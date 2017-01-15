@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5c 17-January-2015
+ * Project Version: 1n5d 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2142,7 +2142,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 					if(!(parentEntity->NLCcontextGenerated))
 					{
 					*/
-					if((parentEntity->grammaticalDefiniteTemp) || (parentEntity->grammaticalProperNounTemp))
+					if(isDefiniteEntity(parentEntity))
 					{
 						bool foundParentEntityNewTemp = false;
 						parentEntityNew = getSameReferenceSetDefiniteUniqueParent(parentEntity, sentenceIndex, generateObjectInitialisationsLastParent, &foundParentEntityNewTemp, parseConditionParents);
@@ -2190,7 +2190,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 								//removed 1i11e, readded 1i11j
 								if(conditionSubject != generateObjectInitialisationsLastParent)
 								{
-									if((conditionSubject->grammaticalDefiniteTemp) || (conditionSubject->grammaticalProperNounTemp))
+									if(isDefiniteEntity(conditionSubject))
 									{
 										bool foundParentEntityNewTemp = false;
 										parentEntityNew = getSameReferenceSetDefiniteUniqueParent(conditionSubject, sentenceIndex, generateObjectInitialisationsLastParent, &foundParentEntityNewTemp, parseConditionParents);

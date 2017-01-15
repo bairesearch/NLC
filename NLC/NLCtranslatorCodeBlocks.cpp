@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5c 17-January-2015
+ * Project Version: 1n5d 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,6 +41,7 @@
 #include "NLCtranslatorCodeBlocksLogicalConditions.h"
 #include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
 #include "NLCtranslatorCodeBlocksOperations.h"
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
 bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList)
 {
@@ -244,7 +245,6 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				result = false;
 			}
 			
-			/*
 			#ifdef NLC_SUPPORT_REDEFINITIONS
 			//Part 4: redefinitions (eg The dog is an Alsation)
 			#ifdef NLC_DEBUG
@@ -255,7 +255,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				result = false;
 			}
 			#endif
-			*/
+			
 		#ifdef NLC_PREPROCESSOR_MATH
 		}
 		#endif
@@ -708,6 +708,48 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock ** currentCodeBlo
 	}
 	return result;
 }
+
+#ifdef NLC_SUPPORT_REDEFINITIONS
+bool generateCodeBlocksPart5redefinitions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+{
+	//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
+	bool result = true;
+	GIAentityNode * entity = NULL;
+	GIAentityNode * definitionEntity = NULL;
+	if(checkIfPhraseContainsSubstanceWithDefinitionLink(entityNodesActiveListComplete, sentenceIndex, &entity, &definitionEntity))
+	{
+		if(!checkSpecialCaseEntity(entity, true))	//is this required?
+		{	
+			NLCcodeblock * firstCodeBlockInLevel = *currentCodeBlockInTree;
+			
+			//1. get parent of the dog (eg pound)
+			GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);
+			
+			//2. generate context of the dog
+			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+			bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
+
+			//3. verify that alsations are dogs
+			*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);
+									
+			//4. cast the dog to alsation
+			*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, entity, definitionEntity);
+			
+			//5. add alsation to alsation property list of pound 
+				//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
+				//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
+			if(parentEntity != entity)
+			{
+				*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, parentEntity, definitionEntity, sentenceIndex);
+			}
+			
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInLevel);
+
+		}
+	}
+	return result;
+}
+#endif
 
 
 

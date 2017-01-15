@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5c 17-January-2015
+ * Project Version: 1n5d 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -136,6 +136,9 @@ using namespace std;
 #ifdef NLC_USE_LIBRARY
 	#define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT (53)			//context1->param1->param2param3ConditionList.insert(param2, param3);
 #endif
+#ifdef NLC_SUPPORT_REDEFINITIONS
+	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (54)
+#endif
 /*
 #define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (54)			//param1class * param1 = NULL;
 #define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (55)			//param1 = param2;
@@ -204,8 +207,9 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST (131)
 	#define NLC_CODEBLOCK_TYPE_IN_LOCAL_LIST (132)
 #endif
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION (133)
+#ifdef NLC_SUPPORT_REDEFINITIONS
+	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1 (133)
+	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2 (134)
 #endif
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
@@ -369,6 +373,7 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 	#endif
 	
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);
+	bool isDefiniteEntity(GIAentityNode* entity);
 
 NLCcodeblock * createCodeBlock(NLCcodeblock * currentCodeBlockInTree, int codeBlockType);
 NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree);
@@ -533,8 +538,10 @@ NLCcodeblock * getLastCodeBlockInLevel(NLCcodeblock * currentCodeBlockInTree);
 GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity);
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
+#ifdef NLC_SUPPORT_REDEFINITIONS
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
+NLCcodeblock * createCodeConvertParentToChildClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* parentEntity, GIAentityNode* childEntity);
 #endif
 
 /*

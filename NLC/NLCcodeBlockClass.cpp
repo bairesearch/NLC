@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5c 17-January-2015
+ * Project Version: 1n5d 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1102,10 +1102,12 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(G
 	return validClass;
 }
 
+#endif
+
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;
-	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLClocalListVariableHasBeenInitialised || entity->NLCisSingularArgument)
+	if(isDefiniteEntity(entity) || entity->NLClocalListVariableHasBeenInitialised || entity->NLCisSingularArgument)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
 		#ifdef NLC_DEBUG
@@ -1118,7 +1120,16 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 	}
 	return isAssumedToAlreadyHaveBeenDeclared;
 }
-#endif
+
+bool isDefiniteEntity(GIAentityNode* entity)
+{
+	bool isDefiniteEntity = false;
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
+	{
+		isDefiniteEntity = true;
+	}
+	return isDefiniteEntity;
+}
 
 
 
@@ -2474,8 +2485,8 @@ NLCcodeblock * createCodeBlockSetTempVariable(NLCcodeblock * currentCodeBlockInT
 }
 #endif
 */
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind)
+#ifdef NLC_SUPPORT_REDEFINITIONS
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind)
 {
 	NLCitem * objectItem = new NLCitem(object, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
@@ -2483,7 +2494,30 @@ NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction(NLCcodeblock *
 	NLCitem * classNameToFindItem = new NLCitem(classNameToFind, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(classNameToFindItem);
 		
-	int codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind)
+{
+	NLCitem * objectItem = new NLCitem(object, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(objectItem);
+
+	NLCitem * classNameToFindItem = new NLCitem(classNameToFind, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(classNameToFindItem);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock * createCodeConvertParentToChildClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* parentEntity, GIAentityNode* childEntity)
+{
+	NLCitem * parentItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(parentItem);
+
+	NLCitem * childItem = new NLCitem(childEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(childItem);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 #endif

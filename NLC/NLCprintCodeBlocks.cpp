@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5c 17-January-2015
+ * Project Version: 1n5d 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -102,6 +102,44 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string codeBlockText = functionOwnerNameWithReferenceDelimiter + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]			
 			#endif
 			printLine(codeBlockText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_NEW_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_NEW_FUNCTION" << endl;
+			#endif
+			
+			NLCitem * functionArgument = NULL;
+			string functionName = "";
+			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, &functionArgument))
+			{
+				functionName = functionArgument->functionName;
+			}
+			
+			string functionArguments = "";
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+			//#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
+			string functionDeclarationOwnerName = "";
+			string functionDeclarationObjectName = "";
+			//#endif
+			generateFunctionArgumentsBasedOnActionAndActionObjectVars(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
+			#endif
+			
+			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
+			#endif
+			
+			#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
+			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang);
+			#endif
+			
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
+			string codeBlockText = functionDeclarationOwnerName + functionArgument->name + functionDeclarationObjectName + NLC_FUNCTION_NAME_APPEND + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
+			#else
+			string codeBlockText = functionOwnerContext + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
+			#endif
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
 		}
 		#ifdef NLC_RECORD_ACTION_HISTORY
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT)
@@ -356,44 +394,6 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 			string indexName = progLangForIndex[progLang] + iterIndexString;
 			string codeBlockText = progLangFor[progLang] + progLangForIndexPart1[progLang] + progLangInteger[progLang] + indexName + progLangForIndexPart2[progLang] + indexName + progLangForIndexPart3[progLang] + param1->name + progLangForIndexPart4[progLang] + indexName + progLangForIndexPart5[progLang];
-			printLine(codeBlockText, level, code);
-			printLine(progLangOpenBlock[progLang], level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_NEW_FUNCTION)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_NEW_FUNCTION" << endl;
-			#endif
-			
-			NLCitem * functionArgument = NULL;
-			string functionName = "";
-			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, &functionArgument))
-			{
-				functionName = functionArgument->functionName;
-			}
-			
-			string functionArguments = "";
-			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-			//#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-			string functionDeclarationOwnerName = "";
-			string functionDeclarationObjectName = "";
-			//#endif
-			generateFunctionArgumentsBasedOnActionAndActionObjectVars(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
-			#endif
-			
-			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
-			#endif
-			
-			#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang);
-			#endif
-			
-			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-			string codeBlockText = functionDeclarationOwnerName + functionArgument->name + functionDeclarationObjectName + NLC_FUNCTION_NAME_APPEND + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
-			#else
-			string codeBlockText = functionOwnerContext + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
-			#endif
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}
@@ -1482,22 +1482,48 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(tempVarDeclarationText, (level+1), code);
 		}
 		#endif
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION)
+		#ifdef NLC_SUPPORT_REDEFINITIONS
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1)
 		{
 			string iterIndexString = convertIntToString(level);
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1" << endl;
 			#endif
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 			
 			string objectName = param1->instanceName;
 			string classNameToFind = param2->name;
 			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string codeBlockExecuteFunctionText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + string(NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME) +  progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(objectName, genericEntityClassName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + classNameToFind + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(checkParentClassName(dynamic_cast<NLCgenericEntity*>param1, param2))
+			string codeBlockExecuteFunctionText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + string(NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME) +  progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(objectName, genericEntityClassName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + classNameToFind + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(checkParentClassName(dynamic_cast<NLCgenericEntity*>(param1), param2))
+			printLine(codeBlockExecuteFunctionText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);	//{
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2)
+		{
+			string iterIndexString = convertIntToString(level);
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			
+			string objectClassName = param1->className; 
+			string classNameToFind = param2->name;
+			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
+			string codeBlockExecuteFunctionText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + string(NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME) +  progLangOpenParameterSpace[progLang] + generateDynamicCastOfNewEntity(objectClassName, genericEntityClassName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + classNameToFind + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(checkParentClassName(dynamic_cast<NLCgenericEntity*>(new param1Class), param2))
 			printLine(codeBlockExecuteFunctionText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);	//{
 		}		
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS)
+		{
+			string iterIndexString = convertIntToString(level);
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			
+			string codeBlockConvertParentToChildClassText = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + generateDynamicCastOfEntity(param1->instanceName, param2->className, progLang) + progLangEndLine[progLang];	//param2class * param2instance = dynamic_cast<param2class*>(param1instance);
+			printLine(codeBlockConvertParentToChildClassText, level, code);
+		}	
 		#endif
 		else
 		{

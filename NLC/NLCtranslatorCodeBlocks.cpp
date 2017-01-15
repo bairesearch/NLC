@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l10b 06-November-2014
+ * Project Version: 1l10c 06-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -164,9 +164,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		
 		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 		#ifdef NLC_DEBUG
-		cout << "markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet:" << endl;
+		cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet:" << endl;
 		#endif
-		markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
+		markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
 		#endif
 
 
@@ -389,7 +389,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 }
 
 #ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-bool markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
+bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
 {
 	bool result = true;
 	//e.g. "a chicken" in "A chicken that ate a pie rows the boat."/"A chicken that ate the pie rows the boat" - set all actions as !sameReferenceSet such that they are not parsed by future references to generateContextBlocks(), but are instead treated as actions
@@ -408,15 +408,11 @@ bool markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock 
 					{//indefinite action subject entity found
 						if(actionSubjectConnection->sameReferenceSet)
 						{
-							//Only perform markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet for the first sentence in which the action is defined. Although not required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (as actions are never assigned connections across multiple sentence indices),  this is critically important for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (ie GIA_ADVANCED_REFERENCING); eg to prevent the action connections in the second sentence of "A chicken that ate a pie rows the boat. The chicken that ate the pie is happy." from being changed to !sameRefrenceSet 
+							//Only perform markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet for the first sentence in which the action is defined. Although not required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (as actions are never assigned connections across multiple sentence indices), this is critically important for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (ie GIA_ADVANCED_REFERENCING); eg to prevent the action connections in the second sentence of "A chicken that ate a pie rows the boat. The chicken that ate the pie is happy." from being changed to !sameReferenceSet 
 							if(actionEntity->sentenceIndexTemp == actionSubjectConnection->sentenceIndexTemp) 
 							{
-								//e.g. "A chicken that ate rows the boat."
-								actionSubjectConnection->sameReferenceSet = false;
-								//#ifdef NLC_DEBUG
-								cout << "markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet(): actionSubjectEntity = " << actionSubjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
-								//#endif
-								
+								bool hasSameSentenceSameReferenceSetActionObject = false;
+								bool hasSameSentenceSameReferenceSetIndefiniteActionObject = false;
 								for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
 								{
 									GIAentityConnection * actionObjectConnection = *iter;
@@ -425,17 +421,86 @@ bool markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock 
 									{
 										if(actionObjectConnection->sameReferenceSet)
 										{
-											//e.g. "A chicken that ate a pie rows the boat."/"A chicken that ate the pie rows the boat" 
-											actionObjectConnection->sameReferenceSet = false;
-											//#ifdef NLC_DEBUG
-											cout << "markActionSubjectIndefiniteEntityActionsAsNotSameReferenceSet(): actionObjectEntity = " << actionObjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
-											//#endif
+											hasSameSentenceSameReferenceSetActionObject = true;
+											if(!assumedToAlreadyHaveBeenDeclared(actionObjectEntity))
+											{//indefinite action subject entity found
+												//e.g. "A chicken that ate a pie rows the boat." [not: "A chicken that ate the pie rows the boat." as the context of "the pie" will be parsed by generateContextBlocks()]
+												actionObjectConnection->sameReferenceSet = false;
+												#ifdef NLC_DEBUG
+												cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet() 1: actionObjectEntity = " << actionObjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
+												#endif
+												hasSameSentenceSameReferenceSetIndefiniteActionObject = true;
+											}
 										}
 									}
 								}
+								if(!hasSameSentenceSameReferenceSetActionObject || hasSameSentenceSameReferenceSetIndefiniteActionObject)
+								{
+									//e.g. "A chicken that ate rows the boat."/"A chicken that ate a pie rows the boat."
+									actionSubjectConnection->sameReferenceSet = false;
+									#ifdef NLC_DEBUG
+									cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet() 2: actionSubjectEntity = " << actionSubjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
+									#endif
+								}
+								else if(hasSameSentenceSameReferenceSetActionObject)
+								{
+									//e.g. "A chicken that ate the pie rows the boat." - mark "a chicken" as definite such that its context will be parsed by generateContextBlocks()
+									actionSubjectEntity->grammaticalDefiniteTemp = true;
+								}
 							}
 						}
-					
+					}
+				}
+				for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
+				{
+					GIAentityConnection * actionObjectConnection = *iter;
+					GIAentityNode * actionObjectEntity = actionObjectConnection->entity;
+					if(!assumedToAlreadyHaveBeenDeclared(actionObjectEntity))
+					{//indefinite action object entity found
+						if(actionObjectConnection->sameReferenceSet)
+						{
+							//Only perform markActionObjectSubjectIndefiniteEntityActionsAsNotSameReferenceSet for the first sentence in which the action is defined. Although not required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (as actions are never assigned connections across multiple sentence indices), this is critically important for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (ie GIA_ADVANCED_REFERENCING); eg to prevent the action connections in the second sentence of "A chicken that ate a pie rows the boat. The chicken that ate the pie is happy." from being changed to !sameReferenceSet 
+							if(actionEntity->sentenceIndexTemp == actionObjectConnection->sentenceIndexTemp) 
+							{
+								bool hasSameSentenceSameReferenceSetActionSubject = false;
+								bool hasSameSentenceSameReferenceSetIndefiniteActionSubject = false;
+								for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
+								{
+									GIAentityConnection * actionSubjectConnection = *iter;
+									GIAentityNode * actionSubjectEntity = actionSubjectConnection->entity;
+									if(actionSubjectConnection->sentenceIndexTemp == actionObjectConnection->sentenceIndexTemp)
+									{
+										if(actionSubjectConnection->sameReferenceSet)
+										{
+											hasSameSentenceSameReferenceSetActionSubject = true;
+											if(!assumedToAlreadyHaveBeenDeclared(actionSubjectEntity))
+											{//indefinite action object entity found
+												//e.g. "A pie that was eaten by a chicken rows the boat." [not: "A pie that was eaten by the chicken rows the boat." as the context of "the chicken" will be parsed by generateContextBlocks()]
+												actionSubjectConnection->sameReferenceSet = false;
+												#ifdef NLC_DEBUG
+												cout << "markActionObjectSubjectIndefiniteEntityActionsAsNotSameReferenceSet() 3: actionSubjectEntity = " << actionSubjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
+												#endif
+												hasSameSentenceSameReferenceSetIndefiniteActionSubject = true;
+											}
+										}
+									}
+								}
+								if(!hasSameSentenceSameReferenceSetActionSubject || hasSameSentenceSameReferenceSetIndefiniteActionSubject)
+								{
+									//e.g. "A pie that was eaten by a chicken rows the boat."/"A pie that was eaten rows the boat."
+									actionObjectConnection->sameReferenceSet = false;
+									#ifdef NLC_DEBUG
+									cout << "markActionObjectSubjectIndefiniteEntityActionsAsNotSameReferenceSet() 4: actionObjectEntity = " << actionObjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
+									#endif
+								}
+								else if(hasSameSentenceSameReferenceSetActionSubject)
+								{
+									//NOTNECESSARY based on current implementation of generateCodeBlocksFromMathTextNLPparsablePhrase():
+									//e.g. "A pie that was eaten by the chicken rows the boat." -  mark "a pie" as definite such that its context will be parsed by generateContextBlocks()
+									//actionObjectEntity->grammaticalDefiniteTemp = true;
+								}
+							}
+						}
 					}
 				}
 			}
@@ -919,7 +984,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 									contextFound = true;
 								}
 								#else
-								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + entity->entityName);
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + entity->entityName);
 								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
 								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
 								GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
@@ -932,7 +997,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 								#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 								generateContextBlocksVariables.testNumerosity = true;
 								#endif
-								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + entity->entityName);
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + entity->entityName);
 								if(generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION))
 								{
 									contextFound = true;

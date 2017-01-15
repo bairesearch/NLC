@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12b 30-September-2016
+ * Project Version: 1u12c 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -327,9 +327,12 @@ public:
 	NLCcodeblock* currentCodeBlockInTreeAtBaseLevel;	//added 1k16c - for loop support
 	#endif
 	#endif
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
+	
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	bool testNumerosity;
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
 	int childQuantity;
+	#endif
 	#endif
 	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 	bool enterGeneratedCategoryList;

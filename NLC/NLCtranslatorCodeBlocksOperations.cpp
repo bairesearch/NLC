@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12b 30-September-2016
+ * Project Version: 1u12c 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -257,8 +257,8 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	bool result = true;
 
 	#ifdef NLC_DEBUG
-	//cout << "subjectEntity->grammaticalPredeterminerTemp = " << subjectEntity->grammaticalPredeterminerTemp << endl;
-	//cout << "subjectEntity->entityName = " << subjectEntity->entityName << endl;
+	cout << "subjectEntity->grammaticalPredeterminerTemp = " << subjectEntity->grammaticalPredeterminerTemp << endl;
+	cout << "subjectEntity->entityName = " << subjectEntity->entityName << endl;
 	#endif
 	
 	NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
@@ -318,10 +318,10 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	bool addNewObjectForEachSubject = false;
 	/*
 	implement all/each;
-		case 1: if detect "each"/"every"/"all" predeterminer and object is singular [REDUNDANT: or quantity entity] then add a new object for each subject
+		case 1: if detect "each"/"every"/"all" predeterminer {OLD: and object is singular [REDUNDANT: or quantity entity]} then add a new object for each subject
 			eg Each player has a colour.
 		case 2: if detect plural subject and indefinite plural object, then add a new object for each subject 
-			eg Each player has 16 pieces.
+			{OLD: eg Each player has 16 pieces.	[this doesn't work: If each player has 16 pieces]}
 			eg the players have pieces.
 		case 3: if detect plural subject and quality object, then add a new object for each subject 
 	*/
@@ -350,7 +350,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			#else
 			subjectEntityPredeterminerDetected = intInIntArray(subjectEntity->grammaticalPredeterminerTemp, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
 			#endif
-			if(subjectEntityPredeterminerDetected && (objectEntity->grammaticalNumber != GRAMMATICAL_NUMBER_PLURAL))
+			if(subjectEntityPredeterminerDetected)	//modified 1u12c
 			{
 				addNewObjectForEachSubject = true;
 			}
@@ -382,7 +382,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	{
 		#ifdef NLC_DEBUG
 		cout << "subjectEntity = " << subjectEntity->entityName << endl;
-		//cout << "\tobjectEntity = " << objectEntity->entityName << endl;
 		#endif
 		generateContextBlocksVariables.getParentCheckLastParent = true;
 		generateContextBlocksVariables.lastParent = objectEntity;	//is this required? (designed for dual/two-way condition connections only)
@@ -418,29 +417,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 				{
 					if(connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)	//added 1u12a
 					{
-						/*
-						#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE_OBJECT_PARSE_CONCURRENTLY
-						//1u12a
-						bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
-						bool checkIsDefinite = false;
-						bool objectHasSameReferenceSetParent = false;
-						GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, NULL, &objectHasSameReferenceSetParent, parseConditionParents, checkIsDefinite);
-						#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE_OBJECT_PARSE_CONCURRENTLY_INCLUDING_PARENT
-						if(!assumedToAlreadyHaveBeenDeclared(objectEntity) && !assumedToAlreadyHaveBeenDeclared(parentEntityNew))
-						#else
-						if(!assumedToAlreadyHaveBeenDeclared(objectEntity) && !objectHasSameReferenceSetParent)	//!isDefiniteEntity
-						#endif
-						{
-							foundObject = false;
-							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
-							#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE_OBJECT_STRICT_NUMEROSITY
-							#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
-							generateContextBlocksVariables.testNumerosity = true;
-							#endif
-							#endif
-						}
-						#else
-						*/
 						//1u11c:
 						if(objectEntity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY)
 						{
@@ -554,9 +530,9 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 	if(addNewObjectForEachSubject)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "addNewObjectForEachSubject" << endl;
-		#endif
+		//#ifdef NLC_DEBUG
+		cout << "addNewObjectForEachSubject" << endl;
+		//#endif
 		
 		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH
 		if(generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement)
@@ -2751,9 +2727,9 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 //assume is logicalConditionStatement
 bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, bool primary, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
 {
-	#ifdef NLC_DEBUG
+	//#ifdef NLC_DEBUG
 	cout << "generateCodeBlocksVerifyConnection entry" << endl;
-	#endif
+	//#endif
 	
 	bool result = false;
 	
@@ -2794,6 +2770,7 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 		#endif
 		{
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+			cout << "as" << endl;
 			firstCodeBlockAtLevel2 = *currentCodeBlockInTree;
 			if(generateContextBlocksVariablesLogicalConditionStatement->testNumerosity)
 			{
@@ -2814,7 +2791,9 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 			#endif
 		}	
 	}
-		
+	
+	cout << "qt1" << endl;
+	
 	#ifdef NLC_RECORD_ACTION_HISTORY
 	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 	{
@@ -2954,6 +2933,8 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 	}
 	#endif
 
+	cout << "qt2" << endl;
+
 	if(result)
 	{
 		if(generateContextBlocksVariables.negativeDetectedInContextBlocks)
@@ -2992,13 +2973,21 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 				{
 					if((foundSubject && checkNumerosity(subjectEntity)) || checkNumerosity(objectEntity))
 					{
+						cout << "qt3" << endl;
 						//eg If the basket has 3 pies, eat the apple.
 						string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(objectEntity);
 						*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName);
 	
+						cout << "qt4" << endl;
+						if(firstCodeBlockAtLevel2 == NULL)
+						{
+							cout << "qt4f" << endl;
+						}
 						*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockAtLevel2);
+						cout << "qt4b" << endl;
 						if(checkNumerosity(objectEntity))
 						{
+							cout << "qt5" << endl;
 							#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 							*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (child)");
 							#endif
@@ -3006,9 +2995,11 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 						}
 						else
 						{
+							cout << "qt6" << endl;
 							//just verify that at least 1 object item is found
 							*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 1);
 						}
+						cout << "qt7" << endl;
 					}		
 				}	
 				#endif
@@ -3034,9 +3025,9 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 		}
 	}
 	
-	#ifdef NLC_DEBUG
+	//#ifdef NLC_DEBUG
 	cout << "generateCodeBlocksVerifyConnection exit" << endl;
-	#endif
+	//#endif
 	
 	return result;
 }

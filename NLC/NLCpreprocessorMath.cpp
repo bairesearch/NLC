@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -99,8 +99,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
 	#endif
 					
-	int sentenceIndexOfFullSentence =* sentenceIndex;
-	NLCsentence* firstNLCsentenceInFullSentence =* currentNLCsentenceInList;
+	int sentenceIndexOfFullSentence = *sentenceIndex;
+	NLCsentence* firstNLCsentenceInFullSentence = *currentNLCsentenceInList;
 	
 	int startIndex = 0;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -391,7 +391,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						}
 						#endif
 						(*currentNLCsentenceInList)->sentenceContents = currentPhrase + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;	//append a fullstop to the NLP parsable phrase to make it readable by NLP
-						(*currentNLCsentenceInList)->sentenceIndex =* sentenceIndex;
+						(*currentNLCsentenceInList)->sentenceIndex = *sentenceIndex;
 						//(*currentNLCsentenceInList)->indentation = currentIndentation;	//indentation not recorded for NLC parsable phrases
 						mathText = mathText + generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, (*currentNLCsentenceInList));
 						#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
@@ -493,7 +493,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	//remove all numbers from mathTextVariableNames - added 1l7a
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end();)
 	{
-		string mathTextVariableName =* iter;
+		string mathTextVariableName = *iter;
 		bool variableNameIsNumber = isStringNumber(mathTextVariableName);
 		if(variableNameIsNumber)
 		{
@@ -511,7 +511,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	//{
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end(); iter++)
 	{
-		string mathTextVariableName =* iter;
+		string mathTextVariableName = *iter;
 		
 		bool ignoreVariable = false;
 		if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
@@ -616,7 +616,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	NLCsentence* currentSentence = firstNLCsentenceInFullSentence;
 	while(currentSentence->next != NULL)
 	{
-		*functionContents =* functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
+		*functionContents = *functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
 		currentSentence = currentSentence->next;
 	}
 	
@@ -770,7 +770,7 @@ bool findPredefinedNumericalVariableInFunction(string* currentWord, NLCfunction*
 		{
 			for(vector<string>::iterator iter = currentNLCsentenceInList->mathTextVariableNames.begin(); iter != currentNLCsentenceInList->mathTextVariableNames.end(); iter++)
 			{
-				string mathTextVariableName =* iter;
+				string mathTextVariableName = *iter;
 				if(*currentWord == mathTextVariableName)
 				{
 					result = true;

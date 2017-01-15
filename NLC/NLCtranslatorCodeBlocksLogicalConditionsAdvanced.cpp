@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -180,7 +180,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						//cout << "foundConditionSubject && foundConditionObject" << endl;
 						//1. disable all classStructure formation based on condition object subset
 
-						NLCcodeblock* currentCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;
+						NLCcodeblock* currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 						NLCcodeblock* previousCodeBlockInTreeAtBaseLevel = currentCodeBlockInTreeAtBaseLevel;
 
 						bool passedLogicalConditionObject = false;
@@ -304,7 +304,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							*/
 							
 							#ifdef NLC_USE_PREPROCESSOR
-							NLCcodeblock* firstCodeBlockAtStartOfElseStatement =* currentCodeBlockInTree;
+							NLCcodeblock* firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
 							NLCcodeblock* firstCodeBlockAtStartOfIfStatement = NULL;
 							NLCcodeblock* previousCodeBlockInTree = NULL;
 							if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
@@ -328,7 +328,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 							{
 								*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
-								currentCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;
+								currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 								*currentCodeBlockInTree = createCodeBlockWhileHasBool(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName);
 								*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, false);
 							}
@@ -356,10 +356,10 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 
 							if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 							{
-								previousCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;
+								previousCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 							}
 							#ifdef NLC_USE_PREPROCESSOR
-							previousCodeBlockInTree =* currentCodeBlockInTree;
+							previousCodeBlockInTree = *currentCodeBlockInTree;
 							#endif
 							
 							//cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName << endl;
@@ -409,7 +409,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								#endif
 								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 								{
-									currentCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;
+									currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 								}
 								
 								#ifndef NLC_USE_PREPROCESSOR
@@ -576,7 +576,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* currentLogicalConditionObject, int sentenceIndex, int logicalOperation, int* logicalConditionConjunctionIndex, NLClogicalConditionConjunction* logicalConditionConjunctionArray, GIAentityNode* previousLogicalConditionConjunction)
 {
-	NLCcodeblock* currentCodeBlockInTreeAtCurrentLevel1 =* currentCodeBlockInTree;
+	NLCcodeblock* currentCodeBlockInTreeAtCurrentLevel1 = *currentCodeBlockInTree;
 
 	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 	cout << "addNewLogicalCondition(): currentLogicalConditionObject = " << currentLogicalConditionObject->entityName << endl;
@@ -591,7 +591,7 @@ void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode
 	//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
 	NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 	generateContextBlocksVariables.logicalOperation = logicalOperation;
-	generateContextBlocksVariables.logicalConditionConjunctionIndex =* logicalConditionConjunctionIndex;
+	generateContextBlocksVariables.logicalConditionConjunctionIndex = *logicalConditionConjunctionIndex;
 	generateContextBlocksVariables.primaryEntityInLogicalConditionConjunctionSubset = previousLogicalConditionConjunction;
 		//NB this will set NLCparsedForCodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
 
@@ -623,7 +623,7 @@ void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode
 			currentCodeBlockInTreeAtCurrentLevel1 = currentCodeBlockInTreeAtCurrentLevel1->next;
 			*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;
 		}
-		*logicalConditionConjunctionIndex =* logicalConditionConjunctionIndex + 1;
+		*logicalConditionConjunctionIndex = *logicalConditionConjunctionIndex + 1;
 		#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 		cout << "*logicalConditionConjunctionIndex = " <<* logicalConditionConjunctionIndex << endl;
 		#endif
@@ -701,7 +701,7 @@ void checkConditionForLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GI
 					#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 					cout << "logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex == INT_DEFAULT_VALUE: " << logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex << endl;
 					#endif
-					logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex =* logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value
+					logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex = *logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value
 					if(logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex > 0)
 					{//conjunction type (eg and/or) is not set for first logicalCondition in array
 						logicalConditionConjunctionArray[logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex].conjunctionType = conjunctionType;

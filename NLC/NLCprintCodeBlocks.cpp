@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1212,7 +1212,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 				string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + contextListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<genericEntityClass*> ::iterator iterX = contextList.begin(); iterX < contextList.end(); iterX++)
 				printLine(codeBlockText, (level+1), code);
 					printLine(progLangOpenBlock[progLang], (level+1), code);	//{
-					string tempVarDeclarationText = generateTempEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//genericEntityClass* genericEntity =* iter2;
+					string tempVarDeclarationText = generateTempEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//genericEntityClass* genericEntity = *iter2;
 					printLine(tempVarDeclarationText, (level+2), code);
 					string popLastSentenceReferencedText = tempVariableName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackRemove[progLang] + progLangEndLine[progLang];	//genericEntity->lastSentenceReferenced.pop();
 					printLine(popLastSentenceReferencedText, (level+2), code);
@@ -1287,7 +1287,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 				string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + progLangTypeName[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(typename vector<E1*> ::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
 				printLine(codeBlockTextForLoop, (level+1), code);
 				printLine(progLangOpenBlock[progLang], (level+1), code);	//{
-					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity =* iter1;
+					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity = *iter1;
 					printLine(tempVarDeclarationText, (level+2), code);;
 					string addCastedEntityToVectorText = entity2InstanceListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(tempVariableName, templateName2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//E2InstanceList.push_back(dynamic_cast<E2*>(genericEntity));
 					printLine(addCastedEntityToVectorText, (level+2), code);
@@ -1357,7 +1357,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 				printLine(codeBlockTextForLoop, level+q, code);
 				printLine(progLangOpenBlock[progLang], level+q, code);	//{
 					q++;
-					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity =* iter1;
+					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity = *iter1;
 					printLine(tempVarDeclarationText, (level+q), code);
 					//NB this code could be generated using existing codeblock (NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST)
 
@@ -1675,7 +1675,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 		for(vector<NLCitem*>::iterator parametersIterator = functionDeclaration->parameters.begin(); parametersIterator < functionDeclaration->parameters.end(); parametersIterator++)
 		{
-			NLCitem* currentItem =* parametersIterator;
+			NLCitem* currentItem = *parametersIterator;
 			//cout << "1 currentItem->itemType = " << currentItem->itemType << endl;
 			if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 			{
@@ -1693,7 +1693,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 
 		//cout << "2 currentItem->itemType = " << currentItem->itemType << endl;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
@@ -1701,12 +1701,12 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			//cout << "3 currentItem->name = " << currentItem->name << endl;
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
 			bool categoryList = false;
-			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
-			//*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
@@ -1714,7 +1714,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
@@ -1722,9 +1722,9 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
-			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 			
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -1739,20 +1739,20 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 			bool categoryList = false;
-			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
-			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
@@ -1760,9 +1760,9 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
-			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 			
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -1779,17 +1779,17 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments =* functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_PROPERTY)
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 		}
 		#endif
 		*/
@@ -1886,14 +1886,14 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCi
 {
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 		}
 	}
 }
@@ -1904,7 +1904,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 {
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		#ifdef NLC_DEBUG
 		//cout << "generateFunctionArgumentsBasedOnActionAndActionObjectVars():" << endl;
 		//cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
@@ -1918,12 +1918,12 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 			#endif
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments =* functionArguments + generateTempEntityDeclaration(currentItem, progLang);
+			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			*functionDeclarationOwnerName = currentItem->name;
@@ -1938,12 +1938,12 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 			#endif
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments =* functionArguments + generateTempEntityDeclaration(currentItem, progLang);
+			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
@@ -1953,12 +1953,12 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 			#endif
 			if(*functionArguments != "")
 			{
-				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments =* functionArguments + generateTempEntityDeclaration(currentItem, progLang);
+			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif	
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			*functionDeclarationObjectName = currentItem->name;
@@ -1980,7 +1980,7 @@ string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang)
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
 			functionOwnerContext = progLangClassMemberFunctionDefaultType[progLang] + currentItem->className + progLangFunctionOwnerClassDelimiter[progLang];
@@ -2001,7 +2001,7 @@ string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int p
 	string logicalConjunctionOfBoolsText = "";
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->conjunctionType == ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND)
 		{
 			logicalConjunctionOfBoolsText = logicalConjunctionOfBoolsText + STRING_SPACE + progLangAnd[progLang] + STRING_SPACE;

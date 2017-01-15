@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -45,7 +45,7 @@ void printLine(string command, int level, string* code)
 	}
 	line = line + command;
 	line = line + CHAR_NEWLINE;
-	*code =* code + line;
+	*code = *code + line;
 	//}
 }
 
@@ -270,7 +270,7 @@ string generateStringFromContextVector(vector<string>* context, int progLang)
 	string contextString = "";
 	for(vector<string>::iterator contextIterator = context->begin(); contextIterator < context->end(); contextIterator++)
 	{
-		string currentContext =* contextIterator;
+		string currentContext = *contextIterator;
 		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
 	}
 

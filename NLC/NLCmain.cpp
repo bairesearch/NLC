@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -638,7 +638,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1n15a 28-January-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1n15c 28-January-2015" << endl;
 			exit(1);
 		}
 
@@ -1018,7 +1018,7 @@ int main(int argc,char* *argv)
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
 	{	
-		NLCclassDefinitionFunctionDependency* functionDependencyTemp =* functionDependencyIter;
+		NLCclassDefinitionFunctionDependency* functionDependencyTemp = *functionDependencyIter;
 		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 		cout << "functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
 		cout << "functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
@@ -1026,7 +1026,7 @@ int main(int argc,char* *argv)
 		cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependencyTemp->functionDependencyList.begin(); functionDependencyIter2 != functionDependencyTemp->functionDependencyList.end(); functionDependencyIter2++)
 		{	
-			NLCclassDefinitionFunctionDependency* functionDependencyTemp2 =* functionDependencyIter2;
+			NLCclassDefinitionFunctionDependency* functionDependencyTemp2 = *functionDependencyIter2;
 			cout << "  2. ---------------------------------------------------" << endl;
 			cout << "  functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
 			cout << "  functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
@@ -1047,7 +1047,7 @@ int main(int argc,char* *argv)
 		stillUnreconciledFunctionDeclarationArguments = false;
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
 		{
-			NLCclassDefinitionFunctionDependency* functionDependency =* functionDependencyIter;
+			NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
 
 			if(functionDependency->functionNameListIndex != INT_DEFAULT_VALUE)
 			{
@@ -1060,7 +1060,7 @@ int main(int argc,char* *argv)
 						bool reconciledChildFunctionDeclarationArguments = true;
 						for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependency->functionDependencyList.begin(); functionDependencyIter2 != functionDependency->functionDependencyList.end(); functionDependencyIter2++)
 						{
-							NLCclassDefinitionFunctionDependency* functionDependencyChild =* functionDependencyIter2;
+							NLCclassDefinitionFunctionDependency* functionDependencyChild = *functionDependencyIter2;
 							if(functionDependencyChild->functionNameListIndex != INT_DEFAULT_VALUE)
 							{
 								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS

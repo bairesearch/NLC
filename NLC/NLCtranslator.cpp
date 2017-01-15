@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -451,7 +451,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependency->functionDependencyList.begin(); functionDependencyIter != functionDependency->functionDependencyList.end(); functionDependencyIter++)
 		{
-			NLCclassDefinitionFunctionDependency* functionDependencyChild =* functionDependencyIter;
+			NLCclassDefinitionFunctionDependency* functionDependencyChild = *functionDependencyIter;
 			NLCclassDefinition* functionDeclaration2 = NULL;
 			if(findFunctionDeclarationClassDefinition(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, &functionDeclaration2, rearrangeClassList, isReference))	//should find exact match as class definitions have already been created for all new function definitions (and their implicit declarations have been added to their function argument lists)
 			{
@@ -477,7 +477,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclarat
 	vector<NLCitem*>* functionDeclarationArgumentList = &(functionDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
-		NLCitem* functionDefinitionSourceArgument =* parametersIterator;
+		NLCitem* functionDefinitionSourceArgument = *parametersIterator;
 		if(functionDefinitionSourceArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			//add a new function argument to the existing function argument list
@@ -504,7 +504,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclara
 	vector<NLCitem*>* functionDeclarationArgumentList = &(functionDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
 	{
-		NLCitem* functionDeclarationSourceArgument =* parametersIterator;
+		NLCitem* functionDeclarationSourceArgument = *parametersIterator;
 		if(functionDeclarationSourceArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			//add a new function argument to the existing function argument list
@@ -529,7 +529,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinit
 	vector<NLCitem*>* functionDeclarationSourceArgumentList = &(functionDeclarationSource->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
 	{
-		NLCitem* functionDeclarationSourceArgument =* parametersIterator;
+		NLCitem* functionDeclarationSourceArgument = *parametersIterator;
 		if(functionDeclarationSourceArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			//add a new function argument to the existing function argument list

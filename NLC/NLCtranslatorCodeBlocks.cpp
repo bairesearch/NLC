@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -418,7 +418,7 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 			{
 				for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
 				{
-					GIAentityConnection* actionSubjectConnection =* iter;
+					GIAentityConnection* actionSubjectConnection = *iter;
 					GIAentityNode* actionSubjectEntity = actionSubjectConnection->entity;
 					if(!assumedToAlreadyHaveBeenDeclared(actionSubjectEntity))
 					{//indefinite action subject entity found
@@ -431,7 +431,7 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 								bool hasSameSentenceSameReferenceSetIndefiniteActionObject = false;
 								for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
 								{
-									GIAentityConnection* actionObjectConnection =* iter;
+									GIAentityConnection* actionObjectConnection = *iter;
 									GIAentityNode* actionObjectEntity = actionObjectConnection->entity;
 									if(actionObjectConnection->sentenceIndexTemp == actionSubjectConnection->sentenceIndexTemp)
 									{
@@ -469,7 +469,7 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 				}
 				for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
 				{
-					GIAentityConnection* actionObjectConnection =* iter;
+					GIAentityConnection* actionObjectConnection = *iter;
 					GIAentityNode* actionObjectEntity = actionObjectConnection->entity;
 					if(!assumedToAlreadyHaveBeenDeclared(actionObjectEntity))
 					{//indefinite action object entity found
@@ -482,7 +482,7 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 								bool hasSameSentenceSameReferenceSetIndefiniteActionSubject = false;
 								for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
 								{
-									GIAentityConnection* actionSubjectConnection =* iter;
+									GIAentityConnection* actionSubjectConnection = *iter;
 									GIAentityNode* actionSubjectEntity = actionSubjectConnection->entity;
 									if(actionSubjectConnection->sentenceIndexTemp == actionObjectConnection->sentenceIndexTemp)
 									{
@@ -567,11 +567,11 @@ bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBloc
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	#ifdef NLC_USE_PREPROCESSOR
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	NLCcodeblock* firstCodeBlockAtStartOfElseStatement =* currentCodeBlockInTree;
+	NLCcodeblock* firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
 	NLCcodeblock* firstCodeBlockAtStartOfIfStatement = NULL;
 	NLCcodeblock* previousCodeBlockInTree = NULL;
 	setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected);
-	previousCodeBlockInTree =* currentCodeBlockInTree;
+	previousCodeBlockInTree = *currentCodeBlockInTree;
 	#endif
 	#endif
 	#endif
@@ -690,7 +690,7 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBloc
 	bool result = true;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* entity =* entityIter;
+		GIAentityNode* entity = *entityIter;
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
 			if(!checkSpecialCaseEntity(entity, true))
@@ -725,7 +725,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 	{
 		if(!checkSpecialCaseEntity(entity, true))	//is this required?
 		{	
-			NLCcodeblock* firstCodeBlockInLevel =* currentCodeBlockInTree;
+			NLCcodeblock* firstCodeBlockInLevel = *currentCodeBlockInTree;
 			
 			GIAentityNode* parentEntity = NULL;
 			
@@ -767,7 +767,7 @@ bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveList
 	bool result = true;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* entity =* entityIter;
+		GIAentityNode* entity = *entityIter;
 		entity->NLCcontextGenerated = false;
 	}
 	return result;

@@ -147,7 +147,7 @@ void mainFunction(vector<mainClass*> &mainClassList, vector<redClass*> &redClass
 	vector<objectClass*> object2CategoryList;
 	for(vector<objectClass*> ::iterator iter1 = objectClassList.begin(); iter1 < objectClassList.end(); iter1++) 
 	{
-		objectClass* object2 =* iter1;
+		objectClass* object2 = *iter1;
 		//Singular definite referencing tests
 		addToCategoryIfPassSingularDefiniteReferencingTests<objectClass, objectClass> (object2CategoryList, object2);
 	}
@@ -163,7 +163,7 @@ void mainFunction(vector<mainClass*> &mainClassList, vector<redClass*> &redClass
 	vector<animalClass*> animal2CategoryList;
 	for(vector<animalClass*> ::iterator iter1 = animalClassList.begin(); iter1 < animalClassList.end(); iter1++) 
 	{
-		animalClass* animal2 =* iter1;
+		animalClass* animal2 = *iter1;
 		//Singular definite referencing tests
 		addToCategoryIfPassSingularDefiniteReferencingTests<animalClass, animalClass> (animal2CategoryList, animal2);
 	}
@@ -182,7 +182,7 @@ void dogClass::rideFunction(vector<dogClass*> &dogClassList, vector<rideClass*> 
 	vector<ballClass*> ball1CategoryList;
 	for(vector<ballClass*> ::iterator iter1 = ballClassList.begin(); iter1 < ballClassList.end(); iter1++) 
 	{
-		ballClass* ball1 =* iter1;
+		ballClass* ball1 = *iter1;
 		//Singular definite referencing tests
 		addToCategoryIfPassSingularDefiniteReferencingTests<ballClass, ballClass> (ball1CategoryList, ball1);
 	}
@@ -252,7 +252,7 @@ void clearReferenceContextList(vector<NLCgenericEntityClass*> &referenceContextL
 {
 	for(vector<NLCgenericEntityClass*> ::iterator iter1 = referenceContextList.begin(); iter1 < referenceContextList.end(); iter1++) 
 	{
-		NLCgenericEntityClass* NLCgenericEntity =* iter1;
+		NLCgenericEntityClass* NLCgenericEntity = *iter1;
 		NLCgenericEntity->lastSentenceReferenced.pop();
 	}
 	referenceContextList.clear();
@@ -264,7 +264,7 @@ vector<E1*> castVector(vector<E1*> &E1List)
 	vector<E2*> E2List;
 	for(typename vector<E1*> ::iterator iter1 = E1List.begin(); iter1 < E1List.end(); iter1++) 
 	{
-		E1* NLCgenericEntity =* iter1;
+		E1* NLCgenericEntity = *iter1;
 		E2List.push_back(dynamic_cast<E2*>(NLCgenericEntity));
 	}
 	return E2List;
@@ -275,7 +275,7 @@ void findAliasAndAddToCategoryList(vector<E1*> &E1List, string aliasName, vector
 {
 	for(typename vector<E1*> ::iterator iter1 = E1List.begin(); iter1 < E1List.end(); iter1++) 
 	{
-		E1* NLCgenericEntity =* iter1;
+		E1* NLCgenericEntity = *iter1;
 		if((find(NLCgenericEntity->aliasList.begin(), NLCgenericEntity->aliasList.end(), aliasName) != NLCgenericEntity->aliasList.end()))
 		{
 			E1CategoryList.push_back(NLCgenericEntity);

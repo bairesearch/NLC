@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,7 +46,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 	
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* entityNode =* entityIter;
+		GIAentityNode* entityNode = *entityIter;
 
 		//valid class checks added 1g12f 14-July-2014
 		if(generateClassHeirarchyValidClassChecks(entityNode))
@@ -77,7 +77,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 				{
 					for(vector<GIAentityConnection*>::iterator connectionIter = entityNode->entityVectorConnectionsArray[i].begin(); connectionIter != entityNode->entityVectorConnectionsArray[i].end(); connectionIter++)
 					{
-						GIAentityConnection* connection =* connectionIter;
+						GIAentityConnection* connection = *connectionIter;
 						GIAentityNode* targetEntity = connection->entity;
 
 						#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -371,7 +371,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 	//disable all double declarations
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
-		NLCclassDefinition* classDefinition =* classDefinitionIter;
+		NLCclassDefinition* classDefinition = *classDefinitionIter;
 
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES);	//changed from GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS, 1k8b
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
@@ -383,7 +383,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 	//create a high level "genericEntity" class definition (for generic NLC library functions - that cannot rely on specific class names)
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
-		NLCclassDefinition* classDefinition =* classDefinitionIter;
+		NLCclassDefinition* classDefinition = *classDefinitionIter;
 
 		if(classDefinition->definitionList.empty() && (classDefinition->name != generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE)))
 		{
@@ -457,7 +457,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 	
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* actionEntity =* entityIter;
+		GIAentityNode* actionEntity = *entityIter;
 
 		#ifdef NLC_DEBUG
 		//cout << "generateClassHeirarchyFunctions(): actionEntity = " << actionEntity->entityName << endl;
@@ -749,7 +749,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 	//disable all double declarations
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
-		NLCclassDefinition* classDefinition =* classDefinitionIter;
+		NLCclassDefinition* classDefinition = *classDefinitionIter;
 
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES);	//changed from GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS, 1k8b
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
@@ -922,8 +922,8 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 			if(!(substanceConceptCondition->conditionObjectEntity->empty()))
 			{
 				GIAentityNode* substanceConceptConditionObject = (substanceConceptCondition->conditionObjectEntity->back())->entity;
-				*substanceConceptClassName =* substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION;
-				*substanceConceptClassName =* substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+				*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION;
+				*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
 			}
 			else
 			{
@@ -936,8 +936,8 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->propertyNodeList->begin(); entityIter != substanceConceptEntity->propertyNodeList->end(); entityIter++)
 	{
 		GIAentityNode* substanceConceptProperty = (*entityIter)->entity;
-		*substanceConceptClassName =* substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
-		*substanceConceptClassName =* substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptProperty, substanceConceptEntity);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+		*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
+		*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptProperty, substanceConceptEntity);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
 	}
 }
 			
@@ -949,13 +949,13 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 	for(vector<NLCclassDefinition*>::iterator localListIter = classDefinitionSublist->begin(); localListIter != classDefinitionSublist->end();)
 	{
 		bool localListIterErased = false;
-		NLCclassDefinition* variableClassDefinition =* localListIter;
+		NLCclassDefinition* variableClassDefinition = *localListIter;
 		string variableName = variableClassDefinition->name;
 		for(vector<NLCclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
 		{
 			if(!localListIterErased)
 			{
-				NLCclassDefinition* targetClassDefinition =* parentListIter;	
+				NLCclassDefinition* targetClassDefinition = *parentListIter;	
 
 				if(findVariableInParentClass(targetClassDefinition, variableName, variableType))
 				{
@@ -984,7 +984,7 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 		{
-			NLCclassDefinition* targetClassDefinition =* localListIter;
+			NLCclassDefinition* targetClassDefinition = *localListIter;
 			string targetName = targetClassDefinition->name;
 			if(targetName == variableName)
 			{
@@ -996,7 +996,7 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
 		{
-			NLCclassDefinition* targetClassDefinition =* localListIter;
+			NLCclassDefinition* targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
 			string targetName = targetClassDefinition->name;
 			if(targetName == variableName)
@@ -1009,7 +1009,7 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 		{
-			NLCclassDefinition* targetClassDefinition =* localListIter;
+			NLCclassDefinition* targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
 			string targetName = targetClassDefinition->name;
 			if(targetName == variableName)
@@ -1022,7 +1022,7 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 		{
-			NLCclassDefinition* targetClassDefinition =* localListIter;
+			NLCclassDefinition* targetClassDefinition = *localListIter;
 			if(findVariableInParentClass(targetClassDefinition, variableName, variableType))
 			{
 				foundVariable = true;
@@ -1099,7 +1099,7 @@ bool checkDuplicateProperty(GIAentityNode* propertyEntity, vector<NLCitem*>* par
 	bool alreadyAdded = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_PROPERTY)
 		{
 			if(generateClassName(propertyEntity) == currentItem->className)
@@ -1117,7 +1117,7 @@ bool checkDuplicateCondition(GIAentityNode* conditionEntity, vector<NLCitem*>* p
 	bool alreadyAdded = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_CONDITION)
 		{
 			GIAentityNode* conditionObjectEntity = NULL;

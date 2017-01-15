@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,7 +47,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 	#endif
 	bool result = true;
 	
-	NLCcodeblock* currentCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;
+	NLCcodeblock* currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 	string whileLogicalConditionConjunctionBooleanName = generateWhileLogicalConditionConjunctionBooleanName(firstNLCsentenceInFullSentence->indentation);
 	
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -56,7 +56,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 		{
 			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
-			currentCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;
+			currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 			*currentCodeBlockInTree = createCodeBlockWhileHasBool(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName);
 			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, false);
 		}
@@ -277,7 +277,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 		}
 		else if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE))
 		{
-			currentCodeBlockInTreeAtBaseLevel =* currentCodeBlockInTree;		
+			currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;		
 		}
 		else
 		{
@@ -412,7 +412,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 	cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 1" << endl;
 	#endif
 	//generate NLP parsable phrase eg "the number of chickens" in "if(the number of chickens > the number of apples...)"
-	NLCcodeblock* currentCodeBlockAtStartOfparsablePhrase =* currentCodeBlockInTree;
+	NLCcodeblock* currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
 	string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentFullSentence->sentenceIndex, parsablePhrase);	//parsablePhraseGenerateNumberOfElementCounterName
 	*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName, 0);	//?this will need to be changed to createCodeBlockDeclareNewIntArray in the future to support multiple cases (ie if, else if, else)
 	
@@ -556,7 +556,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
-								NLCcodeblock* NLCcodeBlockBeforeGenerateContext =* currentCodeBlockInTree; 
+								NLCcodeblock* NLCcodeBlockBeforeGenerateContext = *currentCodeBlockInTree; 
 								bool contextFound = false;
 								bool generatedContextForChild = false;
 								if(foundChildEntity)
@@ -695,7 +695,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 						generateContextBlocksVariables.setCodeBlockInTreeAtBaseLevel = true;
 						#endif
 						generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
-						NLCcodeblock* NLCcodeBlockBeforeGenerateContext =* currentCodeBlockInTree; 
+						NLCcodeblock* NLCcodeBlockBeforeGenerateContext = *currentCodeBlockInTree; 
 						bool contextFound = false;
 						bool generatedContextForChild = false;
 						if(foundChildEntity)
@@ -792,7 +792,7 @@ bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNod
 			{
 				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
 				{
-					GIAentityConnection* definitionConnection =* iter;
+					GIAentityConnection* definitionConnection = *iter;
 					GIAentityNode* definitionEntityTemp =  definitionConnection->entity;
 					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
 					{
@@ -837,7 +837,7 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 			{
 				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
 				{
-					GIAentityConnection* definitionConnection =* iter;
+					GIAentityConnection* definitionConnection = *iter;
 					GIAentityNode* definitionEntityTemp = definitionConnection->entity;
 					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
 					{

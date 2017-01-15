@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -805,7 +805,7 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	GIAentityNode* function = NULL;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* entity =* entityIter;
+		GIAentityNode* entity = *entityIter;
 		if(!(entity->isConcept) && !(entity->isActionConcept) && !(entity->isSubstanceConcept))
 		{
 			if(entity->entityName == functionOwnerName)
@@ -917,7 +917,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* entity =* entityIter;
+		GIAentityNode* entity = *entityIter;
 		if(assumedToAlreadyHaveBeenDeclared(entity))
 		{
 			if(!(entity->isConcept))
@@ -1032,7 +1032,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
-			GIAentityNode* indefiniteEntity =* entityIter;
+			GIAentityNode* indefiniteEntity = *entityIter;
 			
 			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 			{//indefiniteEntityFound
@@ -1087,7 +1087,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	#else
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* indefiniteEntity =* entityIter;
+		GIAentityNode* indefiniteEntity = *entityIter;
 		if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 		{	
 			if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
@@ -2435,7 +2435,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, i
 	bool foundFunctionArgument = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem* currentItem =* parametersIterator;
+		NLCitem* currentItem = *parametersIterator;
 		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
 		if(currentItem->itemType == itemType)
 		{

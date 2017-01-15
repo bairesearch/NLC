@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15a 28-January-2015
+ * Project Version: 1n15c 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -93,7 +93,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
 					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-					*numberOfInputFilesInList =* numberOfInputFilesInList+1;
+					*numberOfInputFilesInList = *numberOfInputFilesInList+1;
 					//create new function file based on current text
 				}
 				else
@@ -469,7 +469,7 @@ void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentat
 		char c = (*currentLine)[i];
 		if(c == NLC_PREPROCESSOR_INDENTATION_CHAR)
 		{
-			*currentIndentation =* currentIndentation + 1;
+			*currentIndentation = *currentIndentation + 1;
 		}
 		i++;
 	}

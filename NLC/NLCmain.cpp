@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10a 29-September-2016
+ * Project Version: 1u10b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1u10a 29-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1u10b 29-September-2016" << endl;
 			exit(1);
 		}
 
@@ -1846,6 +1846,9 @@ void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
 	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
 	currentCodeBlockInTree = createCodeBlockAddPropertyNewFunction(currentCodeBlockInTree);
 	currentCodeBlockInTree = createCodeBlockAddConditionNewFunction(currentCodeBlockInTree);
+	#endif
+	#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
+	currentCodeBlockInTree = createCodeVerifyDefiniteReferenceExistenceNewFunction(currentCodeBlockInTree);	
 	#endif
 }
 #endif

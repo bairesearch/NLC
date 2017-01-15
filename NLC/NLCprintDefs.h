@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10a 29-September-2016
+ * Project Version: 1u10b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -250,6 +250,7 @@ static string progLangDefaultBooleanValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] =
 #endif
 static string progLangGenericPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void* ", "void* ", "void* ", "void* ", "void* ", "void* ", "void* "};
 
+static string progLangFunctionParameterStringType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};

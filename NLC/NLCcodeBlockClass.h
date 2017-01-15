@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10a 29-September-2016
+ * Project Version: 1u10b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -174,6 +174,10 @@
 	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
 		#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION (83)
 	#endif
+#endif
+#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
+	#define NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_NEW_FUNCTION (84)
+	#define NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_EXECUTE_FUNCTION (85)
 #endif
 
 //containers:
@@ -663,6 +667,11 @@ NLCcodeblock* createCodeBlockIfTempVariableNameEqualsClassName(NLCcodeblock* cur
 
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 bool checkNumericalReferenceToEntity(GIAentityNode* entity);
+#endif
+
+#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
+NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceNewFunction(NLCcodeblock* currentCodeBlockInTree);
+NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 #endif
 
 #endif

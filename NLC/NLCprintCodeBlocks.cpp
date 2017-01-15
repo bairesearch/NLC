@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10a 29-September-2016
+ * Project Version: 1u10b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1358,6 +1358,24 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(ifObjectNameEqualsClassNameText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
 		}
+		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_NEW_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_NEW_FUNCTION" << endl;
+			#endif
+
+			generateCodeVerifyDefiniteReferenceExistenceNewFunction(progLang, &printedCodeBlocksSourceText, level);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_EXECUTE_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_EXECUTE_FUNCTION" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			generateCodeVerifyDefiniteReferenceExistenceExecuteFunction(param1, param2, progLang, &printedCodeBlocksSourceText, level);
+		}
+		#endif
 		/*
 		else if(currentCodeBlockInLevel->codeBlockType == ...)
 		{

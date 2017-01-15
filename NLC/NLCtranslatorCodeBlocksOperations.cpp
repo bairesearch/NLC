@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10a 29-September-2016
+ * Project Version: 1u10b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -382,7 +382,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		{
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
 			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
-			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement);
+			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement, true);
 			#endif
 		}
 	}
@@ -410,7 +410,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		{
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
 			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
-			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, objectEntity, sentenceIndex, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement);
+			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, objectEntity, sentenceIndex, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement, true);
 			#endif
 		}
 	}
@@ -460,7 +460,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	if(addNewObjectForEachSubject)
 	{
 		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
-		generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement);
+		generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement, true);
 		#endif
 	}
 			
@@ -478,8 +478,8 @@ bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree
 }
 #endif
 
-#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
-void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
+#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
+void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement, bool checkParent)
 {	
 	bool testDefiniteEntityExistence = true;
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
@@ -490,7 +490,7 @@ void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, 
 		bool checkIsDefinite = true;
 		bool entityHasSameReferenceSetDefiniteParent = false;
 		GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &entityHasSameReferenceSetDefiniteParent, parseConditionParents, checkIsDefinite);
-		if(isDefiniteEntityStrict(entity) || entityHasSameReferenceSetDefiniteParent)
+		if(isDefiniteEntityStrict(entity) || (checkParent && entityHasSameReferenceSetDefiniteParent))
 		{
 			testDefiniteEntityExistence = true;
 		}
@@ -499,6 +499,9 @@ void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, 
 	if(testDefiniteEntityExistence)
 	{
 		NLCcodeblock* lastCodeBlockInTree2 = *currentCodeBlockInTree;
+		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION
+		*currentCodeBlockInTree = createCodeVerifyDefiniteReferenceExistenceExecuteFunction(*currentCodeBlockInTree, entity, genericListAppendName);
+		#else
 		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, entity, true, genericListAppendName, sentenceIndex);
 		if(genericListAppendName == NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION)
 		{
@@ -508,6 +511,11 @@ void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, 
 		{
 			*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_OBJECT_WARNING_TEXT + entity->entityName);		
 		}
+		else if(genericListAppendName == NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION)
+		{
+			*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES_WARNING_TEXT + entity->entityName);		
+		}
+		#endif
 		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
 	}
 }
@@ -648,18 +656,11 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 				if(!isDefiniteEntityStrict(parentEntity))
 				{
 					testPlurality = false;
-					testDefiniteEntityExistence = false;
 				}
 			}
 			#endif
 			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES
-			if(testDefiniteEntityExistence)
-			{
-				NLCcodeblock* lastCodeBlockInTree2 = *currentCodeBlockInTree;
-				*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, true, genericListAppendName, sentenceIndex);
-				*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES_WARNING_TEXT + parentEntity->entityName);
-				*currentCodeBlockInTree = lastCodeBlockInTree2->next;
-			}
+			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, parentEntity, sentenceIndex, genericListAppendName, generateContextBlocksVariables, false);
 			#endif
 			if(testPlurality)
 			{

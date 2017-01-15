@@ -23,7 +23,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f5a 05-January-2014
+ * Project Version: 1f6a 29-January-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -50,6 +50,9 @@
 #endif
 #ifdef GIA_USE_CORPUS_DATABASE
 #include "GIAcorpusDatabase.h"
+#endif
+#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+#include "GIAtranslatorOperations.h"
 #endif
 
 static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
@@ -627,7 +630,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1f5a 05-January-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f6a 29-January-2014" << endl;
 			exit(1);
 		}
 
@@ -864,8 +867,12 @@ int main(int argc,char **argv)
 		#ifdef NLC_DEBUG
 		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;	
 		#endif
+
+		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
+		#endif
 		
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLCfunctionName);
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName);
 	}
 	
 	//cout << "q3" << endl;	
@@ -942,3 +949,70 @@ string removeFileNameExtensions(string NLCfunctionName)
 	}
 	return NLCfunctionNameCleaned;
 }
+
+#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+//this is required for NLC as NLC assumes GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> * entityNodesActiveListComplete)
+{
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{		
+		GIAentityNode * actionEntity = (*entityIter);
+		if((actionEntity->isAction) && !(actionEntity->isConcept))
+		{
+			if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_POSSESSIVE)
+			{
+				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
+
+				bool actionHasObject = false;
+				GIAentityNode * objectEntity = NULL;
+				if(!(actionEntity->actionObjectEntity->empty()))
+				{
+					actionHasObject = true;
+					objectEntity = (actionEntity->actionObjectEntity->back())->entity;
+				}
+				bool actionHasSubject = false;
+				GIAentityNode * subjectEntity = NULL;
+				if(!(actionEntity->actionSubjectEntity->empty()))
+				{
+					actionHasSubject = true;
+					subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
+				}
+				cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
+				if(actionHasSubject && actionHasObject)
+				{
+					actionEntity->actionSubjectEntity->clear();
+					actionEntity->actionObjectEntity->clear();
+					actionEntity->isAction = false;
+					actionEntity->disabled = true;
+					for(vector<GIAentityConnection*>::iterator connectionIter = subjectEntity->actionNodeList->begin(); connectionIter != subjectEntity->actionNodeList->end(); )
+					{
+						GIAentityNode * actionEntity2 = (*connectionIter)->entity;
+						if(actionEntity2 == actionEntity)
+						{
+							connectionIter = subjectEntity->actionNodeList->erase(connectionIter);
+						}
+						else
+						{
+							connectionIter++;
+						}
+					}
+					for(vector<GIAentityConnection*>::iterator connectionIter = objectEntity->incomingActionNodeList->begin(); connectionIter != objectEntity->incomingActionNodeList->end(); )
+					{
+						GIAentityNode * actionEntity2 = (*connectionIter)->entity;
+						if(actionEntity2 == actionEntity)
+						{
+							connectionIter = objectEntity->incomingActionNodeList->erase(connectionIter);
+						}
+						else
+						{
+							connectionIter++;
+						}
+					}
+				}
+				addOrConnectPropertyToEntity(subjectEntity, objectEntity, false);
+			}
+		}
+	}
+}
+#endif
+		

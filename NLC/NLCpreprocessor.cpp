@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6a 19-March-2015
+ * Project Version: 1o6b 19-March-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -512,10 +512,17 @@ bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
 	{
 		char currentToken = lineText[i];
 		bool quotationMarkFound = false;
+		if(currentToken == CHAR_INVERTED_COMMAS)
+		{//only support "" quotation marks (not '') at present
+			quotationMarkFound = true;
+		}
+		/*
 		if(charInCharArray(currentToken, nlpQuotationMarkCharacterArray, GIA_NLP_NUMBER_OF_QUOTATIONMARK_CHARACTERS))
 		{
 			quotationMarkFound = true;
 		}
+		*/
+		
 		bool whiteSpaceFound = false;
 		if(currentToken == CHAR_SPACE)
 		{//only support " " white space within quotations at present

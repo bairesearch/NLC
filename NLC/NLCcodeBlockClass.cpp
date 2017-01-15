@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12f 30-September-2016
+ * Project Version: 1u13a 02-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -975,7 +975,7 @@ bool isDefiniteEntity(GIAentityNode* entity)
 	#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
 	if((entity->grammaticalDefiniteTemp) || ((entity->grammaticalProperNounTemp) && !(entity->NLCfirstInstanceOfProperNounInContext)))	
 	#else
-	if((entity->grammaticalDefiniteTemp) || ((entity->grammaticalProperNounTemp))
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
 	#endif
 	{
 		isDefiniteEntity = true;

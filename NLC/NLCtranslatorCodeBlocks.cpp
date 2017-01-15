@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12f 30-September-2016
+ * Project Version: 1u13a 02-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1014,26 +1014,24 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode*
 	if(indefiniteEntity->entityName == definiteEntity->entityName)
 	{
 		if(!(indefiniteEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
-		{
+		{		
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
 			if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
 			#else
 			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 			#endif
 			{
-				if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
+				if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && ((definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) || (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_UNDEFINED))) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
 				{
 					int indentationDifferenceFound = INT_DEFAULT_VALUE;	//not used
 					if(checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(indefiniteEntity, definiteEntity, &indentationDifferenceFound))
 					{
 						foundIndefiniteEntity = true;
 						#ifdef NLC_DEBUG
-						/*
 						cout << "\nisIndefiniteEntityCorrespondingToDefiniteEntityInSameContext, indefiniteEntity = " << indefiniteEntity->entityName << endl;
 						cout << "isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext, definiteEntity = " << definiteEntity->entityName << endl;
 						cout << "indefiniteEntity->sentenceIndexTemp = " << indefiniteEntity->sentenceIndexTemp << endl;
 						cout << "definiteEntity->sentenceIndexTemp = " << definiteEntity->sentenceIndexTemp << endl;
-						*/
 						#endif
 					}
 				}

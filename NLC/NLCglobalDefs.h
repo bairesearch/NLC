@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o5a 15-February-2015
+ * Project Version: 1o6a 19-March-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,7 +44,14 @@
 //#define NLC_DISABLE_1l_CODE_FOR_DEBUG	//aka NLC_ENABLE_1k_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1m_CODE_FOR_DEBUG	//aka NLC_ENABLE_1l_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1n_CODE_FOR_DEBUG	//aka NLC_ENABLE_1m_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1o_CODE_FOR_DEBUG	//aka NLC_ENABLE_1n_CODE_FOR_DEBUG
 
+#ifndef NLC_DISABLE_1o_CODE_FOR_DEBUG
+	#ifndef GIA_LRP_REDUCE_QUOTES_TO_SINGLE_WORDS
+		#define NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
+	#endif
+#endif
+	
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
 	#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_IGNORE_SAME_REFERENCE_SET_COMPENSATE_FOR_NLP_FAILURE_TO_CREATE_RCMOD	//1n15g
 	#define NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT	//1n15a

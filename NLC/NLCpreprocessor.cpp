@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o5a 15-February-2015
+ * Project Version: 1o6a 19-March-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,10 +40,12 @@
 //#include "NLCprintDefs.h" //required for progLangOpenParameterSpace
 #include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-
-
+#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
+#include "GIAlrp.h"	//requied for nlpQuotationMarkCharacterArray/GIA_ASSUME_QUOTES_HAVE_BEEN_REDUCED_TO_SINGLE_WORDS_FILLER
+#endif
 
 #ifdef NLC_USE_PREPROCESSOR
+
 bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName)
 {
 	*numberOfInputFilesInList = 1;
@@ -71,10 +73,18 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		int currentLineNumber = 0;
 		
 		while(getline(parseFileObject, currentLine))
-		{
+		{	
 			currentLineNumber++;
 			#ifdef NLC_DEBUG_PREPROCESSOR
 			cout << currentLineNumber << ": " << currentLine << endl;
+			#endif
+			
+			#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
+			string updatedLineTextWithQuotationsReducedToSingleWords = "";
+			if(reduceQuotesToSingleWords(currentLine, &updatedLineTextWithQuotationsReducedToSingleWords))
+			{
+				currentLine = updatedLineTextWithQuotationsReducedToSingleWords;
+			}
 			#endif
 			
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -492,7 +502,72 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	return result;
 }
 
+#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
+bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
+{
+	bool result = false;
+	*updatedLineText = "";
+	bool readingQuotation = false;
+	for(int i=0; i<lineText.length(); i++)
+	{
+		char currentToken = lineText[i];
+		bool quotationMarkFound = false;
+		if(charInCharArray(currentToken, nlpQuotationMarkCharacterArray, GIA_NLP_NUMBER_OF_QUOTATIONMARK_CHARACTERS))
+		{
+			quotationMarkFound = true;
+		}
+		bool whiteSpaceFound = false;
+		if(currentToken == CHAR_SPACE)
+		{//only support " " white space within quotations at present
+			whiteSpaceFound = true;
+		}
+		/*
+		if(charInCharArray(currentToken, nlpWhitespaceCharacterArray, GIA_NLP_NUMBER_OF_WHITESPACE_CHARACTERS))
+		{
+			whiteSpaceFound = true;
+		}
+		*/
+		
+		if(quotationMarkFound)
+		{//NB imbedded/recursive quotation marks not currently supported eg "'hello'"
+			if(!readingQuotation)
+			{
+				readingQuotation = true;
+			}
+			else
+			{
+				readingQuotation = false;
+				result = true;
+			}
+			//do not add quotation marks; *updatedLineText = *updatedLineText + currentToken;
+		}
+		else if(readingQuotation && whiteSpaceFound)
+		{
+			*updatedLineText = *updatedLineText + GIA_ASSUME_QUOTES_HAVE_BEEN_REDUCED_TO_SINGLE_WORDS_FILLER;
+		}
+		else
+		{
+			*updatedLineText = *updatedLineText + currentToken;
+		}
+	}
+
+	if(readingQuotation)
+	{
+		cout << "reduceQuotesToSingleWords() error; quotation mark not ended on current line. Multiline quotations are not currently supported by NLC" << endl;
+		result = false;
+	}
 	
+	#ifdef NLC_DEBUG_PREPROCESSOR
+	if(result)
+	{
+		cout << "reduceQuotesToSingleWords():" << endl;
+		cout << "lineText = " << lineText << endl;
+		cout << "*updatedLineText = " << *updatedLineText << endl;
+	}
+	#endif
+	return result;
+}
+#endif
 
 
 void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents)

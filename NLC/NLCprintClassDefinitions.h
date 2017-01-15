@@ -20,19 +20,17 @@
 
 /*******************************************************************************
  *
- * File Name: NLPItranslator.h
+ * File Name: NLCprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_TRANSLATOR
-#define HEADER_NLPI_TRANSLATOR
-
-//#define NLPI_NOT_NECESSARY
+#ifndef HEADER_NLC_PRINT_CLASSDEFINITIONS
+#define HEADER_NLC_PRINT_CLASSDEFINITIONS
 
 #include <iostream>
 #include <fstream>
@@ -44,18 +42,14 @@
 #include <vector>
 using namespace std;
 
-#include "GIAglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
-
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName);
-
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, string NLPIfunctionName);
-	bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * functionClassDefinition, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList);
-		bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLPIclassDefinition ** parentClass);
-int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
-#endif	
-#endif	
+#include "NLCclassDefinitionClass.h"
+	
+bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code);	
+	void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
+		string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang);
+		string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang);
+		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		string generateCodeConditionPairDefinitionText(NLCitem * currentItem, int progLang);
+		#endif
+			
+#endif

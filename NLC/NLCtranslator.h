@@ -20,17 +20,19 @@
 
 /*******************************************************************************
  *
- * File Name: NLPImain.h
+ * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_MAIN
-#define HEADER_NLPI_MAIN
+#ifndef HEADER_NLC_TRANSLATOR
+#define HEADER_NLC_TRANSLATOR
+
+//#define NLC_NOT_NECESSARY
 
 #include <iostream>
 #include <fstream>
@@ -42,11 +44,20 @@
 #include <vector>
 using namespace std;
 
-#include "NLPIglobalDefs.h"
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
+#include "GIAglobalDefs.h"
+#include "GIAentityNodeClass.h"
+#include "GIAentityConnectionClass.h"
+#include "NLCcodeBlockClass.h"
+#include "NLCclassDefinitionClass.h"
 
-int main(int argc,char **argv);
-	string removeFileNameExtensions(string NLPIfunctionName);
-
-#endif
+bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName);
+	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	bool identifyAndTagAllConditionLogicalOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+	#endif
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, string NLCfunctionName);
+	bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDefinition, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList);
+		bool findParentClass(NLCclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLCclassDefinition ** parentClass);
+int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
+#endif	
+#endif	

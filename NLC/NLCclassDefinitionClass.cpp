@@ -20,10 +20,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIclassDefinition.cpp
+ * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -31,30 +31,30 @@
 
 
 
-#include "NLPIclassDefinition.h"
+#include "NLCclassDefinitionClass.h"
 
 
-NLPIclassDefinition::NLPIclassDefinition(string newName)
+NLCclassDefinition::NLCclassDefinition(string newName)
 {
 	name = newName;	
 	functionNameSpecial = "";
 
 	isActionOrConditionInstanceNotClass = false;
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
 }
-NLPIclassDefinition::NLPIclassDefinition(void)
+NLCclassDefinition::NLCclassDefinition(void)
 {
 	name = "";	
 	functionNameSpecial = "";
 	
 	isActionOrConditionInstanceNotClass = false;
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
 }
-NLPIclassDefinition::~NLPIclassDefinition(void)
+NLCclassDefinition::~NLCclassDefinition(void)
 {
 }
 
@@ -62,7 +62,7 @@ NLPIclassDefinition::~NLPIclassDefinition(void)
 bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode * entity, int sentenceIndex)
 {
 	bool result = false;
-	if(((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference)) && !(entity->parsedForNLPIclassHeirarchy))
+	if(((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference)) && !(entity->parsedForNLCclassHeirarchy))
 	{
 		result = true;
 	}
@@ -70,12 +70,12 @@ bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode * entity, int sentenc
 }
 */
 
-NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition)
+NLCclassDefinition * findClassDefinition(vector<NLCclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition)
 {
-	NLPIclassDefinition * classDefinitionFound = NULL;
-	for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+	NLCclassDefinition * classDefinitionFound = NULL;
+	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{	
-		NLPIclassDefinition *  currentClassDef = *classDefinitionIter;
+		NLCclassDefinition *  currentClassDef = *classDefinitionIter;
 		if(currentClassDef->name == name)
 		{
 			//cout << "foundClassDefinition: className = " << className << endl;

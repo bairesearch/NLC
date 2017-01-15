@@ -20,10 +20,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLPItranslator.cpp
+ * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -34,21 +34,29 @@
 #include <cstdlib>	//for random number generation
 #include <cmath>
 
-#include "NLPItranslator.h"
-#include "NLPItranslatorCodeBlocks.h"
-#include "NLPItranslatorClassDefinitions.h"
+#include "NLCtranslator.h"
+#include "NLCtranslatorCodeBlocks.h"
+#include "NLCtranslatorClassDefinitions.h"
 
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string NLPIfunctionName)
+bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string NLCfunctionName)
 {
 	bool result = true;
 
-	//NLPI translator Part 1.
-	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLPIfunctionName))
+	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	//NLC translator Part 0.
+	if(!identifyAndTagAllConditionLogicalOperations(entityNodesActiveListComplete, maxNumberSentences))
+	{
+		result = false;
+	}
+	#endif
+	
+	//NLC translator Part 1.
+	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLCfunctionName))
 	{
 		result = false;
 	}
 	
-	//NLPI translator Part 2.
+	//NLC translator Part 2.
 	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
@@ -56,33 +64,102 @@ bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefi
 }
 
 
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+bool identifyAndTagAllConditionLogicalOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
+{
+	//cout << "maxNumberSentences = " << maxNumberSentences << endl;
+	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	{			
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+		{		
+			GIAentityNode * conditionEntity = (*entityIter);
+			if(conditionEntity->isCondition)
+			{
+				if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, true))	//could be set to false instead
+				{
+					bool foundConditionLogicalOperation = false;
+					for(int i=0; i<NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES; i++)
+					{
+						if(conditionEntity->entityName == conditionLogicalOperationsArray[i])
+						{
+							foundConditionLogicalOperation = true;
+						}
+					}
+					if(foundConditionLogicalOperation)
+					{
+						GIAentityNode * conditionSubject = NULL;	
+						GIAentityNode * conditionObject = NULL;
+						bool foundConditionSubject = false;
+						bool foundConditionObject = false;
+						if(!(conditionEntity->conditionSubjectEntity->empty()))
+						{
+							conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
+							foundConditionSubject = true;
+						}
+						if(!(conditionEntity->conditionObjectEntity->empty()))
+						{
+							conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+							foundConditionObject = true;
+						}
+						if(foundConditionSubject && foundConditionObject)
+						{
+							conditionEntity->NLCconditionLogicalOperations = true;
+							cout << "tagged: conditionEntity->entityName = " << conditionEntity->entityName << endl;
+							
+							if(conditionObject->isConcept)
+							{
+								cout << "identifyAndTagAllConditionLogicalOperations() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "conditionObject = " << conditionObject->entityName;
+							}
+							else
+							{
+								tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionObject, sentenceIndex, true);
+							}
+							if(conditionSubject->isConcept)
+							{
+								cout << "identifyAndTagAllConditionLogicalOperations() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "conditionSubject = " << conditionSubject->entityName;
+							}
+							else
+							{
+								tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionSubject, sentenceIndex, true);
+							}
+						} 
+					}
+				}
+			}
+		}
+	}
+}
+#endif
 
-void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, string NLPIfunctionName)
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+
+void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, string NLCfunctionName)
 {		
 	//reconcile function arguments (both class function header and code function reference)
 	string functionName = "";	
 	string functionOwnerName = "";
 	bool foundFunctionOwnerClass = false; 
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	//gets "fight" from "dog::fight"
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	//gets "fight" from "dog::fight"
 
-	NLPIclassDefinition * classDefinitionFound = NULL;
-	for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+	NLCclassDefinition * classDefinitionFound = NULL;
+	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{	
-		NLPIclassDefinition * currentClassDef = *classDefinitionIter;
+		NLCclassDefinition * currentClassDef = *classDefinitionIter;
 		//cout << "currentClassDef->name = " << currentClassDef->name << endl;
 		//cout << "functionOwnerName = " << functionOwnerName << endl;
 		if((currentClassDef->name == generateClassName(functionOwnerName)) || !foundFunctionOwnerClass)
 		{
 			//cout << "currentClassDef->name = " << currentClassDef->name << endl;
-			for(vector<NLPIclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
+			for(vector<NLCclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
 			{
-				NLPIclassDefinition * functionClassDefinition = *localListIter;
+				NLCclassDefinition * functionClassDefinition = *localListIter;
 				//cout << "functionClassDefinition->functionNameSpecial = " << functionClassDefinition->functionNameSpecial << endl;
 				//cout << "functionName = " << functionName << endl;
 				if(functionClassDefinition->functionNameSpecial == generateFunctionName(functionName))
 				{
-					#ifdef NLPI_DEBUG
+					#ifdef NLC_DEBUG
 					cout << "reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() functionName = " << functionName << endl;
 					#endif
 					//contrast and compare function class arguments vs 
@@ -94,31 +171,31 @@ void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVaria
 	}
 }
 		
-bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * functionClassDefinition, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList)
+bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDefinition, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
 {
-	vector<NLPIitem*> * existingFunctionArgumentList = &(functionClassDefinition->parameters);
+	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDefinition->parameters);
 	
-	for(vector<NLPIitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
+	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
 	{
-		NLPIitem * formalFunctionArgument = *parametersIterator;
-		NLPIclassDefinition * classDefinitionCorrespondingToExistingFunctionArgument = NULL;
-		NLPIclassDefinition * classDefinitionCorrespondingToFormalFunctionArgument = NULL;	//not used
-		NLPIitem * existingFunctionArgument = NULL;	
+		NLCitem * formalFunctionArgument = *parametersIterator;
+		NLCclassDefinition * classDefinitionCorrespondingToExistingFunctionArgument = NULL;
+		NLCclassDefinition * classDefinitionCorrespondingToFormalFunctionArgument = NULL;	//not used
+		NLCitem * existingFunctionArgument = NULL;	
 		bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
-		int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLPI_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;			
-		if(formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+		int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLC_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;			
+		if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
 		{
-			#ifdef NLPI_DEBUG
+			#ifdef NLC_DEBUG
 			cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
 			#endif
-			for(vector<NLPIitem*>::iterator parametersIterator = existingFunctionArgumentList->begin(); parametersIterator < existingFunctionArgumentList->end(); parametersIterator++)
+			for(vector<NLCitem*>::iterator parametersIterator = existingFunctionArgumentList->begin(); parametersIterator < existingFunctionArgumentList->end(); parametersIterator++)
 			{
-				NLPIitem * currentExistingFunctionArgument = *parametersIterator;
+				NLCitem * currentExistingFunctionArgument = *parametersIterator;
 
 				bool foundClassDefinitionCorrespondingToExistingFunctionArgument = false;
-				for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+				for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 				{
-					NLPIclassDefinition * currentClassDef = *classDefinitionIter;
+					NLCclassDefinition * currentClassDef = *classDefinitionIter;
 					if(currentClassDef->name == currentExistingFunctionArgument->className)
 					{
 						classDefinitionCorrespondingToExistingFunctionArgument = currentClassDef;
@@ -128,13 +205,13 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 
 				if(foundClassDefinitionCorrespondingToExistingFunctionArgument)
 				{
-					#ifdef NLPI_DEBUG
+					#ifdef NLC_DEBUG
 					cout << "foundClassDefinitionCorrespondingToExistingFunctionArgument: " << classDefinitionCorrespondingToExistingFunctionArgument->name << endl;
 					#endif
-					if(formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+					if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
 					{//CHECKTHIS; do not currently distinguish between plural and singular variables - this will need to be updated in future
 						int inheritanceLevel = 0;
-						NLPIclassDefinition * tempClassDef = NULL;
+						NLCclassDefinition * tempClassDef = NULL;
 						//cout << "classDefinitionCorrespondingToExistingFunctionArgument->name = " << classDefinitionCorrespondingToExistingFunctionArgument->name << endl;
 						//cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
 						if(findParentClass(classDefinitionCorrespondingToExistingFunctionArgument, formalFunctionArgument->className, 0, &inheritanceLevel, &tempClassDef))
@@ -173,7 +250,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 			}
 			else
 			{
-				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 				bool foundFunctionArgumentInActionSubjectContents = false;
 				GIAentityNode * actionEntity = functionClassDefinition->actionOrConditionInstance;
 				if(!(actionEntity->actionSubjectEntity->empty()))
@@ -184,7 +261,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 					if(formalFunctionArgument->className == generateClassName(actionSubject))
 					{
 						foundFunctionArgumentInActionSubjectContents = true;
-						#ifdef NLPI_DEBUG
+						#ifdef NLC_DEBUG
 						cout << "foundFunctionArgumentInActionSubjectContents: " << formalFunctionArgument->className << endl;
 						#endif
 						//formalFunctionArgument->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;	//not done; this is now handled by generateConditionBlocks()	
@@ -209,14 +286,14 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 
 				if(!foundFunctionArgumentInActionSubjectContents)
 				{
-					cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map): " << formalFunctionArgument->className << endl;
+					cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map): " << formalFunctionArgument->className << endl;
 				#else
-					cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map): " << formalFunctionArgument->className << endl;
+					cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map): " << formalFunctionArgument->className << endl;
 				#endif
 					//add a new function argument to the existing function argument list
-					NLPIitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLPIitem(formalFunctionArgument);	//NLPI by default uses plural (lists) not singular entities
+					NLCitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
 					existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);		
-				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 				}
 				#endif
 			}
@@ -224,7 +301,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 	}
 }
 
-bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLPIclassDefinition ** parentClass)
+bool findParentClass(NLCclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLCclassDefinition ** parentClass)
 {
 	bool foundVariable = false;
 	if(classDefinition->name == variableName)
@@ -235,9 +312,9 @@ bool findParentClass(NLPIclassDefinition * classDefinition, string variableName,
 	}
 	else 
 	{	
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 		{
-			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			NLCclassDefinition * targetClassDefinition = *localListIter;
 			if(findParentClass(targetClassDefinition, variableName, (inheritanceLevel+1), maxInheritanceLevel, parentClass))
 			{
 				foundVariable = true;

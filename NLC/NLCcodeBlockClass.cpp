@@ -20,10 +20,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIcodeBlock.cpp
+ * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -31,13 +31,13 @@
 
 
 
-#include "NLPIcodeBlock.h"
+#include "NLCcodeBlockClass.h"
 #include "GIAtranslatorOperations.h"
 
 
-NLPIcodeblock::NLPIcodeblock(void)
+NLCcodeblock::NLCcodeblock(void)
 {
-	codeBlockType = NLPI_CODEBLOCK_TYPE_UNDEFINED;
+	codeBlockType = NLC_CODEBLOCK_TYPE_UNDEFINED;
 	
 	/*
 	//used by language specific code generator (eg C++, java);
@@ -49,70 +49,70 @@ NLPIcodeblock::NLPIcodeblock(void)
 	lowerLevel = NULL;
 	next = NULL;	
 }
-NLPIcodeblock::~NLPIcodeblock(void)
+NLCcodeblock::~NLCcodeblock(void)
 {
 }
 
 
 
 //Resultant code: functionItem[context].functionItem[name](objectItem[context].objectItem[name]);	//NB functionItem[context] = action subject
-NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem)
+NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectItem)
 {
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
 
-	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
+	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
-NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem)
+NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem)
 {
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 
-	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
+	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
 //add property
-NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
-	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
-	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlockAddPropertyToLocalList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock * createCodeBlockAddPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
 {
-	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
-	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_PROPERTY_TO_LOCAL_LIST;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_LOCAL_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
-	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
-	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_PROPERTY;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_PROPERTY;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
@@ -120,23 +120,23 @@ NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTre
 
 
 //add state
-NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
-		NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);	
 		currentCodeBlockInTree->parameters.push_back(entityItem);
 
-		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_OBJECT);
+		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
 		currentCodeBlockInTree->parameters.push_back(conditionItem);
 
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
+		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 		//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
-		int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
+		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
 		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	}
 	else
@@ -147,23 +147,23 @@ NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockI
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
-		NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(entityItem);
 
-		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_OBJECT);
+		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
 		currentCodeBlockInTree->parameters.push_back(conditionItem);
 
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
+		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 		//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
-		int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_CONDITION;
+		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_CONDITION;
 		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	}
 	else
@@ -174,25 +174,25 @@ NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTr
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlocksCreateNewLocalListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_CREATE_NEW_LOCAL_LIST_VARIABLE;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CREATE_NEW_LOCAL_LIST_VARIABLE;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
@@ -201,25 +201,25 @@ NLPIcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLPIcodeblock * curr
 
 
 
-NLPIcodeblock * createCodeBlockForPropertyList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item)
+NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLPIcodeblock * createCodeBlockForPropertyListLocal(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item)
+NLCcodeblock * createCodeBlockForPropertyListLocal(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem)
+NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
@@ -227,16 +227,16 @@ NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlock
 
 
 
-NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string NLPIfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
+NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
 {	
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	//gets "fight" from "dog::fight"
 	string functionName = "";
 	bool foundFunctionOwnerClass = false;
 	string functionOwnerName = "";
 	bool foundFunctionObjectClass = false;
 	string functionObjectName = "";
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);
 	
 	GIAentityNode * functionOwner = NULL;
 	GIAentityNode * functionObject = NULL;
@@ -248,65 +248,65 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 		{
 			if(entity->entityName == functionOwnerName)
 			{
-				entity->NLPIisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
-				entity->parsedForNLPIcodeBlocks = true;
+				entity->NLCisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+				entity->parsedForNLCcodeBlocks = true;
 				
 				functionOwner = entity;
 			}
 			else if(entity->entityName == functionObjectName)
 			{
-				entity->NLPIisSingularArgument = true;
-				entity->parsedForNLPIcodeBlocks = true;
+				entity->NLCisSingularArgument = true;
+				entity->parsedForNLCcodeBlocks = true;
 				
 				functionObject = entity;
 			}
 			else if(entity->entityName == functionName)
 			{
-				entity->NLPIisSingularArgument = true;
-				entity->parsedForNLPIcodeBlocks = true;
+				entity->NLCisSingularArgument = true;
+				entity->parsedForNLCcodeBlocks = true;
 				
 				function = entity;
 			}
 		}
 	}	
 	#else
-	string functionName = NLPIfunctionName;
+	string functionName = NLCfunctionName;
 	#endif
 	
-	NLPIitem * functionItem = new NLPIitem(functionName, NLPI_ITEM_TYPE_FUNCTION);
+	NLCitem * functionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION);
 	currentCodeBlockInTree->parameters.push_back(functionItem);
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	if(foundFunctionOwnerClass)
 	{
-		NLPIitem * functionOwnerItem = new NLPIitem(functionOwnerName, NLPI_ITEM_TYPE_FUNCTION_OWNER);
+		NLCitem * functionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_OWNER);
 		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);	
 	}
-	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	if(foundFunctionObjectClass)	//added 21 November 2013
 	{
 		if(functionObject != NULL)
 		{//functionObject is used by the function definition: use functionObject instance name
 			//cout << "functionObjectName2 = " << functionObjectName << endl;
-			NLPIitem * functionObjectItem = new NLPIitem(functionObject, NLPI_ITEM_TYPE_FUNCTION_OBJECT);	
+			NLCitem * functionObjectItem = new NLCitem(functionObject, NLC_ITEM_TYPE_FUNCTION_OBJECT);	
 			currentCodeBlockInTree->parameters.push_back(functionObjectItem);	
 		}
 		else
 		{//functionObject is not used by the function definition
-			NLPIitem * functionObjectItem = new NLPIitem(functionObjectName, NLPI_ITEM_TYPE_FUNCTION_OBJECT);
+			NLCitem * functionObjectItem = new NLCitem(functionObjectName, NLC_ITEM_TYPE_FUNCTION_OBJECT);
 			currentCodeBlockInTree->parameters.push_back(functionObjectItem);			
 		}
 	}
 	#endif
 	#endif
 	
-	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 	generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters));
 	#endif
 	
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_NEW_FUNCTION);
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_NEW_FUNCTION);
 	
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	if(functionOwner != NULL)
 	{
 		currentCodeBlockInTree = createCodeBlockDeclareAndInitialiseVariableForActionSubject(currentCodeBlockInTree, functionOwner);
@@ -326,19 +326,19 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner)
+NLCcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner)
 {
 	//"Dog dog1 = this;"
-	NLPIitem * functionOwnerItem = new NLPIitem(functionOwner, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * functionOwnerItem = new NLCitem(functionOwner, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
-	NLPIitem * actionSubjectInstanceReplacementItem = new NLPIitem(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLPI_ITEM_TYPE_OBJECT);
+	NLCitem * actionSubjectInstanceReplacementItem = new NLCitem(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
 
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlocksAddVariableToNewList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlocksAddVariableToNewList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
 	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
 	currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, entity, entity);
@@ -346,8 +346,8 @@ NLPIcodeblock * createCodeBlocksAddVariableToNewList(NLPIcodeblock * currentCode
 	return currentCodeBlockInTree;
 }
 
-#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLPIitem*> * parameters)
+#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLCitem*> * parameters)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -356,15 +356,15 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 		{
 			if(!(entity->isConcept))
 			{	
-				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-				if(!entity->NLPIisSingularArgument)
+				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+				if(!entity->NLCisSingularArgument)
 				{
 				#endif
 					//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
 					//detected "the x" without declaring x (ie implicit declaration)
-					NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
+					NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
 					parameters->push_back(thisFunctionArgumentInstanceItem);
-				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 				}
 				#endif
 			}
@@ -374,7 +374,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;
-	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLPIlocalListVariableHasBeenDeclared || entity->NLPIisSingularArgument)
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLClocalListVariableHasBeenDeclared || entity->NLCisSingularArgument)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
 	}
@@ -384,7 +384,7 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 
 
 /*
-NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
+NLCcodeblock * createCodeBlockForStatements(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, GIAentityNode* entity, int sentenceIndex)
 {
 	for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 	{
@@ -399,7 +399,7 @@ NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInT
 }
 */
 
-NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
+NLCcodeblock * createCodeBlockForStatements(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, GIAentityNode* entity, int sentenceIndex)
 {
 	//LIMITATION: only parse 1 sub level of conditions:
 
@@ -426,27 +426,27 @@ NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInT
 	*/	
 }		
 
-NLPIcodeblock * createCodeBlockForGivenProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex)
+NLCcodeblock * createCodeBlockForGivenProperties(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, GIAentityNode * entity, int sentenceIndex)
 {
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 	{
 		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-		//if(!(propertyConnection->parsedForNLPIcodeBlocks))	//removed 1e5b
+		//if(!(propertyConnection->parsedForNLCcodeBlocks))	//removed 1e5b
 		//{			
 			GIAentityNode* propertyEntity = propertyConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{//only write conditions that are explicated in current sentence
 				//cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
 				currentCodeBlockInTree = createCodeBlockForGivenProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
-				propertyConnection->parsedForNLPIcodeBlocks = true;
+				propertyConnection->parsedForNLCcodeBlocks = true;
 			}
 		//}
 	}
 	return currentCodeBlockInTree;
 }
-NLPIcodeblock * createCodeBlockForGivenProperty(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* propertyEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockForGivenProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, GIAentityNode* propertyEntity, int sentenceIndex)
 {
-	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_CLASS);
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_CLASS);
 	
 	if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
 	{
@@ -463,32 +463,32 @@ NLPIcodeblock * createCodeBlockForGivenProperty(NLPIcodeblock * currentCodeBlock
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlockForGivenConditions(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item,  GIAentityNode * entity, int sentenceIndex)
+NLCcodeblock * createCodeBlockForGivenConditions(NLCcodeblock * currentCodeBlockInTree, NLCitem * item,  GIAentityNode * entity, int sentenceIndex)
 {
 	//cout << "createCodeBlockForGivenConditions: " << endl;
 	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
 	{
 		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-		//if(!(conditionConnection->parsedForNLPIcodeBlocks))	//removed 1e5b
+		//if(!(conditionConnection->parsedForNLCcodeBlocks))	//removed 1e5b
 		//{
 			GIAentityNode* conditionEntity = conditionConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{	
 				currentCodeBlockInTree = createCodeBlockForGivenCondition(currentCodeBlockInTree, item, conditionEntity, sentenceIndex);
-				conditionConnection->parsedForNLPIcodeBlocks = true;
+				conditionConnection->parsedForNLCcodeBlocks = true;
 			}
 		//}			
 	}
 	return currentCodeBlockInTree;
 }
-NLPIcodeblock * createCodeBlockForGivenCondition(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* conditionEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockForGivenCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, GIAentityNode* conditionEntity, int sentenceIndex)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 
-		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_CLASS);
-		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_CLASS);
+		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_CLASS);
+		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_CLASS);
 		
 		conditionItem->context.push_back(item->instanceName);
 		conditionObjectItem->context.push_back(item->instanceName);	//redundant
@@ -505,15 +505,15 @@ NLPIcodeblock * createCodeBlockForGivenCondition(NLPIcodeblock * currentCodeBloc
 }
 
 
-NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType)
+NLCcodeblock * createCodeBlock(NLCcodeblock * currentCodeBlockInTree, int codeBlockType)
 {
-	#ifdef NLPI_DEBUG
+	#ifdef NLC_DEBUG
 	cout << "createCodeBlock [" << codeBlockType << "] = " << currentCodeBlockInTree->codeBlockType << endl;
 	#endif
 	currentCodeBlockInTree->codeBlockType = codeBlockType;
-	currentCodeBlockInTree->next = new NLPIcodeblock();
+	currentCodeBlockInTree->next = new NLCcodeblock();
 	
-	if(codeBlockType >= NLPI_CODEBLOCK_TYPE_CONTAINERS)
+	if(codeBlockType >= NLC_CODEBLOCK_TYPE_CONTAINERS)
 	{
 		currentCodeBlockInTree = createLowerLevel(currentCodeBlockInTree);
 	}
@@ -524,9 +524,9 @@ NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int code
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createLowerLevel(NLPIcodeblock * currentCodeBlockInTree)
+NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree)
 {
-	currentCodeBlockInTree->lowerLevel = new NLPIcodeblock();
+	currentCodeBlockInTree->lowerLevel = new NLCcodeblock();
 	currentCodeBlockInTree = currentCodeBlockInTree->lowerLevel;
 	return currentCodeBlockInTree;
 }
@@ -560,7 +560,7 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 					GIAentityConnection * propertyConnection = findEntityNodePointerInVector(currentEntity, parentEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, &foundNode);
 					if(foundNode)
 					{
-						propertyConnection->parsedForNLPIcodeBlocks = true;
+						propertyConnection->parsedForNLCcodeBlocks = true;
 					}
 					else
 					{
@@ -580,10 +580,10 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 }
 
 
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLPIcodeBlocks)
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
-	if(!checkIfEntityHasBeenParsedForNLPIcodeBlocks || !(entity->parsedForNLPIcodeBlocks))
+	if(!checkIfEntityHasBeenParsedForNLCcodeBlocks || !(entity->parsedForNLCcodeBlocks))
 	{
 		#ifdef GIA_DRAW_PRINT_ENTITY_NODES_IN_ORDER_OF_SENTENCE_INDEX
 		if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference))
@@ -636,47 +636,47 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, GIAentityNode * ch
 	return alreadyAdded;
 }
 
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+string parseFunctionNameFromNLCfunctionName(string NLCfunctionName)
 {
 	//gets "fight" from "dog::fight"
 	string functionName = "";
 	bool foundFunctionOwnerClass = false;
 	string functionOwnerName = "";
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
 	return functionName;
 }
 
-void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
+void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
 {
 	//gets "fight" from "dog::fight"
 	bool foundFunctionObjectClass = false;
 	string functionObjectName = "";
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, functionName, functionOwnerName, foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);	
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);	
 }
 
-void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass, string * functionObjectName, bool * foundFunctionObjectClass)
+void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass, string * functionObjectName, bool * foundFunctionObjectClass)
 {
 	//gets "fight" from "dog::fight"
 	*foundFunctionOwnerClass = false;
 	*functionOwnerName = "";
 	*foundFunctionObjectClass = false;
 	*functionObjectName = "";
-	*functionName = NLPIfunctionName;
-	int indexOfActionName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER);
-	int indexOfObjectName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER);
+	*functionName = NLCfunctionName;
+	int indexOfActionName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER);
+	int indexOfObjectName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER);
 	if(indexOfActionName != string::npos)
 	{
 		if(indexOfObjectName != string::npos)
 		{
-			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
-			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
-			*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
+			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
+			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
+			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 			*foundFunctionOwnerClass = true;
 			*foundFunctionObjectClass = true;	
 			/*
-			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
-			cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
+			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " << *functionName << endl;
 			cout << "functionOwnerName = " << *functionOwnerName << endl;
 			cout << "functionObjectName = " << *functionObjectName << endl;	
@@ -684,28 +684,28 @@ void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * fun
 		}
 		else
 		{
-			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfActionName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
-			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
+			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
+			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*foundFunctionOwnerClass = true;
-			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
-			cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
+			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " << *functionName << endl;
 			cout << "functionOwnerName = " << *functionOwnerName << endl;
 		}
 	}
 	else if(indexOfObjectName != string::npos)
 	{
-		*functionName = NLPIfunctionName.substr(0, indexOfObjectName);
-		*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
+		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
+		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*foundFunctionObjectClass = true;
-		cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
-		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+		cout << "parseFunctionNameFromNLCfunctionName():" << endl;
+		cout << "NLCfunctionName = " << NLCfunctionName << endl;
 		cout << "functionName = " << *functionName << endl;
 		cout << "functionObjectName = " << *functionObjectName << endl;	
 	}
 	else
 	{
-		*functionName = NLPIfunctionName;
+		*functionName = NLCfunctionName;
 	}
 }
 #endif

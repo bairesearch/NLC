@@ -20,36 +20,40 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIprintClassDefinitions.h
+ * File Name: NLCprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_PRINT_CLASSDEFINITIONS
-#define HEADER_NLPI_PRINT_CLASSDEFINITIONS
 
-#include <iostream>
-#include <fstream>
 #include <ctime>
-#include <cstring>
 #include <cstdlib>	//for random number generation
 #include <cmath>
-#include <string>
-#include <vector>
-using namespace std;
 
-#include "NLPIclassDefinition.h"
+#include "NLCprint.h"
+#include "NLCprintClassDefinitions.h"
+#include "NLCprintCodeBlocks.h"
+
+#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
+bool printCode(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code)
+{
+	bool result = true;
 	
-bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);	
-	void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
-		string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang);
-		string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang);
-		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang);
-		#endif
-			
+	if(!printClassDefinitions(classDefinitionList, progLang, code))
+	{
+		result = false;
+	}
+	
+	int level = 0;
+	if(!printCodeBlocks(firstCodeBlockInLevel, classDefinitionList, progLang, code, level))
+	{
+		result = false;
+	}
+
+	return result;
+}
 #endif

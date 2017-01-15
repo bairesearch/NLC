@@ -20,17 +20,17 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIprintCodeBlocks.h
+ * File Name: NLCprintCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_PRINT_CODEBLOCKS
-#define HEADER_NLPI_PRINT_CODEBLOCKS
+#ifndef HEADER_NLC_PRINT_CODEBLOCKS
+#define HEADER_NLC_PRINT_CODEBLOCKS
 
 #include <iostream>
 #include <fstream>
@@ -42,23 +42,23 @@
 #include <vector>
 using namespace std;
 
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
+#include "NLCcodeBlockClass.h"
+#include "NLCclassDefinitionClass.h"
 
-bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code, int level);	//classDefinitionList is required by NLPI_SUPPORT_INPUT_FILE_LISTS only
-	void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLPIclassDefinition *> * classDefinitionList, vector<NLPIitem*> * codeBlockParameters, string * functionArguments, int progLang);
-		string generateCodeSingularReferenceText(NLPIitem * functionArgumentPropertyItem, int progLang);
+bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code, int level);	//classDefinitionList is required by NLC_SUPPORT_INPUT_FILE_LISTS only
+	void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * codeBlockParameters, string * functionArguments, int progLang);
+		string generateCodeSingularReferenceText(NLCitem * functionArgumentPropertyItem, int progLang);
 			string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
-		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang);
+		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		string generateCodeConditionPairReferenceText(NLCitem * functionArgumentConditionItem, int progLang);
 		#endif
-	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-	void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+	void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
 	#endif
-	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-	void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
 	#endif
-	string generateFunctionOwnerContext(vector<NLPIitem*> * parameters, int progLang);
+	string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang);
 string generateStringFromContextVector(vector<string> * context, int progLang);
 			
 

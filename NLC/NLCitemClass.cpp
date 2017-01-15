@@ -20,10 +20,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIcodeBlock.cpp
+ * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -31,27 +31,27 @@
 
 
 
-#include "NLPIitem.h"
+#include "NLCitemClass.h"
 #include "GIAtranslatorOperations.h"
 
 
 
-NLPIitem::NLPIitem(void)
+NLCitem::NLCitem(void)
 {
-	itemType = NLPI_ITEM_INSTANCE_ID_UNDEFINED;
+	itemType = NLC_ITEM_INSTANCE_ID_UNDEFINED;
 	className = "";
 	instanceName = "";
 	functionName = "";
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
-NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
+NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 {
 	itemType = newItemType;
 	className = generateClassName(entity);
@@ -59,18 +59,18 @@ NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 	functionName = generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
-NLPIitem::NLPIitem(string newName, int newItemType)
+NLCitem::NLCitem(string newName, int newItemType)
 {
 	itemType = newItemType;
 	className = generateClassName(newName);	//changed 9 November 2013
-	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	instanceName = newName;		//added 21 November 2013
 	#else
 	instanceName = ""
@@ -78,14 +78,14 @@ NLPIitem::NLPIitem(string newName, int newItemType)
 	functionName = generateFunctionName(newName);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
-NLPIitem::NLPIitem(NLPIitem * newItem)
+NLCitem::NLCitem(NLCitem * newItem)
 {
 	itemType = newItem->itemType;
 	className = newItem->className;
@@ -93,14 +93,14 @@ NLPIitem::NLPIitem(NLPIitem * newItem)
 	functionName = newItem->functionName;
 	className2 = newItem->className2;
 	instanceName2 = newItem->instanceName2;
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
 	#endif
 }
-NLPIitem::~NLPIitem(void)
+NLCitem::~NLCitem(void)
 {
 }
 
@@ -111,7 +111,7 @@ string generateClassName(GIAentityNode * entity)
 }
 string generateClassName(string entityName)
 {
-	string className = entityName + NLPI_CLASS_NAME_APPEND;
+	string className = entityName + NLC_CLASS_NAME_APPEND;
 	return className;
 }
 string generateFunctionName(GIAentityNode * entity)
@@ -120,7 +120,7 @@ string generateFunctionName(GIAentityNode * entity)
 }
 string generateFunctionName(string entityName)
 {
-	string functionName = entityName + NLPI_FUNCTION_NAME_APPEND;
+	string functionName = entityName + NLC_FUNCTION_NAME_APPEND;
 	return functionName;
 }
 string generateInstanceName(GIAentityNode * entity)

@@ -20,10 +20,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLPImain.cpp
+ * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -34,13 +34,13 @@
 #include <cstdlib>	//for random number generation
 #include <cmath>
 
-#include "NLPImain.h"
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
-#include "NLPItranslator.h"
-#include "NLPIprint.h"
-#include "NLPIprintClassDefinitions.h"
-#include "NLPIprintCodeBlocks.h"
+#include "NLCmain.h"
+#include "NLCcodeBlockClass.h"
+#include "NLCclassDefinitionClass.h"
+#include "NLCtranslator.h"
+#include "NLCprint.h"
+#include "NLCprintClassDefinitions.h"
+#include "NLCprintCodeBlocks.h"
 
 #include "GIAmain.h"
 #include "GIAdatabase.h"
@@ -49,7 +49,7 @@
 #include "GIAwordnet.h"
 #endif
 
-static char errmessage[] = "Usage:  OpenNLPI.exe [options]\n\n\twhere options are any of the following\n"
+static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
 "\n\t-itxt [string]     : plain text .txt input filename to be parsed by the NLP parser (def: inputText.txt)"
 "\n\t-ionlprel [string] : NLP dependency relation parser .xml intermediary input/output filename (def: inputNLPrelation.xml)"
 "\n\t-ionlptag [string] : NLP feature tag parser .xml intermediary input/output filename (def: inputNLPfeature.xml)"
@@ -58,7 +58,7 @@ static char errmessage[] = "Usage:  OpenNLPI.exe [options]\n\n\twhere options ar
 "\n\t-ionlprelq [string]: query NLP dependency relation parser .xml intermediary input/output filename (def: inputNLPrelationQuery.xml)"
 "\n\t-ionlptagq [string]: query NLP feature tag parser .xml intermediary input/output filename (def: inputNLPfeatureQuery.xml)"
 "\n\t-ixmlq [string]    : query semantic network definition .xml input filename (def: semanticNetQuery.xml)"
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 "\n\t-ilist		: all input files will be treated as file lists (new line delimited)"
 #endif
 "\n\t-oxml [string]     : semantic network definition .xml output filename (def: semanticNet.xml)"
@@ -111,7 +111,7 @@ static char errmessage[] = "Usage:  OpenNLPI.exe [options]\n\n\twhere options ar
 "\n\t-tempfolder [string]               : temp directory name for temporary and output files (def: same as exe)"
 "\n"
 "\n\n\t-version         : print version"
-"\n\n\tThis program performs NLPI (Natural Language Programming Interface) operations - generates computer code (eg C++) from natural language statements (it currently requires to be compiled with GIA source code).\n\n";
+"\n\n\tThis program performs NLC (Natural Language Programming Interface) operations - generates computer code (eg C++) from natural language statements (it currently requires to be compiled with GIA source code).\n\n";
 
 //Dependency Relationship Extractor
 
@@ -120,7 +120,7 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 
 int main(int argc,char **argv)
 {
-	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
+	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
 	
 	#ifdef GIA_TRIAL_WORD_NET_SYNONYM_LOOKUP
 	initialiseWordNet();
@@ -140,7 +140,7 @@ int main(int argc,char **argv)
 	current = localtime(&now);
 	char timeAndDateString[100];
 	sprintf(timeAndDateString, "%i:%i:%i %.2i/%.2i/%i", current->tm_hour, current->tm_min, current->tm_sec, current->tm_mday, (current->tm_mon+1), (current->tm_year + TM_STRUCT_YEAR_OFFSET));
-	cout << "NLPI execution time: " << timeAndDateString << " (start)" << endl;
+	cout << "NLC execution time: " << timeAndDateString << " (start)" << endl;
 
 	bool result = true;
 
@@ -203,10 +203,10 @@ int main(int argc,char **argv)
 	string outputTextAnswerPlainTXTFileName = "answer.txt";
 
 #ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
-	bool inputFileList = false;	//not used by NLPI
+	bool inputFileList = false;	//not used by NLC
 #endif
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS	
-	bool NLPIinputFileList = false;
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	
+	bool NLCinputFileList = false;
 #endif	
 	
 	bool printOutput = false;
@@ -304,10 +304,10 @@ int main(int argc,char **argv)
 			useInputQuery = true;
 		}
 		
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS	
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	
 		if(argumentExists(argc,argv,"-ilist"))
 		{
-			NLPIinputFileList = true;
+			NLCinputFileList = true;
 		}
 	#endif		
 
@@ -611,7 +611,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1e11a 25-November-2013" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f1a 06-December-2013" << endl;
 			exit(1);
 		}
 
@@ -625,13 +625,13 @@ int main(int argc,char **argv)
 	}
 
 	int numberOfInputFilesInList = 1;
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	vector<string> inputTextPlainTXTFileNameList;
 	vector<string> inputTextNLPrelationXMLFileNameList;
 	vector<string> inputTextNLPfeatureXMLFileNameList;
 	vector<string> inputTextXMLFileNameList;
 	vector<string> functionNameList;
-	if(NLPIinputFileList)
+	if(NLCinputFileList)
 	{
 		if(useInputTextPlainTXTFile)
 		{
@@ -652,14 +652,14 @@ int main(int argc,char **argv)
 	}
 	#endif
 
-	vector<NLPIcodeblock*> firstCodeBlockInTreeList;
-	vector<NLPIclassDefinition *> classDefinitionList;
+	vector<NLCcodeblock*> firstCodeBlockInTreeList;
+	vector<NLCclassDefinition *> classDefinitionList;
 		
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{	
 		int maxNumberSentences;
 		
-		NLPIcodeblock * firstCodeBlockInTree = new NLPIcodeblock();
+		NLCcodeblock * firstCodeBlockInTree = new NLCcodeblock();
 		firstCodeBlockInTreeList.push_back(firstCodeBlockInTree);
 
 		vector<GIAentityNode*> * entityNodesActiveListComplete = new vector<GIAentityNode*>;
@@ -669,8 +669,8 @@ int main(int argc,char **argv)
 		vector<GIAentityNode*> * entityNodesActiveListConditions = new vector<GIAentityNode*>;
 		unordered_map<long, GIAtimeConditionNode*> * timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
 	
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-		if(NLPIinputFileList)
+		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		if(NLCinputFileList)
 		{
 			if(useInputTextPlainTXTFile)
 			{
@@ -802,76 +802,76 @@ int main(int argc,char **argv)
 			&maxNumberSentences	
 		);
 
-		string NLPIfunctionName = "";
+		string NLCfunctionName = "";
 		if(useInputTextPlainTXTFile)
 		{
-			NLPIfunctionName = inputTextPlainTXTfileName;
+			NLCfunctionName = inputTextPlainTXTfileName;
 		}
 		else if(useInputTextNLPrelationXMLFile)
 		{
-			NLPIfunctionName = inputTextNLPrelationXMLfileName;
+			NLCfunctionName = inputTextNLPrelationXMLfileName;
 		}
 		else if(useInputTextNLPfeatureXMLFile)
 		{
-			NLPIfunctionName = inputTextNLPfeatureXMLfileName;
+			NLCfunctionName = inputTextNLPfeatureXMLfileName;
 		}
 		else if(useInputTextXMLFile)
 		{
-			NLPIfunctionName = inputTextXMLFileName;
+			NLCfunctionName = inputTextXMLFileName;
 		}
 		else
 		{
-			cout << "error: NLPI requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
+			cout << "error: NLC requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
 		}
 		
-		#ifdef NLPI_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
-		NLPIfunctionName = progLangMainEntryPointFunctionName[progLang];
+		#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
+		NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
 		#else
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-		if(!NLPIinputFileList)
+		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		if(!NLCinputFileList)
 		{
 		#endif
-			NLPIfunctionName = removeFileNameExtensions(NLPIfunctionName);
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+			NLCfunctionName = removeFileNameExtensions(NLCfunctionName);
+		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		}
 		#endif
 		#endif		
 		
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-		functionNameList.push_back(NLPIfunctionName);
+		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		functionNameList.push_back(NLCfunctionName);
 		#endif
 		
-		#ifdef NLPI_DEBUG
-		cout << "translateNetwork(): NLPIfunctionName = " << NLPIfunctionName << endl;	
+		#ifdef NLC_DEBUG
+		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;	
 		#endif
 		
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLPIfunctionName);
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLCfunctionName);
 	}
 	
 	//cout << "q3" << endl;	
 	
 	
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		//updates all classDefinition functionList function arguments corresponding to a single defined function (i)
 		
-		NLPIcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
+		NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
 
-		string NLPIfunctionName = functionNameList.at(i);
+		string NLCfunctionName = functionNameList.at(i);
 		
-		#ifdef NLPI_DEBUG
-		cout << "start reconcile: NLPIfunctionName = " << NLPIfunctionName << endl;
+		#ifdef NLC_DEBUG
+		cout << "start reconcile: NLCfunctionName = " << NLCfunctionName << endl;
 		#endif
 		/*
-		for(vector<NLPIitem*>::iterator parametersIterator = firstCodeBlockInTree->parameters.begin(); parametersIterator < firstCodeBlockInTree->parameters.end(); parametersIterator++)
+		for(vector<NLCitem*>::iterator parametersIterator = firstCodeBlockInTree->parameters.begin(); parametersIterator < firstCodeBlockInTree->parameters.end(); parametersIterator++)
 		{
-			NLPIitem * formalFunctionArgument = *parametersIterator;
+			NLCitem * formalFunctionArgument = *parametersIterator;
 			cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
 			cout << "formalFunctionArgument->itemType = " << formalFunctionArgument->itemType << endl;
 		}
 		*/
-		reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLPIfunctionName);
+		reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLCfunctionName);
 		//cout << "end reconcile" << endl;
 		
 		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias	
@@ -888,9 +888,9 @@ int main(int argc,char **argv)
 		
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
-		NLPIcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
+		NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
 		int level = 0;
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		if(!printCodeBlocks(firstCodeBlockInTree, &classDefinitionList, progLang, &code, level))
 		{
 			result = false;
@@ -908,17 +908,17 @@ int main(int argc,char **argv)
 	time(&now);
 	current = localtime(&now);
 	sprintf(timeAndDateString, "%i:%i:%i %.2i/%.2i/%i", current->tm_hour, current->tm_min, current->tm_sec, current->tm_mday, (current->tm_mon+1), (current->tm_year + TM_STRUCT_YEAR_OFFSET));
-	cout << "NLPI execution time: " << timeAndDateString << " (finish)" << endl;	
+	cout << "NLC execution time: " << timeAndDateString << " (finish)" << endl;	
 }	
 
 
-string removeFileNameExtensions(string NLPIfunctionName)
+string removeFileNameExtensions(string NLCfunctionName)
 {
-	string NLPIfunctionNameCleaned = NLPIfunctionName;
-	int indexOfFirstFileExtension = NLPIfunctionName.find(".");
+	string NLCfunctionNameCleaned = NLCfunctionName;
+	int indexOfFirstFileExtension = NLCfunctionName.find(".");
 	if(indexOfFirstFileExtension != string::npos)
 	{
-		NLPIfunctionNameCleaned = NLPIfunctionName.substr(0, indexOfFirstFileExtension);
+		NLCfunctionNameCleaned = NLCfunctionName.substr(0, indexOfFirstFileExtension);
 	}
-	return NLPIfunctionNameCleaned;
+	return NLCfunctionNameCleaned;
 }

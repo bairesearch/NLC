@@ -20,17 +20,19 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIclassDefinition.h
+ * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_CLASSDEFINITION
-#define HEADER_NLPI_CLASSDEFINITION
+#ifndef HEADER_NLC_TRANSLATOR_CLASSDEFINITIONS
+#define HEADER_NLC_TRANSLATOR_CLASSDEFINITIONS
+
+//#define NLC_NOT_NECESSARY
 
 #include <iostream>
 #include <fstream>
@@ -40,46 +42,29 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#include <vector>
-#include <unordered_map>
 using namespace std;
 
-#include "NLPIglobalDefs.h"
-#include "NLPIitem.h"
 #include "GIAglobalDefs.h"
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
+#include "NLCcodeBlockClass.h"
+#include "NLCclassDefinitionClass.h"
 
-	//progLangEndLine
-	
-class NLPIclassDefinition
-{
-public:
-
-	NLPIclassDefinition(void);
-	NLPIclassDefinition(string newName);
-	~NLPIclassDefinition(void);
-	
-	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
-	string functionNameSpecial;
-		//classdefinition sublists;
-	vector<NLPIclassDefinition *> propertyList;	//subclass
-	vector<NLPIclassDefinition *> conditionList;	//declared conditions
-	vector<NLPIclassDefinition *> definitionList;	//inherited parents
-	vector<NLPIclassDefinition *> functionList;
-
-	bool isActionOrConditionInstanceNotClass;
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-	GIAentityNode * actionOrConditionInstance;
+bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+	#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+	string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity);
+	void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName);
+	#endif		
+	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition * classDefinition, vector<NLCclassDefinition*> * classDefinitionSublist, int variableType);
+		bool findVariableInParentClass(NLCclassDefinition * classDefinition, string variableName, int variableType);
 	#endif
-	vector<NLPIitem*> parameters;
 	
-	bool isDisabledChildReplicantDeclaration;
-};
-
-NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition);
-
-
-
-
+#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, vector<NLCitem*> * parameters);
+void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, vector<NLCitem*> * parameters, bool performChildActionDuplicateCheck);
+	bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLCitem*> * parameters);
+	bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLCitem*> * parameters);
 #endif
+
+#endif	

@@ -20,40 +20,33 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIprint.cpp
+ * File Name: NLCmain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e11a 25-November-2013
+ * Project Version: 1f1a 06-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
 
 
+#ifndef HEADER_NLC_MAIN
+#define HEADER_NLC_MAIN
 
+#include <iostream>
+#include <fstream>
 #include <ctime>
+#include <cstring>
 #include <cstdlib>	//for random number generation
 #include <cmath>
+#include <string>
+#include <vector>
+using namespace std;
 
-#include "NLPIprint.h"
-#include "NLPIprintClassDefinitions.h"
-#include "NLPIprintCodeBlocks.h"
+#include "NLCglobalDefs.h"
+#include "NLCcodeBlockClass.h"
+#include "NLCclassDefinitionClass.h"
 
-#ifndef NLPI_SUPPORT_INPUT_FILE_LISTS
-bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code)
-{
-	bool result = true;
-	
-	if(!printClassDefinitions(classDefinitionList, progLang, code))
-	{
-		result = false;
-	}
-	
-	int level = 0;
-	if(!printCodeBlocks(firstCodeBlockInLevel, classDefinitionList, progLang, code, level))
-	{
-		result = false;
-	}
+int main(int argc,char **argv);
+	string removeFileNameExtensions(string NLCfunctionName);
 
-	return result;
-}
 #endif

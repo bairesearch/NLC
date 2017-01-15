@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8d 04-November-2014
+ * Project Version: 1l8e 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1l8d 04-November-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1l8e 04-November-2014" << endl;
 			exit(1);
 		}
 
@@ -1213,10 +1213,6 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 		{
 			if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_POSSESSIVE)
 			{
-				#ifdef NLC_DEBUG
-				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
-				#endif
-
 				bool actionHasObject = false;
 				GIAentityNode * actionObjectEntity = NULL;
 				if(!(actionEntity->actionObjectEntity->empty()))
@@ -1234,16 +1230,11 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
 				if(actionHasSubject && actionHasObject)
 				{
-					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
-					//added 1i8g
-					bool sameReferenceSet = false;
-					GIAentityConnection * actionSubjectConnection = actionEntity->actionSubjectEntity->back();
-					GIAentityConnection * actionObjectConnection = actionEntity->actionObjectEntity->back();
-					if(actionSubjectConnection->sameReferenceSet && actionObjectConnection->sameReferenceSet)
-					{
-						sameReferenceSet = true;
-					}
-					#endif
+					//#ifdef NLC_DEBUG
+					cout << "transformTheActionOfPossessionEgHavingIntoAproperty():" << endl;
+					cout << "actionSubjectEntity->entityName = " << actionSubjectEntity->entityName << endl;
+					cout << "actionObjectEntity->entityName = " << actionObjectEntity->entityName << endl;
+					//#endif
 				
 					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 					/*
@@ -1284,70 +1275,187 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						connectionIter = actionEntity->incomingConditionNodeList->erase(connectionIter);
 					}
 					#endif
+					
+					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+					int numberOfDuplicateConnections = actionEntity->actionSubjectEntity->size();
+					if(numberOfDuplicateConnections != actionEntity->actionObjectEntity->size())
+					{
+						cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: numberOfDuplicateConnections inconsistent between action object and action subject" << endl;
+						exit(0);
+					}
+					for(int i=0; i < numberOfDuplicateConnections; i++)
+					{
+						cout << "i = " << i << endl;
+					#endif
+						
+						int sentenceIndex = (actionEntity->actionSubjectEntity->back())->sentenceIndexTemp;
+						cout << "sentenceIndex = " << sentenceIndex << endl;
+						if(sentenceIndex != (actionEntity->actionObjectEntity->back())->sentenceIndexTemp)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sentenceIndex inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+						//added 1i8g
+						bool sameReferenceSet = (actionEntity->actionSubjectEntity->back())->sameReferenceSet;
+						cout << "sameReferenceSet = " << sameReferenceSet << endl;
+						if(sameReferenceSet != (actionEntity->actionObjectEntity->back())->sameReferenceSet)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sameReferenceSet inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						#endif
+						
+						bool foundConnection = false;
+						foundConnection = false;
+						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionSubjectEntity->begin(); connectionIter != actionEntity->actionSubjectEntity->end(); )
+						{
+							GIAentityConnection * connection = (*connectionIter);
+							if(connection->sentenceIndexTemp == sentenceIndex)
+							{
+								if(connection->entity == actionSubjectEntity)
+								{
+									connectionIter = actionEntity->actionSubjectEntity->erase(connectionIter);
+									if(foundConnection)
+									{
+										cout << "error" << endl;
+									}
+									foundConnection = true;
+								}
+							}
+							else
+							{
+								connectionIter++;
+							}
+						}
+						if(!foundConnection)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						foundConnection = false;
+						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionObjectEntity->begin(); connectionIter != actionEntity->actionObjectEntity->end(); )
+						{
+							GIAentityConnection * connection = (*connectionIter);
+							if(connection->sentenceIndexTemp == sentenceIndex)
+							{
+								if(connection->entity == actionObjectEntity)
+								{
+									connectionIter = actionEntity->actionObjectEntity->erase(connectionIter);
+									if(foundConnection)
+									{
+										cout << "error" << endl;
+									}
+									foundConnection = true;
+								}
+							}
+							else
+							{
+								connectionIter++;
+							}
+						}
+						if(!foundConnection)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						foundConnection = false;
+						for(vector<GIAentityConnection*>::iterator connectionIter = actionSubjectEntity->actionNodeList->begin(); connectionIter != actionSubjectEntity->actionNodeList->end(); )
+						{
+							GIAentityConnection * connection = (*connectionIter);
+							if(connection->sentenceIndexTemp == sentenceIndex)
+							{
+								if(connection->entity == actionEntity)
+								{
+									connectionIter = actionSubjectEntity->actionNodeList->erase(connectionIter);
+									if(foundConnection)
+									{
+										cout << "error" << endl;
+									}
+									foundConnection = true;
+								}
+							}
+							else
+							{
+								connectionIter++;
+							}
+						}
+						if(!foundConnection)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						foundConnection = false;
+						for(vector<GIAentityConnection*>::iterator connectionIter = actionObjectEntity->incomingActionNodeList->begin(); connectionIter != actionObjectEntity->incomingActionNodeList->end(); )
+						{
+							GIAentityConnection * connection = (*connectionIter);
+							if(connection->sentenceIndexTemp == sentenceIndex)
+							{
+								if(connection->entity == actionEntity)
+								{
+									connectionIter = actionObjectEntity->incomingActionNodeList->erase(connectionIter);
+									if(foundConnection)
+									{
+										cout << "error" << endl;
+									}
+									foundConnection = true;
+								}
+							}
+							else
+							{
+								connectionIter++;
+							}
+						}
+						if(!foundConnection)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							exit(0);
+						}			
 
-					actionEntity->actionSubjectEntity->clear();
-					actionEntity->actionObjectEntity->clear();
+						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+						/*not required:
+						#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+						sentenceIndex = actionEntity->sentenceIndexTemp;
+						#endif
+						*/
+						setCurrentSentenceIndex(sentenceIndex);
+						#endif
+						//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
+						GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
+						GIAentityConnection * propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
+						#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+						if(actionEntity->negative)
+						{
+							//cout << "actionEntity->negative" << endl;
+							propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
+							propertyConnectionReverse->negative = true;	//not used
+						}
+						#endif
+						#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+						//added 1i8g
+						if(sameReferenceSet)
+						{
+							
+							propertyConnection->sameReferenceSet = true;
+							propertyConnectionReverse->sameReferenceSet = true;
+						}
+						#endif
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+						if(actionEntity->negative)
+						{
+							actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
+						}
+						#endif
+					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+					}
+					#endif
+
 					actionEntity->isAction = false;
 					actionEntity->disabled = true;	//disable have instance entity
 					if(!(actionEntity->entityNodeDefiningThisInstance->empty()))
 					{
 						getPrimaryConceptNodeDefiningInstance(actionEntity)->disabled = true;	//disable have concept entity
 					}
-
-					for(vector<GIAentityConnection*>::iterator connectionIter = actionSubjectEntity->actionNodeList->begin(); connectionIter != actionSubjectEntity->actionNodeList->end(); )
-					{
-						GIAentityNode * actionEntity2 = (*connectionIter)->entity;
-						if(actionEntity2 == actionEntity)
-						{
-							connectionIter = actionSubjectEntity->actionNodeList->erase(connectionIter);
-						}
-						else
-						{
-							connectionIter++;
-						}
-					}
-					for(vector<GIAentityConnection*>::iterator connectionIter = actionObjectEntity->incomingActionNodeList->begin(); connectionIter != actionObjectEntity->incomingActionNodeList->end(); )
-					{
-						GIAentityNode * actionEntity2 = (*connectionIter)->entity;
-						if(actionEntity2 == actionEntity)
-						{
-							connectionIter = actionObjectEntity->incomingActionNodeList->erase(connectionIter);
-						}
-						else
-						{
-							connectionIter++;
-						}
-					}
-					
-					#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-					int sentenceIndex = actionEntity->sentenceIndexTemp;
-					setCurrentSentenceIndex(sentenceIndex);
-					#endif
-					//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-					GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
-					GIAentityConnection * propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
-					#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-					if(actionEntity->negative)
-					{
-						//cout << "actionEntity->negative" << endl;
-						propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
-						propertyConnectionReverse->negative = true;	//not used
-					}
-					#endif
-					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
-					//added 1i8g
-					if(sameReferenceSet)
-					{
-						propertyConnection->sameReferenceSet = true;
-						propertyConnectionReverse->sameReferenceSet = true;
-					}
-					#endif
-					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-					if(actionEntity->negative)
-					{
-						actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
-					}
-					#endif
 				}
 			}
 		}

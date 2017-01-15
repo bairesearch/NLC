@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e8d 24-November-2013
+ * Project Version: 1e9a 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -238,7 +238,6 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 			{
 				entity->NLPIisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 				entity->parsedForNLPIcodeBlocks = true;
-				entity->NLPIlocalListVariableHasBeenDeclared = true;
 				
 				functionOwner = entity;
 			}
@@ -246,7 +245,6 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 			{
 				entity->NLPIisSingularArgument = true;
 				entity->parsedForNLPIcodeBlocks = true;
-				entity->NLPIlocalListVariableHasBeenDeclared = true;
 				
 				functionObject = entity;
 			}
@@ -254,7 +252,6 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 			{
 				entity->NLPIisSingularArgument = true;
 				entity->parsedForNLPIcodeBlocks = true;
-				entity->NLPIlocalListVariableHasBeenDeclared = true;
 				
 				function = entity;
 			}
@@ -365,7 +362,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;
-	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLPIlocalListVariableHasBeenDeclared)
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLPIlocalListVariableHasBeenDeclared || entity->NLPIisSingularArgument)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
 	}

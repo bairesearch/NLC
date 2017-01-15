@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e8d 24-November-2013
+ * Project Version: 1e9a 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -107,7 +107,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						//cout << "functionItem->className = " << functionItem->className << endl;
 						currentCodeBlockInTree->parameters.push_back(functionItem);
 						currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE);	
-						generateObjectInitialisationsBasedOnPropertiesAndConditions(actionEntity, &currentCodeBlockInTree, sentenceIndex, "");
+						generateObjectInitialisationsBasedOnPropertiesAndConditions(actionEntity, &currentCodeBlockInTree, sentenceIndex, "", "");
 						generateObjectInitialisationsBasedOnSubstanceConcepts(actionEntity, &currentCodeBlockInTree, sentenceIndex);
 						firstCodeBlockInSentence = currentCodeBlockInTree;	
 						#endif
@@ -289,7 +289,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					}
 				}
 				#endif
-				generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, &currentCodeBlockInTree, sentenceIndex, "");
+				generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, &currentCodeBlockInTree, sentenceIndex, "", "");
 			}
 		}	
 		//cout << "q2" << endl;
@@ -360,7 +360,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 					currentEntity->parsedForNLPIcodeBlocks = true;
 					currentEntity->NLPIlocalListVariableHasBeenDeclared = true;
 					//NLPIcodeblock firstCodeBlockInSection = *currentCodeBlockInTree;
-					generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex, "");
+					generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
 
 					#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 					//Part 2b: generate object initialisations based on substance concepts (class inheritance)
@@ -406,13 +406,30 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex)
 			currentEntity = getParent(parentEntity, sentenceIndex);
 		}
 	}
+	else if(!(currentEntity->incomingConditionNodeList->empty()))
+	{//added 1e9a
+		GIAentityNode * conditionEntity = (currentEntity->incomingConditionNodeList->back())->entity;
+		
+		bool foundConditionSubject = false;
+		GIAentityNode * conditionSubject = NULL;
+		if(!(conditionEntity->conditionSubjectEntity->empty()))
+		{
+			conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
+			foundConditionSubject = true;
+			
+			if(checkSentenceIndexParsingCodeBlocks(conditionSubject, sentenceIndex, false) || conditionSubject->parsedForNLPIcodeBlocks)
+			{
+				currentEntity = getParent(conditionSubject, sentenceIndex);
+			}	
+		}
+	}
 
 	return currentEntity;
 }	
 		
 		
 //added recursion 1e8a
-bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLPIcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName)
+bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLPIcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName, string parentConditionName)
 {
 	bool performedAtLeastOneObjectInitialisation = false;
 	if(!(entity->isSubstanceConcept) && !(entity->isActionConcept))
@@ -432,11 +449,15 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				//cout << "entity->entityName = " << entity->entityName << endl;
 				//for(all items in context){
 				NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
-				if(parentName != "")
+				if(assumedToAlreadyHaveBeenDeclared(entity))
+				{
+					*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, entityClass);
+				}
+				else
 				{
 					entityClass->context.push_back(parentName);
+					*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
 				}
-				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
 				//cout << "createCodeBlockForPropertyList: " << entity->entityName << endl;
 
 				if(!(propertyConnection->parsedForNLPIcodeBlocks) && !(propertyEntity->parsedForNLPIcodeBlocks))
@@ -490,7 +511,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				}	
 
 				NLPIcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity));
+				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), "");
 				
 				generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 			}
@@ -517,11 +538,31 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					//for(all items in context){
 					NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
 					NLPIitem * conditionObjectClass = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_CLASS);
-					if(parentName != "")
+					
+					if(assumedToAlreadyHaveBeenDeclared(entity))
 					{
-						entityClass->context.push_back(parentName);
+						/*
+						cout << "\th1" << endl;
+							cout << "parentName = " << parentName << endl;
+							cout << "entity = " << entity->entityName << endl;
+							cout << "conditionEntity = " << conditionEntity->entityName << endl;
+							cout << "conditionObject = " << conditionObject->entityName << endl;
+						*/
+						*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, entityClass);	
 					}
-					*currentCodeBlockInTree = createCodeBlockForConditionList(*currentCodeBlockInTree, entityClass, conditionObjectClass);	
+					else
+					{	
+						/*
+						cout << "\th2" << endl;
+							cout << "parentName = " << parentName << endl;
+							cout << "entity = " << entity->entityName << endl;
+							cout << "conditionEntity = " << conditionEntity->entityName << endl;
+							cout << "conditionObject = " << conditionObject->entityName << endl;
+						*/
+						NLPIitem * parentConditionItem = new NLPIitem(parentConditionName, NLPI_ITEM_TYPE_CLASS);
+						parentConditionItem->context.push_back(parentName);
+						*currentCodeBlockInTree = createCodeBlockForConditionList(*currentCodeBlockInTree, parentConditionItem, entityClass);	
+					}
 
 					if(!(conditionConnection->parsedForNLPIcodeBlocks) && !(conditionEntity->parsedForNLPIcodeBlocks))
 					{
@@ -568,7 +609,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					
 
 					NLPIcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-					bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity));
+					bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), generateInstanceName(conditionEntity));
 
 					generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 				}

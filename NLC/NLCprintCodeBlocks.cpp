@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6d 20-August-2015
+ * Project Version: 1q7a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -713,7 +713,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_PRINT_WARNING" << endl;
 			#endif
-			string codeBlockText = progLangPrintTextOpen[progLang] + param1->name + progLangPrintTextClose[progLang]  + progLangEndLine[progLang];	//cout << "warning" << endl;
+			string codeBlockText = progLangPrintTextOpen[progLang] + param1->name + progLangPrintTextClose[progLang] + progLangEndLine[progLang];	//cout << "warning" << endl;
 			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY)
@@ -1203,7 +1203,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(ifDecimalPointerNotNullText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
 			
-			string throwNullPointerErrorText = string(progLangPrintTextOpen[progLang]) + "NLC runtime error: math value pointer undefined (referenced value could not be found); mathText excution will crash" + progLangPrintTextClose[progLang];
+			string throwNullPointerErrorText = string(progLangPrintTextOpen[progLang]) + "NLC runtime error: math value pointer undefined (referenced value could not be found); mathText execution will crash" + progLangPrintTextClose[progLang] + progLangEndLine[progLang];
 			printLine(throwNullPointerErrorText, level+1, &printedCodeBlocksSourceText);
 			
 			printLine(progLangCloseBlock[progLang], level, &printedCodeBlocksSourceText);	//}

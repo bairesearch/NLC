@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6d 20-August-2015
+ * Project Version: 1q7a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -316,7 +316,7 @@ static string progLangGetAtPositionPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = 
 static string progLangGetAtPositionPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"-1)", "-1)", "-1)", "-1)", "-1)", "-1)", "-1)"};
 #endif
 #ifdef NLC_USE_MATH_OBJECTS
-static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "0.0"};
+static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()"};
 #endif
 
 #ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN

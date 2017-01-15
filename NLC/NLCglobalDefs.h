@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1b 22-July-2014
+ * Project Version: 1h1c 22-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,6 +40,24 @@
 
 #define NLC_USE_PREPROCESSOR	//1g17a 18-July-2014
 #ifdef NLC_USE_PREPROCESSOR
+	#define NLC_PREPROCESSOR_SUPPORT_MATH	//1h1a 22-July-2014
+	#ifdef NLC_PREPROCESSOR_SUPPORT_MATH
+		#define NLC_PREPROCESSOR_MATH_GREATER_THAN ">"
+		#define NLC_PREPROCESSOR_MATH_LESS_THAN "<"
+		#define NLC_PREPROCESSOR_MATH_EQUALS "="
+		#define NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES (3)
+		static string preprocessorMathOperatorsNumberOfTypes[NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES] = {NLC_PREPROCESSOR_MATH_GREATER_THAN, NLC_PREPROCESSOR_MATH_LESS_THAN, NLC_PREPROCESSOR_MATH_EQUALS};
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES (63)
+		static char preprocessorMathNLPparsableCharacters[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};	//'.' could be added
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES (53)
+		static char preprocessorMathNLPparsableCharactersMandatory[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_'};
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS (2)
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE "##nlpParsablePhraseRef"
+		#define NLC_PREPROCESSOR_SUPPORT_MATH_DETECT_NUMERICAL_VARIABLES
+		#ifdef NLC_PREPROCESSOR_SUPPORT_MATH_DETECT_NUMERICAL_VARIABLES
+			//#define NLC_PREPROCESSOR_SUPPORT_MATH_DETECT_GLOBAL_NUMERICAL_VARIABLES 	//global defs are disabled by default
+		#endif
+	#endif
 	//#define NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES
 	#define NLC_PREPROCESSOR_INDENTATION_CHAR (CHAR_TAB)
@@ -109,6 +127,7 @@
 	#endif
 #endif
 
+#define NLC_DEBUG_PREPROCESSOR_MATH
 //#define NLC_DEBUG_PREPROCESSOR
 //#define NLC_DEBUG_PARSE_CONTEXT
 //#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS

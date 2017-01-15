@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1b 22-July-2014
+ * Project Version: 1h1c 22-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -63,6 +63,15 @@ public:
 	bool elseIfDetected;
 	bool elseDetected;
 	#endif
+	#ifdef NLC_PREPROCESSOR_SUPPORT_MATH
+	bool isMath;
+	string mathText;
+	int mathTextNLPparsablePhraseIndex;
+	#ifdef NLC_PREPROCESSOR_SUPPORT_MATH_DETECT_NUMERICAL_VARIABLES
+	vector mathTextVariableNames;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
+	vector variableNamesDetected;	//record of original variable name that has been replaced by dummy number for NLP/GIA to parse
+	#endif
+	#endif
 	NLCsentence* next;
 };
 
@@ -81,6 +90,16 @@ public:
 #ifdef NLC_USE_PREPROCESSOR
 bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName);
 void writeStringToFile(string fileName, string s);
+#ifdef NLC_PREPROCESSOR_SUPPORT_MATH
+bool detectMathSymbolsInSentence(string * sentenceContents);
+bool splitMathDetectedSentenceIntoNLPparsablePhrases(string * sentenceContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation);
+string generateMathTextNLPparsablePhraseReference(int phraseIndex)
+#ifdef NLC_PREPROCESSOR_SUPPORT_MATH_DETECT_NUMERICAL_VARIABLES
+bool replaceCurrentWordWithDummyNameIfNecessary(string * currentWord, string * functionContents, string * sentenceContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
+	bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);	//pass firstNLCfunctionInList and update findPredefinedNumericalVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
+	string generateDummyNumericalValue(int predefinedVariableDetectedSentenceIndex);
+#endif
+#endif
 #endif
 
 #endif

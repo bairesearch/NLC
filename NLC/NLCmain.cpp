@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8c 11-July-2014
+ * Project Version: 1g8d 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -627,7 +627,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g8c 11-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g8d 11-July-2014" << endl;
 			exit(1);
 		}
 
@@ -868,10 +868,16 @@ int main(int argc,char **argv)
 		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;
 		#endif
 
+		#ifdef NLC_DEBUG
+		cout << "transformTheActionOfPossessionEgHavingIntoAproperty():" << endl;
+		#endif
 		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
 		
+		#ifdef NLC_DEBUG
+		cout << "removeRedundantConditionConjunctions():" << endl;
+		#endif
 		#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 		removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences);
 		#endif
@@ -959,8 +965,10 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 		{
 			if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_POSSESSIVE)
 			{
+				#ifdef NLC_DEBUG
 				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
-
+				#endif
+				
 				bool actionHasObject = false;
 				GIAentityNode * actionObjectEntity = NULL;
 				if(!(actionEntity->actionObjectEntity->empty()))

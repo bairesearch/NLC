@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18b 21-July-2014
+ * Project Version: 1g18c 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -780,12 +780,20 @@ NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction * logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel)
+NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree)
+{
+	NLCitem * tempItem = new NLCitem("notUsedButNLCprintCodeBlocksRequiresAtLeastOneItem", NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(tempItem);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ELSE;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction * logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel, int logicalConditionCase, bool elseIfDetected)
 {
 	//cout << "logicalConditionConjunctionIndexMax = " << logicalConditionConjunctionIndexMax << endl;
 	for(int i=0; i<logicalConditionConjunctionIndexMax; i++)
 	{
-		string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(logicalConditionLevel, i);
+		string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(logicalConditionLevel, logicalConditionCase, i, logicalOperation);
 		NLCitem * conditionItem = new NLCitem(logicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
 		conditionItem->conjunctionType = logicalConditionConjunctionArray[i].conjunctionType;
 		conditionItem->negative = logicalConditionConjunctionArray[i].negative;
@@ -797,11 +805,14 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 	int codeBlockType;
 	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
 	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
-	}
-	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_ELSE_IF)
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
+		if(elseIfDetected)
+		{
+			codeBlockType = NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
+		}
+		else
+		{
+			codeBlockType = NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
+		}
 	}
 	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 	{
@@ -815,24 +826,41 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree)
+string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalOperation)
 {
-	NLCitem * tempItem = new NLCitem("notUsedButNLCprintCodeBlocksRequiresAtLeastOneItem", NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(tempItem);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_ELSE;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel)
-{
-	string logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel);
+	string logicalConditionConjunctionBooleanName = "";
+	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
+	{
+		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE) + convertIntToString(logicalConditionCase);
+	}
+	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+	{
+		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel);
+	}
+	else
+	{
+		cout << "generateLogicalConditionConjunctionBooleanName() error: invalid logicalOperation: " << logicalOperation << endl;
+	}
+	
 	return logicalConditionConjunctionBooleanName;
 }
 
 
-string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionConjunctionIndex)
+string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalConditionConjunctionIndex, int logicalOperation)
 {
-	string logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel) + progLangArrayOpen[0] + intToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
+	string logicalConditionConjunctionBooleanName = "";
+	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
+	{
+		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE) + convertIntToString(logicalConditionCase) + progLangArrayOpen[0] + intToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
+	}
+	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+	{
+		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel) + progLangArrayOpen[0] + intToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];	
+	}
+	else
+	{
+		cout << "generateLogicalConditionConjunctionBooleanName() error: invalid logicalOperation: " << logicalOperation << endl;
+	}
 	return logicalConditionConjunctionBooleanName;
 }
 

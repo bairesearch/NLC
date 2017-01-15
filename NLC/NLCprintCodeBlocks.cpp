@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n6a 20-January-2015
+ * Project Version: 1n6b 20-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1523,6 +1523,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			
 			string codeBlockConvertParentToChildClassText = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + generateDynamicCastOfEntity(param1->instanceName, param2->className, progLang) + progLangEndLine[progLang];	//param2class * param2instance = dynamic_cast<param2class*>(param1instance);
 			printLine(codeBlockConvertParentToChildClassText, level, code);
+			string codeBlockRenameChildClassObjectToChildClassText = generateTempEntityName(param2) + progLangObjectReferenceDelimiter[progLang] + progLangClassNameVariableName[progLang] + progLangEquals[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//param2instance->name = "param2";	//added 1n6b
+			printLine(codeBlockRenameChildClassObjectToChildClassText, level, code);
 		}	
 		#endif
 		else

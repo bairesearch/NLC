@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3c 28-July-2014
+ * Project Version: 1h3d 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -788,18 +788,25 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 		if(!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal)
 		{//!legalWordCharacterFound or (legalWordCharacterFound && last character in sentence)
-		
+
+			cout << "currentWord = " << currentWord << endl;
+			
+			//current word checks:
 			if(mandatoryCharacterFoundInCurrentWord)
 			{
-				
-				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator) || !textInTextArray(currentWord, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
+				if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 				{
-					(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariableNames
-					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-					//cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
-					#endif
+					if(i == currentWord.length())
+					{
+						if(textInTextArray(currentWord, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
+						{
+							cout << "logical condition operator detected: mandatoryCharacterFoundInCurrentWord = false" << endl;
+							mandatoryCharacterFoundInCurrentWord = false;
+						}
+					}
+
 				}
-				
+
 				#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 				{
@@ -823,9 +830,17 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					}
 				}
 				#endif
+			}			
+						
+			if(mandatoryCharacterFoundInCurrentWord)
+			{
+				(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariableNames
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+				//cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
+				#endif
 				
 				wordIndex++;
-				if(!wordDelimiterCharacterFound || finalWordInSentenceFoundAndIsLegal && mandatoryCharacterFoundInCurrentWord)	//&& mandatoryCharacterFoundInCurrentWord is required for NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+				if(!wordDelimiterCharacterFound || finalWordInSentenceFoundAndIsLegal)
 				{
 					mandatoryCharacterFoundInCurrentWord = false;
 

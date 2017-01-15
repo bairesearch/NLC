@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2e 09-January-2015
+ * Project Version: 1n2f 09-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -795,6 +795,17 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
+	if(entityNode->isConcept)	//added 1n2f
+	{
+		validClass = false;
+	}
+	
+	/*
+	cout << "\nentityNode->entityName = " << entityNode->entityName << endl;
+	cout << "entityNode->isSubstance = " << entityNode->isSubstance << endl;
+	cout << "entityNode->isConcept = " << entityNode->isConcept << endl;
+	cout << "entityNode->disabled = " << entityNode->disabled << endl;
+	*/
 	
 	/*
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -811,12 +822,12 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 
 bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 {
-	bool validClassContents = true;
+	bool validClass = true;
 
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	if(targetEntity->NLClogicalConditionOperation)
 	{
-		validClassContents = false;
+		validClass = false;
 	}
 	/*OLD:
 	if(!(connection->NLCparsedForlogicalConditionOperations) && !(targetEntity->NLCparsedForlogicalConditionOperations))
@@ -827,7 +838,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	#ifdef NLC_USE_PREPROCESSOR
 	if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
 	{
-		validClassContents = false;
+		validClass = false;
 	}
 	#endif
 	#endif
@@ -837,7 +848,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 	if(conjunctionConditionFound)
 	{
-		validClassContents = false;
+		validClass = false;
 	}
 	#endif
 	//#endif	
@@ -847,15 +858,20 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	if(targetEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
 	{
 		//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
-		validClassContents = false;	
+		validClass = false;	
 	}
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 	if(targetEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION)
 	{
-		validClassContents = false;	
+		validClass = false;	
 	}
 	#endif
 	#endif
+	
+	if(targetEntity->isConcept)	//added 1n2f
+	{
+		validClass = false;
+	}
 	
 	/*
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -867,7 +883,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	#endif
 	*/
 	
-	return validClassContents;
+	return validClass;
 }
 
 

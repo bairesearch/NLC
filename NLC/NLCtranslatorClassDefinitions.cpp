@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15d 23-October-2014
+ * Project Version: 1k16a 24-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -423,23 +423,26 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 							bool duplicateFunctionDeclarationDetected = false;
 							if(foundFunctionDependencyInList)
 							{
-								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList: " << functionName << endl;
-								exit(0);
+								//this will be true if an action (function reference) has been declared twice, but the action (function) has not been defined, eg "A chicken ate a pie. The chicken that ate a pie rowed the boat."
 								/*
+								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList functionName: " << functionName << endl;
+								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList functionOwnerName: " << functionOwnerName << endl;
+								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList functionObjectName: " << functionObjectName << endl;
+								exit(0);
+								*/
 								NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
 								bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 								if(!foundFunctionDependencyInParent)
 								{
-									cout << "1. !foundFunctionDependencyInParent" << endl;		
+									//cout << "1. !foundFunctionDependencyInParent" << endl;		
 									parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 								}
 								else
 								{
-									cout << "1. foundFunctionDependencyInParent" << endl;	
+									//cout << "1. foundFunctionDependencyInParent" << endl;	
 									duplicateFunctionDeclarationDetected = true;
 									//duplicate function declarations will be ignored
 								}
-								*/
 							}
 							else
 							{

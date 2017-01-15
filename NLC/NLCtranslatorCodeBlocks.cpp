@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l7a 03-November-2014
+ * Project Version: 1l7b 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -575,7 +575,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 								} else 
 								#endif
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
-								if(checkIfPhraseContainsSubstanceConcept(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
+								if(checkIfPhraseContainsSubstanceConceptWithDefinitionLink(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
 								{//eg "Red dogs are pies. / If red dogs are pies, eat the cabbage."
 								
 									//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
@@ -1285,7 +1285,7 @@ bool checkIfPhraseContainsAction(vector<GIAentityNode*> * entityNodesActiveListC
 #endif
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
-bool checkIfPhraseContainsSubstanceConcept(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject)
+bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject)
 {
 	bool phraseContainsSubstanceConcept = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -1295,8 +1295,11 @@ bool checkIfPhraseContainsSubstanceConcept(vector<GIAentityNode*> * entityNodesA
 		{		
 			if(connectedEntity->isSubstanceConcept)
 			{
-				phraseContainsSubstanceConcept = true;
-				*logicalConditionOperationObject = connectedEntity;
+				if(!(connectedEntity->entityNodeDefinitionList->empty()))
+				{
+					phraseContainsSubstanceConcept = true;
+					*logicalConditionOperationObject = connectedEntity;
+				}
 			}
 		}
 	}

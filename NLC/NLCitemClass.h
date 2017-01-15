@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6b 24-August-2014
+ * Project Version: 1i7a 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -114,6 +114,7 @@ public:
 	#endif
 	
 	string name;	//added 1h1d 24-July-2014 for NLC_ITEM_TYPE_VARIABLE
+	string genericObjectName;	//added 1i7a
 };
 
 
@@ -122,6 +123,8 @@ string generateClassName(GIAentityNode * entity);
 string generateFunctionName(GIAentityNode * entity);
 	string generateFunctionName(string entityName);
 string generateInstanceName(GIAentityNode * entity);
+
+string generateTypeName(string entityName);
 
 //string generateItemName(GIAentityNode * entity, int itemType);
 string convertLongToString(long number);

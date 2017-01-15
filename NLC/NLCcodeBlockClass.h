@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6b 24-August-2014
+ * Project Version: 1i7a 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -86,11 +86,13 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_INT_VARIABLE (26)
 #define NLC_CODEBLOCK_TYPE_INCREMENT_INT_VARIABLE (27)
 #define NLC_CODEBLOCK_TYPE_COMMENT_SINGLE_LINE (28)
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_REASSIGN_ITER (29)
-	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_CATEGORY_LIST_VARIABLE (30)
-	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_CATEGORY_LIST (31)
 #endif
+#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE (30)
+#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST (31)
+#define NLC_CODEBLOCK_TYPE_ADD_GENERIC_LIST_TO_GENERIC_LIST (32)
+
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (40)		//forall(context1.param1PropertyList){
@@ -114,8 +116,8 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (53)
 #endif
 #define NLC_CODEBLOCK_TYPE_WHILE (54)
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
-	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_CATEGORY (55)
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC (55)
 #endif
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
@@ -224,7 +226,7 @@ NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree);
 bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed);
 
 /*
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection);
 #endif
 */	
@@ -277,11 +279,22 @@ NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInT
 
 NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockInTree, string comment);
 
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
+NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+NLCcodeblock * createCodeBlockAddGenericListToGenericList(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
+
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string categoryListName);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string categoryListName, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, string categoryListName);
+NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
+NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+#endif
+
+#ifdef NLC_GENERATE_TYPE_LISTS
+NLCcodeblock * createCodeBlocksDeclareNewTypeListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlockAddInstanceListToTypeList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
+NLCcodeblock * createCodeBlockForPropertyTypeClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);

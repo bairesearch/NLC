@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6b 24-August-2014
+ * Project Version: 1i7a 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1i6b 24-August-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1i7a 24-August-2014" << endl;
 			exit(1);
 		}
 
@@ -1135,7 +1135,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					actionEntity->disabled = true;	//disable have instance entity
 					if(!(actionEntity->entityNodeDefiningThisInstance->empty()))
 					{
-						(actionEntity->entityNodeDefiningThisInstance->back())->entity->disabled = true;	//disable have concept entity
+						getPrimaryConceptNodeDefiningInstance(actionEntity)->disabled = true;	//disable have concept entity
 					}
 
 					for(vector<GIAentityConnection*>::iterator connectionIter = actionSubjectEntity->actionNodeList->begin(); connectionIter != actionSubjectEntity->actionNodeList->end(); )

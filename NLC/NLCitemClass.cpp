@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6b 24-August-2014
+ * Project Version: 1i7a 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -78,6 +78,7 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = "";
+	genericObjectName = "";
 }
 NLCitem::NLCitem(string newName, int newItemType)
 {
@@ -103,6 +104,7 @@ NLCitem::NLCitem(string newName, int newItemType)
 	#endif
 	//if(newItemType == NLC_ITEM_TYPE_VARIABLE)
 	name = newName;
+	genericObjectName = "";
 }
 NLCitem::NLCitem(NLCitem * newItem)
 {
@@ -123,6 +125,7 @@ NLCitem::NLCitem(NLCitem * newItem)
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = newItem->name;
+	genericObjectName = "";
 }
 NLCitem::~NLCitem(void)
 {
@@ -161,5 +164,12 @@ string convertLongToString(long number)
 	sprintf(tempString, "%ld", number);
 	return string(tempString);
 }
+
+string generateTypeName(string entityName)
+{
+	string typeName = entityName;
+	return typeName;
+}
+
 
 

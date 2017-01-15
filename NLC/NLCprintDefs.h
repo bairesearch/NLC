@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6b 24-August-2014
+ * Project Version: 1i7a 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,6 +64,8 @@ using namespace std;
 #define NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
 #define NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION "InstanceList"
 #define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"
+#define NLC_ITEM_TYPE_TYPEVAR_APPENDITION "Type"
+#define NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION "Instance"
 #define NLC_ITEM_TYPE_LISTVAR_APPENDITION "List"
 
 //from NLCclassDefinitionClass.h
@@ -177,8 +179,8 @@ static string progLangOpenSingleLineComment[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES]
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyInstanceName);
 string generatePropertyLocalListName(string propertyInstanceName);	//added 1i6a
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
-string generatePropertyCategoryListName(string propertyInstanceName, string categoryName);
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+string generateGenericListName(string genericObjectName, string genericName);
 #endif
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);

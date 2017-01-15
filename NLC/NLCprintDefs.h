@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21b 02-October-2014
+ * Project Version: 1j21c 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,6 +69,7 @@ using namespace std;
 #define NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION "Instance"
 #define NLC_ITEM_TYPE_CLASSLISTVAR_APPENDITION "Class"
 #define NLC_ITEM_TYPE_LISTVAR_APPENDITION "List"
+#define NLC_ITEM_TYPE_PROPERTYCOUNTVAR_APPENDITION "PropertyCount"
 
 //from NLCclassDefinitionClass.h
 static string progLangClassTitlePrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -189,6 +190,7 @@ static string progLangPrintTextOpen[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"cou
 static string progLangPrintTextClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\" << endl", "\" << endl", "\" << endl", "\" << endl", "\" << endl", "\" << endl", "\" << endl"};
 static string progLangGetLast[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"back()", "back()", "back()", "back()", "back()", "back()", "back()"};
 static string progLangGreaterThan[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" > ", " > ", " > ", " > ", " > ", " > ", " > "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_GREATER_THAN
+static string progLangGreaterThanOrEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" >= ", " >= ", " >= ", " >= ", " >= ", " >= ", " >= "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_GREATER_THAN_OR_EQUAL_TO
 static string progLangEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST
 static string progLangSizeOfList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"size()", "size()", "size()", "size()", "size()", "size()", "size()"};
 #endif

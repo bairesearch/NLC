@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21b 02-October-2014
+ * Project Version: 1j21c 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -304,6 +304,13 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 {			
 	bool contextFound = false;
 	*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	if(generateContextBlocksVariables->testNumerosity)
+	{
+		string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
+		*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 0);
+	}
+	#endif
 
 	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
 	if(generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, generatedParentContext, genericListAppendName))
@@ -311,7 +318,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		contextFound = true;
 	}
 
-	addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity, genericListAppendName);
+	addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity, genericListAppendName, generateContextBlocksVariables);
 
 	if(!(generatedParentContext && !contextFound))
 	{
@@ -339,6 +346,24 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		}
 	}
 	
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	if(generateContextBlocksVariables->testNumerosity)
+	{
+		//test numerosity of child
+		if(generateContextBlocksVariables->childQuantity > 1)
+		{
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+			*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (child)");
+			#endif
+			string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
+			*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, generateContextBlocksVariables->childQuantity);
+		}			
+		
+	}
+	#endif
+	#endif
+		
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
 	if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
 	{
@@ -348,7 +373,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
 		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockIfHasMoreThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 0);
+		*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1);
 		*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
 		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
 		#endif
@@ -370,9 +395,9 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 			if(parentEntity->hasQuantity)
 			{
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite numerosity tests");
+				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
 				#endif
-				*currentCodeBlockInTree = createCodeBlockIfHasMoreThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, (parentEntity->quantityNumber - 1));
+				*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, parentEntity->quantityNumber);
 			}
 		}
 		#endif
@@ -505,7 +530,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 					contextFound = true;
 				}
 				
-				addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName);
+				addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables);
 				
 				*currentCodeBlockInTree = (*lastCodeBlockInTree);
 				while((*currentCodeBlockInTree)->next != NULL)
@@ -522,7 +547,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 	return contextFound;
 }
 
-bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName)
+bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
 	bool result = true;
 	
@@ -546,7 +571,15 @@ bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentity
 	#else
 	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName);
 	#endif
-	
+
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	if(generateContextBlocksVariables->testNumerosity)
+	{
+		string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(entity);
+		*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName);
+	}
+	#endif
+
 	return result;
 }	
 #endif
@@ -653,10 +686,10 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 					#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 					if(generateContextBlocksVariables->testNumerosity)
 					{
-						//test numerosity of child
 						if(propertyEntity->hasQuantity)
 						{
-							*currentCodeBlockInTree = createCodeBlockIfHasMoreThanNumProperty(*currentCodeBlockInTree, propertyEntity, (propertyEntity->quantityNumber - 1), parentInstanceName);
+							generateContextBlocksVariables->childQuantity = propertyEntity->quantityNumber;
+							//cout << "generateContextBlocksVariables->childQuantity = " << generateContextBlocksVariables->childQuantity << endl;
 						}
 					}
 					#endif
@@ -790,10 +823,9 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 							#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 							if(generateContextBlocksVariables->testNumerosity)
 							{
-								//test numerosity of child
 								if(conditionObject->hasQuantity)
 								{
-									*currentCodeBlockInTree = createCodeBlockIfHasMoreThanNumCondition(*currentCodeBlockInTree, conditionEntity, conditionObject, (conditionObject->quantityNumber - 1), parentInstanceName);
+									generateContextBlocksVariables->childQuantity = conditionObject->quantityNumber;
 								}
 							}
 							#endif
@@ -2007,6 +2039,5 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 	#endif
 }
 #endif
-
 
 

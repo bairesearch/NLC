@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21b 02-October-2014
+ * Project Version: 1j21c 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,7 +36,7 @@
 
 #include "NLCcodeBlockClass.h"
 #include "GIAtranslatorOperations.h"
-#include "NLCprintDefs.h"	//required for progLangArrayOpen/progLangArrayClose
+#include "NLCprintDefs.h"	//required for progLangArrayOpen/progLangArrayClose/NLC_ITEM_TYPE_PROPERTYCOUNTVAR_APPENDITION
 
 
 
@@ -62,6 +62,7 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	#endif
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	testNumerosity = false;
+	childQuantity = 1;
 	#endif
 }
 NLCgenerateContextBlocksVariables::~NLCgenerateContextBlocksVariables(void)
@@ -1303,9 +1304,15 @@ NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * current
 {
 	return createCodeBlockGetBackPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
 }
-NLCcodeblock * createCodeBlockIfHasMoreThanNumCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value)
+NLCcodeblock * createCodeBlockIfHasGreaterThanNumCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value)
 {
-	return createCodeBlockIfHasMoreThanNumPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, value);
+	return createCodeBlockIfHasGreaterThanNumPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, value);
+}
+#endif
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+NLCcodeblock * createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value)
+{
+	return createCodeBlockIfHasGreaterThanOrEqualToNumPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, value);
 }
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
@@ -1390,7 +1397,7 @@ NLCcodeblock * createCodeBlockGetBackPropertyListGeneric(NLCcodeblock * currentC
 	int codeBlockType = NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock * createCodeBlockIfHasMoreThanNumPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value)
+NLCcodeblock * createCodeBlockIfHasGreaterThanNumPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1404,7 +1411,7 @@ NLCcodeblock * createCodeBlockIfHasMoreThanNumPropertyGeneric(NLCcodeblock * cur
 	currentCodeBlockInTree->parameters.push_back(intValueItem);
 	//cout << "intValueString = " << intValueString << endl;
 	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY_GENERIC;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_PROPERTY_GENERIC;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
@@ -1419,6 +1426,26 @@ NLCcodeblock * createCodeBlockPrintWarning(NLCcodeblock * currentCodeBlockInTree
 	return currentCodeBlockInTree;
 }
 #endif
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+NLCcodeblock * createCodeBlockIfHasGreaterThanOrEqualToNumPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+	
+	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+	
+	string intValueString = convertIntToString(value);
+	NLCitem * intValueItem = new NLCitem(intValueString, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(intValueItem);
+	//cout << "intValueString = " << intValueString << endl;
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_PROPERTY_GENERIC;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
+
 #ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock * createCodeBlockIfHasPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative)
 {
@@ -1596,6 +1623,21 @@ NLCcodeblock * createCodeBlockForPropertyTypeClass(NLCcodeblock * currentCodeBlo
 #endif
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+NLCcodeblock * createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock * currentCodeBlockInTree, string intVariableName, int value)
+{
+	NLCitem * intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(intNameItem);
+	//cout << "intVariableName = " << intVariableName << endl;
+
+	string intValueString = convertIntToString(value);
+	NLCitem * intValueItem = new NLCitem(intValueString, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(intValueItem);
+	//cout << "intValueString = " << intValueString << endl;
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+/*
 NLCcodeblock * createCodeBlockIfHasMoreThanNumProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* propertyEntity, int value, string parentInstanceName)
 {
 	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
@@ -1630,6 +1672,7 @@ NLCcodeblock * createCodeBlockIfHasMoreThanNumCondition(NLCcodeblock * currentCo
 	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+*/
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock)
@@ -1643,5 +1686,15 @@ void clearCodeBlock(NLCcodeblock * codeBlock)
 		cout << "error: !(codeBlock->parameters.empty())" << endl;
 	}	
 }
+
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+string generateCategoryListPropertyCountVariableName(GIAentityNode * entity)
+{
+	string categoryListPropertyCountVariableName = generateInstanceName(entity) + NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION + NLC_ITEM_TYPE_LISTVAR_APPENDITION + NLC_ITEM_TYPE_PROPERTYCOUNTVAR_APPENDITION;	
+	
+	return categoryListPropertyCountVariableName;
+}
+#endif
+
 
 

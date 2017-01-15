@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21b 02-October-2014
+ * Project Version: 1j21c 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -550,10 +550,10 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string codeBlockText = progLangPrintTextOpen[progLang] + param1->name + progLangPrintTextClose[progLang]  + progLangEndLine[progLang];	//cout << "warning" << endl;
 			printLine(codeBlockText, level, code);
 		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY_GENERIC)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_PROPERTY_GENERIC)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY_GENERIC" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_PROPERTY_GENERIC" << endl;
 			#endif
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
@@ -808,7 +808,41 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string tempVarDeclarationText = generateCodePropertyListDefinitionTypeText(param1->className, progLang) + generatePropertyListName(param1->className) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//OLD:  param1->className + NLC_ITEM_TYPE_TEMPVAR_APPENDITION
 			printLine(tempVarDeclarationText, (level+1), code);
 		}
-		#endif	
+		#endif
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_PROPERTY_GENERIC)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_PROPERTY_GENERIC" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string genericListAppendName = param2->name;
+
+			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			string valueString = param3->name;
+
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangSizeOfList[progLang] + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1instanceCategoryList.size() > 0){
+
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM" << endl;
+			#endif
+
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string valueString = param2->name;
+
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param1->name + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(variable > x){
+
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}
+		#endif
+		/*	
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY)
 		{
@@ -839,6 +873,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}
+		#endif
+		*/
 		#endif
 		else
 		{

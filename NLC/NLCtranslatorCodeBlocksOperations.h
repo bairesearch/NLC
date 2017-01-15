@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21b 02-October-2014
+ * Project Version: 1j21c 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -73,7 +73,7 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 						#endif
 		#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock ** lastCodeBlockInTree, GIAentityNode* parentInstance, GIAentityNode* parentSubstanceConcept, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool generateContext, string genericListAppendName);
-			bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+			bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, NLCgenerateContextBlocksVariables * generateContextBlocksVariables);
 		#endif
 		
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE

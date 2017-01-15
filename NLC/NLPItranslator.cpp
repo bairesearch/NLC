@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1a 20-November-2013
+ * Project Version: 1e1b 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -250,10 +250,12 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			{	
 				generateObjectInitialisationsBasedOnPropertiesAndConditions(entity, &currentCodeBlockInTree, sentenceIndex);	
 				
+				/*//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
 				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 				//Part 2b: generate object initialisations based on substance concepts (class inheritance)
 				generateObjectInitialisationsBasedOnSubstanceConcepts(entity, &currentCodeBlockInTree, sentenceIndex);
-				#endif				
+				#endif		
+				*/	
 			}
 		}
 
@@ -317,9 +319,16 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				{//only write properties that are explicated in current sentence
 					//cout << "sentenceIndexA = " << sentenceIndex << endl;
 					*currentCodeBlockInTree = createCodeBlockAddProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
+				
 					propertyConnection->parsedForNLPIcodeBlocks = true;
 					propertyEntity->parsedForNLPIcodeBlocks = true;		//added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 					entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+				
+					//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
+					#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+					//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+					generateObjectInitialisationsBasedOnSubstanceConcepts(propertyEntity, currentCodeBlockInTree, sentenceIndex);
+					#endif					
 				}
 			}
 		}
@@ -337,6 +346,12 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					conditionConnection->parsedForNLPIcodeBlocks = true;
 					conditionEntity->parsedForNLPIcodeBlocks = true;	//added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 					entity->parsedForNLPIcodeBlocks = true;		//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+				
+					//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
+					#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+					//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+					generateObjectInitialisationsBasedOnSubstanceConcepts(conditionEntity, currentCodeBlockInTree, sentenceIndex);
+					#endif	
 				}
 			}
 		}

@@ -273,11 +273,14 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			{
 				subjectEntity->NLCbooleanStatmentIndefiniteEntity = true;
 			}	
-			if(foundObject)
-			{
-				if(!assumedToAlreadyHaveBeenDeclared(objectEntity))	//!isDefiniteEntity
-				{	
-					foundObject = false;
+			if(connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)	//redundant
+			{				
+				if(foundObject)
+				{
+					if(!assumedToAlreadyHaveBeenDeclared(objectEntity))	//!isDefiniteEntity
+					{	
+						foundObject = false;
+					}
 				}
 			}	
 		}
@@ -300,12 +303,15 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	//entity->NLCparsedForCodeBlocks = true;
 	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS || connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
 	{
-		//initialise the action
-		if(generateObjectInitialisationsFunction(currentCodeBlockInTree, entity, sentenceIndex))
+		if(!logicalConditionBooleanStatement)
 		{
-
+			//initialise the action
+			if(generateObjectInitialisationsFunction(currentCodeBlockInTree, entity, sentenceIndex))
+			{
+	
+			}
+			entity->NLCcontextGeneratedTemp = true;
 		}
-		entity->NLCcontextGeneratedTemp = true;
 	}
 
 	#ifdef NLC_DEBUG
@@ -2645,30 +2651,37 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 				//CHECKTHIS (code based on generateCodeBlocksAddConnection)
 
 				//eg verify that alsations are dogs
+				
+				/*removed 1t2f
 				#ifdef NLC_SUPPORT_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY
 				//FUTURE NLC - could use classDefinitionList instead of GIAentityNode concepts; but generateClassHeirarchy needs to be called before generateCodeBlocks
 				if(checkParentExists(definitionEntity, subjectEntity->entityName))
 				{
 				#else
+				*/
 				*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, subjectEntity->entityName);
-				#endif
-					result = true;
-					//eg verify that the dog is an alsation
-					*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, subjectEntity, definitionEntity->entityName);	//eg if(dog->name == "alsation")
+				//#endif
+				
+				result = true;
+				//eg verify that the dog is an alsation
+				*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, subjectEntity, definitionEntity->entityName);	//eg if(dog->name == "alsation")
 
-					//#ifdef NLC_DEBUG
-					cout << "createCodeBlockIfTempVariableNameEqualsClassName: subjectEntity = " << subjectEntity->entityName << ", definitionEntity = " << definitionEntity->entityName << endl;
-					//#endif
-					
-					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					if(connection->negative)
-					{
-						generateContextBlocksVariables.negativeDetectedInContextBlocks = true;
-					}
-					#endif
+				#ifdef NLC_DEBUG
+				cout << "createCodeBlockIfTempVariableNameEqualsClassName: subjectEntity = " << subjectEntity->entityName << ", definitionEntity = " << definitionEntity->entityName << endl;
+				#endif
+				
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				if(connection->negative)
+				{
+					generateContextBlocksVariables.negativeDetectedInContextBlocks = true;
+				}
+				#endif
+				
+				/*
 				#ifdef NLC_SUPPORT_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY
 				}
 				#endif
+				*/
 			#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES	
 			}
 			#endif	
@@ -3453,7 +3466,7 @@ void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEn
 		parentName = generateInstanceName(parentEntity);
 	}
 	
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
 	if(!(definitionEntity->NLCparsedForlogicalConditionOperations))
 	{
 	#endif
@@ -3576,7 +3589,7 @@ void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEn
 			}
 			#endif
 		}
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
 	}
 	#endif
 }

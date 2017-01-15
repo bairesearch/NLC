@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12d 30-September-2016
+ * Project Version: 1u12e 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -323,7 +323,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		case 1: if detect "each"/"every"/"all" predeterminer {REDUNDANT: and object is singular [REDUNDANT: or quantity entity]} then add a new object for each subject
 			eg Each player has a colour.
 		case 2: if detect plural subject and indefinite plural object, then add a new object for each subject 
-			eg Each player has 16 pieces.	[/If each player has 16 pieces]}
+			[OLD: eg Each player has 16 pieces.	[/If each player has 16 pieces]}]
 			eg the players have pieces.
 		case 3: if detect plural subject and quality object, then add a new object for each subject 
 	*/
@@ -360,7 +360,11 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			{
 				effectiveEach = true;
 			}
-			if((subjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && (objectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && !isDefiniteEntityStrict(objectEntity))
+			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_DO_NOT_INTERPRET_NUMERIC_OBJECT_AS_EFFECTIVE_EACH
+			if((subjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && (objectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && !isDefiniteEntityStrict(objectEntity) && !(checkNumerosity(objectEntity)))	//modified 1u12d; changed from newInitialisationObject to !isDefiniteEntityStrict(objectEntity) //modified 1u12e; added && !(checkNumerosity(objectEntity)		
+			#else
+			if((subjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && (objectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && !isDefiniteEntityStrict(objectEntity))	//modified 1u12d; changed from newInitialisationObject to !isDefiniteEntityStrict(objectEntity)
+			#endif
 			{
 				effectiveEach = true;
 			}
@@ -524,9 +528,9 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 	if(addNewObjectForEachSubject)
 	{
-		//#ifdef NLC_DEBUG
+		#ifdef NLC_DEBUG
 		cout << "addNewObjectForEachSubject" << endl;
-		//#endif
+		#endif
 	
 		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
 		generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement, true);

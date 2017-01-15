@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -231,7 +231,7 @@ static string progLangForIndex[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"index", 
 static string progLangDecimalType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double ", "double ", "double ", "double ", "double ", "double ", "double "};
 static string progLangDecimalPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double* ", "double* ", "double* ", "double* ", "double* ", "double* ", "double* "};
 static string progLangGenericPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void* ", "void* ", "void* ", "void* ", "void* ", "void* ", "void* "};
-static string progLangStringPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string* ", "string* ", "string* ", "string* ", "string* ", "string* ", "string* "};
+//static string progLangStringPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string* ", "string* ", "string* ", "string* ", "string* ", "string* ", "string* "};
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};
@@ -503,12 +503,13 @@ string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
 
 #ifdef NLC_USE_MATH_OBJECTS
 string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang);
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang);
+string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang);
+#else
 string generateCodeEntityMathNumericalValueText(string entityName, int progLang);
 string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);
-#ifdef NLC_USE_MATH_OBJECTS
-string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang);
-string generateCodeEntityMathStringValueText(string entityName, int progLang);
-string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang);
+string generateCodeSetDecimalPointerToEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
 #endif
 string generateCodePointerValueText(NLCitem* param1, int progLang);
 string generateCodePointerValueText(string entityName, int progLang);

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -45,12 +45,14 @@ bool detectMathSymbolsInLine(string* lineContents);
 bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, bool hasLogicalConditionOperator, bool isMathText);
 
 bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
+	bool findCharacterAtIndexOrAfterSpace(string* lineContents, int i, char characterToFind, int* indexOfCharacterFound);
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents);
 	bool restoreExplicitVariableTypes(string* mathText);
 	string replaceSubstringAtStartOfString(string* textOrig, string stringToFind, string replacementString);
 	#endif
 	void addNewMathTextVariable(NLCsentence* sentence, string variableName, int variableTypeObject);
+	void removeLastMathTextVariable(NLCsentence* sentence);
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 bool replaceNumericalVariablesWithDummyNumberIfNecessary(string* lineContents, NLCsentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);

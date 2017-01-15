@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -307,18 +307,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
 			if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 			{
-				bool foundMathEqualsSetCommand = false;
 				int indexOfMathEqualsSetCommand = INT_DEFAULT_VALUE;
-				if(c == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR)		//mathText eg: "X=..
-				{
-					indexOfMathEqualsSetCommand = i;
-					foundMathEqualsSetCommand = true;
-				}
-				if(wordDelimiterCharacterFound && (i+1 < lineContents->length()) && ((*lineContents)[i+1] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR))	//mathText eg: "X =.."
-				{
-					indexOfMathEqualsSetCommand = i+1;
-					foundMathEqualsSetCommand = true;
-				}
+				bool foundMathEqualsSetCommand = findCharacterAtIndexOrAfterSpace(lineContents, i, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR, &indexOfMathEqualsSetCommand);	//mathText eg: "X=.." OR "X =.."
 				if(foundMathEqualsSetCommand)
 				{
 					int variableTypeTemp = INT_DEFAULT_VALUE;
@@ -334,22 +324,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						{//first word in mathText (type will automatically be assigned) (eg "X = ")
 							
 							#ifdef NLC_USE_MATH_OBJECTS_STRING
-							bool foundMathStringDelimiter = false;
 							int indexOfMathStringDelimiter = INT_DEFAULT_VALUE;
-							if((indexOfMathEqualsSetCommand+1 < lineContents->length()) && ((*lineContents)[indexOfMathEqualsSetCommand+1] == NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER))		//mathText eg: "X=\".."
-							{
-								indexOfMathStringDelimiter = indexOfMathEqualsSetCommand+1;
-								foundMathStringDelimiter = true;
-							}
-							if(indexOfMathEqualsSetCommand+2 < lineContents->length())
-							{
-								bool wordDelimiterCharacterFound2 = charInCharArray((*lineContents)[indexOfMathEqualsSetCommand+1], preprocessorMathNLPparsableCharactersDelimiter, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_DELIMITER_NUMBER_OF_TYPES);
-								if(wordDelimiterCharacterFound2 && ((*lineContents)[indexOfMathEqualsSetCommand+2] == NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER))	//mathText eg: "X= \".."
-								{
-									indexOfMathStringDelimiter = indexOfMathEqualsSetCommand+2;
-									foundMathStringDelimiter = true;
-								}
-							}
+							bool foundMathStringDelimiter = findCharacterAtIndexOrAfterSpace(lineContents, indexOfMathEqualsSetCommand+1, NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER, &indexOfMathStringDelimiter);	//mathText eg: "X=\".." OR "X= \".."
 							if(foundMathStringDelimiter)
 							{
 								variableTypeObjectString = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME;
@@ -475,9 +451,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 							//cout << "((*currentNLCsentenceInList)->mathTextVariables.back()).name = " << ((*currentNLCsentenceInList)->mathTextVariables.back()).name << endl;
 							#endif
 							#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-							firstNLCsentenceInFullSentence->mathTextVariables.pop_back();
+							removeLastMathTextVariable(firstNLCsentenceInFullSentence);
 							#else
-							(*currentNLCsentenceInList)->mathTextVariables.pop_back();
+							removeLastMathTextVariable(*currentNLCsentenceInList);
 							#endif
 						}
 
@@ -792,6 +768,26 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	return result;
 }
 
+
+bool findCharacterAtIndexOrAfterSpace(string* lineContents, int i, char characterToFind, int* indexOfCharacterFound)
+{
+	bool foundCharacter = false;
+	bool wordDelimiterCharacterFound = charInCharArray((*lineContents)[i], preprocessorMathNLPparsableCharactersDelimiter, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_DELIMITER_NUMBER_OF_TYPES);
+
+	if((*lineContents)[i] == characterToFind)		//mathText eg1 (=): "X=.., eg2 (") "\".."
+	{
+		*indexOfCharacterFound = i;
+		foundCharacter = true;
+	}
+	if(wordDelimiterCharacterFound && (i+1 < lineContents->length()) && ((*lineContents)[i+1] == characterToFind))	//mathText eg1 (=): "X =..", eg2 (") " \".."
+	{
+		*indexOfCharacterFound = i+1;
+		foundCharacter = true;
+	}
+	return foundCharacter;
+}
+
+
 #ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents)
 {	
@@ -845,8 +841,19 @@ void addNewMathTextVariable(NLCsentence* sentence, string variableName, int vari
 	mathtextVariable->name = variableName;
 	mathtextVariable->type = variableTypeObject;
 	sentence->mathTextVariables.push_back(mathtextVariable);
+	#ifdef NLC_DEBUG
+	cout << "adding mathtext variable: name = " << mathtextVariable->name << ", type = " << mathtextVariable->type << endl;
+	#endif
 }						
-							
+
+void removeLastMathTextVariable(NLCsentence* sentence)
+{
+	#ifdef NLC_DEBUG
+	NLCvariable* mathtextVariable = sentence->mathTextVariables.back();
+	cout << "removing last mathtext variable: name = " << mathtextVariable->name << ", type = " << mathtextVariable->type << endl;
+	#endif
+	sentence->mathTextVariables.pop_back();
+}							
 
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP

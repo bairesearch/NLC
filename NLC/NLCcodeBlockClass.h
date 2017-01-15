@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -148,8 +148,8 @@
 	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE (67)
 	#ifdef NLC_USE_MATH_OBJECTS_STRING
 		#define NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE (68)
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE (69)
-		#define NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE (70)	
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE (69)
+		#define NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY (70)	
 	#endif
 	#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
 		#define NLC_CODEBLOCK_TYPE_TEST_POINTER_VALUE (71)
@@ -610,12 +610,12 @@ NLCcodeblock* createCodeBlockAddConditionInverseNewFunction(NLCcodeblock* curren
 
 #ifdef NLC_USE_MATH_OBJECTS
 NLCcodeblock* createCodeBlockSetMathNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName);
+NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName, GIAentityNode* entity);
+#else
 NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);
 NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathNumericalValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity);
-#ifdef NLC_USE_MATH_OBJECTS_STRING
-NLCcodeblock* createCodeBlockSetMathStringValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
-NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName);
-NLCcodeblock* createCodeBlockSetStringPointerToEntityMathStringValue(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName, GIAentityNode* entity);
 #endif
 #ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
 NLCcodeblock* createCodeBlockTestDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);

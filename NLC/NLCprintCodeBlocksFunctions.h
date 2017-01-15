@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -122,6 +122,5 @@ void generateCodeForLocalList(NLCitem* param1, int progLang, string* code, int l
 	void generateCodeForEntityList(string entityClassName, string entityListName, string entityInstanceName, int progLang, string* code, int level);
 void generateCodeForConditionList(NLCitem* param1, NLCitem* param2, string contextParam1, int progLang, string* code, int level);
 	void generateCodeForConditionList(string entityClassName1, string entityClassName2, string entityListName, string entityInstanceName1, string entityInstanceName2, int progLang, string* code, int level);
-
 
 #endif

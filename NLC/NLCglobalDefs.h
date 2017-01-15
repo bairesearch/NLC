@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,10 +56,13 @@
 //#define NLC_DISABLE_1r_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1r_CODE_FOR_DEBUG
-	//#define NLC_USE_MATH_OBJECTS_STRING	//1r5b
-	#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE	//1r5b	//CHECKTHIS
+	#define NLC_USE_MATH_OBJECTS_STRING	//1r5c	//requires NLC_USE_LIBRARY_BASE_EXTENDED
+	#ifdef NLC_USE_MATH_OBJECTS_STRING
+		#define NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME "assignMathTextValue"
+	#endif
+	//#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE	//1r5b	//CHECKTHIS
 	//#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_DUPLICATES	//1r5b	//not required and untested
-	//#define NLC_API	//1r5b		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+	//#define NLC_API	//1r5d		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 	#ifdef NLC_API
 		#define NLC_API_DEFAULT_SOURCE_FOLDER_NAME "/home/systemusername/source/NLCthirdpartyAPI/"
 		#define NLC_API_DEFAULT_CLASS_LIST_FILE_NAME "NLCthirdpartyAPIclassList.txt"

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5b 15-August-2016
+ * Project Version: 1r5c 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,6 +37,7 @@
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance{}
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#include "NLCpreprocessorMath.h"	//required for findCharacterAtIndexOrAfterSpace{}
 
 #ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST
 GIAentityNode* logicalConditionForLoopPrimaryEntityTemp;
@@ -681,29 +682,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			*/
 			
 			#ifdef NLC_USE_MATH_OBJECTS_STRING
-			#ifndef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE is now required" << endl;	
-			exit(0);
-			#endif
-			int mathTextVariableTypeObject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
-			if(!(currentFullSentence->mathTextVariables.empty()))	//requires NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-			{
-				NLCvariable* mathtextVariable = currentFullSentence->mathTextVariables.back();	//CHECKTHIS
-				mathTextVariableTypeObject = mathtextVariable->type;
-				
-				if(mathTextVariableTypeObject == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
-				{
-					*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//double* thedogsvalue = NULL;
-				}
-				else if(mathTextVariableTypeObject == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
-				{
-					*currentCodeBlockInTree = createCodeBlockDeclareNewStringPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//string* thedogsvalue = NULL;	
-				}
-				else
-				{
-					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: mathTextVariableTypeObject unknown" << endl;
-				}
-			}
+			*currentCodeBlockInTree = createCodeBlockDeclareNewGenericEntityPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//NLCgenericEntityClass* thedogsvalue = NULL;
 			#else
 			*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//double* thedogsvalue = NULL;		
 			#endif
@@ -751,28 +730,22 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 							parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
 
-							string parsablePhraseReferenceMathValue = "";
 							#ifdef NLC_USE_MATH_OBJECTS_STRING
-							if(mathTextVariableTypeObject == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
-							{
-								*currentCodeBlockInTree = createCodeBlockSetDecimalPointerToEntityMathNumericalValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//*thedogsvalue = childEntity->numericalValue;
-								parsablePhraseReferenceMathValue = generateCodeEntityMathNumericalValueText(parsablePhraseReferenceName, NLC_PROGRAMMING_LANGUAGE_DEFAULT);
-							}
-							else if(mathTextVariableTypeObject == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
-							{
-								*currentCodeBlockInTree = createCodeBlockSetStringPointerToEntityMathStringValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//*thedogsvalue = childEntity->stringValue;
-								parsablePhraseReferenceMathValue = generateCodeEntityMathNumericalValueText(parsablePhraseReferenceName, NLC_PROGRAMMING_LANGUAGE_DEFAULT);
-							}
+							*currentCodeBlockInTree = createCodeBlockSetGenericEntityPointerToEntity(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = childEntity;  
 							#else
-							*currentCodeBlockInTree = createCodeBlockSetDecimalPointerToEntityMathNumericalValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//*thedogsvalue = childEntity->numericalValue;
-							parsablePhraseReferenceMathValue = generateCodeEntityMathNumericalValueText(parsablePhraseReferenceName, NLC_PROGRAMMING_LANGUAGE_DEFAULT);
+							*currentCodeBlockInTree = createCodeBlockSetDecimalPointerToEntityMathNumericalValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->numericalValue);  
+							string parsablePhraseReferenceMathValue = generateCodeEntityMathNumericalValueText(parsablePhraseReferenceName, NLC_PROGRAMMING_LANGUAGE_DEFAULT);	//eg childEntity->numericalValue
 							#endif
 
 							foundParsablePhrase = true;	
 							currentFullSentence->mathTextIdentifiesMathValue = true;
 							//parsablePhrase->mathTextNLPparsablePhraseIdentifiesMathValue = true;
 							bool foundParsablePhraseInMathText = false;
+							#ifdef NLC_USE_MATH_OBJECTS_STRING
+							currentFullSentence->mathText = generateAssignMathTextValueExecuteFunctionMathText(&(currentFullSentence->mathText), parsablePhraseReferenceName);	//replace "thedogsvalue = ..." with "assignMathTextValue(thedogsvalue, ...)"	
+							#else
 							currentFullSentence->mathText = replaceAllOccurancesOfString(&(currentFullSentence->mathText), parsablePhraseReferenceName, parsablePhraseReferenceMathValue, &foundParsablePhraseInMathText);	//replace "thedogsvalue" with "thedogsvalue->value"
+							#endif
 							if(!foundParsablePhraseInMathText)
 							{
 								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !foundParsablePhraseInMathText" << endl;
@@ -935,32 +908,6 @@ bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int senten
 				
 #endif
 
-#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-bool findDummyNumberAndReplaceWithOriginalNumericalVariableName(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, int dummyNumber, string numericalVariableName)
-{
-	bool result = true;
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-	{
-		GIAentityNode* entity = (*entityIter);
-		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
-		{
-			if(entity->quantityNumber == dummyNumber)
-			{
-				#ifdef NLC_DEBUG
-				//cout << "findDummyNumberAndReplaceWithOriginalNumericalVariableName{}: " << endl;
-				//cout << "entity->quantityNumber = " << entity->quantityNumber << endl;
-				//cout << "dummyNumber = " << dummyNumber << endl;
-				//cout << "sentenceIndex = " << sentenceIndex << endl;
-				#endif
-				entity->NLCoriginalNumericalVariableName = numericalVariableName;
-				result = true;
-			}
-		}	
-	}
-	return result;
-}
-#endif
-
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
 bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject)
 {
@@ -1105,6 +1052,49 @@ void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entity
 	}
 }
 
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, string parsablePhraseReferenceName)
+{
+	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;	//CHECKTHIS - if this assumption is not valid, must update NLCtranslatorCodeBlocksLogicalConditions.cpp generateCodeBlocksFromMathText{} to not execute generateCodeBlocksFromMathText (ie print updated mathText), but instead execute a new codeBlocks subroutine createCodeBlockAssignMathTextValueExecute(targetText, sourceText)
+	string mathTextUpdated = *mathText;
+	#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
+	int parsablePhraseReferenceNameIndex = mathText->find(parsablePhraseReferenceName);
+	if(parsablePhraseReferenceNameIndex != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	{
+		int indexOfMathEqualsSetCommand = INT_DEFAULT_VALUE;
+		bool foundMathEqualsSetCommand = findCharacterAtIndexOrAfterSpace(mathText, parsablePhraseReferenceNameIndex+parsablePhraseReferenceName.length(), NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR, &indexOfMathEqualsSetCommand);	//mathText eg: "thedogsvalue =" OR "thedogsvalue="	
+		if(foundMathEqualsSetCommand)
+		{
+			string targetValueText = "";
+			if((*mathText)[indexOfMathEqualsSetCommand+1] == CHAR_SPACE)
+			{
+				targetValueText = mathText->substr(indexOfMathEqualsSetCommand+2);
+			}
+			else
+			{
+				targetValueText = mathText->substr(indexOfMathEqualsSetCommand+1);
+			}
+			mathTextUpdated = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg1 assignMathTextValue(thedogsvalue, 5 + theNumberOfApplesNearTheFarm);, eg2 assignMathTextValue(thedogsvalue, "the dog's name is " + maxsName)
+		}
+	}
+	#else
+	cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: requires NLC_USE_LIBRARY_BASE_EXTENDED" << endl;
+	#endif
+	return mathTextUpdated;
+}
+/*
+void generateCodeAssignMathTextValueExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
+{
+	#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
+	string codeBlockExecuteFunctionText = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + param1->name + progLangClassMemberFunctionParametersNext[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//assignMathTextValue(param1, param2);
+	printLine(codeBlockExecuteFunctionText, level, code);
+	#else
+	cout << "generateCodeAssignMathTextValueExecuteFunction{} error: requires NLC_USE_LIBRARY_BASE_EXTENDED" << endl;
+	#endif
+}
+*/	
+#endif
+
 bool readParsablePhraseEntryEntityChecks(GIAentityNode* entity)
 {
 	bool result = false;
@@ -1115,3 +1105,28 @@ bool readParsablePhraseEntryEntityChecks(GIAentityNode* entity)
 	return result;
 }
 
+#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+bool findDummyNumberAndReplaceWithOriginalNumericalVariableName(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, int dummyNumber, string numericalVariableName)
+{
+	bool result = true;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode* entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+		{
+			if(entity->quantityNumber == dummyNumber)
+			{
+				#ifdef NLC_DEBUG
+				//cout << "findDummyNumberAndReplaceWithOriginalNumericalVariableName{}: " << endl;
+				//cout << "entity->quantityNumber = " << entity->quantityNumber << endl;
+				//cout << "dummyNumber = " << dummyNumber << endl;
+				//cout << "sentenceIndex = " << sentenceIndex << endl;
+				#endif
+				entity->NLCoriginalNumericalVariableName = numericalVariableName;
+				result = true;
+			}
+		}	
+	}
+	return result;
+}
+#endif

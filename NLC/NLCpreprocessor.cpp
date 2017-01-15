@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17d 30-January-2015
+ * Project Version: 1n18a 31-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -168,29 +168,41 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					while(stillSentenceToParseOnLine)
 					{
 						bool lineFullStopDetected = false;
+						//cout << "stillSentenceToParseOnLine: lineContents = " << lineContents << endl;
 						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
-						int startOfSentenceIndexNew = 0;
-						int startOfSentenceIndexTemp = 0;
-						while((startOfSentenceIndexTemp = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndexTemp)) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+						int startOfSentenceIndexNew = startOfSentenceIndex;
+						//cout << "lineContents.length = " << lineContents.length() << endl;
+						bool stillFinding = true;
+						while(stillFinding)
 						{
-							//cout << "startOfSentenceIndexTemp2 = " << startOfSentenceIndexTemp << endl;
-							bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
-							if(startOfSentenceIndexTemp < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"
-							{	
-								char characterImmediatelySucceedingFullStop = lineContents[startOfSentenceIndexTemp+1];
-								fullStopImmediatelySucceededByAlphabeticalCharacter = charInCharArray(characterImmediatelySucceedingFullStop, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
-								//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: characterImmediatelySucceedingFullStop = " << characterImmediatelySucceedingFullStop << endl;
-							}
-							if(!fullStopImmediatelySucceededByAlphabeticalCharacter)
+							startOfSentenceIndexNew = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndexNew);
+							if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 							{
-								lineFullStopDetected = true;
+								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
+								bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
+								if(startOfSentenceIndexNew < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"
+								{	
+									char characterImmediatelySucceedingFullStop = lineContents[startOfSentenceIndexNew+1];
+									fullStopImmediatelySucceededByAlphabeticalCharacter = charInCharArray(characterImmediatelySucceedingFullStop, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
+									//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: characterImmediatelySucceedingFullStop = " << characterImmediatelySucceedingFullStop << endl;
+									//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: fullStopImmediatelySucceededByAlphabeticalCharacter = " << fullStopImmediatelySucceededByAlphabeticalCharacter << endl;
+								}
+								if(!fullStopImmediatelySucceededByAlphabeticalCharacter)
+								{
+									lineFullStopDetected = true;
+									stillFinding = false;
+								}
+								else
+								{
+									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
+								}
+								//cout << "startOfSentenceIndexNew2 = " << startOfSentenceIndexNew << endl;
 							}
-							if(startOfSentenceIndexTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+							else
 							{
-								startOfSentenceIndexNew = startOfSentenceIndexTemp;
+								stillFinding = false;
 							}
-							startOfSentenceIndexTemp++;
-						}					
+						}				
 						#else
 						int startOfSentenceIndexNew = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndex);
 						if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -455,10 +467,11 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	exit(0);
 	#endif
 	
-	/*
+	
 	NLCsentence* currentSentence = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentSentence->next != NULL)
 	{
+		/*
 		cout << "\ncurrentSentence->sentenceContents = " << currentSentence->sentenceContents << endl;
 		cout << "currentSentence->sentenceIndex = " << currentSentence->sentenceIndex << endl;
 		cout << "currentSentence->indentation = " << currentSentence->indentation << endl;
@@ -470,9 +483,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
 		cout << "currentSentence->sentenceOriginal = " << currentSentence->sentenceOriginal << endl;
 		cout << "currentSentence->sentenceContentsOriginal = " << currentSentence->sentenceContentsOriginal << endl;
+		*/
 		currentSentence = currentSentence->next;
 	}
-	*/
+	
 	
 	return result;
 }

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1a 12-September-2016
+ * Project Version: 1t1b 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -107,7 +107,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 			//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
 			for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
 			{
-				GIAentityNode* parentConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance networkIndex
+				GIAentityNode* parentConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" concept
 				if(parentConcept->isConcept)
 				{	
 					if(parentConcept->entityName == parentEntity->entityName)	//added 1q3a
@@ -1168,7 +1168,7 @@ bool createCodeBlockForGivenDefinition(NLCcodeblock** currentCodeBlockInTree, st
 	//#endif
 	
 	/*
-	createCodeBlockForStatements(currentCodeBlockInTree, parentInstanceName, definitionEntity, sentenceIndex, generateContextBlocksVariables);	//creates for statements (generates context) according to the properties/conditions of the substance networkIndex (assuming it is a specific networkIndex eg "blue" in "if the boat is a blue chicken")
+	createCodeBlockForStatements(currentCodeBlockInTree, parentInstanceName, definitionEntity, sentenceIndex, generateContextBlocksVariables);	//creates for statements (generates context) according to the properties/conditions of the concept (assuming it is a specific networkIndex eg "blue" in "if the boat is a blue chicken")
 	*/
 	*objectEntity = definitionEntity;
 				
@@ -1448,7 +1448,7 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 	#endif
 	
 	#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS
-	//Part 2b: generate object initialisations based on substance networkIndexs (class inheritance)
+	//Part 2b: generate object initialisations based on concepts (class inheritance)
 	generateObjectInitialisationsBasedOnConcepts(entity, entity, currentCodeBlockInTree, sentenceIndex, true);
 	#endif
 
@@ -1915,7 +1915,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 					#ifdef NLC_SUPPORT_REDEFINITIONS
 					#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-					//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance networkIndexs. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a concept-concept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
+					//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a concept-concept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
 					if(!isDefiniteEntity(definitionEntity))
 					{
 						bool foundDefiniteParentOfEntity = false;
@@ -1945,7 +1945,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 	
 								//3. verify that alsations are dogs
 								#ifdef NLC_SUPPORT_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY
-								//FUTURE NLC - could use classDefinitionList instead of GIAentityNode substance networkIndexs; but generateClassHeirarchy needs to be called before generateCodeBlocks
+								//FUTURE NLC - could use classDefinitionList instead of GIAentityNode concepts; but generateClassHeirarchy needs to be called before generateCodeBlocks
 								if(checkParentExists(definitionEntity, subjectEntity->entityName))
 								{
 								#else
@@ -1958,7 +1958,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 									//5. add alsation to alsation property list of pound 
 										//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
-										//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance networkIndex definition link to its parent [dream mode has connected substance networkIndex definiton links to all instantations thereof]
+										//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on concept definition link to its parent [dream mode has connected concept definiton links to all instantations thereof]
 									if(subjectParentEntity != subjectEntity)
 									{
 										*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, subjectParentEntity, definitionEntity, sentenceIndex);
@@ -1973,7 +1973,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 									/*
 									#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS
-									//7. generate object initialisations based on substance networkIndexs (class inheritance)
+									//7. generate object initialisations based on concepts (class inheritance)
 									generateObjectInitialisationsBasedOnConcepts(definitionEntity, definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
 									#endif
 									*/	
@@ -2675,7 +2675,7 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 		//if(!(definitionConnection->NLCparsedForCodeBlocks))	//probably not required
 		//{
 		GIAentityNode* definitionEntity = definitionConnection->entity;
-		//check the definition is a substance networkIndex
+		//check the definition is a concept
 		#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
 		if((definitionEntity->isConcept) || (definitionEntity->isActionNetworkIndex))	//added (definitionEntity->isActionNetworkIndex)  changed 1e2e
 		#else
@@ -2788,7 +2788,7 @@ void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEn
 					*currentCodeBlockInTree = createCodeBlockCreateNewProperty(*currentCodeBlockInTree, targetEntity, propertyEntity, sentenceIndex, false);
 
 					targetEntity->NLCparsedForCodeBlocks = true;			//added NLC 1b6b/4 October 2013 - used for quick access of instances already declared in current context
-					generateObjectInitialisationsBasedOnConceptsRecurse(targetEntity, propertyEntity, currentCodeBlockInTree, sentenceIndex, definitionEntity, "", true);		//updated 9 November 2013 - support recursion of complex substance networkIndex definition
+					generateObjectInitialisationsBasedOnConceptsRecurse(targetEntity, propertyEntity, currentCodeBlockInTree, sentenceIndex, definitionEntity, "", true);		//updated 9 November 2013 - support recursion of complex concept definition
 
 					*currentCodeBlockInTree = firstCodeBlockInSection->next;
 				}
@@ -2852,7 +2852,7 @@ void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEn
 							*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, targetEntity, conditionEntity, sentenceIndex, false);
 
 							targetEntity->NLCparsedForCodeBlocks = true;			//added NLC 1b6b/4 October 2013 - used for quick access of instances already declared in current context
-							generateObjectInitialisationsBasedOnConceptsRecurse(targetEntity, conditionObject, currentCodeBlockInTree, sentenceIndex, definitionEntity, conditionEntity->entityName, true);	//updated 9 November 2013 - support recursion of complex substance networkIndex definition
+							generateObjectInitialisationsBasedOnConceptsRecurse(targetEntity, conditionObject, currentCodeBlockInTree, sentenceIndex, definitionEntity, conditionEntity->entityName, true);	//updated 9 November 2013 - support recursion of complex concept definition
 
 							*currentCodeBlockInTree = firstCodeBlockInSection->next;
 

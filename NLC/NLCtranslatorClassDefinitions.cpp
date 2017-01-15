@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1a 12-September-2016
+ * Project Version: 1t1b 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -207,7 +207,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									{//declare inheritance
 										#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 										#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-										//chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance networkIndexs. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a concept-concept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
+										//chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a concept-concept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
 										bool indefiniteChild = false;
 										if(!isDefiniteEntity(entityNode))
 										{
@@ -230,7 +230,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										{	
 										#endif
 											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-											if(targetName != className)	//eg do not create a separate class for substance networkIndex definitions
+											if(targetName != className)	//eg do not create a separate class for concept definitions
 											{
 											#endif
 												addDefinitionToClassDefinition(classDefinition, targetClassDefinition);
@@ -946,7 +946,7 @@ void generateConceptClassNameRecurse(GIAentityNode* conceptEntity, string* conce
 			{
 				GIAentityNode* conceptConditionObject = (conceptCondition->conditionObjectEntity->back())->entity;
 				*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptCondition->entityName + conceptConditionObject->entityName + NLC_CONCEPT_CLASS_CONDITION;
-				*conceptClassName = *conceptClassName + generateConceptClassNameRecurse(conceptConditionObject, conceptClassName);	//recurse in case of very detailed substance networkIndex eg "red dogs next to blue cows"
+				*conceptClassName = *conceptClassName + generateConceptClassNameRecurse(conceptConditionObject, conceptClassName);	//recurse in case of very detailed concept eg "red dogs next to blue cows"
 			}
 			else
 			{
@@ -960,7 +960,7 @@ void generateConceptClassNameRecurse(GIAentityNode* conceptEntity, string* conce
 	{
 		GIAentityNode* conceptProperty = (*entityIter)->entity;
 		*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptProperty->entityName + NLC_CONCEPT_CLASS_PROPERTY;
-		*conceptClassName = *conceptClassName + generateConceptClassNameRecurse(conceptProperty, conceptClassName);	//recurse in case of very detailed substance networkIndex eg "red dogs next to blue cows"
+		*conceptClassName = *conceptClassName + generateConceptClassNameRecurse(conceptProperty, conceptClassName);	//recurse in case of very detailed concept eg "red dogs next to blue cows"
 	}
 }
 			

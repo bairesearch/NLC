@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1a 12-September-2016
+ * Project Version: 1t1b 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1t1a 12-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1t1b 12-September-2016" << endl;
 			exit(1);
 		}
 
@@ -893,6 +893,7 @@ int main(int argc, char** argv)
 		vector<GIAentityNode*>* entityNodesActiveListSubstances = new vector<GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListActions = new vector<GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListConditions = new vector<GIAentityNode*>;
+		vector<GIAentityNode*>* entityNodesActiveListConcepts = new vector<GIAentityNode*>;
 		map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		entityNodesActiveListSentencesFunctions.push_back(entityNodesActiveListSentences);
 		unordered_map<long, GIAtimeConditionNode*>* timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
@@ -1047,6 +1048,7 @@ int main(int argc, char** argv)
 			entityNodesActiveListSubstances,
 			entityNodesActiveListActions,
 			entityNodesActiveListConditions,
+			entityNodesActiveListConcepts,
 			entityNodesActiveListSentences,
 			timeConditionNodesActiveList,
 

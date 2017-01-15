@@ -23,7 +23,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f4b 14-December-2013
+ * Project Version: 1f5a 05-January-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -47,6 +47,9 @@
 #include "SHAREDvars.h"
 #ifdef USE_WORDNET
 #include "GIAwordnet.h"
+#endif
+#ifdef GIA_USE_CORPUS_DATABASE
+#include "GIAcorpusDatabase.h"
 #endif
 
 static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
@@ -88,6 +91,9 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 "\n\t-dbread            : read from database (GIA knowledge base) [improves referencing capacity]"
 "\n\t-dbwrite           : write to database (GIA knowledge base) [saves knowledge]"
 "\n\t-dbfolder          : database base folder path (def: /home/systemusername/source/GIAKBdatabase)"
+#endif
+#ifdef GIA_USE_CORPUS_DATABASE
+"\n\t-dbcorpusfolder    : corpus database base folder path (def: /home/systemusername/source/GIAcorpusDatabase)"
 #endif
 #ifdef GIA_USE_LRP
 "\n\t-lrp                               : language reduction preprocessor"
@@ -223,6 +229,9 @@ int main(int argc,char **argv)
 	bool writeToDatabase = false;
 	bool useDatabase = false;
 	string databaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+#endif
+#ifdef GIA_USE_CORPUS_DATABASE
+	string corpusDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_CORPUS_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 #endif
 
 #ifdef GIA_USE_LRP
@@ -517,7 +526,14 @@ int main(int argc,char **argv)
 			databaseFolderName = databaseFolderName + '/';
 		}		
 	#endif
-
+	#ifdef GIA_USE_CORPUS_DATABASE
+		if(argumentExists(argc,argv,"-dbcorpusfolder"))
+		{
+			corpusDatabaseFolderName=getCharArgument(argc,argv,"-dbcorpusfolder");
+			corpusDatabaseFolderName = corpusDatabaseFolderName + '/';
+		}
+	#endif
+	
 	#ifdef GIA_USE_LRP
 		if(argumentExists(argc,argv,"-lrp"))
 		{
@@ -611,7 +627,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1f4b 14-December-2013" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f5a 05-January-2014" << endl;
 			exit(1);
 		}
 
@@ -775,6 +791,10 @@ int main(int argc,char **argv)
 			databaseFolderName,
 		#endif
 
+		#ifdef GIA_USE_CORPUS_DATABASE
+			corpusDatabaseFolderName,
+		#endif
+	
 		#ifdef GIA_USE_LRP
 			useLRP,
 			useOutputLRPTextPlainTXTFile,

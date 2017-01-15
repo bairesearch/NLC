@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -321,7 +321,7 @@ NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBl
 
 	int codeBlockType;
 	#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
-	if(entity->isSubstanceQuality)
+	if(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY)
 	{
 		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE;
 	}
@@ -576,7 +576,7 @@ NLCcodeblock* createCodeBlockAddConditionSimpleInverse(NLCcodeblock* currentCode
 NLCcodeblock* createCodeBlocksCreateNewLocalListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
 {
 	#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
-	if(!(entity->isSubstanceQuality))
+	if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 	{	
 	#endif
 		currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
@@ -594,14 +594,14 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodebloc
 {
 	bool setNLCLocalListVariableHasBeenDeclared = true;
 	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
-	if(entity->isAction)
+	if(entity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)
 	{
 		setNLCLocalListVariableHasBeenDeclared = false;
 	}
 	#endif
 	#ifdef NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
 	#ifndef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
-	if(entity->isSubstanceQuality)
+	if(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY)
 	{
 		setNLCLocalListVariableHasBeenDeclared = false;
 	}	
@@ -914,7 +914,7 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = *entityIter;
-		if(!(entity->isNetworkIndex) && !(entity->isActionNetworkIndex) && !(entity->isConcept))
+		if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 		{
 			if(entity->entityName == functionOwnerName)
 			{
@@ -1231,7 +1231,7 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode*
 	
 	if(indefiniteEntity->entityName == definiteEntity->entityName)
 	{
-		if(!(indefiniteEntity->isConcept))
+		if(!(indefiniteEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 		{
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
 			if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
@@ -1276,7 +1276,7 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(G
 	}
 	#endif
 	#endif
-	if(entityNode->isConcept)
+	if(entityNode->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 	{
 		validClass = false;	
 	}
@@ -1329,7 +1329,7 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity)
 	
 	if(isDefiniteEntity(entity))
 	{
-		if(!(entity->isNetworkIndex))
+		if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 			if(!entity->NLCisSingularArgument)
@@ -2825,7 +2825,7 @@ NLCcodeblock* getLastCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree)
 GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity)
 {
 	GIAentityNode* conditionEntityInverse = new GIAentityNode();
-	conditionEntityInverse->isCondition = true;
+	conditionEntityInverse->entityType = GIA_ENTITY_TYPE_TYPE_CONDITION;
 	conditionEntityInverse->entityName = conditionEntity->entityName;
 	conditionEntityInverse->idInstance = conditionEntity->idInstance;
 	conditionEntityInverse->conditionSubjectEntity->push_back(conditionEntity->conditionObjectEntity->back());	//CHECKTHIS: reused existing connections

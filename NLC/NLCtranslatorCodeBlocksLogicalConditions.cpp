@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -191,11 +191,11 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 									}								
 								} else 
 								#endif
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC
 								if(checkIfPhraseContainsConceptWithDefinitionLink(entityNodesActiveListParsablePhrase, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
 								{//eg "Red dogs are pies. / If red dogs are pies, eat the cabbage."
 																	
-									//logical operations on networkIndexs are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
+									//logical operations on networkIndexes are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 									//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 								
 									#ifdef NLC_DEBUG
@@ -211,13 +211,13 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 									{
 										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
 										#ifdef NLC_DEBUG
-										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS: passed logical condition" << endl;
+										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES: passed logical condition" << endl;
 										#endif
 									}
 									
 								} else
 								#endif
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC_DYNAMIC
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC_DYNAMIC
 								if(checkIfPhraseContainsSubstanceWithDefinitionLink(entityNodesActiveListParsablePhrase, parsablePhrase->sentenceIndex, &logicalConditionOperationObject, &definitionEntity))
 								{//eg "The dog is an alsation. / If the dog is an alsation, eat the cabbage."
 								
@@ -1544,7 +1544,7 @@ bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListCo
 		GIAentityNode* entity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{		
-			if(entity->isAction || entity->isActionNetworkIndex)
+			if(entity->isAction || (entity->isConcept && entity->isActionConcept))
 			{
 				phraseContainsAction = true;
 				*logicalConditionOperationObject = entity;
@@ -1555,7 +1555,7 @@ bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListCo
 }
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC
 bool checkIfPhraseContainsConceptWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject)
 {
 	bool phraseContainsConceptWithDefinitionLink = false;
@@ -1564,7 +1564,7 @@ bool checkIfPhraseContainsConceptWithDefinitionLink(vector<GIAentityNode*>* enti
 		GIAentityNode* entity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{		
-			if(entity->isConcept)
+			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 			{
 				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
 				{
@@ -1600,7 +1600,7 @@ bool checkIfPhraseContainsConceptWithDefinitionLink(vector<GIAentityNode*>* enti
 }
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC_DYNAMIC
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC_DYNAMIC
 bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject, GIAentityNode** definitionEntity)
 {
 	bool phraseContainsSubstanceWithDefinitionLink = false;
@@ -1609,7 +1609,7 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 		GIAentityNode* entity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{		
-			if(entity->isSubstance)
+			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
 			{
 				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
 				{
@@ -1669,7 +1669,7 @@ void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entity
 		GIAentityNode* entity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{			
-			entity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXS_DUMMY_REFERENCE_SET_ID;
+			entity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
 			#ifdef NLC_DEBUG
 			//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase{}:" << endl;
 			//cout << "entity = " << entity->entityName << endl;
@@ -1683,7 +1683,7 @@ void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entity
 bool readParsablePhraseEntryEntityChecks(GIAentityNode* entity)
 {
 	bool result = false;
-	if(!(entity->isNetworkIndex) && !(entity->isCondition))
+	if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION))
 	{
 		result = true;
 	}

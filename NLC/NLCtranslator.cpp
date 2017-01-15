@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -192,7 +192,7 @@ bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* ent
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 		{
 			GIAentityNode* conditionEntity = (*entityIter);
-			if(conditionEntity->isCondition)
+			if(conditionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
 			{
 				if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
 				{
@@ -223,7 +223,7 @@ bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* ent
 			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 			{
 				GIAentityNode* conditionEntity = (*entityIter);
-				if(conditionEntity->isCondition)
+				if(conditionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
 				{
 					if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
 					{
@@ -376,14 +376,14 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 				}
 				if(foundLogicalConditionOperation)
 				{
-					//networkIndexs must be tagged as NLClogicalConditionOperation to prevent generateClassHeirarchy from creating class definitions for logical conditions
+					//networkIndexes must be tagged as NLClogicalConditionOperation to prevent generateClassHeirarchy from creating class definitions for logical conditions
 					#ifdef NLC_DEBUG
 					cout << "foundLogicalConditionOperation: " << conditionEntity->entityName << endl;
 					#endif
 					conditionEntity->NLClogicalConditionOperation = true;
 
-					if(conditionEntity->isCondition)
-					{//ignore networkIndexs
+					if(conditionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
+					{//ignore networkIndexes
 
 						GIAentityNode* conditionSubject = NULL;
 						GIAentityNode* conditionObject = NULL;
@@ -406,18 +406,18 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 							//cout << "tagged: conditionEntity->entityName = " << conditionEntity->entityName << endl;
 							#endif
 
-							if(conditionObject->isNetworkIndex)
+							if(conditionObject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "conditionObject = " << conditionObject->entityName;
 							}
 							else
 							{
 								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionObject, sentenceIndex, true);
 							}
-							if(conditionSubject->isNetworkIndex)
+							if(conditionSubject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "conditionSubject = " << conditionSubject->entityName;
 							}
 							else

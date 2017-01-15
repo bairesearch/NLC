@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -108,7 +108,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 			for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
 			{
 				GIAentityNode* parentConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" concept
-				if(parentConcept->isConcept)
+				if(parentConcept->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 				{	
 					if(parentConcept->entityName == parentEntity->entityName)	//added 1q3a
 					{
@@ -319,7 +319,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 		GIAentityNode* child = (*reverseDefinitionNodeListIterator)->entity;
 		if(child != parentInstance)
 		{
-			if(child->isConcept)
+			if(child->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 			{
 				GIAentityNode* childConcept = child;
 				//recurse; eg "interesting bannanas" in "A yellow bannana is on the table. Interesting bannanas are yellow bannanas. Yellow bannanas are fruit. The fruit is tasty."
@@ -458,7 +458,7 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 	string subclassParentEntityName = getParentClassEntityNameFromSubClassEntityName(subclassEntity->entityName);	//eg line
 	string subclassChildEntityName = getChildClassEntityNameFromSubClassEntityName(subclassEntity->entityName);	//eg goal
 						
-	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
 	GIAentityNode* subclassEntityNetworkIndex = getNonspecificConceptEntityFromInstance(subclassEntity);	//eg eg goal_line	
 	#else
 	GIAentityNode* subclassEntityNetworkIndex = getPrimaryNetworkIndexNodeDefiningInstance(subclassEntity);	//eg goal_line
@@ -468,7 +468,7 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = subclassEntityNetworkIndex->entityNodeDefinitionList->begin(); definitionNodeListIterator < subclassEntityNetworkIndex->entityNodeDefinitionList->end(); definitionNodeListIterator++)
 		{
 			GIAentityNode* subclassParentEntityNetworkIndex = (*definitionNodeListIterator)->entity;
-			#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+			#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
 			subclassParentEntityNetworkIndex = getPrimaryNetworkIndexNodeDefiningInstance(subclassParentEntityNetworkIndex);
 			#endif
 			
@@ -477,8 +477,8 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 				for(vector<GIAentityConnection*>::iterator iter = subclassParentEntityNetworkIndex->associatedInstanceNodeList->begin(); iter < subclassParentEntityNetworkIndex->associatedInstanceNodeList->end(); iter++)
 				{
 					GIAentityNode* subclassParentEntity = (*iter)->entity;	//eg line
-					#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
-					if(!(subclassParentEntity->isConcept))
+					#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
+					if(!(subclassParentEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 					{
 					#endif
 						GIAentityNode definiteEntityArtificial;
@@ -505,7 +505,7 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 								#endif
 							}
 						}
-					#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+					#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
 					}
 					#endif
 				}
@@ -811,7 +811,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 										parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, entity, &foundParentEntityNew, parseConditionParents, checkIsDefinite);
 										if(isDefiniteEntity(objectEntity) || foundParentEntityNew)	//ie objectEntity is explicitly or implicitly definite
 										{
-											if(!(objectEntity->isSubstanceQuality))	//added 1n24a
+											if(!(objectEntity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))	//added 1n24a
 											{
 												verifyObject = true;
 											}
@@ -933,7 +933,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, stri
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	if(propertyEntity->isSubstanceQuality)
+	if(propertyEntity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY)
 	{
 		if(propertyEntity->negative)
 		{
@@ -1764,7 +1764,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 			result = true;
 			#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-			if(connection->negative || (propertyEntity->isSubstanceQuality && propertyEntity->negative))
+			if(connection->negative || ((propertyEntity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY) && propertyEntity->negative))
 			{
 				if(isDefiniteEntity(propertyEntity))	//added 1p1b - CHECKTHIS
 				{
@@ -2611,7 +2611,7 @@ GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parent
 		if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false) || propertyEntity->NLCparsedForCodeBlocks)	//CHECKTHIS; copied from getParent(); if parent is propertyEntity->NLCparsedForCodeBlocks && !sameSentence, then child must be propertyEntity->NLCparsedForCodeBlocks && !sameSentence
 		#endif
 		{
-			if(!(propertyEntity->isSubstanceQuality))
+			if(!(propertyEntity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 			{
 				if(propertyConnection->sameReferenceSet)	//added 1n30a
 				{
@@ -2654,7 +2654,7 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 	{
 		generateObjectInitialisationsBasedOnConceptsRecurse(targetEntity, entity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);
 	}
-	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
 	else	
 	{//first call to generateObjectInitialisationsBasedOnConcepts
 		GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
@@ -2662,8 +2662,8 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 	}
 	#endif
 	#else
-	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS	//removed condition 1r2a
-	//added 6 December 2013: take into account plain networkIndexs; eg "Dogs are fat. The dog rides the bike." <- the dog will be given the property 'fat'
+	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES	//removed condition 1r2a
+	//added 6 December 2013: take into account plain networkIndexes; eg "Dogs are fat. The dog rides the bike." <- the dog will be given the property 'fat'
 	GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
 	generateObjectInitialisationsBasedOnConceptsRecurse(targetEntity, networkIndexEntity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);	
 	#endif
@@ -2676,10 +2676,10 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 		//{
 		GIAentityNode* definitionEntity = definitionConnection->entity;
 		//check the definition is a concept
-		#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
-		if((definitionEntity->isConcept) || (definitionEntity->isActionNetworkIndex))	//added (definitionEntity->isActionNetworkIndex)  changed 1e2e
+		#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
+		if(definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 		#else
-		if((definitionEntity->isConcept) || (definitionEntity->isActionNetworkIndex) || (definitionEntity->isNetworkIndex))	//added (definitionEntity->isActionNetworkIndex) 1e2e	//added (definitionEntity->isNetworkIndex) 1r2a
+		if((definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT) || (definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//added (definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) 1r2a
 		#endif
 		{
 			#ifndef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
@@ -2702,12 +2702,12 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 			if(definitionEntity->entityName != targetEntity->entityName)
 			{
 				GIAentityNode* definitionEntityNetworkIndexEntity = definitionEntity;
-				#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
-				if(!(definitionEntity->isNetworkIndex))
+				#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
+				if(!(definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))
 				{
 				#endif
 					definitionEntityNetworkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(definitionEntity);
-				#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+				#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
 				}
 				#endif
 				if(definitionEntityNetworkIndexEntity->NLClocalListVariableHasBeenDeclared)	//assumedToAlreadyHaveBeenDeclared(definitionEntity)
@@ -2742,7 +2742,7 @@ void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEn
 		parentName = generateInstanceName(parentEntity);
 	}
 	
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
 	if(!(definitionEntity->NLCparsedForlogicalConditionOperations))
 	{
 	#endif
@@ -2865,7 +2865,7 @@ void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEn
 			}
 			#endif
 		}
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
 	}
 	#endif
 }
@@ -2911,11 +2911,11 @@ void fillFunctionAliasClassList(vector<GIAentityNode*>* entityNodesActiveListCom
 bool checkSpecialCaseEntity(GIAentityNode* entity, bool detectActions)
 {
 	bool specialCaseEntity = false;
-	if((entity->isNetworkIndex) || (entity->isConcept) || (entity->isActionNetworkIndex) || (entity->isCondition))
+	if((entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) || (entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT) || (entity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION))
 	{
 		specialCaseEntity = true;
 	}
-	else if(detectActions && (entity->isAction))
+	else if(detectActions && (entity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION))
 	{
 		specialCaseEntity = true;
 	}
@@ -2925,7 +2925,7 @@ bool checkSpecialCaseEntity(GIAentityNode* entity, bool detectActions)
 bool checkNetworkIndexTypeEntity(GIAentityNode* entity)
 {
 	bool networkIndexTypeEntity = false;
-	if((entity->isNetworkIndex) || (entity->isConcept) || (entity->isActionNetworkIndex))
+	if((entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) || (entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 	{
 		networkIndexTypeEntity = true;
 	}

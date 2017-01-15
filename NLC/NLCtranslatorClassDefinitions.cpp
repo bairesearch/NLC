@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 			{
 				string className = generateClassName(entityNode);
 				#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-				if(entityNode->isConcept)
+				if(entityNode->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 				{
 					className = generateConceptClassName(entityNode);
 				}
@@ -96,7 +96,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										targetName = generateInstanceName(targetEntity);
 									}
 									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-									else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->isConcept))
+									else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 									{
 										targetName = generateConceptClassName(targetEntity);
 									}
@@ -136,12 +136,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									}
 
 									#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
-									if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isNetworkIndex)) 16 April 2014
+									if(1)	//removed; || (if((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)) 16 April 2014
 									#else
 									#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isNetworkIndex) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
+									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
 									#else
-									if((targetEntity->isAction) || (targetEntity->isActionNetworkIndex) && !(targetEntity->isNetworkIndex))	//removed; || (targetEntity->isCondition) 16 April 2014
+									if((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) || (targetEntity->isActionConcept) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//removed; || (targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) 16 April 2014
 									#endif
 									#endif
 									{
@@ -390,19 +390,19 @@ bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* 
 	bool parentClassIsChildOfChildClass = false;
 	
 	GIAentityNode* parentNetworkIndexEntity = parentEntity;
-	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
-	if(!(parentEntity->isNetworkIndex))	//added 1r1a
+	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
+	if(!(parentEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//added 1r1a
 	{
 	#endif
 		parentNetworkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(parentEntity);
-	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
 	}
 	#endif
 
 	for(vector<GIAentityConnection*>::iterator connectionIter = parentNetworkIndexEntity->associatedInstanceNodeList->begin(); connectionIter != parentNetworkIndexEntity->associatedInstanceNodeList->end(); connectionIter++)
 	{
 		GIAentityNode* parentConceptEntity = (*connectionIter)->entity;
-		if(parentConceptEntity->isConcept || parentConceptEntity->isActionNetworkIndex)
+		if(parentConceptEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 		{
 			for(vector<GIAentityConnection*>::iterator connectionIter2 = parentConceptEntity->entityNodeDefinitionList->begin(); connectionIter2 != parentConceptEntity->entityNodeDefinitionList->end(); connectionIter2++)
 			{
@@ -475,7 +475,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 		{
 			if(generateClassHeirarchyValidClassChecks(actionEntity))
 			{
-				if(actionEntity->isAction)
+				if(actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)
 				{
 					string actionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
 					
@@ -628,7 +628,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 								{
 									classDefinitionFunctionOwnerName = generateClassName(actionSubject);
 									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-									if(actionEntity->isConcept)
+									if(actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 									{
 										classDefinitionFunctionOwnerName = generateConceptClassName(actionSubject);	//is this still required?
 									}
@@ -858,8 +858,8 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
-	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
-	if(entityNode->isNetworkIndex)	//added 1n2f
+	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
+	if(entityNode->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)	//added 1n2f
 	{
 		validClass = false;
 	}
@@ -1140,13 +1140,13 @@ void generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance
 	generateFunctionPropertyConditionArguments(actionEntity, parameters, false);
 
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-	//Part b: generate object initialisations based on action networkIndexs (class inheritance)
+	//Part b: generate object initialisations based on action networkIndexes (class inheritance)
 	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
 	{
 		GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
 		definitionConnection->NLCparsedForCodeBlocks = true;
 		GIAentityNode* definitionEntity = definitionConnection->entity;
-		if(definitionEntity->isActionNetworkIndex)
+		if(definitionEntity->isActionConcept)
 		{
 			generateFunctionPropertyConditionArguments(definitionEntity, parameters, true);
 		}

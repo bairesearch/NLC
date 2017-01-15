@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -400,7 +400,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBl
 	{
 		GIAentityNode* entity = (*entityIter);
 		#ifdef NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
-		if(!checkSpecialCaseEntity(entity, true) && !(entity->isSubstanceQuality))
+		if(!checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 		#else
 		if(!checkSpecialCaseEntity(entity, true))
 		#endif
@@ -542,7 +542,7 @@ bool generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(NLCcodeb
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
-		if(!checkSpecialCaseEntity(entity, true) && !(entity->isSubstanceQuality))
+		if(!checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 		{
 			if(entity->sentenceIndexTemp == sentenceIndex)	//changed 1l15a
 			//if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
@@ -591,12 +591,8 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 
 					int connectionType = -1;
 	
-					if(entity->isAction)
+					if(entity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)
 					{
-						/*//CHECKTHIS;
-						if(!(entity->isActionNetworkIndex))
-						{
-						*/
 						#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
 						if(!isPotentialAction(entity))
 						{
@@ -661,7 +657,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 						}
 						*/
 					}
-					else if(entity->isCondition)
+					else if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
 					{
 						GIAentityConnection* conditionSubjectConnection = NULL;
 						if(getConditionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, &conditionSubjectConnection, sentenceIndex, false))
@@ -831,7 +827,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			{
 				addNewObjectForEachSubject = true;
 			}
-			if((subjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && (objectEntity->isSubstanceQuality))
+			if((subjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && (objectEntity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 			{
 				addNewObjectForEachSubject = true;
 			}

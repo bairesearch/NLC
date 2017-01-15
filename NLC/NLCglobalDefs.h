@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -366,8 +366,8 @@
 	#ifdef NLC_SUPPORT_REDEFINITIONS
 		#define NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES	//1n19b	//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as concepts
 		#define NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS	//1n10b/1n19c	//prevents circular definition; eg Chickens are animals. An animal is happy. The animal is a blue chicken.
-		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC_DYNAMIC	//1n5b
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC_DYNAMIC
+		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC_DYNAMIC	//1n5b
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC_DYNAMIC
 			#define NLC_CLASS_PARENT_CLASS_LIST_NAME "parentClassList"
 			#define NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME "checkParentClassName"
 		#endif
@@ -587,19 +587,19 @@
 			#endif
 		#endif
 	#endif	
-	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS	//always use concept nodes rather than raw networkIndex nodes to store networkIndex relationships
-		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
-			//GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS hasnt been coded therefore NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS cannot be used
+	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES	//always use concept nodes rather than raw networkIndex nodes to store networkIndex relationships
+		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
+			//GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES hasnt been coded therefore NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES cannot be used
 			//static bool isIncomingOutgoingConditionArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES] = {false, false, true, true, false, false, false, false, false, false, false, false, false, false};
 			#ifndef NLC_DISABLE_1l_CODE_FOR_DEBUG
 				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS	//required for searchForEquivalentSubnetToIfStatement
-					#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC
+					#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES_BASIC
 				#endif
 			#endif
 		#endif
 	#endif
-	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXS_DUMMY_REFERENCE_SET_ID (99)
+	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID (99)
 #endif
 #ifndef NLC_DISABLE_1l_CODE_FOR_DEBUG
 	#define NLC_RECORD_ACTION_HISTORY_GENERALISABLE	//code introduced by NLC_RECORD_ACTION_HISTORY but doesn't necessarily require it

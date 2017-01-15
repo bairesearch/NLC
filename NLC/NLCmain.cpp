@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1t1b 12-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1t1c 12-September-2016" << endl;
 			exit(1);
 		}
 
@@ -889,11 +889,7 @@ int main(int argc, char** argv)
 
 		vector<GIAentityNode*>* entityNodesActiveListComplete = new vector<GIAentityNode*>;
 		entityNodesActiveListCompleteFunctions.push_back(entityNodesActiveListComplete);
-		unordered_map<string, GIAentityNode*>* entityNodesActiveListNetworkIndexs = new unordered_map<string, GIAentityNode*>;
-		vector<GIAentityNode*>* entityNodesActiveListSubstances = new vector<GIAentityNode*>;
-		vector<GIAentityNode*>* entityNodesActiveListActions = new vector<GIAentityNode*>;
-		vector<GIAentityNode*>* entityNodesActiveListConditions = new vector<GIAentityNode*>;
-		vector<GIAentityNode*>* entityNodesActiveListConcepts = new vector<GIAentityNode*>;
+		unordered_map<string, GIAentityNode*>* entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;
 		map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		entityNodesActiveListSentencesFunctions.push_back(entityNodesActiveListSentences);
 		unordered_map<long, GIAtimeConditionNode*>* timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
@@ -1044,11 +1040,7 @@ int main(int argc, char** argv)
 		#endif
 
 			entityNodesActiveListComplete,
-			entityNodesActiveListNetworkIndexs,
-			entityNodesActiveListSubstances,
-			entityNodesActiveListActions,
-			entityNodesActiveListConditions,
-			entityNodesActiveListConcepts,
+			entityNodesActiveListNetworkIndexes,
 			entityNodesActiveListSentences,
 			timeConditionNodesActiveList,
 
@@ -1275,7 +1267,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* actionEntity = (*entityIter);
-		if((actionEntity->isAction) && !(actionEntity->isNetworkIndex) && !(actionEntity->disabled))
+		if((actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) && !(actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) && !(actionEntity->disabled))
 		{
 			if(isActionSpecialPossessive(actionEntity))
 			{
@@ -1610,7 +1602,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					}
 					#endif
 
-					actionEntity->isAction = false;
+					actionEntity->entityType = GIA_ENTITY_TYPE_TYPE_SUBSTANCE;	//convert action
 					actionEntity->disabled = true;	//disable have instance entity
 					if(!(actionEntity->entityNodeDefiningThisInstance->empty()))
 					{

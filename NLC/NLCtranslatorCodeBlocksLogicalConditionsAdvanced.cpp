@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1b 12-September-2016
+ * Project Version: 1t1c 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -96,7 +96,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* logicalConditionOperationEntity = (*entityIter);
-		if(logicalConditionOperationEntity->isCondition)
+		if(logicalConditionOperationEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
 		{
 			if(checkSentenceIndexParsingCodeBlocks(logicalConditionOperationEntity, sentenceIndex, true))	//could be set to false instead
 			{
@@ -185,21 +185,21 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						NLCcodeblock* previousCodeBlockInTreeAtBaseLevel = currentCodeBlockInTreeAtBaseLevel;
 
 						bool passedLogicalConditionObject = false;
-						if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isNetworkIndex || logicalConditionOperationObject->isConcept))
+						if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isNetworkIndex || logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 						{//eg If red dogs are pies, eat the cabbage
 							#ifdef NLC_DEBUG
 							//cout << "logicalConditionOperationObject->isConcept = " << logicalConditionOperationObject->isConcept << endl;
 							#endif
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
+							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
 							//isConcept case not yet coded
-							//logical operations on networkIndexs are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
+							//logical operations on networkIndexes are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
-							if(logicalConditionOperationObject->isNetworkIndex)
+							if(logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
+								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
 							}
-							else if(logicalConditionOperationObject->isConcept)
+							else if(logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 							{
 								cout << "logicalConditionOperationObject->isConcept" << endl;
 								GIAentityNode* conceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
@@ -217,7 +217,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							}
 							#endif
 						}
-						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionNetworkIndex))
+						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionConcept))
 						{
 							#ifdef NLC_USE_PREPROCESSOR
 							if(elseDetected)
@@ -481,15 +481,15 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							#endif
 							//check if logicalConditionOperationSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
 
-							if(logicalConditionOperationSubject->isNetworkIndex || logicalConditionOperationSubject->isConcept)
+							if(logicalConditionOperationSubject->isNetworkIndex || logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
-								if(logicalConditionOperationSubject->isNetworkIndex)
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
+								if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 								{
-									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
+									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
 								}
-								else if(logicalConditionOperationSubject->isConcept)
+								else if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 								{
 									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);
 								}
@@ -497,7 +497,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							}
 							else
 							{
-								if(logicalConditionOperationSubject->isAction)
+								if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)
 								{
 									#ifdef NLC_USE_PREPROCESSOR
 									if(logicalConditionOperationSubject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION)
@@ -722,7 +722,7 @@ void checkConditionForLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GI
 					logicalConditionConjunctionArray[logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex].negative = logicalConditionConjunctionObjectEntity->negative;
 					(conditionEntity->conditionObjectEntity->back())->NLCparsedForCodeBlocks = true;
 
-					if(logicalConditionConjunctionObjectEntity->isCondition)
+					if(logicalConditionConjunctionObjectEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
 					{//added 1g5g
 						addNewLogicalCondition(currentCodeBlockInTree, (logicalConditionConjunctionObjectEntity->conditionSubjectEntity->back())->entity, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionConjunctionObjectEntity);
 					}
@@ -763,15 +763,15 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 					{//don't cross the "if" boundary
 						if(checkSentenceIndexParsingCodeBlocks(connectedEntity, connection, sentenceIndex, false))
 						{
-							if(connectedEntity->isNetworkIndex)
+							if(connectedEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
+								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "connectedEntity = " << connectedEntity->entityName;
 							}
 							else
 							{
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
-								connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXS_DUMMY_REFERENCE_SET_ID;
+								connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
 								#endif
 								if(tagOrUntag)
 								{
@@ -858,7 +858,7 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareNetworkI
 
 	//code copied from identifyReferenceSetsSpecificConceptsAndLinkWithConcepts() in GIAtranslatorDefineReferencing.cpp
 
-	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXS_DUMMY_REFERENCE_SET_ID;
+	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
 
 	bool traceModeIsQuery = false;
 	GIAreferenceTraceParameters referenceTraceParameters;

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8e 11-July-2014
+ * Project Version: 1g8f 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,10 +105,13 @@ bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock *
 		GIAentityNode * entity = (*entityIter);
 		if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceQuality) && !(entity->isCondition))
 		{
+			//cout << "pass1: " << entity->entityName << endl;
 			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{
+				//cout << "pass2: " << entity->entityName << endl;
 				if(!assumedToAlreadyHaveBeenDeclared(entity))
 				{//indefinite entity found
+					//cout << "pass3: " << entity->entityName << endl;
 					bool foundPropertyInSameSentence = false;
 					bool foundConditionInSameSentence = false;
 					for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
@@ -130,6 +133,10 @@ bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock *
 					if(!foundPropertyInSameSentence && !foundConditionInSameSentence)
 					{
 						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
+						#ifdef NLC_DEBUG
+						cout << "declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
+						#endif
+						entity->NLClocalListVariableHasBeenDeclared = true;
 					}
 					/*
 					bool foundProperty = false;
@@ -147,7 +154,6 @@ bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock *
 						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
 					}
 					*/
-					entity->NLClocalListVariableHasBeenDeclared = true;
 				}
 			}
 		}

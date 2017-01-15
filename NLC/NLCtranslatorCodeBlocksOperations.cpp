@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l7j 03-November-2014
+ * Project Version: 1l8a 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1430,6 +1430,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	#endif
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	//new implementation: only create context for parent (ie for parent entities...) at start of each generateObjectInitialisationsBasedOnPropertiesAndConditions() if;
+	//a) first call to generateObjectInitialisationsBasedOnPropertiesAndConditions, or;
 	//added 1i8a->1i8c, moved 1i11d
 	if(generateParentContext)
 	{	
@@ -1458,12 +1460,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		#endif
 	}
-	#endif
-
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	//b) the previous level call generateObjectInitialisationsBasedOnPropertiesAndConditions resulted in the creation of a new property/conditionObject (its context has not yet been generated)
 	if(!(entity->NLCcontextGenerated))
 	{//context block already created by generateContextBlocks()	//added 1g14b 15-July-2014
-	#endif
 		if(!(entity->isSubstanceQuality))	//added 1k23f - ignore qualities as they will not have NLClocalListVariableHasBeenInitialised set when they were added as a property, because they will not have NLClocalListVariableHasBeenDeclared set - see declareLocalPropertyListsForIndefiniteEntities()
 		{
 			NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -1474,7 +1473,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 1createCodeBlockForPropertyListLocal: ") + entity->entityName);
 				#endif
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
-				entity->NLCcontextGenerated = true;
+				entity->NLCcontextGenerated = true;	//is this required?
 				#else
 				#ifdef NLC_DEBUG_PARSE_CONTEXT2
 				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 1createCodeBlockForPropertyListLocal: ") + entity->entityName);
@@ -1482,7 +1481,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entityClass);
 				#endif
 			}
-			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 			#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 			else
 			{
@@ -1492,19 +1490,26 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				//OLD: corrected for with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES condition; cout << "NB it is also possible that NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES has been disabled: (if !isSubstanceQuality) NLClocalListVariableHasBeenInitialised must be set when variables are added as a property" << endl;
 			}
 			#endif
-			#else		
-			else
-			{
-				#ifdef NLC_DEBUG_PARSE_CONTEXT2
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 2createCodeBlockForPropertyList: ") + entity->entityName);
-				#endif
-
-				entityClass->context.push_back(parentName);
-				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
-			}
-			#endif
 		}
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	}
+	#else
+	//old implementation: always create context for parent at start of each call to generateObjectInitialisationsBasedOnPropertiesAndConditions() - this is a simpler implementation however it 
+	NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	if(assumedToAlreadyHaveBeenDeclared(entity))
+	{
+		#ifdef NLC_DEBUG_PARSE_CONTEXT2
+		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 1createCodeBlockForPropertyListLocal: ") + entity->entityName);
+		#endif
+		*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entityClass);
+	}	
+	else
+	{
+		#ifdef NLC_DEBUG_PARSE_CONTEXT2
+		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 2createCodeBlockForPropertyList: ") + entity->entityName);
+		#endif
+
+		entityClass->context.push_back(parentName);
+		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
 	}
 	#endif
 	

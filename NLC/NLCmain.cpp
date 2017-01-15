@@ -703,6 +703,9 @@ int main(int argc,char **argv)
 		}
 		#endif
 
+		#ifdef USE_CS_WORKAROUND
+		executeGIA2();
+		#endif
 		executeGIA(
 
 			NLPfeatureParser,

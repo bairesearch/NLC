@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11f 25-August-2014
+ * Project Version: 1i11g 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -344,12 +344,24 @@ bool generateCategories(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * 
 	bool contextFound = true;
 	*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity);
 
+	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
+	
+	NLCitem * propertyItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_OBJECT);
+	//context property item:
+	if(assumedToAlreadyHaveBeenDeclared(parentEntity))
+	{
+		*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
+	}
+	else
+	{
+		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+	}
+	
 	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);
 	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN
 	cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
 	#endif
-
-	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
+	*currentCodeBlockInTree = lastCodeBlockInTree->next;
 	
 	//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
 	for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
@@ -1442,7 +1454,13 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 								if(generateCategories(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
 								{
-									conditionConnection->NLCparsedForCodeBlocks = true;
+									/*//not possible because getSameReferenceSetDefiniteContextUngeneratedParent() only parses parent properties not conditions
+									if(parentEntity == entity)
+									{
+										conditionConnection->NLCparsedForCodeBlocks = true;
+									}
+									*/
+									parentEntity->NLCcontextGenerated = true;
 								#else
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
 								{
@@ -1453,6 +1471,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);										
 									*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);
 									conditionObject->NLClocalListVariableHasBeenInitialised = true;
+									performedAtLeastOneObjectInitialisationAtThisLevel = true;
 								}
 							}
 							else

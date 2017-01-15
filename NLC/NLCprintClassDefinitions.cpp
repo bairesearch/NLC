@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4f 27-June-2015
+ * Project Version: 1p5a 02-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -292,6 +292,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								string targetName = targetClassDefinition->functionNameSpecial;
 								string functionArguments = "";
 
+								cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
 								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 								printLine(localListDeclarationText, 1, code);
@@ -588,6 +589,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
+			cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString; NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER = " << currentItem->name << endl;
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];

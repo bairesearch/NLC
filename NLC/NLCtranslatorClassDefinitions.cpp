@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4f 27-June-2015
+ * Project Version: 1p5a 02-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -717,7 +717,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 									//added 1l1a for dynamic casting of children
 									if(hasFunctionOwnerClass)
 									{
-										NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
+										NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);	//corrected 1p5a
 										classDefinitionFunction->parameters.push_back(classDeclarationFunctionOwnerItem);
 									}
 									#endif
@@ -727,7 +727,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 									
 									if(hasFunctionObjectClass)
 									{
-										NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+										NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)	//why use actionObject instead of actionObjectName?
 										classDefinitionFunction->parameters.push_back(classDeclarationFunctionObjectItem);
 									}
 

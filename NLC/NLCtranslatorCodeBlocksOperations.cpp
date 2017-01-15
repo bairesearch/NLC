@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u15b 03-October-2016
+ * Project Version: 1u15c 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -3378,27 +3378,27 @@ bool connectionTypeIsCondition(int connectionType)
 	}
 }
 
-bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** actionSubjectConnection, int connectionType)
+bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** entityConnection, int connectionType)
 {
 	bool entityHasConnection = false;
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 	//required because GIA advanced referencing may connect a given action to multiple subjects/objects (ie across multiple sentences)
-	for(vector<GIAentityConnection*>::iterator iter = actionEntity->entityVectorConnectionsArray[connectionType]->begin(); iter < actionEntity->entityVectorConnectionsArray[connectionType]->end(); iter++)
+	for(vector<GIAentityConnection*>::iterator iter = entity->entityVectorConnectionsArray[connectionType].begin(); iter < entity->entityVectorConnectionsArray[connectionType].end(); iter++)
 	{
-		GIAentityConnection* actionSubjectConnectionTemp = *iter;
-		if(actionSubjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		GIAentityConnection* entityConnectionTemp = *iter;
+		if(entityConnectionTemp->sentenceIndexTemp == sentenceIndex)
 		{
 			#ifdef NLC_DEBUG
-			//cout << "getActionSubjectEntityConnection{}: actionSubjectConnectionTemp->sentenceIndexTemp = " << actionSubjectConnectionTemp->sentenceIndexTemp << endl;
+			//cout << "getActionSubjectEntityConnection{}: entityConnectionTemp->sentenceIndexTemp = " << entityConnectionTemp->sentenceIndexTemp << endl;
 			#endif
-			*actionSubjectConnection = actionSubjectConnectionTemp;
+			*entityConnection = entityConnectionTemp;
 			entityHasConnection = true;	
 		}
 	}
 	#else
 	if(!((entity->entityVectorConnectionsArray[connectionType]).empty()))
 	{
-		*actionSubjectConnection = ((entity->entityVectorConnectionsArray[connectionType]).back());
+		*entityConnection = ((entity->entityVectorConnectionsArray[connectionType]).back());
 		entityHasConnection = true;
 	}	
 	#endif
@@ -4152,7 +4152,6 @@ bool checkConditionLogicalConditionAdvancedTests(GIAentityNode* conditionEntity)
 }
 #endif
 
-#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 bool checkNumerosity(GIAentityNode* entity)
 {
 	bool hasNumerosity = false;
@@ -4162,7 +4161,6 @@ bool checkNumerosity(GIAentityNode* entity)
 	}
 	return hasNumerosity;
 }
-#endif
 					
 bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
 {

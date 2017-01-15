@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u15b 03-October-2016
+ * Project Version: 1u15c 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,7 +54,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 		#endif
 
 bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, int sentenceIndex, bool sameReferenceSet, int connectionType);
-	bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** actionSubjectConnection, int connectionType);
+	bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** entityConnection, int connectionType);
 
 		
 bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName);
@@ -154,9 +154,7 @@ void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCo
 bool checkConditionLogicalConditionAdvancedTests(GIAentityNode* conditionEntity);
 #endif
 
-#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 bool checkNumerosity(GIAentityNode* entity);
-#endif
 
 bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex);
 

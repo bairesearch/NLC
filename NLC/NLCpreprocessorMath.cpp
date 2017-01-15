@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h10a 04-August-2014
+ * Project Version: 1h10b 04-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -534,7 +534,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{	
 		//cout << "hasLogicalConditionOperator" << endl; 
-		if(!splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(firstNLCsentenceInFullSentence, currentNLCsentenceInList, sentenceIndex, additionalClosingBracketRequired, detectedLogicalConditionCommand, phraseIndexOfFirstLogicalCommand))
+		if(!splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(firstNLCsentenceInFullSentence, currentNLCsentenceInList, sentenceIndex, additionalClosingBracketRequired, detectedLogicalConditionCommand, phraseIndexOfFirstLogicalCommand, logicalConditionCommandSuperphraseContents))
 		{
 			result = false;
 		}

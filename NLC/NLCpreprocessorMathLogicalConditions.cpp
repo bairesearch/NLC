@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h10a 04-August-2014
+ * Project Version: 1h10b 04-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -189,7 +189,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence * firs
 
 
 
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence * firstNLCsentenceInFullSentence, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand)
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence * firstNLCsentenceInFullSentence, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSuperphraseContents)
 {
 	bool result = true;
 	
@@ -202,6 +202,11 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 		cout << "detectedLogicalConditionCommand: mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
 		cout << "phraseIndexOfFirstLogicalCommand = " << phraseIndexOfFirstLogicalCommand << endl;
 		#endif
+		
+		if(phraseIndexOfFirstLogicalCommand == 0)
+		{//eg If x+5 == 12405, X = 3+5 OR If x+5 == 12405, the dog is happy
+		
+		}
 
 		NLCsentence * firstPhraseInLogicalConditionCommandOld = firstNLCsentenceInFullSentence;
 		NLCsentence * lastPhraseBeforeLogicalConditionCommand = firstNLCsentenceInFullSentence;
@@ -214,10 +219,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 				firstPhraseInLogicalConditionCommandOld = firstPhraseInLogicalConditionCommandOld->next;
 			}
 		}
+		else
+		{
+			//eg If x+5 == 12405, the dog is happy
+		}
 
 		int indexOfLogicalConditionCommandInMathText;
-		if(firstPhraseInLogicalConditionCommandOld->sentenceContents != "")
+		bool logicalConditionCommandContainsNLPparsablePhrase = false;
+		if((firstPhraseInLogicalConditionCommandOld->sentenceContents != "") && (firstNLCsentenceInFullSentence->sentenceContents != NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY))
 		{
+			logicalConditionCommandContainsNLPparsablePhrase = true;
 			string firstParsablePhraseReferenceInLogicalConditionCommand = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, firstPhraseInLogicalConditionCommandOld);
 			//cout << "firstParsablePhraseReferenceInLogicalConditionCommand = " << firstParsablePhraseReferenceInLogicalConditionCommand << endl;
 			indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(firstParsablePhraseReferenceInLogicalConditionCommand);
@@ -225,10 +236,21 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 		}
 		else
 		{//logical condition command does not contain an nlp parsable phrase; it is just math, eg; "If the house is blue, X = 3+5"
-			string lastParsablePhraseReferenceBeforeLogicalConditionCommand = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, lastPhraseBeforeLogicalConditionCommand);
-			//cout << "lastParsablePhraseReferenceBeforeLogicalConditionCommand = " << lastParsablePhraseReferenceBeforeLogicalConditionCommand << endl;
-			indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(lastParsablePhraseReferenceBeforeLogicalConditionCommand) + lastParsablePhraseReferenceBeforeLogicalConditionCommand.length();
-			//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;			
+			//cout << "logical condition command does not contain an nlp parsable phrase; it is just math" << endl;
+			//cout << "\n\nphraseIndexOfFirstLogicalCommand = " << phraseIndexOfFirstLogicalCommand << endl;
+
+			if(phraseIndexOfFirstLogicalCommand == 0)
+			{//eg If x+5 == 12405, X = 3+5
+				indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(logicalConditionCommandSuperphraseContents);
+				//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;
+			}
+			else
+			{//eg If the house is blue, X = 3+5
+				string lastParsablePhraseReferenceBeforeLogicalConditionCommand = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, lastPhraseBeforeLogicalConditionCommand);
+				//cout << "lastParsablePhraseReferenceBeforeLogicalConditionCommand = " << lastParsablePhraseReferenceBeforeLogicalConditionCommand << endl;
+				indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(lastParsablePhraseReferenceBeforeLogicalConditionCommand) + lastParsablePhraseReferenceBeforeLogicalConditionCommand.length();
+				//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;			
+			}
 		}
 		
 		if(indexOfLogicalConditionCommandInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -242,16 +264,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 			firstPhraseInLogicalConditionCommand->next = firstPhraseInLogicalConditionCommandOld->next;
 			firstPhraseInLogicalConditionCommand->sentenceContents = firstPhraseInLogicalConditionCommandOld->sentenceContents;
 			
-			if(firstPhraseInLogicalConditionCommandOld->sentenceContents != "")
+			if(logicalConditionCommandContainsNLPparsablePhrase)
 			{
 				if(phraseIndexOfFirstLogicalCommand > 0)
-				{
+				{//eg If the house is blue, the dog is happy 
 					lastPhraseBeforeLogicalConditionCommand->next = new NLCsentence();
 					(*currentNLCsentenceInList) = lastPhraseBeforeLogicalConditionCommand->next;
 					*sentenceIndex = firstNLCsentenceInFullSentence->sentenceIndex + phraseIndexOfFirstLogicalCommand;
 				}
 				else
-				{
+				{//eg If x+5 == 12405, the dog is happy 
 					firstNLCsentenceInFullSentence->next = new NLCsentence();
 					(*currentNLCsentenceInList) = firstNLCsentenceInFullSentence;
 					(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
@@ -272,7 +294,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 			cout << "sentenceIndex = " << *sentenceIndex << endl;
 			#endif
 			
-			if(firstPhraseInLogicalConditionCommandOld->sentenceContents != "")
+			if(logicalConditionCommandContainsNLPparsablePhrase)
 			{
 				if(!generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(currentNLCsentenceInList, firstPhraseInLogicalConditionCommand, mathTextOfLogicalConditionCommand, sentenceIndex, firstNLCsentenceInFullSentence->sentenceIndex, indentationOfLogicalCommand))
 				{

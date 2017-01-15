@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j7a 10-September-2014
+ * Project Version: 1j8a 10-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -606,7 +606,13 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				
 			string addCategoryItemText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceCategoryList.push_back(param2);
 				//NB this code could be generated using existing codeblock (NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST)
-				
+
+			#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
+			string negativeModifierStringFind = progLangNot[progLang];	//if not found (negative find)
+			string findCategoryItemText = progLangFindPart1[progLang] + negativeModifierStringFind + progLangFindPart2[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFindPart3[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFindPart4[progLang] + param2->instanceName + progLangFindPart5[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFindPart6[progLang];	//if(!find(param1instanceCategoryList.begin(), param1instanceCategoryList.end(), param2) != param1instanceCategoryList.end()) 
+				//NB this code could be moved to a new codeblock  (NLC_CODEBLOCK_TYPE_FIND_PROPERTY_IN_GENERIC_LIST)
+			#endif
+			
 			printLine(codeBlockText1, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 			printLine(removeCategoryListItemsText, level+1, code);
@@ -615,7 +621,14 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 			printLine(codeBlockText2, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
+			#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
+			printLine(findCategoryItemText, level+1, code);
+			printLine(progLangOpenBlock[progLang], level+1, code);
+			printLine(addCategoryItemText, level+2, code);
+			printLine(progLangCloseBlock[progLang], level+1, code);
+			#else
 			printLine(addCategoryItemText, level+1, code);
+			#endif
 			printLine(progLangCloseBlock[progLang], level, code);
 			
 			printLine(codeBlockText3, level, code);

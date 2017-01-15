@@ -34,4 +34,8 @@ NLCgenericEntityClass::NLCgenericEntityClass(void)
 	//#ifdef NLC_USE_MATH_OBJECTS
 	value = 0.0;
 	//#endif
+	
+	//#ifdef NLC_USE_ENUM_PROPERTY_LISTS 
+	enumType = "none"; 	//NLC_ENUM_PROPERTY_LIST_DEFAULT_TYPE
+	//#endif
 };

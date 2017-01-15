@@ -100,7 +100,7 @@ unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * getConditionList
 	return conditionList;
 }
 
-bool addPropertyListByName(NLCgenericEntityClass* entity, NLCgenericEntityClass * propertyEntity)
+bool addPropertyGeneric(NLCgenericEntityClass* entity, NLCgenericEntityClass * propertyEntity)
 {
 	bool result = false;
 	vector<NLCgenericEntityClass*> * propertyList = getPropertyListByName(entity, propertyEntity->name);
@@ -109,10 +109,14 @@ bool addPropertyListByName(NLCgenericEntityClass* entity, NLCgenericEntityClass 
 		result = true;
 		propertyList->push_back(propertyEntity);
 	}
+	//#ifdef NLC_USE_ENUM_LISTS
+	string enumType = propertyEntity->enumType;
+	if(
+	//#endif
 	return result;
 }
 
-bool addConditionListByConditionName(NLCgenericEntityClass* entity, NLCgenericEntityClass * condition, NLCgenericEntityClass * conditionObject) 
+bool addConditionGeneric(NLCgenericEntityClass* entity, NLCgenericEntityClass * condition, NLCgenericEntityClass * conditionObject) 
 {
 	bool result = false;
 	unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * conditionList = getConditionListByName(entity, condition->name, conditionObject->name);
@@ -121,6 +125,9 @@ bool addConditionListByConditionName(NLCgenericEntityClass* entity, NLCgenericEn
 		result = true;
 		conditionList->insert(pair<NLCgenericEntityClass*, NLCgenericEntityClass*>(condition, conditionObject));
 	}
+	//#ifdef NLC_USE_ENUM_LISTS
+	if(
+	//#endif
 	return result;
 }
 

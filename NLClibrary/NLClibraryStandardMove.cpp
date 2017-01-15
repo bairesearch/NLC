@@ -92,7 +92,7 @@ void moveFunction(vector<moveClass*> &moveClassList, vector<NLCgenericEntityClas
 							for(unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> ::iterator iter4 = NLCgenericEntityToConditionList.begin(); iter4 != NLCgenericEntityToConditionList.end(); iter4++)
 							{
 								NLCgenericEntityClass* toConditionObject = iter4->second;
-  								addPropertyListByName(toConditionObject, moveObject);
+  								addPropertyGeneric(toConditionObject, moveObject);
 								#ifdef NLC_DEBUG_LIBRARY
 								cout << "move() pass: moveParentOld (fromConditionObject) = " << fromConditionObject->name << ", moveObject = " << moveObject->name << "moveParentNew (toConditionObject) = " << toConditionObject->name << endl;
 								#endif
@@ -116,4 +116,7 @@ void moveFunction(vector<moveClass*> &moveClassList, vector<NLCgenericEntityClas
 		}
 	}
 }
+
+
+
 

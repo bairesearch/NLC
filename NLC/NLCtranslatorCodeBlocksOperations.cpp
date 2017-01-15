@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12d 22-August-2015
+ * Project Version: 1q13a 23-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2753,19 +2753,6 @@ bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, 
 	{
 		result = false;
 	}
-	
-	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	actionEntity->NLClocalListVariableHasBeenDeclared = false;
-	#else
-	actionEntity->NLClocalListVariableHasBeenDeclared = false;
-	GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(actionEntity);
-	if(conceptEntity->NLClocalListVariableHasBeenDeclared)
-	{
-		conceptEntity->NLClocalListVariableHasBeenDeclared = false;
-	}
-	#endif
-	#endif
 	
 	return result;
 }

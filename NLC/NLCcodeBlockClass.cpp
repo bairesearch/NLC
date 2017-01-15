@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12d 22-August-2015
+ * Project Version: 1q13a 23-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -560,26 +560,49 @@ NLCcodeblock* createCodeBlocksCreateNewLocalListVariable(NLCcodeblock* currentCo
 
 NLCcodeblock* createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
 {
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	if(!(entity->NLClocalListVariableHasBeenDeclared))
-	{//added 1g8a 11-July-2014
-		entity->NLClocalListVariableHasBeenDeclared = true;
-	#else
-	entity->NLClocalListVariableHasBeenDeclared = true;	//added 1n4a
-	GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-	if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))
+	bool setNLCLocalListVariableHasBeenDeclared = true;
+	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+	if(entity->isAction)
 	{
-		
-		conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+		setNLCLocalListVariableHasBeenDeclared = false;
+	}
+	#endif
+	#ifdef NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
+	#ifndef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
+	if(entity->isSubstanceQuality)
+	{
+		setNLCLocalListVariableHasBeenDeclared = false;
+	}	
+	#endif
 	#endif
 	
-		currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
+	if(setNLCLocalListVariableHasBeenDeclared)
+	{	
+		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		if(!(entity->NLClocalListVariableHasBeenDeclared))
+		{//added 1g8a 11-July-2014
+			entity->NLClocalListVariableHasBeenDeclared = true;
+		#else
+		entity->NLClocalListVariableHasBeenDeclared = true;	//added 1n4a
+		GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+		if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))
+		{
+
+			conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+		#endif
+
+			currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity, setNLCLocalListVariableHasBeenDeclared);
+		}
+	}
+	else
+	{
+		currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity, setNLCLocalListVariableHasBeenDeclared);
 	}
 	
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool createTypeList)
 {	
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -588,20 +611,23 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentC
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_GENERATE_TYPE_LISTS
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	if(!(getPrimaryConceptNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared))
-	{	
-	#endif
-		//declare a generic type list (typeList) of local instance lists (instanceLists)
-		currentCodeBlockInTree = createCodeBlocksDeclareNewTypeListVariable(currentCodeBlockInTree, entity);
-		
-		//add local instance list to generic type list		
-		currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);
-		
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-		getPrimaryConceptNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;
+	if(createTypeList)
+	{
+		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		if(!(getPrimaryConceptNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared))	//ie typeList has not been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:conceptEntity->NLClocalListVariableHasBeenDeclared)
+		{	
+		#endif
+			//declare a generic type list (typeList) of local instance lists (instanceLists)
+			currentCodeBlockInTree = createCodeBlocksDeclareNewTypeListVariable(currentCodeBlockInTree, entity);
+
+			//add local instance list to generic type list		
+			currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);
+
+		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			getPrimaryConceptNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;	//ie typeList has been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:conceptEntity->NLClocalListVariableHasBeenDeclared)
+		}
+		#endif
 	}
-	#endif
 	#endif
 	
 	return currentCodeBlockInTree;

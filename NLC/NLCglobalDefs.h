@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12d 22-August-2015
+ * Project Version: 1q13a 23-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,7 +58,14 @@
 			#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST	//1q11c
 		//#endif
 	#endif
-	#define NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES	//1q10d
+	#define NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
+	#ifdef NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
+		//#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL	//has not yet been defined
+			#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined. NB must only check NLC_LOCAL_LISTS_USE_INSTANCE_NAMES/GIA_DISABLE_CROSS_SENTENCE_REFERENCING here because NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL has not yet been defined
+				#define NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES	//1q10d
+			#endif
+		//#endif
+	#endif
 	#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
 		#define NLC_PREVENT_REDECLARATIONS_OF_CATEGORY_LISTS
 	#else	

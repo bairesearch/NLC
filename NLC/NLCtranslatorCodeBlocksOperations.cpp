@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l7e 03-November-2014
+ * Project Version: 1l7f 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -348,9 +348,15 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 
 		if(generateContextForChildEntity(NULL, currentEntity, currentCodeBlockInTree, sentenceIndex))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetDefiniteUniqueParent()
 		{
-			cout << "generateContextForChildEntity pass parentEntity = " << currentEntity->entityName << endl;
+			//cout << "generateContextForChildEntity pass parentEntity = " << currentEntity->entityName << endl;
 			result = true;
 		}
+		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//ie #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+		else if(generateContextBasedOnDeclaredParent(currentEntity, currentCodeBlockInTree))
+		{
+			
+		}
+		#endif
 	}
 
 	return result;
@@ -1431,7 +1437,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		if(!(entity->isSubstanceQuality))	//this is required because referenced entities may have a connection to a parent defined in a preceeding sentence, yet generateObjectInitialisationsBasedOnPropertiesAndConditions is still executed on these entities (because they are tagged as wasReference and are accepted by checkSentenceIndexParsingCodeBlocks themselves)
 		{
 		#endif
-			//cout << "generateContextForChildEntity: entity = " << entity->entityName << endl;
+			//cout << "generateContextBasedOnDeclaredParent: entity = " << entity->entityName << endl;
 			if(assumedToAlreadyHaveBeenDeclared(entity))
 			{
 				NLCgenerateContextBlocksVariables generateContextBlocksVariables;

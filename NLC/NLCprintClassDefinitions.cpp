@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5c 13-October-2014
+ * Project Version: 1k5d 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -332,7 +332,11 @@ string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang)
 		currentItem->className = currentItem->functionArgumentPassCastClassName;
 	}
 	#endif
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_PASS_LISTS_BY_REFERENCE
+	string codePluralDefinitionText = generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+	#else
 	string codePluralDefinitionText = generateCodeEntityListDefinitionText(currentItem, progLang);	//OLD: generateCodePropertyListDefinitionText / progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + pluralClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION; 
+	#endif
 	currentItem->className = backupClassName;
 	return codePluralDefinitionText;
 }

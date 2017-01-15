@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5c 13-October-2014
+ * Project Version: 1k5d 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -233,6 +233,9 @@ static string progLangTemplateUsePart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"
 static string progLangTemplateUseClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {",", ",", ",", ",", ",", ",", ","};
 #endif
 
+static string progLangReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
+
+
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyClassName);
 string generateEntityLocalListName(NLCitem * entityParam);	//added 1i6a
@@ -245,6 +248,7 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 		string generateStringFromContextVector(vector<string> * context, int progLang);
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
 string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
+string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang);
 	string generateCodeEntityListDefinitionTypeText(string propertyClassName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);

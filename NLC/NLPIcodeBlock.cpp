@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e2c 22-November-2013
+ * Project Version: 1e2d 22-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -72,6 +72,22 @@ NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, N
 }
 
 //add property
+NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+{
+	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
+	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+	
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
 NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
 	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
@@ -89,6 +105,33 @@ NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTre
 }
 
 //add state
+NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
+{
+	if(!(conditionEntity->conditionObjectEntity->empty()))
+	{
+		NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+		getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(entityItem);
+
+		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
+		getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+		int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
+		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	}
+	else
+	{
+		cout << "error: condition does not have object" << endl;
+	}
+	
+	return currentCodeBlockInTree;
+}
+
 NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
@@ -147,19 +190,19 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 		{
 			if(entity->entityName == functionOwnerName)
 			{
-				entity->NLPIisArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+				entity->NLPIisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 				
 				functionOwner = entity;
 			}
 			else if(entity->entityName == functionObjectName)
 			{
-				entity->NLPIisArgument = true;
+				entity->NLPIisSingularArgument = true;
 			
 				functionObject = entity;
 			}
 			else if(entity->entityName == functionName)
 			{
-				entity->NLPIisArgument = true;	//added 1e2c
+				entity->NLPIisSingularArgument = true;	//added 1e2c
 			}
 		}
 	}	
@@ -222,12 +265,12 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = *entityIter;
-		if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
+		if(assumedToAlreadyHaveBeenDeclared(entity))
 		{
 			if(!(entity->isConcept))
 			{	
 				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-				if(!entity->NLPIisArgument)
+				if(!entity->NLPIisSingularArgument)
 				{
 				#endif
 					//detected "the x" without declaring x (ie implicit declaration)
@@ -239,6 +282,15 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 			}
 		}
 	}	
+}
+bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
+{
+	bool isAssumedToAlreadyHaveBeenDeclared = false;
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
+	{
+		isAssumedToAlreadyHaveBeenDeclared = true;
+	}
+	return isAssumedToAlreadyHaveBeenDeclared;
 }
 #endif
 

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5a 04-July-2014
+ * Project Version: 1g5b 05-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,7 +57,7 @@
 #ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 #include "GIAtranslatorOperations.h"
 #endif
-#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONJUNCTION_INTO_A_PROPERTY_CONJUNCTION
+#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 #include "GIAtranslatorDefs.h"
 #endif
 
@@ -627,7 +627,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g5a 04-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g5b 05-July-2014" << endl;
 			exit(1);
 		}
 
@@ -974,13 +974,13 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
 				if(actionHasSubject && actionHasObject)
 				{
-					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONJUNCTION_INTO_A_PROPERTY_CONJUNCTION
+					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 					/*
-					case A:
+					eg case A:
 					
 					a
 					|
-					has	and	x
+					has	and/if/etc	x
 					|
 					b
 
@@ -988,111 +988,94 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 
 					a
 					|
-					b	and 	x
+					b	and/if/etc 	x
 					*/
 					for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
 					{
 						GIAentityNode * conditionEntity = (*entityIter2);
 						if(conditionEntity->isCondition)
 						{
-							//cout << "conditionEntity->entityName = " << conditionEntity->entityName << endl;
-							bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-							/*
-							bool conjunctionConditionFound = false;
-							for(int i=0; i<ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+							//cout << "conjunctionConditionFound" << endl;
+							if(conditionEntity->sentenceIndexTemp == actionEntity->sentenceIndexTemp)	//if(checkSentenceIndexParsingCodeBlocks(conditionEntity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks))
 							{
-								if(conditionEntity->entityName == entityCoordinatingConjunctionArray[i])
+								//cout << "sentenceIndexTemp passed" << endl;
+								//conditionEntity eg "and"
+								bool conditionHasObject = false;
+								GIAentityNode * conditionObjectEntity = NULL;
+								if(!(conditionEntity->conditionObjectEntity->empty()))
 								{
-									conjunctionConditionFound = true;
+									conditionHasObject = true;
+									conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
 								}
-							}
-							*/
-
-
-							if(conjunctionConditionFound)
-							{
-								//cout << "conjunctionConditionFound" << endl;
-								if(conditionEntity->sentenceIndexTemp == actionEntity->sentenceIndexTemp)	//if(checkSentenceIndexParsingCodeBlocks(conditionEntity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks))
+								bool conditionHasSubject = false;
+								GIAentityNode * conditionSubjectEntity = NULL;
+								if(!(conditionEntity->conditionSubjectEntity->empty()))
 								{
-									//cout << "sentenceIndexTemp passed" << endl;
-									//conditionEntity eg "and"
-									bool conditionHasObject = false;
-									GIAentityNode * conditionObjectEntity = NULL;
-									if(!(conditionEntity->conditionObjectEntity->empty()))
+									conditionHasSubject = true;
+									conditionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
+								}
+
+								//Case A:
+								if(conditionHasSubject)
+								{
+									if(conditionSubjectEntity->entityName == actionEntity->entityName)	//ie == RELATION_ENTITY_SPECIAL_POSSESSIVE ("has")
 									{
-										conditionHasObject = true;
-										conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
-									}
-									bool conditionHasSubject = false;
-									GIAentityNode * conditionSubjectEntity = NULL;
-									if(!(conditionEntity->conditionSubjectEntity->empty()))
-									{
-										conditionHasSubject = true;
-										conditionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
-									}
-														
-									//Case A:
-									if(conditionHasSubject)
-									{
-										if(conditionSubjectEntity->entityName == actionEntity->entityName)	//ie == RELATION_ENTITY_SPECIAL_POSSESSIVE ("has")
+										bool foundReverseConnection = false;
+										for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->conditionNodeList->begin(); connectionIter != actionEntity->conditionNodeList->end(); )
 										{
-											bool foundReverseConnection = false;
-											for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->conditionNodeList->begin(); connectionIter != actionEntity->conditionNodeList->end(); )
+											GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
+											if(conditionEntity2 == conditionEntity)
 											{
-												GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
-												if(conditionEntity2 == conditionEntity)
-												{
-													connectionIter = actionEntity->conditionNodeList->erase(connectionIter);
-													foundReverseConnection = true;
-												}
-												else
-												{
-													connectionIter++;
-												}
-											}
-											if(foundReverseConnection)
-											{
-												(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
-												connectConditionInstanceToSubject(actionSubjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
-												cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONJUNCTION_INTO_A_PROPERTY_CONJUNCTION case A; foundReverseConnection" << endl;
+												connectionIter = actionEntity->conditionNodeList->erase(connectionIter);
+												foundReverseConnection = true;
 											}
 											else
 											{
-												cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONJUNCTION_INTO_A_PROPERTY_CONJUNCTION case A; !foundReverseConnection" << endl;
+												connectionIter++;
 											}
 										}
-									}
-									
-									//Case B:
-									if(conditionHasObject)
-									{
-										if(conditionObjectEntity->entityName == actionEntity->entityName)	//ie == RELATION_ENTITY_SPECIAL_POSSESSIVE ("has")
+										if(foundReverseConnection)
 										{
-											//cout << "conditionObjectEntity->entityName = " << conditionObjectEntity->entityName << endl;
-											bool foundReverseConnection = false;
-											for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->incomingConditionNodeList->begin(); connectionIter != actionEntity->incomingConditionNodeList->end(); )
+											(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
+											connectConditionInstanceToSubject(actionSubjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
+											cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A; foundReverseConnection" << endl;
+										}
+										else
+										{
+											cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A; !foundReverseConnection" << endl;
+										}
+									}
+								}
+
+								//Case B:
+								if(conditionHasObject)
+								{
+									if(conditionObjectEntity->entityName == actionEntity->entityName)	//ie == RELATION_ENTITY_SPECIAL_POSSESSIVE ("has")
+									{
+										//cout << "conditionObjectEntity->entityName = " << conditionObjectEntity->entityName << endl;
+										bool foundReverseConnection = false;
+										for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->incomingConditionNodeList->begin(); connectionIter != actionEntity->incomingConditionNodeList->end(); )
+										{
+											GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
+											if(conditionEntity2 == conditionEntity)
 											{
-												GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
-												if(conditionEntity2 == conditionEntity)
-												{
-													connectionIter = actionEntity->incomingConditionNodeList->erase(connectionIter);
-													foundReverseConnection = true;
-												}
-												else
-												{
-													connectionIter++;
-												}
-											}
-											if(foundReverseConnection)
-											{
-												(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
-												connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);	//actionObjectEntity->incomingConditionNodeList->push
-												cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONJUNCTION_INTO_A_PROPERTY_CONJUNCTION case B; foundReverseConnection" << endl;
+												connectionIter = actionEntity->incomingConditionNodeList->erase(connectionIter);
+												foundReverseConnection = true;
 											}
 											else
 											{
-												cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONJUNCTION_INTO_A_PROPERTY_CONJUNCTION case B; !foundReverseConnection" << endl;
+												connectionIter++;
 											}
+										}
+										if(foundReverseConnection)
+										{
+											(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
+											connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);	//actionObjectEntity->incomingConditionNodeList->push
+											cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B; foundReverseConnection" << endl;
+										}
+										else
+										{
+											cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B; !foundReverseConnection" << endl;
 										}
 									}
 								}
@@ -1136,6 +1119,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					}
 				}
 				addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
+				actionObjectEntity->negative = actionEntity->negative;
 			}
 		}
 	}

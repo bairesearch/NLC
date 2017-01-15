@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5a 04-July-2014
+ * Project Version: 1g5b 05-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,7 +52,7 @@ using namespace std;
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
 
-#define NLC_ITEM_INSTANCE_ID_UNDEFINED (-1)
+#define NLC_ITEM_INSTANCE_ID_UNDEFINED (INT_DEFAULT_VALUE)
 
 #define NLC_ITEM_TYPE_UNDEFINED (-1)
 #define NLC_ITEM_TYPE_OBJECT (0)
@@ -69,7 +69,7 @@ using namespace std;
 #define NLC_ITEM_TYPE_FUNCTION_OWNER (11)
 #define NLC_ITEM_TYPE_FUNCTION_OBJECT (12)
 #define NLC_ITEM_TYPE_NEGATIVE (13)
-
+#define NLC_ITEM_TYPE_VARIABLE (14)
 
 #define NLC_CLASS_NAME_APPEND "Class"
 #define NLC_FUNCTION_NAME_APPEND "Function"
@@ -109,6 +109,9 @@ public:
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only
 
 	bool negative;
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	int conjunctionType;
+	#endif
 };
 
 

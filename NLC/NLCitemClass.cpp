@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5a 04-July-2014
+ * Project Version: 1g5b 05-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,6 +54,9 @@ NLCitem::NLCitem(void)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	conjunctionType = INT_DEFAULT_VALUE;
+	#endif
 }
 NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 {
@@ -70,6 +73,9 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	conjunctionType = INT_DEFAULT_VALUE;
+	#endif
 }
 NLCitem::NLCitem(string newName, int newItemType)
 {
@@ -90,6 +96,9 @@ NLCitem::NLCitem(string newName, int newItemType)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	conjunctionType = INT_DEFAULT_VALUE;
+	#endif
 }
 NLCitem::NLCitem(NLCitem * newItem)
 {
@@ -106,6 +115,9 @@ NLCitem::NLCitem(NLCitem * newItem)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
 	#endif	
 	negative = false;
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	conjunctionType = INT_DEFAULT_VALUE;
+	#endif
 }
 NLCitem::~NLCitem(void)
 {

@@ -23,7 +23,7 @@
  * File Name: NLPIprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e4a 23-November-2013
+ * Project Version: 1e5a 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -45,7 +45,6 @@ using namespace std;
 #include "NLPIclassDefinition.h"
 	
 bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);	
-	string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 		string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang);
 		string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang);

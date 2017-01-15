@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e4a 23-November-2013
+ * Project Version: 1e5a 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -99,11 +99,11 @@ static string progLangParameterSpaceNextParam[NLPI_NUMBER_OF_PROGRAMMING_LANGUAG
 static string progLangPointer[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*", "*", "*", "*", "*", "*", "*"};
 static string progLangNot[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"!", "!", "!", "!", "!", "!", "!"};
 static string progLangEquals[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" = ", " = ", " = ", " = ", " = ", " = ", " = "};
-static string progLangForVectorIterPart1[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(vector<", "(vector<", "(vector<", "(vector<", "(vector<", "(vector<", "(vector<"};
-static string progLangForVectorIterPart2[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = "};
-static string progLangForVectorIterPart3[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < "};
-static string progLangForVectorIterPart4[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)"};
-static string progLangForVectorIterName[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"iter", "iter", "iter", "iter", "iter", "iter", "iter"};
+static string progLangForIterPart1[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(vector<", "(vector<", "(vector<", "(vector<", "(vector<", "(vector<", "(vector<"};
+static string progLangForIterPart2[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = ", "*>::iterator iter = "};
+static string progLangForIterPart3[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < ", ".begin(); iter < "};
+static string progLangForIterPart4[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)", ".end(); iter++)"};
+static string progLangForIterName[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"iter", "iter", "iter", "iter", "iter", "iter", "iter"};
 
 static string progLangNewObject[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ", "new ", "new ", "new ", "new ", "new ", "new "};
 static string progLangAddProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};

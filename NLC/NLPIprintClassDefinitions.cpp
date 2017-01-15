@@ -23,7 +23,7 @@
  * File Name: NLPIprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e4a 23-November-2013
+ * Project Version: 1e5a 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -134,16 +134,6 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			printLine("", 0, code);
 		}
 	}
-}
-
-string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang)
-{
-	#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + conditionClassName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;
-	#else
-	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + generateConditionListName(conditionClassName, conditionObjectClassName);				
-	#endif
-	return codeConditionListDefinitionText;
 }
 
 void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang)

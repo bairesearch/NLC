@@ -23,7 +23,7 @@
  * File Name: NLPIprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e4a 23-November-2013
+ * Project Version: 1e5a 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -131,24 +131,33 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			printLine(codeBlockText, level, code);
 
 		}			
-		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_FOR)
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 		{
 			#ifdef NLPI_DEBUG
-			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_FOR" << endl;
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST" << endl;
 			#endif
-			if(progLang == NLPI_PROGRAMMING_LANGUAGE_DEFAULT)
-			{
-				string codeBlockText = progLangFor[progLang] + progLangForVectorIterPart1[progLang] + param1->className + progLangForVectorIterPart2[progLang] + contextParam1 + param1->className + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangForVectorIterPart3[progLang] + contextParam1 + param1->className + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangForVectorIterPart4[progLang];
-				printLine(codeBlockText, level, code);
-				printLine(progLangOpenBlock[progLang], level, code);
-				string tempVarDeclarationText = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + progLangPointer[progLang] + progLangForVectorIterName[progLang] + progLangEndLine[progLang];	//OLD:  param1->className + NLPI_ITEM_TYPE_TEMPVAR_APPENDITION
-				printLine(tempVarDeclarationText, (level+1), code);
-			}
-			else
-			{
-				cout << "error: printCodeBlocks() only yet finished for NLPI_PROGRAMMING_LANGUAGE_DEFAULT" << endl; 
-			}
+			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodePropertyListDefinitionTypeText(param1->className, progLang) + progLangForIterPart2[progLang] + contextParam1 + generatePropertyListName(param1->className) + progLangForIterPart3[progLang] + contextParam1 + generatePropertyListName(param1->className) + progLangForIterPart4[progLang];
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+			string tempVarDeclarationText = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + progLangEndLine[progLang];	//OLD:  param1->className + NLPI_ITEM_TYPE_TEMPVAR_APPENDITION
+			printLine(tempVarDeclarationText, (level+1), code);
+
+			//?cout << "error: printCodeBlocks() only yet finished for NLPI_PROGRAMMING_LANGUAGE_DEFAULT" << endl; 
 		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST)
+		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST" << endl;
+			#endif
+			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeConditionListDefinitionTypeText(param1->className, param2->className, progLang) + progLangForIterPart2[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart3[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart4[progLang];
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+			string tempVarDeclarationText = param2->className + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + progLangForIterConditionObjectReference[progLang] + progLangEndLine[progLang];
+			printLine(tempVarDeclarationText, (level+1), code);
+
+			//?cout << "error: printCodeBlocks() only yet finished for NLPI_PROGRAMMING_LANGUAGE_DEFAULT" << endl; 
+		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_NEW_FUNCTION)
 		{
 			#ifdef NLPI_DEBUG

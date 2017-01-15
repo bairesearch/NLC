@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e4a 23-November-2013
+ * Project Version: 1e5a 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -174,12 +174,23 @@ NLPIcodeblock * createCodeBlockAddNewListVariable(NLPIcodeblock * currentCodeBlo
 
 
 
-NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item)
+NLPIcodeblock * createCodeBlockForPropertyList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR;
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+
+NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	currentCodeBlockInTree->parameters.push_back(objectItem);
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+
+
 
 
 NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string NLPIfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
@@ -308,7 +319,7 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 
 
 /*
-NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
+NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
 {
 	for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 	{
@@ -323,91 +334,17 @@ NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTr
 }
 */
 
-
-NLPIcodeblock * createCodeBlockIfHasProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex)
-{
-	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
-	{
-		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-		if(!(propertyConnection->parsedForNLPIcodeBlocks))
-		{
-			GIAentityNode* propertyEntity = propertyConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, true))
-			{//only write conditions that are explicated in current sentence
-				currentCodeBlockInTree = createCodeBlockIfHasProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
-				propertyConnection->parsedForNLPIcodeBlocks = true;
-			}
-		}
-	}
-	return currentCodeBlockInTree;
-}
-NLPIcodeblock * createCodeBlockIfHasProperty(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* propertyEntity, int sentenceIndex)
-{
-	currentCodeBlockInTree->parameters.push_back(item);
-	
-	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_CLASS);
-	currentCodeBlockInTree->parameters.push_back(propertyItem);
-	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
-	currentCodeBlockInTree = createCodeBlockIfStatements(currentCodeBlockInTree, propertyItem, propertyEntity, sentenceIndex);
-	return currentCodeBlockInTree;
-}
-
-NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item,  GIAentityNode * entity, int sentenceIndex)
-{
-	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
-	{
-		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-		if(!(conditionConnection->parsedForNLPIcodeBlocks))
-		{
-			GIAentityNode* conditionEntity = conditionConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, true))
-			{	
-				currentCodeBlockInTree = createCodeBlockIfHasCondition(currentCodeBlockInTree, item, conditionEntity, sentenceIndex);
-				conditionConnection->parsedForNLPIcodeBlocks = true;
-			}
-		}			
-	}
-	return currentCodeBlockInTree;
-}
-NLPIcodeblock * createCodeBlockIfHasCondition(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* conditionEntity, int sentenceIndex)
-{
-	if(!(conditionEntity->conditionObjectEntity->empty()))
-	{
-		currentCodeBlockInTree->parameters.push_back(item);
-		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_FUNCTION);		//NLPI_ITEM_TYPE_FUNCTION??
-		currentCodeBlockInTree->parameters.push_back(conditionItem);
-		
-		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
-		getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, true);
-		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
-		
-		int codeBlockType = NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-		
-		currentCodeBlockInTree = createCodeBlockIfStatements(currentCodeBlockInTree, conditionObjectItem, conditionObject, sentenceIndex);
-	}
-	else
-	{
-		cout << "error createCodeBlockIfHasCondition(): condition does not have object" << endl;
-	}
-	return currentCodeBlockInTree;
-}
-
-NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
+NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
 {
 	//LIMITATION: only parse 1 sub level of conditions:
 
 	//if object near a red car / if object has a red car (if object has a car which is red)
 	//if(item->has(property) && item->has(property1) etc..){
-	currentCodeBlockInTree = createCodeBlockIfHasProperties(currentCodeBlockInTree, item, entity, sentenceIndex);
+	currentCodeBlockInTree = createCodeBlockForGivenProperties(currentCodeBlockInTree, item, entity, sentenceIndex);
 
 	//if object near a car that is behind the driveway / if object has a car that is near the house 
 	//if(item > 3){		/	if(greaterthan(item, 3)){
-	currentCodeBlockInTree = createCodeBlockIfHasConditions(currentCodeBlockInTree, item, entity, sentenceIndex);
+	currentCodeBlockInTree = createCodeBlockForGivenConditions(currentCodeBlockInTree, item, entity, sentenceIndex);
 
 	/*
 	//if object near a car that is towed by a truck / if object has a car that is towed by a truck
@@ -424,6 +361,70 @@ NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTr
 	*/	
 }		
 
+NLPIcodeblock * createCodeBlockForGivenProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex)
+{
+	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
+	{
+		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
+		if(!(propertyConnection->parsedForNLPIcodeBlocks))
+		{
+			GIAentityNode* propertyEntity = propertyConnection->entity;
+			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, true))
+			{//only write conditions that are explicated in current sentence
+				currentCodeBlockInTree = createCodeBlockForGivenProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
+				propertyConnection->parsedForNLPIcodeBlocks = true;
+			}
+		}
+	}
+	return currentCodeBlockInTree;
+}
+NLPIcodeblock * createCodeBlockForGivenProperty(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* propertyEntity, int sentenceIndex)
+{
+	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_CLASS);
+	propertyItem->context.push_back(item->instanceName);
+	currentCodeBlockInTree = createCodeBlockForPropertyList(currentCodeBlockInTree, propertyItem);
+	
+	currentCodeBlockInTree = createCodeBlockForStatements(currentCodeBlockInTree, propertyItem, propertyEntity, sentenceIndex);
+	return currentCodeBlockInTree;
+}
+
+NLPIcodeblock * createCodeBlockForGivenConditions(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item,  GIAentityNode * entity, int sentenceIndex)
+{
+	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
+	{
+		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
+		if(!(conditionConnection->parsedForNLPIcodeBlocks))
+		{
+			GIAentityNode* conditionEntity = conditionConnection->entity;
+			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, true))
+			{	
+				currentCodeBlockInTree = createCodeBlockForGivenCondition(currentCodeBlockInTree, item, conditionEntity, sentenceIndex);
+				conditionConnection->parsedForNLPIcodeBlocks = true;
+			}
+		}			
+	}
+	return currentCodeBlockInTree;
+}
+NLPIcodeblock * createCodeBlockForGivenCondition(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* conditionEntity, int sentenceIndex)
+{
+	if(!(conditionEntity->conditionObjectEntity->empty()))
+	{
+		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+
+		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_CLASS);
+		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_CLASS);
+		conditionItem->context.push_back(item->instanceName);
+		conditionObjectItem->context.push_back(item->instanceName);	//redundant
+		currentCodeBlockInTree = createCodeBlockForConditionList(currentCodeBlockInTree, conditionItem, conditionObjectItem);
+			
+		currentCodeBlockInTree = createCodeBlockForStatements(currentCodeBlockInTree, conditionObjectItem, conditionObject, sentenceIndex);
+	}
+	else
+	{
+		cout << "error createCodeBlockForGivenCondition(): condition does not have object" << endl;
+	}
+	return currentCodeBlockInTree;
+}
 
 
 NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType)

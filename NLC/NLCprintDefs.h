@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8g 24-August-2014
+ * Project Version: 1i9a 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -189,5 +189,8 @@ string generateCodePropertyListDefinitionText(string propertyClassName, int prog
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
 
+#ifdef NLC_GENERATE_TYPE_LISTS
+string generateCodePropertyListDefinitionTypeText2(string propertyClassName, int progLang);
+#endif
 
 #endif

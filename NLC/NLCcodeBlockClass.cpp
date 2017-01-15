@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8g 24-August-2014
+ * Project Version: 1i9a 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1166,6 +1166,18 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 
 
 
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{	
+	NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+
+	currentCodeBlockInTree->parameters.push_back(entityClass);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REASSIGN_ITER;
+
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
 NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -1199,27 +1211,6 @@ NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCod
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock * createCodeBlockAddGenericListToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2)
-{
-	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
-
-	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-	currentCodeBlockInTree->parameters.push_back(propertyItem);
-
-	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
-
-	NLCitem * genericListAppendItem2 = new NLCitem(genericListAppendName2, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(genericListAppendItem2);
-		
-	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_GENERIC_LIST_TO_GENERIC_LIST;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-
-	return currentCodeBlockInTree;
-}
-
 NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -1230,18 +1221,6 @@ NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeB
 	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
-{	
-	NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-
-	currentCodeBlockInTree->parameters.push_back(entityClass);
-	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_REASSIGN_ITER;
-
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
@@ -1260,17 +1239,66 @@ NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCode
 #endif
 
 #ifdef NLC_GENERATE_TYPE_LISTS
+NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+
+	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockAddPropertyToGenericList2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+
+	NLCitem * genericListAppendItem2 = new NLCitem(genericListAppendName2, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem2);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockForPropertyListGeneric2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+	
+	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC2;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
 NLCcodeblock * createCodeBlocksDeclareNewTypeListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPEVAR_APPENDITION2);
+	return createCodeBlocksDeclareNewGenericListVariable2(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPEVAR_APPENDITION2);
 }
 NLCcodeblock * createCodeBlockAddInstanceListToTypeList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
 {
-	return createCodeBlockAddGenericListToGenericList(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPEVAR_APPENDITION2, propertyEntity, NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION2);
+	return createCodeBlockAddPropertyToGenericList2(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPEVAR_APPENDITION2, propertyEntity, NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION2);
 }
 NLCcodeblock * createCodeBlockForPropertyTypeClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	return createCodeBlockForPropertyListGeneric(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPEVAR_APPENDITION2);
+	return createCodeBlockForPropertyListGeneric2(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPEVAR_APPENDITION2);
 }
 #endif
 

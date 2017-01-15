@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8g 24-August-2014
+ * Project Version: 1i9a 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -512,7 +512,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 	
-			string localListDeclarationText = generateCodePropertyListDefinitionTypeText(param1->className, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangEndLine[progLang];	//vector<param1Class*> param1instanceCategoryPropertyList;
+			string localListDeclarationText = generateCodePropertyListDefinitionTypeText(param1->className, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangEndLine[progLang];	//vector<param1Class*> param1instanceCategoryList;
 			printLine(localListDeclarationText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST)
@@ -524,21 +524,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 
-			string codeBlockText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceCategoryPropertyList.push_back(param2);
-			printLine(codeBlockText, level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_GENERIC_LIST_TO_GENERIC_LIST)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_GENERIC_LIST_TO_GENERIC_LIST" << endl;
-			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
-			NLCitem * param4 = currentCodeBlockInLevel->parameters.at(3);
-			string genericListAppendName = param3->name;
-			string genericListAppendName2 = param4->name;
-
-			string codeBlockText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param2->instanceName, genericListAppendName2) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceCategoryPropertyList.push_back(param2);
+			string codeBlockText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceCategoryList.push_back(param2);
 			printLine(codeBlockText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC)
@@ -560,7 +546,53 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string tempVarDeclarationText = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//OLD:  param1->className + NLC_ITEM_TYPE_TEMPVAR_APPENDITION
 			printLine(tempVarDeclarationText, (level+1), code);
 		}
-		#endif		
+		#endif	
+		#ifdef NLC_GENERATE_TYPE_LISTS
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string genericListAppendName = param2->name;
+	
+			string localListDeclarationText = generateCodePropertyListDefinitionTypeText2(param1->className, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangEndLine[progLang];	//vector<vector<param1Class*>> param1instanceTypeList;
+			printLine(localListDeclarationText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem * param4 = currentCodeBlockInLevel->parameters.at(3);
+			string genericListAppendName = param3->name;
+			string genericListAppendName2 = param4->name;
+
+			string codeBlockText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param2->instanceName, genericListAppendName2) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceTypeList.push_back(param2);
+			printLine(codeBlockText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC2)
+		{
+			string iterIndexString = convertIntToString(level);
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC2" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string genericListAppendName = param2->name;
+			
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodePropertyListDefinitionTypeText2(param1->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
+			#else
+			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodePropertyListDefinitionTypeText2(param1->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
+			#endif
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+			string tempVarDeclarationText = generateCodePropertyListDefinitionTypeText(param1->className, progLang) + generatePropertyListName(param1->className) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//OLD:  param1->className + NLC_ITEM_TYPE_TEMPVAR_APPENDITION
+			printLine(tempVarDeclarationText, (level+1), code);
+		}
+		#endif	
 		else
 		{
 			cout << "printCodeBlocks: error: currentCodeBlockInLevel->codeBlockType = " << currentCodeBlockInLevel->codeBlockType << endl;

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8g 24-August-2014
+ * Project Version: 1i9a 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -89,10 +89,14 @@ using namespace std;
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_REASSIGN_ITER (29)
 #endif
-#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE (30)
-#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST (31)
-#define NLC_CODEBLOCK_TYPE_ADD_GENERIC_LIST_TO_GENERIC_LIST (32)
-
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE (30)
+	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST (31)
+#endif
+#ifdef NLC_GENERATE_TYPE_LISTS
+	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (32)
+	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2 (33)
+#endif
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (40)		//forall(context1.param1PropertyList){
@@ -118,6 +122,9 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_WHILE (54)
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC (55)
+#endif
+#ifdef NLC_GENERATE_TYPE_LISTS
+	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC2 (56)
 #endif
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
@@ -279,22 +286,24 @@ NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInT
 
 NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockInTree, string comment);
 
-NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
-NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockAddGenericListToGenericList(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
 #endif
 
 #ifdef NLC_GENERATE_TYPE_LISTS
 NLCcodeblock * createCodeBlocksDeclareNewTypeListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlockAddInstanceListToTypeList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockForPropertyTypeClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockAddPropertyToGenericList2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2);
+	NLCcodeblock * createCodeBlockForPropertyListGeneric2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);

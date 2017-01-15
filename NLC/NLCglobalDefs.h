@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k16f 24-October-2014
+ * Project Version: 1k17a 25-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -113,11 +113,11 @@
 		#define NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED	//1i8a+
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED
 			#ifndef NLC_DISABLE_1j_CODE_FOR_DEBUG
-				//#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL is required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES. It is not required for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES, but should be tested with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES also as it is a cleaner more general implementation
+				#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL is required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES. It is not required for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES, but should be tested with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES also as it is a cleaner more general implementation
 					#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 						#define NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL	//added 1j6a	//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 					#endif
-				//#endif
+				#endif
 			#endif
 			#define NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD	//1i8b
 			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD

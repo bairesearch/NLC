@@ -60,7 +60,7 @@
 	#endif
 	#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-		//#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES	//not supported by Stanford NLP at present (_num relation is not generated)
+		#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES	//not supported by Stanford NLP at present (_num relation is not generated)
 	#endif
 	#define NLC_USE_LIBRARY
 	#ifdef NLC_USE_LIBRARY

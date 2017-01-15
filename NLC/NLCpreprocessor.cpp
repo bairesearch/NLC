@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2e 27-July-2014
+ * Project Version: 1h2f 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -157,10 +157,6 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				if(detectMathSymbolsInLine(&lineContents))
 				{
 					currentNLCsentenceInList->isMath = true;
-					
-					#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-					replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(&lineContents);
-					#endif
 				}
 				
 				int lineLogicalConditionOperator;
@@ -191,6 +187,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				
 				if(currentNLCsentenceInList->isMath)
 				{
+					#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+					replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(&lineContents);
+					#endif
+					
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases():" << endl;
 					#endif
@@ -832,7 +832,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 		cout << "add dummy phrase for NLP to parse: " << string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY) << endl;
 		#endif
-		firstNLCsentenceInFullSentence->sentenceContents = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY);
+		(*currentNLCsentenceInList)->sentenceContents = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY);
+		(*currentNLCsentenceInList)->next = new NLCsentence();
+		(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
+		(*sentenceIndex) = (*sentenceIndex) + 1;
 	}
 	
 	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES

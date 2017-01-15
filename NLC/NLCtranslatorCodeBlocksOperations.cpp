@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l5a 02-November-2014
+ * Project Version: 1l5b 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1177,38 +1177,41 @@ bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCod
 	cout << "generateCodeBlocksObjectInitialisationsForEntity: getParent()" << endl;
 	#endif
 	GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);	//parse condition parents in accordance with original generateCodeBlocksPart4objectInitialisations implementation
-	#ifdef NLC_DEBUG_PARSE_CONTEXT
-	cout << "\tparentEntity = " << parentEntity->entityName << endl;
-	cout << "generateCodeBlocksObjectInitialisationsForEntity: generateParentInitialisationCodeBlockWithChecks()" << endl;
-	#endif
-	if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
+	if(!checkSpecialCaseEntity(parentEntity))
 	{
 		#ifdef NLC_DEBUG_PARSE_CONTEXT
-		cout << "\tfail generateParentInitialisationCodeBlockWithChecks" << endl;
-		cout << "generateCodeBlocksObjectInitialisationsForEntity: generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions()" << endl;
+		cout << "\tparentEntity = " << parentEntity->entityName << endl;
+		cout << "generateCodeBlocksObjectInitialisationsForEntity: generateParentInitialisationCodeBlockWithChecks()" << endl;
 		#endif
-		if(!generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", true, false))
+		if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
 		{
-			*currentCodeBlockInTree = originalCodeBlockInLevel;
-			clearCodeBlock(originalCodeBlockInLevel);
-
 			#ifdef NLC_DEBUG_PARSE_CONTEXT
-			cout << "\tfail generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
+			cout << "\tfail generateParentInitialisationCodeBlockWithChecks" << endl;
+			cout << "generateCodeBlocksObjectInitialisationsForEntity: generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions()" << endl;
 			#endif
+			if(!generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", true, false))
+			{
+				*currentCodeBlockInTree = originalCodeBlockInLevel;
+				clearCodeBlock(originalCodeBlockInLevel);
+
+				#ifdef NLC_DEBUG_PARSE_CONTEXT
+				cout << "\tfail generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
+				#endif
+			}
+			else
+			{
+				*currentCodeBlockInTree = getLastCodeBlockInLevel(originalCodeBlockInLevel);
+				#ifdef NLC_DEBUG_PARSE_CONTEXT
+				cout << "\tpass generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
+				#endif
+			}
 		}
 		else
 		{
-			*currentCodeBlockInTree = getLastCodeBlockInLevel(originalCodeBlockInLevel);
 			#ifdef NLC_DEBUG_PARSE_CONTEXT
-			cout << "\tpass generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
+			cout << "\tpass generateParentInitialisationCodeBlockWithChecks" << endl;
 			#endif
 		}
-	}
-	else
-	{
-		#ifdef NLC_DEBUG_PARSE_CONTEXT
-		cout << "\tpass generateParentInitialisationCodeBlockWithChecks" << endl;
-		#endif
 	}
 	return result;
 }
@@ -2240,3 +2243,13 @@ void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, ve
 }
 
 #endif
+
+bool checkSpecialCaseEntity(GIAentityNode * entity)
+{
+	bool specialCaseEntity = false;
+	if((entity->isConcept) || (entity->isAction) || (entity->isSubstanceConcept) || (entity->isActionConcept) || (entity->isCondition))
+	{
+		specialCaseEntity = true;
+	}
+	return specialCaseEntity;
+}			

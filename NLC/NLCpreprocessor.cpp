@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2h 28-July-2014
+ * Project Version: 1h2i 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -666,8 +666,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	string newlyDeclaredVariable = "";
 	#endif
 	
+	int startIndex = 0;
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
+		//prevent logical condition operatators from being considered legal words by splitMathDetectedLineIntoNLPparsablePhrases
+		startIndex = logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator].length();
+		mathText = mathText + logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator];
+	}
+	
 	bool finalWordInSentenceFoundAndIsLegal = false;
-	for(int i=0; i<lineContents->length(); i++)
+	for(int i=startIndex; i<lineContents->length(); i++)
 	{
 		//eg y = x+the number of house in the park
 		//eg y = x+(the number of house in the park)
@@ -1004,9 +1012,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 							
 			if(phraseContainsPrimarySubject)
 			{	
-				//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				cout << "\nphraseContainsPrimarySubject: " << currentPhrasePrimarySubject->sentenceContents << endl;
-				//#endif
+				#endif
 				
 				int indexOfPrimaryAuxillaryTaggingSubject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
 				int primaryAuxillaryType;
@@ -1039,7 +1047,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 									{
 										indexOfClosestIgnoredAuxillary = indexOfAuxillaryTemp;
 									}
-									cout << "ignoreAuxillary" << endl;
+									#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+									//cout << "ignoreAuxillary" << endl;
+									#endif
 								}
 							}
 
@@ -1047,7 +1057,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 							{
 								indexOfNextClosestAuxillary = indexOfAuxillaryTemp;
 								primaryAuxillaryType = i;
-								cout << "found nextClosestAuxillary: " << preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[i] << ", indexOfNextClosestAuxillary = " << indexOfNextClosestAuxillary << endl;
+								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+								//cout << "found nextClosestAuxillary: " << preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[i] << ", indexOfNextClosestAuxillary = " << indexOfNextClosestAuxillary << endl;
+								#endif
 							}
 						}
 					}
@@ -1059,7 +1071,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					else if(foundAnAuxillaryButItWasIgnored)
 					{
 						startPosToSearchForAuxillary = indexOfClosestIgnoredAuxillary + 1;
-						cout << "startPosToSearchForAuxillary = indexOfClosestIgnoredAuxillary: " << indexOfClosestIgnoredAuxillary << endl;
+						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						//cout << "startPosToSearchForAuxillary = indexOfClosestIgnoredAuxillary: " << indexOfClosestIgnoredAuxillary << endl;
+						#endif
 					}
 					else
 					{
@@ -1079,10 +1093,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					for(int phraseIndex2=phraseIndex+1; phraseIndex2<maxPhraseIndex; phraseIndex2++)					
 					{
 						//now for each secondary auxillary referencing the subject, artificially generate (copy) the subject text
-						//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 						cout << "currentPhraseReferenceToPrimarySubject = " << currentPhraseReferenceToPrimarySubject->sentenceContents << endl;
 						cout << "preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[primaryAuxillaryType] = " << preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[primaryAuxillaryType] << endl;
-						//#endif
+						#endif
 						int indexOfSecondaryAuxillaryReferencingSubject = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[primaryAuxillaryType]);	
 						if((indexOfSecondaryAuxillaryReferencingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfSecondaryAuxillaryReferencingSubject == 0))
 						{

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q8b 20-August-2015
+ * Project Version: 1q9a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -776,6 +776,9 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 //#endif
 
 #define NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+	#define NLC_ENTITY_VECTOR_CONNECTION_TYPE_FUNCTIONS (14)	//added 1q9a //artificial entity connection representing attached functionLists (redundant if NLC_RECORD_ACTION_HISTORY:GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS/actionLists is used)
+#endif
 //#define NLC_BAD_IMPLEMENTATION
 
 //#define NLC_PRINT_EXPLICIT_LOCAL_CONTEXT

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q8b 20-August-2015
+ * Project Version: 1q9a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,10 +57,11 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 	string generateSubstanceConceptClassName(GIAentityNode* substanceConceptEntity);
 		void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEntity, string* substanceConceptClassName);
 	#endif
-	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+void preventDoubleDeclarationsOfClassDefinitionVariablesInHeirachy(vector<NLCclassDefinition*>* classDefinitionList);
 	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition* classDefinition, vector<NLCclassDefinition*>* classDefinitionSublist, int variableType);
 		bool findVariableInParentClass(NLCclassDefinition* classDefinition, string variableName, int variableType);
-	#endif
+#endif
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode* actionEntity, vector<NLCitem*>* parameters);

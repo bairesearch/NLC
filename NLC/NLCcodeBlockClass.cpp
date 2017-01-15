@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2b 12-June-2015
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2817,6 +2817,18 @@ NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathValue(NLCcodeblock* cu
 }
 
 //check that pointer is not NULL
+#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+NLCcodeblock* createCodeBlockTestDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
+{
+	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_TEST_DECIMAL_POINTER_VALUE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+#else
 NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
 {
 	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
@@ -2827,6 +2839,8 @@ NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeB
 	
 	return currentCodeBlockInTree;
 }
+#endif
+
 #endif
 
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2b 12-June-2015
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -399,13 +399,16 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 	else
 	{
 	#endif
+
 		*currentCodeBlockInTree = createCodeBlockMathTextLine(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->mathText);
 		
 		#ifdef NLC_USE_MATH_OBJECTS
+		#ifndef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
 		if(firstNLCsentenceInFullSentence->mathTextIdentifiesMathValue)
 		{
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockInTreeAtBaseLevel);
 		}
+		#endif
 		#endif
 		
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -706,7 +709,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			}
 			if(foundParsablePhrase)
 			{
+				#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+				*currentCodeBlockInTree = createCodeBlockTestDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);			 //if(thedogsvalue == NULL) { cout << "error" << endl;}
+				#else
 				*currentCodeBlockInTree = createCodeBlockCheckDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);		 //if(thedogsvalue != NULL)
+				#endif
 			}
 			else
 			{

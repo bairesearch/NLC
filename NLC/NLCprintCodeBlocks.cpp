@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2b 12-June-2015
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1174,6 +1174,23 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string setDecimalPointerToEntityMathValueText = generateCodePointerValueText(param1, progLang) + progLangEquals[progLang] + generateCodeEntityMathValueText(param2, progLang) + progLangEndLine[progLang];	 //*param1 = param2->value;
 			printLine(setDecimalPointerToEntityMathValueText, level, code);
 		}
+		#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_DECIMAL_POINTER_VALUE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_DECIMAL_POINTER_VALUE" << endl;
+			#endif
+						
+			string ifDecimalPointerNotNullText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param1->name + progLangEqualsTest[progLang] + progLangNullPointer[progLang] + progLangCloseParameterSpace[progLang];	 //if(param1 == NULL)
+			printLine(ifDecimalPointerNotNullText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);	//{
+			
+			string throwNullPointerErrorText = string(progLangPrintTextOpen[progLang]) + "NLC runtime error: math value pointer undefined (referenced value could not be found); mathText excution will crash" + progLangPrintTextClose[progLang];
+			printLine(throwNullPointerErrorText, level+1, code);
+			
+			printLine(progLangCloseBlock[progLang], level, code);	//}
+		}		
+		#else
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE)
 		{
 			#ifdef NLC_DEBUG
@@ -1184,6 +1201,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(ifDecimalPointerNotNullText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);	//{			
 		}
+		#endif
 		#endif		
 		/*
 		else if(currentCodeBlockInLevel->codeBlockType == ...)

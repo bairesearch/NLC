@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2b 12-June-2015
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -146,6 +146,9 @@
 	#define NLC_CODEBLOCK_TYPE_SET_MATH_VALUE (65)
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE (66)
 	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_VALUE (67)
+	#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+		#define NLC_CODEBLOCK_TYPE_TEST_DECIMAL_POINTER_VALUE (68)
+	#endif
 #endif
 
 //containers:
@@ -219,7 +222,9 @@
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_EXECUTE_FUNCTION (136)
 #endif
 #ifdef NLC_USE_MATH_OBJECTS
-	#define NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE (137)
+	#ifndef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+		#define NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE (137)
+	#endif
 #endif
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
@@ -586,7 +591,11 @@ NLCcodeblock* createCodeBlockAddConditionNewFunction(NLCcodeblock* currentCodeBl
 NLCcodeblock* createCodeBlockSetMathValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string DecimalPointerVariableName);
 NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity);
+#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+NLCcodeblock* createCodeBlockTestDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);
+#else
 NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);
+#endif
 #endif
 
 

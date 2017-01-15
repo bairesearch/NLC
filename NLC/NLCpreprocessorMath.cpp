@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7a 14-October-2014
+ * Project Version: 1k7b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -225,16 +225,6 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		#endif
 		
 		bool legalWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
-		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
-		if(currentWord.length() == 0)
-		{
-			bool illegalFirstWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
-			if(illegalFirstWordCharacterFound)
-			{
-				legalWordCharacterFound = false;
-			}
-		}
-		#endif
 		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
 			mandatoryCharacterFoundInCurrentWord = true;
@@ -242,6 +232,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		finalWordInSentenceFoundAndIsLegal = false;
 		if(legalWordCharacterFound && (i == lineContents->length()-1) && mandatoryCharacterFoundInCurrentWord)
 		{
+
 			if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
 			{
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
@@ -249,8 +240,17 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				#endif
 				//add final word in sentence to phrase if it is legal
 				currentWord = currentWord + c;
-				finalWordInSentenceFoundAndIsLegal = true;
+				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+				bool illegalFirstWordCharacterFound = charInCharArray(currentWord[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
+				if(!illegalFirstWordCharacterFound)
+				{
+				#endif
+					finalWordInSentenceFoundAndIsLegal = true;
+				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+				}
+				#endif
 			}
+
 		}
 		bool wordDelimiterCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharactersDelimiter, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_DELIMITER_NUMBER_OF_TYPES);
 
@@ -259,6 +259,18 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 			//cout << "!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal): " << c << endl;
 			
+			#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+			if(mandatoryCharacterFoundInCurrentWord)
+			{
+				bool illegalFirstWordCharacterFound = charInCharArray(currentWord[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
+				if(illegalFirstWordCharacterFound)
+				{
+					cout << "splitMathDetectedLineIntoNLPparsablePhrases(): user input error - variables names cannot start with numbers: " << currentWord << endl;
+					exit(0);
+				}
+			}
+			#endif
+				
 			//current word checks:
 			if(mandatoryCharacterFoundInCurrentWord)
 			{

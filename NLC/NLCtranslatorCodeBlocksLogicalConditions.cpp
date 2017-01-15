@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1c 29-October-2014
+ * Project Version: 1l2a 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -463,7 +463,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 							#endif
 							getParentAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, &generateContextBlocksVariables, false))	//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
 
-							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 						#endif
 
@@ -487,7 +487,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								}
 								else if(logicalConditionOperationSubject->isSubstanceConcept)
 								{
-									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationSubject, sentenceIndex, false);
+									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);
 								}
 								#endif
 							}
@@ -506,7 +506,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 									{
 									#endif
 										//eg If the sun is bright, eat the cabbage.
-										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 										generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex, NLCfunctionName);
 									#ifdef NLC_USE_PREPROCESSOR
@@ -516,7 +516,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								else
 								{
 									//eg If the sun is bright, the dog is happy.
-									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 									#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 									generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex);
@@ -576,60 +576,6 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 		}
 	}
 	return true;
-}
-
-bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity)
-{
-	bool result = false;
-
-	//code copied from [*****^] (identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts() in GIAtranslatorDefineReferencing.cpp)
-
-	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID;
-
-	bool traceModeIsQuery = false;
-	GIAreferenceTraceParameters referenceTraceParameters;
-	referenceTraceParameters.referenceSetID = referenceSetID;
-	referenceTraceParameters.linkSpecificConceptsAndActions = true;
-
-	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareConcept->associatedInstanceNodeList->begin(); entityIter != entityCompareConcept->associatedInstanceNodeList->end(); entityIter++)
-	{
-		GIAentityNode * entityCompare = (*entityIter)->entity;
-		#ifdef GIA_DREAMMODE_REFERENCING_DEBUG
-		cout << "\t identifyReferenceSetsSpecificConcepts: " << entityCompare->entityName << endl;
-		#endif
-
-		if(!(entityCompare->disabled))
-		{
-			if(entity != entityCompare)
-			{
-				GIAqueryTraceParameters queryTraceParameters;		//not used
-
-				//cout << "entityCompare->entityName = " << entityCompare->entityName << endl;
-				//cout << "entity->entityName = " << entity->entityName << endl;
-
-				int numberOfMatchedNodesTemp = 0;
-				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
-				bool exactMatch = testReferencedEntityNodeForExactNameMatch2(entity, entityCompare, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
-
-				if(exactMatch)
-				{
-					if(numberOfMatchedNodesTemp > 0)
-					{
-						//cout << "exactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
-						result = true;
-					}
-				}
-
-				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
-				int irrelevant;
-				string printEntityNodeString = "";
-				bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
-				traceEntityNode(entityCompare, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
-				traceEntityNode(entity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
-			}
-		}
-	}
-	return result;
 }
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -692,7 +638,7 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 		*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;
 	}
 
-	tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(currentLogicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+	tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(currentLogicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 	cout << "conj: q2" << endl;
@@ -795,7 +741,7 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 #endif
 
 
-void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(GIAentityNode * entity, int sentenceIndex, bool tagOrUntag)
+void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(GIAentityNode * entity, int sentenceIndex, bool tagOrUntag)
 {
 	for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 	{
@@ -813,7 +759,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(GIAen
 						{
 							if(connectedEntity->isConcept)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "connectedEntity = " << connectedEntity->entityName;
 							}
 							else
@@ -837,7 +783,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(GIAen
 									connection->NLCparsedForlogicalConditionOperations = false;
 									connectedEntity->NLCparsedForlogicalConditionOperations = false;
 								}
-								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(connectedEntity, sentenceIndex, tagOrUntag);
+								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(connectedEntity, sentenceIndex, tagOrUntag);
 							}
 						}
 					}
@@ -892,4 +838,62 @@ bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock ** current
 }
 #endif
 
+
 #endif
+
+
+bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity)
+{
+	bool result = false;
+
+	//code copied from [*****^] (identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts() in GIAtranslatorDefineReferencing.cpp)
+
+	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID;
+
+	bool traceModeIsQuery = false;
+	GIAreferenceTraceParameters referenceTraceParameters;
+	referenceTraceParameters.referenceSetID = referenceSetID;
+	referenceTraceParameters.linkSpecificConceptsAndActions = true;
+
+	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareConcept->associatedInstanceNodeList->begin(); entityIter != entityCompareConcept->associatedInstanceNodeList->end(); entityIter++)
+	{
+		GIAentityNode * entityCompare = (*entityIter)->entity;
+		#ifdef GIA_DREAMMODE_REFERENCING_DEBUG
+		cout << "\t identifyReferenceSetsSpecificConcepts: " << entityCompare->entityName << endl;
+		#endif
+
+		if(!(entityCompare->disabled))
+		{
+			if(entity != entityCompare)
+			{
+				GIAqueryTraceParameters queryTraceParameters;		//not used
+
+				//cout << "entityCompare->entityName = " << entityCompare->entityName << endl;
+				//cout << "entity->entityName = " << entity->entityName << endl;
+
+				int numberOfMatchedNodesTemp = 0;
+				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
+				bool exactMatch = testReferencedEntityNodeForExactNameMatch2(entity, entityCompare, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
+
+				if(exactMatch)
+				{
+					if(numberOfMatchedNodesTemp > 0)
+					{
+						//cout << "exactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
+						result = true;
+					}
+				}
+
+				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
+				int irrelevant;
+				string printEntityNodeString = "";
+				bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
+				traceEntityNode(entityCompare, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
+				traceEntityNode(entity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
+			}
+		}
+	}
+	return result;
+}
+
+

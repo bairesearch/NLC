@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1c 29-October-2014
+ * Project Version: 1l2a 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 
 #include "NLCtranslator.h"
 #include "NLCtranslatorCodeBlocks.h"
-#include "NLCtranslatorCodeBlocksLogicalConditions.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation
+#include "NLCtranslatorCodeBlocksLogicalConditions.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced
 #include "NLCtranslatorClassDefinitions.h"
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 #include "GIAtranslatorDefs.h"
@@ -398,7 +398,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 							}
 							else
 							{
-								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(conditionObject, sentenceIndex, true);
+								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionObject, sentenceIndex, true);
 							}
 							if(conditionSubject->isConcept)
 							{
@@ -407,7 +407,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 							}
 							else
 							{
-								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(conditionSubject, sentenceIndex, true);
+								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionSubject, sentenceIndex, true);
 							}
 						}
 					}

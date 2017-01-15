@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17d 18-July-2014
+ * Project Version: 1g17e 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -230,7 +230,7 @@ int main(int argc,char **argv)
 	bool NLCinputFileList = false;
 #endif
 #ifdef NLC_USE_PREPROCESSOR
-	bool NLCpreprocessor = false;
+	bool useNLCpreprocessor = false;
 #endif
 
 	bool printOutput = false;
@@ -340,7 +340,7 @@ int main(int argc,char **argv)
 	#ifdef NLC_USE_PREPROCESSOR
 		if(argumentExists(argc,argv,"-ipreprocess"))
 		{
-			NLCpreprocessor = true;
+			useNLCpreprocessor = true;
 		}
 	#endif
 
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g17d 18-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g17e 18-July-2014" << endl;
 			exit(1);
 		}
 
@@ -695,30 +695,31 @@ int main(int argc,char **argv)
 		}
 	}
 	#endif
-	NLCfunction * firstNLCfunctionInList = new NLCfunction();
+	
 	#ifdef NLC_USE_PREPROCESSOR
+	NLCfunction * firstNLCfunctionInList = new NLCfunction();
 	//vector<string> inputTextPlainTXTFileNameList;
 	bool preprocessorDetectedFunctions = false;
-	if(NLCpreprocessor)
+	if(useNLCpreprocessor)
 	{
 		#ifdef NLC_DEBUG_PREPROCESSOR
-		cout << "NLCpreprocessor" << endl;
+		cout << "useNLCpreprocessor" << endl;
 		#endif
 		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + "afterPreprocessedforNLConly.txt";
 		if(!useInputTextPlainTXTFile)
 		{
-			cout << "NLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
+			cout << "useNLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
 		}
 		if(useInputTextNLPrelationXMLFile || useInputTextNLPfeatureXMLFile || useInputTextXMLFile)
 		{
-			cout << "NLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
+			cout << "useNLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
 		}
 		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			if(preprocessorDetectedFunctions)
 			{
-				#ifdef NLC_USE_PREPROCESSOR
+				#ifdef NLC_DEBUG_PREPROCESSOR
 				cout << "preprocessorDetectedFunctions" << endl;
 				#endif
 				NLCinputFileList = true;
@@ -744,9 +745,9 @@ int main(int argc,char **argv)
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
 	vector<NLCclassDefinition *> classDefinitionList;
 
-	#ifdef NLC_USE_PREPROCESSOR
+	//#ifdef NLC_USE_PREPROCESSOR
 	NLCfunction * currentNLCfunctionInList = firstNLCfunctionInList;
-	#endif
+	//#endif
 	
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
@@ -955,15 +956,14 @@ int main(int argc,char **argv)
 		#ifdef NLC_DEBUG
 		cout << "removeRedundantConditionConjunctions():" << endl;
 		#endif
-
-		#ifdef NLC_USE_PREPROCESSOR
-		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-		#endif
 		
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, firstNLCfunctionInList);
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
 		
 		#ifdef NLC_USE_PREPROCESSOR
-		currentNLCfunctionInList = currentNLCfunctionInList->next;
+		if(useNLCpreprocessor)
+		{
+			currentNLCfunctionInList = currentNLCfunctionInList->next;
+		}
 		#endif
 	}
 	

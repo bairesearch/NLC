@@ -23,7 +23,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f10a 16-April-2014
+ * Project Version: 1f11a 16-April-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -113,12 +113,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 							}
 
 							#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
-							if((targetEntity->isCondition) && !(targetEntity->isConcept))
+							if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isConcept)) 16 April 2014
 							#else
 							#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-							if(((targetEntity->isCondition) && !(targetEntity->isConcept)) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
+							if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isConcept) ||) 16 April 2014
 							#else
-							if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))
+							if((targetEntity->isAction) || (targetEntity->isActionConcept) && !(targetEntity->isConcept))	//removed; || (targetEntity->isCondition) 16 April 2014
 							#endif
 							#endif
 							{

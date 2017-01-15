@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17f 19-July-2014
+ * Project Version: 1g17g 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -119,7 +119,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	//for(int i=0; i<propertyEntity->quantityNumber; i++)
 	//{
 	#endif
-	
+
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 
@@ -136,7 +136,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 		{//added 1g8a 11-July-2014
 			currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, propertyEntity, propertyEntity);
 			propertyEntity->NLClocalListVariableHasBeenInitialised = true;
-			
+
 			//DEBUG:
 			//string debugString = string("10createCodeBlockAddNewProperty") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + propertyEntity->entityName + string(" ") + convertIntToString(propertyEntity->NLClocalListVariableHasBeenInitialised);
 			//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
@@ -144,7 +144,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 		}
 	}
 	#endif
-						
+
 	#ifdef NLC_SUPPORT_QUANTITIES
 	if(propertyEntity->quantityNumber > 1)
 	{
@@ -152,7 +152,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	}
 	//}
 	#endif
-	
+
 	return currentCodeBlockInTree;
 }
 
@@ -167,7 +167,7 @@ NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCo
 	//for(int i=0; i<propertyEntity->quantityNumber; i++)
 	//{
 	#endif
-	
+
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 
@@ -176,7 +176,7 @@ NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCo
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
+
 	#ifdef NLC_SUPPORT_QUANTITIES
 	if(propertyEntity->quantityNumber > 1)
 	{
@@ -184,7 +184,7 @@ NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCo
 	}
 	//}
 	#endif
-	
+
 	return currentCodeBlockInTree;
 }
 
@@ -246,7 +246,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 
 		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
 		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-		
+
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		if(copyNewItemsToLocalList)
 		{
@@ -254,7 +254,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 			{//added 1g8a 11-July-2014
 				currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, conditionObject, conditionObject);
 				conditionObject->NLClocalListVariableHasBeenInitialised = true;
-				
+
 				//DEBUG:
 				//string debugString = string("11createCodeBlockAddNewCondition") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + conditionObject->entityName + string(" ") + convertIntToString(conditionObject->NLClocalListVariableHasBeenInitialised);
 				//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
@@ -262,7 +262,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 			}
 		}
 		#endif
-										
+
 		#ifdef NLC_SUPPORT_QUANTITIES
 		if(conditionObject->quantityNumber > 1)
 		{
@@ -353,7 +353,7 @@ NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockIn
 #ifdef NLC_SUPPORT_QUANTITIES
 NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, int numberIterations)
 {
-	NLCitem * integerItem = new NLCitem(numberIterations, NLC_ITEM_TYPE_VARIABLE);	
+	NLCitem * integerItem = new NLCitem(numberIterations, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(integerItem);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_INTEGER;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -793,7 +793,7 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 		currentCodeBlockInTree->parameters.push_back(conditionItem);
 		//cout << "done currentCodeBlockInTree->parameters.push_back(conditionItem)" << endl;
 	}
-							
+
 	int codeBlockType;
 	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
 	{
@@ -807,7 +807,7 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 	{
 		cout << "createCodeBlockLogicalConditionHasBools() error: invalid logicalOperation: " << logicalOperation << endl;
 	}
-	
+
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
@@ -834,7 +834,7 @@ string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionL
 NLCcodeblock * createCodeBlockDeclareNewBoolArray(NLCcodeblock * currentCodeBlockInTree, string boolArrayName, bool value)
 {
 	NLCitem * itemDeclareNewBoolVariable = new NLCitem(boolArrayName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);	
+	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
 	int codeBlockType;
 	if(value)
 	{
@@ -849,7 +849,7 @@ NLCcodeblock * createCodeBlockDeclareNewBoolArray(NLCcodeblock * currentCodeBloc
 NLCcodeblock * createCodeBlockDeclareNewBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value)
 {
 	NLCitem * itemDeclareNewBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);	
+	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
 	int codeBlockType;
 	if(value)
 	{
@@ -880,7 +880,7 @@ NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, 
 #else
 NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative)
 {
-	currentCodeBlockInTree->parameters.push_back(itemProperty);	
+	currentCodeBlockInTree->parameters.push_back(itemProperty);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY;
 	if(negative)
 	{
@@ -891,7 +891,7 @@ NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTre
 
 NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative)
 {
-	currentCodeBlockInTree->parameters.push_back(itemCondition);	
+	currentCodeBlockInTree->parameters.push_back(itemCondition);
 	currentCodeBlockInTree->parameters.push_back(itemConditionObject);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION;
 	if(negative)
@@ -903,7 +903,7 @@ NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTr
 
 NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative)
 {
-	currentCodeBlockInTree->parameters.push_back(itemProperty);	
+	currentCodeBlockInTree->parameters.push_back(itemProperty);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY;
 	if(negative)
 	{
@@ -914,7 +914,7 @@ NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockIn
 
 NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative)
 {
-	currentCodeBlockInTree->parameters.push_back(itemCondition);	
+	currentCodeBlockInTree->parameters.push_back(itemCondition);
 	currentCodeBlockInTree->parameters.push_back(itemConditionObject);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION;
 	if(negative)

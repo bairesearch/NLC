@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17f 19-July-2014
+ * Project Version: 1g17g 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -142,7 +142,7 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 int main(int argc,char **argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
-	
+
 	#ifdef GIA_TRIAL_WORD_NET_SYNONYM_LOOKUP
 	initialiseWordNet();
 	string wordExample = "like";
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g17f 19-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g17g 18-July-2014" << endl;
 			exit(1);
 		}
 
@@ -695,7 +695,7 @@ int main(int argc,char **argv)
 		}
 	}
 	#endif
-	
+
 	NLCfunction * firstNLCfunctionInList = new NLCfunction();
 	#ifdef NLC_USE_PREPROCESSOR
 	//vector<string> inputTextPlainTXTFileNameList;
@@ -727,7 +727,7 @@ int main(int argc,char **argv)
 			else
 			{
 			#endif
-				inputTextPlainTXTfileName = outputPreprocessedTextForNLConlyPlainTXTFileName;	//execute NLP on preprocessed file 
+				inputTextPlainTXTfileName = outputPreprocessedTextForNLConlyPlainTXTFileName;	//execute NLP on preprocessed file
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			}
 			#endif
@@ -738,9 +738,9 @@ int main(int argc,char **argv)
 			exit(0);
 		}
 
-	
+
 	}
-	#endif	
+	#endif
 
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
 	vector<NLCclassDefinition *> classDefinitionList;
@@ -748,7 +748,7 @@ int main(int argc,char **argv)
 	//#ifdef NLC_USE_PREPROCESSOR
 	NLCfunction * currentNLCfunctionInList = firstNLCfunctionInList;
 	//#endif
-	
+
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		int maxNumberSentences;
@@ -952,13 +952,13 @@ int main(int argc,char **argv)
 		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
-		
+
 		#ifdef NLC_DEBUG
 		cout << "removeRedundantConditionConjunctions():" << endl;
 		#endif
-		
+
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
-		
+
 		#ifdef NLC_USE_PREPROCESSOR
 		if(useNLCpreprocessor)
 		{
@@ -966,7 +966,7 @@ int main(int argc,char **argv)
 		}
 		#endif
 	}
-	
+
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
@@ -1050,7 +1050,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				#ifdef NLC_DEBUG
 				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
 				#endif
-				
+
 				bool actionHasObject = false;
 				GIAentityNode * actionObjectEntity = NULL;
 				if(!(actionEntity->actionObjectEntity->empty()))
@@ -1071,7 +1071,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 					/*
 					eg case A:
-					
+
 					a
 					|
 					has	and/if/etc	x
@@ -1087,27 +1087,27 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->conditionNodeList->begin(); connectionIter !=  actionEntity->conditionNodeList->end(); )
 					{
 						GIAentityNode * conditionEntity = (*connectionIter)->entity;
-											
+
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
 						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
 						connectionIter = actionEntity->conditionNodeList->erase(connectionIter);
-					}	
+					}
 					for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->incomingConditionNodeList->begin(); connectionIter !=  actionEntity->incomingConditionNodeList->end(); )
 					{
 						GIAentityNode * conditionEntity = (*connectionIter)->entity;
-											
+
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
 						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
 						connectionIter = actionEntity->incomingConditionNodeList->erase(connectionIter);
-					}				
+					}
 					#endif
-					
+
 					actionEntity->actionSubjectEntity->clear();
 					actionEntity->actionObjectEntity->clear();
 					actionEntity->isAction = false;
@@ -1144,7 +1144,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				}
 				#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 				int sentenceIndex = actionEntity->sentenceIndexTemp;
-				setCurrentSentenceIndex(sentenceIndex); 
+				setCurrentSentenceIndex(sentenceIndex);
 				#endif
 				//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
 				GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
@@ -1160,7 +1160,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				if(actionEntity->negative)
 				{
 					actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
-				}				
+				}
 			}
 		}
 	}

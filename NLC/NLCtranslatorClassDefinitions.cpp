@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17f 19-July-2014
+ * Project Version: 1g17g 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,7 +47,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entityNode = *entityIter;
-		
+
 		//cout << "entityNode = " << entityNode->entityName << endl;
 		//valid class checks added 1g12f 14-July-2014
 		bool validClass = true;
@@ -68,8 +68,8 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		if(conjunctionConditionFound)
 		{
 			validClass = false;
-		}	
-		#endif	
+		}
+		#endif
 		if(validClass)
 		{
 			if(!(entityNode->disabled))
@@ -110,7 +110,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						/*OLD:
 						if(!(connection->NLCparsedForlogicalConditionOperations) && !(targetEntity->NLCparsedForlogicalConditionOperations))
 						{
-						
+
 						}
 						*/
 						#ifdef NLC_USE_PREPROCESSOR
@@ -125,9 +125,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						if(conjunctionConditionFound)
 						{
 							validClassContents = false;
-						}	
-						#endif	
-		
+						}
+						#endif
+
 						#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 						if(validClassContents)
 						{
@@ -319,7 +319,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 
 			classDefinition->definitionList.push_back(targetClassDefinition);
 		}
-	}	
+	}
 	#endif
 
 	return true;

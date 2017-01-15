@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17f 19-July-2014
+ * Project Version: 1g17g 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -113,7 +113,7 @@ NLCitem::NLCitem(NLCitem * newItem)
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
-	#endif	
+	#endif
 	negative = false;
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;

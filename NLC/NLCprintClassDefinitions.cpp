@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17f 19-July-2014
+ * Project Version: 1g17g 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -73,7 +73,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 		for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 		{
 			NLCclassDefinition * classDefinition = *classDefinitionIter;
-			
+
 			if(!(classDefinition->printed))
 			{
 				if(!(classDefinition->isActionOrConditionInstanceNotClass))
@@ -97,7 +97,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						{
 							//cout << "2 classDefinition = " << classDefinition->name << endl;
 							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}						
+						}
 					}
 					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
 					{
@@ -136,7 +136,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 
 						bool foundDefinition = false;
 						string classTitleText = "";
-					
+
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 						{
 							NLCclassDefinition * targetClassDefinition = *localListIter;
@@ -170,7 +170,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						#endif
 						string classNameRaw = className.substr(0, className.length()-strlen(NLC_CLASS_NAME_APPEND));
 						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
-						
+
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						if(classDefinition->definitionList.empty())
 						{//top level NLClibraryEntity class found

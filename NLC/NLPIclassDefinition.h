@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPImain.h
+ * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1a1e 15-September-2013
@@ -29,8 +29,8 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_MAIN
-#define HEADER_NLPI_MAIN
+#ifndef HEADER_NLPI_CLASSDEFINITION
+#define HEADER_NLPI_CLASSDEFINITION
 
 #include <iostream>
 #include <fstream>
@@ -40,14 +40,28 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <vector>
+#include <unordered_map>
 using namespace std;
 
-#include "GIAglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
 
-int main(int argc,char **argv);
-	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences);
+class NLPIclassDefinition
+{
+public:
+
+	NLPIclassDefinition(void);
+	NLPIclassDefinition(GIAentityNode * entity);
+	NLPIclassDefinition(string newName, int newItemType);
+	~NLPIclassDefinition(void);
+	
+	string name;
+	vector<NLPIclassDefinition *> propertiesList;	//subclass
+	vector<NLPIclassDefinition *> definitionsList;	//inherited parents
+	vector<NLPIclassDefinition *> functionList;
+};
+
+bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode * entity, int sentenceIndex);
+
 
 
 #endif

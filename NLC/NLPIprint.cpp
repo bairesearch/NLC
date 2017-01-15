@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1d 15-September-2013
+ * Project Version: 1a1e 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,43 +36,84 @@
 
 #include "NLPIprint.h"
 
+bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> classDefinitionList, int progLang, string * code)
+{
+	bool result = true;
+	
+	if(!printClassDefinitions(classDefinitionList, progLang, code))
+	{
+		result = false;
+	}
+	
+	int level = 0;
+	if(!printCodeBlocks(firstCodeBlockInLevel, progLang, code, level))
+	{
+		result = false;
+	}
+
+	return result;
+}
+
+bool printClassDefinitions(vector<NLPIclassDefinition *> NLPIclassDefinitionList, int progLang, string * code)
+{
+
+}
+
 bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level)
 {
 	NLPIcodeblock * currentCodeBlockInLevel = firstCodeBlockInLevel;
 	while(currentCodeBlockInLevel->next != NULL)
 	{
-		cout << "z1" << endl;
+		//cout << "z1" << endl;
 		NLPIitem * param1 = currentCodeBlockInLevel->parameters.at(0);
 		string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 		
-		cout << "z2" << endl;	
+		//cout << "z2" << endl;	
 		if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION)
 		{
-			cout << "z7" << endl;
+			//cout << "z7" << endl;
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			cout << "z7a" << endl;
-			cout << "param1->name = " << param1->name << endl;
-			cout << "param2->name = " << param2->name << endl;
-			cout << "contextParam1 = " << contextParam1 << endl;						
+			//cout << "z7a" << endl;
+			//cout << "param1->name = " << param1->name << endl;
+			//cout << "param2->name = " << param2->name << endl;
+			//cout << "contextParam1 = " << contextParam1 << endl;						
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
-			cout << "contextParam2 = " << contextParam2 << endl;
+			//cout << "contextParam2 = " << contextParam2 << endl;
 
-			cout << "z7b" << endl;
+			//cout << "z7b" << endl;
 
-			cout << "z8" << endl;
+			//cout << "z8" << endl;
 			
 			string codeBlockText = contextParam1 + param1->name + progLangOpenParameterSpace[progLang] + contextParam2 + param2->name + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
-			cout << "z7c" << endl;
+			//cout << "z7c" << endl;
 			printLine(codeBlockText, level, code);
 			
-			cout << "z9" << endl;
+			//cout << "z9" << endl;
 		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_ADD_PROPERTY)
+		{
+			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
+			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
+				
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] +  contextParam1 + param1->name + progLangFunctionReferenceDelimiter[progLang] + progLangObjectCheckHasPropertyFunction[progLang] + progLangOpenParameterSpace[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//context1.param1.param2propertyList.push_back(context2.param2);
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}	
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_ADD_CONDITION)
+		{
+			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
+			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
+				
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] +  contextParam1 + param1->name + progLangFunctionReferenceDelimiter[progLang] + progLangObjectCheckHasPropertyFunction[progLang] + progLangOpenParameterSpace[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//context1.param1.param3stateList.push_back(context3.param3, param2);
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}			
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_FOR)
 		{
 			if(progLang == NLPI_PROGRAMMING_LANGUAGE_DEFAULT)
 			{
-				//string codeBlockText = progLangFor[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->name + progLangCloseParameterSpace[progLang];	//for(vector<class*>::iterator iter = classContext.class->begin(); iter < classContext.class->end(); iter++)
-				string codeBlockText = progLangFor[progLang] + "(vector<" + param1->name + "*>::iterator iter = " + contextParam1 + param1->name + NLPI_ITEM_TYPE_LISTVAR_APPENDITION + "->begin(); iter < " + contextParam1 + param1->name + NLPI_ITEM_TYPE_LISTVAR_APPENDITION + 	"->end(); iter++)";
+				//string codeBlockText = progLangFor[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->name + progLangCloseParameterSpace[progLang];	//for(vector<class*>::iterator iter = classContext.classPropertyList->begin(); iter < classContext.classPropertyList->end(); iter++)
+				string codeBlockText = progLangFor[progLang] + "(vector<" + param1->name + "*>::iterator iter = " + contextParam1 + param1->name + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + "->begin(); iter < " + contextParam1 + param1->name + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + 	"->end(); iter++)";
 				printLine(codeBlockText, level, code);
 				printLine(progLangOpenBlock[progLang], level, code);
 				string tempVarDeclarationText = param1->name + progLangPointer[progLang] + " " + param1->name + NLPI_ITEM_TYPE_TEMPVAR_APPENDITION + " = " + progLangPointer[progLang] + "iter;";
@@ -115,14 +156,14 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 		...
 		*/
 			
-		cout << "z3" << endl;	
+		//cout << "z3" << endl;	
 		if(currentCodeBlockInLevel->lowerLevel != NULL)
 		{
 			printCodeBlocks(currentCodeBlockInLevel->lowerLevel, progLang, code, (level+1));
 			printLine(progLangCloseBlock[progLang], level, code);
 		}
 		
-		cout << "z4" << endl;
+		//cout << "z4" << endl;
 		currentCodeBlockInLevel = currentCodeBlockInLevel->next;
 	}
 }

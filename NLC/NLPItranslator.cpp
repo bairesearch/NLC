@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1d 15-September-2013
+ * Project Version: 1a1e 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,11 +36,31 @@
 
 #include "NLPItranslator.h"
 
+bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
+{
+	bool result = true;
+
+	//NLPI translator Part 1.
+	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences))
+	{
+		result = false;
+	}
+	
+	//NLPI translator Part 2.
+	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences))
+	{
+		result = false;
+	}
+}
 
 bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
 {
-	
 	NLPIcodeblock * currentCodeBlockInTree = firstCodeBlockInTree;
+	
+	#ifdef NLPI_NOT_NECESSARY
+	vector<NLPIitem *> implictlyDeclaredFunctionList;	//implictlyDeclaredFunctionList is used to capture implicitly declared functions; to be added to object class definitions at end
+	vector<NLPIitem *> implictlyDeclaredFunctionListTopLevel;	//top level function list (used to store implicitly declared functions without subject/context/owner)	
+	#endif
 	
 	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, "main");
 
@@ -58,7 +78,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			//cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
 			//cout << "actionEntity->hasAssociatedInstance = " << actionEntity->hasAssociatedInstance << endl;
 			
-			if(checkSentenceIndex(actionEntity,  sentenceIndex))
+			if(checkSentenceIndexParsingCodeBlocks(actionEntity,  sentenceIndex))
 			{
 				//cout << "h1" << endl;
 				
@@ -69,7 +89,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					actionHasObject = true;
 					objectEntity = (actionEntity->actionObjectEntity->back())->entity;
 				}
-				cout << "h1b" << endl;
+				//cout << "h1b" << endl;
 				bool actionHasSubject = false;
 				GIAentityNode * subjectEntity = NULL;
 				if(!(actionEntity->actionSubjectEntity->empty()))
@@ -78,7 +98,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
 				}
 				
-				cout << "h2" << endl;
+				//cout << "h2" << endl;
 				
 				if(actionHasObject)
 				{
@@ -86,30 +106,47 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					NLPIitem * objectItem = NULL;
 					currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar);
 					
-					cout << "h3" << endl;
+					//cout << "h3" << endl;
 					NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 					if(actionHasSubject)
 					{
 						bool subjectRequiredTempVar = false;
 						NLPIitem * subjectItem = NULL;
 						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
-						cout << "h4" << endl;
+						//cout << "h4" << endl;
 						if(subjectRequiredTempVar)
 						{	
 							cout << "subjectRequiredTempVar" << endl;						
 							functionItem->context.push_back(subjectItem->name);
+							
+							#ifdef NLPI_NOT_NECESSARY
+							//required just for implictlyDeclaredFunctionList...;
+							NLPIitem * functionItemFullContextForRecordOnly = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION); 
+							getEntityContext(subjectEntity, &(functionItemFullContextForRecordOnly->context), true);
+							implictlyDeclaredFunctionList.push_back(functionItemFullContextForRecordOnly);
+							#endif
 						}
 						else
 						{
 							getEntityContext(subjectEntity, &(functionItem->context), true);
+							#ifdef NLPI_NOT_NECESSARY
+							implictlyDeclaredFunctionList.push_back(functionItem);
+							#endif
 						}
+												
 					}
-					cout << "h5" << endl;
+					#ifdef NLPI_NOT_NECESSARY
+					else
+					{
+						implictlyDeclaredFunctionListTopLevel.push_back(functionItem);					
+					}
+					#endif
+					//cout << "h5" << endl;
 					
 					currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem, objectItem);
 				}
 				
-				cout << "h6" << endl;
+				//cout << "h6" << endl;
 				/*		
 				findContextOfObject(objectEntity)
 
@@ -125,20 +162,37 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			}
 		}
 		
-		cout << "q1" << endl;
+		//cout << "q1" << endl;
 	
-		//method2;
+		//Part 2: generate object initialisations (eg Tom has a boat) [without actions]
 		//cout << "*** sentenceIndex = " << sentenceIndex << endl;
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
-			GIAentityNode * entityNode = *entityIter;
-			if(checkSentenceIndex(entityNode,  sentenceIndex))
-			{			
-			
+			GIAentityNode * entity = *entityIter;
+			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex))
+			{	
+				//property initialisations
+				for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
+				{
+					GIAentityNode* propertyEntity = (*propertyNodeListIterator)->entity;
+					if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex))
+					{//only write properties that are explicated in current sentence
+						currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
+					}
+				}
+				//state initialisations
+				for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
+				{
+					GIAentityNode* conditionEntity = (*conditionNodeListIterator)->entity;
+					if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex))
+					{//only write conditions that are explicated in current sentence	
+						currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+					}
+				}					
 			}
 		}
-		
-		cout << "q2" << endl;
+				
+		//cout << "q2" << endl;
 	}
 	
 }
@@ -188,3 +242,11 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	}
 	return currentCodeBlockInTree;
 }
+
+bool generateClassHeirarchy(vector<NLPIclassDefinition *> classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
+{	
+				//declare definitions (inheritance)
+				
+				//declare properties (class )	
+}	
+

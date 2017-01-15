@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPImain.h
+ * File Name: NLPIclassDefinition.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1a1e 15-September-2013
@@ -29,25 +29,26 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_MAIN
-#define HEADER_NLPI_MAIN
-
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <cstring>
-#include <cstdlib>	//for random number generation
-#include <cmath>
-#include <string>
-#include <vector>
-using namespace std;
-
-#include "GIAglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-
-int main(int argc,char **argv);
-	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences);
 
 
-#endif
+#include "NLPIclassDefinition.h"
+
+
+NLPIclassDefinition::NLPIclassDefinition(void)
+{
+		
+}
+NLPIclassDefinition::~NLPIclassDefinition(void)
+{
+}
+
+
+bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode * entity, int sentenceIndex)
+{
+	bool result = false;
+	if(((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference)) && !(entity->parsedForNLPIclassHeirarchy))
+	{
+		result = true;
+	}
+	return result;
+}

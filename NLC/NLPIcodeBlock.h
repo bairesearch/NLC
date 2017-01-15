@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1d 15-September-2013
+ * Project Version: 1a1e 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -50,10 +50,12 @@ using namespace std;
 
 #define NLPI_CODEBLOCK_TYPE_UNDEFINED (-1)
 #define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (2)	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
-#define NLPI_CODEBLOCK_TYPE_FOR (3)			//forall(context.param1){
-#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (4)		//main(){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (12)	//if(param2(context.param1, context.param3)){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (13)	//if(context.param1->has(param2)){
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)		//context1.param1.param2propertyList.push_back(context2.param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)		//context1.param1.param3stateList.push_back(context3.param3, param2);
+#define NLPI_CODEBLOCK_TYPE_FOR (5)			//forall(context.param1){
+#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (6)		//main(){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)	//if(context.param1->has(param2)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)	//if(param2(context.param1, context.param3)){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR)
 
 #define NLPI_PROGRAMMING_LANGUAGE_CPP (0)
@@ -102,7 +104,8 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 #define NLPI_ITEM_TYPE_FUNCTION (2)
 #define NLPI_ITEM_TYPE_TEMPVAR (3)
 #define NLPI_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
-#define NLPI_ITEM_TYPE_LISTVAR_APPENDITION "List"
+#define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
+#define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
 
 class NLPIitem
 {
@@ -143,18 +146,23 @@ public:
 string generateItemName(GIAentityNode * entity, int itemType);
 string convertLongToString(long number);
 
+NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem);
+NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
+NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
+NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName);
 NLPIcodeblock * createCodeBlockIfHasProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex);
 	NLPIcodeblock * createCodeBlockIfHasProperty(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* propertyEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item,  GIAentityNode * entity, int sentenceIndex);
 	NLPIcodeblock * createCodeBlockIfHasCondition(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* conditionEntity, int sentenceIndex);
-NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem);
-NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName);
-NLPIcodeblock * createLowerLevel(NLPIcodeblock * currentCodeBlockInTree);
-bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject);
-	NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType);
+		NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex);
 
+NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType);
+NLPIcodeblock * createLowerLevel(NLPIcodeblock * currentCodeBlockInTree);
+
+bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject);
 string generateStringFromContextVector(vector<string> * context, int progLang);
-bool checkSentenceIndex(GIAentityNode * entity, int sentenceIndex);
+
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex);
 
 #endif

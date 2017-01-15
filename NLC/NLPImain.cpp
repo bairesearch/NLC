@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1d 15-September-2013
+ * Project Version: 1a1e 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,6 +36,7 @@
 
 #include "NLPImain.h"
 #include "NLPIcodeBlock.h"
+#include "NLPIclassDefinition.h"
 #include "NLPItranslator.h"
 #include "NLPIprint.h"
 
@@ -747,13 +748,13 @@ int main(int argc,char **argv)
 bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences)
 {
 	NLPIcodeblock * firstCodeBlockInTree = new NLPIcodeblock();
+	vector<NLPIclassDefinition *> classDefinitionList;
 	
-	generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences);
+	translateNetwork(firstCodeBlockInTree, classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences);
 	
-	int level = 0;
 	string code = "";
 	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
-	printCodeBlocks(firstCodeBlockInTree, progLang, &code, level);
+	printCode(firstCodeBlockInTree, classDefinitionList, progLang, &code);
 	
 	cout << "code = \n" << code << endl;
 }

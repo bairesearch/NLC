@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3b 01-November-2014
+ * Project Version: 1l3c 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -159,6 +159,14 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		#endif
 		generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
 		#endif
+		
+		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+		#ifdef NLC_DEBUG
+		cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet:" << endl;
+		#endif
+		markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
+		#endif
+
 
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 		if(getUseNLCpreprocessor())
@@ -374,6 +382,55 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	return result;
 }
 
+#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
+{
+	bool result = true;
+	//e.g. "a chicken" in "A chicken that ate a pie rows the boat." - set all actions as !sameReferenceSet such that they are not parsed by future references to generateContextBlocks(), but are instead treated as actions
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+		{	
+			if(!assumedToAlreadyHaveBeenDeclared(entity))
+			{//indefinite entity found
+				for(vector<GIAentityConnection*>::iterator connectionIter = entity->actionNodeList->begin(); connectionIter != entity->actionNodeList->end(); connectionIter++)
+				{
+					GIAentityConnection * actionConnection = *connectionIter;
+					GIAentityNode * actionEntity = actionConnection->entity;
+					actionConnection->sameReferenceSet = false;
+					
+					GIAentityNode * actionObject = NULL;
+					if(!(actionEntity->actionObjectEntity->empty()))
+					{
+						actionObject = (actionEntity->actionObjectEntity->back())->entity;
+						(actionEntity->actionObjectEntity->back())->sameReferenceSet = false;
+					}
+					cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet: entity = " << entity->entityName << ", action = " << actionEntity->entityName << endl;
+				}
+				for(vector<GIAentityConnection*>::iterator connectionIter = entity->incomingActionNodeList->begin(); connectionIter != entity->incomingActionNodeList->end(); connectionIter++)
+				{
+					GIAentityConnection * actionConnection = *connectionIter;
+					GIAentityNode * actionEntity = actionConnection->entity;
+					actionConnection->sameReferenceSet = false;
+
+					GIAentityNode * actionSubject = NULL;
+					if(!(actionEntity->actionSubjectEntity->empty()))
+					{
+						actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
+						(actionEntity->actionSubjectEntity->back())->sameReferenceSet = false;
+					}
+					cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet: entity = " << entity->entityName << ", action = " << actionEntity->entityName << endl;
+				}
+			}
+		}
+	}
+	return result;
+}	
+#endif
+		
+		
+		
 #ifdef NLC_PREPROCESSOR_MATH
 bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * firstNLCsentenceInFullSentence, string NLCfunctionName)
 {

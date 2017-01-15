@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3b 01-November-2014
+ * Project Version: 1l3c 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -95,7 +95,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#endif
 		}
 		
-		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 		if(!sameReferenceSet)
 		{
 		#endif
@@ -278,7 +278,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			}
 			#endif
 			*/
-		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 		}
 		#endif
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -1293,12 +1293,16 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock ** currentCode
 									if(parentEntity->sentenceIndexTemp == sentenceIndex)	//ie "wasReference" is not a sufficient condition to initialise parent
 									{
 									#endif
-										if(!(parentEntity->NLCcontextGenerated))
+										#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+										if(!(parentEntity->NLCcontextGenerated))	//added 1k20b
 										{
+										#endif
 											//cout << "generateParentInitialisationCodeBlock: parentEntity = " << parentEntity->entityName << endl;
 											generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex);
 											result = true;
-										}										
+										#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+										}		
+										#endif								
 									#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 									}
 									#endif

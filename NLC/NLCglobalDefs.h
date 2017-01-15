@@ -23,7 +23,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f2a 10-December-2013
+ * Project Version: 1f3a 14-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -34,6 +34,8 @@
 #define HEADER_NLC_GLOBAL_DEFS
 
 #include "SHAREDglobalDefs.h"
+
+#define NLC_SUPPORT_QUANTITIES	//1f3a
 
 #define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS		//1f1a+ if statement support
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS

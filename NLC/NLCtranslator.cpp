@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k12b 17-October-2014
+ * Project Version: 1k13a 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,7 +61,7 @@ NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContaine
 }
 #endif
 
-bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor)
+bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency * functionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
 {
 	bool result = true;
 
@@ -80,22 +80,6 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	#endif
 	#endif	
 	*/
-	
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	//NLC translator Part prep B.
-	if(!removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences))
-	{
-		result = false;
-	}
-	#endif
-
-	//NLC translator Part prep C.
-	if(!identifyAndTagAllLogicalConditionOperations(entityNodesActiveListComplete, maxNumberSentences))
-	{
-		result = false;
-	}
-	#endif
 
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -125,12 +109,17 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	{
 		result = false;
 	}
+	
+	//cout << "finished generateCodeBlocks()" << endl;
 
 	//NLC translator Part 2.
-	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, maxNumberSentences))
+	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, functionDependency, functionDependencyList))
 	{
 		result = false;
 	}
+	
+	//cout << "finished generateClassHeirarchy()" << endl;
+		
 	return result;
 }
 
@@ -427,30 +416,117 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 }
 #endif
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
-void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, string NLCfunctionName)
+/*
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+bool addFunctionDependenciesWithoutOwners(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
 {
-	//reconcile function arguments (both class function header and code function reference)
-	string functionName = "";
-	string functionOwnerName = "";
-	bool hasFunctionOwnerClass = false;
-	string functionObjectName = "";
-	bool hasFunctionObjectClass = false;
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog::fight"
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entityNode = *entityIter;
 
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		//cout << "entityNode = " << entityNode->entityName << endl;
+		if(generateClassHeirarchyValidClassChecks(entityNode))
+		{
+			if(!(entityNode->disabled))
+			{
+				if(entityNode->isAction)
+				{
+					bool hasActionObject = false;
+					string actionObjectName = "";
+					if(!(entityNode->actionObjectEntity->empty()))
+					{
+						GIAentityNode * actionObject = (entityNode->actionObjectEntity->back())->entity;
+						hasActionObject = true;
+						actionObjectName = actionObject->entityName;
+					}
+					
+					bool hasActionSubject = false;
+					string actionSubjectName = "";
+					if(!(entityNode->actionSubjectEntity->empty()))
+					{
+						GIAentityNode * actionSubject = (entityNode->actionSubjectEntity->back())->entity;
+						hasActionSubject = true;
+						actionSubjectName = actionSubject->entityName;
+					}
+					
+					if(!hasActionSubject)
+					{
+						cout << "addFunctionDependenciesWithoutOwners(): " << entityNode->entityName << endl;
+
+						NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+						bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, entityNode->entityName, "", actionObjectName, false, hasActionObject, &functionDependency);
+						if(foundFunctionDependencyInList)
+						{
+							NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
+							bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, entityNode->entityName, "", actionObjectName, false, hasActionObject, &functionDependenciesInParentTemp);
+							if(!foundFunctionDependencyInParent)
+							{
+								parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+							}
+						}
+						else
+						{
+							functionDependency = new NLCclassDefinitionFunctionDependency();
+							functionDependency->functionName = entityNode->entityName;
+							functionDependency->functionOwnerName = "";
+							functionDependency->functionObjectName = actionObjectName;
+							functionDependency->hasFunctionOwnerClass = false;
+							functionDependency->hasFunctionObjectClass = hasActionObject;
+							parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+							functionDependencyList->push_back(functionDependency);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+#endif
+*/
+
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
+void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, NLCclassDefinitionFunctionDependency * functionDependency)
+{
+	//reconcile function arguments (class function header) - NB code function reference arguments are reconciled in printCodeBlocks()  
+
+	string functionName = functionDependency->functionName;
+	string functionOwnerName = functionDependency->functionOwnerName;
+	bool hasFunctionOwnerClass = functionDependency->hasFunctionOwnerClass;
+	string functionObjectName = functionDependency->functionObjectName;
+	bool hasFunctionObjectClass = functionDependency->hasFunctionObjectClass;
+
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	bool foundFunctionOwnerExactMatch = false;
 	bool foundFunctionObjectExactMatch = false;
 	NLCclassDefinition * functionDeclaration = NULL;
 	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, true, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition" << endl;
 		#endif
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 		addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(functionDeclaration, &(firstCodeBlockInTree->parameters));
+		
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependency->functionDependencyList.begin(); functionDependencyIter != functionDependency->functionDependencyList.end(); functionDependencyIter++)
+		{
+			NLCclassDefinitionFunctionDependency * functionDependencyChild = *functionDependencyIter;
+			bool foundFunctionOwnerExactMatch2 = false;
+			bool foundFunctionObjectExactMatch2 = false;
+			NLCclassDefinition * functionDeclaration2 = NULL;
+			if(findFunctionDeclarationClassDefinition(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, &functionDeclaration2, false, &foundFunctionOwnerExactMatch2, &foundFunctionObjectExactMatch2))
+			{
+				addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToClassDefinition(functionDeclaration, &(functionDeclaration2->parameters));
+			}
+		}
+		#endif
+		#endif
 	}
 	#else
+	cout << "reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
+	exit(0);
+	/*
 	NLCclassDefinition * classDefinitionFound = NULL;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
@@ -475,10 +551,12 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 			}
 		}
 	}	
+	*/
 	#endif
 }
 
-#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(NLCclassDefinition * functionDeclaration, vector<NLCitem*> * formalFunctionArgumentList)
 {
@@ -490,18 +568,48 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(
 		if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			//add a new function argument to the existing function argument list
-			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 			cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition: formalFunctionArgument->name = " << formalFunctionArgument->name << endl;
 			#endif
-			NLCitem * newFunctionArgument = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
-			newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
-			existingFunctionArgumentList->push_back(newFunctionArgument);
+			NLCitem * functionArgumentTemp = NULL;
+			if(!findFunctionArgument(existingFunctionArgumentList, formalFunctionArgument->name, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			{
+				NLCitem * newFunctionArgument = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
+				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
+				existingFunctionArgumentList->push_back(newFunctionArgument);
+			}
 		}
 	}
 }
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToClassDefinition(NLCclassDefinition * functionDeclaration, vector<NLCitem*> * functionDeclarationArgumentList)
+{
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(): functionDeclaration->name = " << functionDeclaration->name << endl;
+	vector<NLCitem*> * existingFunctionArgumentList = &(functionDeclaration->parameters);
+	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationArgumentList->begin(); parametersIterator < functionDeclarationArgumentList->end(); parametersIterator++)
+	{
+		NLCitem * functionDeclarationArgument = *parametersIterator;
+		if(functionDeclarationArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+		{
+			//add a new function argument to the existing function argument list
+			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+			cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToClassDefinition: functionDeclarationArgument->name = " << functionDeclarationArgument->name << endl;
+			#endif
+			NLCitem * functionArgumentTemp = NULL;
+			if(!findFunctionArgument(existingFunctionArgumentList, functionDeclarationArgument->name, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			{
+				NLCitem * newFunctionArgument = new NLCitem(functionDeclarationArgument);
+				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
+				existingFunctionArgumentList->push_back(newFunctionArgument);
+			}
+		}
+	}
+}
+#endif
 
 
 #else
+/*
 bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionDeclaration, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
 {
 	bool result = true;
@@ -626,6 +734,8 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 	}
 	return result;
 }
+*/
+#endif
 #endif
 #endif
 

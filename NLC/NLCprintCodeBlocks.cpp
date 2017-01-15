@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k12b 17-October-2014
+ * Project Version: 1k13a 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1050,7 +1050,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(progLangOpenBlock[progLang], level, code);		
 		}
 		#endif
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION	
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS	
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION)
 		{//not used - see printCodeBlockCastVectorExecuteFunction()
 			#ifdef NLC_DEBUG
@@ -1151,8 +1151,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * codeBlockParameters, string * functionArguments, int progLang)
 {
 	vector<NLCitem*> * parameters;
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	parameters = codeBlockParameters;
 	NLCitem * param1 = codeBlockParameters->at(0);
 	NLCclassDefinition * functionDeclaration = NULL;	//NB "functionDeclaration" should be "functionDeclaration"
@@ -1175,7 +1175,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	bool foundFunctionOwnerExactMatch = false;
 	bool foundFunctionObjectExactMatch = false;
-	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "\n\n\n\n generateFunctionExecutionArgumentsWithActionConceptInheritanceString():" << endl;
 	cout << "functionName = " << functionName << endl;
 	cout << "functionOwnerName = " << functionOwnerName << endl;
@@ -1183,12 +1183,12 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	#endif
 	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "findFunctionDeclarationClassDefinition" << endl;
 		#endif
 		if(hasFunctionObjectClass && !foundFunctionObjectExactMatch)
 		{
-			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 			cout << "(hasFunctionObjectClass && !foundFunctionObjectExactMatch)" << endl;
 			#endif
 			NLCitem * functionObjectArgumentDeclaration = NULL;
@@ -1203,6 +1203,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 		}
 		
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 		for(vector<NLCitem*>::iterator parametersIterator = functionDeclaration->parameters.begin(); parametersIterator < functionDeclaration->parameters.end(); parametersIterator++)
 		{
 			NLCitem * currentItem = *parametersIterator;
@@ -1214,8 +1215,10 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 				parameters->push_back(newFunctionArgument);
 			}
 		}
+		#endif
 	}
 	#else
+	/*
 	//get function arguments from class definition list (in case they have been dynamically updated based on implicit declarations within the function definition)
 	bool foundFunctionDeclaration = false;
 	NLCclassDefinition * functionDeclaration = findClassDefinition(classDefinitionList, param1->instanceName, &foundFunctionDeclaration);	//see if class definition already exists
@@ -1232,6 +1235,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		#endif
 		parameters = codeBlockParameters;
 	}
+	*/
 	#endif
 	#else
 	parameters = codeBlockParameters;
@@ -1243,11 +1247,13 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		NLCitem * currentItem = *parametersIterator;
 
 		//cout << "2 currentItem->itemType = " << currentItem->itemType << endl;
+		/*
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_NON_ADVANCED
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		#else
+		*/
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
-		#endif
+		//#endif
 		{
 			//cout << "3 currentItem->name = " << currentItem->name << endl;
 			if(*functionArguments != "")
@@ -1259,11 +1265,13 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+		/*
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_NON_ADVANCED
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION)
 		#else
+		*/
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
-		#endif
+		//#endif
 		{
 			if(*functionArguments != "")
 			{
@@ -1275,11 +1283,13 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 		}
+		/*
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_NON_ADVANCED
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)
 		#else
+		*/
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
-		#endif
+		//#endif
 		{
 			if(*functionArguments != "")
 			{
@@ -1288,7 +1298,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			
 			/*
 			NLCitem * executionItem = currentItem;
-			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 			if(currentItem->functionArgumentPassCastRequired)
 			{
 				executionItem = new NLCitem(currentItem);	//check existing currentItem object will not be overwritten
@@ -1310,8 +1320,8 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		}
 		#endif
 		/*
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
 		#else
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
@@ -1354,10 +1364,10 @@ string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progL
 {
 	string codePropertyTypeText = generateEntityLocalListName(functionArgumentItem);
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{	
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "generateCodePluralReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
 		#endif
 		codePropertyTypeText = printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang);
@@ -1371,10 +1381,10 @@ string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int pro
 {
 	string codePropertyTypeText = functionArgumentItem->instanceName;
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "generateCodeSingularReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
 		#endif
 		codePropertyTypeText = progLangDynamicCastStart[progLang] + functionArgumentItem->functionArgumentPassCastClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + functionArgumentItem->instanceName + progLangCloseParameterSpace[progLang];	//dynamic_cast<parentClass*>(childClassInstance);
@@ -1384,7 +1394,7 @@ string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int pro
 	return codePropertyTypeText;
 }
 
-#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang)
 {
 	//see NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION

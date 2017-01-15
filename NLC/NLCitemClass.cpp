@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k12b 17-October-2014
+ * Project Version: 1k13a 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,11 +48,11 @@ NLCitem::NLCitem(void)
 	functionName = "";
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	functionArgumentExecutionEntityName = "";
 	#endif
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
@@ -71,11 +71,11 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	functionName = generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	functionArgumentExecutionEntityName = "";
 	#endif
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
@@ -99,11 +99,11 @@ NLCitem::NLCitem(string newName, int newItemType)
 	functionName = generateFunctionName(newName);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	functionArgumentExecutionEntityName = "";
 	#endif
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
@@ -124,11 +124,11 @@ NLCitem::NLCitem(NLCitem * newItem)
 	functionName = newItem->functionName;
 	className2 = newItem->className2;
 	instanceName2 = newItem->instanceName2;
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 	functionArgumentCertified = newItem->functionArgumentCertified;	//updated 1k9c
 	functionArgumentPassCastRequired = newItem->functionArgumentPassCastRequired;		//updated 1k9c
 	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	functionArgumentExecutionEntityName = newItem->functionArgumentExecutionEntityName;
 	#endif
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;

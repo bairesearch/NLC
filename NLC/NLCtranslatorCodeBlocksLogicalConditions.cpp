@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1a 24-September-2016
+ * Project Version: 1u1b 24-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1136,6 +1136,13 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 
 			*mathTextSubphraseContainingNLPparsablePhrase = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
 			*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
+			
+			if(removeSurroundingBracketsOfSubphrase(mathTextSubphraseContainingNLPparsablePhrase))	//added 1t3d
+			{
+				int sizeOfBracket = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING).length();
+				*mathTextSubphraseContainingNLPparsablePhraseIndex = *mathTextSubphraseContainingNLPparsablePhraseIndex + sizeOfBracket;		
+			}
+			
 			#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
 			cout << "*mathTextSubphraseContainingNLPparsablePhrase = " << *mathTextSubphraseContainingNLPparsablePhrase << endl;
 			#endif
@@ -1366,6 +1373,9 @@ string generateAssignMathTextValueExecuteFunctionMathText(NLCsentence* currentFu
 		int indexOfMathEqualsTestCommand = mathTextSubphraseContainingNLPparsablePhrase.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
 		if(indexOfMathEqualsTestCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
+			#ifdef NLC_DEBUG
+			cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
+			#endif
 			//eg1 X == thecatssvalue, eg2 eg1 thedogsvalue == X eg3 thedogsvalue == thecatssvalue, eg3 thedogsvalue == thecatssvalue + themousessvalue, eg4 X == thecatssvalue + themousessvalue, eg5 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == thecatssvalue + Y [not X == Y]
 			if(mathText->find(NLC_USE_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) != 0)
 			{//only create one instance of = testMathObjectValue(.. per sentence; eg1 X == thecatssvalue + themousessvalue, eg2 thecatssvalue == themousessvalue
@@ -1399,6 +1409,7 @@ string generateAssignMathTextValueExecuteFunctionMathText(NLCsentence* currentFu
 
 	return mathTextUpdated;
 }
+
 
 bool findInvertedCommasEitherSideOfCharacter(string* mathText, int indexOfCharacter)
 {
@@ -1450,6 +1461,8 @@ string getSourceValueText(string* mathText, int indexOfCommand, int progLang)
 #ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ADDITIONS
 string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang)
 {
+	removeSurroundingBracketsOfSubphrase(&text);	//added 1t3d
+	
 	//now detect all instances of "+" within text and insert addMathTextValue{} function
 	//eg thedogsvalue + 5 -> addMathTextValue(thedogsvalue, 5)
 	//algorithm eg: "a + b + c"  ->  "a , b + c"  ->  "a , b) + c"  ->  "addMathTextValue(addMathTextValue((a, b), c)"
@@ -1489,6 +1502,47 @@ string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang)
 	return text;
 }
 #endif
+
+bool removeSurroundingBracketsOfSubphrase(string* subphraseText)
+{
+	bool foundSurroundingBrackets = false;
+	string subphraseTemp = *subphraseText;
+	
+	int numberOfOpenBrackets = 0;
+	if((subphraseTemp[0] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET) && (subphraseTemp[subphraseTemp.length()-1] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET))
+	{
+		int sizeOfBracket = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING).length();	//assume == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET
+		numberOfOpenBrackets = 1;
+		int i = 0;
+		foundSurroundingBrackets = true;
+		for(int i=0; i<subphraseTemp.length()-sizeOfBracket; i++)	//-1 to ingore last bracket
+		{
+			if(subphraseTemp[i] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
+			{
+				numberOfOpenBrackets++;
+			}
+			if(subphraseTemp[i] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET)
+			{
+				numberOfOpenBrackets--;
+			}
+			if(numberOfOpenBrackets < 1)
+			{
+				foundSurroundingBrackets = false;
+			}
+		}
+		if(foundSurroundingBrackets)
+		{
+			//eg: "(a + b)"  ->  "a + b"
+			//eg: "(a + (b))"  ->  "a + (b)"
+			//eg: "(a == b)"  ->  "a == b"
+			//eg: "(a == (b))"  ->  "a == (b)"
+			
+			*subphraseText = subphraseTemp.substr(sizeOfBracket, subphraseTemp.length()-(sizeOfBracket*2));
+		}	
+	}
+	return foundSurroundingBrackets;
+}
+
 
 
 bool isNumberOf(GIAentityNode* entity)

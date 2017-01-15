@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a2a 15-September-2013
+ * Project Version: 1a2b 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -750,11 +750,11 @@ bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unorder
 	NLPIcodeblock * firstCodeBlockInTree = new NLPIcodeblock();
 	vector<NLPIclassDefinition *> classDefinitionList;
 	
-	translateNetwork(firstCodeBlockInTree, classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences);
+	translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences);
 	
 	string code = "";
 	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
-	printCode(firstCodeBlockInTree, classDefinitionList, progLang, &code);
+	printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code);
 	
 	cout << "code = \n" << code << endl;
 }

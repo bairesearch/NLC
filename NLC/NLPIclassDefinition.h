@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a2a 15-September-2013
+ * Project Version: 1a2b 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -44,23 +44,39 @@
 #include <unordered_map>
 using namespace std;
 
+#define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLPIglobalDefs.h
 
+static string progLangClassTitlePrepend[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
+static string progLangOpenClass[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{", "{", "{", "{", "{", "{", "{"};
+static string progLangCloseClass[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"};", "};", "};", "};", "};", "};", "};"};
+static string progLangClassIntro[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"public:", "public:", "public:", "public:", "public:", "public:", "public:"};
+static string progLangClassConstructorDestructorAppend[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(void);", "(void);", "(void);", "(void);", "(void);", "(void);", "(void);"};
+static string progLangClassDestructorPrepend[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"~", "~", "~", "~", "~", "~", "~"};
+static string progLangClassListTypeStart[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"vector<", "vector<", "vector<", "vector<", "vector<", "vector<", "vector<"};
+static string progLangClassListTypeEnd[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" *> ", " *> ", " *> ", " *> ", " *> ", " *> ", " *> "};
+static string progLangClassNameType[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
+static string progLangClassMemberFunctionType[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void ", "void ", "void ", "void ", "void ", "void ", "void "};
+static string progLangClassMemberFunctionParameters[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"()", "()", "()", "()", "()", "()", "()"};
+
+	//progLangEndLine
+	
 class NLPIclassDefinition
 {
 public:
 
 	NLPIclassDefinition(void);
-	NLPIclassDefinition(GIAentityNode * entity);
-	NLPIclassDefinition(string newName, int newItemType);
+	NLPIclassDefinition(string newName);
 	~NLPIclassDefinition(void);
 	
 	string name;
-	vector<NLPIclassDefinition *> propertiesList;	//subclass
-	vector<NLPIclassDefinition *> definitionsList;	//inherited parents
+	vector<NLPIclassDefinition *> propertyList;	//subclass
+	vector<NLPIclassDefinition *> conditionList;	//declared conditions
+	vector<NLPIclassDefinition *> definitionList;	//inherited parents
 	vector<NLPIclassDefinition *> functionList;
 };
 
-bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode * entity, int sentenceIndex);
+NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string className, bool * foundClassDefinition);
+
 
 
 

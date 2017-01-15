@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a2a 15-September-2013
+ * Project Version: 1a2b 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -45,8 +45,8 @@ using namespace std;
 #include "NLPIcodeBlock.h"
 #include "NLPIclassDefinition.h"
 
-bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> classDefinitionList, int progLang, string * code);
-	bool printClassDefinitions(vector<NLPIclassDefinition *> NLPIclassDefinitionList, int progLang, string * code);
+bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
+	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
 	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
 		void printLine(string command, int level, string * code);
 	

@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a2a 15-September-2013
+ * Project Version: 1a2b 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,7 +36,7 @@
 
 #include "NLPItranslator.h"
 
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
+bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
 {
 	bool result = true;
 
@@ -47,7 +47,7 @@ bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefi
 	}
 	
 	//NLPI translator Part 2.
-	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences))
+	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
 	}
@@ -78,13 +78,15 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			GIAentityNode * actionEntity = (*entityNodesActiveListActionsIterator);
 			if(!(actionEntity->isActionConcept))
 			{
+				#ifdef NLPI_DEBUG
 				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
+				#endif
 				//cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
 				//cout << "actionEntity->hasAssociatedInstance = " << actionEntity->hasAssociatedInstance << endl;
 
 				if(checkSentenceIndexParsingCodeBlocks(actionEntity, sentenceIndex))
 				{
-					cout << "sentenceIndexC = " << sentenceIndex << endl;
+					//cout << "sentenceIndexC = " << sentenceIndex << endl;
 					//cout << "h1" << endl;
 
 					bool actionHasObject = false;
@@ -121,7 +123,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							//cout << "h4" << endl;
 							if(subjectRequiredTempVar)
 							{	
-								cout << "subjectRequiredTempVar" << endl;						
+								//cout << "subjectRequiredTempVar" << endl;						
 								functionItem->context.push_back(subjectItem->instanceName);
 
 								#ifdef NLPI_NOT_NECESSARY
@@ -159,7 +161,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						if(subjectRequiredTempVar)
 						{	
-							cout << "subjectRequiredTempVar" << endl;						
+							//cout << "subjectRequiredTempVar" << endl;						
 							functionItem->context.push_back(subjectItem->instanceName);
 						}
 						else
@@ -214,7 +216,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						GIAentityNode* propertyEntity = propertyConnection->entity;
 						if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex))
 						{//only write properties that are explicated in current sentence
-							cout << "sentenceIndexA = " << sentenceIndex << endl;
+							//cout << "sentenceIndexA = " << sentenceIndex << endl;
 							currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
 							propertyConnection->parsedForNLPIcodeBlocks = true;
 						}
@@ -229,7 +231,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						GIAentityNode* conditionEntity = conditionConnection->entity;
 						if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex))
 						{//only write conditions that are explicated in current sentence	
-							cout << "sentenceIndexB = " << sentenceIndex << endl;
+							//cout << "sentenceIndexB = " << sentenceIndex << endl;
 							currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
 							conditionConnection->parsedForNLPIcodeBlocks = true;
 						}
@@ -293,10 +295,99 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	return currentCodeBlockInTree;
 }
 
-bool generateClassHeirarchy(vector<NLPIclassDefinition *> classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
+bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {	
-				//declare definitions (inheritance)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entityNode = *entityIter;
+		string className = entityNode->entityName;
+		bool foundClassDefinition = false;
+		NLPIclassDefinition * classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
+		if(!foundClassDefinition)
+		{
+			classDefinition = new NLPIclassDefinition(className);
+			classDefinitionList->push_back(classDefinition);
+			//cout << "!foundClassDefinition" << endl;
+		}
+		//cout << "generateClassHeirarchy: " << className << endl;
+
+		
+		for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
+		{
+			for(vector<GIAentityConnection*>::iterator connectionIter = entityNode->entityVectorConnectionsArray[i].begin(); connectionIter != entityNode->entityVectorConnectionsArray[i].end(); connectionIter++)
+			{
+				GIAentityConnection * connection = *connectionIter;
+				GIAentityNode * targetEntity = connection->entity;
 				
-				//declare properties (class )	
+				if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+				{
+					if(!(targetEntity->conditionObjectEntity->empty()))
+					{					
+						targetEntity = (targetEntity->conditionObjectEntity->back())->entity;
+					}
+					else
+					{
+						cout << "error generateClassHeirarchy(): condition does not have object" << endl;
+					}
+				}
+									
+				string targetName = targetEntity->entityName;
+				
+				bool foundTargetClassDefinition = false;
+				NLPIclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
+				if(!foundTargetClassDefinition)
+				{
+					//cout << "new NLPIclassDefinition(" << targetName << endl;
+					targetClassDefinition = new NLPIclassDefinition(targetName);
+					classDefinitionList->push_back(targetClassDefinition);
+				}
+		
+				if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+				{//declare subclass
+					//propertyList
+					bool foundLocalClassDefinition = false;
+					NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+					if(!foundLocalClassDefinition)
+					{
+						//cout << "propertyList.push_back: " << targetClassDefinition->name << endl;
+						classDefinition->propertyList.push_back(targetClassDefinition);
+					}
+				}
+				else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+				{//declare inheritance
+					//conditionList
+					bool foundLocalClassDefinition = false;
+					NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+					if(!foundLocalClassDefinition)
+					{
+						//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
+						classDefinition->conditionList.push_back(targetClassDefinition);
+					}						
+				}				
+				else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+				{//declare inheritance
+					//definitionList
+					bool foundLocalClassDefinition = false;
+					NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+					if(!foundLocalClassDefinition)
+					{
+						//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
+						classDefinition->definitionList.push_back(targetClassDefinition);
+					}
+				}
+				else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+				{//declare functions
+					//functionList
+					bool foundLocalClassDefinition = false;
+					NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->functionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+					if(!foundLocalClassDefinition)
+					{
+						//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
+						classDefinition->functionList.push_back(targetClassDefinition);
+					}
+				}
+			}
+		}
+	}
 }	
 

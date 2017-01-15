@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a2a 15-September-2013
+ * Project Version: 1a2b 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -67,7 +67,7 @@ using namespace std;
 #define NLPI_PROGRAMMING_LANGUAGE_PERL (5)
 #define NLPI_PROGRAMMING_LANGUAGE_PYTHON (6)
 #define NLPI_PROGRAMMING_LANGUAGE_DEFAULT (NLPI_PROGRAMMING_LANGUAGE_CPP)
-#define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)
+#define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLPIglobalDefs.h
 
 #define NLPI_ITEM_INSTANCE_ID_UNDEFINED (-1)
 
@@ -109,6 +109,7 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 #define NLPI_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
 #define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
 #define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
+#define NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
 #define NLPI_ITEM_TYPE_PROPERTYLISTFINDFUNCTION "findProperty"
 #define NLPI_ITEM_TYPE_CONDITIONLISTFINDFUNCTION "findCondition"
 #define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"

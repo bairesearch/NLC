@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n22a 02-February-2015
+ * Project Version: 1n22b 02-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -468,7 +468,8 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 								else if(hasSameSentenceSameReferenceSetActionObject)
 								{
 									//e.g. "A chicken that ate the pie rows the boat." - mark "a chicken" as definite such that its context will be parsed by generateContextBlocks()
-									actionSubjectEntity->grammaticalDefiniteTemp = true;
+									//actionSubjectEntity->grammaticalDefiniteTemp = true;
+									actionSubjectEntity->NLClocalListVariableHasBeenInitialised = true;	//added 1n22b
 									//cout << "actionSubjectEntity = " << actionSubjectEntity->entityName << endl;
 								}
 							}

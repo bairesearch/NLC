@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4c 29-October-2013
+ * Project Version: 1c4d 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,12 +36,12 @@
 
 #include "NLPItranslator.h"
 
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
+bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName)
 {
 	bool result = true;
 
 	//NLPI translator Part 1.
-	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences))
+	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, functionName))
 	{
 		result = false;
 	}
@@ -53,7 +53,7 @@ bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefi
 	}
 }
 
-bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
+bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName)
 {
 	NLPIcodeblock * currentCodeBlockInTree = firstCodeBlockInTree;
 	
@@ -62,7 +62,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 	vector<NLPIitem *> implictlyDeclaredFunctionListTopLevel;	//top level function list (used to store implicitly declared functions without subject/context/owner)	
 	#endif
 	
-	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, "main", entityNodesActiveListComplete);
+	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, functionName, entityNodesActiveListComplete);
 
 	//NLPIcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
 	//for each action (command) in sentence;

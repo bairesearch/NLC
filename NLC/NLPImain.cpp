@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4c 29-October-2013
+ * Project Version: 1c4d 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -736,7 +736,21 @@ int main(int argc,char **argv)
 		&maxNumberSentences	
 	);
 	
-	executeNLPI(entityNodesActiveListComplete, entityNodesActiveListConcepts, entityNodesActiveListSubstances, entityNodesActiveListActions, entityNodesActiveListConditions, maxNumberSentences);
+	string NLPIfunctionName = "";
+	if(useInputTextPlainTXTFile)
+	{
+		NLPIfunctionName = inputTextPlainTXTfileName;
+	}
+	else if(useInputTextXMLFile)
+	{
+		NLPIfunctionName = inputTextXMLFileName;
+	}
+	else
+	{
+		cout << "error: NLPI requires useInputTextPlainTXTFile or useInputTextXMLFile" << endl; 
+	}
+	
+	executeNLPI(entityNodesActiveListComplete, entityNodesActiveListConcepts, entityNodesActiveListSubstances, entityNodesActiveListActions, entityNodesActiveListConditions, maxNumberSentences, NLPIfunctionName);
 	
 	//print execution time (end)
 	time(&now);
@@ -745,12 +759,12 @@ int main(int argc,char **argv)
 	cout << "NLPI execution time: " << timeAndDateString << " (finish)" << endl;	
 }	
 
-bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences)
+bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences, string functionName)
 {
 	NLPIcodeblock * firstCodeBlockInTree = new NLPIcodeblock();
 	vector<NLPIclassDefinition *> classDefinitionList;
 	
-	translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences);
+	translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, functionName);
 		
 	string code = "";
 	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;

@@ -23,7 +23,7 @@
  * File Name: NLPImain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4c 29-October-2013
+ * Project Version: 1c4d 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -47,7 +47,7 @@ using namespace std;
 #include "GIAentityConnectionClass.h"
 
 int main(int argc,char **argv);
-	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences);
+	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences, string functionName);
 
 
 #endif

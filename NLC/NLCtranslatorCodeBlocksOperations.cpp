@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u3a 27-September-2016
+ * Project Version: 1u3b 27-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -761,64 +761,73 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 				#endif	
 					//this code is from generateContextBlocksSimple{}:
 
-					//context property item:		
+					//context property item:	
+					bool parseDefinitionChild = false;	
 					if(assumedToAlreadyHaveBeenDeclared(childSubstance))
 					{
 						#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
 						cout << "1 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForLocalList{}: assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
 						#endif
 						*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, childSubstance);
+						parseDefinitionChild = true;
 					}
 					else
 					{
+						parseDefinitionChild = false;	//changed @NLC1t5b: do not parse if not already declared
+						/*
+						parseDefinitionChild = true;
 						#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
 						cout << "2 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForPropertyList{}: !assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
 						#endif
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, childSubstance);
+						*/
 					}	
 
-					if(generateContext)
+					if(parseDefinitionChild)
 					{
-						if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstance), parentInstance, sentenceIndex, generateContextBlocksVariables))
+						if(generateContext)
+						{
+							if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstance), parentInstance, sentenceIndex, generateContextBlocksVariables))
+							{
+								contextFound = true;
+							}
+						}
+						else
 						{
 							contextFound = true;
 						}
-					}
-					else
-					{
-						contextFound = true;
-					}
-					
-					#ifdef NLC_DEBUG
-					cout << "parentInstance = " << parentInstance->entityName << endl;
-					cout << "parentConcept = " << parentConcept->entityName << endl;
-					cout << "childSubstance = " << childSubstance->entityName << endl;
-					#endif
-					if((parentConcept->entityName != childSubstance->entityName) && checkParentExists(parentConcept, childSubstance->entityName))	//verify that "bananas are fruit"/"Chess is a game."
-					{
-						#ifdef NLC_DEBUG
-						cout << "checkParentExists" << endl;
-						#endif
-						*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, childSubstance, parentConcept->entityName);	//verify that the substance (eg "the fruit") in its local list has previously been renamed to "banana" (see NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS:generateCodeBlocksAddConnection:GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
-						
-						//[substance definition logic #2] eg parsing back through this past sentence from banana to fruit; "the fruit is a yellow banana. [The banana is tasty.]" / "The game is chess. [The game of chess is good.]"
-						addEntityToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, true);
-					}
-					else
-					{
-						//[substance definition logic #1] eg parsing back through this past sentence from fruit to banana; "The yellow banana is a fruit. [The yellow fruit is tasty.]"
-						addEntityToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
-					}
-					
-					#ifdef NLC_DEBUG_PARSE_CONTEXT2
-					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForStatementsForDefinitionChildren{}"));
-					#endif
 
-					*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
-					*lastCodeBlockInTree = *currentCodeBlockInTree;
-					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-					cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements{}: contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance->entityName << endl;
-					#endif
+						#ifdef NLC_DEBUG
+						cout << "parentInstance = " << parentInstance->entityName << endl;
+						cout << "parentConcept = " << parentConcept->entityName << endl;
+						cout << "childSubstance = " << childSubstance->entityName << endl;
+						#endif
+						if((parentConcept->entityName != childSubstance->entityName) && checkParentExists(parentConcept, childSubstance->entityName))	//verify that "bananas are fruit"/"Chess is a game."
+						{
+							#ifdef NLC_DEBUG
+							cout << "checkParentExists" << endl;
+							#endif
+							*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, childSubstance, parentConcept->entityName);	//verify that the substance (eg "the fruit") in its local list has previously been renamed to "banana" (see NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS:generateCodeBlocksAddConnection:GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+
+							//[substance definition logic #2] eg parsing back through this past sentence from banana to fruit; "the fruit is a yellow banana. [The banana is tasty.]" / "The game is chess. [The game of chess is good.]"
+							addEntityToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, true);
+						}
+						else
+						{
+							//[substance definition logic #1] eg parsing back through this past sentence from fruit to banana; "The yellow banana is a fruit. [The yellow fruit is tasty.]"
+							addEntityToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
+						}
+
+						#ifdef NLC_DEBUG_PARSE_CONTEXT2
+						*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForStatementsForDefinitionChildren{}"));
+						#endif
+
+						*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
+						*lastCodeBlockInTree = *currentCodeBlockInTree;
+						#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+						cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements{}: contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance->entityName << endl;
+						#endif
+					}
 
 				#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
 				}

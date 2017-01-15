@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c2a 27-October-2013
+ * Project Version: 1c3a 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -280,37 +280,30 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					//check the definition is a substance concept
 					if(definitionEntity->isSubstanceConcept)
 					{
+						//cout << "isSubstanceConcept" << endl;
 						definitionConnection->parsedForNLPIcodeBlocks = true;
 
 						//property initialisations
 						for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = definitionEntity->propertyNodeList->begin(); propertyNodeListIterator < definitionEntity->propertyNodeList->end(); propertyNodeListIterator++)
 						{
 							GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-							if(!(propertyConnection->parsedForNLPIcodeBlocks))
-							{
-								GIAentityNode* propertyEntity = propertyConnection->entity;
-								if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, false))
-								{//only write properties that are explicated in current sentence
-									//cout << "sentenceIndexA = " << sentenceIndex << endl;
-									currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
-									entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
-								}
-							}
+
+							GIAentityNode* propertyEntity = propertyConnection->entity;
+
+							//cout << "sentenceIndexA = " << sentenceIndex << endl;
+							currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
+							entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
 						}
 						//state initialisations
 						for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = definitionEntity->conditionNodeList->begin(); conditionNodeListIterator < definitionEntity->conditionNodeList->end(); conditionNodeListIterator++)
 						{
 							GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-							if(!(conditionConnection->parsedForNLPIcodeBlocks))
-							{
-								GIAentityNode* conditionEntity = conditionConnection->entity;
-								if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, false))
-								{//only write conditions that are explicated in current sentence	
-									//cout << "sentenceIndexB = " << sentenceIndex << endl;
-									currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
-									entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
-								}
-							}
+							
+							GIAentityNode* conditionEntity = conditionConnection->entity;
+
+							//cout << "sentenceIndexB = " << sentenceIndex << endl;
+							currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+							entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
 						}	
 					}
 					//}
@@ -419,7 +412,8 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						classDefinitionList->push_back(targetClassDefinition);
 					}
 					#ifndef NLPI_BAD_IMPLEMENTATION
-					if((targetEntity->isAction) || (targetEntity->isActionConcept) ||(targetEntity->isCondition) && !(targetEntity->isConcept))
+					//if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))	//TEMPORARILY REMOVED FOR DEBUGGING
+					if((targetEntity->isCondition) && !(targetEntity->isConcept))
 					{
 						targetClassDefinition->isActionOrConditionInstanceNotClass = true;
 						//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;

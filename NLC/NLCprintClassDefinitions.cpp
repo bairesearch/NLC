@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u2e 26-September-2016
+ * Project Version: 1u3a 27-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -102,6 +102,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							#endif
 						}
 					}
+					#ifdef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES_RETAIN_OLD_CODE_FOR_DEBUGGING
 					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 					{
 						NLCclassDefinition* targetClassDefinition = *localListIter;
@@ -128,13 +129,12 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							cout << "printClassDefinitions{} error: !foundClassDefinitionConditionClass, targetClassDefinition->name = " << targetClassDefinition->name << endl;
 							exit(0);
 						}
-						/*
+						
 						//OLD: not possible with 1m3a implementation (use of findClassDefinitionCondition and isConditionInstance) as targetClassDefinition will be a condition instance and will therefore not be printed
-						if(!(targetClassDefinition->printed))
-						{
-							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}
-						*/
+						//if(!(targetClassDefinition->printed))
+						//{
+						//	printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+						//}
 
 						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 						//requries NLClibrary such that printClassDefinitions() can generate classes in separate files such that they can reference each other (bidirectional)
@@ -161,6 +161,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						}
 						#endif
 					}
+					#endif
 					#endif
 
 					#ifdef NLC_API

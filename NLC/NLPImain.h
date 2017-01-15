@@ -23,7 +23,7 @@
  * File Name: NLPImain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1a 28-June-2013
+ * Project Version: 1a1b 14-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -42,35 +42,14 @@
 #include <vector>
 using namespace std;
 
-#define NLPI_CODEBLOCK_TYPE_UNDEFINED (-1)
-#define NLPI_CODEBLOCK_TYPE_FOR (1)
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTIES (2)
-#define NLPI_CODEBLOCK_TYPE_IF_SATISFIES_CONDITIONS (3)
-#define NLPI_DEFAULT_CONTEXT "nlpiDefaultContext"	//eg "this."?
-//shared with GIAtranslatorDefineReferencing.cpp
-class NLPIcodeblock
-{
-public:
-
-	NLPIcodeblock(void);
-	~NLPIcodeblock(void);
-
-	codeBlockType = -1;
-	vector<string> parameters;
-	
-	//used by language specific code generator (eg C++, java);
-	string codeBlockType; 	//eg "for"
-	string openingText;	//eg "for(...){"
-	string closingText; 	//eg "}";
-	
-	NLPIcodeblock * lowerLevel;
-	NLPIcodeblock * next;
-};
-
-NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType);
+#include "GIAglobalDefs.h"
+#include "GIAentityNodeClass.h"
+#include "GIAentityConnectionClass.h"
 
 int main(int argc,char **argv);
-
-bool executeNLPI();
+	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences);
+		bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree ,vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences);
+		bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code);
+			void printLine(string command, int level, string * code);
 
 #endif

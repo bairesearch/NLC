@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g14b 15-July-2014
+ * Project Version: 1g14c 15-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -390,7 +390,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 							logicalConditionConjunctionVariables.logicalOperation = logicalOperation;
 							logicalConditionConjunctionVariables.negative = simpleNonConjunctionLogicalConditionNegative;
 								//NB this will set NLCparsedForCodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
-							getParentAndGenerateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables, false, true);		//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
+							getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables, false, true);		//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
 							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 					
 						#endif
@@ -480,7 +480,7 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 
 	if(checkSentenceIndexParsingCodeBlocks(currentLogicalConditionObject, sentenceIndex, false))
 	{	
-		getParentAndGenerateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, currentLogicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables, false, true);	//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
+		getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, currentLogicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables, false, true);	//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
 		
 		if(logicalOperation != NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
 		{
@@ -778,7 +778,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#endif
 			
 			#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-			//this is where original getParentAndGenerateContextBlocksAndInitialiseParentIfNecessary code whent (for both subjectEntity and objectEntity)
+			//this is where original getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks code whent (for both subjectEntity and objectEntity)
 			getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, subjectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 			getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, objectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 			#endif
@@ -789,12 +789,12 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		if(actionHasObject)
 		{
 			NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;	//not used
-			getParentAndGenerateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, objectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 			
 			if(actionHasSubject)
 			{
 				NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;	//not used
-				getParentAndGenerateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 				
 				functionItem->context.push_back(generateInstanceName(subjectEntity));
 
@@ -826,7 +826,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		{
 			//[**^]
 			NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;
-			getParentAndGenerateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 				
 			//cout << "subjectRequiredTempVar" << endl;
 			functionItem->context.push_back(generateInstanceName(subjectEntity));

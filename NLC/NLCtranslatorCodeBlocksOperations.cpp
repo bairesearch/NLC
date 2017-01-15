@@ -2308,7 +2308,20 @@ bool generateContextBlocksForParentEntity(NLCcodeblock** currentCodeBlockInTree,
 	if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))		//changed from generateCategories 1i11o
 	{
 		//eg Tom has Jack's blue ball
+		#ifndef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
 		result = true;
+		#endif
+	}
+		
+	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
+	generateContextBlocksVariables->parseParentEfficient = false;
+	generateContextBlocksVariables->childEntityNotToParse = NULL;
+	result = true;	//in case parent entity has no independent children (eg "red" in "The chicken's car" vs "The red chicken's car")
+	#endif
+		
+	if(result)
+	{
+		
 		#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 		if(checkNumericalReferenceToEntity(childEntity))
@@ -2328,11 +2341,6 @@ bool generateContextBlocksForParentEntity(NLCcodeblock** currentCodeBlockInTree,
 		#endif
 		childEntity->NLClocalListVariableHasBeenInitialised = true;
 	}
-	
-	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
-	generateContextBlocksVariables->parseParentEfficient = false;
-	generateContextBlocksVariables->childEntityNotToParse = NULL;
-	#endif
 	
 	return result;
 }

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p10a 11-July-2015
+ * Project Version: 1p11a 19-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -71,6 +71,7 @@
 		#else
 			#define NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED	//generates inline addProperty/addCondition functions only
 		#endif
+		#define NLC_USE_LIBRARY_COPY_FUNCTION_COPY_INTERNAL_CONDITION_LISTS	//1p11a
 		#define NLC_USE_LIBRARY_COPY_OBJECT_BY_NAME_FUNCTION_NAME "copyObjectByName"	//1p2a
 		#define NLC_USE_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME "NLClibraryStandardFunctionList.txt"	//1p3c
 		#define NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME "NLClibraryUserFunctionList.txt"	//1p3c

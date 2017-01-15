@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13c 18-October-2014
+ * Project Version: 1k13d 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -134,7 +134,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										functionDependency->functionObjectName = actionObjectName;
 										functionDependency->hasFunctionOwnerClass = true;
 										functionDependency->hasFunctionObjectClass = hasActionObject;
+										#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 										functionDependency->isReference = true;
+										#endif
 										parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 										functionDependencyList->push_back(functionDependency);
 									}
@@ -421,7 +423,10 @@ bool generateClassDefinitionsActionsWithoutSubject(vector<NLCclassDefinition *> 
 							actionObjectName = actionObject->entityName;
 						}
 						
-						createNewClassDefinitionFunctionDeclaration(classDefinitionList, actionName, actionSubjectName, actionObjectName, hasActionSubject, hasActionObject, actionClassDefinitionName, actionOwnerClassDefinitionName, true, parentFunctionDependency, functionDependencyList, true, true);
+						bool hasParent = true;
+						bool isReference = true;
+						bool createClassDefinition = true;
+						createNewClassDefinitionFunctionDeclaration(classDefinitionList, actionName, actionSubjectName, actionObjectName, hasActionSubject, hasActionObject, actionClassDefinitionName, actionOwnerClassDefinitionName, hasParent, parentFunctionDependency, functionDependencyList, isReference, createClassDefinition);
 					}
 				}
 			}
@@ -456,10 +461,12 @@ NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclarati
 				duplicateFunctionDeclarationDetected = true;
 			}
 		}
+		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 		if(!isReference)
 		{
 			functionDependency->isReference = false;	//upgrade isReference value (!isReference takes priority)
 		}
+		#endif
 	}
 	else
 	{
@@ -470,7 +477,9 @@ NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclarati
 		functionDependency->functionObjectName = functionObjectName;
 		functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;
 		functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
+		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 		functionDependency->isReference = isReference;	
+		#endif
 		if(hasParent)
 		{
 			parentFunctionDependency->functionDependencyList.push_back(functionDependency);

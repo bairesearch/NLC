@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13c 18-October-2014
+ * Project Version: 1k13d 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,7 +97,9 @@ NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDef
 	{	
 		cout << "createNewClassDefinitionFunctionDeclaration (!isReference): functionName  = " << functionName << endl;
 		NLCclassDefinitionFunctionDependency * parentFunctionDependencyTemp = NULL;
-		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, false, parentFunctionDependencyTemp, functionDependencyList, false, createClassDefinition);
+		bool hasParent = false;
+		bool isReference = false;
+		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, hasParent, parentFunctionDependencyTemp, functionDependencyList, isReference, createClassDefinition);
 	}
 	
 	
@@ -545,7 +547,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 	bool foundFunctionOwnerExactMatch = false;
 	bool foundFunctionObjectExactMatch = false;
 	NLCclassDefinition * functionDeclaration = NULL;
-	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, true, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
+	if(findFunctionDeclarationClassDefinitionNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, true, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition" << endl;
@@ -553,19 +555,20 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 		addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(functionDeclaration, &(firstCodeBlockInTree->parameters));
 		
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependency->functionDependencyList.begin(); functionDependencyIter != functionDependency->functionDependencyList.end(); functionDependencyIter++)
 		{
 			NLCclassDefinitionFunctionDependency * functionDependencyChild = *functionDependencyIter;
 			bool foundFunctionOwnerExactMatch2 = false;
 			bool foundFunctionObjectExactMatch2 = false;
 			NLCclassDefinition * functionDeclaration2 = NULL;
-			if(findFunctionDeclarationClassDefinition(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, &functionDeclaration2, false, &foundFunctionOwnerExactMatch2, &foundFunctionObjectExactMatch2))
+			if(findFunctionDeclarationClassDefinitionNonExactMatch(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, &functionDeclaration2, false, &foundFunctionOwnerExactMatch2, &foundFunctionObjectExactMatch2))
 			{
 				addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToClassDefinition(functionDeclaration, &(functionDeclaration2->parameters));
 			}
 		}
 		#endif
+
 		#endif
 	}
 	#else
@@ -619,6 +622,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(
 			NLCitem * functionArgumentTemp = NULL;
 			if(!findFunctionArgument(existingFunctionArgumentList, formalFunctionArgument->name, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 			{
+				cout << "adding: formalFunctionArgument->name = " << formalFunctionArgument->name << " to " << "functionDeclaration->functionName = " << functionDeclaration->name << endl;
 				NLCitem * newFunctionArgument = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
 				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
 				existingFunctionArgumentList->push_back(newFunctionArgument);

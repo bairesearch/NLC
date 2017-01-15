@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u15a 03-October-2016
+ * Project Version: 1u15b 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2222,6 +2222,9 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityNode* entity, int sentenceIndex)
 {
 	bool result = false;
+	#ifdef NLC_DEBUG
+	cout << "generateObjectInitialisationsForConnectionType: connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+	#endif
 	for(vector<GIAentityConnection*>::iterator targetNodeListIterator = entity->entityVectorConnectionsArray[connectionType].begin(); targetNodeListIterator < entity->entityVectorConnectionsArray[connectionType].end(); targetNodeListIterator++)
 	{
 		GIAentityConnection* targetConnection = *targetNodeListIterator;
@@ -2273,7 +2276,9 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					#ifdef NLC_RECORD_ACTION_HISTORY
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 					{
-						//foundSubject = true;
+						#ifdef NLC_RECORD_ACTION_HISTORY_EXTENDED
+						foundSubject = true;
+						#endif
 						subjectEntity = entity;
 						actionOrConditionEntity = targetEntity;
 						GIAentityConnection* actionObjectConnection = NULL;
@@ -2287,7 +2292,9 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					}
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
 					{
-						//foundObject = true;
+						#ifdef NLC_RECORD_ACTION_HISTORY_EXTENDED
+						foundObject = true;
+						#endif
 						objectEntity = entity;
 						actionOrConditionEntity = targetEntity;
 						GIAentityConnection* actionSubjectConnection = NULL;
@@ -2326,9 +2333,6 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 
 					if(recurse)
 					{
-						#ifdef NLC_DEBUG
-						//cout << "recurse; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
-						#endif
 
 						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 						generateContextBlocksVariables.getParentCheckLastParent = true;
@@ -2339,12 +2343,21 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						}
 						#ifdef NLC_DEBUG
 						//cout << "actionOrConditionEntity->NLCcontextGeneratedTemp = " << actionOrConditionEntity->entityName << endl;
+						cout << "getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks: recurseEntity = " << recurseEntity->entityName << endl;
 						#endif
-
+							
 						GIAentityNode* recurseEntityParent = NULL;
 						bool newInitialisation = false;
 						if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, recurseEntity, sentenceIndex, &generateContextBlocksVariables, false, &recurseEntityParent, &newInitialisation, false))
 						{
+							#ifdef NLC_DEBUG
+							cout << "entity->entityName = " << entity->entityName << endl;
+							cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
+							cout << "subjectEntity->entityName = " << subjectEntity->entityName << endl;
+							cout << "objectEntity->entityName = " << objectEntity->entityName << endl;
+							cout << "recurseEntity->entityName = " << recurseEntity->entityName << endl;
+							cout << "recurse; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+							#endif
 							//*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, recurseEntity, recurseEntity, NLC_ITEM_TYPE_RECURSEENTITYCATEGORY_VAR_APPENDITION, sentenceIndex);
 						}
 						/*NO:	
@@ -2363,7 +2376,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					if(addObject)
 					{
 						#ifdef NLC_DEBUG
-						//cout << "addObject; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+						cout << "\taddObject; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
 						#endif
 						
 						bool isPrimary = false;
@@ -2397,6 +2410,9 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, subjectEntity, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);
 			}
 			#ifdef NLC_RECORD_ACTION_HISTORY
+			#ifdef NLC_DEBUG
+			cout << "createCodeBlockRecordHistoryActionSubject subjectEntity = " << subjectEntity->entityName << endl;
+			#endif
 			*currentCodeBlockInTree = createCodeBlockRecordHistoryActionSubject(*currentCodeBlockInTree, actionEntity, subjectEntity);
 			#endif	
 		}
@@ -2408,6 +2424,9 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);
 			}
 			#ifdef NLC_RECORD_ACTION_HISTORY
+			#ifdef NLC_DEBUG
+			cout << "createCodeBlockRecordHistoryActionObject objectEntity = " << objectEntity->entityName << endl;
+			#endif
 			*currentCodeBlockInTree = createCodeBlockRecordHistoryActionObject(*currentCodeBlockInTree, actionEntity, objectEntity);
 			#endif
 			#ifdef NLC_USE_LIBRARY_FROM_CONDITIONS

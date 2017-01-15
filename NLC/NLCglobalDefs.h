@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14g 02-September-2015
+ * Project Version: 1q14h 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -119,9 +119,9 @@
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME "NLClibraryGenericEntityClass"
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME "NLClibrary"	//must be sychronised with progLangDependenciesNLClibary[]
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME "NLCgeneratedList.txt"
-			#define NLC_USE_LIBRARY_LIBRARY_FOLDER "../NLClibrary/"		//1q6d
-			#define NLC_USE_LIBRARY_GENERATED_FOLDER "../NLCgenerated/"	//1q6d
-			#define NLC_USE_LIBRARY_SOURCE_FOLDER "../source/"	//1q6d
+			#define NLC_USE_LIBRARY_LIBRARY_FOLDER ""	//1q6d, changed 1q14h		//"../NLClibrary/"
+			#define NLC_USE_LIBRARY_GENERATED_FOLDER ""	//1q6d, changed 1q14h		//"../NLCgenerated/"
+			#define NLC_USE_LIBRARY_SOURCE_FOLDER ""	//1q6d, changed 1q14h		//"../source/"
 		#endif
 		//#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION	//has not been defined yet
 			#define NLC_USE_LIBRARY_ASSUME_STANDARD_AND_USER_LIBRARY_FUNCTIONS_ACTION_ARGUMENT_TYPE_IS_NLC_GENERIC_ENTITY_CLASS	//1q1a	//if this is not defined, then wrapper functions must be created for every NLClibrary function (x) whose function action argument is of type NLCgenericEntityClass (instead of xClass)

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11r 25-August-2014
+ * Project Version: 1i12a 30-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -292,9 +292,9 @@ NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree
 NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
-	NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 #endif
 
 #ifdef NLC_GENERATE_TYPE_LISTS

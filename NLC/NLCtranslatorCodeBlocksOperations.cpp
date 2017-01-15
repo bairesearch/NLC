@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6a 24-August-2014
+ * Project Version: 1i6b 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -293,7 +293,7 @@ bool initialiseParentIfNecessaryAndGenerateCodeBlocks(NLCcodeblock ** currentCod
 bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
 {
 	bool contextFound = false;
-	*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND);
+	*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
 
 	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
 	if(generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, logicalConditionConjunctionVariables))
@@ -301,7 +301,7 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 		contextFound = true;
 	}
 
-	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND, parentEntity);
+	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, parentEntity);
 	*currentCodeBlockInTree = lastCodeBlockInTree->next;
 	lastCodeBlockInTree = *currentCodeBlockInTree;
 	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN
@@ -325,7 +325,7 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 	}
 	
 	NLCitem * parentItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_CLASS);
-	*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentItem, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND);
+	*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentItem, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
 
 	return contextFound;
 
@@ -426,7 +426,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 					contextFound = true;
 				}
 				
-				*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND, childSubstance);
+				*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, childSubstance);
 				*currentCodeBlockInTree = (*lastCodeBlockInTree)->next;
 				*lastCodeBlockInTree = *currentCodeBlockInTree;
 				#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i6a 24-August-2014
+ * Project Version: 1i6b 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,10 +41,10 @@
 
 //#define NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
 
-#define NLC_PARSE_CONTEXT_CHILDREN
+#define NLC_PARSE_CONTEXT_CHILDREN	//1i1a/19-August-2014 - categories
 #ifdef NLC_PARSE_CONTEXT_CHILDREN
-	#define NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND "Category"
 	#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
+	#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2 "Category"
 #endif
 
 #define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS
@@ -68,10 +68,10 @@
 #endif
 
 
-#define NLC_USE_PREPROCESSOR	//1g17a 18-July-2014	//reimplementation 1h1a+ 22-July-2014 //first working 1h1f
+#define NLC_USE_PREPROCESSOR	//1g17a/18-July-2014	//reimplementation 1h1a+/22-July-2014 //first working 1h1f
 #ifdef NLC_USE_PREPROCESSOR
 	#define NLC_PREPROCESSOR_GENERATE_COMMENTS
-	#define NLC_PREPROCESSOR_MATH	//1h1a 22-July-2014	//requires NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE for preprocessor isLogicalConditionOperator detection	//first working 1h2f
+	#define NLC_PREPROCESSOR_MATH	//1h1a/22-July-2014	//requires NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE for preprocessor isLogicalConditionOperator detection	//first working 1h2f
 	#ifdef NLC_PREPROCESSOR_MATH
 		#define NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR (CHAR_FULLSTOP)	//this is defined by NLP/English
 		#define NLC_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR (CHAR_QUESTIONMARK)	//this is defined by NLP/English
@@ -217,11 +217,11 @@
 	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 #endif
 
-#define NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS	//1g16a 16-July-2014
+#define NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS	//1g16a/16-July-2014
 
-#define NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX	//1g15a 16-July-2014	//requires GIA_STORE_CONNECTION_SENTENCE_INDEX
+#define NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX	//1g15a/16-July-2014	//requires GIA_STORE_CONNECTION_SENTENCE_INDEX
 
-#define NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE	//added 1g13b+ 15-July-2014
+#define NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE	//added 1g13b+/15-July-2014
 
 #define NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES	//1g8a+ local variable implementation
 

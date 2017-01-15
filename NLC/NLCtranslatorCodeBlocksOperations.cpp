@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h7a 30-July-2014
+ * Project Version: 1h8a 30-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -400,6 +400,21 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 					propertyEntity->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionVariables->logicalConditionConjunctionIndex;
 					#endif
+					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+					if(propertyConnection->negative)
+					{
+						logicalConditionConjunctionVariables->negativeDetectedInContextBlocks = true;
+						//cout << "propertyConnection->negative: propertyEntity->entityName = " << propertyEntity->entityName << endl;
+					}
+					if(propertyEntity->isSubstanceQuality)
+					{
+						if(propertyEntity->negative)
+						{
+							//cout << "propertyEntity->negative: propertyEntity->entityName = " << propertyEntity->entityName << endl;
+							logicalConditionConjunctionVariables->negativeDetectedInContextBlocks = true;
+						}
+					}
+					#endif
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 				}
 				#endif
@@ -511,6 +526,13 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 							createCodeBlockForGivenCondition(currentCodeBlockInTree, parentInstanceName, conditionEntity, conditionObject, sentenceIndex, logicalConditionConjunctionVariables);
 							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 							conditionEntity->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionVariables->logicalConditionConjunctionIndex;
+							#endif
+							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+							if(conditionEntity->negative)
+							{
+								//cout << "conditionEntity->negative: conditionEntity->entityName = " << conditionEntity->entityName << endl;
+								logicalConditionConjunctionVariables->negativeDetectedInContextBlocks = true;
+							}
 							#endif
 						}
 						else

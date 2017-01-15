@@ -366,16 +366,19 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 						contextFound = true;
 					}
 					
+					#ifdef NLC_DEBUG
 					//cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;
-					cout << "childSubstance = " << childSubstance->entityName << endl;
+					//cout << "childSubstance = " << childSubstance->entityName << endl;
+					#endif
 					if(checkParentExists(parentSubstanceConcept, childSubstance->entityName))	//verify that "bananas are fruit"/"Chess is a game."
 					{
+						#ifdef NLC_DEBUG
 						//cout << "checkParentExists" << endl;
+						#endif
 						*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, childSubstance, parentSubstanceConcept->entityName);	//verify that the substance (eg "the fruit") in its local list has previously been renamed to "banana" (see NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS:generateCodeBlocksAddConnection:GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 						
 						//[substance definition logic #2] eg parsing back through this past sentence from banana to fruit; "the fruit is a yellow banana. [The banana is tasty.]" / "The game is chess. [The game of chess is good.]"
 						addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, true);
-						//cout << "addPropertyToCategoryList" << endl;
 					}
 					else
 					{

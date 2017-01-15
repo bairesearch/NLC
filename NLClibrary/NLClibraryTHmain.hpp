@@ -1,18 +1,18 @@
 /*******************************************************************************
  *
- * This file is part of NLC.
+ * This file is part of BAIPROJECT.
  *
- * NLC is commercially licensed software. It may not be redistributed,
+ * BAIPROJECT is commercially licensed software. It may not be redistributed,
  * and may only be used by a registered licensee.
  *
- * NLC is sold in the hope that it will be useful,
+ * BAIPROJECT is sold in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * BAI Commercial License for more details
  * (a copy is included in the LICENSE file that accompanied this code).
  *
  * You will have received a copy of the BAI Commercial License
- * along with NLC. For more information, visit <http://www.baxterai.com>
+ * along with BAIPROJECT. For more information, visit <http://www.baxterai.com>
  *
  *******************************************************************************/
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7f 14-October-2014
+ * Project Version: 1k7g 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -920,7 +920,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 			if(declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(entity))
 			{
 				#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
-				if(!(entity->disabled))
+				if(!(entity->disabled))	//added 1k7f
 				{
 				#else
 				//cout << "pass1: " << entity->entityName << endl;
@@ -1006,6 +1006,13 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 		validClassContents = false;	
 	}
 	#endif
+
+	//added 1k7g
+	if(isStringNumber(entityNode->entityName))
+	{
+		validClassContents = false;
+		//entityNode->disabled = true;	//this could be used instead (more general implementation)
+	}
 	
 	return validClassContents;
 }

@@ -167,7 +167,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							else
 							{
 								//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
-								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop)" << endl;
+								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
 								exit(0);
 							}
 						}
@@ -209,7 +209,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					#endif
 					lineNonWhiteSpaceDetected = false;
 				}
-				else if(currentToken == CHAR_FULLSTOP)
+				else if((currentToken == CHAR_FULLSTOP) || (currentToken == CHAR_QUESTIONMARK))
 				{
 					if(lineNonWhiteSpaceDetected)
 					{
@@ -290,9 +290,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					}
 					else if(lowerCaseSentenceContents == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF)
 					{
-						//#ifdef NLC_DEBUG_PREPROCESSOR
+						#ifdef NLC_DEBUG_PREPROCESSOR
 						cout << "elseIfDetected" << endl;
-						//#endif
+						#endif
 						lineIsLogicalCondition = true;
 						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 						currentNLCsentenceInList->elseIfDetected = true;
@@ -304,11 +304,15 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						#endif
 						sentenceContents = sentenceContents + currentToken;
 					}
+					#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 					else if((sentenceContents.length() > string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF).length()) && (lowerCaseSentenceContents.substr(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE).length()) == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)) 
+					#else
+					else if((sentenceContents.length() > string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF).length()) && (lowerCaseSentenceContents.substr(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE).length()) == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE) && (lowerCaseSentenceContents.substr(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF).length()) != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF)) 			
+					#endif
 					{
-						//#ifdef NLC_DEBUG_PREPROCESSOR
+						#ifdef NLC_DEBUG_PREPROCESSOR
 						cout << "elseDetected" << endl;
-						//#endif
+						#endif
 						lineIsLogicalCondition = true;
 						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 						currentNLCsentenceInList->elseDetected = true;

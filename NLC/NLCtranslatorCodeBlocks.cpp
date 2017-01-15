@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18d 21-July-2014
+ * Project Version: 1g18e 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -348,8 +348,8 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 						#else
 						for(vector<GIAentityConnection*>::iterator propertyIter = logicalConditionOperationObject->propertyNodeList->begin(); propertyIter != logicalConditionOperationObject->propertyNodeList->end(); propertyIter++)
 						{
-							GIAentityNode propertyEntity = (*propertyIter)->entity;
-							if(propertyEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_ELSE)
+							GIAentityNode * propertyEntity = (*propertyIter)->entity;
+							if(propertyEntity->entityName == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 							{//this is only known to hold using Stanford NLP
 								elseIfDetected = true;
 							}

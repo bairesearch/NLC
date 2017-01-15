@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k16d 24-October-2014
+ * Project Version: 1k16e 24-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -182,10 +182,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 											//cout << "targetEntity->entityName: " << targetEntity->entityName << endl;
 
 											NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
-											#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-											string conditionClassName = generateClassName(conditionEntity);
-											classDeclarationConditionsListItem->className2 = conditionClassName;
-											#else
 											if(!(targetEntity->conditionObjectEntity->empty()))
 											{
 												string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
@@ -195,7 +191,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 											{
 												cout << "generateClassHeirarchy() error: condition has no object" << endl;
 											}
-											#endif
 											targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
 										}
 									}

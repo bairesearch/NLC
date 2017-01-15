@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11l 25-August-2014
+ * Project Version: 1i11m 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1122,7 +1122,12 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, G
 bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName, string parentConditionName, bool generateParentContext)
 {
 	#ifdef NLC_DEBUG_PARSE_CONTEXT3
-	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): ") + entity->entityName);
+	string generateParentContextStringTemp = "false";
+	if(generateParentContext)
+	{
+		generateParentContextStringTemp = "true";
+	}
+	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): ") + entity->entityName + ", generateParentContext = " + generateParentContextStringTemp);
 	#endif
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
@@ -1200,7 +1205,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);						
 						*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);
 						propertyEntity->NLClocalListVariableHasBeenInitialised = true;
-						performedAtLeastOneObjectInitialisationAtThisLevel = true;
 					}
 				}
 				#endif
@@ -1473,7 +1477,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);										
 									*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);
 									conditionObject->NLClocalListVariableHasBeenInitialised = true;
-									performedAtLeastOneObjectInitialisationAtThisLevel = true;
 								}
 							}								
 							#endif

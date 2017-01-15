@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j3a 07-September-2014
+ * Project Version: 1j4a 08-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,6 +40,7 @@
 #include "NLCtranslatorCodeBlocks.h"
 #include "NLCtranslatorCodeBlocksLogicalConditions.h"
 #include "NLCtranslatorCodeBlocksOperations.h"
+#include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
 
 bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList)
 {
@@ -834,60 +835,70 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 					{//indefinite entity found
 						if(!(entity->NLClocalListVariableHasBeenDeclared))
 						{
-							//cout << "pass3: " << entity->entityName << endl;
-							/*OLD declareLocalPropertyListsForAllNonSpecificIndefiniteEntities() code;
-							bool foundPropertyInSameSentence = false;
-							bool foundConditionInSameSentence = false;
-							for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
+							#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+							//check the concept entity NLClocalListVariableHasBeenDeclared
+							GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+							if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))
 							{
-								GIAentityNode* propertyEntity = (*propertyNodeListIterator)->entity;
-								if(checkSentenceIndexParsingCodeBlocks(propertyEntity, sentenceIndex, false))
+								conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+							#endif
+							
+								//cout << "pass3: " << entity->entityName << endl;
+								/*OLD declareLocalPropertyListsForAllNonSpecificIndefiniteEntities() code;
+								bool foundPropertyInSameSentence = false;
+								bool foundConditionInSameSentence = false;
+								for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 								{
-									foundPropertyInSameSentence = true;
+									GIAentityNode* propertyEntity = (*propertyNodeListIterator)->entity;
+									if(checkSentenceIndexParsingCodeBlocks(propertyEntity, sentenceIndex, false))
+									{
+										foundPropertyInSameSentence = true;
+									}
 								}
-							}
-							for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
-							{
-								GIAentityNode* conditionEntity = (*conditionNodeListIterator)->entity;
-								if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
+								for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
 								{
-									foundConditionInSameSentence = true;
+									GIAentityNode* conditionEntity = (*conditionNodeListIterator)->entity;
+									if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
+									{
+										foundConditionInSameSentence = true;
+									}
 								}
+								if(!foundPropertyInSameSentence && !foundConditionInSameSentence)
+								{
+								*/
+
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+								#ifdef NLC_USE_PREPROCESSOR
+								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+								NLCcodeblock * firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
+								NLCcodeblock * firstCodeBlockAtStartOfIfStatement = NULL;
+								NLCcodeblock * previousCodeBlockInTree = NULL;
+								setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected);
+								previousCodeBlockInTree = *currentCodeBlockInTree;
+								#endif
+								#endif
+								#endif
+
+								*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
+
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+								#ifdef NLC_USE_PREPROCESSOR
+								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+								restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected, &previousCodeBlockInTree);
+								#endif
+								#endif
+								#endif
+
+								#ifdef NLC_DEBUG
+								cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
+								#endif
+								entity->NLClocalListVariableHasBeenDeclared = true;
+								/*
+								}
+								*/
+							#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 							}
-							if(!foundPropertyInSameSentence && !foundConditionInSameSentence)
-							{
-							*/
-							
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-							#ifdef NLC_USE_PREPROCESSOR
-							#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-							NLCcodeblock * firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
-							NLCcodeblock * firstCodeBlockAtStartOfIfStatement = NULL;
-							NLCcodeblock * previousCodeBlockInTree = NULL;
-							setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected);
-							previousCodeBlockInTree = *currentCodeBlockInTree;
-							#endif
-							#endif
-							#endif
-							
-							*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
-							
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-							#ifdef NLC_USE_PREPROCESSOR
-							#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-							restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected, &previousCodeBlockInTree);
-							#endif
-							#endif
-							#endif
-							
-							#ifdef NLC_DEBUG
-							cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
-							#endif
-							entity->NLClocalListVariableHasBeenDeclared = true;
-							/*
-							}
-							*/
-							
+							#endif	
 						}
 					}
 				}

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i2b 20-August-2014
+ * Project Version: 1i2c 20-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1i2b 20-August-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1i2c 20-August-2014" << endl;
 			exit(1);
 		}
 
@@ -700,6 +700,7 @@ int main(int argc,char **argv)
 	#ifdef NLC_USE_PREPROCESSOR
 	//vector<string> inputTextPlainTXTFileNameList;
 	bool preprocessorDetectedFunctions = false;
+	string inputTextPlainTXTfileNameOrig = inputTextPlainTXTfileName;
 	if(useNLCpreprocessor)
 	{
 		#ifdef NLC_DEBUG_PREPROCESSOR
@@ -727,6 +728,7 @@ int main(int argc,char **argv)
 			else
 			{
 			#endif
+				inputTextPlainTXTfileNameOrig = inputTextPlainTXTfileName;
 				inputTextPlainTXTfileName = outputPreprocessedTextForNLConlyPlainTXTFileName;	//execute NLP on preprocessed file
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			}
@@ -913,7 +915,19 @@ int main(int argc,char **argv)
 		string NLCfunctionName = "";
 		if(useInputTextPlainTXTFile)
 		{
-			NLCfunctionName = inputTextPlainTXTfileName;
+			#ifdef NLC_USE_PREPROCESSOR
+			if(useNLCpreprocessor && !preprocessorDetectedFunctions)
+			{
+				NLCfunctionName = inputTextPlainTXTfileNameOrig;	//NLC 1i2c - do not add "afterPreprocessedforNLConly" to function name
+			}
+			else
+			{
+			#endif
+				NLCfunctionName = inputTextPlainTXTfileName;
+			#ifdef NLC_USE_PREPROCESSOR
+			}
+			#endif				
+		
 		}
 		else if(useInputTextNLPrelationXMLFile)
 		{

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j10a 11-September-2014
+ * Project Version: 1j11a 11-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j10a 11-September-2014
+ * Project Version: 1j11a 11-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1164,8 +1164,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 			#ifdef NLC_DEBUG
 			//cout << "\t\tpropertyConnection->sentenceIndexTemp = " << propertyConnection->sentenceIndexTemp << endl;
 			#endif
-		
-			
+					
 			#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 			if((checkSentenceIndexParsingCodeBlocks(propertyEntity, sentenceIndex, false) || propertyEntity->NLCparsedForCodeBlocks) && (propertyConnection->sentenceIndexTemp == sentenceIndex))
 			#else
@@ -1281,6 +1280,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				cout << "\t\tcreateCodeBlockForPropertyList: " << entity->entityName << endl;
 				#endif
 
+				bool newlyDeclaredEntityInCategoryList2 = false;
+
 				if(!(propertyConnection->NLCparsedForCodeBlocks))
 				{
 					#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
@@ -1378,7 +1379,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 							//create a new property; eg "a ball" in "Tom has a ball"
 
-							*currentCodeBlockInTree = createCodeBlockAddNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, true);
+							newlyDeclaredEntityInCategoryList2 = true;
+							*currentCodeBlockInTree = createCodeBlockCreateNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, true);
+							
 							#ifdef NLC_DEBUG
 							cout << "createCodeBlockAddNewProperty: " << entity->entityName << ", " << propertyEntity->entityName << endl;
 							#endif
@@ -1398,7 +1401,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
 						#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 						//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-						generateObjectInitialisationsBasedOnSubstanceConcepts(propertyEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList);
+						generateObjectInitialisationsBasedOnSubstanceConcepts(propertyEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList2);
 						#endif
 					#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 					}
@@ -1423,7 +1426,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				}
 
 				NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), "", false, false);
+				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), "", false, newlyDeclaredEntityInCategoryList2);
 				#ifdef NLC_DEBUG
 				cout << "performedAtLeastOneObjectInitialisationAtALowerLevel = " << performedAtLeastOneObjectInitialisationAtALowerLevel << endl;
 				#endif
@@ -1581,6 +1584,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							}
 							#endif
 
+							bool newlyDeclaredEntityInCategoryList2 = false;
+							
 							if(!(conditionConnection->NLCparsedForCodeBlocks))
 							{
 								#ifdef NLC_DEBUG
@@ -1667,7 +1672,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 										#endif
 
 										//create a new condition; eg "a house" in "Tom is near a house"
-										*currentCodeBlockInTree = createCodeBlockAddNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, true);
+										newlyDeclaredEntityInCategoryList2 = true;
+										*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, true);
 
 									#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 									}
@@ -1680,7 +1686,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
 									#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 									//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-									generateObjectInitialisationsBasedOnSubstanceConcepts(conditionEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList);
+									generateObjectInitialisationsBasedOnSubstanceConcepts(conditionEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList2);
 									#endif
 								#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 								}
@@ -1705,7 +1711,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							}
 
 							NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-							bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), conditionEntity->entityName, false, false);
+							bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), conditionEntity->entityName, false, newlyDeclaredEntityInCategoryList2);
 
 							generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 						}
@@ -1870,10 +1876,10 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 				}
 				#endif
 
-				*currentCodeBlockInTree = createCodeBlockAddNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, false);
+				*currentCodeBlockInTree = createCodeBlockCreateNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, false);
 
 				entity->NLCparsedForCodeBlocks = true;			//added NLC 1b6b/4 October 2013 - used for quick access of instances already declared in current context
-				generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(definitionEntity), "", false);		//updated 9 November 2013 - support recursion of complex substance concept definition
+				generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(definitionEntity), "", true);		//updated 9 November 2013 - support recursion of complex substance concept definition
 
 				*currentCodeBlockInTree = firstCodeBlockInSection->next;
 			}
@@ -1922,10 +1928,10 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 					}
 					#endif
 				
-					*currentCodeBlockInTree = createCodeBlockAddNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, false);
+					*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, false);
 
 					entity->NLCparsedForCodeBlocks = true;			//added NLC 1b6b/4 October 2013 - used for quick access of instances already declared in current context
-					generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(definitionEntity), conditionEntity->entityName, false);	//updated 9 November 2013 - support recursion of complex substance concept definition
+					generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(definitionEntity), conditionEntity->entityName, true);	//updated 9 November 2013 - support recursion of complex substance concept definition
 
 					*currentCodeBlockInTree = firstCodeBlockInSection->next;
 				}

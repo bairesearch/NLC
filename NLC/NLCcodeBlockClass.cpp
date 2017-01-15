@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j10a 11-September-2014
+ * Project Version: 1j11a 11-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -114,6 +114,16 @@ NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLC
 }
 
 //add property
+
+NLCcodeblock * createCodeBlockCreateNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList)
+{	
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, propertyEntity);	//create new category list
+	#endif
+	currentCodeBlockInTree = createCodeBlockAddNewProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, copyNewItemsToLocalList);
+	return currentCodeBlockInTree;
+}
+
 NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList)
 {
 	#ifdef NLC_SUPPORT_QUANTITIES
@@ -158,6 +168,9 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	}
 	#endif
 
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, propertyEntity, propertyEntity);	//add new object to category list
+	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, propertyEntity, sentenceIndex);
 	#endif
@@ -248,12 +261,25 @@ NLCcodeblock * createCodeBlockAddProperty(NLCcodeblock * currentCodeBlockInTree,
 }
 
 
-//add state
+
+NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList)
+{	
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	if(!(conditionEntity->conditionObjectEntity->empty()))
+	{
+		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+		currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, conditionObject);	//create new category list
+	}
+	#endif
+	currentCodeBlockInTree = createCodeBlockAddNewCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, copyNewItemsToLocalList);
+	return currentCodeBlockInTree;
+}
+
+
 NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
-
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 
 		#ifdef NLC_SUPPORT_QUANTITIES
@@ -301,6 +327,9 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 		}
 		#endif
 
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+		currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, conditionObject, conditionObject);	//add new object to category list
+		#endif
 		#ifdef NLC_USE_ADVANCED_REFERENCING
 		currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, conditionObject, sentenceIndex);
 		#endif

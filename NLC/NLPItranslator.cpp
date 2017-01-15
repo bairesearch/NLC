@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1c 15-September-2013
+ * Project Version: 1a1d 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -69,7 +69,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					actionHasObject = true;
 					objectEntity = (actionEntity->actionObjectEntity->back())->entity;
 				}
-				//cout << "h1b" << endl;
+				cout << "h1b" << endl;
 				bool actionHasSubject = false;
 				GIAentityNode * subjectEntity = NULL;
 				if(!(actionEntity->actionSubjectEntity->empty()))
@@ -77,72 +77,39 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					actionHasSubject = true;
 					subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
 				}
-
-				//cout << "h2" << endl;
+				
+				cout << "h2" << endl;
 				
 				if(actionHasObject)
 				{
-					bool objectHasProperties = false;
-					if(!(objectEntity->propertyNodeList->empty()))
-					{
-						objectHasProperties = true;
-					}
-					bool objectHasConditions = false;
-					if(!(objectEntity->conditionNodeList->empty()))
-					{
-						objectHasConditions = true;	//not used
-					}		
-					bool multipleObjects = false;
-					if(objectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
-					{
-						multipleObjects = true;
-					}
-					bool objectsHaveParent = false;
-					
-					//cout << "h3" << endl;
-					
+					bool objectRequiredTempVar = false;	//not used
 					NLPIitem * objectItem = NULL;
-										
-					if(multipleObjects || objectHasProperties)
-					{//for loop required
-						//for(all items in context){
-						NLPIitem * objectClass = new NLPIitem(objectEntity, NLPI_ITEM_TYPE_CLASS);
-						objectsHaveParent = getEntityContext(objectEntity, &(objectClass->context), false);
-						currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectClass);
-						objectItem = new NLPIitem(objectEntity, NLPI_ITEM_TYPE_TEMPVAR);
-					}
-					else
-					{
-						objectItem = new NLPIitem(objectEntity, NLPI_ITEM_TYPE_OBJECT);
-						objectsHaveParent = getEntityContext(objectEntity, &(objectItem->context), false);
-					}
+					currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar);
 					
-					//cout << "h5" << endl;
-					
-					//specificObjects
-					currentCodeBlockInTree = createCodeBlockIfHasProperties(currentCodeBlockInTree, objectItem, objectEntity, sentenceIndex);
-					//if(item->has(property) && item->has(property1) etc..){
-	
-					//cout << "h6" << endl;
-					
-					currentCodeBlockInTree = createCodeBlockIfHasConditions(currentCodeBlockInTree, objectItem, objectEntity, sentenceIndex);
-					//if(item > 3){		/	if(greaterthan(item, 3)){
-					//}
-
-					//cout << "h7" << endl;
-					
+					cout << "h3" << endl;
 					NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 					if(actionHasSubject)
 					{
-						getEntityContext(subjectEntity, &(functionItem->context), true);
+						bool subjectRequiredTempVar = false;
+						NLPIitem * subjectItem = NULL;
+						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
+						cout << "h4" << endl;
+						if(subjectRequiredTempVar)
+						{	
+							cout << "subjectRequiredTempVar" << endl;						
+							functionItem->context.push_back(subjectItem->name);
+						}
+						else
+						{
+							getEntityContext(subjectEntity, &(functionItem->context), true);
+						}
 					}
-					//cout << "h8" << endl;
+					cout << "h5" << endl;
 					
 					currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem, objectItem);
-					
-					//cout << "h9" << endl;
 				}
-
+				
+				cout << "h6" << endl;
 				/*		
 				findContextOfObject(objectEntity)
 
@@ -158,7 +125,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			}
 		}
 		
-		//cout << "q1" << endl;
+		cout << "q1" << endl;
 	
 		//method2;
 		//cout << "*** sentenceIndex = " << sentenceIndex << endl;
@@ -171,9 +138,53 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			}
 		}
 		
-		//cout << "q2" << endl;
+		cout << "q2" << endl;
 	}
 	
 }
 
+NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar)
+{
+	*requiredTempVar = false;
 
+	bool objectOrSubjectHasProperties = false;
+	if(!(objectOrSubjectEntity->propertyNodeList->empty()))
+	{
+		objectOrSubjectHasProperties = true;
+	}
+	bool objectOrSubjectHasConditions = false;
+	if(!(objectOrSubjectEntity->conditionNodeList->empty()))
+	{
+		objectOrSubjectHasConditions = true;	//not used
+	}							
+	bool multipleobjectOrSubjects = false;
+	if(objectOrSubjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
+	{
+		multipleobjectOrSubjects = true;
+	}
+	bool objectOrSubjectsHaveParent = false;
+
+	if(multipleobjectOrSubjects || objectOrSubjectHasProperties || objectOrSubjectHasConditions)
+	{//for loop required
+		*requiredTempVar = true;
+		
+		//for(all items in context){
+		NLPIitem * objectOrSubjectClass = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_CLASS);
+		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &(objectOrSubjectClass->context), false);
+		currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectOrSubjectClass);
+		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_TEMPVAR);
+		
+		//specificobjectOrSubjects
+		currentCodeBlockInTree = createCodeBlockIfHasProperties(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
+		//if(item->has(property) && item->has(property1) etc..){
+
+		currentCodeBlockInTree = createCodeBlockIfHasConditions(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
+		//if(item > 3){		/	if(greaterthan(item, 3)){						
+	}
+	else
+	{
+		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_OBJECT);
+		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &((*objectOrSubjectItem)->context), false);
+	}
+	return currentCodeBlockInTree;
+}

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k11a 17-October-2014
+ * Project Version: 1k12a 17-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -649,7 +649,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 					if(generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
 					{
 						#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-						if(findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entityNodesActiveListComplete, entity, firstNLCsentenceInList))	//NB findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() could be reimplemented to be performed during generateCodeBlocks() sentence parsing, but then generateLocalFunctionArgumentsBasedOnImplicitDeclarations() could not be decared at start of generateCodeBlocks(), ie it would have to be moved out of createCodeBlockNewFunction()
+						if(!findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entityNodesActiveListComplete, entity, firstNLCsentenceInList))	//NB findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() could be reimplemented to be performed during generateCodeBlocks() sentence parsing, but then generateLocalFunctionArgumentsBasedOnImplicitDeclarations() could not be decared at start of generateCodeBlocks(), ie it would have to be moved out of createCodeBlockNewFunction()
 						{
 						#endif
 							//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
@@ -685,16 +685,22 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 //see checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext()
 bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*> * entityNodesActiveListComplete, GIAentityNode * definiteEntity, NLCsentence * firstNLCsentenceInList)
 {
+	//cout << "definiteEntity = " << definiteEntity->entityName << endl;
 	bool foundIndefiniteEntity = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * indefiniteEntity = *entityIter;
 		if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 		{//indefiniteEntityFound
+			//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
 			if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
 			{
+				//cout << "definiteEntity->grammaticalNumber  = " << definiteEntity->grammaticalNumber << endl;
+
 				if(indefiniteEntity->sentenceIndexTemp < definiteEntity->sentenceIndexTemp)
-				{					 
+				{	
+					//cout << "(indefiniteEntity->sentenceIndexTemp < definiteEntity->sentenceIndexTemp)" << endl;
+				 
 					 NLCsentence * currentNLCsentenceInList = firstNLCsentenceInList;
 					 bool foundIndefiniteEntitySentence = false;
 					 while((currentNLCsentenceInList->next != NULL) && !foundIndefiniteEntitySentence)
@@ -731,23 +737,25 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 					 NLCsentence * definiteEntityNLCsentenceInList = currentNLCsentenceInList;
 
 					 
-					 cout << "definiteEntity = " << definiteEntity->entityName << endl;
-					 cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
+					 //cout << "definiteEntity = " << definiteEntity->entityName << endl;
+					 //cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
 					 if(foundDefiniteEntitySentence)
 					 {
 					 	if(minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence < indefiniteEntityNLCsentenceInList->indentation)
 						{
-							cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): no reference found" << endl;
+							//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): no reference found" << endl;
 						}
 						else
 						{
-							cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): entity declared in this function" << endl;
+							//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): entity declared in this function" << endl;
+					 		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
+					 		//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
 							foundIndefiniteEntity = true;
 						}
 					 }
 					 else
 					 {
-					 	cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() error: !foundDefiniteEntitySentence" << endl;
+					 	//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() error: !foundDefiniteEntitySentence" << endl;
 					 }
 				}
 			}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g15b 16-July-2014
+ * Project Version: 1g15c 16-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -703,7 +703,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 			GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
 			GIAentityNode* propertyEntity = propertyConnection->entity;
 
-			if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false) || propertyEntity->NLCparsedForCodeBlocks)
+			if((checkSentenceIndexParsingCodeBlocks(propertyEntity, sentenceIndex, false) || propertyEntity->NLCparsedForCodeBlocks) && (propertyConnection->sentenceIndexTemp == sentenceIndex))
 			{//only write properties that are explicated in current sentence
 
 				bool performedAtLeastOneObjectInitialisationAtThisLevel = false;
@@ -823,7 +823,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 						foundConditionObject = true;
 
-						if(checkSentenceIndexParsingCodeBlocks(conditionEntity, conditionConnection, sentenceIndex, false) || conditionEntity->NLCparsedForCodeBlocks)
+						if((checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false) || conditionEntity->NLCparsedForCodeBlocks) && (conditionConnection->sentenceIndexTemp == sentenceIndex))
 						{//only write conditions that are explicated in current sentence
 
 							bool performedAtLeastOneObjectInitialisationAtThisLevel = false;

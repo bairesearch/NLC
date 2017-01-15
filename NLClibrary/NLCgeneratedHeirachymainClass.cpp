@@ -1,8 +1,8 @@
-#include "NLClibraryDynamictoClass.hpp"
+#include "NLCgeneratedHeirachymainClass.hpp"
 
-toClass::toClass(void)
+mainClass::mainClass(void)
 {
-	name = "to";
+	name = "main";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

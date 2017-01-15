@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1a 11-August-2015
+ * Project Version: 1q1b 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1410,10 +1410,13 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
 		{
 			#ifdef NLC_USE_LIBRARY_ASSUME_STANDARD_AND_USER_LIBRARY_FUNCTIONS_ACTION_ARGUMENT_TYPE_IS_NLC_GENERIC_ENTITY_CLASS
-			if(functionDefinitionClassDefinition->isLibraryFunctionDefinition)
+			if(functionDefinitionClassDefinition != NULL)
 			{
-				currentItem->functionArgumentPassCastRequired = true;
-				currentItem->functionArgumentPassCastClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
+				if(functionDefinitionClassDefinition->isLibraryFunctionDefinition)
+				{
+					currentItem->functionArgumentPassCastRequired = true;
+					currentItem->functionArgumentPassCastClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
+				}
 			}
 			#endif		
 			if(*functionArguments != "")
@@ -1494,6 +1497,7 @@ string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLa
 	}
 	#endif
 	
+	codeFunctionArgumentNameWithCast = codeFunctionArgumentName;
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)

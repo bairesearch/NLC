@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1a 11-August-2015
+ * Project Version: 1q1b 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,13 +50,14 @@
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
 	//#ifdef NLC_USE_LIBRARY	//has not been defined yet
-		#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS	//1q1a
-		#ifdef NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS
-			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_NAME_PREPEND "NLClibraryDynamic"
-			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_EXTENSION_CPP ".cpp"
-			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_EXTENSION_HPP ".hpp"
-			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_NAME_GENERIC_ENTITY_CLASS "NLClibraryGenericEntityClass"
-			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_LIST_NAME "NLClibraryDynamicList.txt"
+		#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES	//1q1a
+		#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_CLASS_HEIRACHY_NAME_PREPEND "NLCgeneratedHeirachy"	//1q1a
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS	//1q2a	//requires NLC_SUPPORT_INPUT_FUNCTION_LISTS
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP ".cpp"
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP ".hpp"
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME "NLClibraryGenericEntityClass"
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME "NLCgeneratedList.txt"
 		#endif
 		//#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION	//has not been defined yet
 			#define NLC_USE_LIBRARY_ASSUME_STANDARD_AND_USER_LIBRARY_FUNCTIONS_ACTION_ARGUMENT_TYPE_IS_NLC_GENERIC_ENTITY_CLASS	//1q1a	//if this is not defined, then wrapper functions must be created for every NLClibrary function (x) whose function action argument is of type NLCgenericEntityClass (instead of xClass)
@@ -735,7 +736,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 #endif
 	
 //#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
-	//#define NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS	//removed 1e1a; now pass action action and action object as arguments cf NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS (do not pass action subject[?] properties and conditions as arguments)
+	//#define NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS	//removed 1e1a; now pass action action and action object as arguments cf NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS (do not pass action subject[?] properties and conditions as arguments)	//depreciated
 	#define NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS	//added 1e1a
 	#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS

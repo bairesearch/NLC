@@ -1,8 +1,8 @@
-#include "NLClibraryDynamicfileClass.hpp"
+#include "NLCgeneratedHeirachyfatClass.hpp"
 
-fileClass::fileClass(void)
+fatClass::fatClass(void)
 {
-	name = "file";
+	name = "fat";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

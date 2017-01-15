@@ -1,4 +1,4 @@
-#include "NLClibraryDynamicfunctionsWithNoSubjectArtificialClass.hpp"
+#include "NLCgeneratedHeirachyfunctionsWithNoSubjectArtificialClass.hpp"
 
 functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(void)
 {

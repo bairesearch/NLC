@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1a 11-August-2015
+ * Project Version: 1q1b 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -770,6 +770,7 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
 
 		bool foundFunctionOwnerClassDefinition = false;
+		//NB if(hasFunctionOwnerClass), then functionOwnerClassDefinitionName will be set to NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME
 		NLCclassDefinition* functionOwnerClassDefinition = findClassDefinition(classDefinitionList, functionOwnerClassDefinitionName, &foundFunctionOwnerClassDefinition);	//see if class definition already exists
 		if(!foundFunctionOwnerClassDefinition)
 		{
@@ -794,8 +795,8 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		functionClassDefinition->isActionOrConditionInstanceNotClass = true;
 		//cout << "functionOwnerClassDefinition->isActionOrConditionInstanceNotClass" << endl;
 
-		functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
-
+		functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);							
+		
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 		if(hasFunctionOwnerClass)
 		{
@@ -813,6 +814,18 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 			NLCitem* classDeclarationFunctionObjectItem = new NLCitem(functionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);		//changed from NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT 1p4a
 			functionClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 		}
+		
+		#ifdef NLC_RECORD_ACTION_HISTORY
+		//added 1q2a
+		//cout << "functionName = " << functionName << endl;
+		fillActionLists(classDefinitionList, hasFunctionOwnerClass, hasFunctionObjectClass, functionName, functionObjectName, functionOwnerClassDefinition);
+		/*
+		classDefinitionFunctionOwner->actionList.push_back(classDefinitionAction);
+		classDefinitionAction->actionSubjectList.push_back(classDefinitionFunctionOwner);
+		classDefinitionAction->actionObjectList.push_back(classDefinitionActionObject);
+		classDefinitionActionObject->actionIncomingList.push_back(classDefinitionAction);
+		*/
+		#endif	
 
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 		functionClassDefinition->functionDependency = functionDependency;

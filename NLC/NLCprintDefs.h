@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12e 27-July-2015
+ * Project Version: 1p13a 03-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -128,7 +128,7 @@ static string progLangClassIntro[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"public
 static string progLangClassConstructorDestructorAppend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(void)", "(void)", "(void)", "(void)", "(void)", "(void)", "(void)"};
 static string progLangClassDestructorPrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"~", "~", "~", "~", "~", "~", "~"};
 static string progLangClassListTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"vector<", "vector<", "vector<", "vector<", "vector<", "vector<", "vector<"};
-static string progLangClassListTypeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"> ", "> ", "> ", "> ", "> ", "> ", "> "};
+static string progLangClassListTypeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 static string progLangClassList2DTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<"};
 static string progLangClassList2DTypeMiddle[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {", ", ", ", ", ", ", ", ", ", ", ", ", "};
 static string progLangClassList2DTypeConditionTypeVar[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string", "string", "string", "string", "string", "string", "string"};
@@ -297,6 +297,8 @@ static string progLangTypeName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"typename
 static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};
 
 static string progLangAddAllList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
+static string progLangAddAllListKey1open[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"[", "[", "[", "[", "[", "[", "["};
+static string progLangAddAllListKey1close[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"]", "]", "]", "]", "]", "]", "]"};
 static string progLangMakePair[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair"};
 #define NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE "string"
 static string progLangReinterpretCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<"};
@@ -359,24 +361,26 @@ string generateCodePropertyListDefinitionText(string propertyClassName, int prog
 string generateCodeEntityListDefinitionText(NLCitem* entityParam, int progLang);
 string generateCodeEntityListDefinitionText(string className, string instanceName, int progLang);
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
-	#ifdef NLC_NONOO
-		string generateCodeEntityListDefinitionTypeText(int progLang);
-	#else
-	string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang);
-	#ifdef NLC_GENERATE_TYPE_LISTS
-	string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
-	#endif
-	#endif
-	string generateCodeVectorListDefinitionTypeText(string entityClassName, int progLang);
-	string generateCodeVectorListDefinitionTypeTextPointer(string entityClassName, int progLang);
-	string generateCodeVectorListDefinitionTypeText2(string vectorClassName, int progLang);
+		string generateCodeEntityListDefinitionTypeTextCompact(string entityClassName, int progLang);
+			#ifdef NLC_NONOO
+			string generateCodeEntityListDefinitionTypeTextNonOO(int progLang);
+			#else
+			string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang);
+			#ifdef NLC_GENERATE_TYPE_LISTS
+			string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
+			#endif
+			#endif
+			string generateCodeVectorListDefinitionTypeText(string entityClassName, int progLang);
+			string generateCodeVectorListDefinitionTypeTextPointer(string entityClassName, int progLang);
+			string generateCodeVectorListDefinitionTypeText2(string vectorClassName, int progLang);
 
 string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int progLang);
-	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
+	string generateCodeEntityListDefinitionTypeTextReference(string entityClassName, int progLang);
 string generateCodeGenericListDefinitionText(NLCitem* entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(NLCitem* conditionParam, NLCitem* conditionObjectParam, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
+		string generateCodeMapsListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
 	#ifdef NLC_NONOO
 	string generateCodeConditionListDefinitionTypeText(int progLang);
 	#else
@@ -402,6 +406,7 @@ string generateCodeEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang);
 string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
+string generateReinterpretCastOfVectorReference(string vectorName, string castClassName, int progLang);	//CHECKTHIS
 string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang);
 
 //this code is not currently used;
@@ -420,6 +425,7 @@ string generateCodeAllVectorListAddText(string allListName, string vectorListNam
 string generateCodeAllVectorListDefinitionTypeText(int progLang);
 string generateCodeEntityMapListDefinitionTypeText(string pairItem1className, string entityClassName, int progLang);
 string generateCodePairText(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang);
+	string generateCodePairTextNew(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang);
 
 string generateCodeAllPropertyIncomingListDefinitionText(int progLang);
 string generateCodeAllPropertyIncomingListDefinitionTypeText(int progLang);
@@ -433,6 +439,7 @@ string generateCodeAllMapListAddText(string allListName, string mapListName, str
 string generateCodeAllConditionListDefinitionTypeText(int progLang);
 string generateCodeEntityPairMapListDefinitionTypeText(string pairItem1className, string pairItem2className, string entityClassName, int progLang);
 string generateCodePairTypeText(string pairItem1className, string pairItem2className, int progLang);
+	string generateCodePairTypeTextPointer(string pairItem1className, string pairItem2className, int progLang);
 string generateCodePairPairText(string pairItem1AclassName, string pairItem1BclassName, string pairItem2className, string pairItem1AinstanceName, string pairItem1BinstanceName, string pairItem2instanceName, int progLang);
 
 string generateCodeAllConditionIncomingListDefinitionText(int progLang);

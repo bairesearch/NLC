@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12e 27-July-2015
+ * Project Version: 1p13a 03-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -237,7 +237,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								printLine(allListDeclarationText, 1, code);
 								allListDeclarationText = generateCodeAllPropertyIncomingListDefinitionText(progLang);	//vector<NLCgenericEntityClass*> propertyIncomingList;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);		//unordered_map<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>*> conditionLists;
+								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);		//unordered_map<pair<string, string>*, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>*> conditionLists;
 								printLine(allListDeclarationText, 1, code);
 								allListDeclarationText = generateCodeAllConditionIncomingListDefinitionText(progLang);	//unordered_map<string, NLCgenericEntityClass*> conditionIncomingList;
 								printLine(allListDeclarationText, 1, code);
@@ -661,7 +661,7 @@ string generateCodePluralDefinitionText(NLCitem* currentItem, int progLang)
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_PASS_LISTS_BY_REFERENCE
 	string codePluralDefinitionText = generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 	#else
-	string codePluralDefinitionText = generateCodeEntityListDefinitionText(currentItem, progLang);	//OLD: generateCodePropertyListDefinitionText / progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + pluralClassName + NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION; 
+	string codePluralDefinitionText = generateCodeEntityListDefinitionText(currentItem, progLang);
 	#endif
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED

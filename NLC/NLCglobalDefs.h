@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12e 27-July-2015
+ * Project Version: 1p13a 03-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,6 +37,8 @@
 
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
+
+#define NLC_DEBUG_COMPILE_LIBRARY
 
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1j_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -74,6 +76,7 @@
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ENTITY_TO_LOCAL_LIST "addEntityToLocalList"
 			#define NLC_USE_ENUM_LISTS
 			#ifdef NLC_USE_ENUM_LISTS
+				#define NLC_ENUM_LIST_TYPE_DEFAULT_NON_ENUM "nonEnum"	//restored 1p13a	//CHECKTHIS
 				#define NLC_USE_ENUM_LISTS_PROPERTIES
 				#define NLC_USE_ENUM_LISTS_CONDITIONS
 				//#define NLC_USE_ENUM_LISTS_ACTIONS	//not yet coded

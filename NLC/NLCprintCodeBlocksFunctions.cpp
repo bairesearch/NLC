@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12e 27-July-2015
+ * Project Version: 1p13a 03-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,7 +57,7 @@ void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsNewFunction(
 	string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
 	#endif
 
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + templateName2 + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangCloseParameterSpace[progLang];	//void addToCategoryIfPassSingularDefinitePluralityTests(vector<E1*> &param1CategoryList, E2* param2instanceName)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(templateName1, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + templateName2 + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangCloseParameterSpace[progLang];	//void addToCategoryIfPassSingularDefinitePluralityTests(vector<E1*>& param1CategoryList, E2* param2instanceName)
 
 	string codeBlockText6 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(param2->lastSentenceReferenced.empty())){
 
@@ -221,7 +221,7 @@ void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsNewFunction(in
 	string templateName2 = "E2";
 	string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
 	#endif
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + templateName2 + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangCloseParameterSpace[progLang];	//void addToCategoryIfPassPluralDefiniteReferencingTests(vector<E1*> &param1CategoryList, E2* param2instanceName)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(templateName1, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + templateName2 + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangCloseParameterSpace[progLang];	//void addToCategoryIfPassPluralDefiniteReferencingTests(vector<E1*>& param1CategoryList, E2* param2instanceName)
 
 	//string codeBlockText6 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(param2->lastSentenceReferenced.empty())){
 
@@ -301,7 +301,7 @@ void generateCodeAddEntityToReferenceContextListNewFunction(int progLang, string
 	string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLIST_VAR_APPENDITION);
 	string entityToAddName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
 
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_ADD_ENTITY_TO_CONTEXT_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(genericEntityClassName, progLang) + contextListName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityDefinitionText(genericEntityClassName, entityToAddName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangClassLastSentenceIndexVariableType[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_SENTENCE_INDEX_VARIABLE_NAME + progLangCloseParameterSpace[progLang];	//void addVariableToContextList(vector<genericEntityClass*> &contextList, genericEntityClass* genericEntity, int sentenceIndex)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_ADD_ENTITY_TO_CONTEXT_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(genericEntityClassName, progLang) + contextListName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityDefinitionText(genericEntityClassName, entityToAddName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangClassLastSentenceIndexVariableType[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_SENTENCE_INDEX_VARIABLE_NAME + progLangCloseParameterSpace[progLang];	//void addVariableToContextList(vector<genericEntityClass*>& contextList, genericEntityClass* genericEntity, int sentenceIndex)
 
 	printLine("", level, code);
 	printLine(codeBlockTextFunctionHeader, level, code);
@@ -339,12 +339,12 @@ void generateCodeClearReferenceContextListNewFunction(int progLang, string* code
 	string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLIST_VAR_APPENDITION);
 	string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(genericEntityClassName, progLang) + contextListName + progLangCloseParameterSpace[progLang];	//void clearContextList(vector<genericEntityClass*> &contextList)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(genericEntityClassName, progLang) + contextListName + progLangCloseParameterSpace[progLang];	//void clearContextList(vector<genericEntityClass*>& contextList)
 
 	printLine("", level, code);
 	printLine(codeBlockTextFunctionHeader, level, code);
 	printLine(progLangOpenBlock[progLang], level, code);
-		string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + contextListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<genericEntityClass*> ::iterator iterX = contextList.begin(); iterX < contextList.end(); iterX++)
+		string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + contextListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<genericEntityClass*>::iterator iterX = contextList.begin(); iterX < contextList.end(); iterX++)
 		printLine(codeBlockText, (level+1), code);
 			printLine(progLangOpenBlock[progLang], (level+1), code);	//{
 			string tempVarDeclarationText = generateCodeEntityDefinitionText(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//genericEntityClass* genericEntity = *iter2;
@@ -385,26 +385,15 @@ void generateCodeCastVectorNewFunction(int progLang, string* code, int level)
 	string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 
 	string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
-	string codeBlockTextFunctionHeader = generateCodeEntityListDefinitionTypeText(templateName1, progLang) + NLC_CAST_VECTOR_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + entity1InstanceListName + progLangCloseParameterSpace[progLang];	//vector<E2*> castVector(vector<E1*> &E1InstanceList)
+	string codeBlockTextFunctionHeader = generateCodeEntityListDefinitionTypeTextReference(templateName1, progLang) + NLC_CAST_VECTOR_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(templateName1, progLang) + entity1InstanceListName + progLangCloseParameterSpace[progLang];	//vector<E2*>& castVector(vector<E1*>& E1InstanceList)
 
 	printLine("", level, code);
 	printLine(codeBlockTextTemplateHeader, level, code);
 	printLine(codeBlockTextFunctionHeader, level, code);
 	printLine(progLangOpenBlock[progLang], level, code);
-		string codeBlockTextDeclareVectorPointerAndSet = generateCodeEntityListDefinitionTypeTextPointer(templateName2, progLang) + entity2InstanceListName + progLangEquals[progLang] + generateReinterpretCastOfVector(entity1InstanceListName, templateName2, progLang) + progLangEndLine[progLang];	//vector<E2*>* E2InstanceList = reinterpret_cast<vector<E2*>* >(&E1List);
+		string codeBlockTextDeclareVectorPointerAndSet = generateCodeEntityListDefinitionTypeTextReference(templateName2, progLang) + entity2InstanceListName + progLangEquals[progLang] + generateReinterpretCastOfVectorReference(entity1InstanceListName, templateName2, progLang) + progLangEndLine[progLang];	//vector<E2*>& E2InstanceList = reinterpret_cast<vector<E2*>& >(E1List);
 		printLine(codeBlockTextDeclareVectorPointerAndSet, (level+1), code);
-		/*
-		string codeBlockTextDeclareNewVector = generateCodeEntityListDefinitionTypeText(templateName2, progLang) + entity2InstanceListName + progLangEndLine[progLang];	//vector<E2*> E2InstanceList;
-		printLine(codeBlockTextDeclareNewVector, (level+1), code);
-		string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + progLangTypeName[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(typename vector<E1*> ::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
-		printLine(codeBlockTextForLoop, (level+1), code);
-		printLine(progLangOpenBlock[progLang], (level+1), code);	//{
-			string tempVarDeclarationText = generateCodeEntityDefinitionText(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity = *iter1;
-			printLine(tempVarDeclarationText, (level+2), code);;
-			string addCastedEntityToVectorText = entity2InstanceListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(tempVariableName, templateName2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//E2InstanceList.push_back(dynamic_cast<E2*>(genericEntity));
-			printLine(addCastedEntityToVectorText, (level+2), code);
-		printLine(progLangCloseBlock[progLang], (level+1), code);	//}
-		*/
+
 		string codeBlockTextReturnNewVector = progLangReturn[progLang] + entity2InstanceListName + progLangEndLine[progLang];		//return E2InstanceList;
 		printLine(codeBlockTextReturnNewVector, (level+1), code);
 	printLine(progLangCloseBlock[progLang], level, code);	//}
@@ -413,8 +402,7 @@ void generateCodeCastVectorNewFunction(int progLang, string* code, int level)
 void generateCodeCastVectorExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
 {
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
-	//string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)	
-	string codeBlockExecuteFunctionText = string("") + progLangPointer[progLang] + progLangOpenParameterSpace[progLang] + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param1) + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//*(castVector<param1class, param2class> (param1InstanceList))
+	string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)
 	printLine(codeBlockExecuteFunctionText, level, code);
 }
 
@@ -444,7 +432,7 @@ void generateCodeFindAliasAndAddToCategoryListNewFunction(int progLang, string* 
 	string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateHeaderPart2[progLang];  //template <class E1>
 	#endif
 
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + entity1InstanceListName + progLangClassMemberFunctionParametersNext[progLang] + progLangAliasNameVariableType[progLang] + aliasName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + entity1CategoryListName + progLangCloseParameterSpace[progLang];	//void findAliasAndAddToCategoryListNewFunction(vector<E1*> &E1instanceList, string aliasName, vector<E1*> &E1CategoryList)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(templateName1, progLang) + entity1InstanceListName + progLangClassMemberFunctionParametersNext[progLang] + progLangAliasNameVariableType[progLang] + aliasName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityListDefinitionTypeTextReference(templateName1, progLang) + entity1CategoryListName + progLangCloseParameterSpace[progLang];	//void findAliasAndAddToCategoryListNewFunction(vector<E1*>& E1instanceList, string aliasName, vector<E1*>& E1CategoryList)
 
 	int q = 0;
 	printLine("", level+q, code);
@@ -452,7 +440,7 @@ void generateCodeFindAliasAndAddToCategoryListNewFunction(int progLang, string* 
 	printLine(codeBlockTextFunctionHeader, level+q, code);
 	printLine(progLangOpenBlock[progLang], level+q, code);
 	q++;
-		string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + progLangTypeName[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(typename vector<E1*> ::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
+		string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + progLangTypeName[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(typename vector<E1*>::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
 		printLine(codeBlockTextForLoop, level+q, code);
 		printLine(progLangOpenBlock[progLang], level+q, code);	//{
 			q++;
@@ -587,7 +575,7 @@ void generateCodeCheckParentClassNameNewFunction(int progLang, string* code, int
 
 
 		string contextParam1 = objectName + progLangObjectReferenceDelimiter[progLang];
-		string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextParam1 + NLC_CLASS_PARENT_CLASS_LIST_NAME + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + contextParam1 + NLC_CLASS_PARENT_CLASS_LIST_NAME + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<NLCgenericEntityClass*> ::iterator iter1 = object->parentClassList.begin(); iter1 < object->parentClassList.end(); iter1++)
+		string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextParam1 + NLC_CLASS_PARENT_CLASS_LIST_NAME + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + contextParam1 + NLC_CLASS_PARENT_CLASS_LIST_NAME + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<NLCgenericEntityClass*>::iterator iter1 = object->parentClassList.begin(); iter1 < object->parentClassList.end(); iter1++)
 		printLine(codeBlockText, level+q, code);
 		printLine(progLangOpenBlock[progLang], level+q, code);
 		q++;

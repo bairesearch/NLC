@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17b 30-January-2015
+ * Project Version: 1n17c 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -125,6 +125,7 @@
 					#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 						#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_NAME "aliasName"
 						#define NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME "findAliasAndAddToCategoryList"
+						#define NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_FUNCTION_NAME "findAlias"
 						//#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES	//not yet implemented
 						#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT	//1k14d
 					#endif
@@ -657,7 +658,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 //#define NLC_DEBUG_PREPROCESSOR_MATH
 //#define NLC_DEBUG_PREPROCESSOR
 //#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-#define NLC_DEBUG
+//#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES
 
 

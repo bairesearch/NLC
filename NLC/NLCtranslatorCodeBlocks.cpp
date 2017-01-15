@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17b 30-January-2015
+ * Project Version: 1n17c 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -157,13 +157,6 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
 		#endif
-		#endif
-		
-		#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-		#ifdef NLC_DEBUG
-		cout << "identifyAliasesInCurrentSentence:" << endl;
-		#endif
-		identifyAliasesInCurrentSentence(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
 		
 		#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
@@ -731,42 +724,156 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBloc
 #ifdef NLC_SUPPORT_REDEFINITIONS
 bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
 {
-	//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
 	bool result = true;
-	GIAentityNode* entity = NULL;
-	GIAentityNode* definitionEntity = NULL;
-	if(checkIfPhraseContainsSubstanceWithDefinitionLink(entityNodesActiveListComplete, sentenceIndex, &entity, &definitionEntity))
-	{
-		if(!checkSpecialCaseEntity(entity, true))	//is this required?
-		{	
-			NLCcodeblock* firstCodeBlockInLevel = *currentCodeBlockInTree;
-			
-			GIAentityNode* parentEntity = NULL;
-			
-			//1. and 2. get parent of the dog (eg pound) and generate context of the dog
-			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-			generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
-			bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
-		
-			//3. verify that alsations are dogs
-			*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);
-									
-			//4. cast the dog to alsation
-			*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, entity, definitionEntity);
-			
-			//5. add alsation to alsation property list of pound 
-				//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
-				//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
-			if(parentEntity != entity)
-			{
-				*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, parentEntity, definitionEntity, sentenceIndex);
-			}
-			
-			//6. add alsation to alsation local list
-			*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
-			
-			*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInLevel);
 
+	bool phraseContainsSubstanceWithDefinitionLink = false;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode* entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+		{
+			if(!checkSpecialCaseEntity(entity, true))
+			{		
+				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
+				{
+					GIAentityConnection* definitionConnection = *iter;
+					GIAentityNode* definitionEntity = definitionConnection->entity;
+					if(checkSentenceIndexParsingCodeBlocks(definitionEntity, definitionConnection, sentenceIndex, false))
+					{
+						if(!(definitionConnection->sameReferenceSet))
+						{
+							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+							if(definitionConnection->isAlias)
+							{
+								bool aliasAlreadyInitialised = false;
+								string aliasName = definitionEntity->entityName;
+								string aliasClassName = entity->entityName;
+
+								string aliasNameTemp = "";
+								if(findAliasInEntity(definitionEntity, &aliasNameTemp)) //*
+								{
+									aliasAlreadyInitialised = true;
+								}
+								if(!aliasAlreadyInitialised)
+								{	
+									//check this code
+									#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+									cout << "generateCodeBlocksPart5redefinitions (alias):" << endl;
+									cout << "definitionEntity (aliasName) = " << definitionEntity << endl;
+									cout << "entity (aliasClassName) = " << entity << endl;
+									#endif
+
+									/*
+									unordered_map<string, string>*  functionAliasClassList = getFunctionAliasClassList();
+									functionAliasClassList->insert(pair<string, string>(aliasName, entity));
+									*/
+									
+									NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+									GIAentityNode* parentEntity = NULL;
+									
+									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+									//generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
+									generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
+									bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
+
+									/*OLD:
+									bool generatedParentContext = false;
+									if(!generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+									{
+										#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+										cout << "identifyAliasesInCurrentSentence(): !generateContextBlocks: entity = " << entity->entityName << endl;
+										#endif
+									}
+									*/
+
+									*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, entity, aliasName);
+
+									*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
+
+									//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
+									for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
+									{
+										GIAentityNode* entity2 = (*entityIter2);
+										if(entity2->entityName == aliasName)
+										{
+											if(entity2->sentenceIndexTemp > definitionEntity->sentenceIndexTemp)	//this test isn't required because of* 
+											{
+												entity2->aliasList.push_back(aliasName);
+												entity2->entityName = aliasClassName;	
+											}
+										}
+									}	
+								}
+							
+							}
+							else
+							{
+							#endif
+								//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
+
+								if(!isDefiniteEntity(definitionEntity))
+								{
+									bool foundDefiniteParentOfEntity = false;
+									bool parseConditionParents = true;	//use default value here
+									bool checkIsDefinite = true;
+									GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
+									if(isDefiniteEntity(entity) || foundDefiniteParentOfEntity)
+									{
+										if(entity->entityName != definitionEntity->entityName)
+										{//ignore substanceConcept definitions for for entities of same name
+											
+											#ifdef NLC_DEBUG
+											cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
+											cout << "entity = " << entity->entityName << endl;
+											cout << "definitionEntity = " << definitionEntity->entityName << endl;
+											#endif
+											
+											NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+
+											GIAentityNode* parentEntity = NULL;
+
+											//1. and 2. get parent of the dog (eg pound) and generate context of the dog
+											NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+											generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
+											bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
+
+											//3. verify that alsations are dogs
+											*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);
+
+											//4. cast the dog to alsation
+											*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, entity, definitionEntity);
+
+											//5. add alsation to alsation property list of pound 
+												//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
+												//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
+											if(parentEntity != entity)
+											{
+												*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, parentEntity, definitionEntity, sentenceIndex);
+											}
+
+											//6. add alsation to alsation local list
+											*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
+
+											*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
+
+										}
+									}
+									else
+									{
+										cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(entity) || foundDefiniteParentOfEntity))" << endl;
+									}
+								}
+								else
+								{
+									cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: isDefiniteEntity(definitionEntity))" << endl;
+								}
+							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES						
+							}
+							#endif
+						}
+					}
+				}
+			}
 		}
 	}
 	return result;

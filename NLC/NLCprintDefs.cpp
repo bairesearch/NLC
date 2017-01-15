@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17b 30-January-2015
+ * Project Version: 1n17c 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -733,5 +733,21 @@ string generateTempEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2
 {
 	string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + generateTempEntityName(param2) + progLangEndLine[progLang];	//param1Class* param1 = param2;
 	return tempEntityDeclarationText;
+}
+
+string generateDeclareBoolTextAndSetFalse(string variableName, int progLang)
+{
+	string declareText = progLangBoolean[progLang] + variableName + progLangEquals[progLang] + progLangFalse[progLang] + progLangEndLine[progLang];	//bool variable = false;
+	return declareText;
+}
+string generateSetBoolTextTrue(string variableName, int progLang)
+{
+	string setText = variableName + progLangEquals[progLang] + progLangTrue[progLang] + progLangEndLine[progLang];	//variable = true;
+	return setText;
+}
+string generateReturnText(string variableName, int progLang)
+{
+	string returnText = progLangReturn[progLang] + variableName + progLangEndLine[progLang];	//return variable;
+	return returnText;
 }
 

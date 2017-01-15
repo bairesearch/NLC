@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17b 30-January-2015
+ * Project Version: 1n17c 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2314,8 +2314,7 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodebl
 	#endif
 	
 	return currentCodeBlockInTree;
-}	
-
+}
 //NB genericListAppendName is "CategoryList"
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity, string genericListAppendName)
 {
@@ -2332,6 +2331,53 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCco
 	
 	NLCitem* genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "end createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction():" << endl;
+	#endif
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBlockInTree)
+{
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "createCodeBlocksFindAliasNewFunction():" << endl;
+	#endif
+	
+	//required because printCodeBlocks requires at least 1 param
+	string genericObjectName = "dummyentity";
+	GIAentityNode* entity = new GIAentityNode();
+	entity->entityName = genericObjectName;
+	
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "end createCodeBlocksFindAliasAndAddToCategoryListNewFunction():" << endl;
+	#endif
+	
+	return currentCodeBlockInTree;
+}	
+NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity)
+{
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "createCodeBlocksFindAliasExecuteFunction():" << endl;
+	#endif
+	
+	NLCitem* aliasEntityItem = new NLCitem(aliasName, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(aliasEntityItem);
+
+	//NB entity is used for both instance and category list
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);	
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);

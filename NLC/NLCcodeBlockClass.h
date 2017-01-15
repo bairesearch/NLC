@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17b 30-January-2015
+ * Project Version: 1n17c 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -116,20 +116,21 @@
 	#define NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST (48)
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION (49)
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION (50)
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_NEW_FUNCTION (51)
 #endif
 #ifdef NLC_RECORD_ACTION_HISTORY
-	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT (51)
-	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (52)
+	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT (52)
+	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (53)
 #endif
 #ifdef NLC_USE_LIBRARY
-	#define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT (53)			//context1->param1->param2param3ConditionList.insert(param2, param3);
+	#define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT (54)			//context1->param1->param2param3ConditionList.insert(param2, param3);
 #endif
 #ifdef NLC_SUPPORT_REDEFINITIONS
-	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (54)
+	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (55)
 #endif
-#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (55)			//param1class* param1 = NULL;
-#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (56)			//param1 = param2;
-#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY (57)			//param1class* param1 = param2;
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (56)			//param1class* param1 = NULL;
+#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (57)			//param1 = param2;
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY (58)			//param1class* param1 = param2;
 
 
 //containers:
@@ -199,6 +200,9 @@
 	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2 (134)
 #endif
 #define NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY (135)			//if(param1 == param2){
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_EXECUTE_FUNCTION (136)
+#endif
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
@@ -380,11 +384,6 @@ NLCcodeblock* createLowerLevel(NLCcodeblock* currentCodeBlockInTree);
 
 bool getEntityContext(GIAentityNode* entity, vector<string>* context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed);
 
-/*
-#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnection* connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection);
-#endif
-*/	
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnection* connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks);
 	bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks);
 
@@ -513,6 +512,8 @@ NLCcodeblock* createCodeBlocksCastVectorExecuteFunction(NLCcodeblock* currentCod
 NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string aliasName);
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock* currentCodeBlockInTree);
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBlockInTree);
+NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity);
 bool findAliasInEntity(GIAentityNode* entity, string* aliasName);
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 unordered_map<string, string>* getFunctionAliasClassList();

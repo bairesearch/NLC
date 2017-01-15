@@ -141,7 +141,18 @@ void findAliasAndAddToCategoryList(vector<E1*> &E1List, string aliasName, vector
 	}
 }
 
-//embed this funciton in NLCprintCodeBlocks.cpp code;
+template <class E1>
+bool findAliasNewFunction(E1* E1instance, string aliasName)
+{
+	bool result = false;
+	if(!find(E1instance->aliasList.begin(), E1instance->aliasList.end(), aliasName) != E1instance->aliasList.end()) 
+	{
+		result = true;
+	}
+	return result;
+}
+
+//must embed this function in NLCprintCodeBlocks.cpp code;
 bool checkParentClassName(NLCgenericEntityClass* object, string className)
 {
 	bool result = false;
@@ -159,3 +170,5 @@ bool checkParentClassName(NLCgenericEntityClass* object, string className)
 	}
 	return result;
 }
+
+

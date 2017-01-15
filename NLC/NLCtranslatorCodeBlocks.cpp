@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g10a 12-July-2014
+ * Project Version: 1g10b 12-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -273,7 +273,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 						else
 						{//eg If/While the sun is bright, the dog is happy. / If/While the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
 							
-							#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+						#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 							/*
 							eg; for all the reds dog near the park, and the blue tea trees, eat the pie
 							for(all the red dog near the park)
@@ -377,7 +377,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								cout << "conj: 3" << endl;
 								#endif
 							}							
-							#else
+						#else
 							//this code is suitable for for/while/if logical conditions without conjunctions:
 
 							//code copied from [*^]
@@ -394,7 +394,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 							*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, logicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables);	
 							#endif
 							
-							#endif
+						#endif
 							
 							passedConditionObject = true;
 						}
@@ -456,6 +456,12 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 	cout << "conj: q1" << endl;
 	#endif
+	
+	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
+	{
+		//set currentLogicalConditionObject to isDefiniteTemp, eg "chicken" in "For every/each chicken.." NB "chicken" in "For all chickens..." is parsed as definite by GIA fillGrammaticalArraysStanford() already
+		currentLogicalConditionObject->grammaticalDefiniteTemp = true;
+	}
 	
 	//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
 	bool contextFound = false;

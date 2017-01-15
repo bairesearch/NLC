@@ -25,8 +25,8 @@
  *
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1455,7 +1455,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 				GIAentityNode* parentEntityFromCondition = new GIAentityNode();
 				parentEntityFromCondition->entityName = NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME;
 				addOrConnectConditionToEntity(actionEntity, parentEntityFunctionObject, parentEntityFromCondition, false);	//this is required so that generateClassHeirarchyFunctions() adds the "from" condition to the action, but need to check that GIA supports NLC's use of the addOrConnectConditionToEntity() function
-				*currentCodeBlockInTree = createCodeBlockAddNewConditionExistingObjectSimple(*currentCodeBlockInTree, actionEntity, parentEntityFromCondition, parentEntityFunctionObject);
+				*currentCodeBlockInTree = createCodeBlockAddConditionSimple(*currentCodeBlockInTree, actionEntity, parentEntityFromCondition, parentEntityFunctionObject);
 			}
 			#endif
 		}
@@ -1521,14 +1521,28 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 			#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 			if(connection->negative || (propertyEntity->isSubstanceQuality && propertyEntity->negative))
 			{
-				//remove property links; eg "a ball" in "Tom does not have a ball."
-				#ifdef NLC_DEBUG_PARSE_CONTEXT2
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksPart3subjectObjectConnections{}: createCodeBlockRemoveProperties: ") + subjectEntity->entityName + string(" ") + propertyEntity->entityName);
-				#endif
-				#ifdef NLC_DEBUG
-				cout << "createCodeBlockRemoveProperties: " << subjectEntity->entityName << ", " << propertyEntity->entityName << endl;
-				#endif
-				*currentCodeBlockInTree = createCodeBlockRemoveProperties(*currentCodeBlockInTree, subjectEntity, propertyEntity);
+				if(isDefiniteEntity(propertyEntity))	//added 1p1b - CHECKTHIS
+				{
+					//remove property link; eg "the ball" in "Tom does not have the ball."
+					#ifdef NLC_DEBUG_PARSE_CONTEXT2
+					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksPart3subjectObjectConnections{}: createCodeBlockRemoveProperty: ") + subjectEntity->entityName + string(" ") + propertyEntity->entityName);
+					#endif
+					#ifdef NLC_DEBUG
+					cout << "createCodeBlockRemoveProperty: " << subjectEntity->entityName << ", " << propertyEntity->entityName << endl;
+					#endif
+					*currentCodeBlockInTree = createCodeBlockRemoveProperty(*currentCodeBlockInTree, subjectEntity, propertyEntity);
+				}
+				else
+				{
+					//remove property links; eg "a ball" in "Tom does not have a ball."
+					#ifdef NLC_DEBUG_PARSE_CONTEXT2
+					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksPart3subjectObjectConnections{}: createCodeBlockRemoveProperties: ") + subjectEntity->entityName + string(" ") + propertyEntity->entityName);
+					#endif
+					#ifdef NLC_DEBUG
+					cout << "createCodeBlockRemoveProperties: " << subjectEntity->entityName << ", " << propertyEntity->entityName << endl;
+					#endif
+					*currentCodeBlockInTree = createCodeBlockRemoveProperties(*currentCodeBlockInTree, subjectEntity, propertyEntity);
+				}
 			}
 			else
 			{
@@ -1549,15 +1563,31 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 		{
 			result = true;
 			GIAentityNode* conditionEntity = actionOrConditionEntity;
-
+			GIAentityNode* conditionObject = NULL;
+			if(!(conditionEntity->conditionObjectEntity->empty()))
+			{		
+				conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+			}
+			
 			#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 			if(conditionEntity->negative)
 			{
-				//remove condition links; eg "a house" in "Tom is not near a house"
-				#ifdef NLC_DEBUG_PARSE_CONTEXT2
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksPart3subjectObjectConnections{}: createCodeBlockRemoveConditions: ") + subjectEntity->entityName + string(" ") + conditionEntity->entityName);
-				#endif
-				*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, subjectEntity, conditionEntity);
+				if(isDefiniteEntity(conditionObject))	//added 1p1b - CHECKTHIS
+				{
+					//remove condition link; eg "a house" in "Tom is not near the house"
+					#ifdef NLC_DEBUG_PARSE_CONTEXT2
+					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksPart3subjectObjectConnections{}: createCodeBlockRemoveCondition: ") + subjectEntity->entityName + string(" ") + conditionEntity->entityName);
+					#endif
+					*currentCodeBlockInTree = createCodeBlockRemoveCondition(*currentCodeBlockInTree, subjectEntity, conditionEntity);
+				}
+				else
+				{
+					//remove condition links; eg "a house" in "Tom is not near a house"
+					#ifdef NLC_DEBUG_PARSE_CONTEXT2
+					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksPart3subjectObjectConnections{}: createCodeBlockRemoveConditions: ") + subjectEntity->entityName + string(" ") + conditionEntity->entityName);
+					#endif
+					*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, subjectEntity, conditionEntity);
+				}
 			}
 			else
 			{
@@ -1575,125 +1605,138 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 		{
 			GIAentityNode* definitionEntity = objectEntity;
 
-			#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-			if(connection->isAlias)
+			#ifdef NLC_USE_MATH_OBJECTS
+			if(isStringNumberOrFractional(definitionEntity->entityName)) 
 			{
-				result = true;
-				bool aliasAlreadyInitialised = false;
-				string aliasName = definitionEntity->entityName;
-				string aliasClassName = subjectEntity->entityName;
-
-				string aliasNameTemp = "";
-				if(findAliasInEntity(definitionEntity, &aliasNameTemp)) //*
-				{
-					aliasAlreadyInitialised = true;
-				}
-				if(!aliasAlreadyInitialised)
-				{	
-					//check this code
-					#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-					cout << "generateCodeBlocksPart3subjectObjectConnections (alias):" << endl;
-					cout << "definitionEntity (aliasName) = " << definitionEntity->entityName << endl;
-					cout << "subjectEntity (aliasClassName) = " << subjectEntity->entityName << endl;
-					#endif
-
-					NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
-					GIAentityNode* parentEntity = NULL;
-
-					*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, subjectEntity, aliasName);
-					
-					//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
-					GIAentityNode* aliasConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
-					for(vector<GIAentityConnection*>::iterator iter2 = aliasConceptEntity->associatedInstanceNodeList->begin(); iter2 < aliasConceptEntity->associatedInstanceNodeList->end(); iter2++)
-					{
-						GIAentityNode* entity2 = (*iter2)->entity;
-						if(entity2->entityName == aliasName)
-						{
-							if(entity2->sentenceIndexTemp > definitionEntity->sentenceIndexTemp)	//this test isn't required because of* 
-							{
-								entity2->aliasList.push_back(aliasName);
-								entity2->entityName = aliasClassName;	
-							}
-						}
-					}
-					
-					definitionEntity->NLCisAlias = true; //added 1o1b (prevents addition of alias to class heirachy)	
-				}
+				//eg The value is 5.5
+				//cout << "NLC_USE_MATH_OBJECTS: generateCodeBlocksAddConnection{} found value = " << definitionEntity->entityName << endl;
+				*currentCodeBlockInTree = createCodeBlockSetMathValue(*currentCodeBlockInTree, subjectEntity, definitionEntity);
 			}
 			else
 			{
 			#endif
-				//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
-
-				#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-				//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
-				if(!isDefiniteEntity(definitionEntity))
+				#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+				if(connection->isAlias)
 				{
-					bool foundDefiniteParentOfEntity = false;
-					bool parseConditionParents = true;	//use default value here
-					bool checkIsDefinite = true;
-					GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(subjectEntity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
-					if(isDefiniteEntity(subjectEntity) || foundDefiniteParentOfEntity)
+					result = true;
+					bool aliasAlreadyInitialised = false;
+					string aliasName = definitionEntity->entityName;
+					string aliasClassName = subjectEntity->entityName;
+
+					string aliasNameTemp = "";
+					if(findAliasInEntity(definitionEntity, &aliasNameTemp)) //*
 					{
-				#endif
-						if(subjectEntity->entityName != definitionEntity->entityName)
-						{//ignore substanceConcept definitions for for entities of same name
-
-							result = true;
-							#ifdef NLC_DEBUG
-							cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
-							cout << "sentenceIndex = " << sentenceIndex << endl;
-							cout << "subjectEntity = " << subjectEntity->entityName << endl;
-							cout << "definitionEntity = " << definitionEntity->entityName << endl;
-							#endif
-
-							NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
-
-							GIAentityNode* parentEntity = NULL;
-
-							//1. and 2. get parent of the dog (eg pound) and generate context of the dog (already done)
-							//generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
-
-							//3. verify that alsations are dogs
-							*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, subjectEntity->entityName);
-
-							//4. cast the dog to alsation
-							*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, subjectEntity, definitionEntity);
-
-							//5. add alsation to alsation property list of pound 
-								//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
-								//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
-							if(subjectParentEntity != subjectEntity)
-							{
-								*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, subjectParentEntity, definitionEntity, sentenceIndex);
-							}
-
-							//6. add alsation to alsation local list
-							*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
-							
-							/*
-							#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-							//7. generate object initialisations based on substance concepts (class inheritance)
-							generateObjectInitialisationsBasedOnSubstanceConcepts(definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
-							#endif
-							*/							
-
-						}
-				#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+						aliasAlreadyInitialised = true;
 					}
-					else
-					{
-						cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(subjectEntity) || foundDefiniteParentOfEntity))" << endl;
+					if(!aliasAlreadyInitialised)
+					{	
+						//check this code
+						#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+						cout << "generateCodeBlocksPart3subjectObjectConnections (alias):" << endl;
+						cout << "definitionEntity (aliasName) = " << definitionEntity->entityName << endl;
+						cout << "subjectEntity (aliasClassName) = " << subjectEntity->entityName << endl;
+						#endif
+
+						NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+						GIAentityNode* parentEntity = NULL;
+
+						*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, subjectEntity, aliasName);
+
+						//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
+						GIAentityNode* aliasConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
+						for(vector<GIAentityConnection*>::iterator iter2 = aliasConceptEntity->associatedInstanceNodeList->begin(); iter2 < aliasConceptEntity->associatedInstanceNodeList->end(); iter2++)
+						{
+							GIAentityNode* entity2 = (*iter2)->entity;
+							if(entity2->entityName == aliasName)
+							{
+								if(entity2->sentenceIndexTemp > definitionEntity->sentenceIndexTemp)	//this test isn't required because of* 
+								{
+									entity2->aliasList.push_back(aliasName);
+									entity2->entityName = aliasClassName;	
+								}
+							}
+						}
+
+						definitionEntity->NLCisAlias = true; //added 1o1b (prevents addition of alias to class heirachy)	
 					}
 				}
 				else
 				{
-					cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: isDefiniteEntity(definitionEntity))" << endl;
+				#endif
+					//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
+
+					#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+					//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
+					if(!isDefiniteEntity(definitionEntity))
+					{
+						bool foundDefiniteParentOfEntity = false;
+						bool parseConditionParents = true;	//use default value here
+						bool checkIsDefinite = true;
+						GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(subjectEntity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
+						if(isDefiniteEntity(subjectEntity) || foundDefiniteParentOfEntity)
+						{
+					#endif
+							if(subjectEntity->entityName != definitionEntity->entityName)
+							{//ignore substanceConcept definitions for for entities of same name
+
+								result = true;
+								#ifdef NLC_DEBUG
+								cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
+								cout << "sentenceIndex = " << sentenceIndex << endl;
+								cout << "subjectEntity = " << subjectEntity->entityName << endl;
+								cout << "definitionEntity = " << definitionEntity->entityName << endl;
+								#endif
+
+								NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+
+								GIAentityNode* parentEntity = NULL;
+
+								//1. and 2. get parent of the dog (eg pound) and generate context of the dog (already done)
+								//generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
+
+								//3. verify that alsations are dogs
+								*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, subjectEntity->entityName);
+
+								//4. cast the dog to alsation
+								*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, subjectEntity, definitionEntity);
+
+								//5. add alsation to alsation property list of pound 
+									//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
+									//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
+								if(subjectParentEntity != subjectEntity)
+								{
+									*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, subjectParentEntity, definitionEntity, sentenceIndex);
+								}
+
+								//6. add alsation to alsation local list
+								*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
+
+								/*
+								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+								//7. generate object initialisations based on substance concepts (class inheritance)
+								generateObjectInitialisationsBasedOnSubstanceConcepts(definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
+								#endif
+								*/							
+
+							}
+					#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+						}
+						else
+						{
+							cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(subjectEntity) || foundDefiniteParentOfEntity))" << endl;
+						}
+					}
+					else
+					{
+						cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: isDefiniteEntity(definitionEntity))" << endl;
+					}
+					#endif
+				#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES						
 				}
 				#endif
-			#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES						
+			#ifdef NLC_USE_MATH_OBJECTS						
 			}
-			#endif
+			#endif				
 		}
 	}
 	return result;

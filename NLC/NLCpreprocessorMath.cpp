@@ -25,8 +25,8 @@
  *
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -521,7 +521,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end();)
 	{
 		string mathTextVariableName = *iter;
-		bool variableNameIsNumber = isStringNumber(mathTextVariableName);
+		bool variableNameIsNumber = isStringNumberPreprocessorMath(mathTextVariableName);
 		if(variableNameIsNumber)
 		{
 			iter = firstNLCsentenceInFullSentence->mathTextVariableNames.erase(iter);

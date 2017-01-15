@@ -1,0 +1,326 @@
+<!--
+/*******************************************************************************
+ * 
+ * This file is part of BAIPROJECT.
+ * 
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation.
+ * 
+ * BAIPROJECT is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License version 3 for more details
+ * (a copy is included in the LICENSE file that accompanied this code).
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * version 3 along with BAIPROJECT.  If not, see <http://www.gnu.org/licenses/>
+ * for a copy of the AGPLv3 License.
+ * 
+ *******************************************************************************/
+
+/*******************************************************************************
+ *
+ * File Name: NLCrules.xml
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
+ * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
+ *
+ *******************************************************************************/
+-->
+<rules>
+	<enums>	
+		<entity name="property">
+			<type name="colour">
+				<instance name="black" />
+				<instance name="blue" />
+				<instance name="green" />
+				<instance name="cyan" />
+				<instance name="red" />
+				<instance name="magenta" />
+				<instance name="brown" />
+				<instance name="lightgrey" />
+				<instance name="darkgrey" />
+				<instance name="yellow" />
+				<instance name="white" />
+				<instance name="orange" />
+				<instance name="purple" />
+			</type>
+			<type name="temperature">
+				<instance name="hot" />
+				<instance name="cold" />
+				<instance name="warm" />
+			</type>
+			<type name="affect">
+				<instance name="sad" />
+				<instance name="happy" />
+			</type>
+			<type name="cognition">
+				<instance name="excited" />
+				<instance name="amused" />
+				<instance name="confused" />
+				<instance name="bedazzled" />
+				<instance name="bored" />
+			</type>
+			<type name="health">
+				<instance name="sick" />
+				<instance name="well" />
+				<instance name="healthy" />
+			</type>
+			<type name="valence">
+				<instance name="good" />
+				<instance name="bad" />
+			</type>
+			<type name="correctness">
+				<instance name="right" />
+				<instance name="wrong" />
+			</type>
+			<type name="moral">
+				<instance name="good" />
+				<instance name="evil" />
+				<instance name="selfish" />
+			</type>
+			<type name="state">
+				<instance name="on" />
+				<instance name="off" />
+			</type>
+		</entity>
+		<entity name="condition">
+			<type name="position1" notes="position">
+				<instance name="abaft" />
+				<instance name="abeam" />
+				<instance name="aboard" />
+				<instance name="above" />
+				<instance name="across" />
+				<instance name="afore" />
+				<instance name="after" />
+				<instance name="athwart" />
+				<instance name="atop" />
+				<instance name="before" />
+				<instance name="behind" />
+				<instance name="below" />
+				<instance name="beneath" />
+				<instance name="on" />
+				<instance name="off" />
+				<instance name="over" />
+				<instance name="under" />
+				<instance name="underneath" />
+				<instance name="upon" />
+				<instance name="ahead_of" />
+				<instance name="forward_of" />
+				<instance name="left_of" />
+				<instance name="on_board" />
+				<instance name="right_of" />
+				<instance name="in_front_of" />
+				<instance name="on_top_of" />
+			</type>
+			<type name="position2" notes="near">
+				<instance name="about" />
+				<instance name="among" />
+				<instance name="among" />
+				<instance name="amongst" />
+				<instance name="apud" />
+				<instance name="around" />
+				<instance name="by" />
+				<instance name="in" />
+				<instance name="near" />
+				<instance name="near_to" />
+				<instance name="next_to" />
+			</type>
+			<type name="position3" notes="proximity">
+				<instance name="against" />
+				<instance name="alongside" />
+				<instance name="beside" />
+				<instance name="besides" />
+				<instance name="beyond" />
+				<instance name="outside" />
+				<instance name="past" /><!-- ? -->
+				<instance name="round" /><!-- ? -->
+				<instance name="vis-a-vis" /><!-- ? -->
+				<instance name="away_from" />
+				<instance name="close_to" />
+				<instance name="far_from" />
+			</type>
+			<type name="position4" notes="between">
+				<instance name="amid" />
+				<instance name="amidst" />
+				<instance name="anenst" />
+				<instance name="anent" />
+				<instance name="aside" />
+				<instance name="astride" />
+				<instance name="between" />
+				<instance name="forenenst" /><!-- ? -->
+				<instance name="inside" />
+				<instance name="mid" />
+				<instance name="midst" />
+				<instance name="within" />
+				<instance name="in_between" />
+				<instance name="inside_of" />
+				<instance name="outside_of" />
+			</type>
+			<type name="logic">
+				<instance name="absent" />
+				<instance name="bar" />
+				<instance name="barring" />
+				<instance name="but" />
+				<instance name="counting" />
+				<instance name="except" />
+				<instance name="excepting" />
+				<instance name="excluding" />
+				<instance name="failing" />
+				<instance name="including" />
+				<instance name="notwithstanding" />
+				<instance name="opposite" />
+				<instance name="pending" />
+				<instance name="sans" />
+				<instance name="save" />
+				<instance name="saving" />
+				<instance name="touching" />
+				<instance name="versus" />
+				<instance name="vice" />
+				<instance name="apart_from" />
+				<instance name="aside_from" />
+				<instance name="but_for" />
+				<instance name="except_for" />
+				<instance name="instead_of" />
+				<instance name="regardless_of" />
+				<instance name="save_for" />
+				<instance name="as_well_as" />
+				<instance name="in_addition_to" />
+				<instance name="in_lieu_of" />
+				<instance name="in_place_of" />
+				<instance name="in_spite_of" />
+			</type>
+			<type name="spatiotemporal">
+				<instance name="aboard" />
+				<instance name="across" />
+				<instance name="along" />
+				<instance name="from" />
+				<instance name="into" />
+				<instance name="onto" />
+				<instance name="over" />
+				<instance name="round" />
+				<instance name="through" />
+				<instance name="throughout" />
+				<instance name="toward" />
+				<instance name="towards" />
+				<instance name="via" />
+				<instance name="back_to" />
+				<instance name="in_to" />
+				<instance name="on_to" />
+				<instance name="out_from" />
+				<instance name="out_of" />
+			</type>
+			<type name="regarding">
+				<instance name="anenst" />
+				<instance name="anent" />
+				<instance name="apropos" />
+				<instance name="concerning" />
+				<instance name="considering" />
+				<instance name="despite" />
+				<instance name="given" />
+				<instance name="pace" />
+				<instance name="re" />
+				<instance name="regarding" />
+				<instance name="respecting" />
+				<instance name="as_regards" />
+				<instance name="as_to" />
+				<instance name="further_to" /><!-- ? -->
+				<instance name="in_view_of" />
+				<instance name="with_reference_to" />
+				<instance name="with_regard_to" />
+				<instance name="with_respect_to" />
+				<instance name="with_a_view_to" />
+			</type>
+			<type name="stance">
+				<instance name="against" />
+				<instance name="anti" />
+				<instance name="like" />
+				<instance name="pace" />
+				<instance name="pro" />
+				<instance name="unlike" />
+				<instance name="according_to" /><!-- ? -->
+				<instance name="as_per" /><!-- ? -->
+				<instance name="contrary_to" /><!-- ? -->
+				<instance name="pursuant_to" /><!-- ? -->
+				<instance name="where_as" /><!-- ? -->
+				<instance name="as_opposed_to" /><!-- ? -->
+				<instance name="in_accordance_with" /><!-- ? -->
+				<instance name="in_favour_of" />
+				<instance name="on_account_of" /><!-- ? -->
+				<instance name="on_behalf_of" />
+			</type>
+			<type name="time">
+				<instance name="afore" />
+				<instance name="after" />
+				<instance name="by" />
+				<instance name="circa" />
+				<instance name="during" />
+				<instance name="following" />
+				<instance name="from" />
+				<instance name="on" />
+				<instance name="past" />
+				<instance name="pending" />
+				<instance name="since" />
+				<instance name="till" />
+				<instance name="until" />
+				<instance name="unto" />
+				<instance name="upon" />
+				<instance name="as_of" />
+				<instance name="preparatory_to" />
+				<instance name="prior_to" />
+				<instance name="subsequent_to" />
+				<instance name="up_to" />
+				<instance name="as_soon_as" />
+			</type>
+			<type name="means of achieving action">
+				<instance name="by" />
+			</type>
+			<type name="similar">
+				<instance name="cum" />
+				<instance name="a la" />
+				<instance name="" />
+			</type>
+			<type name="purpose">
+				<instance name="for" />
+				<instance name="because_of" />
+				<instance name="depending_on" />
+				<instance name="due_to" />
+				<instance name="owing_to" />
+				<instance name="thanks_to" />
+				<instance name="by_means_of" />
+				<instance name="by_virtue_of" />
+				<instance name="for_the_sake_of" />
+				<instance name="in_case_of" />
+				<instance name="in_face_of" />
+				<instance name="in_order_to" />
+				<instance name="in_point_of" />
+				<instance name="on_account_of" />
+			</type>
+			<type name="math">
+				<instance name="less" />
+				<instance name="minus" />
+				<instance name="modulo" />
+				<instance name="per" />
+				<instance name="plus" />
+				<instance name="times" />
+			</type>
+			<type name="comparison">
+				<instance name="than" />
+			</type>
+			<type name="with">
+				<instance name="with" />
+				<instance name="without" />
+				<instance name="along_with" />
+				<instance name="" />
+			</type>
+			<type name="distanceComparison">
+				<instance name="as_far_as" />
+			</type>
+			<type name="lengthComparison">
+				<instance name="as_long_as" />
+			</type>
+		</entity>
+	</enums>				
+</rules>

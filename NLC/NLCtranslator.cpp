@@ -25,8 +25,8 @@
  *
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,7 +59,7 @@ NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContaine
 }
 #endif
 		
-bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
 {
 	bool result = true;
 
@@ -465,7 +465,7 @@ void disableInstanceAndConceptEntityNLC(GIAentityNode* entity)
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency)
+void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency)
 {
 	//reconcile function arguments (class function header) - NB code function reference arguments are reconciled in printCodeBlocks()  
 
@@ -662,7 +662,7 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListC
 #endif
 
 
-NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition* >* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex)
+NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition*>* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex)
 {
 	NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 	 
@@ -710,7 +710,7 @@ NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefi
 	return functionDependency;
 }
 
-NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, bool isReference, bool createClassDefinition)
+NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, bool isReference, bool createClassDefinition)
 {
 	NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 

@@ -25,8 +25,8 @@
  *
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,6 +58,8 @@
 //#endif
 #include "NLCtranslatorClassDefinitions.h"
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#include "XMLrulesClass.h"
+
 
 static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
 "\n\t-itxt [string]     : plain text .txt input filename to be parsed by the NLP parser (def: inputText.txt)"
@@ -264,6 +266,13 @@ int main(int argc,char* *argv)
 	int synonymnDetectionStatus = SYNONYMN_DETECTION_STATUS_QUERIES_AND_ADVANCED_REFERENCING;
 #endif
 
+	//not currently used;
+	if(!parseNLCrulesXMLfile())
+	{
+		cout << "error: NLCrules.xml file not detected" << endl;
+		exit(0);
+	}
+	
 	//bool train = false;
 	//bool form = true;
 
@@ -638,7 +647,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p1a 06-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p2a 12-June-2015" << endl;
 			exit(1);
 		}
 
@@ -1145,9 +1154,9 @@ int main(int argc,char* *argv)
 	//create predefined NLC functions
 	NLCcodeblock* currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
 	currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree);
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree);
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 	currentCodeBlockInTree = createCodeBlocksAddEntityToContextLevelListNewFunction(currentCodeBlockInTree);
 	currentCodeBlockInTree = createCodeBlocksClearContextListNewFunction(currentCodeBlockInTree);
@@ -1164,6 +1173,9 @@ int main(int argc,char* *argv)
 	#endif
 	#ifdef NLC_SUPPORT_REDEFINITIONS
 	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);
+	#endif
+	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
+	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);	
 	#endif
 	#endif
 	

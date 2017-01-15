@@ -25,8 +25,8 @@
  *
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,13 +38,47 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
-//#define NLC_DISABLE_1i_CODE_FOR_DEBUG	//aka NLC_ENABLE_1h_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
-//#define NLC_DISABLE_1j_CODE_FOR_DEBUG	//aka NLC_ENABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
-//#define NLC_DISABLE_1k_CODE_FOR_DEBUG	//aka NLC_ENABLE_1j_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
-//#define NLC_DISABLE_1l_CODE_FOR_DEBUG	//aka NLC_ENABLE_1k_CODE_FOR_DEBUG
-//#define NLC_DISABLE_1m_CODE_FOR_DEBUG	//aka NLC_ENABLE_1l_CODE_FOR_DEBUG
-//#define NLC_DISABLE_1n_CODE_FOR_DEBUG	//aka NLC_ENABLE_1m_CODE_FOR_DEBUG
-//#define NLC_DISABLE_1o_CODE_FOR_DEBUG	//aka NLC_ENABLE_1n_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+//#define NLC_DISABLE_1j_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+//#define NLC_DISABLE_1k_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+//#define NLC_DISABLE_1l_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1m_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1n_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1o_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1p_CODE_FOR_DEBUG
+
+#ifndef NLC_DISABLE_1p_CODE_FOR_DEBUG
+	//#ifdef NLC_USE_LIBRARY
+		#define NLC_USE_LIBRARY_BASE_EXTENDED	//1p2a	//simplifies generated code	//requires NLC_USE_LIBRARY	//NB NLC_USE_LIBRARY_BASE_EXTENDED does not support NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+		#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_PROPERTY "addProperty"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION "addCondition"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTY "removeProperty"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITION "removeCondition"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTIES "removeProperties"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITIONS "removeConditions"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ACTIONSUBJECT "addActionSubject"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ACTIONOBJECT "addActionObject"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_NEW_ENTITY_TO_LOCAL_LIST "addNewEntityToLocalList"
+			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ENTITY_TO_LOCAL_LIST "addEntityToLocalList"
+			#define NLC_USE_ENUM_LISTS
+			#ifdef NLC_USE_ENUM_LISTS
+				#define NLC_USE_ENUM_LISTS_PROPERTIES
+				#define NLC_USE_ENUM_LISTS_CONDITIONS
+				//#define NLC_USE_ENUM_LISTS_ACTIONS	//not yet coded
+			#endif
+			//#define NLC_USE_GENERIC_FUNCTIONS	//for test only (should produce same result)	//note generic functions represent the foundation for the NLC commercial library (enable library functions to be defined irrespective of entity name)
+		#else
+			#define NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED	//generates inline addProperty/addCondition functions only
+		#endif
+		#define NLC_USE_LIBRARY_COPY_OBJECT_BY_NAME_FUNCTION_NAME "copyObjectByName"	//1p2a
+	//#endif
+	#define NLC_USE_MATH_OBJECTS	//1p2a (first declared 1n3b) - each entity has a (double) value which can be set by NLC mathText
+	#ifdef NLC_USE_MATH_OBJECTS
+		#define NLC_USE_MATH_OBJECTS_VALUE_NAME "value"
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_SUPPORT_FRACTIONAL_VALUES	//e.g. 5.5
+	#endif	
+#endif
 
 #ifndef NLC_DISABLE_1o_CODE_FOR_DEBUG
 	#ifndef GIA_LRP_REDUCE_QUOTES_TO_SINGLE_WORDS
@@ -84,11 +118,7 @@
 		#endif
 		#define NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
-	#define NLC_USE_MATH_OBJECTS	//1n3b - not yet finished (each entity has a (double) value which can be set by NLC mathText)
-	#ifdef NLC_USE_MATH_OBJECTS
-		#define NLC_USE_MATH_OBJECTS_VALUE_NAME "value"
-	#endif
-	#ifdef GIA_LRP_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+	#ifdef GIA_LRP_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS_AND_FLOATS_AND_TIMES
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS	//1n2e
 	#endif
 	//#define NLC_NONOO	//1n1a
@@ -648,7 +678,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 			#define NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS	//added 1k5c
 		#endif
-		//#define NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS	//certified 1k3a
+		//#define NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS	//certified 1k3a	//NB NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS/unorderedMap<sting, entity*> is not an appropriate data structure to store conditionLists, as there may be more than one condition of a given type; therefore are currently using unorderedMap<entity*, entity*>
 	#endif
 //#endif
 

@@ -25,8 +25,8 @@
  *
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2a 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -114,7 +114,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					*detectedFunctions = true;
 				}
 				sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
-				functionName = getFunctionNameFromFunctionHeader(&currentLine);
+				functionName = getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
 				functionFileName = generateNLCfunctionFileName(functionName);
 				inputTextFileNameList->push_back(functionFileName);
 				functionContents = "";
@@ -190,22 +190,15 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							{	
 								//based on isIntrawordFullStop() code:
 								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
-								bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
-								if(startOfSentenceIndexNew < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"
-								{	
-									char characterImmediatelySucceedingFullStop = lineContents[startOfSentenceIndexNew+1];
-									fullStopImmediatelySucceededByAlphabeticalCharacter = charInCharArray(characterImmediatelySucceedingFullStop, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
-									//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: characterImmediatelySucceedingFullStop = " << characterImmediatelySucceedingFullStop << endl;
-									//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: fullStopImmediatelySucceededByAlphabeticalCharacter = " << fullStopImmediatelySucceededByAlphabeticalCharacter << endl;
-								}
-								if(!fullStopImmediatelySucceededByAlphabeticalCharacter)
+								if(isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
 								{
-									lineFullStopDetected = true;
-									stillFinding = false;
+									//cout << "isIntrawordPunctuationMark" << endl;
+									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
 								}
 								else
 								{
-									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
+									lineFullStopDetected = true;
+									stillFinding = false;
 								}
 								//cout << "startOfSentenceIndexNew2 = " << startOfSentenceIndexNew << endl;
 							}
@@ -238,6 +231,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							cout << "lineFullStopDetected" << endl;
 							#endif
 							sentenceContents = lineContents.substr(startOfSentenceIndex, startOfSentenceIndexNew-startOfSentenceIndex+1);	//+1 append the full stop
+							//cout << "sentenceContents = " << sentenceContents << endl;
 
 						}
 						else

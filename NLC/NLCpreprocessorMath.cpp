@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n8a 25-January-2015
+ * Project Version: 1n9a 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -238,7 +238,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		finalWordInSentenceFoundAndIsLegal = false;
 		if(legalWordCharacterFound && (i == lineContents->length()-1) && NLPparsableMandatoryCharacterFoundInCurrentWord)
 		{
-			if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
+			if(wordIndex >= (NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS-1))
 			{
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 				cout << "finalWordInSentenceFoundAndIsLegal" << endl;

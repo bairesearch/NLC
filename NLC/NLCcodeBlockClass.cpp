@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8f 04-November-2014
+ * Project Version: 1l8g 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1030,7 +1030,7 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceInd
 	if(!checkIfEntityHasBeenParsedForNLCcodeBlocks || !(entity->NLCparsedForCodeBlocks))
 	{
 		#ifdef GIA_RECORD_WAS_REFERENCE_INFORMATION
-		if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference && (sentenceIndex > entity->sentenceIndexTemp)))	//1k23c added && (sentenceIndex > entity->sentenceIndexTemp) 
+		if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference && (sentenceIndex > entity->sentenceIndexTemp)))	//1l6c added && (sentenceIndex > entity->sentenceIndexTemp) 
 		#else
 		if(entity->sentenceIndexTemp == sentenceIndex)
 		#endif

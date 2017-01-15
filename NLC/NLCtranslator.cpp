@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8f 04-November-2014
+ * Project Version: 1l8g 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -760,7 +760,7 @@ NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclarati
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 			if(hasFunctionOwnerClass)
 			{
-				//added 1k18a for dynamic casting of children
+				//added 1l1a for dynamic casting of children
 				NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
 				functionClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
 			}

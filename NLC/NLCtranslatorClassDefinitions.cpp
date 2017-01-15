@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8f 04-November-2014
+ * Project Version: 1l8g 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -247,7 +247,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 
 											#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 											//hasActionOwner is true for all actions (targetClassDefinition) with subjects (classDefinition);
-											//added 1k18a for dynamic casting of children
+											//added 1l1a for dynamic casting of children
 											NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
 											targetClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
 											#endif
@@ -522,7 +522,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 								functionDependency->functionOwnerName = functionOwnerName;
 								functionDependency->functionObjectName = functionObjectName;
 								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH
-								functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;	//changed from true 1k18a
+								functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;	//changed from true 1l1a
 								#else
 								functionDependency->hasFunctionOwnerClass = true;
 								#endif
@@ -592,7 +592,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 									classDefinitionFunctionOwner->functionList.push_back(classDefinitionFunction);
 									
 									#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-									//added 1k18a for dynamic casting of children
+									//added 1l1a for dynamic casting of children
 									if(hasFunctionOwnerClass)
 									{
 										NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);

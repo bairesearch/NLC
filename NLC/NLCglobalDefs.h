@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8f 04-November-2014
+ * Project Version: 1l8g 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -93,13 +93,13 @@
 			#endif
 		#endif
 		#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
-			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1k18a
+			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1l1a
 			#ifndef DISABLE_CODE_NOT_YET_SUPPORTED_BY_NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-				//#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1k18b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//this currently fails with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+				//#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1l1b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//this currently fails with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 			#endif
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
-				#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS	//1k18b
-				#define NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS	//1k18b
+				#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS	//1l1b
+				#define NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS	//1l1b
 			#endif
 		#endif
 	#endif

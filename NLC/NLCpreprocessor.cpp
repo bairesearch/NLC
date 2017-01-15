@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2i 28-July-2014
+ * Project Version: 1h2j 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -667,12 +667,28 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	#endif
 	
 	int startIndex = 0;
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
 		//prevent logical condition operatators from being considered legal words by splitMathDetectedLineIntoNLPparsablePhrases
 		startIndex = logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator].length();
 		mathText = mathText + logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator];
+		
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
+		{
+			//add a comma after "else", such that the logical condition command will be created (in a new sentence) instead of creating an nlp parsable phrase
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			cout << "splitMathDetectedLineIntoNLPparsablePhrases() else detected" << endl;
+			#endif
+			if((lineContents->length() > logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_ELSE].length()) && ((*lineContents)[logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_ELSE].length()] != CHAR_COMMA)) 
+			{
+				lineContents->insert(logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_ELSE].length(), STRING_COMMA);
+				cout << "creating artificial comma for logical condition command to be detected" << endl;
+				cout << "lineContents = " << *lineContents << endl;
+			}
+		}			
 	}
+	#endif
 	
 	bool finalWordInSentenceFoundAndIsLegal = false;
 	for(int i=startIndex; i<lineContents->length(); i++)
@@ -922,10 +938,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					#endif
 					
 					bool finalParsablePhraseIsLogicalConditionCommand = false;
-					if(firstNLCsentenceInFullSentence->mathText[finalParsablePhraseReferencePos - 2] == CHAR_COMMA)	//-2 to take into account intermediary comma CHAR_COMMA and white space CHAR_SPACE
+					//if(firstNLCsentenceInFullSentence->mathText[finalParsablePhraseReferencePos - 2] == CHAR_COMMA)	//-2 to take into account intermediary comma CHAR_COMMA and white space CHAR_SPACE
+					int index = firstNLCsentenceInFullSentence->mathText.find(NLC_PREPROCESSOR_MATH_PARSABLE_PHRASE_START_TEXT_INDICATING_LOGICAL_CONDITION_COMMAND, finalParsablePhraseReferencePos - string(NLC_PREPROCESSOR_MATH_PARSABLE_PHRASE_START_TEXT_INDICATING_LOGICAL_CONDITION_COMMAND).length());
+					if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
 					{
 						//e.g. If the basket that is near the house is above the tray, and the basket is blue, the dog is happy.*
 						finalParsablePhraseIsLogicalConditionCommand = true;
+						cout << "finalParsablePhraseIsLogicalConditionCommand" << endl;
 					}
 					/*OLD:
 					bool finalParsablePhraseIsLogicalConditionCommand = true;

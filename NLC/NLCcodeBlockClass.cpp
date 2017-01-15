@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8b 11-July-2014
+ * Project Version: 1g8c 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -508,7 +508,7 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 			GIAentityNode* propertyEntity = propertyConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{//only write conditions that are explicated in current sentence
-				#ifdef NLC_DEBUG2
+				#ifdef NLC_DEBUG
 				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
 				#endif
 				result = true;
@@ -603,7 +603,7 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 					{
 					#endif
 				#endif
-						#ifdef NLC_DEBUG2
+						#ifdef NLC_DEBUG
 						cout << "createCodeBlockForGivenConditions: " << conditionEntity->entityName << endl;
 						#endif
 						result = true;

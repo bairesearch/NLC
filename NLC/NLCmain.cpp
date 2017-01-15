@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8b 11-July-2014
+ * Project Version: 1g8c 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -627,7 +627,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g8b 11-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g8c 11-July-2014" << endl;
 			exit(1);
 		}
 
@@ -1107,7 +1107,9 @@ void removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesAc
 			}
 		}
 		
+		#ifdef NLC_DEBUG
 		cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
+		#endif
 		if(maximumNumberOfConjunctions > 0)
 		{
 			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -1123,12 +1125,14 @@ void removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesAc
 						{	
 							if(!traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainerFirstInOptimumPath, conditionEntity))
 							{
-								cout << "disabling conditionEntity: " << conditionEntity->entityName << endl;
 								GIAentityNode * logicalConditionConjunctionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
 								GIAentityNode * logicalConditionConjunctionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
+								#ifdef NLC_DEBUG
+								cout << "disabling conditionEntity: " << conditionEntity->entityName << endl;
 								cout << "logicalConditionConjunctionObjectEntity: " << logicalConditionConjunctionObjectEntity->entityName << endl;
 								cout << "logicalConditionConjunctionSubjectEntity: " << logicalConditionConjunctionSubjectEntity->entityName << endl;
-
+								#endif
+								
 								conditionEntity->disabled = true;
 							}	
 						}

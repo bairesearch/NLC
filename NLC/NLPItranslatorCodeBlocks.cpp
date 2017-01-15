@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e7a 23-November-2013
+ * Project Version: 1e7b 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -276,15 +276,19 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 	if(!(currentEntity->propertyNodeReverseList->empty()))
 	{
 		GIAentityNode * parentEntity = (currentEntity->propertyNodeReverseList->back())->entity;
+		/*//removed 1e7b
 		if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
 		{
-			if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex))
+		*/
+		if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex))
+		{
+			result = true;
+			NLPIitem * propertyItem = new NLPIitem(currentEntity, NLPI_ITEM_TYPE_CLASS);
+			propertyItem->context.push_back(generateInstanceName(parentEntity));
+			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+
+			if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))	//added 1e7b
 			{
-				result = true;
-				NLPIitem * propertyItem = new NLPIitem(currentEntity, NLPI_ITEM_TYPE_CLASS);
-				propertyItem->context.push_back(generateInstanceName(parentEntity));
-				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
-				
 				//required to prevent generateObjectInitialisationsBasedOnPropertiesAndConditions() from writing property:
 				for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = parentEntity->propertyNodeList->begin(); propertyNodeListIterator < parentEntity->propertyNodeList->end(); propertyNodeListIterator++)
 				{
@@ -298,18 +302,29 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 				parentEntity->parsedForNLPIcodeBlocks = true;
 			}
 		}
+		/*//removed 1e7b
+		}
 		else
 		{
 			possibleContextParentFound = true;
 		}
+		*/
 	}
 	else
 	{
+		/*//removed 1e7b
 		if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
 		{
+		*/
 			possibleContextParentFound = true;
+		/*//removed 1e7b
 		}
+		*/
 	}
+	
+	cout << "generateContextBlocksAndInitialiseParentIfNecessary, sentenceIndex = " << sentenceIndex << endl;
+	cout << "\tpossibleContextParentFound = " << possibleContextParentFound << endl;
+	cout << "\tcurrentEntity->entityName = " << currentEntity->entityName << endl;
 	
 	if(possibleContextParentFound)
 	{

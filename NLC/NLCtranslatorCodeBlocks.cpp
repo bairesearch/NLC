@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5f 17-January-2015
+ * Project Version: 1n5g 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -727,6 +727,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock ** currentCodeBlockInTree
 			
 			//2. generate context of the dog
 			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+			generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition)
 			bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
 
 			//3. verify that alsations are dogs

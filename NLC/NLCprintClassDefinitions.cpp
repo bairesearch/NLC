@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5f 17-January-2015
+ * Project Version: 1n5g 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -349,7 +349,6 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							#endif
 							#endif
 							
-
 							printLine(progLangCloseClass[progLang], 0, code);
 							printLine("", 0, code);
 
@@ -370,10 +369,17 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							printLine(classConstructorLastSentenceReferencedCode, 1, code);	
 							#endif
 							#endif
-							#ifdef NLC_USE_MATH_OBJECTS
-							string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang];	//value = 0.0;
-							printLine(setValueCode, 1, code);
 							#endif
+							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
+							if(classDefinition->definitionList.empty())
+							{//top level NLClibraryEntity class found
+							#endif
+								#ifdef NLC_USE_MATH_OBJECTS
+								string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang];	//value = 0.0;
+								printLine(setValueCode, 1, code);
+								#endif							
+							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
+							}
 							#endif
 							
 							#ifdef NLC_USE_LIBRARY

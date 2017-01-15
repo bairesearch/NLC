@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5f 17-January-2015
+ * Project Version: 1n5g 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -507,18 +507,21 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
 		#endif
 		
-		//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
-		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+		if(generateContextBlocksVariables->searchSubstanceConceptsForChildren)
 		{
-			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
-			if(parentSubstanceConcept->isSubstanceConcept)
-			{	
-				#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-				cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren(): parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
-				#endif
-				if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, parentSubstanceConcept, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
-				{
-					contextFound = true;
+			//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
+			for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+			{
+				GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
+				if(parentSubstanceConcept->isSubstanceConcept)
+				{	
+					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+					cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren(): parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
+					#endif
+					if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, parentSubstanceConcept, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
+					{
+						contextFound = true;
+					}
 				}
 			}
 		}

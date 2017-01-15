@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5f 17-January-2015
+ * Project Version: 1n5g 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -103,6 +103,9 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	#endif
 	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 	enterGeneratedCategoryList = true;
+	#endif
+	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+	searchSubstanceConceptsForChildren = true;
 	#endif
 }
 NLCgenerateContextBlocksVariables::~NLCgenerateContextBlocksVariables(void)

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5f 17-January-2015
+ * Project Version: 1n5g 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -285,6 +285,9 @@ public:
 	#endif
 	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 	bool enterGeneratedCategoryList;
+	#endif
+	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+	bool searchSubstanceConceptsForChildren;
 	#endif
 };
 

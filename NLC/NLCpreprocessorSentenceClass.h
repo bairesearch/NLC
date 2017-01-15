@@ -25,8 +25,8 @@
  *
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p6a 04-July-2015
+ * Project: Natural Language Programming Interface (compiler)
+ * Project Version: 1p1a 06-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -65,10 +65,6 @@ public:
 	vector<string> mathTextVariableNames;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
 	vector<string> variableNamesDetected;	//record of original variable name that has been replaced by dummy number for NLP/GIA to parse
 	#endif
-	#ifdef NLC_USE_MATH_OBJECTS
-	bool mathTextIdentifiesMathValue; 
-	//bool mathTextNLPparsablePhraseIdentifiesMathValue; 
-	#endif
 	#endif
 	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
 	string sentenceOriginal;	//set for first parsable phrase only, or if no NLP parsable phrases
@@ -88,7 +84,7 @@ public:
 	NLCfunction(void);
 	~NLCfunction(void);
 
-	string NLCfunctionName;
+	string functionName;
 	NLCsentence* firstNLCsentenceInFunction;
 	NLCfunction* next;
 };
@@ -99,10 +95,8 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 int generateDummyNumericalValue(int predefinedVariableIndex);
 #endif
 #endif
-bool isStringNLPparsableWord(string phrase, bool preprocessorMath);
+bool isStringNLPparsableWord(string phrase, bool preprocessor);
 bool isStringValidVariableName(string phrase, bool preprocessor);
-bool isStringNumberPreprocessorMath(string phrase);
-bool isStringNumberOrFractional(string phrase);
-	bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
+bool isStringNumber(string phrase);
 
 #endif

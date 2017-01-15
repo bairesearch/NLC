@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e10d 25-November-2013
+ * Project Version: 1e11a 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -186,6 +186,18 @@ NLPIcodeblock * createCodeBlocksCreateNewLocalListVariable(NLPIcodeblock * curre
 	return currentCodeBlockInTree;
 }
 
+NLPIcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{
+	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	//getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
 
 
 
@@ -328,7 +340,7 @@ NLPIcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLPI
 
 NLPIcodeblock * createCodeBlocksAddVariableToNewList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(currentCodeBlockInTree, entity);
+	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
 	currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, entity, entity);
 
 	return currentCodeBlockInTree;

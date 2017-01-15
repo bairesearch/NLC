@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e10d 25-November-2013
+ * Project Version: 1e11a 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -63,6 +63,7 @@ using namespace std;
 #define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY_TO_LOCAL_LIST (10)		//param1instancePropertyList.push_back(param2);
 #define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (11)
 #define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (13)
+#define NLPI_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE (14)
 
 //containers:
 #define NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (20)		//forall(context.param1){
@@ -118,6 +119,7 @@ NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockIn
 NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 	NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlocksCreateNewLocalListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLPIcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLPIcodeblock * createCodeBlockForPropertyList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
 NLPIcodeblock * createCodeBlockForPropertyListLocal(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
 NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem);

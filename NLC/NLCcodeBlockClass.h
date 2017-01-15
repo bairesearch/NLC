@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15b 23-October-2014
+ * Project Version: 1k15c 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -356,7 +356,7 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 NLCcodeblock * createCodeBlockAddEntityToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
 NLCcodeblock * createCodeBlockForCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
@@ -429,7 +429,7 @@ NLCcodeblock * createCodeBlocksCastVectorExecuteFunction(NLCcodeblock * currentC
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 NLCcodeblock * createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string aliasName);
 NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock * currentCodeBlockInTree);
-NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, string aliasName, GIAentityNode* categoryEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, string aliasName, GIAentityNode* entity, string genericListAppendName);
 bool findAliasInEntity(GIAentityNode * entity, string * aliasName);
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 unordered_map<string, string> * getFunctionAliasClassList();

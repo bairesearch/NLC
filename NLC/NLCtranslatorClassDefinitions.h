@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15b 23-October-2014
+ * Project Version: 1k15c 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,9 +54,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
 #endif	
-	#ifdef NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT
-	bool generateClassHeirachyFunctionsWithoutSubject(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
-	#endif
 	bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode);
 	bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity);
 	#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9d 14-October-2014
+ * Project Version: 1k9e 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1074,7 +1074,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(codeBlockTextTemplateHeader, level, code);
 			printLine(codeBlockTextFunctionHeader, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
-				string codeBlockTextDeclareNewVector = generateCodeEntityListDefinitionTypeText(templateName2, progLang) + entity2InstanceListName;	//vector<E2*> E2InstanceList;
+				string codeBlockTextDeclareNewVector = generateCodeEntityListDefinitionTypeText(templateName2, progLang) + entity2InstanceListName + progLangEndLine[progLang];	//vector<E2*> E2InstanceList;
 				printLine(codeBlockTextDeclareNewVector, (level+1), code);
 				string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<E1*> ::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
 				printLine(codeBlockTextForLoop, (level+1), code);
@@ -1279,12 +1279,16 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang)
 {
 	string codePropertyTypeText = generateEntityLocalListName(functionArgumentItem);
-	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{	
-		cout << "generateCodePluralReferenceText() error: functionArgumentItem->functionArgumentPassCastRequired not yet coded" << endl;
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		cout << "generateCodePluralReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
+		#endif
 		codePropertyTypeText = printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang);
 	}
+	#endif
 	#endif
 	return codePropertyTypeText;
 }
@@ -1292,27 +1296,30 @@ string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progL
 string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int progLang)
 {
 	string codePropertyTypeText = functionArgumentItem->instanceName;
-	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		cout << "generateCodeSingularReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
+		#endif
 		codePropertyTypeText = progLangDynamicCastStart[progLang] + functionArgumentItem->functionArgumentPassCastClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + functionArgumentItem->instanceName + progLangCloseParameterSpace[progLang];	//dynamic_cast<parentClass*>(childClassInstance);
 	}
+	#endif
 	#endif
 	return codePropertyTypeText;
 }
 
-#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang)
 {
 	//see NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION
 	//NO: v2.assign(v1.begin(), v1.end());
 	
-	NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);	//functionArgumentPassCast
-
-	//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
-	//string codeBlockExecuteFunctionText = "" + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(param1->genericObjectName) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
-	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
-	string codeBlockExecuteFunctionText = "" + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(param1->genericObjectName) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
+	//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
+	//string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
+	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + functionArgumentItem->functionArgumentPassCastClassName + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
+	string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
 	return codeBlockExecuteFunctionText;
 }
 #endif

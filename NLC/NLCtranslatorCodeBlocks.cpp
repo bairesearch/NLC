@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6a 08-July-2014
+ * Project Version: 1g6b 08-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -992,14 +992,26 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 			#ifdef NLC_UNTESTED_UPDATE_TO_generateContextBlocksAndInitialiseParentIfNecessary_INITIALISE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT			
 			else
 			{//added 1g6a
-				if((currentEntity->grammaticalDefiniteTemp) && !(currentEntity->grammaticalProperNounTemp) && !(currentEntity->NLClocalListVariableHasBeenDeclared) && !(currentEntity->NLCisSingularArgument))
+				NLCitem * propertyItem = new NLCitem(currentEntity, NLC_ITEM_TYPE_CLASS);
+
+				//context property item:
+				if(assumedToAlreadyHaveBeenDeclared(currentEntity))
 				{
-					cout << "generateConditionBlocks: " << endl;
-					//parse the children (properties and conditions) of an undeclared definite parent 
-					*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, currentEntity, sentenceIndex, logicalConditionConjunctionVariables);
+					*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
 				}
+				else
+				{
+					*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+				}
+			
+				//if((currentEntity->grammaticalDefiniteTemp) && !(currentEntity->grammaticalProperNounTemp) && !(currentEntity->NLClocalListVariableHasBeenDeclared) && !(currentEntity->NLCisSingularArgument))
+				//{
+				cout << "generateConditionBlocks: " << currentEntity->entityName << endl;
+				//parse the children (properties and conditions) of an undeclared definite parent 
+				*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, currentEntity, sentenceIndex, logicalConditionConjunctionVariables);
+				//}
 			}
-			#endif
+			#else
 			NLCitem * propertyItem = new NLCitem(currentEntity, NLC_ITEM_TYPE_CLASS);
 
 			//context property item:
@@ -1010,7 +1022,8 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 			else
 			{
 				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
-			}	
+			}			
+			#endif	
 		}
 	}
 

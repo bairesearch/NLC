@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l6b 02-November-2014
+ * Project Version: 1l6c 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1432,12 +1432,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		else
 		{
-			//entity pertains to a future sentence (it is a reference) and its connections will be ignored (because they pertain to a future sentence): generateObjectInitialisationsBasedOnPropertiesAndConditions() will exit with !performedAtLeastOneObjectInitialisation
-			if(!(entity->wasReference))	
-			{
-				cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContext && !assumedToAlreadyHaveBeenDeclared && !wasReference: entity = " << entity->entityName << ", sentenceIndex = " << sentenceIndex << endl;
-				exit(0);
-			}
+			cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContext && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << ", sentenceIndex = " << sentenceIndex << endl;
+			exit(0);
 		}
 	}
 	#endif
@@ -1463,21 +1459,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		else
 		{
-			//entity pertains to a future sentence (it is a reference) and its connections will be ignored (because they pertain to a future sentence): generateObjectInitialisationsBasedOnPropertiesAndConditions() will exit with !performedAtLeastOneObjectInitialisation
-			if(!(entity->wasReference))	
-			{
-				cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: !(entity->NLCcontextGenerated) && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName  << ", sentenceIndex = " << sentenceIndex << endl;
-				exit(0);
-			}
-			
-			/*
-			#ifdef NLC_DEBUG_PARSE_CONTEXT2
-			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 2createCodeBlockForPropertyList: ") + entity->entityName);
-			#endif
-
-			entityClass->context.push_back(parentName);
-			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
-			*/
+			cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: !(entity->NLCcontextGenerated) && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName  << ", sentenceIndex = " << sentenceIndex << endl;
+			exit(0);
 		}
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	}

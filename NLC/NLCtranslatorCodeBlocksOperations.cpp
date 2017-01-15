@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9f 25-January-2015
+ * Project Version: 1n9g 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -382,82 +382,94 @@ bool isPotentialAction(GIAentityNode * actionEntity)
 
 bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool parseConditionParents, bool parseLogicalConditions, GIAentityNode ** parentEntity, bool parseAction)
 {
-	*parentEntity = getParent(currentEntity, sentenceIndex, parseConditionParents);
-
 	bool result = false;
-	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
-	{//is this required?
 	
-		#ifdef NLC_ACTION_CATEGORY_LISTS
-		if(parseAction)
+	*parentEntity = getParent(currentEntity, sentenceIndex, parseConditionParents);
+	
+	bool passSubstanceConceptChecks = true;
+	if(!parseAction)
+	{
+		if((*parentEntity)->isSubstanceConcept)
 		{
-			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-			if(!(currentEntity->NLCcategoryListCreatedTemp))
-			{
-			#endif
-				//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) a new actionSubject[/object]'s "action" category list must be created here such that it can be accessed by [a) createCodeBlockForCategoryList/createCodeBlockForLocalList? and] b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
-				*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//create new action category list
-			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-			}
-			#endif
+			passSubstanceConceptChecks = false;
 		}
-		#endif
-		
-		#ifdef NLC_DEBUG_PARSE_CONTEXT4
-		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(): generateContextBasedOnDeclaredParent; currentEntity: ") + currentEntity->entityName + string(", parentEntity: ") + (*parentEntity)->entityName);
-		#endif
-			
-		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, *parentEntity, sentenceIndex, parseLogicalConditions))
-		{
-			result = true;
-			//eg A chicken's barrel eats the bike.
-			/*
-			NB this code aligns with generateObjectInitialisationsBasedOnPropertiesAndConditions part c)
-			definite children of indefinite parents are illegal here, eg "A chicken has the barrel - eat the bike" [NB ignoring irrelevant case "A chicken has the barrel that eats the bike" because the action is sameReferenceSet and as such will not be parsed by generateActionCodeBlocks()]
-			indefinite children of definite parents are illegal here also, eg "The chicken has a barrel - eat the bike" [NB ignoring irrelevant case "The chicken has a barrel that eats the bike" because the action is sameReferenceSet and as such will not be parsed by generateActionCodeBlocks()]
-			only indefinite children of indefinite parents are legal eg "A chicken's barrel eats the bike"
-			This means that if the parent is indefinite, the child is also, and as such the child's full context does not have to be generated (ie can use createCodeBlockForCategoryList/createCodeBlockForLocalList instead of generateContextForChildEntity)
-			*/
-			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
-			#else
-			*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, currentEntity);
-			#endif
-			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+	}
+	if(passSubstanceConceptChecks)
+	{
+		if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
+		{//is this required?
+
+			#ifdef NLC_ACTION_CATEGORY_LISTS
 			if(parseAction)
 			{
-				currentEntity->NLCcategoryListCreatedTemp = true;
+				#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+				if(!(currentEntity->NLCcategoryListCreatedTemp))
+				{
+				#endif
+					//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) a new actionSubject[/object]'s "action" category list must be created here such that it can be accessed by [a) createCodeBlockForCategoryList/createCodeBlockForLocalList? and] b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
+					*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//create new action category list
+				#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+				}
+				#endif
 			}
 			#endif
-		}
-		else
-		{
-			//eg The chicken's barrel eats the bike.
-			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-			if(currentEntity->NLCcategoryListCreatedTemp && parseAction)
+
+			#ifdef NLC_DEBUG_PARSE_CONTEXT4
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(): generateContextBasedOnDeclaredParent; currentEntity: ") + currentEntity->entityName + string(", parentEntity: ") + (*parentEntity)->entityName);
+			#endif
+
+			if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, *parentEntity, sentenceIndex, parseLogicalConditions))
 			{
-				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//added 1l11a - for "3 chickens that ate a pie row the boat."	//NB NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION is required here instead of NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION in the case that the action subject/object is a child eg "The chickens' blue bears eat a pie." [this example/scenario does not relate to NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES but is still required to be covered] 
+				result = true;
+				//eg A chicken's barrel eats the bike.
+				/*
+				NB this code aligns with generateObjectInitialisationsBasedOnPropertiesAndConditions part c)
+				definite children of indefinite parents are illegal here, eg "A chicken has the barrel - eat the bike" [NB ignoring irrelevant case "A chicken has the barrel that eats the bike" because the action is sameReferenceSet and as such will not be parsed by generateActionCodeBlocks()]
+				indefinite children of definite parents are illegal here also, eg "The chicken has a barrel - eat the bike" [NB ignoring irrelevant case "The chicken has a barrel that eats the bike" because the action is sameReferenceSet and as such will not be parsed by generateActionCodeBlocks()]
+				only indefinite children of indefinite parents are legal eg "A chicken's barrel eats the bike"
+				This means that if the parent is indefinite, the child is also, and as such the child's full context does not have to be generated (ie can use createCodeBlockForCategoryList/createCodeBlockForLocalList instead of generateContextForChildEntity)
+				*/
+				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+				#else
+				*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, currentEntity);
+				#endif
+				#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+				if(parseAction)
+				{
+					currentEntity->NLCcategoryListCreatedTemp = true;
+				}
+				#endif
 			}
 			else
 			{
-			#endif
-				if(generateContextForChildEntity(NULL, currentEntity, currentCodeBlockInTree, sentenceIndex, true))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetDefiniteUniqueParent()
+				//eg The chicken's barrel eats the bike.
+				#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+				if(currentEntity->NLCcategoryListCreatedTemp && parseAction)
 				{
-					result = true;
+					*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//added 1l11a - for "3 chickens that ate a pie row the boat."	//NB NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION is required here instead of NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION in the case that the action subject/object is a child eg "The chickens' blue bears eat a pie." [this example/scenario does not relate to NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES but is still required to be covered] 
 				}
-			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+				else
+				{
+				#endif
+					if(generateContextForChildEntity(NULL, currentEntity, currentCodeBlockInTree, sentenceIndex, true))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetDefiniteUniqueParent()
+					{
+						result = true;
+					}
+				#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+				}
+				#endif
+			}
+
+			#ifdef NLC_ACTION_CATEGORY_LISTS
+			if(parseAction)
+			{
+				*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, currentEntity, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
 			}
 			#endif
 		}
-		
-		#ifdef NLC_ACTION_CATEGORY_LISTS
-		if(parseAction)
-		{
-			*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, currentEntity, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
-		}
-		#endif
 	}
-
+	
 	return result;
 
 }

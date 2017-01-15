@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9a 11-September-2016
+ * Project Version: 1s9b 11-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -590,7 +590,7 @@ void generateCodeCheckParentClassNameNewFunction(int progLang, string* code, int
 		printLine(declareText, level+q, code);
 
 		string negativeModifierStringFind = "";	//if found (positive find)
-		string ifObjectNameEqualsClassNameText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + objectName + progLangObjectReferenceDelimiter[progLang] + progLangClassNameVariableName[progLang] + progLangEqualsTest[progLang] + className + progLangCloseParameterSpace[progLang];	//if(object->name == className)
+		string ifObjectNameEqualsClassNameText = generateCodeClassNameTestText(objectName, className, progLang);	//if(object->name == className)
 			//NB this code could be moved to a new codeblock  (NLC_CODEBLOCK_TYPE_IF_OBJECT_NAME_EQUALS_STRING)
 		printLine(ifObjectNameEqualsClassNameText, level+q, code);
 		printLine(progLangOpenBlock[progLang], level+q, code);

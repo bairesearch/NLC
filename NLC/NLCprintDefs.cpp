@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9a 11-September-2016
+ * Project Version: 1s9b 11-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -503,6 +503,12 @@ string generateCodeEntityNameTestText(NLCitem* param, int progLang)
 	return entityNameTestText;
 }
 #endif
+string generateCodeClassNameTestText(string objectName, string className, int progLang)
+{
+	string ifObjectNameEqualsClassNameText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + objectName + progLangObjectReferenceDelimiter[progLang] + progLangClassNameVariableName[progLang] + progLangEqualsTest[progLang] + progLangStringOpenClose[progLang] + className + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang];	//if(object->name == "className")
+	return ifObjectNameEqualsClassNameText;
+}
+
 
 string generateCodeNewEntity(NLCitem* param, int progLang)
 {

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9a 11-September-2016
+ * Project Version: 1s9b 11-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -365,18 +365,34 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 					{
 						contextFound = true;
 					}
-
-					addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
-
+					
+					//cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;
+					cout << "childSubstance = " << childSubstance->entityName << endl;
+					if(checkParentExists(parentSubstanceConcept, childSubstance->entityName))	//verify that "bananas are fruit"/"Chess is a game."
+					{
+						//cout << "checkParentExists" << endl;
+						*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, childSubstance, parentSubstanceConcept->entityName);	//verify that the substance (eg "the fruit") in its local list has previously been renamed to "banana" (see NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS:generateCodeBlocksAddConnection:GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+						
+						//[substance definition logic #2] eg parsing back through this past sentence from banana to fruit; "the fruit is a yellow banana. [The banana is tasty.]" / "The game is chess. [The game of chess is good.]"
+						addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, true);
+						//cout << "addPropertyToCategoryList" << endl;
+					}
+					else
+					{
+						//[substance definition logic #1] eg parsing back through this past sentence from fruit to banana; "The yellow banana is a fruit. [The yellow fruit is tasty.]"
+						addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
+					}
+					
 					#ifdef NLC_DEBUG_PARSE_CONTEXT2
 					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForStatementsForDefinitionChildren{}"));
 					#endif
-					
+
 					*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 					*lastCodeBlockInTree = *currentCodeBlockInTree;
 					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
 					cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements{}: contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance->entityName << endl;
 					#endif
+
 				#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
 				}
 				#endif	
@@ -1893,6 +1909,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 				#endif
 					//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
 
+					#ifdef NLC_SUPPORT_REDEFINITIONS
 					#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
 					//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
 					if(!isDefiniteEntity(definitionEntity))
@@ -1972,6 +1989,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 					{
 						cout << "checkIfPhraseContainsSubstanceWithDefinitionLink{} warning: isDefiniteEntity{definitionEntity}" << endl;
 					}
+					#endif
 					#endif
 				#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES						
 				}

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17c 30-January-2015
+ * Project Version: 1n17d 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2357,7 +2357,7 @@ NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBloc
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	entityItem->genericObjectName = genericObjectName;
 	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -2379,7 +2379,7 @@ NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCode
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);	
 	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_EXECUTE_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES

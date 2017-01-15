@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12c 22-August-2015
+ * Project Version: 1q12d 22-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -518,13 +518,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			}
 		}
 	}	
-	if(foundParsablePhrase)
-	{
-		#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
-		*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
-		#endif	
-	}
-	else
+	if(!foundParsablePhrase)
 	{
 		#ifndef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !foundParsablePhrase" << endl;		
@@ -655,13 +649,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					}
 				}
 			}	
-			if(foundParsablePhrase)
-			{
-				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
-				*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
-				#endif			
-			}
-			else
+			if(!foundParsablePhrase)
 			{
 				cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !foundParsablePhrase" << endl;		
 				*currentCodeBlockInTree = clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);	//NB "*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;" redundant
@@ -754,9 +742,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 				*currentCodeBlockInTree = createCodeBlockTestDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);			 //if(thedogsvalue == NULL) { cout << "error" << endl;}
 				#else
 				*currentCodeBlockInTree = createCodeBlockCheckDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);		 //if(thedogsvalue != NULL)
-				#endif
-				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
-				*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
 				#endif
 			}
 			else

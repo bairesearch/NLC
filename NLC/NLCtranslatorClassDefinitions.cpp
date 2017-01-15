@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10a 26-January-2015
+ * Project Version: 1n10b 26-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,6 +40,9 @@
 #include "NLCtranslatorClassDefinitions.h"
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 #include "GIAtranslatorDefs.h"
+#endif
+#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
+#include "NLCtranslatorCodeBlocksOperations.h"	//required for getSameReferenceSetDefiniteUniqueParent()
 #endif
 
 bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
@@ -223,26 +226,32 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
 										if(!isDefiniteEntity(entityNode))
 										{
-										#endif
-											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-											if(targetName != className)	//eg do not create a separate class for substance concept definitions
+											bool parseConditionParents = true;	//default value
+											bool foundDefiniteParentEntity = false;
+											GIAentityNode * parentTemp = getSameReferenceSetDefiniteUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents);
+											if(!foundDefiniteParentEntity)
 											{
-											#endif
-												//definitionList
-												bool foundLocalClassDefinition = false;
-												NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-												if(!foundLocalClassDefinition)
+										#endif
+												#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+												if(targetName != className)	//eg do not create a separate class for substance concept definitions
 												{
-													#ifdef NLC_DEBUG
-													//cout << "generateClassHeirarchy(): classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
-													#endif
+												#endif
+													//definitionList
+													bool foundLocalClassDefinition = false;
+													NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+													if(!foundLocalClassDefinition)
+													{
+														#ifdef NLC_DEBUG
+														//cout << "generateClassHeirarchy(): classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
+														#endif
 
-													classDefinition->definitionList.push_back(targetClassDefinition);
+														classDefinition->definitionList.push_back(targetClassDefinition);
+													}
+												#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 												}
-											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-											}
-											#endif
+												#endif
 										#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
+											}
 										}
 										#endif
 									}

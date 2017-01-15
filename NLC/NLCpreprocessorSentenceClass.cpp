@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7d 14-October-2014
+ * Project Version: 1k7e 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -89,6 +89,16 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 	string variableName = replaceAllOccurancesOfString(&(currentPhrase->sentenceContents), STRING_SPACE, "");
 	variableName = replaceAllOccurancesOfString(&variableName, STRING_FULLSTOP, "");
+	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES; i++)
+	{
+		if(variableName[0] == preprocessorMathVariableNameCharactersIllegalAsFirst[i])
+		{
+			variableName = string(NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_REPLACEMENT_CHARACTER) + variableName;
+			cout << "variableName = " << variableName << endl;
+		}
+	}
+	#endif
 	string mathTextNLPparsablePhraseReference = variableName + convertIntToString(sentenceIndexOfFullSentence);
 	#else
 	string mathTextNLPparsablePhraseReference = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->phraseIndex) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence);	
@@ -112,7 +122,7 @@ bool isStringNLPparsableWord(string phrase)
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
-		cout << "isStringNLPparsableWord() error: phrase.length() == 0" << endl;
+		//cout << "isStringNLPparsableWord() error: phrase.length() == 0" << endl;
 	}
 	if(isStringValidVariableName(phrase) || isStringNumber(phrase))
 	{
@@ -145,7 +155,7 @@ bool isStringValidVariableName(string phrase)
 {
 	if(phrase.length() == 0)
 	{
-		cout << "isStringValidVariableName() error: phrase.length() == 0" << endl;
+		//cout << "isStringValidVariableName() error: phrase.length() == 0" << endl;
 	}
 	
 	bool stringIsNLPparsableWord = true;
@@ -189,7 +199,7 @@ bool isStringNumber(string phrase)
 	bool stringIsNumber = true;
 	if(phrase.length() == 0)
 	{
-		cout << "isStringNumber() error: phrase.length() == 0" << endl;
+		//cout << "isStringNumber() error: phrase.length() == 0" << endl;
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{

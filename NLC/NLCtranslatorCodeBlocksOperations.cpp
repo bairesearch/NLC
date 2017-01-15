@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10c 29-September-2016
+ * Project Version: 1u11a 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -263,12 +263,13 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	if(generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement)
 	{
 		generateContextBlocksVariables.logicalConditionStatement = true;
+		/*
 		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
-		//modified 1t2e, 1u7a
+		//modified 1t2e, 1u7a, removed 1u11a (not compatible with indefinite entities that have properties, eg "if the blue bike has a green box")
 		if(foundSubject)
 		{	
 			if(connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)	//redundant
-			{				
+			{		
 				if(foundObject)
 				{
 					bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
@@ -283,6 +284,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			}	
 		}
 		#endif	
+		*/
 	}
 	#endif
 		

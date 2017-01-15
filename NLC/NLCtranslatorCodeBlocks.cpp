@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g10d 12-July-2014
+ * Project Version: 1g11a 13-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,11 +64,13 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		cout << "*** sentenceIndex = " << sentenceIndex << endl;
 		#endif
 
+		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		//Part 1 - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
 		#ifdef NLC_DEBUG
 		cout << "generateCodeBlocksPart1declareLocalVariables:" << endl;
 		#endif
-		declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName);	//added 1g8a 11-July-2014
+		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName);	//added 1g8a 11-July-2014
+		#endif
 		
 		#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 		//Part 2 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
@@ -102,7 +104,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	return result;
 }
 
-bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -118,6 +120,7 @@ bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock *
 					if(!(entity->NLClocalListVariableHasBeenDeclared))
 					{
 						//cout << "pass3: " << entity->entityName << endl;
+						/*
 						bool foundPropertyInSameSentence = false;
 						bool foundConditionInSameSentence = false;
 						for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
@@ -138,26 +141,13 @@ bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock *
 						}
 						if(!foundPropertyInSameSentence && !foundConditionInSameSentence)
 						{
+						*/
 							*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
 							#ifdef NLC_DEBUG
-							cout << "declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
+							cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
 							#endif
 							entity->NLClocalListVariableHasBeenDeclared = true;
-						}
-						/*
-						bool foundProperty = false;
-						bool foundCondition = false;
-						if(!(entity->propertyNodeList->empty()))
-						{
-							foundProperty = true;
-						}
-						if(!(entity->conditionNodeList->empty()))
-						{
-							foundCondition = true;
-						}
-						if(!foundProperty && !foundCondition)
-						{
-							*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
+						/*	
 						}
 						*/
 					}

@@ -18,7 +18,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLClibraryStandardPrint.cpp
+ * File Name: NLClibraryUserPrint.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
  * Project Version: 1q12a 22-August-2015
@@ -26,31 +26,12 @@
  *
  *******************************************************************************/
  
-#include "../NLClibrary/NLClibraryStandardPrint.hpp"
-#include "../NLClibrary/NLClibraryStandardOperations.hpp"
+#ifndef HEADER_NLC_LIBRARY_USER_PRINT
+#define HEADER_NLC_LIBRARY_USER_PRINT
 
-void printFunction(vector<NLCgenericEntityClass*>& printClassList, vector<NLCgenericEntityClass*>& printObjectClassList)
-{
-	for(vector<NLCgenericEntityClass*>::iterator iter1 = printObjectClassList.begin(); iter1 < printObjectClassList.end(); iter1++) 
-	{
-		NLCgenericEntityClass* printObject = *iter1;
-		cout << printObject->name << endl;	//print the entity name
-		if(!std::isnan(printObject->value))
-		{
-			cout << printObject->value << endl;	//print the entity value
-		}
-				
-		for(unordered_map<string, vector<NLCgenericEntityClass*>*>::iterator iter1 = printObject->propertyLists.begin(); iter1 != printObject->propertyLists.end(); iter1++) 
-		{
-			vector<NLCgenericEntityClass*>* propertyList = iter1->second;
-			printFunction(printClassList, *propertyList);
-		}
-	}
-}
+#include "../NLClibrary/NLClibraryGenericEntityClass.hpp"
 
-//mathText function (macro)
-void print(double value)
-{
-	cout << value << endl;	//print the mathText value
-}
+void printFunction(vector<NLCgenericEntityClass*>& printClassList, vector<NLCgenericEntityClass*>& printObjectClassList);
+void print(double value);
 
+#endif

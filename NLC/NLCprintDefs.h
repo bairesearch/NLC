@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11d 21-August-2015
+ * Project Version: 1q12a 22-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -129,9 +129,10 @@ static string progLangClassConstructorDestructorAppend[NLC_NUMBER_OF_PROGRAMMING
 static string progLangClassDestructorPrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"~", "~", "~", "~", "~", "~", "~"};
 static string progLangClassListTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"vector<", "vector<", "vector<", "vector<", "vector<", "vector<", "vector<"};
 static string progLangClassListTypeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
-static string progLangClassList2DTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<"};
-static string progLangClassList2DTypeMiddle[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {", ", ", ", ", ", ", ", ", ", ", ", ", "};
-static string progLangClassList2DTypeConditionTypeVar[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string", "string", "string", "string", "string", "string", "string"};
+static string progLangClassList2DTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"vector<", "vector<", "vector<", "vector<", "vector<", "vector<", "vector<"};
+static string progLangClassList2DTypeConditionTypeStringVar[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string", "string", "string", "string", "string", "string", "string"};
+static string progLangClassList2DMapTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<"};
+static string progLangClassList2DMapTypeMiddle[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {", ", ", ", ", ", ", ", ", ", ", ", ", "};
 static string progLangClassPairTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"pair<", "pair<", "pair<", "pair<", "pair<", "pair<", "pair<"};
 static string progLangClassPairTypeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 
@@ -212,7 +213,11 @@ static string progLangForIndexPart5[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"++)
 static string progLangNewObject[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ", "new ", "new ", "new ", "new ", "new ", "new "};
 static string progLangAddEntityToList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddProperty[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
+#ifdef NLC_CONDITION_LISTS_VECTOR
+static string progLangAddCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
+#else
 static string progLangAddCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
+#endif
 static string progLangHasEntity[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
 static string progLangHasCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
 
@@ -305,6 +310,7 @@ static string progLangAddAllList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert
 static string progLangAddAllListKey1open[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"[", "[", "[", "[", "[", "[", "["};
 static string progLangAddAllListKey1close[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"]", "]", "]", "]", "]", "]", "]"};
 static string progLangMakePair[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair"};
+static string progLangNewPair[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new pair", "new pair", "new pair", "new pair", "new pair", "new pair", "new pair"};
 #define NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE "string"
 static string progLangReinterpretCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<"};
 static string progLangReinterpretCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
@@ -360,6 +366,9 @@ string generateGIAconditionSubjectListName();
 #else
 string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
+#ifdef NLC_CONDITION_LISTS_VECTOR
+string generateCodeConditionNewPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
+#endif
 string generateCodeConditionPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
 string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string>* conditionContext, int progLang);
 #endif
@@ -391,7 +400,11 @@ string generateCodeConditionListDefinitionText(NLCitem* conditionParam, NLCitem*
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
 		string generateCodeConditionListDefinitionTypeTextCompact(string conditionClassName, string conditionObjectClassName, int progLang);
+			#ifdef NLC_CONDITION_LISTS_VECTOR
+			string generateCodeVectorPairListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
+			#else
 			string generateCodeMapsListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
+			#endif
 	#ifdef NLC_NONOO
 	string generateCodeConditionListDefinitionTypeTextNonOO(int progLang);
 	#else
@@ -419,7 +432,7 @@ string generateStaticCastOfEntity(string entityName, string castClassName, int p
 string generateStaticCastOfNewEntity(string entityClassName, string castClassName, int progLang);
 string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
 string generateReinterpretCastOfVectorReference(string vectorName, string castClassName, int progLang);	//CHECKTHIS
-string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang);
+string generateReinterpretCastOfConditionList(string vectorName, string castClassName1, string castClassName2, int progLang);
 
 //this code is not currently used;
 string generateCodeGenericStringMapListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
@@ -493,7 +506,12 @@ string generateCodePointerValueText(NLCitem* param1, int progLang);
 string generateCodePointerValueText(string entityName, int progLang);
 #endif
 string generatePointerText(string entityName, int progLang);
-
+string generatePointerTypeText(string entityName, int progLang);
 string generateCodeListPointer(string list, int progLang);
+
+string generateCodeIterReference(string iterIndexString, int progLang);
+string generateCodeIterReferenceConditionObject(string iterIndexString, int progLang);
+string generateCodeIterName(string iterIndexString, int progLang);
+
 
 #endif

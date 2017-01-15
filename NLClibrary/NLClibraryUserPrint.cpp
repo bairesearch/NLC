@@ -18,7 +18,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLClibraryStandardPrint.cpp
+ * File Name: NLClibraryUserPrint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
  * Project Version: 1q12a 22-August-2015
@@ -26,8 +26,7 @@
  *
  *******************************************************************************/
  
-#include "../NLClibrary/NLClibraryStandardPrint.hpp"
-#include "../NLClibrary/NLClibraryStandardOperations.hpp"
+#include "../NLClibrary/NLClibraryUserPrint.hpp"
 
 void printFunction(vector<NLCgenericEntityClass*>& printClassList, vector<NLCgenericEntityClass*>& printObjectClassList)
 {

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11d 21-August-2015
+ * Project Version: 1q12a 22-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
-#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
+//#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
 #define NLC_USE_LIBRARY_USER
 	
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -52,6 +52,7 @@
 //#define NLC_DISABLE_1q_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+	#define NLC_CONDITION_LISTS_VECTOR	//tested 1q12a (but disabled since)	//use vector<pair<E1*,E2*>> instead of unordered_map<E1*,E2*> for conditionLists: not currently supported by NLC standard library
 	#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
 		//#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//has not yet been defined
 			#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST	//1q11c
@@ -128,7 +129,7 @@
 		#endif
 	//#endif
 	//#ifdef NLC_USE_LIBRARY	//has not been defined yet
-		#define NLC_USE_LIBRARY_BASE_EXTENDED	//1p2a	//simplifies generated code	//requires NLC_USE_LIBRARY	//NB NLC_USE_LIBRARY_BASE_EXTENDED does not support NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+		#define NLC_USE_LIBRARY_BASE_EXTENDED	//1p2a	//simplifies generated code	//requires NLC_USE_LIBRARY	//NB NLC_USE_LIBRARY_BASE_EXTENDED does not support NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING
 		#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_PROPERTY "addProperty"
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION "addCondition"
@@ -800,7 +801,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 			#define NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS	//added 1k5c
 		#endif
-		//#define NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS	//certified 1k3a	//NB NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS/unorderedMap<sting, entity*> is not an appropriate data structure to store conditionLists, as there may be more than one condition of a given type; therefore are currently using unorderedMap<entity*, entity*>
+		//#define NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING	//certified 1k3a	//NB NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING/unorderedMap<sting, entity*> is not an appropriate data structure to store conditionLists, as there may be more than one condition of a given type; therefore are currently using unorderedMap<entity*, entity*>
 	#endif
 //#endif
 

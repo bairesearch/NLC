@@ -261,7 +261,7 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*
 			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
 		}
 		#endif
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OBJECT)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OBJECT)	//is this used?
 		{
 			if(*functionArguments != "")
 			{

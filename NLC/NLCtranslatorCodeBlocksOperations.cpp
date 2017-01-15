@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l13a 07-November-2014
+ * Project Version: 1l13b 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -355,6 +355,10 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 		#endif
 		#endif
 		
+		#ifdef NLC_DEBUG_PARSE_CONTEXT4
+		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(): generateContextBasedOnDeclaredParent; currentEntity: ") + currentEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
+		#endif
+			
 		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, parseLogicalConditions))
 		{
 			result = true;
@@ -1966,11 +1970,14 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 	{
 		if(!generatedContextForChild)
 		{
+			#ifdef NLC_DEBUG
+			cout << "generateContextForChildEntity(): generateContextBasedOnDeclaredParent: childEntity = " << childEntity->entityName << endl;
+			#endif
+			#ifdef NLC_DEBUG_PARSE_CONTEXT4
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): generateContextBasedOnDeclaredParent(childEntity): ") + childEntity->entityName);
+			#endif
 			if(generateContextBasedOnDeclaredParent(childEntity, currentCodeBlockInTree, topLevel, entity, sentenceIndex))
 			{
-				#ifdef NLC_DEBUG
-				cout << "generateContextForChildEntity(): generateContextBasedOnDeclaredParent: childEntity = " << childEntity->entityName << endl;
-				#endif
 				/*for cases in which GIA advanced referencing has referenced entities whose parent was defined in a previous sentence;
 				eg 1 Tom's boat is red. The chicken rowed the red boat.
 				eg 2 Tom's boat is red. The red boat is new
@@ -2424,8 +2431,9 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode * entity, NLCcodeblock *
 							entity->NLCcontextGenerated = true;
 							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;	//CHECKTHIS
-							createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(entity), entity, sentenceIndex, &generateContextBlocksVariables);	//added 1l13a	//or generateContextBlocksSimple(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION)
-						
+							generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);		//added 1l13b
+							//createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(entity), entity, sentenceIndex, &generateContextBlocksVariables);	//added 1l13a	//or generateContextBlocksSimple(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION)
+	
 							/*//alternative implementation not possible, because of "Tom's boat is red. The chicken rowed the red boat."
 							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;	//CHECKTHIS

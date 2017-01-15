@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6c 20-August-2015
+ * Project Version: 1q6d 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -203,16 +203,14 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							classTitleText = classTitleText + progLangClassInheritanceHeader[progLang] + targetName;
 
 							#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-							string classDefinitionParentDefinitionFileName = "";
 							if(targetName == generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE))
 							{
-								classDefinitionParentDefinitionFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+								printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReferenceLibrary(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME, progLang);
 							}
 							else
 							{
-								classDefinitionParentDefinitionFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + targetName + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+								printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReferenceGenerated(targetName, progLang);
 							}
-							printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReference(classDefinitionParentDefinitionFileName, progLang);
 							#endif
 						}
 
@@ -558,9 +556,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						string printedClassDefinitionSourceFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
 
 						string printedClassDefinitionTextCPPheader = "";
-						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);		//eg #include "NLCgeneratedmoveClass.hpp"
+						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);		//eg #include "NLCgeneratedmoveClass.hpp"
 						#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
-						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReference(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME, progLang);	//eg #include "NLClibrary.hpp"
+						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReferenceLibrary(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME, progLang);	//eg #include "NLClibrary.hpp"
 						#endif
 						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + CHAR_NEWLINE;
 						printedClassDefinitionSourceText = printedClassDefinitionTextCPPheader + printedClassDefinitionSourceText;
@@ -597,23 +595,23 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 	string NLCgeneratedCodeSource = "";
 	string NLCgeneratedCodeSourceFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgenerated.cpp
-	string NLCgeneratedCodeHeaderFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgenerated.h	
-	NLCgeneratedCodeSource = NLCgeneratedCodeSource + generateCodeHashIncludeReference(NLCgeneratedCodeHeaderFileName, progLang) + CHAR_NEWLINE;
+	string NLCgeneratedCodeHeaderFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgenerated.hpp	
+	NLCgeneratedCodeSource = NLCgeneratedCodeSource + generateCodeHashIncludeReferenceGenerated(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND_BASE, progLang) + CHAR_NEWLINE;	//NLCgenerated.hpp
 	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
 	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
 	writeStringToFile(NLCgeneratedCodeSourceFileName, &NLCgeneratedCodeSource);
 	
 	string NLCgeneratedCodeHeader = "";
 	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHeaderCheckOpen(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_PREPEND);
-	string NLClibraryGenericClassHPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
-	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReference(NLClibraryGenericClassHPPfileName, progLang);
+	string NLClibraryGenericClassHeaderfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReferenceLibrary(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME, progLang);
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
 		if(classDefinition->printed)
 		{
-			string NLCgeneratedCodeHPPIncludedClassDefinitionHPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
-			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReference(NLCgeneratedCodeHPPIncludedClassDefinitionHPPfileName, progLang);	//eg #include "NLCgeneratedmoveClass.hpp"
+			string NLCgeneratedCodeHPPIncludedClassDefinitionHeaderfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);	//eg #include "NLCgeneratedmoveClass.hpp"
 		}
 	}	
 	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + CHAR_NEWLINE;
@@ -662,6 +660,18 @@ string generateCodeHeaderCheckClose()
 	return headerCheckClose;
 }
 
+string generateCodeHashIncludeReferenceGenerated(string className, int progLang)
+{
+	string includeFileName = string(NLC_USE_LIBRARY_GENERATED_FOLDER) + string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
+	return hashIncludeReference;
+}
+string generateCodeHashIncludeReferenceLibrary(string libraryFileNameWithoutExtension, int progLang)
+{
+	string includeFileName = string(NLC_USE_LIBRARY_LIBRARY_FOLDER) + libraryFileNameWithoutExtension + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
+	return hashIncludeReference;
+}
 string generateCodeHashIncludeReference(string includeFileName, int progLang)
 {
 	string hashIncludeReference = progLangIncludeStart[progLang] + includeFileName + progLangIncludeEnd[progLang] + CHAR_NEWLINE;

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6c 20-August-2015
+ * Project Version: 1q6d 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,7 +42,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 		#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 		string generateCodeHeaderCheckOpen(string headerCheckOpenDefinition);
 		string generateCodeHeaderCheckClose();
-		string generateCodeHashIncludeReference(string includeFileName, int progLang);
+		string generateCodeHashIncludeReferenceGenerated(string className, int progLang);
+		string generateCodeHashIncludeReferenceLibrary(string libraryFileNameWithoutExtension, int progLang);
+			string generateCodeHashIncludeReference(string includeFileName, int progLang);
 		string generateForwardDeclaration(string className, int progLang);
 		void addToForwardDeclarationList(vector<string>* printedClassDefinitionTextHeaderTopForwardDeclarationList, string className);
 		#endif

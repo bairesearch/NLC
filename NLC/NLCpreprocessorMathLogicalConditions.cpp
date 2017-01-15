@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7c 14-October-2014
+ * Project Version: 1k7d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -310,16 +310,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 				lastPhraseBeforeLogicalConditionCommand->next = firstPhraseInLogicalConditionCommand;
 				
 				#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-				bool logicalConditionCommandIsNLCparsableWord = false; 
+				bool logicalConditionCommandIsValidVariableName = false; 
 				string logicalConditionCommandWithoutFullStop = "";
 				if(mathTextOfLogicalConditionCommand[mathTextOfLogicalConditionCommand.length()-1] == CHAR_FULLSTOP)	//only process logical condition commands with fullstop as potential single word actions (ie non mathtext)
 				{
 					logicalConditionCommandWithoutFullStop = mathTextOfLogicalConditionCommand.substr(0, mathTextOfLogicalConditionCommand.length()-1);
-					logicalConditionCommandIsNLCparsableWord = isStringNLPparsableWord(logicalConditionCommandWithoutFullStop);
+					logicalConditionCommandIsValidVariableName = isStringValidVariableName(logicalConditionCommandWithoutFullStop);
 					//cout << "splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(): logical condition command CHAR_FULLSTOP detected" << endl;
 					//cout << "logicalConditionCommandWithoutFullStop = " << logicalConditionCommandWithoutFullStop << endl;
 				}
-				if(logicalConditionCommandIsNLCparsableWord)
+				if(logicalConditionCommandIsValidVariableName)
 				{
 					#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 					string actionName = logicalConditionCommandWithoutFullStop;
@@ -939,23 +939,14 @@ bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentenc
 				if((parsablePhraseReferenceWithAppendedFullstop == mathTextInCommand) && (conjunctionIndex == 0) && !stillConjunctionsToFind)	//check the "(parsablePhraseReference == mathTextInCommand)" exact test is sufficient (or if white space can be allowed either side of test)
 				{
 					//no mathText detected
-					//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 					cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): no mathText detected in subcommand: " << mathTextInCommand << endl;
-					//#endif
+					#endif
 					
 					/* //this implementation is not currently possible because NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS == 2
 					#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 					string sentenceContents = currentPhraseInCommand->sentenceContents;
-					bool whiteSpaceDetectedInSentence = false;
-					for(int i=0; i<sentenceContents.length(); i++)
-					{
-						char c = sentenceContents[i];
-						if(isWhiteSpace(c))
-						{
-							whiteSpaceDetectedInSentence = true;
-						}
-					}
-					if(!whiteSpaceDetectedInSentence)
+					if(isStringValidVariableName(sentenceContents))
 					{
 						#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 						string actionName = sentenceContents.substr(0, sentenceContents.length()-1);

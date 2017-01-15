@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7c 14-October-2014
+ * Project Version: 1k7d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -106,15 +106,50 @@ int generateDummyNumericalValue(int predefinedVariableIndex)
 
 #endif
 
+//isStringNLPparsableWord: either variable name or all numbers
 bool isStringNLPparsableWord(string phrase)
 {
+	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
 		cout << "isStringNLPparsableWord() error: phrase.length() == 0" << endl;
 	}
+	if(isStringValidVariableName(phrase) || isStringNumber(phrase))
+	{
+		stringIsNLPparsableWord = true;
+	}
+	
+	#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+	//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;
+	for(int i=0; i<phrase.length(); i++)
+	{
+		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
+		{
+			NLPparsableMandatoryCharacterFoundInCurrentWord = true;
+		}
+	}
+	if(!NLPparsableMandatoryCharacterFoundInCurrentWord)
+	{
+		//cout << "!NLPparsableMandatoryCharacterFoundInCurrentWord" << endl;
+		stringIsNLPparsableWord = false;
+	}
+	#endif
+	
+	//cout << "isStringNLPparsableWord: " << phrase << " = " << stringIsNLPparsableWord << endl;
+	return stringIsNLPparsableWord;
+}
+
+//isStringValidVariableName: alphanumeric string but can't start with number 
+bool isStringValidVariableName(string phrase)
+{
+	if(phrase.length() == 0)
+	{
+		cout << "isStringValidVariableName() error: phrase.length() == 0" << endl;
+	}
 	
 	bool stringIsNLPparsableWord = true;
-	bool mandatoryCharacterFoundInCurrentWord = false;
+	bool variableNameMandatoryCharacterFoundInCurrentWord = false;
 	for(int i=0; i<phrase.length(); i++)
 	{
 		char c = phrase[i];
@@ -126,30 +161,48 @@ bool isStringNLPparsableWord(string phrase)
 			//cout << "phrase = " << phrase << endl;
 			//cout << "i = " << i << endl;
 		}	
-		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
+		if(charInCharArray(c, preprocessorMathVariableNameCharactersMandatory, NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
-			mandatoryCharacterFoundInCurrentWord = true;
+			variableNameMandatoryCharacterFoundInCurrentWord = true;
 		}
 	}
-	if(!mandatoryCharacterFoundInCurrentWord)
+	if(!variableNameMandatoryCharacterFoundInCurrentWord)
 	{
-		//cout << "!mandatoryCharacterFoundInCurrentWord" << endl;
+		//cout << "!variableNameMandatoryCharacterFoundInCurrentWord" << endl;
 		stringIsNLPparsableWord = false;
 	}
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
-	bool illegalFirstWordCharacterFound = charInCharArray(phrase[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
+	bool illegalFirstWordCharacterFound = charInCharArray(phrase[0], preprocessorMathVariableNameCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
 	if(illegalFirstWordCharacterFound)
 	{
-		//cout << "illegalFirstWordCharacterFound" << endl;
 		stringIsNLPparsableWord = false;
 	}
 	#endif
-	//cout << "phrase = " << phrase << endl;
-	//cout << "stringIsNLPparsableWord = " << stringIsNLPparsableWord << endl;
-	
+
+	//cout << "isStringValidVariableName: " << phrase << " = " << stringIsNLPparsableWord << endl;
 	return stringIsNLPparsableWord;
 }
 
+//all numbers
+bool isStringNumber(string phrase)
+{
+	bool stringIsNumber = true;
+	if(phrase.length() == 0)
+	{
+		cout << "isStringNumber() error: phrase.length() == 0" << endl;
+	}
+	for(int i=0; i<phrase.length(); i++)
+	{
+		char c = phrase[i];	
+		bool numberFound = charInCharArray(c, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
+		if(!numberFound)
+		{
+			stringIsNumber = false;
+		}
+	}
+	//cout << "isStringNumber: " << phrase << " = " << stringIsNumber << endl;
+	return stringIsNumber;
+}
 
 
 

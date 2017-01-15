@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7c 14-October-2014
+ * Project Version: 1k7d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -338,16 +338,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						else
 						{
 							#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-							bool whiteSpaceDetectedInSentence = false;
-							for(int i=0; i<sentenceContents.length(); i++)
-							{
-								char c = sentenceContents[i];
-								if(isWhiteSpace(c))
-								{
-									whiteSpaceDetectedInSentence = true;
-								}
-							}
-							if(!whiteSpaceDetectedInSentence)
+							if(isStringValidVariableName(sentenceContents))
 							{
 								#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 								string actionName = sentenceContents.substr(0, sentenceContents.length()-1);

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7c 14-October-2014
+ * Project Version: 1k7d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -98,6 +98,7 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineCon
 bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList)
 {
 	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " << *sentenceIndex << endl;
+	bool result = true;
 
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
@@ -105,16 +106,6 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					
 	int sentenceIndexOfFullSentence = *sentenceIndex;
 	NLCsentence * firstNLCsentenceInFullSentence = *currentNLCsentenceInList;
-	
-	bool result = true;
-	int mathTextNLPparsablePhraseIndex = 0;
-	//NLP parsable phrase is taken to be at least 2 consecutive words delimited by a space ie, [a-zA-Z0-9_] [a-zA-Z0-9_]
-	int wordIndex = 0;
-	int phraseIndex = 0;
-	string currentWord = "";
-	string currentPhrase = "";
-	string mathText = "";
-	bool mandatoryCharacterFoundInCurrentWord = false;
 	
 	int startIndex = 0;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -196,12 +187,20 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	}		
 	#endif
 
+	int mathTextNLPparsablePhraseIndex = 0;
+	//NLP parsable phrase is taken to be at least 2 consecutive words delimited by a space ie, [a-zA-Z0-9_] [a-zA-Z0-9_]
+	int wordIndex = 0;
+	int phraseIndex = 0;
+	string currentWord = "";
+	string currentPhrase = "";
+	string mathText = "";
+	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;	//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+	bool parsingWhiteSpace = false;	//added 1h5b 30-July-2014
+	
 	//cout << "lineContents = " << *lineContents << endl;
 	//cout << "lineContents->length() = " << lineContents->length() << endl;
 	//cout << "lineContents[lineContents->length()-1] = " << (*lineContents)[lineContents->length()-1] << endl;
 	//exit(0);
-	
-	bool parsingWhiteSpace = false;	//added 1h5b 30-July-2014
 	
 	bool finalWordInSentenceFoundAndIsLegal = false;
 	for(int i=startIndex; i<lineContents->length(); i++)
@@ -225,14 +224,20 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		#endif
 		
 		bool legalWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
+		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+		if(legalWordCharacterFound)
+		{
+			NLPparsableMandatoryCharacterFoundInCurrentWord = true;
+		}
+		#else
 		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
-			mandatoryCharacterFoundInCurrentWord = true;
+			NLPparsableMandatoryCharacterFoundInCurrentWord = true;
 		}
+		#endif
 		finalWordInSentenceFoundAndIsLegal = false;
-		if(legalWordCharacterFound && (i == lineContents->length()-1) && mandatoryCharacterFoundInCurrentWord)
+		if(legalWordCharacterFound && (i == lineContents->length()-1) && NLPparsableMandatoryCharacterFoundInCurrentWord)
 		{
-
 			if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
 			{
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
@@ -241,8 +246,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				//add final word in sentence to phrase if it is legal
 				currentWord = currentWord + c;
 				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
-				bool illegalFirstWordCharacterFound = charInCharArray(currentWord[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
-				if(!illegalFirstWordCharacterFound)
+				if(isStringNLPparsableWord(currentWord))
 				{
 				#endif
 					finalWordInSentenceFoundAndIsLegal = true;
@@ -259,21 +263,20 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 			//cout << "!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal): " << c << endl;
 			
-			#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
-			if(mandatoryCharacterFoundInCurrentWord)
+			//current word checks:
+			#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+			//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+			if(NLPparsableMandatoryCharacterFoundInCurrentWord)
 			{
-				bool illegalFirstWordCharacterFound = charInCharArray(currentWord[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
-				if(illegalFirstWordCharacterFound)
+			#endif
+				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
+				if(!isStringNLPparsableWord(currentWord))
 				{
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases(): user input error - variables names cannot start with numbers: " << currentWord << endl;
 					exit(0);
 				}
-			}
-			#endif
-				
-			//current word checks:
-			if(mandatoryCharacterFoundInCurrentWord)
-			{
+				#endif
+			
 				if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 				{
 					if(i == currentWord.length())
@@ -281,9 +284,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 						if(textInTextArray(currentWord, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
 						{
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-							cout << "logical condition operator detected: mandatoryCharacterFoundInCurrentWord = false" << endl;
+							cout << "logical condition operator detected: NLPparsableMandatoryCharacterFoundInCurrentWord = false" << endl;
 							#endif
-							mandatoryCharacterFoundInCurrentWord = false;
+							NLPparsableMandatoryCharacterFoundInCurrentWord = false;
 						}
 					}
 
@@ -308,7 +311,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 								//cout << "new currentPhrase = " << currentPhrase << endl;
 
 								newlyDeclaredVariable = currentWord;
-								mandatoryCharacterFoundInCurrentWord = false;
+								NLPparsableMandatoryCharacterFoundInCurrentWord = false;
 								(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);
 							}
 							else
@@ -327,7 +330,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 										cout << "explicit mathText variable type detected for currentWord: " << preprocessorMathNaturalLanguageVariables[i2] << " " << currentWord << endl;
 										//#endif									
 										newlyDeclaredVariable = currentWord;
-										mandatoryCharacterFoundInCurrentWord = false;
+										NLPparsableMandatoryCharacterFoundInCurrentWord = false;
 										(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);
 									}
 								}
@@ -336,9 +339,11 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					}
 				}
 				#endif
-			}			
+			#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+			}	
+			#endif		
 						
-			if(mandatoryCharacterFoundInCurrentWord)
+			if(NLPparsableMandatoryCharacterFoundInCurrentWord)
 			{
 
 				if(!parsingWhiteSpace)
@@ -353,7 +358,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					}				
 				}
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-				cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
+				cout << "NLPparsableMandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
 				cout << "wordDelimiterCharacterFound = " << wordDelimiterCharacterFound << endl;
 				cout << "wordIndex = " << wordIndex << endl;
 				#endif
@@ -364,7 +369,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				
 				if(!wordDelimiterCharacterFound || finalWordInSentenceFoundAndIsLegal)
 				{
-					mandatoryCharacterFoundInCurrentWord = false;
+					NLPparsableMandatoryCharacterFoundInCurrentWord = false;
 
 					//currentWord is either a mathText variable name or part of an NLP parsable phrase (c is a space or comma)
 					if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
@@ -443,7 +448,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 			}
 			else
 			{
-				//currentWord is disgarded as math (eg numbers) in mathText as it does not contain a mandatory character
+				//currentWord is disgarded as math (OLD: eg numbers) in mathText as it does not contain a mandatory character
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH	
 				//cout << "currentWord is disgarded as math (eg numbers) in mathText as it does not contain a mandatory character" << endl;
 				#endif

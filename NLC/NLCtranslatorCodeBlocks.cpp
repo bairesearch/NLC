@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n19a 01-February-2015
+ * Project Version: 1n19b 01-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -811,6 +811,8 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 							#endif
 								//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
 
+								#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+								//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
 								if(!isDefiniteEntity(definitionEntity))
 								{
 									bool foundDefiniteParentOfEntity = false;
@@ -819,6 +821,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 									GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
 									if(isDefiniteEntity(entity) || foundDefiniteParentOfEntity)
 									{
+								#endif
 										if(entity->entityName != definitionEntity->entityName)
 										{//ignore substanceConcept definitions for for entities of same name
 											
@@ -857,6 +860,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 											*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
 
 										}
+								#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
 									}
 									else
 									{
@@ -867,6 +871,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 								{
 									cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: isDefiniteEntity(definitionEntity))" << endl;
 								}
+								#endif
 							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES						
 							}
 							#endif

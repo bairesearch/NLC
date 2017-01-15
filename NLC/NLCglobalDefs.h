@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n19a 01-February-2015
+ * Project Version: 1n19b 01-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,9 +54,10 @@
 	#endif
 	#define NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS	//1n7a
 	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES	//1n5e
-	#define NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN	//required for NLC_SUPPORT_REDEFINITIONS and prevents circular definition; eg Chickens are animals. An animal is happy. The animal is a blue chicken.
 	#define NLC_SUPPORT_REDEFINITIONS		//1n5d
 	#ifdef NLC_SUPPORT_REDEFINITIONS
+		#define NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES	//1n19b	//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts
+		//#define NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS	//1n10b/1n19c	//prevents circular definition; eg Chickens are animals. An animal is happy. The animal is a blue chicken.
 		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC	//1n5b
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
 			#define NLC_CLASS_PARENT_CLASS_LIST_NAME "parentClassList"

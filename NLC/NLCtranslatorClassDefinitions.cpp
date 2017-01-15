@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n19a 01-February-2015
+ * Project Version: 1n19b 01-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,7 +36,7 @@
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 #include "GIAtranslatorDefs.h"
 #endif
-#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
+#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 #include "NLCtranslatorCodeBlocksOperations.h"	//required for getSameReferenceSetUniqueParent()
 #endif
 
@@ -218,7 +218,10 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 									}
 									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 									{//declare inheritance
-										#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
+										#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
+										#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+										//chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
+										bool indefiniteChild = false;
 										if(!isDefiniteEntity(entityNode))
 										{
 											bool parseConditionParents = true;	//default value
@@ -227,27 +230,39 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 											GIAentityNode* parentTemp = getSameReferenceSetUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents, checkIsDefinite);
 											if(!foundDefiniteParentEntity)
 											{
-										#endif
-												#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-												if(targetName != className)	//eg do not create a separate class for substance concept definitions
-												{
-												#endif
-													//definitionList
-													bool foundLocalClassDefinition = false;
-													NLCclassDefinition* localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-													if(!foundLocalClassDefinition)
-													{
-														#ifdef NLC_DEBUG
-														//cout << "generateClassHeirarchy(): classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
-														#endif
-
-														classDefinition->definitionList.push_back(targetClassDefinition);
-													}
-												#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-												}
-												#endif
-										#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
+												indefiniteChild = true;
 											}
+										}
+										#endif
+										bool parentClassIsNotChildOfTheChildClass = true;
+										
+										
+										#ifdef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+										if(parentClassIsNotChildOfTheChildClass)
+										#else
+										if(indefiniteChild || parentClassIsNotChildOfTheChildClass)
+										#endif
+										{	
+										#endif
+											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+											if(targetName != className)	//eg do not create a separate class for substance concept definitions
+											{
+											#endif
+												//definitionList
+												bool foundLocalClassDefinition = false;
+												NLCclassDefinition* localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+												if(!foundLocalClassDefinition)
+												{
+													#ifdef NLC_DEBUG
+													//cout << "generateClassHeirarchy(): classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
+													#endif
+
+													classDefinition->definitionList.push_back(targetClassDefinition);
+												}
+											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+											}
+											#endif
+										#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 										}
 										#endif
 									}

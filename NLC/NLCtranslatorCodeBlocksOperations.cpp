@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s2a 04-September-2016
+ * Project Version: 1s3a 05-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1258,7 +1258,7 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 	//cout << "createCodeBlocksCreateNewLocalListVariable: " << entity->entityName << endl;
 	#endif
 	
-	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+	#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS
 	//Part 2b: generate object initialisations based on substance concepts (class inheritance)
 	generateObjectInitialisationsBasedOnSubstanceConcepts(entity, entity, currentCodeBlockInTree, sentenceIndex, true);
 	#endif
@@ -1775,7 +1775,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 								}
 								
 								/*
-								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+								#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS
 								//7. generate object initialisations based on substance concepts (class inheritance)
 								generateObjectInitialisationsBasedOnSubstanceConcepts(definitionEntity, definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
 								#endif
@@ -2442,14 +2442,14 @@ GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parent
 
 
 
-#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS
 void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* targetEntity, GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, bool newlyDeclaredEntityInCategoryList)
 {
 	#ifdef NLC_DEBUG
 	//cout << "generateObjectInitialisationsBasedOnSubstanceConcepts{}: targetEntity = " << targetEntity->entityName << ", entity = " << entity->entityName << endl;
 	#endif
 	
-	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS_PARSE_CONCEPT_DEFINITIONS
+	#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_DEFINITIONS
 	if(targetEntity != entity)
 	{
 		generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(targetEntity, entity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);
@@ -2490,12 +2490,13 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* target
 			//cout << "\tgenerateObjectInitialisationsBasedOnSubstanceConcepts{}: targetEntity = " << targetEntity->entityName << ", definitionEntity = " << definitionEntity->entityName << endl;
 			#endif
 			
-			#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS_PARSE_CONCEPT_DEFINITIONS
+			#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_DEFINITIONS
 			generateObjectInitialisationsBasedOnSubstanceConcepts(targetEntity, definitionEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList);
 			#else
 			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(targetEntity, definitionEntity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);
 			#endif
 			
+			#ifndef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_REMOVE_REDUNDANT_CODE
 			//added 1q8b
 			//DOING: check whether targetEntity needs to be replaced with entity
 			if(definitionEntity->entityName != targetEntity->entityName)
@@ -2513,9 +2514,9 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* target
 				{
 					NLCcodeblock* firstCodeBlockInSection = *currentCodeBlockInTree;
 
-					#ifdef NLC_DEBUG
+					//#ifdef NLC_DEBUG
 					cout << "generateObjectInitialisationsBasedOnSubstanceConcepts{}: add targetEntity to definition local list; definitionEntity->entityName = " << definitionEntity->entityName << ", targetEntity->entityName = " << targetEntity->entityName << endl;
-					#endif
+					//#endif
 	
 					*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, targetEntity);
 
@@ -2524,6 +2525,7 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* target
 					*currentCodeBlockInTree = firstCodeBlockInSection->next;				
 				}
 			}
+			#endif
 		}
 		//}
 	}

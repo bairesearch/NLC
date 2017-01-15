@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g9a 11-July-2014
+ * Project Version: 1g10a 12-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,7 +74,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 					GIAentityNode * targetEntity = connection->entity;
 
 					#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
-					if(!(connection->NLCconditionLogicalOperations) && !(targetEntity->NLCconditionLogicalOperations))
+					if(!(connection->NLCparsedForlogicalConditionOperations) && !(targetEntity->NLCparsedForlogicalConditionOperations))
 					{
 					#endif
 						//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;

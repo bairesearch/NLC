@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g9a 11-July-2014
+ * Project Version: 1g10a 12-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,6 +49,7 @@
 
 #define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS		//1f1a+ if statement support
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	#define NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE	//this is a more restricted implementation but is faster. It still requires modifications of GIA (it requires entityIndex information to be stored in GIAdatabase.cpp or GIAxmlConversion.cpp)
 	#define NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS	//1gXy+ logical if/while/for support + conjunction support
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 		#define NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
@@ -57,12 +58,14 @@
 		#define NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME "logicalCondition"	//eg logicalCondition1
 		#define NLC_WHILE_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME "whileLogicalCondition"	//eg whileLogicalCondition1
 	#endif
-	#define NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES (7)
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES (7)
 	#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 		#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID (99)
 	#endif
-	static string conditionLogicalOperationsArray[NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
+	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)
+	static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_FOR (0)	//default
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_IF (1)
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_WHILE (5)
@@ -75,7 +78,7 @@
 	#endif
 #endif
 
-//#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
+#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 //#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES
 //#define NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT

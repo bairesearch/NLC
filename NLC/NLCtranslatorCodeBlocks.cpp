@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14c 08-June-2014
+ * Project Version: 1g1a 30-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -118,7 +118,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 					}
 				}
 				if(foundConditionLogicalOperation)
-				{
+				{	
 					GIAentityNode * conditionSubject = NULL;
 					GIAentityNode * conditionObject = NULL;
 					bool foundConditionSubject = false;
@@ -135,6 +135,12 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 					}
 					if(foundConditionSubject && foundConditionObject)
 					{
+						bool negative = false;
+						if(conditionObject->negative)
+						{
+							negative = true;
+						}
+
 						//cout << "foundConditionSubject && foundConditionObject" << endl;
 						//1. disable all classStructure formation based on condition object subset
 
@@ -160,7 +166,10 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 								conditionSubject->disabled = true;	//temporarily disable conditionSubject to prevent it from being parsed
 								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, conditionObject))
 								{
-									passedConditionObject = true;
+									if(!negative)
+									{
+										passedConditionObject = true;
+									}
 								}
 								conditionSubject->disabled = false;
 							}
@@ -182,7 +191,10 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							conditionSubject->disabled = true;	//temporarily disable conditionSubject to prevent it from being parsed
 							if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, conditionObject))
 							{
-								passedConditionObject = true;
+								if(!negative)
+								{
+									passedConditionObject = true;
+								}
 								//cout << "passedConditionObject" << endl;
 							}
 							conditionSubject->disabled = false;
@@ -191,7 +203,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 						else
 						{//eg If the sun is bright, the dog is happy. / If the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
 							//code copied from [*^]
-							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, conditionObject, sentenceIndex);	//NB this will set parsedForNLCcodeBlocks to true, so NLCconditionLogicalOperations can be set to false without causing any problems (ie generateCodeBlocksPart1/generateCodeBlocksPart2 will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
+							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, conditionObject, sentenceIndex, negative);	//NB this will set parsedForNLCcodeBlocks to true, so NLCconditionLogicalOperations can be set to false without causing any problems (ie generateCodeBlocksPart1/generateCodeBlocksPart2 will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
 							tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 							passedConditionObject = true;
 						}
@@ -424,11 +436,11 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			{
 				//[*^]
 				//cout << "executing generateContextBlocksAndInitialiseParentIfNecessary subjectEntity" << endl;
-				generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, subjectEntity, sentenceIndex);
+				generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, subjectEntity, sentenceIndex, false);
 			}
 			if(actionHasObject)
 			{
-				generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, objectEntity, sentenceIndex);
+				generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, objectEntity, sentenceIndex, false);
 			}
 		}
 
@@ -562,7 +574,7 @@ void initialiseFunctionArguments(NLCcodeblock ** currentCodeBlockInTree, GIAenti
 #endif
 
 //added 1e6a
-bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex)
+bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex, bool negative)
 {
 	bool result = false;
 	bool possibleContextParentFound = false;
@@ -575,21 +587,37 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 			GIAentityNode * parentEntity = (currentEntity->propertyNodeReverseList->back())->entity;
 			if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false) || parentEntity->parsedForNLCcodeBlocks || assumedToAlreadyHaveBeenDeclared(parentEntity))
 			{
-				if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex))
+				if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex, negative))
 				{
 					//cout << "\tgenerateContextBlocksAndInitialiseParentIfNecessary passed: " << currentEntity->entityName << endl;
 
 					result = true;
 					NLCitem * propertyItem = new NLCitem(currentEntity, NLC_ITEM_TYPE_CLASS);
+
+					//target property item:
 					if(assumedToAlreadyHaveBeenDeclared(currentEntity))
 					{
-						*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
+						if(negative)
+						{
+							*currentCodeBlockInTree = createCodeBlockIfHasProperty(*currentCodeBlockInTree, propertyItem, negative);
+						}
+						else
+						{
+							*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);	//createCodeBlockForPropertyListLocal() can be replaced with createCodeBlockForPropertyList(): createCodeBlockForPropertyListLocal() is likely an artefact of an old implementation
+						}
 					}
 					else
 					{
 						propertyItem->context.push_back(generateInstanceName(parentEntity));
-						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
-					}
+						if(negative)
+						{
+							*currentCodeBlockInTree = createCodeBlockIfHasProperty(*currentCodeBlockInTree, propertyItem, negative);
+						}
+						else
+						{
+							*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+						}
+					}	
 
 					//IS THIS REQUIRED?
 					if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))	//added 1e7b
@@ -647,6 +675,8 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 			}
 			#endif
 			NLCitem * propertyItem = new NLCitem(currentEntity, NLC_ITEM_TYPE_CLASS);
+
+			//context property item:
 			if(assumedToAlreadyHaveBeenDeclared(currentEntity))
 			{
 				*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);

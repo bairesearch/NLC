@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14c 08-June-2014
+ * Project Version: 1g1a 30-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,6 +68,8 @@ using namespace std;
 #define NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST (8)
 #define NLC_ITEM_TYPE_FUNCTION_OWNER (11)
 #define NLC_ITEM_TYPE_FUNCTION_OBJECT (12)
+#define NLC_ITEM_TYPE_NEGATIVE (13)
+
 
 #define NLC_CLASS_NAME_APPEND "Class"
 #define NLC_FUNCTION_NAME_APPEND "Function"
@@ -105,6 +107,8 @@ public:
 
 	string className2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only
+
+	bool negative;
 };
 
 

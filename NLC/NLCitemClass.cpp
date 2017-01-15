@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14c 08-June-2014
+ * Project Version: 1g1a 30-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,6 +53,7 @@ NLCitem::NLCitem(void)
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
+	negative = false;
 }
 NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 {
@@ -68,6 +69,7 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
+	negative = false;
 }
 NLCitem::NLCitem(string newName, int newItemType)
 {
@@ -87,6 +89,7 @@ NLCitem::NLCitem(string newName, int newItemType)
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
+	negative = false;
 }
 NLCitem::NLCitem(NLCitem * newItem)
 {
@@ -101,7 +104,8 @@ NLCitem::NLCitem(NLCitem * newItem)
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
-	#endif
+	#endif	
+	negative = false;
 }
 NLCitem::~NLCitem(void)
 {

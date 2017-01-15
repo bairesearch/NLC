@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14c 08-June-2014
+ * Project Version: 1g1a 30-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -746,5 +746,29 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 	}
 }
 #endif
+
+NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative)
+{
+	currentCodeBlockInTree->parameters.push_back(itemProperty);	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY;
+	if(negative)
+	{
+		itemProperty->negative = true;
+	}
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative)
+{
+	currentCodeBlockInTree->parameters.push_back(itemCondition);	
+	currentCodeBlockInTree->parameters.push_back(itemConditionObject);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION;
+	if(negative)
+	{
+		itemCondition->negative = true;
+	}
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
 
 

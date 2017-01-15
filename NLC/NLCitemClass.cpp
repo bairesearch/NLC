@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2a 15-September-2016
+ * Project Version: 1t2b 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -226,7 +226,14 @@ string generateInstanceName(GIAentityNode* entity)
 }
 string generateInstanceName(string entityName, long idInstance)
 {
-	string instanceName = entityName + convertLongToString(idInstance);
+	string idInstanceString = convertLongToString(idInstance);
+	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
+	if(idInstance == NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_COMPARISON_IDINSTANCE)
+	{
+		idInstanceString = NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_COMPARISON_IDINSTANCE_STRING;
+	}
+	#endif
+	string instanceName = entityName + idInstanceString;
 	return instanceName;
 }
 

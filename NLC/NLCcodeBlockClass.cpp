@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2a 15-September-2016
+ * Project Version: 1t2b 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -118,6 +118,10 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	lastParent = NULL;
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES
 	searchSubclassesForChildren = true;
+	#endif
+	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
+	parsingBooleanStatmentParsablePhrase = false;
+	secondaryComparison = false;
 	#endif
 }
 NLCgenerateContextBlocksVariables::~NLCgenerateContextBlocksVariables(void)
@@ -867,9 +871,8 @@ NLCcodeblock* createCodeBlockForActionList(NLCcodeblock* currentCodeBlockInTree,
 }
 NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* actionObject)
 {
-	return createCodeBlockForActionList(currentCodeBlockInTree, actionEntity, generateInstanceName(actionObject));
+	return createCodeBlockForActionIncomingList(currentCodeBlockInTree, actionEntity, generateInstanceName(actionObject));
 }
-
 NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -885,7 +888,7 @@ NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBloc
 }
 NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionObject, GIAentityNode* actionEntity)
 {
-	return createCodeBlockForActionList(currentCodeBlockInTree, actionObject, generateInstanceName(actionEntity));
+	return createCodeBlockForActionObjectList(currentCodeBlockInTree, actionObject, generateInstanceName(actionEntity));
 }
 NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
 {
@@ -898,7 +901,7 @@ NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockI
 }
 NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionSubject, GIAentityNode* actionEntity)
 {
-	return createCodeBlockForActionList(currentCodeBlockInTree, actionSubject, generateInstanceName(actionEntity));
+	return createCodeBlockForActionSubjectList(currentCodeBlockInTree, actionSubject, generateInstanceName(actionEntity));
 }
 NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
 {

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2a 15-September-2016
+ * Project Version: 1t2b 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,6 +60,8 @@
 	#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY	//1t2a
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 		#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_DEFINITIONS	//1t2a
+		#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_COMPARISON_IDINSTANCE (-1)	//1t2b
+		#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_COMPARISON_IDINSTANCE_STRING ""	//1t2b
 	#endif
 #endif
 
@@ -154,7 +156,6 @@
 		//#define NLC_API	//1r6b (coded ~1r5d)		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 	#endif
 	#ifdef NLC_API
-		#define NLC_API_DEBUG
 		#define NLC_API_DEFAULT_SOURCE_FOLDER_NAME "/home/systemusername/source/NLCthirdpartyAPI/"
 		#define NLC_API_DEFAULT_CLASS_LIST_FILE_NAME "APIclassList.txt"
 		#define DOXYGEN_XML_OUTPUT_FOLDER "xml/"	//relative path
@@ -1071,7 +1072,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 //#define NLC_DEBUG_PARSE_CONTEXT3
 //#define NLC_DEBUG_PARSE_CONTEXT2
 
-
+//#define NLC_DEBUG_API
 //#define NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 //#define NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 //#define NLC_DEBUG_PARSE_CONTEXT_CHILDREN

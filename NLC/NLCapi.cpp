@@ -26,7 +26,7 @@
  * File Name: NLCapi.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2a 15-September-2016
+ * Project Version: 1t2b 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -111,7 +111,7 @@ bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vecto
 					APIwrapperSourceText = APIwrapperSourceText + generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);	//eg #include "NLCgeneratedInterfaceXClass.hpp";
 					#endif
 
-					#ifdef NLC_API_DEBUG
+					#ifdef NLC_DEBUG_API
 					cout << "APIclassName = " << APIclassName << endl;
 					#endif
 
@@ -120,14 +120,14 @@ bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vecto
 						if(currentTagUpdatedL3->name == NET_XML_TAG_includes)
 						{	
 							APIsourceHeaderFileName = currentTagUpdatedL3->value;
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "NET_XML_TAG_includes found, APIsourceHeaderFileName = " << APIsourceHeaderFileName << endl;
 							#endif
 						}
 						if(currentTagUpdatedL3->name == NET_XML_TAG_basecompoundref)
 						{
 							string APIclassParentName = currentTagUpdatedL3->value;	//TODO support template classes eg "QIntDict&lt; char &gt;" (QIntDict<char>)
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "NET_XML_TAG_basecompoundref found, APIclassParentName = " << APIclassParentName << endl;
 							#endif
 							NLCclassDefinition* parentClassDefinition = NULL;
@@ -140,7 +140,7 @@ bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vecto
 						}
 						if(currentTagUpdatedL3->name == NET_XML_TAG_sectiondef)
 						{	
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "NET_XML_TAG_sectiondef found" << endl;
 							#endif
 					
@@ -218,14 +218,14 @@ void generatePropertyClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 						if(currentTagUpdatedL3->name == NET_XML_TAG_name)	//eg <name>memberList</name>
 						{	
 							variableName = currentTagUpdatedL3->value;
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "variableName = " << variableName << endl;
 							#endif
 						}
 						if(currentTagUpdatedL3->name == NET_XML_TAG_type)	//eg <type><ref refid="classMemberList" kindref="compound">MemberList</ref> *</type>
 						{	
 							variableType = getType(currentTagUpdatedL3);
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "variableType = " << variableType << endl;
 							#endif
 						}
@@ -272,20 +272,20 @@ void generateFunctionClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 						if(currentTagUpdatedL3->name == NET_XML_TAG_name)
 						{	
 							functionName = currentTagUpdatedL3->value;	//eg <name>setInGroup</name>
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "functionName = " << functionName << endl;
 							#endif
 						}
 						else if(currentTagUpdatedL3->name == NET_XML_TAG_type)
 						{	
 							functionType = getType(currentTagUpdatedL3);	//eg <type>void</type>
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "functionType = " << functionType << endl;
 							#endif
 						}
 						else if(currentTagUpdatedL3->name == NET_XML_TAG_param)
 						{	
-							#ifdef NLC_API_DEBUG
+							#ifdef NLC_DEBUG_API
 							cout << "param = " << endl;
 							#endif
 							NLCvariable* param = new NLCvariable();
@@ -296,14 +296,14 @@ void generateFunctionClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 								if(currentTagUpdatedL4->name == NET_XML_TAG_declname)
 								{	
 									param->name = currentTagUpdatedL4->value;	//eg <declname>parameterName</declname>
-									#ifdef NLC_API_DEBUG
+									#ifdef NLC_DEBUG_API
 									cout << "param->name = " << param->name << endl;
 									#endif
 								}
 								else if(currentTagUpdatedL4->name == NET_XML_TAG_type)	//eg <type><ref refid="classClassDef" kindref="compound">parameterType</ref> *</type> / <type>bool</type>
 								{	
 									param->typeString = getType(currentTagUpdatedL4);
-									#ifdef NLC_API_DEBUG
+									#ifdef NLC_DEBUG_API
 									cout << "param->typeString = " << param->typeString << endl;
 									#endif
 								}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2a 15-September-2016
+ * Project Version: 1t2b 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -674,6 +674,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									}
 									else
 									{
+										//isnt this redundant with parseParsablePhraseParent?
 										//eg A dog's value = X.
 										if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false, false))
 										{

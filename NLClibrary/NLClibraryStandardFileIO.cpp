@@ -28,6 +28,7 @@
  
 #include "NLClibraryStandardFileIO.h"
 #include "NLClibraryStandardOperations.h"
+#include "SHAREDvars.h"	//required for convertStringToDouble
 //need to update to support .csv file io (not just xml file io)
 
 //writeFunction() limitation: only supports NLC_USE_ADVANCED_REFERENCING (not GIA_USE_ADVANCED_REFERENCING)
@@ -843,7 +844,7 @@ void readNLCflatfilePropertyLists(string fileName, vector<NLCgenericEntityClass*
 							NLCgenericEntityClass* readObject = generateObjectByName(variableName);
 							if(stringContainsNumbers(variableValue) && !stringContainsAlphabetic((variableValue))
 							{
-								readObject->value = atof(variableValue);
+								readObject->value = convertStringToDouble(variableValue);
 							}
 							else
 							{

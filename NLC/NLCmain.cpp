@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p9a 10-July-2015
+ * Project Version: 1p10a 11-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,8 +46,8 @@
 #ifdef USE_WORDNET
 #include "GIAwordnet.h"
 #endif
-#ifdef GIA_USE_CORPUS_DATABASE
-#include "GIAcorpusDatabase.h"
+#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
+#include "GIAsemanticParserDatabase.h"
 #endif
 #include "GIAtranslatorOperations.h"
 #ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
@@ -104,8 +104,8 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 "\n\t-dbwrite           : write to database (GIA knowledge base) [saves knowledge]"
 "\n\t-dbfolder          : database base folder path (def: /home/systemusername/source/GIAKBdatabase)"
 #endif
-#ifdef GIA_USE_CORPUS_DATABASE
-"\n\t-dbcorpusfolder    : corpus database base folder path (def: /home/systemusername/source/GIAcorpusDatabase)"
+#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
+"\n\t-dbsemanticparserfolder    : direct semantic parser (corpus or optimised) database base folder path (def: /home/systemusername/source/GIAsemanticparserdatabase)"
 #endif
 #ifdef GIA_USE_LRP
 "\n\t-lrp                               : language reduction preprocessor"
@@ -245,8 +245,8 @@ int main(int argc,char* *argv)
 	bool useDatabase = false;
 	string databaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 #endif
-#ifdef GIA_USE_CORPUS_DATABASE
-	string corpusDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_CORPUS_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
+	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEMANTIC_PARSER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 #endif
 
 #ifdef GIA_USE_LRP
@@ -542,11 +542,11 @@ int main(int argc,char* *argv)
 			databaseFolderName = databaseFolderName + '/';
 		}
 	#endif
-	#ifdef GIA_USE_CORPUS_DATABASE
-		if(argumentExists(argc,argv,"-dbcorpusfolder"))
+	#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
+		if(argumentExists(argc,argv,"-dbsemanticparserfolder"))
 		{
-			corpusDatabaseFolderName=getStringArgument(argc,argv,"-dbcorpusfolder");
-			corpusDatabaseFolderName = corpusDatabaseFolderName + '/';
+			semanticParserDatabaseFolderName=getStringArgument(argc,argv,"-dbsemanticparserfolder");
+			semanticParserDatabaseFolderName = semanticParserDatabaseFolderName + '/';
 		}
 	#endif
 
@@ -639,7 +639,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p9a 10-July-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p10a 11-July-2015" << endl;
 			exit(1);
 		}
 
@@ -934,8 +934,8 @@ int main(int argc,char* *argv)
 			databaseFolderName,
 		#endif
 
-		#ifdef GIA_USE_CORPUS_DATABASE
-			corpusDatabaseFolderName,
+		#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
+			semanticParserDatabaseFolderName,
 		#endif
 
 		#ifdef GIA_USE_LRP
@@ -1107,7 +1107,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 		GIAentityNode* actionEntity = (*entityIter);
 		if((actionEntity->isAction) && !(actionEntity->isConcept) && !(actionEntity->disabled))
 		{
-			if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_POSSESSIVE)
+			if(isActionSpecialPossessive(actionEntity))
 			{
 				bool actionHasObject = false;
 				GIAentityNode* actionObjectEntity = NULL;
@@ -1153,7 +1153,12 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, (*connectionIter)->rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
+						#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
+						bool rcmodIndicatesSameReferenceSet = (*connectionIter)->rcmodIndicatesSameReferenceSet;
+						#else
+						bool rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
+						#endif
+						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
@@ -1164,7 +1169,12 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, (*connectionIter)->rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
+						#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
+						bool rcmodIndicatesSameReferenceSet = (*connectionIter)->rcmodIndicatesSameReferenceSet;
+						#else
+						bool rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
+						#endif
+						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
@@ -1217,7 +1227,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							exit(0);
 						}
 						#else
-						rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
+						bool rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
 						#endif
 						
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
@@ -1387,6 +1397,17 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						{
 							actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
 						}
+						#endif
+						#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE
+						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION
+						if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES_HAVE)
+						{
+						#endif
+							propertyConnection->possessionAuxiliaryHave = true;	//added 1p10a
+							propertyConnectionReverse->possessionAuxiliaryHave = true;	//added 1p10a
+						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION
+						}
+						#endif
 						#endif
 					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 					}

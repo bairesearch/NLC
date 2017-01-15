@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p9a 10-July-2015
+ * Project Version: 1p10a 11-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -478,13 +478,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 		cout << "currentPhrasePrimarySubject->sentenceContents = " << currentPhrasePrimarySubject->sentenceContents << endl; 
 		#endif
 		bool phraseContainsPrimarySubject = true; 
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILLARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 		{
-			int indexOfAuxillaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[i], 0);
-			if((indexOfAuxillaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxillaryTemp == 0))
+			int indexOfAuxiliaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
+			if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxiliaryTemp == 0))
 			{
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-				//cout << "phrase: " << currentPhrasePrimarySubject->sentenceContents << ": first word in phrase is an auxillary; it does not contain a subject (does not contain a primary subject)" << endl;
+				//cout << "phrase: " << currentPhrasePrimarySubject->sentenceContents << ": first word in phrase is an auxiliary; it does not contain a subject (does not contain a primary subject)" << endl;
 				#endif
 				phraseContainsPrimarySubject = false;
 			}
@@ -517,105 +517,105 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 			cout << "\nphraseContainsPrimarySubject: " << currentPhrasePrimarySubject->sentenceContents << endl;
 			#endif
 
-			int indexOfPrimaryAuxillaryTaggingSubject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
-			int primaryAuxillaryType;
+			int indexOfPrimaryAuxiliaryTaggingSubject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
+			int primaryAuxiliaryType;
 
-			bool stillFindingPrimaryAuxillary = true;
-			int startPosToSearchForAuxillary = 0;
-			while(stillFindingPrimaryAuxillary)
+			bool stillFindingPrimaryAuxiliary = true;
+			int startPosToSearchForAuxiliary = 0;
+			while(stillFindingPrimaryAuxiliary)
 			{
-				int indexOfNextClosestAuxillary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
-				bool foundAnAuxillaryButItWasIgnored = false;
-				int indexOfClosestIgnoredAuxillary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
-				for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILLARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+				int indexOfNextClosestAuxiliary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
+				bool foundAnAuxiliaryButItWasIgnored = false;
+				int indexOfClosestIgnoredAuxiliary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
+				for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 				{
-					int indexOfAuxillaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[i], startPosToSearchForAuxillary);	
-					if((indexOfAuxillaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxillaryTemp < indexOfNextClosestAuxillary))
+					int indexOfAuxiliaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], startPosToSearchForAuxiliary);	
+					if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxiliaryTemp < indexOfNextClosestAuxiliary))
 					{
-						//ignore auxillary if has a preceeding 'that'/'which'; eg "the dog that is[ignore] near the house has[take] a ball or has[reference] an apple"
+						//ignore auxiliary if has a preceeding 'that'/'which'; eg "the dog that is[ignore] near the house has[take] a ball or has[reference] an apple"
 						//"If the basket that is near the house is above the tray, and the basket is blue, the dog is happy."
 						//"If the basket that is near the house is above the tray and is blue, the dog is happy.
-						bool ignoreAuxillary = false;
+						bool ignoreAuxiliary = false;
 						for(int i2=0; i2<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES; i2++)
 						{
-							int expectedPosOfRcmodSameReferenceSetDelimiterIfExistent = indexOfAuxillaryTemp - preprocessorMathRcmodSameReferenceSetDelimiter[i2].length() - 1;
+							int expectedPosOfRcmodSameReferenceSetDelimiterIfExistent = indexOfAuxiliaryTemp - preprocessorMathRcmodSameReferenceSetDelimiter[i2].length() - 1;
 							int indexOfRcmodSameReferenceSet = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathRcmodSameReferenceSetDelimiter[i2], expectedPosOfRcmodSameReferenceSetDelimiterIfExistent);	
 							if((indexOfRcmodSameReferenceSet != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfRcmodSameReferenceSet == expectedPosOfRcmodSameReferenceSetDelimiterIfExistent))
 							{
-								ignoreAuxillary = true;
-								foundAnAuxillaryButItWasIgnored = true;
-								if(indexOfAuxillaryTemp < indexOfClosestIgnoredAuxillary)
+								ignoreAuxiliary = true;
+								foundAnAuxiliaryButItWasIgnored = true;
+								if(indexOfAuxiliaryTemp < indexOfClosestIgnoredAuxiliary)
 								{
-									indexOfClosestIgnoredAuxillary = indexOfAuxillaryTemp;
+									indexOfClosestIgnoredAuxiliary = indexOfAuxiliaryTemp;
 								}
 								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-								//cout << "ignoreAuxillary" << endl;
+								//cout << "ignoreAuxiliary" << endl;
 								#endif
 							}
 						}
 
-						if(!ignoreAuxillary)
+						if(!ignoreAuxiliary)
 						{
-							indexOfNextClosestAuxillary = indexOfAuxillaryTemp;
-							primaryAuxillaryType = i;
+							indexOfNextClosestAuxiliary = indexOfAuxiliaryTemp;
+							primaryAuxiliaryType = i;
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-							//cout << "found nextClosestAuxillary: " << preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[i] << ", indexOfNextClosestAuxillary = " << indexOfNextClosestAuxillary << endl;
+							//cout << "found nextClosestAuxiliary: " << preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i] << ", indexOfNextClosestAuxiliary = " << indexOfNextClosestAuxiliary << endl;
 							#endif
 						}
 					}
 				}
-				if(indexOfNextClosestAuxillary != NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS)
+				if(indexOfNextClosestAuxiliary != NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS)
 				{
-					indexOfPrimaryAuxillaryTaggingSubject = indexOfNextClosestAuxillary;
-					stillFindingPrimaryAuxillary = false;
+					indexOfPrimaryAuxiliaryTaggingSubject = indexOfNextClosestAuxiliary;
+					stillFindingPrimaryAuxiliary = false;
 				}
-				else if(foundAnAuxillaryButItWasIgnored)
+				else if(foundAnAuxiliaryButItWasIgnored)
 				{
-					startPosToSearchForAuxillary = indexOfClosestIgnoredAuxillary + 1;
+					startPosToSearchForAuxiliary = indexOfClosestIgnoredAuxiliary + 1;
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					//cout << "startPosToSearchForAuxillary = indexOfClosestIgnoredAuxillary: " << indexOfClosestIgnoredAuxillary << endl;
+					//cout << "startPosToSearchForAuxiliary = indexOfClosestIgnoredAuxiliary: " << indexOfClosestIgnoredAuxiliary << endl;
 					#endif
 				}
 				else
 				{
-					stillFindingPrimaryAuxillary = false;
+					stillFindingPrimaryAuxiliary = false;
 				}
 			}
 
-			if(indexOfPrimaryAuxillaryTaggingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			if(indexOfPrimaryAuxiliaryTaggingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
-				string subjectText = currentPhrasePrimarySubject->sentenceContents.substr(0, indexOfPrimaryAuxillaryTaggingSubject);	//check -1 is not required
+				string subjectText = currentPhrasePrimarySubject->sentenceContents.substr(0, indexOfPrimaryAuxiliaryTaggingSubject);	//check -1 is not required
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-				cout << "primary auxillary found for phrase: " << currentPhrasePrimarySubject->sentenceContents << ", i = " << indexOfPrimaryAuxillaryTaggingSubject << endl;
+				cout << "primary auxiliary found for phrase: " << currentPhrasePrimarySubject->sentenceContents << ", i = " << indexOfPrimaryAuxiliaryTaggingSubject << endl;
 				cout << "subjectText = " << subjectText << endl;
 				#endif
 
 				NLCsentence* currentPhraseReferenceToPrimarySubject = currentPhrasePrimarySubject->next;
 				for(int phraseIndex2=phraseIndex+1; phraseIndex2<firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal; phraseIndex2++)					
 				{
-					//now for each secondary auxillary referencing the subject, artificially generate (copy) the subject text
+					//now for each secondary auxiliary referencing the subject, artificially generate (copy) the subject text
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					cout << "currentPhraseReferenceToPrimarySubject = " << currentPhraseReferenceToPrimarySubject->sentenceContents << endl;
-					cout << "preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[primaryAuxillaryType] = " << preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[primaryAuxillaryType] << endl;
+					cout << "preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[primaryAuxiliaryType] = " << preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[primaryAuxiliaryType] << endl;
 					#endif
 					
 					#ifdef NLC_PREPROCESSOR_MATH_SEARCH_FOR_CONJUNCTION_SUBJECT_MATCH_NON_IDENTICAL_AUXILLARIES
-					int indexOfSecondaryAuxillaryReferencingSubject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
-					for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILLARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+					int indexOfSecondaryAuxiliaryReferencingSubject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
+					for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 					{
-						int indexOfAuxillaryTemp = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[i]);
-						if((indexOfAuxillaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxillaryTemp  == 0))
+						int indexOfAuxiliaryTemp = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i]);
+						if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxiliaryTemp  == 0))
 						{
-							indexOfSecondaryAuxillaryReferencingSubject = indexOfAuxillaryTemp;
+							indexOfSecondaryAuxiliaryReferencingSubject = indexOfAuxiliaryTemp;
 						}
 					}
 					#else
-					int indexOfSecondaryAuxillaryReferencingSubject = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[primaryAuxillaryType]);	
+					int indexOfSecondaryAuxiliaryReferencingSubject = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[primaryAuxiliaryType]);	
 					#endif
-					if((indexOfSecondaryAuxillaryReferencingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfSecondaryAuxillaryReferencingSubject == 0))
+					if((indexOfSecondaryAuxiliaryReferencingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfSecondaryAuxiliaryReferencingSubject == 0))
 					{
 					
-						//cout << "phrase: " << currentPhraseReferenceToPrimarySubject->sentenceContents << ": found secondary auxillary" << endl;
+						//cout << "phrase: " << currentPhraseReferenceToPrimarySubject->sentenceContents << ": found secondary auxiliary" << endl;
 						bool secondaryChecks = false;
 						for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
 						{
@@ -648,7 +648,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 							#endif
 							string parsablePhraseReferenceOld = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, currentPhraseReferenceToPrimarySubject);
 
-							currentPhraseReferenceToPrimarySubject->sentenceContents.insert(indexOfSecondaryAuxillaryReferencingSubject, subjectText);
+							currentPhraseReferenceToPrimarySubject->sentenceContents.insert(indexOfSecondaryAuxiliaryReferencingSubject, subjectText);
 
 							string parsablePhraseReferenceNew = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, currentPhraseReferenceToPrimarySubject);
 							int parsablePhraseReferenceOldPos = firstNLCsentenceInFullSentence->mathText.find(parsablePhraseReferenceOld);

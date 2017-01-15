@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p9a 10-July-2015
+ * Project Version: 1p10a 11-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -82,9 +82,13 @@
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_SUPPORT_FRACTIONAL_VALUES	//e.g. 5.5
 		#define NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT	//this prevents execution of mathText out of context
 	#endif	
-	#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
-		#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET	//added 1p2b
+
+	#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
+		#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE	//added 1p10a
+	#elif defined GIA_RECORD_RCMOD_SET_INFORMATION
+		//#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET	//added 1p2b, removed 1p10a	
 	#endif
+	
 	//#ifdef NLC_PREPROCESSOR_MATH
 		#define NLC_PARSE_CONDITION_PARENTS	//enforced 1p2b - this is now required by default (irrespective of NLC_NORMALISE_INVERSE_PREPOSITIONS) for at least generateCodeBlocksFromMathTextNLPparsablePhrase() part 2A and part 2B, such that the primary entity in the nlp parsable phrase can be identified
 	//#endif
@@ -545,8 +549,8 @@
 			
 			#define NLC_LOGICAL_CONDITION_OPERATIONS_IF_ELSE_IF_ELSE_NUMBER_OF_TYPES (3)
 			static int logicalConditionOperationsIfElseIfElseArray[NLC_LOGICAL_CONDITION_OPERATIONS_IF_ELSE_IF_ELSE_NUMBER_OF_TYPES] = {NLC_LOGICAL_CONDITION_OPERATIONS_IF, NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF, NLC_LOGICAL_CONDITION_OPERATIONS_ELSE};	
-			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILLARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES (4)
-			static string preprocessorMathAuxillaryKeywordsTaggingSubjectOrReference[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILLARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES] = {"has", "have", "is", "are"};	//don't use lemmas				
+			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES (4)
+			static string preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES] = {"has", "have", "is", "are"};	//don't use lemmas				
 			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES (2)
 			static string preprocessorMathRcmodSameReferenceSetDelimiter[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES] = {"that", "which"};			
 			

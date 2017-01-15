@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p9a 10-July-2015
+ * Project Version: 1p10a 11-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,7 +52,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	
 	bool result = true;
 	ifstream parseFileObject(inputFileName.c_str());
-	if(!parseFileObject.rdbuf( )->is_open( ))
+	if(!parseFileObject.rdbuf()->is_open())
 	{
 		//txt file does not exist in current directory.
 		cout << "Error: NLC input file does not exist in current directory: " << inputFileName << endl;
@@ -98,7 +98,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					cout << "create new function = " << NLCfunctionName << endl;
 					cout << "functionContents = " << functionContents << endl;
 					#endif
-					writeStringToFile(&functionFileName, &functionContents);
+					writeStringToFile(functionFileName, &functionContents);
 					currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
@@ -430,7 +430,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << "create new function, functionFileName = " << functionFileName << endl;
 			cout << "functionContents = " << functionContents << endl;
 			#endif
-			writeStringToFile(&functionFileName, &functionContents);
+			writeStringToFile(functionFileName, &functionContents);
 			//create new function file based on current text
 		}
 		else
@@ -440,7 +440,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << "create preprocessed file, outputFileName = " << outputFileName << endl;
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
-			writeStringToFile(&outputFileName, &functionContents);
+			writeStringToFile(outputFileName, &functionContents);
 		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif

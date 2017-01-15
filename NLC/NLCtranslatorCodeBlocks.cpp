@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j16b 24-September-2014
+ * Project Version: 1j17a 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -82,7 +82,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			else
 			{
 				currentCodeBlockInTree = createCodeBlockCommentSingleLine(currentCodeBlockInTree, currentNLCsentenceInList->sentenceContents);
-			}
+			}		
 		}
 		#endif
 			
@@ -598,7 +598,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 			{//redundant	
 				//cout << "sentenceIndex = " << sentenceIndex << endl;
 				//cout << "checkSentenceIndexParsingCodeBlocks: " << entity->entityName << "sentenceIndex = " << entity->sentenceIndexTemp << endl;
+				#ifdef NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
 				if(entity->isQuery)
+				#else
+				if(entity->isNumberOf)
+				#endif
 				{
 					if(foundParsablePhrase)
 					{
@@ -675,9 +679,13 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 				{
 					if(!(entity->isConcept) && !(entity->isCondition))
 					{//required			
+						#ifdef NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
 						if(entity->isQuery)
+						#else
+						if(entity->isNumberOf)
+						#endif
 						{
-							//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: entity->isQuery && !(entity->NLCcontextGenerated): part 1 must have failed" << endl;
+							//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: entity->isNumberOf && !(entity->NLCcontextGenerated): part 1 must have failed" << endl;
 						}
 						else
 						{		

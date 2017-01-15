@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1f 02-November-2013
+ * Project Version: 1d2a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -37,7 +37,7 @@
 NLPIclassDefinition::NLPIclassDefinition(string newName)
 {
 	name = newName;	
-	classNameSpecial = "";
+	functionNameSpecial = "";
 
 	isActionOrConditionInstanceNotClass = false;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
@@ -47,7 +47,7 @@ NLPIclassDefinition::NLPIclassDefinition(string newName)
 NLPIclassDefinition::NLPIclassDefinition(void)
 {
 	name = "";	
-	classNameSpecial = "";
+	functionNameSpecial = "";
 	
 	isActionOrConditionInstanceNotClass = false;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS

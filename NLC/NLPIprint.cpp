@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1f 02-November-2013
+ * Project Version: 1d2a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -142,7 +142,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 			{
 				NLPIclassDefinition * targetClassDefinition = *localListIter;
-				string targetName = targetClassDefinition->classNameSpecial;
+				string targetName = targetClassDefinition->functionNameSpecial;
 				string functionArguments = "";
 				if(targetClassDefinition->parameters.size() > 0)
 				{
@@ -214,7 +214,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			#endif
 			
-			string codeBlockText = contextParam1 + param1->className + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
+			string codeBlockText = contextParam1 + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 				//OLD before 1c5a: param1->instanceName
 			//cout << "z7c" << endl;
 			printLine(codeBlockText, level, code);
@@ -232,7 +232,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			#endif
 					
-			string codeBlockText = contextParam1 + param1->className + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
+			string codeBlockText = contextParam1 + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
 				//OLD before 1c5a: param1->instanceName
 			printLine(codeBlockText, level, code);
 			
@@ -299,7 +299,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			#endif	
 			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang);
-			string codeBlockText = functionOwnerContext + param1->className + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
+			string codeBlockText = functionOwnerContext + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
 			printLine(codeBlockText, level, code);		
 			printLine(progLangOpenBlock[progLang], level, code);
 		}

@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1f 02-November-2013
+ * Project Version: 1d2a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -41,6 +41,7 @@ NLPIitem::NLPIitem(void)
 	itemType = NLPI_ITEM_INSTANCE_ID_UNDEFINED;
 	className = "";
 	instanceName = "";
+	functionName = "";
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
@@ -55,6 +56,7 @@ NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 	itemType = newItemType;
 	className = generateClassName(entity);
 	instanceName = generateInstanceName(entity);
+	functionName = generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
@@ -74,6 +76,7 @@ NLPIitem::NLPIitem(string newName, int newItemType)
 	itemType = newItemType;
 	className = generateClassName(newName);	//changed 9 November 2013
 	instanceName = "";
+	functionName = generateFunctionName(newName);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
@@ -88,6 +91,7 @@ NLPIitem::NLPIitem(NLPIitem * newItem)
 	itemType = newItem->itemType;
 	className = newItem->className;
 	instanceName = newItem->instanceName;
+	functionName = newItem->functionName;
 	className2 = newItem->className2;
 	instanceName2 = newItem->instanceName2;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
@@ -109,19 +113,28 @@ string generateClassName(GIAentityNode * entity)
 	string className = "";
 	if(entity->isConcept)
 	{
-		className = entity->entityName + "Class";
+		className = entity->entityName + NLPI_CLASS_NAME_APPEND;
 	}
 	else
 	{
-		className = entity->entityName + convertLongToString(entity->idInstance) + "Class";
+		className = entity->entityName + convertLongToString(entity->idInstance) + NLPI_CLASS_NAME_APPEND;
 	}
 	#endif
 	return className;
 }
 string generateClassName(string entityName)
 {
-	string className = entityName + "Class";
+	string className = entityName + NLPI_CLASS_NAME_APPEND;
 	return className;
+}
+string generateFunctionName(GIAentityNode * entity)
+{
+	return generateFunctionName(entity->entityName);
+}
+string generateFunctionName(string entityName)
+{
+	string functionName = entityName + NLPI_FUNCTION_NAME_APPEND;
+	return functionName;
 }
 string generateInstanceName(GIAentityNode * entity)
 {
@@ -134,11 +147,13 @@ string generateInstanceName(GIAentityNode * entity)
 	#endif
 	return instanceName;
 }
+#ifdef NLPI_BAD_IMPLEMENTATION
 string generateActionName(GIAentityNode * entity)
 {
 	string actionName = entity->entityName;
 	return actionName;
 }
+#endif
 
 string convertLongToString(long number)
 {

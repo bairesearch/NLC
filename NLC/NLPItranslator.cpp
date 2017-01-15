@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1f 02-November-2013
+ * Project Version: 1d2a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -429,7 +429,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						
 						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 						{
-							targetClassDefinition->classNameSpecial = generateClassName(targetEntity);
+							targetClassDefinition->functionNameSpecial = generateFunctionName(targetEntity);
 							#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 							targetClassDefinition->actionOrConditionInstance = targetEntity;
 							#endif
@@ -757,9 +757,9 @@ void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVaria
 			for(vector<NLPIclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
 			{
 				NLPIclassDefinition * functionClassDefinition = *localListIter;
-				//cout << "functionClassDefinition->classNameSpecial = " << functionClassDefinition->classNameSpecial << endl;
+				//cout << "functionClassDefinition->functionNameSpecial = " << functionClassDefinition->functionNameSpecial << endl;
 				//cout << "functionName = " << functionName << endl;
-				if(functionClassDefinition->classNameSpecial ==  generateClassName(functionName))
+				if(functionClassDefinition->functionNameSpecial ==  generateFunctionName(functionName))
 				{
 					#ifdef NLPI_DEBUG
 					cout << "reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() functionName = " << functionName << endl;

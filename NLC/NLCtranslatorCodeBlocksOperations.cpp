@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v10a 23-October-2016
+ * Project Version: 1v11b 23-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -3577,6 +3577,16 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 		checkIsDefinite = false;
 	}
 	#endif
+	#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
+	if(generateContextBlocksVariablesLogicalConditionStatement->setCodeBlockInTreeAtBaseLevel)
+	{
+		generateContextBlocksVariables.setCodeBlockInTreeAtBaseLevel = generateContextBlocksVariablesLogicalConditionStatement->setCodeBlockInTreeAtBaseLevel;
+	}
+	#endif
+	#endif
+	#endif
 	GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(childEntity, sentenceIndex, entity, &foundDefiniteParentEntityNew, parseConditionParents, checkIsDefinite);
 	#ifdef NLC_DEBUG_PARSE_CONTEXT4
 	string parentEntityName = "";
@@ -3660,6 +3670,16 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 	}
 	#endif
 	*/
+	#endif
+	#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
+	if(generateContextBlocksVariablesLogicalConditionStatement->setCodeBlockInTreeAtBaseLevel)
+	{
+		generateContextBlocksVariablesLogicalConditionStatement->currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
+	}
+	#endif
+	#endif
 	#endif
 			
 	return generatedContextForChild;

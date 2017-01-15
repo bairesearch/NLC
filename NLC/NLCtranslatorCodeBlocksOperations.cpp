@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12d 07-November-2014
+ * Project Version: 1l13a 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1966,7 +1966,7 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 	{
 		if(!generatedContextForChild)
 		{
-			if(generateContextBasedOnDeclaredParent(childEntity, currentCodeBlockInTree, topLevel, entity))
+			if(generateContextBasedOnDeclaredParent(childEntity, currentCodeBlockInTree, topLevel, entity, sentenceIndex))
 			{
 				#ifdef NLC_DEBUG
 				cout << "generateContextForChildEntity(): generateContextBasedOnDeclaredParent: childEntity = " << childEntity->entityName << endl;
@@ -2393,7 +2393,7 @@ bool checkSpecialCaseEntity(GIAentityNode * entity, bool detectActions)
 }			
 
 #ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-bool generateContextBasedOnDeclaredParent(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, bool topLevel, GIAentityNode * generateObjectInitialisationsLastParent)
+bool generateContextBasedOnDeclaredParent(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, bool topLevel, GIAentityNode * generateObjectInitialisationsLastParent, int sentenceIndex)
 {
 	bool foundParentProperty = false;
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeReverseList->begin(); propertyNodeListIterator < entity->propertyNodeReverseList->end(); propertyNodeListIterator++)
@@ -2417,13 +2417,27 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode * entity, NLCcodeblock *
 								NLCitem * parentEntityClass = new NLCitem(parentEntity, NLC_ITEM_TYPE_OBJECT);
 								*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, parentEntityClass);	
 							}
+							
 							NLCitem * propertyEntityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 							propertyEntityClass->context.push_back(generateInstanceName(parentEntity));
 							*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);	
 							entity->NLCcontextGenerated = true;
+							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;	//CHECKTHIS
+							createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(entity), entity, sentenceIndex, &generateContextBlocksVariables);	//added 1l13a	//or generateContextBlocksSimple(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION)
+						
+							/*//alternative implementation not possible, because of "Tom's boat is red. The chicken rowed the red boat."
+							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;	//CHECKTHIS
+							if(generateContextBlocksSimple(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+							{
+
+							}
+							*/
+							
 							#ifdef NLC_DEBUG
-							//cout << "generateContextBasedOnDeclaredParent: entity: " << entity->entityName << endl;
-							//cout << "generateContextBasedOnDeclaredParent: foundParentProperty: " << parentEntity->entityName << endl;
+							cout << "generateContextBasedOnDeclaredParent: entity: " << entity->entityName << endl;
+							cout << "generateContextBasedOnDeclaredParent: foundParentProperty: " << parentEntity->entityName << endl;
 							#endif
 						}
 					}

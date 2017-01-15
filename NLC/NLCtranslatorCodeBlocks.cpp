@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j12b 12-September-2014
+ * Project Version: 1j13a 12-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1011,7 +1011,7 @@ bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities
 				//cout << "pass2: " << entity->entityName << endl;
 				if(assumedToAlreadyHaveBeenDeclared(entity))
 				{//definite entity found
-					generateObjectInitialisationsBasedOnSubstanceConcepts(entity, currentCodeBlockInTree, sentenceIndex, false);
+					generateObjectInitialisationsBasedOnSubstanceConcepts(entity, currentCodeBlockInTree, sentenceIndex);
 				}	
 			}
 		}

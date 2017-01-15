@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8a 09-September-2016
+ * Project Version: 1s8b 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,12 +41,12 @@
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 #ifdef NLC_USE_ADVANCED_REFERENCING
 void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsNewFunction(int progLang, string* code, int level);
-void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
+void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool castToCategoryType);
 #endif
 #endif
 #ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
 void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsNewFunction(int progLang, string* code, int level);
-void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
+void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool castToCategoryType);
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 void generateCodeAddEntityToReferenceContextListNewFunction(int progLang, string* code, int level);

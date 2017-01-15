@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8a 09-September-2016
+ * Project Version: 1s8b 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -188,17 +188,29 @@ void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsNewFunction(
 	delete param2;
 }
 
-void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
+void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool castToCategoryType)
 {
 	string genericListAppendName = param3->name;
 
 	string codeBlockText = "";
-	#ifdef NLC_NONOO
-	string codeBlockTextTemplateDefinition = "";
-	#else
-	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
-	#endif
-	codeBlockText = codeBlockText + NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCategoryListName(param1, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addToCategoryIfPassSingularDefinitePluralityTests<param1class, param2class>(param1CategoryList, param2instanceName);				
+	if(castToCategoryType)
+	{
+		#ifdef NLC_NONOO
+		string codeBlockTextTemplateDefinition = "";
+		#else
+		string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param1->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param1class>
+		#endif
+		codeBlockText = codeBlockText + NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCategoryListName(param1, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + generateDynamicCastOfEntity(param2->instanceName, param1->className, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addToCategoryIfPassSingularDefinitePluralityTests<param1class, param2class>(param1CategoryList, dynamic_cast<param1class*>(param2instanceName));	
+	}
+	else
+	{
+		#ifdef NLC_NONOO
+		string codeBlockTextTemplateDefinition = "";
+		#else
+		string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
+		#endif
+		codeBlockText = codeBlockText + NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCategoryListName(param1, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addToCategoryIfPassSingularDefinitePluralityTests<param1class, param2class>(param1CategoryList, param2instanceName);				
+	}
 	printLine(codeBlockText, level, code);
 }
 #endif
@@ -279,17 +291,29 @@ void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsNewFunction(in
 	delete param2;
 }
 
-void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
+void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool castToCategoryType)
 {
 	string genericListAppendName = param3->name;
 
 	string codeBlockText = "";
-	#ifdef NLC_NONOO
-	string codeBlockTextTemplateDefinition = "";
-	#else
-	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	////<param1class, param2class>
-	#endif
-	codeBlockText = codeBlockText + NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCategoryListName(param1, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addToCategoryIfPassPluralDefiniteReferencingTests<param1class, param2class>(param1CategoryList, param2instanceName);				
+	if(castToCategoryType)
+	{
+		#ifdef NLC_NONOO
+		string codeBlockTextTemplateDefinition = "";
+		#else
+		string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param1->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param1class>
+		#endif
+		codeBlockText = codeBlockText + NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCategoryListName(param1, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + generateDynamicCastOfEntity(param2->instanceName, param1->className, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addToCategoryIfPassPluralDefiniteReferencingTests<param1class, param2class>(param1CategoryList, dynamic_cast<param1class*>(param2instanceName));				
+	}
+	else
+	{
+		#ifdef NLC_NONOO
+		string codeBlockTextTemplateDefinition = "";
+		#else
+		string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
+		#endif
+		codeBlockText = codeBlockText + NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCategoryListName(param1, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addToCategoryIfPassPluralDefiniteReferencingTests<param1class, param2class>(param1CategoryList, param2instanceName);				
+	}
 	printLine(codeBlockText, level, code);
 }
 #endif

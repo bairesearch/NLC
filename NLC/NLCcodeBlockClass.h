@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8a 09-September-2016
+ * Project Version: 1s8b 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -87,87 +87,89 @@
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION (34)
-		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION (35)		
-		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (36)	//execute for all new/undeclared/indefinite entities and accessed category items
+		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_WITH_CAST_EXECUTE_FUNCTION (35)
+		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION (36)		
+		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (37)	//execute for all new/undeclared/indefinite entities and accessed category items
 	#endif
 #endif
 #ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
-	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION (37)
-	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION (38)	
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION (38)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_WITH_CAST_EXECUTE_FUNCTION (39)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION (40)	
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
-	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (39)
-	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST2 (40)
+	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (41)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST2 (42)
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-	#define NLC_CODEBLOCK_TYPE_DECLARE_CONTEXT_LIST (41)
-	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_NEW_FUNCTION (42)
-	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_EXECUTE_FUNCTION (43)
-	#define NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_NEW_FUNCTION (44)
-	#define NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION (45)
+	#define NLC_CODEBLOCK_TYPE_DECLARE_CONTEXT_LIST (43)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_NEW_FUNCTION (44)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_EXECUTE_FUNCTION (45)
+	#define NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_NEW_FUNCTION (46)
+	#define NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION (47)
 #endif
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS	
-	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_NEW_FUNCTION (46)
-	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION (47)
+	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_NEW_FUNCTION (48)
+	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION (49)
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	#define NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST (48)
-	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION (49)
-	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION (50)
-	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_NEW_FUNCTION (51)
+	#define NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST (50)
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION (51)
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION (52)
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_NEW_FUNCTION (53)
 #endif
 #ifdef NLC_RECORD_ACTION_HISTORY
-	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT (52)
-	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (53)
+	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT (54)
+	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (55)
 #endif
 #ifdef NLC_SUPPORT_REDEFINITIONS
-	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (54)
+	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (56)
 #endif
-#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (55)			//param1class* param1 = NULL;
-#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (56)			//param1 = param2;
-#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY (57)			//param1class* param1 = param2;
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (57)			//param1class* param1 = NULL;
+#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (58)			//param1 = param2;
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY (59)			//param1class* param1 = param2;
 #ifdef NLC_SUPPORT_REDEFINITIONS
-	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_NEW_FUNCTION (58)
+	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_NEW_FUNCTION (60)
 #endif
 #ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
-	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_NEW_FUNCTION (59)
-	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_NEW_FUNCTION (60)
+	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_NEW_FUNCTION (61)
+	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_NEW_FUNCTION (62)
 #endif
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_EXECUTE_FUNCTION (61)
-	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_EXECUTE_FUNCTION (62)
+	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_EXECUTE_FUNCTION (63)
+	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_EXECUTE_FUNCTION (64)
 #endif
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 	//should be merged with moved in line with other cases above
-	#define NLC_CODEBLOCK_TYPE_REMOVE_PROPERTY (63)
-	#define NLC_CODEBLOCK_TYPE_REMOVE_CONDITION (64)
+	#define NLC_CODEBLOCK_TYPE_REMOVE_PROPERTY (65)
+	#define NLC_CODEBLOCK_TYPE_REMOVE_CONDITION (66)
 #endif
 #ifdef NLC_USE_MATH_OBJECTS
-	#define NLC_CODEBLOCK_TYPE_SET_MATH_NUMERICAL_VALUE (65)
-	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE (66)
-	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE (67)
+	#define NLC_CODEBLOCK_TYPE_SET_MATH_NUMERICAL_VALUE (67)
+	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE (68)
+	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE (69)
 	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE (68)
-		#define NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY (69)
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE (70)
+		#define NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY (71)
 		#ifdef NLC_USE_MATH_OBJECTS_STRING
-		#define NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE (70)
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE (71)
-		#define NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE (72)
+		#define NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE (72)
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE (73)
+		#define NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE (74)
 		#endif
 		#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-		#define NLC_CODEBLOCK_TYPE_SET_MATH_BOOLEAN_VALUE (73)
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOLEAN_POINTER_VARIABLE (74)
-		#define NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_BOOLEAN_VALUE (75)		
+		#define NLC_CODEBLOCK_TYPE_SET_MATH_BOOLEAN_VALUE (75)
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOLEAN_POINTER_VARIABLE (76)
+		#define NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_BOOLEAN_VALUE (77)		
 		#endif
 	#endif
 	#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
-		#define NLC_CODEBLOCK_TYPE_TEST_POINTER_VALUE (76)
+		#define NLC_CODEBLOCK_TYPE_TEST_POINTER_VALUE (78)
 	#endif
 #endif
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
-	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE (77)
+	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE (79)
 	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
-		#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION (78)
+		#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION (80)
 	#endif
 #endif
 
@@ -512,11 +514,11 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblo
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockIfHasCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName, int sentenceIndex);
-NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex);
+NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType);
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree);
 #endif
 #ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
-NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex);
+NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType);
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock* currentCodeBlockInTree);
 #endif
 	NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
@@ -532,12 +534,12 @@ NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedP
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
-	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType);
 	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree);
 	NLCcodeblock* createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 	#endif
 	#ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
-	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType);
 	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock* currentCodeBlockInTree);
 	#endif
 #endif

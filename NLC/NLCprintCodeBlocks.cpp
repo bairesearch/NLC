@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8a 09-September-2016
+ * Project Version: 1s8b 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -745,7 +745,18 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			
-			generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level);
+			generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, false);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_WITH_CAST_EXECUTE_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_WITH_CAST_EXECUTE_FUNCTION" << endl;
+			#endif
+
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
+			
+			generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, true);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION)
 		{
@@ -774,7 +785,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		#endif	
 		#ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION)
-		{//finish coding this
+		{
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION" << endl;
 			#endif
@@ -782,10 +793,21 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			
-			generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level);
+			generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, false);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_WITH_CAST_EXECUTE_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_WITH_CAST_EXECUTE_FUNCTION" << endl;
+			#endif
+
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
+			
+			generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, true);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION)
-		{//finish coding this
+		{
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION" << endl;
 			#endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8a 09-September-2016
+ * Project Version: 1s8b 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -90,7 +90,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 			contextFound = true;
 		}
 
-		addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity, genericListAppendName, generateContextBlocksVariables, sentenceIndex);
+		addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
 
 		if(!(generatedParentContext && !contextFound))
 		{
@@ -366,7 +366,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 						contextFound = true;
 					}
 
-					addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex);
+					addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
 
 					*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 					*lastCodeBlockInTree = *currentCodeBlockInTree;
@@ -382,7 +382,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 	return contextFound;
 }
 
-bool addPropertyToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, int sentenceIndex)
+bool addPropertyToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, int sentenceIndex, bool castToCategoryType)
 {
 	bool result = true;
 	
@@ -392,18 +392,18 @@ bool addPropertyToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityN
 		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
 		#endif
-		*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex);
+		*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex, castToCategoryType);
 	}
 	else
 	{
 		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
 		#endif
-		*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex);
+		*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex, castToCategoryType);
 	}
 	#else
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES
-	*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex);	
+	*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex, castToCategoryType);	
 	#else
 	*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryList(*currentCodeBlockInTree, entity, propertyEntity, genericListAppendName, sentenceIndex);
 	#endif
@@ -504,8 +504,8 @@ bool createCodeBlockForStatementsForNearestSubClassParentReference(NLCcodeblock*
 	{
 		cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES generateContextBlocksCategories{} error: !assumedToAlreadyHaveBeenDeclared: parentInstance = " << parentInstance->entityName << ", nearestSubclassParentEntity = " << nearestSubclassParentEntity->entityName << endl;
 		exit(0);
-	}	
-
+	}
+	
 	if(generateContext)
 	{
 		if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(nearestSubclassParentEntity), parentInstance, sentenceIndex, generateContextBlocksVariables))
@@ -518,13 +518,19 @@ bool createCodeBlockForStatementsForNearestSubClassParentReference(NLCcodeblock*
 		contextFound = true;
 	}
 					
-	addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, nearestSubclassParentEntity, genericListAppendName, generateContextBlocksVariables, sentenceIndex);
+	addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, nearestSubclassParentEntity, genericListAppendName, generateContextBlocksVariables, sentenceIndex, true);
 
 	*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 	*lastCodeBlockInTree = *currentCodeBlockInTree;
+	
+	#ifdef NLC_DEBUG
+	//cout << "createCodeBlockForStatementsForNearestSubClassParentReference{}: parentInstance = " << parentInstance->entityName << ", nearestSubclassParentEntity = " << nearestSubclassParentEntity->entityName << endl;
+	#endif
 	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
 	cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES createCodeBlockForStatementsForNearestSubClassParentReference{}: contextFound: parentInstance = " << parentInstance->entityName << ", nearestSubclassParentEntity = " << nearestSubclassParentEntity->entityName << endl;
 	#endif
+	
+	return contextFound;
 }
 
 #endif
@@ -2935,9 +2941,9 @@ void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCo
 {
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, generateInstanceName(childEntity), NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION, childEntity);	
+	*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, generateInstanceName(childEntity), NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION, childEntity, false);	
 	#else
-	*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, childEntity->entityName, NLC_ITEM_TYPE_CLASS_VAR_APPENDITION, childEntity);		//OR; ... , generateClassName(entity), "", ...		
+	*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, childEntity->entityName, NLC_ITEM_TYPE_CLASS_VAR_APPENDITION, childEntity, false);		//OR; ... , generateClassName(entity), "", ...		
 	#endif
 	#else
 	*currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, childEntity, childEntity);	//removed 1j10a, restored 1j12b for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES only, restored for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES 1l12a

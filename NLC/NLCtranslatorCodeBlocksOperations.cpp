@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -587,7 +587,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 									bool foundParentEntityNew = false;
 									GIAentityNode* parentEntityNew = NULL;
 
-									bool parseConditionParents = true;	//default value
+									bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 									bool checkIsDefinite = false;	//CHECKTHIS; support isolated definite objects, indefinite parents, and definite parents; eg 1. "the chicken that is next to the pie." , 2. "the chicken that is next to a dog's pie." and 3. "the chicken that is next to the dog's pie."
 									parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, entity, &foundParentEntityNew, parseConditionParents, checkIsDefinite);
 									if(isDefiniteEntity(objectEntity) || foundParentEntityNew)	//ie objectEntity is explicitly or implicitly definite
@@ -620,7 +620,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 											}
 											else
 											{
-												cout << "createCodeBlockForConnectionType{}: generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+												cout << "createCodeBlockForConnectionType{}: generateContextBlocksForParentEntity{} error: !generatedContextForChild" << endl;
 											}
 										}
 										if(generateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
@@ -1026,7 +1026,7 @@ bool hasConjunctionConditionConnection(GIAentityNode* conditionEntity, GIAentity
 	{
 		if((conditionEntity->NLClogicalConditionConjunctionIndex != logicalConditionConjunctionIndex) && (conditionEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE))
 		{
-			cout << "hasConjunctionConditionConnection() error: child of primaryEntityInLogicalConditionConjunctionSubset has been declared as pertaining to a different logicalConditionConjunctionSubset - is this a shared context?" << endl;
+			cout << "hasConjunctionConditionConnection{} error: child of primaryEntityInLogicalConditionConjunctionSubset has been declared as pertaining to a different logicalConditionConjunctionSubset - is this a shared context?" << endl;
 		}
 	}
 	*/
@@ -1088,7 +1088,7 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks{}: generateContextBasedOnDeclaredParent; currentEntity: ") + currentEntity->entityName + string(", parentEntity: ") + (*parentEntity)->entityName);
 		#endif
 
-		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree,* parentEntity, sentenceIndex, parseLogicalConditions, testOnly))
+		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, *parentEntity, sentenceIndex, parseLogicalConditions, testOnly))
 		{
 			//cout << "generateParentInitialisationCodeBlockWithChecks passed" << endl;
 			
@@ -1670,7 +1670,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 					if(!isDefiniteEntity(definitionEntity))
 					{
 						bool foundDefiniteParentOfEntity = false;
-						bool parseConditionParents = true;	//use default value here
+						bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 						bool checkIsDefinite = true;
 						GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(subjectEntity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
 						if(isDefiniteEntity(subjectEntity) || foundDefiniteParentOfEntity)
@@ -2018,7 +2018,7 @@ GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex, NLCgen
 			}
 		}
 	}
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_PARSE_CONDITION_PARENTS
 	if(!foundParentProperty && generateContextBlocksVariables->parseConditionParents)
 	{//added 1e9a
 		for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = currentEntity->incomingConditionNodeList->begin(); conditionNodeListIterator < currentEntity->incomingConditionNodeList->end(); conditionNodeListIterator++)
@@ -2096,7 +2096,7 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 	bool generatedContextForChild = false;
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
 	bool foundDefiniteParentEntityNew = false;
-	bool parseConditionParents = true;	//default value
+	bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 	bool checkIsDefinite = true;	//CHECKTHIS
 	GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(childEntity, sentenceIndex, entity, &foundDefiniteParentEntityNew, parseConditionParents, checkIsDefinite);
 	#ifdef NLC_DEBUG_PARSE_CONTEXT4
@@ -2119,7 +2119,7 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 		}
 		else
 		{
-			cout << "generateContextForChildEntity{}: generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+			cout << "generateContextForChildEntity{}: generateContextBlocksForParentEntity{} error: !generatedContextForChild" << endl;
 		}
 	}
 	#endif
@@ -2269,7 +2269,7 @@ GIAentityNode* getSameReferenceSetUniqueParent(GIAentityNode* currentEntity, int
 		}
 	}
 
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_PARSE_CONDITION_PARENTS
 	if(!foundParentProperty && parseConditionParents)
 	{//added 1e9a
 		for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = currentEntity->incomingConditionNodeList->begin(); conditionNodeListIterator < currentEntity->incomingConditionNodeList->end(); conditionNodeListIterator++)
@@ -2346,8 +2346,15 @@ GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parent
 			{
 				if(propertyConnection->sameReferenceSet)	//added 1n30a
 				{
-					childEntity = getSameReferenceSetSubstanceNonQualityChild(propertyEntity, sentenceIndex, foundChildEntity);
-					*foundChildEntity = true;
+					#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET
+					if(!(propertyConnection->rcmodIndicatesSameReferenceSet))	//added 1p2b
+					{
+					#endif
+						childEntity = getSameReferenceSetSubstanceNonQualityChild(propertyEntity, sentenceIndex, foundChildEntity);
+						*foundChildEntity = true;
+					#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET
+					}
+					#endif
 				}
 			}
 		}

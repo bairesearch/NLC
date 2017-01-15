@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -225,7 +225,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										bool indefiniteChild = false;
 										if(!isDefiniteEntity(entityNode))
 										{
-											bool parseConditionParents = true;	//default value
+											bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 											bool foundDefiniteParentEntity = false;
 											bool checkIsDefinite = true;
 											GIAentityNode* parentTemp = getSameReferenceSetUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents, checkIsDefinite);
@@ -476,7 +476,7 @@ bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCcla
 		}
 		else
 		{
-			cout << "generateClassHeirarchy() error: condition has no object" << endl;
+			cout << "generateClassHeirarchy{} error: condition has no object" << endl;
 		}
 
 		targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
@@ -982,7 +982,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 			}
 			else
 			{
-				cout << "generateSubstanceConceptClassNameRecurse() error: condition has no object" << endl;
+				cout << "generateSubstanceConceptClassNameRecurse{} error: condition has no object" << endl;
 			}
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 		}

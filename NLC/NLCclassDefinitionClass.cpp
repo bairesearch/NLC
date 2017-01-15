@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -155,7 +155,7 @@ NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition*>* cl
 	}
 	else
 	{
-		cout << "findClassDefinitionCondition() error: condition has no object" << endl;
+		cout << "findClassDefinitionCondition{} error: condition has no object" << endl;
 	}
 	return classDefinitionFound;
 }
@@ -453,7 +453,7 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 										#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 										if(!findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 										{
-											cout << "findFunctionDeclarationClassDefinition() error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 1" << endl;
+											cout << "findFunctionDeclarationClassDefinition{} error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 1" << endl;
 										}
 										#endif
 									}
@@ -480,7 +480,7 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 											#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 											if(!findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 											{
-												cout << "findFunctionDeclarationClassDefinition() error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 2" << endl;
+												cout << "findFunctionDeclarationClassDefinition{} error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 2" << endl;
 											}
 											#endif
 										}

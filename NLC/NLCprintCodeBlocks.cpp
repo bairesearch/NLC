@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1154,8 +1154,35 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setMathValueText = generateEntityName(param1) + progLangObjectReferenceDelimiter[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->value = param2;
+			string setMathValueText = generateCodeEntityMathValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->value = param2;
 			printLine(setMathValueText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE" << endl;
+			#endif
+			string declareNewDecimalPointerVariableText = generateCodeDeclareNewDecimalPointerVariableText(param1, progLang);	 //double* param1 = NULL;
+			printLine(declareNewDecimalPointerVariableText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_VALUE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_VALUE" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			string setDecimalPointerToEntityMathValueText = generateCodePointerValueText(param1, progLang) + progLangEquals[progLang] + generateCodeEntityMathValueText(param2, progLang) + progLangEndLine[progLang];	 //*param1 = param2->value;
+			printLine(setDecimalPointerToEntityMathValueText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE" << endl;
+			#endif
+			
+			string ifDecimalPointerNotNullText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param1->name + progLangIsNotEqualTo[progLang] + progLangNullPointer[progLang] + progLangCloseParameterSpace[progLang];	 //if(param1 != NULL)
+			printLine(ifDecimalPointerNotNullText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);	//{			
 		}
 		#endif		
 		/*
@@ -1274,7 +1301,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			else
 			{
-				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString() error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
+				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{} error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
 			}
 		}	
 		#endif
@@ -1294,7 +1321,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			else
 			{
-				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString() error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
+				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{} error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
 			}
 		}
 		

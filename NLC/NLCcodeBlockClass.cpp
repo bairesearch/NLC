@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,7 +105,7 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	searchSubstanceConceptsForChildren = true;
 	#endif
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_PARSE_CONDITION_PARENTS
 	parseConditionParents = true;
 	#endif
 	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
@@ -1252,7 +1252,7 @@ bool getEntityContext(GIAentityNode* entity, vector<string>* context, bool inclu
 					}
 					else
 					{
-						cout << "getEntityContext() error: !foundNode" << endl;
+						cout << "getEntityContext{} error: !foundNode" << endl;
 					}
 				}
 			}
@@ -1459,7 +1459,7 @@ NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* cu
 	}
 	else
 	{
-		cout << "createCodeBlockLogicalConditionHasBools() error: invalid logicalOperation: " << logicalOperation << endl;
+		cout << "createCodeBlockLogicalConditionHasBools{} error: invalid logicalOperation: " << logicalOperation << endl;
 	}
 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -1478,7 +1478,7 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 	}
 	else
 	{
-		cout << "generateLogicalConditionConjunctionBooleanName() error: invalid logicalOperation: " << logicalOperation << endl;
+		cout << "generateLogicalConditionConjunctionBooleanName{} error: invalid logicalOperation: " << logicalOperation << endl;
 	}
 	
 	return logicalConditionConjunctionBooleanName;
@@ -1498,7 +1498,7 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 	}
 	else
 	{
-		cout << "generateLogicalConditionConjunctionBooleanName() error: invalid logicalOperation: " << logicalOperation << endl;
+		cout << "generateLogicalConditionConjunctionBooleanName{} error: invalid logicalOperation: " << logicalOperation << endl;
 	}
 	return logicalConditionConjunctionBooleanName;
 }
@@ -2791,7 +2791,44 @@ NLCcodeblock* createCodeBlockSetMathValue(NLCcodeblock* currentCodeBlockInTree, 
 	
 	return currentCodeBlockInTree;
 }
+
+NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
+{
+	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE;
+
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity)
+{
+	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
+	
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_VALUE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+//check that pointer is not NULL
+NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
+{
+	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
 #endif
+
 
 
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER

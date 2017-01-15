@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -184,7 +184,7 @@ string removeClassTextFromClassDefinitionName(string className)
 	}
 	else
 	{
-		cout << "removeClassTextFromClassDefinitionName() error: (classTextIndex == CPP_STRING_FIND_RESULT_FAIL_VALUE)" << endl;
+		cout << "removeClassTextFromClassDefinitionName{} error: (classTextIndex == CPP_STRING_FIND_RESULT_FAIL_VALUE)" << endl;
 	}
 	return classNameRaw;
 }

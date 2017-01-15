@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -647,7 +647,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p2a 12-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p2b 12-June-2015" << endl;
 			exit(1);
 		}
 
@@ -673,28 +673,28 @@ int main(int argc,char* *argv)
 		{
 			if(!getFilesFromFileList2(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2{}" << endl;
+				cout << "main{} error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 		if(useInputTextNLPrelationXMLFile)
 		{
 			if(!getFilesFromFileList2(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2{}" << endl;
+				cout << "main{} error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 		if(useInputTextNLPfeatureXMLFile)
 		{
 			if(!getFilesFromFileList2(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2{}" << endl;
+				cout << "main{} error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 		if(useInputTextXMLFile)
 		{
 			if(!getFilesFromFileList2(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2{}" << endl;
+				cout << "main{} error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 	}
@@ -740,7 +740,7 @@ int main(int argc,char* *argv)
 		}
 		else
 		{
-			cout << "main() error: !preprocessTextForNLC{}" << endl;
+			cout << "main{} error: !preprocessTextForNLC{}" << endl;
 			exit(0);
 		}
 
@@ -1271,7 +1271,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
+						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, (*connectionIter)->rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
@@ -1282,7 +1282,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
+						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, (*connectionIter)->rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
@@ -1294,7 +1294,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					int numberOfDuplicateConnections = actionEntity->actionSubjectEntity->size();
 					if(numberOfDuplicateConnections != actionEntity->actionObjectEntity->size())
 					{
-						cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: numberOfDuplicateConnections inconsistent between action object and action subject" << endl;
+						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: numberOfDuplicateConnections inconsistent between action object and action subject" << endl;
 						exit(0);
 					}
 					for(int i=0; i < numberOfDuplicateConnections; i++)
@@ -1310,10 +1310,10 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						#endif
 						if(sentenceIndex != (actionEntity->actionObjectEntity->back())->sentenceIndexTemp)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sentenceIndex inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sentenceIndex inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
-						#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+						
 						//added 1i8g
 						bool sameReferenceSet = (actionEntity->actionSubjectEntity->back())->sameReferenceSet;
 						#ifdef NLC_DEBUG
@@ -1321,10 +1321,23 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						#endif
 						if(sameReferenceSet != (actionEntity->actionObjectEntity->back())->sameReferenceSet)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sameReferenceSet inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sameReferenceSet inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
+						#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
+						bool rcmodIndicatesSameReferenceSet = (actionEntity->actionSubjectEntity->back())->rcmodIndicatesSameReferenceSet;
+						#ifdef NLC_DEBUG
+						//cout << "rcmodIndicatesSameReferenceSet = " << rcmodIndicatesSameReferenceSet << endl;
 						#endif
+						if(rcmodIndicatesSameReferenceSet != (actionEntity->actionObjectEntity->back())->rcmodIndicatesSameReferenceSet)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: rcmodIndicatesSameReferenceSet inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						#else
+						rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
+						#endif
+						
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
 						bool isReference = (actionEntity->actionSubjectEntity->back())->isReference;
 						#ifdef NLC_DEBUG
@@ -1332,7 +1345,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						#endif
 						if(isReference != (actionEntity->actionObjectEntity->back())->isReference)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: isReference inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: isReference inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						#endif
@@ -1365,7 +1378,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						foundConnection = false;
@@ -1395,7 +1408,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						foundConnection = false;
@@ -1425,7 +1438,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						foundConnection = false;
@@ -1455,7 +1468,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}			
 
@@ -1468,8 +1481,8 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						setCurrentSentenceIndex(sentenceIndex);
 						#endif
 						//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-						GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
-						GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
+						GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
+						GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
 						#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 						if(actionEntity->negative)
 						{
@@ -1477,13 +1490,10 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							propertyConnectionReverse->negative = true;	//not used
 						}
 						#endif
-						#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
-						//added 1i8g
-						if(sameReferenceSet)
-						{
-							propertyConnection->sameReferenceSet = true;
-							propertyConnectionReverse->sameReferenceSet = true;
-						}
+						#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+						//imitates old code before 1i8g fix:
+						propertyConnection->sameReferenceSet = false;
+						propertyConnectionReverse->sameReferenceSet = false;
 						#endif
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
 						//added 1l8h - NB overwrite isReference is required these values will have been incorrectly determined by writeVectorConnection() - an alternative means of correction would be to use "int sentenceIndex = (actionEntity->actionSubjectEntity->front())->sentenceIndexTemp;", as the first connection added between 2 nodes is always deemed to be !isReference, and all additional connections are auto designated as isReference

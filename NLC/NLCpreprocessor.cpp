@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -301,7 +301,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						int sentenceLogicalConditionOperator;
 						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
-							cout << "preprocessTextForNLC() error: !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
+							cout << "preprocessTextForNLC{} error: !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
 						}
 						#endif	
 						
@@ -341,7 +341,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 									else
 									{
 										//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
-										cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
+										cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
 										exit(0);
 									}
 								}
@@ -366,7 +366,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							#endif
 							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine)
 							{
-								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
+								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
 								exit(0);
 							}
 							else
@@ -554,7 +554,7 @@ bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
 
 	if(readingQuotation)
 	{
-		cout << "reduceQuotesToSingleWords() error; quotation mark not ended on current line. Multiline quotations are not currently supported by NLC" << endl;
+		cout << "reduceQuotesToSingleWords{} error; quotation mark not ended on current line. Multiline quotations are not currently supported by NLC" << endl;
 		result = false;
 	}
 	

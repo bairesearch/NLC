@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -802,6 +802,30 @@ string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang)
 	string classNameVariableDefinitionDefaultText = progLangClassNameVariableType[progLang] + param1->name;	//string name
 	return classNameVariableDefinitionDefaultText;
 }
+
+
+#ifdef NLC_USE_MATH_OBJECTS
+string generateCodeEntityMathValueText(NLCitem* param1, int progLang)
+{
+	string entityMathValueText = generateEntityName(param1) + progLangObjectReferenceDelimiter[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME);		//param1->value;
+	return entityMathValueText;
+}
+string generateCodeEntityMathValueText(string entityName, int progLang)
+{
+	string entityMathValueText = entityName + progLangObjectReferenceDelimiter[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME);		//param1->value;
+	return entityMathValueText;
+}
+string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang)
+{
+	string declareNewDecimalPointerVariableText = progLangDecimalPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //double* param1 = NULL;
+	return declareNewDecimalPointerVariableText;
+}
+string generateCodePointerValueText(NLCitem* param1, int progLang)
+{
+	string pointerValueText = progLangPointer[progLang] + param1->name;	//*param1
+	return pointerValueText;
+}
+#endif
 
 
 

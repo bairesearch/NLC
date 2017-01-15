@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -78,8 +78,14 @@
 		#define NLC_USE_MATH_OBJECTS_VALUE_NAME "value"
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_SUPPORT_FRACTIONAL_VALUES	//e.g. 5.5
 	#endif	
+	#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
+		#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET	//added 1p2b
+	#endif
+	//#ifdef NLC_PREPROCESSOR_MATH
+		#define NLC_PARSE_CONDITION_PARENTS	//enforced 1p2b - this is now required by default (irrespective of NLC_NORMALISE_INVERSE_PREPOSITIONS) for at least generateCodeBlocksFromMathTextNLPparsablePhrase() part 2A and part 2B, such that the primary entity in the nlp parsable phrase can be identified
+	//#endif
 #endif
-
+	
 #ifndef NLC_DISABLE_1o_CODE_FOR_DEBUG
 	#ifndef GIA_LRP_REDUCE_QUOTES_TO_SINGLE_WORDS
 		#define NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
@@ -131,6 +137,9 @@
 #ifndef NLC_DISABLE_1m_CODE_FOR_DEBUG
 	#ifdef GIA_LRP_NORMALISE_INVERSE_PREPOSITIONS
 		#define NLC_NORMALISE_INVERSE_PREPOSITIONS
+		#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+			#define NLC_PARSE_CONDITION_PARENTS
+		#endif
 	#endif
 	#ifdef GIA_LRP_NORMALISE_TWOWAY_PREPOSITIONS
 		#define NLC_NORMALISE_TWOWAY_PREPOSITIONS
@@ -144,6 +153,7 @@
 #else
 	#define NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION ""
 #endif
+#define NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE (true)
 
 #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 	#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//added 1e, removed 1j2b+, optional 1k11a+

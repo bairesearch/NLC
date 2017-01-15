@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -219,6 +219,7 @@ static string progLangTrue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"true", "true
 static string progLangInteger[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
 static string progLangForIndex[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"index", "index", "index", "index", "index", "index", "index"};
 static string progLangDecimalType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double ", "double ", "double ", "double ", "double ", "double ", "double "};
+static string progLangDecimalPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double* ", "double* ", "double* ", "double* ", "double* ", "double* ", "double* "};
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};
@@ -250,6 +251,7 @@ static string progLangEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ",
 static string progLangSizeOfList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"size()", "size()", "size()", "size()", "size()", "size()", "size()"};
 static string progLangLessThan[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" < ", " < ", " < ", " < ", " < ", " < ", " < "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN
 static string progLangLessThanOrEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" <= ", " <= ", " <= ", " <= ", " <= ", " <= ", " <= "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN_OR_EQUAL_TO
+static string progLangIsNotEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" != ", " != ", " != ", " != ", " != ", " != ", " != "};	//NO: must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_IS_NOT_EQUAL_TO
 
 #ifdef NLC_USE_ADVANCED_REFERENCING
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
@@ -462,5 +464,12 @@ string generateCodeReturnText(string variableName, int progLang);
 
 string generateCodeClassNameVariableDefinitionText(NLCitem* param1, int progLang);
 string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
+
+#ifdef NLC_USE_MATH_OBJECTS
+string generateCodeEntityMathValueText(NLCitem* param1, int progLang);
+string generateCodeEntityMathValueText(string entityName, int progLang);
+string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);
+string generateCodePointerValueText(NLCitem* param1, int progLang);
+#endif
 
 #endif

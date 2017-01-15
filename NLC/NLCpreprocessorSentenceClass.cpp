@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,6 +54,10 @@ NLCsentence::NLCsentence(void)
 	mathText = "";
 	mathTextNLPparsablePhraseIndex = INT_DEFAULT_VALUE;
 	mathTextNLPparsablePhraseTotal = INT_DEFAULT_VALUE;
+	#ifdef NLC_USE_MATH_OBJECTS
+	mathTextIdentifiesMathValue = false;
+	//mathTextNLPparsablePhraseIdentifiesMathValue = false;
+	#endif
 	#endif
 	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
 	sentenceOriginal = "";
@@ -119,7 +123,7 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringNLPparsableWord() error: phrase.length() == 0" << endl;
+		//cout << "isStringNLPparsableWord{} error: phrase.length() == 0" << endl;
 	}
 	
 	if(isStringValidVariableName(phrase, preprocessorMath))
@@ -174,7 +178,7 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 {
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringValidVariableName() error: phrase.length() == 0" << endl;
+		//cout << "isStringValidVariableName{} error: phrase.length() == 0" << endl;
 	}
 	
 	bool stringIsNLPparsableWord = true;
@@ -226,7 +230,7 @@ bool isStringNumberPreprocessorMath(string phrase)
 	bool stringIsNumber = true;
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringNumberPreprocessorMath() error: phrase.length() == 0" << endl;
+		//cout << "isStringNumberPreprocessorMath{} error: phrase.length() == 0" << endl;
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
@@ -246,7 +250,7 @@ bool isStringNumberOrFractional(string phrase)
 	bool stringIsNumberOrFractional = true;
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringNumberOrFractional() error: phrase.length() == 0" << endl;
+		//cout << "isStringNumberOrFractional{} error: phrase.length() == 0" << endl;
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{

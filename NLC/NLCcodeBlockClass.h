@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -144,6 +144,8 @@
 #endif
 #ifdef NLC_USE_MATH_OBJECTS
 	#define NLC_CODEBLOCK_TYPE_SET_MATH_VALUE (65)
+	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE (66)
+	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_VALUE (67)
 #endif
 
 //containers:
@@ -215,6 +217,9 @@
 #define NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY (135)			//if(param1 == param2){
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_EXECUTE_FUNCTION (136)
+#endif
+#ifdef NLC_USE_MATH_OBJECTS
+	#define NLC_CODEBLOCK_TYPE_CHECK_DECIMAL_POINTER_VALUE (137)
 #endif
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
@@ -295,7 +300,7 @@ public:
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	bool searchSubstanceConceptsForChildren;
 	#endif
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_PARSE_CONDITION_PARENTS
 	bool parseConditionParents;
 	#endif
 	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
@@ -579,7 +584,11 @@ NLCcodeblock* createCodeBlockAddConditionNewFunction(NLCcodeblock* currentCodeBl
 
 #ifdef NLC_USE_MATH_OBJECTS
 NLCcodeblock* createCodeBlockSetMathValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
+NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string DecimalPointerVariableName);
+NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);
 #endif
+
 
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 bool checkNumericalReferenceToEntity(GIAentityNode* entity);

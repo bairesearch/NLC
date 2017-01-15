@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2a 12-June-2015
+ * Project Version: 1p2b 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -291,7 +291,7 @@ int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode* conditio
 	}
 	else
 	{
-		cout << "addConjunctionsConnectedToConditionConjunctionObject() error: !conditionHasObject" << endl;
+		cout << "addConjunctionsConnectedToConditionConjunctionObject{} error: !conditionHasObject" << endl;
 	}
 	return maximumNumberOfConjunctions + 1;
 }
@@ -400,7 +400,7 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 
 							if(conditionObject->isConcept)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "conditionObject = " << conditionObject->entityName;
 							}
 							else
@@ -409,7 +409,7 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 							}
 							if(conditionSubject->isConcept)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "conditionSubject = " << conditionSubject->entityName;
 							}
 							else
@@ -504,7 +504,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 		#endif
 	}
 	#else
-	cout << "reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
+	cout << "reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition{} error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
 	exit(0);
 	#endif
 }

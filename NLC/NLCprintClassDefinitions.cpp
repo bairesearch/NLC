@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k17b 25-October-2014
+ * Project Version: 1l1a 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -63,6 +63,7 @@ public:
 */
 bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code)
 {
+	bool result = true;
 	printLine(progLangDependenciesStandardLibaries[progLang], 0, code);
 	printLine("", 0, code);
 	printLine("", 0, code);
@@ -78,9 +79,11 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			{
 				if(!(classDefinition->isActionOrConditionInstanceNotClass))
 				{
+					//cout << "\t classDefinition->name:" << classDefinition->name << endl;
+
+					bool printedParentClassDefinitions = true;
 					#ifdef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES
 					//only print class definitions once their parent class definitions have been printed
-					bool printedParentClassDefinitions = true;
 					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 					{
 						NLCclassDefinition * targetClassDefinition = *localListIter;
@@ -124,7 +127,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						}
 					}
 					#endif
-
+					
 					if(printedParentClassDefinitions)
 					{//only print class definitions once their parent class definitions have been printed
 
@@ -220,7 +223,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 								string functionArguments = "";
 								//cout << "function targetName = " << targetName << endl;
 
-								generateFunctionArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
+								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 								string localListDeclarationText = progLangClassMemberFunctionDefaultType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 								printLine(localListDeclarationText, 1, code);
 							#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
@@ -260,10 +263,10 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			stillUnprintedClassDefinitions = false;
 		}
 	}
-	return true;
+	return result;
 }
 
-void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*> * parameters, string * functionArguments, int progLang)
+void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vector<NLCitem*> * parameters, string * functionArguments, int progLang)
 {
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
@@ -293,6 +296,20 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*
 		}
 		#endif
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
+			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);	
+			#else
+			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
+			#endif
+		}
+		#endif
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION)
 		{
 			if(*functionArguments != "")
@@ -418,6 +435,12 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionL
 			functionArgumentFound = true;
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
+		{
+			functionArgumentFound = true;
+		}
+		#endif
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION)
 		{
 			functionArgumentFound = true;
@@ -446,7 +469,19 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionL
 			{
 				if(!(localClassDefinition->printed))
 				{
-					functionArgumentsPrinted = false;
+					cout << "!printed: localClassDefinition->name = " << localClassDefinition->name << endl;
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)	//NB function subject entity cant be printed without its function, and function cant be printed without its subject
+					{
+					#endif
+						functionArgumentsPrinted = false;
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					}
+					#endif
+				}
+				else
+				{
+					cout << "printed: localClassDefinition->name = " << localClassDefinition->name << endl;
 				}
 			}
 			else
@@ -455,7 +490,14 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionL
 				if(!((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)))
 				{//NB function definition/declaration names and function object names will not necessarily have a class definition (they will if the function is executed, or if the function object is used)
 				#endif
-					cout << "arefunctionArgumentsPrinted(): error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
+					{
+					#endif
+						cout << "arefunctionArgumentsPrinted(): error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					}
+					#endif
 				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS	
 				}
 				#endif

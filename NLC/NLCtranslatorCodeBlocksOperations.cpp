@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k17b 25-October-2014
+ * Project Version: 1l1a 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -132,7 +132,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
 				
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-				*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionObjectItem, functionSubjectItem);
+				*currentCodeBlockInTree = createCodeBlockExecuteSubjectObject(*currentCodeBlockInTree, functionItem, functionSubjectItem, functionObjectItem);
 			}
 			else
 			{
@@ -141,7 +141,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				#endif
 				
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-				*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionObjectItem);
+				*currentCodeBlockInTree = createCodeBlockExecuteObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
 			}
 			
 
@@ -161,7 +161,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
 				
 			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+			*currentCodeBlockInTree = createCodeBlockExecuteSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
 
 			actionEntity->NLCparsedForCodeBlocks = true;
 			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
@@ -181,7 +181,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		if(actionHasObject || actionHasSubject || actionIsSingleWord)
 		{
 			#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
-			generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
+			generateFunctionDeclarationArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
 			#endif
 
 			//detect action properties and conditions (and disable these for NLC generate code block parse: they will become function execution arguments)
@@ -369,6 +369,8 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
 		#endif
 		
+		/*
+
 		//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
 		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
 		{
@@ -384,6 +386,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 				}
 			}
 		}
+		*/
 
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN

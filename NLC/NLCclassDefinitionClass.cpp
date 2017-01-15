@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k17b 25-October-2014
+ * Project Version: 1l1a 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -377,7 +377,9 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 				#endif
 					NLCclassDefinition * parentFunctionOwnerClassDef = NULL;
 					NLCclassDefinition * parentFunctionObjectClassDef = NULL;
-					//NLCitem * functionOwnerArgument = NULL;
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					NLCitem * functionOwnerArgument = NULL;
+					#endif
 					NLCitem * functionObjectArgument = NULL;
 					bool passFunctionDefinitionRequirements = true;
 					#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -415,12 +417,12 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 										#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 										cout << "2 findParentClass(currentClassDef, generateClassName(functionOwnerName), 0, &inheritanceLevel, &parentFunctionOwnerClassDef)" << endl;
 										#endif
-										/*
+										#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 										if(!findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 										{
-											cout << "findFunctionDeclarationClassDefinition() error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER" << endl;
+											cout << "findFunctionDeclarationClassDefinition() error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 1" << endl;
 										}
-										*/
+										#endif
 									}
 								}
 							}
@@ -445,12 +447,12 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 											#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 											cout << "2 findParentClass(currentClassDef, generateClassName(functionOwnerName), 0, &inheritanceLevel, &parentFunctionOwnerClassDef)" << endl;
 											#endif
-											/*
+											#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 											if(!findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 											{
-												cout << "findFunctionDeclarationClassDefinition() error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER" << endl;
+												cout << "findFunctionDeclarationClassDefinition() error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 2" << endl;
 											}
-											*/
+											#endif
 										}
 									}
 								}

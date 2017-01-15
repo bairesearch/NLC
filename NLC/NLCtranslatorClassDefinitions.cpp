@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k17b 25-October-2014
+ * Project Version: 1l1a 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -235,21 +235,22 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 											}
 
 											classDefinition->functionList.push_back(targetClassDefinition);
+
+											#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+											//hasActionOwner is true for all actions (targetClassDefinition) with subjects (classDefinition);
+											//added 1k18a for dynamic casting of children
+											NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
+											targetClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
+											#endif
+												
 											NLCitem * classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
 											targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+
 											if(hasActionObject)
 											{
 												NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
 												targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 											}
-
-											/*
-											#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-											//added 1k9c for dynamic casting of children
-											NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
-											targetClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
-											#endif
-											*/
 
 											#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 											//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
@@ -447,14 +448,17 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 								functionDependency->functionName = functionName;
 								functionDependency->functionOwnerName = functionOwnerName;
 								functionDependency->functionObjectName = functionObjectName;
+								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH
+								functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;	//changed from true 1k18a
+								#else
 								functionDependency->hasFunctionOwnerClass = true;
+								#endif
 								functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
 								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 								functionDependency->isReference = true;
 								#endif
 								parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 								functionDependencyList->push_back(functionDependency);
-						//#endif
 
 								string functionOwnerClassDefinitionName = "";
 								if(hasActionSubject)
@@ -515,21 +519,25 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 									#endif
 
 									functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
+									
+									#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+									//added 1k18a for dynamic casting of children
+									if(hasFunctionOwnerClass)
+									{
+										NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
+										functionClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
+									}
+									#endif
+																		
 									NLCitem * classDeclarationFunctionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
 									functionClassDefinition->parameters.push_back(classDeclarationFunctionItem);
-									if(hasActionObject)
+									
+									if(hasFunctionObjectClass)
 									{
 										NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
 										functionClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 									}
 
-									/*
-									#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-									//added 1k9c for dynamic casting of children
-									NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
-									functionClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
-									#endif
-									*/
 
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 									//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
@@ -537,10 +545,8 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 									//#endif
 									#endif
 								}
-						//#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 							}
 						}
-						//#endif
 					}
 				}
 			}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k17b 25-October-2014
+ * Project Version: 1l1a 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -63,184 +63,6 @@ NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContaine
 {
 }
 #endif
-
-NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition *> * classDefinitionList, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, int functionIndex)
-{
-	NLCclassDefinitionFunctionDependency * functionDependency = NULL;
-	 
-	string functionName = "";
-	string functionOwnerName = "";
-	string functionObjectName = "";
-	bool hasFunctionOwnerClass = false;
-	bool hasFunctionObjectClass = false;
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog::fight"
-		
-	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-	bool createClassDefinition = true;
-	#else
-	bool createClassDefinition = false;
-	#endif
-	
-	string functionClassDefinitionName = functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
-	string functionOwnerClassDefinitionName = "";
-	bool passNewFunctionDefinitionChecks = true;
-	if(hasFunctionOwnerClass)
-	{
-		functionOwnerClassDefinitionName = generateClassName(functionOwnerName);
-	}
-	else
-	{
-		#ifdef NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT
-		functionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
-		#else
-		passNewFunctionDefinitionChecks = false;
-		#endif
-	}
-	if(passNewFunctionDefinitionChecks)
-	{	
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED	
-		cout << "createNewClassDefinitionFunctionDeclaration (!isReference): functionName  = " << functionName << endl;
-		#endif
-		NLCclassDefinitionFunctionDependency * parentFunctionDependencyTemp = NULL;
-		bool hasParent = false;
-		bool isReference = false;
-		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, hasParent, parentFunctionDependencyTemp, functionDependencyList, isReference, createClassDefinition);
-	}
-	
-	functionDependency->functionNameListIndex = functionIndex;
-	
-	return functionDependency;
-}
-
-NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, bool isReference, bool createClassDefinition)
-{
-	NLCclassDefinitionFunctionDependency * functionDependency = NULL;
-
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-	bool duplicateFunctionDeclarationDetected = false;
-	bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependency);
-	if(foundFunctionDependencyInList)
-	{
-		//cout << "findFunctionDependencyInList" << endl;
-		if(hasParent)
-		{
-			//cout << "findFunctionDependencyInList" << endl;
-			NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
-			bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
-			if(!foundFunctionDependencyInParent)
-			{
-				//cout << "!foundFunctionDependencyInParent" << endl;
-				parentFunctionDependency->functionDependencyList.push_back(functionDependency);
-			}
-			else
-			{
-				//cout << "foundFunctionDependencyInParent" << endl;
-				//duplicate function declarations will be ignored
-				duplicateFunctionDeclarationDetected = true;
-			}
-		}
-		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-		if(!isReference)
-		{
-			functionDependency->isReference = false;	//upgrade isReference value (!isReference takes priority)
-		}
-		#endif
-	}
-	else
-	{
-		//cout << "!findFunctionDependencyInList" << endl;
-		functionDependency = new NLCclassDefinitionFunctionDependency();
-		functionDependency->functionName = functionName;
-		functionDependency->functionOwnerName = functionOwnerName;
-		functionDependency->functionObjectName = functionObjectName;
-		functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;
-		functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
-		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-		functionDependency->isReference = isReference;	
-		#endif
-		if(hasParent)
-		{
-			parentFunctionDependency->functionDependencyList.push_back(functionDependency);
-		}
-		functionDependencyList->push_back(functionDependency);
-	}
-	#endif
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-	if(!foundFunctionDependencyInList)
-	{
-	#endif
-		if(createClassDefinition)
-		{
-			//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
-			bool foundClassDefinition = false;
-			NLCclassDefinition * functionOwnerClassDefinition = findClassDefinition(classDefinitionList, functionOwnerClassDefinitionName, &foundClassDefinition);	//see if class definition already exists
-			if(!foundClassDefinition)
-			{
-				functionOwnerClassDefinition = new NLCclassDefinition(functionOwnerClassDefinitionName);
-				classDefinitionList->push_back(functionOwnerClassDefinition);
-				//cout << "!foundClassDefinition" << endl;
-			}
-			//cout << "generateClassHeirarchy: " << functionOwnerClassDefinitionName << endl;
-
-			bool foundTargetClassDefinition = false;
-			NLCclassDefinition * functionClassDefinition = findClassDefinition(classDefinitionList, functionClassDefinitionName, &foundTargetClassDefinition);	//see if class definition already exists
-			if(!foundTargetClassDefinition)
-			{
-				//cout << "new NLCclassDefinition(" << functionClassDefinitionName << endl;
-				functionClassDefinition = new NLCclassDefinition(functionClassDefinitionName);
-				classDefinitionList->push_back(functionClassDefinition);
-			}
-
-			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-			functionClassDefinition->functionDependency = functionDependency;
-			#endif
-
-			functionClassDefinition->functionNameSpecial = generateFunctionName(functionName);
-			/*no longer supported;
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-			functionClassDefinition->actionOrConditionInstance = targetEntity;
-			#endif
-			*/
-
-			functionClassDefinition->isActionOrConditionInstanceNotClass = true;
-			//cout << "functionOwnerClassDefinition->isActionOrConditionInstanceNotClass" << endl;
-
-			functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
-
-			NLCitem * classDeclarationFunctionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);
-			functionClassDefinition->parameters.push_back(classDeclarationFunctionItem);
-			if(hasFunctionObjectClass)
-			{
-				//NLCitem * classDeclarationFunctionObjectItem = new NLCitem(functionObject, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);
-				NLCitem * classDeclarationFunctionObjectItem = new NLCitem(functionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);
-				functionClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
-			}
-
-			/*
-			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-			if(hasFunctionOwnerClass)
-			{
-				//added 1k9c for dynamic casting of children
-				NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
-				functionClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
-			}
-			#endif
-			*/
-			/*no longer supported;
-			#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-			//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
-			generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(functionClassDefinition->parameters));
-			//#endif
-			#endif
-			*/
-		}
-
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-	}
-	#endif
-	
-	return functionDependency;
-}
 		
 bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency * functionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
 {
@@ -640,32 +462,6 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 	#else
 	cout << "reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
 	exit(0);
-	/*
-	NLCclassDefinition * classDefinitionFound = NULL;
-	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
-	{
-		NLCclassDefinition * currentClassDef = *classDefinitionIter;
-		//cout << "currentClassDef->name = " << currentClassDef->name << endl;
-		for(vector<NLCclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
-		{
-			NLCclassDefinition * functionDeclaration = *localListIter;
-			//cout << "functionDeclaration->functionNameSpecial = " << functionDeclaration->functionNameSpecial << endl;
-			//cout << "functionName = " << functionName << endl;
-			if(functionDeclaration->functionNameSpecial == generateFunctionName(functionName))
-			{
-				if((currentClassDef->name == generateClassName(functionOwnerName)) || !hasFunctionOwnerClass)
-				{
-					#ifdef NLC_DEBUG
-					cout << "reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() functionName = " << functionName << endl;
-					#endif
-					//contrast and compare function class arguments vs
-
-					findFormalFunctionArgumentCorrelateInExistingList(functionDeclaration, &(firstCodeBlockInTree->parameters), classDefinitionList);
-				}
-			}
-		}
-	}	
-	*/
 	#endif
 }
 
@@ -750,135 +546,6 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinit
 }
 
 #endif
-
-
-#else
-/*
-bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionDeclaration, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
-{
-	bool result = true;
-	vector<NLCitem*> * existingFunctionArgumentList = &(functionDeclaration->parameters);
-
-	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
-	{
-		NLCitem * formalFunctionArgument = *parametersIterator;
-		if((formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION) || (formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT))	//OLD before 1k9b - if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
-		{
-			NLCclassDefinition * classDefinitionCorrespondingToExistingFunctionArgument = NULL;
-			NLCclassDefinition * classDefinitionCorrespondingToFormalFunctionArgument = NULL;	//not used
-			NLCitem * existingFunctionArgument = NULL;
-			bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
-			int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLC_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;
-			
-			#ifdef NLC_DEBUG
-			cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
-			#endif
-			for(vector<NLCitem*>::iterator parametersIterator = existingFunctionArgumentList->begin(); parametersIterator < existingFunctionArgumentList->end(); parametersIterator++)
-			{
-				NLCitem * currentExistingFunctionArgument = *parametersIterator;
-
-				bool foundClassDefinitionCorrespondingToExistingFunctionArgument = false;
-				classDefinitionCorrespondingToExistingFunctionArgument = findClassDefinition(classDefinitionList, currentExistingFunctionArgument->className, &foundClassDefinitionCorrespondingToExistingFunctionArgument);
-
-				if(foundClassDefinitionCorrespondingToExistingFunctionArgument)
-				{
-					#ifdef NLC_DEBUG
-					cout << "foundClassDefinitionCorrespondingToExistingFunctionArgument: " << classDefinitionCorrespondingToExistingFunctionArgument->name << endl;
-					#endif
-					if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
-					{//CHECKTHIS; do not currently distinguish between plural and singular variables - this will need to be updated in future
-						int inheritanceLevel = 0;
-						NLCclassDefinition * tempClassDef = NULL;
-						//cout << "classDefinitionCorrespondingToExistingFunctionArgument->name = " << classDefinitionCorrespondingToExistingFunctionArgument->name << endl;
-						//cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
-						if(findParentClass(classDefinitionCorrespondingToExistingFunctionArgument, formalFunctionArgument->className, 0, &inheritanceLevel, &tempClassDef))
-						{
-							if(inheritanceLevel < foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel)
-							{
-								//cout << "foundFormalFunctionArgumentCorrelateForExistingArgument" << endl;
-								foundFormalFunctionArgumentCorrelateForExistingArgument = true;
-								foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = inheritanceLevel;
-								classDefinitionCorrespondingToFormalFunctionArgument = tempClassDef;
-								existingFunctionArgument = currentExistingFunctionArgument;
-							}
-						}
-					}
-					else
-					{
-						//cout << "unsupported function argument: formalFunctionArgument->itemType = " << formalFunctionArgument->itemType << endl;
-					}
-				}
-				else
-				{
-					cout << "findFormalFunctionArgumentCorrelateInExistingList() error: !foundClassDefinitionCorrespondingToExistingFunctionArgument: " << currentExistingFunctionArgument->className << endl;
-				}
-			}
-			if(foundFormalFunctionArgumentCorrelateForExistingArgument)
-			{
-				existingFunctionArgument->functionArgumentCertified = true;
-
-				//store cast information for more generic class type passed as function argument
-				if(existingFunctionArgument->className != formalFunctionArgument->className)
-				{
-					existingFunctionArgument->functionArgumentPassCastClassName = formalFunctionArgument->className;
-					existingFunctionArgument->functionArgumentPassCastRequired = true;
-				}
-			}
-		}
-		else if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
-		{
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-			bool foundFunctionArgumentInActionSubjectContents = false;
-			GIAentityNode * actionEntity = functionDeclaration->actionOrConditionInstance;
-			if(!(actionEntity->actionSubjectEntity->empty()))
-			{
-				GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
-				//cout << "actionSubject = " << actionSubject->entityName << endl;
-				//cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
-				if(formalFunctionArgument->className == generateClassName(actionSubject))
-				{
-					foundFunctionArgumentInActionSubjectContents = true;
-					#ifdef NLC_DEBUG
-					cout << "foundFunctionArgumentInActionSubjectContents: " << formalFunctionArgument->className << endl;
-					#endif
-					//formalFunctionArgument->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;	//not done; this is now handled by generateContextBlocks()
-				}
-				//ignore conditions of actionSubject; they will need to be explicitly referenced by the function
-				//for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->conditionNodeList->begin(); entityIter != actionSubject->conditionNodeList->end(); entityIter++)
-				//{
-				//	GIAentityNode * actionCondition = (*entityIter)->entity;
-				//}
-				for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->propertyNodeList->begin(); entityIter != actionSubject->propertyNodeList->end(); entityIter++)
-				{
-					GIAentityNode * actionProperty = (*entityIter)->entity;
-					if(formalFunctionArgument->className == generateClassName(actionProperty))
-					{//NB these implicitly declared parameters in the function definition will be referenced as plural (lists) not singular entities
-							//NO: check this is the case; eg the dog eats the pie; 'the dog' should be extracted from dogList if it was not passed as a parameter
-							//1dXy: all parameters should be passed as lists (temporary lists should be created if specific variables require passing)
-						foundFunctionArgumentInActionSubjectContents = true;
-					}
-				}
-			}
-
-			if(!foundFunctionArgumentInActionSubjectContents)
-			{
-				//this warning was created for a previous NLC rev;
-				//cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map): " << formalFunctionArgument->className << endl;
-			#else
-				//this warning was created for a previous NLC rev;
-				//cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map): " << formalFunctionArgument->className << endl;
-			#endif
-				//add a new function argument to the existing function argument list
-				NLCitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
-				existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-			}
-			#endif
-		}
-	}
-	return result;
-}
-*/
 #endif
 #endif
 #endif
@@ -945,6 +612,186 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*> * entityNodesActiveList
 	return result;
 }
 #endif
+
+
+NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition *> * classDefinitionList, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, int functionIndex)
+{
+	NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+	 
+	string functionName = "";
+	string functionOwnerName = "";
+	string functionObjectName = "";
+	bool hasFunctionOwnerClass = false;
+	bool hasFunctionObjectClass = false;
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog::fight"
+		
+	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+	bool createClassDefinition = true;
+	#else
+	bool createClassDefinition = false;
+	#endif
+	
+	string functionClassDefinitionName = functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
+	string functionOwnerClassDefinitionName = "";
+	bool passNewFunctionDefinitionChecks = true;
+	if(hasFunctionOwnerClass)
+	{
+		functionOwnerClassDefinitionName = generateClassName(functionOwnerName);
+	}
+	else
+	{
+		#ifdef NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT
+		functionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
+		#else
+		passNewFunctionDefinitionChecks = false;
+		#endif
+	}
+	if(passNewFunctionDefinitionChecks)
+	{	
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED	
+		cout << "createNewClassDefinitionFunctionDeclaration (!isReference): functionName  = " << functionName << endl;
+		#endif
+		NLCclassDefinitionFunctionDependency * parentFunctionDependencyTemp = NULL;
+		bool hasParent = false;
+		bool isReference = false;
+		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, hasParent, parentFunctionDependencyTemp, functionDependencyList, isReference, createClassDefinition);
+	}
+	
+	functionDependency->functionNameListIndex = functionIndex;
+	
+	return functionDependency;
+}
+
+NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, bool isReference, bool createClassDefinition)
+{
+	NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+	bool duplicateFunctionDeclarationDetected = false;
+	bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependency);
+	if(foundFunctionDependencyInList)
+	{
+		//cout << "findFunctionDependencyInList" << endl;
+		if(hasParent)
+		{
+			//cout << "findFunctionDependencyInList" << endl;
+			NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
+			bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
+			if(!foundFunctionDependencyInParent)
+			{
+				//cout << "!foundFunctionDependencyInParent" << endl;
+				parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+			}
+			else
+			{
+				//cout << "foundFunctionDependencyInParent" << endl;
+				//duplicate function declarations will be ignored
+				duplicateFunctionDeclarationDetected = true;
+			}
+		}
+		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+		if(!isReference)
+		{
+			functionDependency->isReference = false;	//upgrade isReference value (!isReference takes priority)
+		}
+		#endif
+	}
+	else
+	{
+		//cout << "!findFunctionDependencyInList" << endl;
+		functionDependency = new NLCclassDefinitionFunctionDependency();
+		functionDependency->functionName = functionName;
+		functionDependency->functionOwnerName = functionOwnerName;
+		functionDependency->functionObjectName = functionObjectName;
+		functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;
+		functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
+		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+		functionDependency->isReference = isReference;	
+		#endif
+		if(hasParent)
+		{
+			parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+		}
+		functionDependencyList->push_back(functionDependency);
+	}
+	#endif
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
+	if(!foundFunctionDependencyInList)
+	{
+	#endif
+		if(createClassDefinition)
+		{
+			//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
+			bool foundClassDefinition = false;
+			NLCclassDefinition * functionOwnerClassDefinition = findClassDefinition(classDefinitionList, functionOwnerClassDefinitionName, &foundClassDefinition);	//see if class definition already exists
+			if(!foundClassDefinition)
+			{
+				functionOwnerClassDefinition = new NLCclassDefinition(functionOwnerClassDefinitionName);
+				classDefinitionList->push_back(functionOwnerClassDefinition);
+				//cout << "!foundClassDefinition" << endl;
+			}
+			//cout << "generateClassHeirarchy: " << functionOwnerClassDefinitionName << endl;
+
+			bool foundTargetClassDefinition = false;
+			NLCclassDefinition * functionClassDefinition = findClassDefinition(classDefinitionList, functionClassDefinitionName, &foundTargetClassDefinition);	//see if class definition already exists
+			if(!foundTargetClassDefinition)
+			{
+				//cout << "new NLCclassDefinition(" << functionClassDefinitionName << endl;
+				functionClassDefinition = new NLCclassDefinition(functionClassDefinitionName);
+				classDefinitionList->push_back(functionClassDefinition);
+			}
+
+			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+			functionClassDefinition->functionDependency = functionDependency;
+			#endif
+
+			functionClassDefinition->functionNameSpecial = generateFunctionName(functionName);
+			/*no longer supported;
+			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+			functionClassDefinition->actionOrConditionInstance = targetEntity;
+			#endif
+			*/
+
+			functionClassDefinition->isActionOrConditionInstanceNotClass = true;
+			//cout << "functionOwnerClassDefinition->isActionOrConditionInstanceNotClass" << endl;
+
+			functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
+
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+			if(hasFunctionOwnerClass)
+			{
+				//added 1k18a for dynamic casting of children
+				NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
+				functionClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
+			}
+			#endif
+			
+			NLCitem * classDeclarationFunctionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);
+			functionClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+			
+			if(hasFunctionObjectClass)
+			{
+				//NLCitem * classDeclarationFunctionObjectItem = new NLCitem(functionObject, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);
+				NLCitem * classDeclarationFunctionObjectItem = new NLCitem(functionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);
+				functionClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
+			}
+
+			/*no longer supported;
+			#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+			//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+			generateFunctionDeclarationArgumentsWithActionConceptInheritance(targetEntity, &(functionClassDefinition->parameters));
+			//#endif
+			#endif
+			*/
+		}
+
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
+	}
+	#endif
+	
+	return functionDependency;
+}
+
 	
 
 

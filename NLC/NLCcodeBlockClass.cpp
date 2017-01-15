@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k17b 25-October-2014
+ * Project Version: 1l1a 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -119,19 +119,27 @@ NLClogicalConditionConjunction::~NLClogicalConditionConjunction(void)
 
 
 //Resultant code: functionItem[context].functionItem[name](objectItem[context].objectItem[name]);	//NB functionItem[context] = action subject
-NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectItem, NLCitem* subjectItem)
+NLCcodeblock * createCodeBlockExecuteSubjectObject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * subjectItem, NLCitem * objectItem)
 {
+	currentCodeBlockInTree->parameters.push_back(subjectItem);
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
-	currentCodeBlockInTree->parameters.push_back(subjectItem);
 
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
-NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectOrSubjectItem)
+NLCcodeblock * createCodeBlockExecuteSubject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * subjectItem)
+{
+	currentCodeBlockInTree->parameters.push_back(subjectItem);
+	currentCodeBlockInTree->parameters.push_back(functionItem);
+
+	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
+}
+
+NLCcodeblock * createCodeBlockExecuteObject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * objectItem)
 {
 	currentCodeBlockInTree->parameters.push_back(functionItem);
-	currentCodeBlockInTree->parameters.push_back(objectOrSubjectItem);
+	currentCodeBlockInTree->parameters.push_back(objectItem);
 
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
@@ -564,14 +572,15 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 	string functionName = NLCfunctionName;
 	#endif
 
-	NLCitem * functionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);
-	currentCodeBlockInTree->parameters.push_back(functionItem);
-	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	if(hasFunctionOwnerClass)
 	{
 		NLCitem * functionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
 		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
 	}
+	
+	NLCitem * functionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);
+	currentCodeBlockInTree->parameters.push_back(functionItem);
+
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	if(hasFunctionObjectClass)	//added 21 November 2013
 	{
@@ -588,7 +597,6 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 		}
 	}
 	#endif
-	//#endif
 
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 	generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters), firstNLCsentenceInList);

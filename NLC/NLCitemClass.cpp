@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v9a 23-October-2016
+ * Project Version: 1v9b 23-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,7 +35,6 @@
 #include "NLCitemClass.h"
 #include "GIAtranslatorOperations.h"
 #include "SHAREDvars.h"	//required for convertLongToString()
-
 
 
 NLCitem::NLCitem(void)
@@ -435,4 +434,21 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, i
 	return foundFunctionArgument;
 }
 
-
+bool detectPredeterminer(GIAentityNode* entity, int sentenceIndex)
+{
+	bool predeterminerDetected = false;
+	
+	#ifdef GIA_ADVANCED_REFERENCING_SUPPORT_REFERENCING_OF_ENTITIES_WITH_PREDETERMINERS			
+	unordered_map<int,int>::iterator iterTemp = entity->grammaticalPredeterminerTempSentenceArray.find(sentenceIndex);
+	if(iterTemp !=  entity->grammaticalPredeterminerTempSentenceArray.end())
+	//if(entity->grammaticalPredeterminerTempSentenceArray.at(sentenceIndex) != -1)
+	{
+		//predeterminerDetected = intInIntArray(grammaticalPredeterminerTempSentenceArray.at(sentenceIndex)->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+		predeterminerDetected = intInIntArray(iterTemp->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+	}
+	#else
+	predeterminerDetected = intInIntArray(entity->grammaticalPredeterminerTemp, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+	#endif
+	
+	return predeterminerDetected;
+}

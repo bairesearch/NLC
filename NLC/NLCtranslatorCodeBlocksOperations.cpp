@@ -26,14 +26,13 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v9a 23-October-2016
+ * Project Version: 1v9b 23-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCtranslatorCodeBlocksOperations.h"
-#include "GIAtranslatorDefs.h"
 #include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance()
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
@@ -373,18 +372,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		{//this should always be the case for properties and conditions
 			//first, initialise a new object if required (such that it remains accessible/in context in a new semtence	
 			
-			bool subjectEntityPredeterminerDetected = false;
-			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES			
-			unordered_map<int,int>::iterator iterTemp = subjectEntity->grammaticalPredeterminerTempSentenceArray.find(sentenceIndex);
-			if(iterTemp !=  subjectEntity->grammaticalPredeterminerTempSentenceArray.end())
-			//if(subjectEntity->grammaticalPredeterminerTempSentenceArray.at(sentenceIndex) != -1)
-			{
-				//subjectEntityPredeterminerDetected = intInIntArray(grammaticalPredeterminerTempSentenceArray.at(sentenceIndex)->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
-				subjectEntityPredeterminerDetected = intInIntArray(iterTemp->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
-			}
-			#else
-			subjectEntityPredeterminerDetected = intInIntArray(subjectEntity->grammaticalPredeterminerTemp, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
-			#endif
+			bool subjectEntityPredeterminerDetected = detectPredeterminer(subjectEntity, sentenceIndex);
 			
 			if(subjectEntityPredeterminerDetected)	//modified 1u12c; removed && (objectEntity->grammaticalNumber != GRAMMATICAL_NUMBER_PLURAL)
 			{

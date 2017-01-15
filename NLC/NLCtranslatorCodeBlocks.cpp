@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n11b 27-January-2015
+ * Project Version: 1n12a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,7 +43,7 @@
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
-bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
+bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
 {
 	bool result = true;
 
@@ -97,9 +97,11 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocks(): maxNumberSentences = " << maxNumberSentences << endl;
 	#endif
-	int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX;
-	while(sentenceIndex <= maxNumberSentences)
+	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); )
 	{
+		int sentenceIndex = sentenceIter->first;
+		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
+				
 		#ifdef NLC_DEBUG
 		cout << "generateCodeBlocks(): sentenceIndex = " << sentenceIndex << endl;
 		#endif
@@ -144,7 +146,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#ifdef NLC_DEBUG
 		cout << "declareLocalPropertyListsForIndefiniteEntities:" << endl;
 		#endif
-		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
+		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
 		#endif
 		#endif
 		
@@ -152,21 +154,21 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#ifdef NLC_DEBUG
 		cout << "identifyAliasesInCurrentSentence:" << endl;
 		#endif
-		identifyAliasesInCurrentSentence(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
+		identifyAliasesInCurrentSentence(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
 		
 		#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
 		#ifdef NLC_DEBUG
 		cout << "generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities:" << endl;
 		#endif
-		generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
+		generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
 		
 		#ifdef NLC_MARK_ACTION_SUBJECT_OBJECT_INDEFINITE_ENTITY_ACTIONS_AS_NOT_SAME_REFERENCE_SET
 		#ifdef NLC_DEBUG
 		cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet:" << endl;
 		#endif
-		markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
+		markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
 
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -184,7 +186,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 					cout << "dummyNumericalValue = " << dummyNumericalValue << endl;
 					cout << "numericalVariableName = " << numericalVariableName << endl;
 					#endif
-					if(!findAndSetDummyNumericalValueForReplacement(entityNodesActiveListComplete, sentenceIndex, dummyNumericalValue, numericalVariableName))
+					if(!findAndSetDummyNumericalValueForReplacement(entityNodesActiveListSentence, sentenceIndex, dummyNumericalValue, numericalVariableName))
 					{
 						cout << "generateCodeBlocks() error: !findAndSetDummyNumericalValueForReplacement, dummyNumericalValueToRestore = " << dummyNumericalValue << ", numericalVariableName = " << numericalVariableName << endl;
 					}
@@ -208,7 +210,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksFromMathText:" << endl;
 			#endif
-			if(!generateCodeBlocksFromMathText(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, currentNLCsentenceInList, NLCfunctionName))
+			if(!generateCodeBlocksFromMathText(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, currentNLCsentenceInList, NLCfunctionName))
 			{
 				result = false;
 			}
@@ -221,7 +223,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart2logicalConditions:" << endl;
 			#endif
-			if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
+			if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
 			{
 				result = false;
 			}
@@ -231,7 +233,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart3actions:" << endl;
 			#endif
-			if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
+			if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
 			{
 				result = false;
 			}
@@ -240,7 +242,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart4objectInitialisations:" << endl;
 			#endif
-			if(!generateCodeBlocksPart4objectInitialisations(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			if(!generateCodeBlocksPart4objectInitialisations(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName))
 			{
 				result = false;
 			}
@@ -250,7 +252,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart5redefinitions:" << endl;
 			#endif
-			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName))
 			{
 				result = false;
 			}
@@ -261,7 +263,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-		clearContextGeneratedVariable(entityNodesActiveListComplete);
+		clearContextGeneratedVariable(entityNodesActiveListSentence);
 		#endif
 
 
@@ -353,11 +355,19 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 				
 				if(nextNLCfullSentenceInList->next != NULL)
 				{	
-					sentenceIndex = nextNLCfullSentenceInList->sentenceIndex;
+					for(int i=0; i<((nextNLCfullSentenceInList->sentenceIndex)-sentenceIndex); i++)
+					{	
+						sentenceIter++; 
+					}
+					//sentenceIndex = nextNLCfullSentenceInList->sentenceIndex;
 				}
 				else
 				{
-					sentenceIndex = maxNumberSentences+1;
+					for(int i=0; i<(maxNumberSentences-sentenceIndex)+1; i++)
+					{
+						sentenceIter++; 
+					}
+					//sentenceIndex = maxNumberSentences+1;
 				}
 				currentNLCsentenceInList = nextNLCfullSentenceInList;
 				#ifdef NLC_DEBUG
@@ -366,7 +376,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			}
 			else
 			{
-				sentenceIndex++;
+				sentenceIter++;
 				#ifdef NLC_DEBUG
 				//cout << "NLC_USE_PREPROCESSOR generateCodeBlocks(): currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
 				#endif
@@ -377,10 +387,10 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		}
 		else
 		{
-			sentenceIndex++;
+			sentenceIter++;
 		}
 		#else
-		sentenceIndex++;
+		sentenceIter++;
 		#endif
 
 	}

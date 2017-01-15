@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n11b 27-January-2015
+ * Project Version: 1n12a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1n11b 27-January-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1n12a 27-January-2015" << endl;
 			exit(1);
 		}
 
@@ -750,7 +750,8 @@ int main(int argc,char* *argv)
 	vector<NLCclassDefinitionFunctionDependency*> functionDependencyList;
 	//#endif
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
-	vector<vector<GIAentityNode*>*> entityNodesActiveListCompleteList;
+	vector<vector<GIAentityNode*>*> entityNodesActiveListCompleteFunctions;
+	vector<map<int, vector<GIAentityNode*>*>*> entityNodesActiveListSentencesFunctions;
 		
 	//#ifdef NLC_USE_PREPROCESSOR
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
@@ -769,11 +770,13 @@ int main(int argc,char* *argv)
 		firstCodeBlockInTreeList.push_back(firstCodeBlockInTree);
 
 		vector<GIAentityNode*>* entityNodesActiveListComplete = new vector<GIAentityNode*>;
-		entityNodesActiveListCompleteList.push_back(entityNodesActiveListComplete);
+		entityNodesActiveListCompleteFunctions.push_back(entityNodesActiveListComplete);
 		unordered_map<string, GIAentityNode*>* entityNodesActiveListConcepts = new unordered_map<string, GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListSubstances = new vector<GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListActions = new vector<GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListConditions = new vector<GIAentityNode*>;
+		map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
+		entityNodesActiveListSentencesFunctions.push_back(entityNodesActiveListSentences);
 		unordered_map<long, GIAtimeConditionNode*>* timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
 
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -921,6 +924,7 @@ int main(int argc,char* *argv)
 			entityNodesActiveListSubstances,
 			entityNodesActiveListActions,
 			entityNodesActiveListConditions,
+			entityNodesActiveListSentences,
 			timeConditionNodesActiveList,
 
 			&maxNumberSentences
@@ -988,7 +992,7 @@ int main(int argc,char* *argv)
 		//generate class definition function declaration for new function definition
 		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex);
 		
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor, functionDependency, &functionDependencyList);
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor, functionDependency, &functionDependencyList);
 		
 		#ifdef NLC_USE_PREPROCESSOR
 		if(useNLCpreprocessor)
@@ -1005,7 +1009,7 @@ int main(int argc,char* *argv)
 		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
 		{	
-			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteList.at(functionIndex);
+			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions.at(functionIndex);
 			
 			//NLC translator Part 2b.
 			if(!generateClassHeirarchyFunctions(&classDefinitionList, entityNodesActiveListComplete, functionDependency, &functionDependencyList))

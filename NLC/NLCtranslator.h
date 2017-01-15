@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n11b 27-January-2015
+ * Project Version: 1n12a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,6 +43,7 @@
 #include <cmath>
 #include <string>
 #include <vector>
+#include <map>
 using namespace std;
 
 #include "GIAentityNodeClass.h"
@@ -69,7 +70,7 @@ public:
 };
 #endif
 
-bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
+bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
 	/*
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
 	#ifdef NLC_USE_PREPROCESSOR
@@ -79,11 +80,11 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 	*/
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	bool removeRedundantConditionConjunctions(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
+	bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences);
 		int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode* conditionEntity, NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, int sentenceIndex);
 		bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, GIAentityNode* logicalConditionConjunctionToTest);
 	#endif
-	bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
+	bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences);
 	#endif
 	/*
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE

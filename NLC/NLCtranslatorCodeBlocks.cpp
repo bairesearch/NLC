@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3d 01-November-2014
+ * Project Version: 1l3e 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -406,7 +406,7 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 						actionObject = (actionEntity->actionObjectEntity->back())->entity;
 						(actionEntity->actionObjectEntity->back())->sameReferenceSet = false;
 					}
-					cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet: entity = " << entity->entityName << ", action = " << actionEntity->entityName << endl;
+					//cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet: entity = " << entity->entityName << ", action = " << actionEntity->entityName << endl;
 				}
 				for(vector<GIAentityConnection*>::iterator connectionIter = entity->incomingActionNodeList->begin(); connectionIter != entity->incomingActionNodeList->end(); connectionIter++)
 				{
@@ -420,7 +420,7 @@ bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcode
 						actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
 						(actionEntity->actionSubjectEntity->back())->sameReferenceSet = false;
 					}
-					cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet: entity = " << entity->entityName << ", action = " << actionEntity->entityName << endl;
+					//cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet: entity = " << entity->entityName << ", action = " << actionEntity->entityName << endl;
 				}
 			}
 		}

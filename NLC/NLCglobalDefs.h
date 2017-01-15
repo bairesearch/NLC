@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3d 01-November-2014
+ * Project Version: 1l3e 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -178,6 +178,9 @@
 #endif
 #ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 	#define NLC_RECORD_ACTION_HISTORY_GENERALISABLE	//code introduced by NLC_RECORD_ACTION_HISTORY but don't necessarily require it
+	#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+		#define NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+	#endif
 #endif
 
 #ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3d 01-November-2014
+ * Project Version: 1l3e 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -184,14 +184,27 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 					#endif
 
 					functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-					*currentCodeBlockInTree = createCodeBlockExecuteSubjectObject(*currentCodeBlockInTree, functionItem, functionSubjectItem, functionObjectItem);
+					#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+					if(!hasTimeConditionNodePast(actionEntity))
+					{
+					#endif
+						*currentCodeBlockInTree = createCodeBlockExecuteSubjectObject(*currentCodeBlockInTree, functionItem, functionSubjectItem, functionObjectItem);
+					#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+					}
+					#endif
 				}
 				else
 				{
 					functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-					*currentCodeBlockInTree = createCodeBlockExecuteObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
+					#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+					if(!hasTimeConditionNodePast(actionEntity))
+					{
+					#endif
+						*currentCodeBlockInTree = createCodeBlockExecuteObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
+					#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+					}
+					#endif
 				}
-
 
 
 				actionEntity->NLCparsedForCodeBlocks = true;
@@ -227,8 +240,14 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				#endif
 
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-				*currentCodeBlockInTree = createCodeBlockExecuteSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
-
+				#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+				if(!hasTimeConditionNodePast(actionEntity))
+				{
+				#endif
+					*currentCodeBlockInTree = createCodeBlockExecuteSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+				#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+				}
+				#endif
 				actionEntity->NLCparsedForCodeBlocks = true;
 				//actionEntity->parsedForNLCcodeBlocksActionRound = true;
 				//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
@@ -305,7 +324,22 @@ void initialiseFunctionArguments(NLCcodeblock ** currentCodeBlockInTree, GIAenti
 }
 #endif
 
-
+#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+bool hasTimeConditionNodePast(GIAentityNode * actionEntity)
+{
+	bool timeConditionPast = false;
+	if(actionEntity->timeConditionNode != NULL)
+	{
+		GIAtimeConditionNode * timeCondition = actionEntity->timeConditionNode;
+		if(timeCondition->tense == GRAMMATICAL_TENSE_PAST)
+		{
+			timeConditionPast = true;
+			//cout << "hasTimeConditionNodePast(): timeConditionPast" << endl;
+		}
+	}
+	return timeConditionPast;
+}
+#endif
 
 
 

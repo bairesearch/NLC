@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8i 11-July-2014
+ * Project Version: 1g9a 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1208,9 +1208,10 @@ void generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIA
 			}
 		}
 		#endif
-		#ifdef NLC_DEBUG
-		cout << "\tgenerateObjectInitialisationsBasedOnPropertiesAndConditions:" << endl;
-		#endif
+		//#ifdef NLC_DEBUG
+		cout << "\tgenerateObjectInitialisationsBasedOnPropertiesAndConditions:" << parentEntity->entityName << endl;
+		cout << "sentenceIndex = " << sentenceIndex << endl;
+		//#endif
 		generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	}
@@ -1281,9 +1282,11 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
 				}
 
-				//cout << "createCodeBlockForPropertyList: " << entity->entityName << endl;
-
-				if(!(propertyConnection->parsedForNLCcodeBlocks) && !(propertyEntity->parsedForNLCcodeBlocks))
+				//#ifdef NLC_DEBUG
+				cout << "createCodeBlockForPropertyList: " << entity->entityName << endl;
+				//#endif
+				
+				if(!(propertyConnection->parsedForNLCcodeBlocks))
 				{
 					#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 					if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
@@ -1298,8 +1301,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyClass);
 
 						*currentCodeBlockInTree = createCodeBlockAddProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
-						//cout << "createCodeBlockAddProperty: " << entity->entityName << ", " << propertyEntity->entityName << endl;
-
+						//#ifdef NLC_DEBUG
+						cout << "createCodeBlockAddProperty: " << entity->entityName << ", " << propertyEntity->entityName << endl;
+						//#endif
 						*currentCodeBlockInTree = firstCodeBlockInSection2->next;
 					}
 					else
@@ -1308,17 +1312,18 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						//create a new property; eg "a ball" in "Tom has a ball"
 
 						*currentCodeBlockInTree = createCodeBlockAddNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, true);
-						//cout << "createCodeBlockAddNewProperty: " << entity->entityName << ", " << propertyEntity->entityName << endl;
-
+						//#ifdef NLC_DEBUG
+						cout << "createCodeBlockAddNewProperty: " << entity->entityName << ", " << propertyEntity->entityName << endl;
+						//#endif
 					#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 					}
 					#endif
 
-					/*
+					//#ifdef NLC_DEBUG
 					cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions():" << endl;
 					cout << "entity->entityName = " << entity->entityName << endl;
 					cout << "propertyEntity->entityName = " << propertyEntity->entityName << endl;
-					*/
+					//#endif
 
 					propertyConnection->parsedForNLCcodeBlocks = true;
 					propertyEntity->parsedForNLCcodeBlocks = true;		//added 3 October 2013 NLC1b2b - used for quick access of instances already declared in current context
@@ -1334,7 +1339,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 				NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
 				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), "");
-
+				#ifdef NLC_DEBUG
+				cout << "performedAtLeastOneObjectInitialisationAtALowerLevel = " << performedAtLeastOneObjectInitialisationAtALowerLevel << endl;
+				#endif
 				generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 			}
 		}
@@ -1406,7 +1413,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								*currentCodeBlockInTree = createCodeBlockForConditionList(*currentCodeBlockInTree, parentConditionItem, entityClass);
 							}
 
-							if(!(conditionConnection->parsedForNLCcodeBlocks) && !(conditionEntity->parsedForNLCcodeBlocks))
+							if(!(conditionConnection->parsedForNLCcodeBlocks))
 							{
 								#ifdef NLC_DEBUG
 								cout << "!(conditionConnection->parsedForNLCcodeBlocks): " << conditionObject->entityName << endl;

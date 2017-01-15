@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v12a 24-October-2016
+ * Project Version: 1v12b 24-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -603,6 +603,7 @@ string generateCategoryListPropertyCountVariableName(GIAentityNode* entity);
 
 NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock);
 NLCcodeblock* getLastCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree);
+NLCcodeblock* getLastSetCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree);
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity);

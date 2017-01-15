@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v12a 24-October-2016
+ * Project Version: 1v12b 24-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1427,7 +1427,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printCodeBlocks(currentCodeBlockInLevel->lowerLevel, classDefinitionList, progLang, &printedCodeBlocksSourceText, (level+1));
 			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 			if(currentCodeBlockInLevel->isLogicalCondition)
-			{
+			{				
 				//createCodeBlocksClearContextListVariableExecuteFunction:
 				#ifdef NLC_DEBUG
 				cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION" << endl;

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v12a 24-October-2016
+ * Project Version: 1v12b 24-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2342,6 +2342,19 @@ NLCcodeblock* getLastCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree)
 	}
 	return currentCodeBlockInTree;
 }
+
+NLCcodeblock* getLastSetCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree)
+{
+	if(currentCodeBlockInTree->next != NULL)
+	{
+		while(currentCodeBlockInTree->next->next != NULL)
+		{
+			currentCodeBlockInTree = currentCodeBlockInTree->next;
+		}
+	}
+	return currentCodeBlockInTree;
+}
+
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity)

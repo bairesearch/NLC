@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v12a 24-October-2016
+ * Project Version: 1v12b 24-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,6 +59,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
 		NLCcodeblock* currentCodeBlockAtStartOfLogicalConditionCommand = *currentCodeBlockInTree;
+		NLCcodeblock* currentCodeBlockAtStartOfLogicalConditionCommandForLoop = NULL;
 		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 		{
 			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
@@ -163,7 +164,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 							}
 							if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 							{
-								if(!generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(currentCodeBlockInTree, entityNodesActiveListParsablePhrase, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, &currentCodeBlockInTreeAtBaseLevel, firstNLCsentenceInFullSentence))
+								if(!generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(currentCodeBlockInTree, entityNodesActiveListParsablePhrase, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, &currentCodeBlockAtStartOfLogicalConditionCommandForLoop, firstNLCsentenceInFullSentence))
 								{
 									result = false;
 								}
@@ -291,33 +292,43 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 			
 			if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 			{
-				currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+				currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;	//currentCodeBlockInTreeAtBaseLevel will point to NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (113) once set
 			}
-			else
+			else if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
+			{
+				currentCodeBlockInTreeAtBaseLevel = getLastSetCodeBlockInLevel(currentCodeBlockAtStartOfLogicalConditionCommand);	//currentCodeBlockInTreeAtBaseLevel will point to NLC_CODEBLOCK_TYPE_WHILE (114)?
+			}
+			else if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 			{
 				#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_SINGLE_SENTENCE_MULTIPLE_LEVEL_FOR_LOOPS_OLD
-				if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-				{
+				currentCodeBlockInTreeAtBaseLevel = currentCodeBlockAtStartOfLogicalConditionCommandForLoop;
+				#else
+				currentCodeBlockInTreeAtBaseLevel = getLastSetCodeBlockInLevel(currentCodeBlockAtStartOfLogicalConditionCommand);	//currentCodeBlockInTreeAtBaseLevel will point to NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST (115)
+				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+				NLCcodeblock* currentCodeBlockInTreeAtBaseLevelForLoop = getLastSetCodeBlockInLevel(currentCodeBlockAtStartOfLogicalConditionCommandForLoop);
+				currentCodeBlockInTreeAtBaseLevelForLoop->isLogicalCondition = true;
+				currentCodeBlockInTreeAtBaseLevelForLoop->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
 				#endif
-					currentCodeBlockInTreeAtBaseLevel = getLastCodeBlockInLevel(currentCodeBlockAtStartOfLogicalConditionCommand);
-				#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_SINGLE_SENTENCE_MULTIPLE_LEVEL_FOR_LOOPS_OLD
-				}
 				#endif
 			}
 		}
 		else if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE))
 		{
-			currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+			currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;	//currentCodeBlockInTreeAtBaseLevel will point to NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (113) once set
 		}
 		else
 		{
 			cout << "generateCodeBlocksFromMathText{} error: illegal firstNLCsentenceInFullSentence->logicalConditionOperator" << endl;
 			exit(0);
 		}
-
+		
 		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-		(*currentCodeBlockInTree)->isLogicalCondition = true;
-		(*currentCodeBlockInTree)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+		{
+			//cout << "currentCodeBlockInTreeAtBaseLevel->codeBlockType = " << currentCodeBlockInTreeAtBaseLevel->codeBlockType << endl;
+			(*currentCodeBlockInTree)->isLogicalCondition = true;
+			(*currentCodeBlockInTree)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+		}
 		#endif
 	}
 	else
@@ -408,10 +419,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 			cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
 			#endif
 
-			if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE))
-			{
-				currentCodeBlockInTreeAtBaseLevel = currentCodeBlockInTreeAtBaseLevel->next;
-			}
+			currentCodeBlockInTreeAtBaseLevel = currentCodeBlockInTreeAtBaseLevel->next;
 			
 			if(nextNLCfullSentenceInList->indentation == (firstNLCsentenceInFullSentence->indentation + 1))
 			{
@@ -1672,7 +1680,13 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 	#endif
 	#endif
 	#endif
-
+	
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
+	#ifndef NLC_TRANSLATOR_LOGICAL_CONDITIONS_SINGLE_SENTENCE_MULTIPLE_LEVEL_FOR_LOOPS_OLD
+	*currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+	#endif
+	#endif
+	
 	if((currentFullSentence->hasLogicalConditionOperator) && (currentFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
 	{
 		foundParsablePhrase = false;
@@ -1739,6 +1753,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 			}
 		}
 	}
+	
 	return foundParsablePhrase;
 }
 

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2f 09-January-2015
+ * Project Version: 1n3a 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,14 +49,53 @@
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
 	#define NLC_USE_LIBRARY
 	#ifdef NLC_USE_LIBRARY
-		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS	//CHECKTHIS	//this is only supported by Stanford Parser/CoreNLP (Relex does not support entity names with fullstops)
-		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"	//must sync with "NLClibraryStandard.h"
-		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME "to"		//must sync with "NLClibraryStandard.h"
+		//these must be synchronised with NLClibaryStandard.h
+		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"
+		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME "to"
 		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_PARENT_TEMP_VARIABLE_NAME "functionObjectParent"
 		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_CONDITION_AT_NAME "at"
 		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_CONDITION_IN_NAME "in"
-		#define NLC_USE_LIBRARY_WRITE_FUNCTION_ACTIONOBJECT_FILE_NAME "file"
+		#define NLC_USE_LIBRARY_FILEIO_FUNCTION_ACTIONOBJECT_FILE_NAME "file"
+		#define NLC_USE_LIBRARY_FILEIO_FUNCTION_DEFAULT_FILE_NAME_PREPEND "NLCfileIO"
+		#define NLC_USE_LIBRARY_FILEIO_FUNCTION_DEFAULT_FILE_NAME_APPEND_XML ".xml"
+		#define NLC_USE_LIBRARY_FILEIO_FUNCTION_DEFAULT_FILE_NAME_APPEND_CSV ".csv"
+		#define NLC_USE_LIBRARY_FILEIO_FUNCTION_ACTION_CONDITION_FROM_NAME "from"
+		#define NLC_USE_LIBRARY_FILEIO_FUNCTION_ACTION_CONDITION_TO_NAME "to"
+		#define NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_CONDITION "condition"
+		#define NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_LISTNAME "name"
+		#define NLC_USE_LIBRARY_FILEIO_XML_WRITE_PROPERTY_LISTS
+		//#define NLC_USE_LIBRARY_FILEIO_XML_WRITE_CONDITION_LISTS
+		//#define NLC_USE_LIBRARY_FILEIO_XML_WRITE_ACTION_LISTS
+		#define NLC_USE_LIBRARY_FILEIO_XML_WRITE_LIST_TAGS
+		#ifdef NLC_USE_LIBRARY_FILEIO_XML_WRITE_LIST_TAGS
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_PROPERTY_LIST_ALL "propertyListAll"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_CONDITION_LIST_ALL "conditionListAll"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTION_LIST_ALL "actionListAll"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTIONINCOMING_LIST_ALL "actionIncomingListAll"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTIONOBJECT_LIST_ALL "actionObjectListAll"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTIONSUBJECT_LIST_ALL "actionSubjectListAll"	
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_PROPERTY_LIST "propertyList"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_CONDITION_LIST "conditionList"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTION_LIST "actionList"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTIONINCOMING_LIST "actionIncomingList"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTIONOBJECT_LIST "actionObjectList"
+			#define NLC_USE_LIBRARY_FILEIO_XML_TAGNAME_ACTIONSUBJECT_LIST "actionSubjectList"
+		#endif
+		#define NLC_USE_LIBRARY_FILEIO_FILETYPE_XML (1)	//xml file
+		#define NLC_USE_LIBRARY_FILEIO_FILETYPE_FLAT (2)	//flat file (text/csv file)
+		#define NLC_USE_LIBRARY_FILEIO_FILETYPE_DEFAULT (NLC_USE_LIBRARY_FILEIO_FILETYPE_XML)
+		#define NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"	
+		#define NLC_USE_LIBRARY_FILEIO_FLAT_DELIMITER_COMMA ','
+		#define NLC_USE_LIBRARY_FILEIO_FLAT_DELIMITER_TAB '\t'
+		#define NLC_USE_LIBRARY_FILEIO_FLAT_DELIMITER_DEFAULT (NLC_USE_LIBRARY_FILEIO_FLAT_DELIMITER_TAB)
+		#define NLC_USE_LIBRARY_FILEIO_FLAT_NUMBER_OF_DELIMITERS (2)
+		static char nlcLibraryFileIOflatFileDelimiters[NLC_USE_LIBRARY_FILEIO_FLAT_NUMBER_OF_DELIMITERS] = {NLC_USE_LIBRARY_FILEIO_FLAT_DELIMITER_COMMA, NLC_USE_LIBRARY_FILEIO_FLAT_DELIMITER_TAB};
+		#define NLC_USE_LIBRARY_FILEIO_FLAT_NUMBER_OF_NUMERICAL_CHARACTERS (10)
+		static char nlcLibraryFileIOflatFileNumericalCharacters[NLC_USE_LIBRARY_FILEIO_FLAT_NUMBER_OF_NUMERICAL_CHARACTERS] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+		#define NLC_USE_LIBRARY_FILEIO_FLAT_NUMBER_OF_ALPHABETIC_CHARACTERS (53)
+		static char nlcLibraryFileIOflatFileAlphabeticCharacters[NLC_USE_LIBRARY_FILEIO_FLAT_NUMBER_OF_ALPHABETIC_CHARACTERS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '_'};
 	#endif
+	#define NLC_USE_MATH_OBJECTS	//not yet finished (each entity has a (double) value which can be set by NLC mathText)
 	//#define NLC_NONOO
 	#ifdef NLC_NONOO
 		#define NLC_NONOO_CREATE_REVERSE_LISTS

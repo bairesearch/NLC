@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2f 09-January-2015
+ * Project Version: 1n3a 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,7 +52,6 @@ using namespace std;
 
 #ifdef NLC_USE_PREPROCESSOR
 bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName);
-	void writeStringToFile(string * fileName, string * s);
 	void extractIndentationFromCurrentLine(string * currentLine, int * currentIndentation, string * lineContents, string * indentationContents);
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	bool detectFunctionHeader(string * lineContents);

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2f 09-January-2015
+ * Project Version: 1n3a 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,6 +69,8 @@ using namespace std;
 #define NLC_USE_LIBRARY_ALL_CONDITION_LIST_NAME "conditionListAll"
 #define NLC_USE_LIBRARY_ALL_ACTION_LIST_NAME "actionListAll"
 #define NLC_USE_LIBRARY_ALL_ACTIONINCOMING_LIST_NAME "actionIncomingListAll"
+#define NLC_USE_LIBRARY_ALL_ACTIONOBJECT_LIST_NAME "actionObjectAll"
+#define NLC_USE_LIBRARY_ALL_ACTIONSUBJECT_LIST_NAME "actionSubjectListAll"
 #endif
 
 
@@ -428,6 +430,13 @@ string generateAllActionListName();
 string generateCodeAllActionIncomingListAddText(string incomingActionClassName, int progLang);
 string generateCodeAllActionIncomingListDefinitionText(int progLang);
 string generateAllActionIncomingListName();
+string generateCodeAllActionSubjectListAddText(string actionSubjectClassName, int progLang);
+string generateCodeAllActionSubjectListDefinitionText(int progLang);
+string generateAllActionSubjectListName();
+string generateCodeAllActionObjectListAddText(string actionObjectClassName, int progLang);
+string generateCodeAllActionObjectListDefinitionText(int progLang);
+string generateAllActionObjectListName();
+
 #endif
 
 #endif

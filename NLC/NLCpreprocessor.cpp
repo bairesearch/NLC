@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2f 09-January-2015
+ * Project Version: 1n3a 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -464,19 +464,6 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 }
 
 	
-
-
-void writeStringToFile(string * fileName, string * s)
-{
-	ofstream writeFileObject(*fileName);
-
-	for(int i=0; i < s->size(); i++)
-	{
-		writeFileObject.put((*s)[i]);
-	}
-
-	writeFileObject.close();
-}
 
 void extractIndentationFromCurrentLine(string * currentLine, int * currentIndentation, string * lineContents, string * indentationContents)
 {

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2f 09-January-2015
+ * Project Version: 1n3a 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -637,6 +637,7 @@ string generateAllActionListName()
 {
 	return NLC_USE_LIBRARY_ALL_ACTION_LIST_NAME;
 }
+
 string generateCodeAllActionIncomingListAddText(string actionIncomingClassName, int progLang)
 {
 	string actionIncomingListName = generateActionIncomingListName(actionIncomingClassName);
@@ -653,6 +654,42 @@ string generateCodeAllActionIncomingListDefinitionText(int progLang)
 string generateAllActionIncomingListName()
 {
 	return NLC_USE_LIBRARY_ALL_ACTIONINCOMING_LIST_NAME;
+}
+
+string generateCodeAllActionSubjectListAddText(string actionSubjectClassName, int progLang)
+{
+	string actionSubjectListName = generateActionSubjectListName(actionSubjectClassName);
+	string actionSubjectClassNameRaw = removeClassTextFromClassDefinitionName(actionSubjectClassName);
+	string actionSubjectListKeyName = string(STRING_INVERTEDCOMMAS) + actionSubjectClassNameRaw + string(STRING_INVERTEDCOMMAS);
+	string codeAllActionSubjectListAddText = generateCodeAllVectorListAddText(generateAllActionSubjectListName(), actionSubjectListName, actionSubjectListKeyName, progLang);	//actionSubjectListAll.insert(pair<string, vector<NLCgenericEntityClass*> *>("actionSubjectName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&actionSubjectListName)));
+	return codeAllActionSubjectListAddText;
+}
+string generateCodeAllActionSubjectListDefinitionText(int progLang)
+{
+	string codeActionSubjectListDefinitionText = generateCodeAllVectorListDefinitionTypeText(progLang) + generateAllActionSubjectListName() + progLangEndLine[progLang];
+	return codeActionSubjectListDefinitionText;
+}
+string generateAllActionSubjectListName()
+{
+	return NLC_USE_LIBRARY_ALL_ACTIONSUBJECT_LIST_NAME;
+}
+
+string generateCodeAllActionObjectListAddText(string actionObjectClassName, int progLang)
+{
+	string actionObjectListName = generateActionObjectListName(actionObjectClassName);
+	string actionObjectClassNameRaw = removeClassTextFromClassDefinitionName(actionObjectClassName);
+	string actionObjectListKeyName = string(STRING_INVERTEDCOMMAS) + actionObjectClassNameRaw + string(STRING_INVERTEDCOMMAS);
+	string codeAllActionObjectListAddText = generateCodeAllVectorListAddText(generateAllActionObjectListName(), actionObjectListName, actionObjectListKeyName, progLang);	//actionObjectListAll.insert(pair<string, vector<NLCgenericEntityClass*> *>("actionObjectName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&actionObjectListName)));
+	return codeAllActionObjectListAddText;
+}
+string generateCodeAllActionObjectListDefinitionText(int progLang)
+{
+	string codeActionObjectListDefinitionText = generateCodeAllVectorListDefinitionTypeText(progLang) + generateAllActionObjectListName() + progLangEndLine[progLang];
+	return codeActionObjectListDefinitionText;
+}
+string generateAllActionObjectListName()
+{
+	return NLC_USE_LIBRARY_ALL_ACTIONOBJECT_LIST_NAME;
 }
 
 #endif

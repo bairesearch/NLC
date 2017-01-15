@@ -1,9 +1,9 @@
-#include "NLCgeneratedfruitClass.hpp"
+#include "NLCgeneratedredClass.hpp"
 #include "NLClibrary.hpp"
 
-fruitClass::fruitClass(void)
+redClass::redClass(void)
 {
-	name = "fruit";
+	name = "red";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

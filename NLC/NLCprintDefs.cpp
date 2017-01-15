@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q3b 18-August-2015
+ * Project Version: 1q4a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -541,12 +541,16 @@ string generateGenericStringMapListName(string genericListNameStart, string gene
 	return codeEntityStringPairPairText;
 }
 
+string generateExternalFunctionContext(string objectName, int progLang)
+{
+	string externalFunctionContext = generateNewObject(objectName, progLang) + progLangObjectReferenceDelimiter[progLang];	//(new objectNameClass)->
+	return externalFunctionContext;
+}
 string generateNewObject(string objectName, int progLang)
 {
 	string newObjectText = progLangOpenParameterSpace[progLang] + progLangNewObject[progLang] + generateClassName(objectName) + progLangCloseParameterSpace[progLang];	//(new objectNameClass)
 	return newObjectText;
 }
-
 
 
 

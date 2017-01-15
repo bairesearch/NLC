@@ -1,9 +1,9 @@
-#include "NLCgeneratedgreenClass.hpp"
+#include "NLCgeneratedblueClass.hpp"
 #include "NLClibrary.hpp"
 
-greenClass::greenClass(void)
+blueClass::blueClass(void)
 {
-	name = "green";
+	name = "blue";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

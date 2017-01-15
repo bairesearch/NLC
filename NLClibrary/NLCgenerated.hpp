@@ -5,13 +5,14 @@
 #include "NLCgeneratedfunctionsWithNoSubjectArtificialClass.hpp"
 #include "NLCgeneratedmoveClass.hpp"
 #include "NLCgeneratedNLCimplicitlyDeclaredFunctionArtificialClass.hpp"
-#include "NLCgeneratedyellowClass.hpp"
-#include "NLCgeneratedbananaClass.hpp"
-#include "NLCgeneratedfruitClass.hpp"
-#include "NLCgeneratedappleClass.hpp"
-#include "NLCgeneratedonClass.hpp"
-#include "NLCgeneratedtreeClass.hpp"
-#include "NLCgeneratedgreenClass.hpp"
+#include "NLCgeneratedredClass.hpp"
+#include "NLCgenerateddogClass.hpp"
+#include "NLCgeneratedblueClass.hpp"
+#include "NLCgeneratedbirdClass.hpp"
+#include "NLCgeneratednearClass.hpp"
+#include "NLCgeneratedmountainClass.hpp"
+#include "NLCgeneratedelephantClass.hpp"
+#include "NLCgeneratedboneClass.hpp"
 
 NLCgenericEntityClass* generateObjectByName(string name);
 NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* entityToCopy);

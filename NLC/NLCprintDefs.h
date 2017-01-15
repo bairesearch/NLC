@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q3b 18-August-2015
+ * Project Version: 1q4a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -317,6 +317,10 @@ static string progLangGetAtPositionPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = 
 static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "0.0"};
 #endif
 
+#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+static string progLangMainFunctionDeclaration[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int main()", "int main()", "int main()", "int main()", "int main()", "int main()", "int main()"};
+#endif
+
 
 void printLine(string command, int level, string* code);
 string generatePropertyListName(NLCitem* item);
@@ -417,6 +421,7 @@ string generateReinterpretCastOfMap(string vectorName, string castClassName1, st
 string generateCodeGenericStringMapListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
 string generateGenericStringMapListName(string genericListNameStart, string genericListAppendName);	//OLD: generateEntityStringMapListName
 
+string generateExternalFunctionContext(string objectName, int progLang);
 string generateNewObject(string objectName, int progLang);
 
 

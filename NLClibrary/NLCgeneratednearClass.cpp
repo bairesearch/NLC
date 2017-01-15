@@ -1,9 +1,9 @@
-#include "NLCgeneratedonClass.hpp"
+#include "NLCgeneratednearClass.hpp"
 #include "NLClibrary.hpp"
 
-onClass::onClass(void)
+nearClass::nearClass(void)
 {
-	name = "on";
+	name = "near";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

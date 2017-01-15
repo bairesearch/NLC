@@ -4,13 +4,17 @@
 #include "NLClibraryGenericEntityClass.hpp"
 
 class NLCimplicitlyDeclaredFunctionArtificialClass;
-class bananaClass;
-class treeClass;
+class dogClass;
+class birdClass;
+class mountainClass;
+class elephantClass;
+class boneClass;
 class functionsWithNoSubjectArtificialClass : public NLCgenericEntityClass
 {
 public:
 	functionsWithNoSubjectArtificialClass(void);
-	void NLCimplicitlyDeclaredFunctionArtificialFunction(vector<NLCimplicitlyDeclaredFunctionArtificialClass*>& NLCimplicitlyDeclaredFunctionArtificialClassList, vector<bananaClass*>& bananaClassList, vector<treeClass*>& treeClassList);
+	void NLCimplicitlyDeclaredFunctionArtificialFunction(vector<NLCimplicitlyDeclaredFunctionArtificialClass*>& NLCimplicitlyDeclaredFunctionArtificialClassList, vector<dogClass*>& dogClassList, vector<birdClass*>& birdClassList, vector<mountainClass*>& mountainClassList, vector<elephantClass*>& elephantClassList, vector<boneClass*>& boneClassList);
 };
 
+int main();
 #endif

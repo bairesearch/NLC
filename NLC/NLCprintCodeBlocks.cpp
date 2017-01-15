@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q3b 18-August-2015
+ * Project Version: 1q4a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,6 +44,9 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 	string printedCodeBlocksSourceText = "";
 	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 	string printedClassDefinitionSourceFileName = "";
+	#endif
+	#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+	string printedCodeBlocksSourceMainFunctionText = "";
 	#endif
 			
 	NLCcodeblock* currentCodeBlockInLevel = firstCodeBlockInLevel;
@@ -77,7 +80,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 			{
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-				functionOwnerNameWithReferenceDelimiter = generateNewObject(functionOwnerArgument->name, progLang) + progLangObjectReferenceDelimiter[progLang];
+				functionOwnerNameWithReferenceDelimiter = generateExternalFunctionContext(functionOwnerArgument->name, progLang);
 				#else
 				functionOwnerNameWithReferenceDelimiter = functionOwnerArgument->instanceName + progLangObjectReferenceDelimiter[progLang];
 				#endif
@@ -147,7 +150,10 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 			printedClassDefinitionSourceFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + functionDeclarationOwnerName + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
 			#endif
-
+			
+			#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+			printedCodeBlocksSourceMainFunctionText = generateMainFunctionText(&(currentCodeBlockInLevel->parameters), progLang);
+			#endif
 		}
 		#ifdef NLC_RECORD_ACTION_HISTORY
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT)
@@ -1257,12 +1263,17 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 
 		currentCodeBlockInLevel = currentCodeBlockInLevel->next;
 	}
-	
+
+	#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+	printedCodeBlocksSourceText = printedCodeBlocksSourceText + printedCodeBlocksSourceMainFunctionText;
+	#endif
+		
 	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 	//cout << "printedClassDefinitionSourceFileName = " << printedClassDefinitionSourceFileName << endl;
 	//cout << "printedCodeBlocksSourceText = " << printedCodeBlocksSourceText << endl;
 	appendStringToFile(printedClassDefinitionSourceFileName, &printedCodeBlocksSourceText);	
 	#endif
+	
 	*code = *code + printedCodeBlocksSourceText;
 	
 	return result;
@@ -1724,4 +1735,52 @@ string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int p
 	return logicalConjunctionOfBoolsText;
 }
 #endif
+
+
+#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+string generateMainFunctionText(vector<NLCitem*>* parameters, int progLang)
+{
+	string printedCodeBlocksSourceMainFunctionText = "";
+	
+	bool implicitlyDeclaredFunctionDetected = false;
+
+	string functionName = "";
+	NLCitem* functionArgument = NULL;
+	if(findFunctionArgument(parameters, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, &functionArgument))
+	{
+		if(functionArgument->className == generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
+		{
+			implicitlyDeclaredFunctionDetected = true;
+			functionName = functionArgument->functionName;
+		}
+	}
+			
+	if(implicitlyDeclaredFunctionDetected)
+	{
+		string functionArgumentsDeclaration = "";
+		string functionArguments = "";
+		for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+		{
+			NLCitem* currentItem = *parametersIterator;
+
+			if((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION))
+			{
+				if(functionArguments != "")
+				{
+					functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];	//, 
+				}
+				functionArguments = functionArguments + generateEntityListName(currentItem);	//xClassList
+				functionArgumentsDeclaration = functionArgumentsDeclaration + CHAR_TAB + generateCodeEntityListDefinitionText(currentItem, progLang) + progLangEndLine[progLang] + CHAR_NEWLINE;	//eg \tvector<xClass> xClassList;
+			}
+		}
+		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + CHAR_NEWLINE + progLangMainFunctionDeclaration[progLang] + CHAR_NEWLINE + progLangOpenBlock[progLang] + CHAR_NEWLINE;	//int main()\n{		
+		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + functionArgumentsDeclaration; 
+		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + CHAR_TAB + generateExternalFunctionContext(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME, progLang) + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang] + CHAR_NEWLINE;	//\tNLCimplicitlyDeclaredFunctionArtificialFunction(xClassList, ...);\n
+		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + progLangCloseBlock[progLang] + CHAR_NEWLINE;		//}\n
+	}
+
+	return printedCodeBlocksSourceMainFunctionText;
+}
+#endif
+
 

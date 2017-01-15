@@ -1,9 +1,9 @@
-#include "NLCgeneratedyellowClass.hpp"
+#include "NLCgeneratedmountainClass.hpp"
 #include "NLClibrary.hpp"
 
-yellowClass::yellowClass(void)
+mountainClass::mountainClass(void)
 {
-	name = "yellow";
+	name = "mountain";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

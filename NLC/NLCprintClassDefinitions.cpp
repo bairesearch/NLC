@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q3b 18-August-2015
+ * Project Version: 1q4a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -171,6 +171,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 						vector<string> printedClassDefinitionTextHeaderTopForwardDeclarationList;
 						string printedClassDefinitionTextHeaderTop = "";
+						#endif
+						#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+						bool implicitlyDeclaredFunctionDetected = false;
+						string printedCodeBlocksHeaderMainFunctionText = progLangMainFunctionDeclaration[progLang] + progLangEndLine[progLang] + CHAR_NEWLINE;	//int main();
 						#endif
 
 						string className = classDefinition->name;
@@ -347,6 +351,13 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 											#endif
 										#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
 										}
+										#endif
+										
+										#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+										if(currentItem->className == generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
+										{
+											implicitlyDeclaredFunctionDetected = true;
+										}										
 										#endif
 									}
 									else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
@@ -531,6 +542,17 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						printLine(progLangCloseBlock[progLang], 0, &printedClassDefinitionSourceText);
 						printLine("", 0, &printedClassDefinitionSourceText);
 
+						#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+						if(classDefinition->name == generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME))
+						{
+							if(implicitlyDeclaredFunctionDetected)
+							{
+								string printedCodeBlocksHeaderMainFunctionText = progLangMainFunctionDeclaration[progLang] + progLangEndLine[progLang] + CHAR_NEWLINE;	//int main();
+								printedClassDefinitionHeaderText = printedClassDefinitionHeaderText + printedCodeBlocksHeaderMainFunctionText;
+							}
+						}
+						#endif
+						
 						#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 						string printedClassDefinitionHeaderFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP; 	//eg NLCgeneratedmoveClass.hpp
 						string printedClassDefinitionSourceFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
@@ -551,7 +573,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						}
 						string preprocessorName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_DELIMITER + classDefinition->name;
 						printedClassDefinitionHeaderText = generateCodeHeaderCheckOpen(preprocessorName) + printedClassDefinitionTextHeaderTop + printedClassDefinitionHeaderText + generateCodeHeaderCheckClose();
-
+						
 						writeStringToFile(printedClassDefinitionHeaderFileName, &printedClassDefinitionHeaderText);
 						writeStringToFile(printedClassDefinitionSourceFileName, &printedClassDefinitionSourceText);
 						#else

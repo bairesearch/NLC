@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l7c 03-November-2014
+ * Project Version: 1l7d 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1822,12 +1822,13 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 	#ifdef NLC_DEBUG_PARSE_CONTEXT4
 	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity() getSameReferenceSetDefiniteUniqueParent result; childEntity: ") + childEntity->entityName + string(", parentEntityNew: ") + parentEntityNew->entityName);
 	#endif	
+	//cout << "1" << endl;
 	if(foundParentEntityNew)
 	{
 		#ifdef NLC_DEBUG_PARSE_CONTEXT4
 		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): (foundParentEntityNew) childEntity: ") + childEntity->entityName + string(", parentEntityNew: ") + parentEntityNew->entityName);
 		#endif
-
+		//cout << "2" << endl;	
 		if(generateContextBlocks(currentCodeBlockInTree, parentEntityNew, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))		//changed from generateCategories 1i11o
 		{
 			generatedContextForChild = true;
@@ -1840,20 +1841,28 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 			*currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, childEntity, childEntity);	//removed 1j10a
 			#endif
 			childEntity->NLClocalListVariableHasBeenInitialised = true;
+			//cout << "3" << endl;
 		}
 	}
-	else 
 	#endif
+	
 	if(assumedToAlreadyHaveBeenDeclared(childEntity))
 	{
-		#ifdef NLC_DEBUG_PARSE_CONTEXT4
-		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared(childEntity): ") + childEntity->entityName);
-		#endif
-
-		if(generateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))	//pass generatedContextForChild 1j10a
+		#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+		if(!generatedContextForChild)
 		{
-			generatedContextForChild = true;
-		}				
+		#endif
+			#ifdef NLC_DEBUG_PARSE_CONTEXT4
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared(childEntity): ") + childEntity->entityName);
+			#endif
+			//cout << "4" << endl;
+			if(generateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))	//pass generatedContextForChild 1j10a
+			{
+				generatedContextForChild = true;
+			}
+		#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+		}
+		#endif				
 	}
 	#endif
 				

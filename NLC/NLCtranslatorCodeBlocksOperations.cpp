@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l4b 02-November-2014
+ * Project Version: 1l4c 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1853,6 +1853,7 @@ bool initialiseOrGenerateContextForChildEntity(GIAentityNode * entity, GIAentity
 		}				
 	}
 	#endif
+	/*//is this code still required? - removed 1k21c
 	else
 	{
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
@@ -1884,6 +1885,7 @@ bool initialiseOrGenerateContextForChildEntity(GIAentityNode * entity, GIAentity
 		}
 		#endif
 	}
+	*/
 				
 	return generatedContextForChild;
 }

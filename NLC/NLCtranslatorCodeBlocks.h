@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g14a 15-July-2014
+ * Project Version: 1g14b 15-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -70,6 +70,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		void initialiseFunctionArguments(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * actionEntity, int sentenceIndex);
 		#endif
 	bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName);
-
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	bool clearContextGeneratedVariable(vector<GIAentityNode*> * entityNodesActiveListComplete);
+	#endif
+	
 
 #endif

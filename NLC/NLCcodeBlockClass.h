@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g14a 15-July-2014
+ * Project Version: 1g14b 15-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,6 +74,7 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_SET_BOOL_VARIABLE_FALSE (18)
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_TRUE (19)
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_FALSE (20)
+#define NLC_CODEBLOCK_TYPE_DEBUG (21)
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (30)		//forall(context1.param1PropertyList){
@@ -126,7 +127,7 @@ public:
 	GIAentityNode * foundLogicalConditionConjunction;
 	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	bool onlyGenerateConditionBlocksIfConnectionsParsedForNLC;
+	bool onlyGenerateContextBlocksIfConnectionsParsedForNLC;
 	#endif
 };
 
@@ -191,7 +192,7 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode * entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
 		bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* propertyEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
 	bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName,  GIAentityNode * entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
-		bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* conditionEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
+		bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* conditionEntity, GIAentityNode* conditionObject, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
 			#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 			bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction);
 			#endif
@@ -226,6 +227,8 @@ NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTr
 NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
 NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
 #endif
+
+NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning);
 
 string intToString(int integer);
 

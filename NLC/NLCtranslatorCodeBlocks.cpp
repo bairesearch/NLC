@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o4b 13-February-2015
+ * Project Version: 1o5a 15-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -761,12 +761,12 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	bool addNewObjectForEachSubject = false;
 	/*
 	implement all/each;
-		if detect "each"/"every"/"all" predeterminer and object is singular [REDUNDANT: or quantity entity] then add a new object for each subject
+		case 1: if detect "each"/"every"/"all" predeterminer and object is singular [REDUNDANT: or quantity entity] then add a new object for each subject
 			eg Each player has a colour.
-		if detect plural subject and indefinite plural object, then add a new object for each subject 
+		case 2: if detect plural subject and indefinite plural object, then add a new object for each subject 
 			eg Each player has 16 pieces.
 			eg the players have pieces.
-		if detect plural subject and quality object, then add a new object for each subject 
+		case 3: if detect plural subject and quality object, then add a new object for each subject 
 	*/
 	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES || connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 	{

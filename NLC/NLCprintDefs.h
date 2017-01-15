@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q5b 19-August-2015
+ * Project Version: 1q5c 19-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -159,6 +159,8 @@ static string progLangStringOpenClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\
 
 static string progLangStaticCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"static_cast<", "static_cast<", "static_cast<", "static_cast<", "static_cast<", "static_cast<", "static_cast<"};
 static string progLangStaticCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*>", "*>", "*>", "*>", "*>", "*>", "*>"};
+static string progLangDynamicCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<"};
+static string progLangDynamicCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*>", "*>", "*>", "*>", "*>", "*>", "*>"};
 static string progLangFunctionOwnerClassDelimiter[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"::", "::", "::", "::", "::", "::", "::"};
 
 //from NLCcodeBlockClass.h
@@ -411,6 +413,7 @@ string generateCodeEntityDeclarationSetToNull(NLCitem* param1, int progLang);
 string generateCodeSetEntity(NLCitem* param1, NLCitem* param2, int progLang);
 string generateCodeEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2, int progLang);
 
+string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 string generateStaticCastOfEntity(string entityName, string castClassName, int progLang);
 string generateStaticCastOfNewEntity(string entityClassName, string castClassName, int progLang);
 string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);

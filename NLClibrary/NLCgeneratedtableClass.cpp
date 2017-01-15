@@ -1,9 +1,9 @@
-#include "NLCgeneratedhappyClass.hpp"
+#include "NLCgeneratedtableClass.hpp"
 #include "NLClibrary.hpp"
 
-happyClass::happyClass(void)
+tableClass::tableClass(void)
 {
-	name = "happy";
+	name = "table";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

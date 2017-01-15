@@ -1,9 +1,9 @@
-#include "NLCgeneratedterribleClass.hpp"
+#include "NLCgeneratedtastyClass.hpp"
 #include "NLClibrary.hpp"
 
-terribleClass::terribleClass(void)
+tastyClass::tastyClass(void)
 {
-	name = "terrible";
+	name = "tasty";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

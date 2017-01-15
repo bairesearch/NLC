@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q5b 19-August-2015
+ * Project Version: 1q5c 19-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -500,7 +500,11 @@ string generateEntityClassName(NLCitem* param)
 }
 
 
-
+string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang)
+{
+	string castText = progLangDynamicCastStart[progLang] + castClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang];	//dynamic_cast<castClassName*>(entityName)
+	return castText;
+}
 string generateStaticCastOfEntity(string entityName, string castClassName, int progLang)
 {
 	string castText = progLangStaticCastStart[progLang] + castClassName + progLangStaticCastEnd[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang];	//static_cast<castClassName*>(entityName)

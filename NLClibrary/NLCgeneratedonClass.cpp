@@ -1,9 +1,9 @@
-#include "NLCgeneratedgarageClass.hpp"
+#include "NLCgeneratedonClass.hpp"
 #include "NLClibrary.hpp"
 
-garageClass::garageClass(void)
+onClass::onClass(void)
 {
-	name = "garage";
+	name = "on";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

@@ -1,9 +1,9 @@
-#include "NLCgeneratednearClass.hpp"
+#include "NLCgeneratedgreenClass.hpp"
 #include "NLClibrary.hpp"
 
-nearClass::nearClass(void)
+greenClass::greenClass(void)
 {
-	name = "near";
+	name = "green";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

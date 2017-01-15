@@ -18,75 +18,50 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		NLCimplicitlyDeclaredFunctionArtificialClass* newNLCimplicitlyDeclaredFunctionArtificialClass = new NLCimplicitlyDeclaredFunctionArtificialClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredFunctionArtificialClass);
 	}
-	if(name == "africa")
+	if(name == "yellow")
 	{
-		africaClass* newafricaClass = new africaClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newafricaClass);
+		yellowClass* newyellowClass = new yellowClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newyellowClass);
 	}
-	if(name == "country")
+	if(name == "banana")
 	{
-		countryClass* newcountryClass = new countryClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcountryClass);
+		bananaClass* newbananaClass = new bananaClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbananaClass);
 	}
-	if(name == "castle")
+	if(name == "on")
 	{
-		castleClass* newcastleClass = new castleClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcastleClass);
+		onClass* newonClass = new onClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newonClass);
 	}
-	if(name == "knight")
+	if(name == "table")
 	{
-		knightClass* newknightClass = new knightClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newknightClass);
+		tableClass* newtableClass = new tableClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtableClass);
 	}
-	if(name == "declare")
+	if(name == "fruit")
 	{
-		declareClass* newdeclareClass = new declareClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdeclareClass);
+		fruitClass* newfruitClass = new fruitClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfruitClass);
 	}
-	if(name == "war")
+	if(name == "apple")
 	{
-		warClass* newwarClass = new warClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newwarClass);
+		appleClass* newappleClass = new appleClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newappleClass);
 	}
-	if(name == "terrible")
+	if(name == "tree")
 	{
-		terribleClass* newterribleClass = new terribleClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newterribleClass);
+		treeClass* newtreeClass = new treeClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtreeClass);
 	}
-	if(name == "tom")
+	if(name == "green")
 	{
-		tomClass* newtomClass = new tomClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtomClass);
+		greenClass* newgreenClass = new greenClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgreenClass);
 	}
-	if(name == "ride")
+	if(name == "tasty")
 	{
-		rideClass* newrideClass = new rideClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newrideClass);
-	}
-	if(name == "bike")
-	{
-		bikeClass* newbikeClass = new bikeClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
-	}
-	if(name == "blue")
-	{
-		blueClass* newblueClass = new blueClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newblueClass);
-	}
-	if(name == "near")
-	{
-		nearClass* newnearClass = new nearClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newnearClass);
-	}
-	if(name == "garage")
-	{
-		garageClass* newgarageClass = new garageClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgarageClass);
-	}
-	if(name == "happy")
-	{
-		happyClass* newhappyClass = new happyClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newhappyClass);
+		tastyClass* newtastyClass = new tastyClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtastyClass);
 	}
 	return newGenericObject;
 }
@@ -109,75 +84,50 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 		NLCimplicitlyDeclaredFunctionArtificialClass* newNLCimplicitlyDeclaredFunctionArtificialClass = new NLCimplicitlyDeclaredFunctionArtificialClass(*(static_cast<NLCimplicitlyDeclaredFunctionArtificialClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredFunctionArtificialClass);
 	}
-	if(name == "africa")
+	if(name == "yellow")
 	{
-		africaClass* newafricaClass = new africaClass(*(static_cast<africaClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newafricaClass);
+		yellowClass* newyellowClass = new yellowClass(*(static_cast<yellowClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newyellowClass);
 	}
-	if(name == "country")
+	if(name == "banana")
 	{
-		countryClass* newcountryClass = new countryClass(*(static_cast<countryClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcountryClass);
+		bananaClass* newbananaClass = new bananaClass(*(static_cast<bananaClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbananaClass);
 	}
-	if(name == "castle")
+	if(name == "on")
 	{
-		castleClass* newcastleClass = new castleClass(*(static_cast<castleClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcastleClass);
+		onClass* newonClass = new onClass(*(static_cast<onClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newonClass);
 	}
-	if(name == "knight")
+	if(name == "table")
 	{
-		knightClass* newknightClass = new knightClass(*(static_cast<knightClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newknightClass);
+		tableClass* newtableClass = new tableClass(*(static_cast<tableClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtableClass);
 	}
-	if(name == "declare")
+	if(name == "fruit")
 	{
-		declareClass* newdeclareClass = new declareClass(*(static_cast<declareClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdeclareClass);
+		fruitClass* newfruitClass = new fruitClass(*(static_cast<fruitClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfruitClass);
 	}
-	if(name == "war")
+	if(name == "apple")
 	{
-		warClass* newwarClass = new warClass(*(static_cast<warClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newwarClass);
+		appleClass* newappleClass = new appleClass(*(static_cast<appleClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newappleClass);
 	}
-	if(name == "terrible")
+	if(name == "tree")
 	{
-		terribleClass* newterribleClass = new terribleClass(*(static_cast<terribleClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newterribleClass);
+		treeClass* newtreeClass = new treeClass(*(static_cast<treeClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtreeClass);
 	}
-	if(name == "tom")
+	if(name == "green")
 	{
-		tomClass* newtomClass = new tomClass(*(static_cast<tomClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtomClass);
+		greenClass* newgreenClass = new greenClass(*(static_cast<greenClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgreenClass);
 	}
-	if(name == "ride")
+	if(name == "tasty")
 	{
-		rideClass* newrideClass = new rideClass(*(static_cast<rideClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newrideClass);
-	}
-	if(name == "bike")
-	{
-		bikeClass* newbikeClass = new bikeClass(*(static_cast<bikeClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
-	}
-	if(name == "blue")
-	{
-		blueClass* newblueClass = new blueClass(*(static_cast<blueClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newblueClass);
-	}
-	if(name == "near")
-	{
-		nearClass* newnearClass = new nearClass(*(static_cast<nearClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newnearClass);
-	}
-	if(name == "garage")
-	{
-		garageClass* newgarageClass = new garageClass(*(static_cast<garageClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgarageClass);
-	}
-	if(name == "happy")
-	{
-		happyClass* newhappyClass = new happyClass(*(static_cast<happyClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newhappyClass);
+		tastyClass* newtastyClass = new tastyClass(*(static_cast<tastyClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtastyClass);
 	}
 	return newGenericObject;
 }

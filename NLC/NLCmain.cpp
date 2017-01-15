@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3e 25-June-2015
+ * Project Version: 1p3f 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p3e 25-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p3f 25-June-2015" << endl;
 			exit(1);
 		}
 
@@ -1431,7 +1431,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 	#endif
 	
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
+	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList->begin(); functionDependencyIter != functionDependencyList->end(); functionDependencyIter++)
 	{	
 		NLCclassDefinitionFunctionDependency* functionDependencyTemp = *functionDependencyIter;
 		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
@@ -1470,6 +1470,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 				#endif
 					if(!(functionDependency->reconciledFunctionDeclarationArguments))
 					{
+						cout << "(!(functionDependency->reconciledFunctionDeclarationArguments))" << endl;
 						bool reconciledChildFunctionDeclarationArguments = true;
 						for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependency->functionDependencyList.begin(); functionDependencyIter2 != functionDependency->functionDependencyList.end(); functionDependencyIter2++)
 						{
@@ -1493,16 +1494,30 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 						if(reconciledChildFunctionDeclarationArguments)
 						{
 							//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionDefinitionListIndex)
-							NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDependency->functionDefinitionListIndex);
-
+							
+							bool isLibraryFunction = false;
+							NLCcodeblock* firstCodeBlockInTree = NULL;
+							#ifdef NLC_USE_LIBRARY
+							if(functionDependency->functionDefinitionListIndex == FUNCTION_INDEX_LIBRARY_FUNCTION)
+							{	
+								isLibraryFunction = true;
+							}
+							else
+							{
+							#endif
+								 firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDependency->functionDefinitionListIndex);
+							#ifdef NLC_USE_LIBRARY
+							}
+							#endif
+							
 							string functionName = functionDependency->functionName;
-							#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+							//#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 							cout << "************" << endl;
 							cout << "start reconcile: functionName = " << functionDependency->functionName << endl;
 							cout << "start reconcile: functionObject = " << functionDependency->functionObjectName << endl;
 							cout << "start reconcile: functionOwner = " << functionDependency->functionOwnerName << endl;
-							#endif
-							reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, functionDependency);
+							//#endif
+							reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, functionDependency, isLibraryFunction);
 
 							functionDependency->reconciledFunctionDeclarationArguments = true;
 						}
@@ -1526,8 +1541,22 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 		if(findFunctionDefinitionFunctionDependencyInList(&functionDependencyList, functionDefinitionIndex, &functionDependency))
 		{
 			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionDefinitionListIndex)
-			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDefinitionIndex);
-
+			
+			bool isLibraryFunction = false;
+			NLCcodeblock* firstCodeBlockInTree = NULL;
+			#ifdef NLC_USE_LIBRARY
+			if(functionDependency->functionDefinitionListIndex == FUNCTION_INDEX_LIBRARY_FUNCTION)
+			{	
+				isLibraryFunction = true;
+			}
+			else
+			{
+			#endif
+				 firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDependency->functionDefinitionListIndex);
+			#ifdef NLC_USE_LIBRARY
+			}
+			#endif
+									
 			string functionName = functionDependency->functionName;
 			#ifdef NLC_DEBUG
 			cout << "" << endl;
@@ -1535,7 +1564,9 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 			cout << "start reconcile: functionObject = " << functionDependency->functionObjectName << endl;
 			cout << "start reconcile: functionOwner = " << functionDependency->functionOwnerName << endl;
 			#endif
-			reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDependency);
+			isLibraryFunction = false;
+			
+			reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDependency, isLibraryFunction);
 
 			//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 		}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3e 25-June-2015
+ * Project Version: 1p3f 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -466,7 +466,7 @@ void disableInstanceAndConceptEntityNLC(GIAentityNode* entity)
 #ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 //NB firstCodeBlockInTree contains the new function codeblock (NLC_CODEBLOCK_TYPE_NEW_FUNCTION) parameters: NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST
-void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency)
+void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency, bool isLibraryFunction)
 {
 	//reconcile function arguments (class function header) - NB code function reference arguments are reconciled in printCodeBlocks()  
 
@@ -482,27 +482,34 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 	bool rearrangeClassList = true;
 	bool isReferenceElseFunctionDefinition = false;
 	NLCclassDefinition* functionDeclaration = NULL;
-	//NB findFunctionDeclarationClassDefinition parses (reconcile/rearranges) function declaration classDefinitions only (isReferenceElseFunctionDefinition==true)
-		//but what if there are multiple function declarations (won't each one need to have its arguments reconciled?)
+	//NB findFunctionDeclarationClassDefinition parses (reconcile/rearranges) functionDefinition classDefinitions only (isReferenceElseFunctionDefinition==false)
 	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, &functionDeclaration, rearrangeClassList, isReferenceElseFunctionDefinition))
 	{
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+		//#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration" << endl;
-		#endif
+		//#endif
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
-		//adds the arguments from firstCodeBlockInTree (NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST) to the functionDeclaration classDefinition
-		addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(&(firstCodeBlockInTree->parameters), functionDeclaration);
+		
+		if(!isLibraryFunction)	
+		{
+			//adds the arguments from firstCodeBlockInTree (NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST) to the functionDeclaration classDefinition
+			addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(&(firstCodeBlockInTree->parameters), functionDeclaration);	//note this has already been done for libraryFunctions
+		}
 		
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
-		//propogates arguments to parent ("dependency child") function?
+		//propogates arguments to parent ("dependency child") function
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependency->functionDependencyList.begin(); functionDependencyIter != functionDependency->functionDependencyList.end(); functionDependencyIter++)
 		{
 			NLCclassDefinitionFunctionDependency* functionDependencyChild = *functionDependencyIter;
 			NLCclassDefinition* functionDeclaration2 = NULL;
+			//find the parent ("dependency child") functionDefinition
 			if(findFunctionDeclarationClassDefinition(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, &functionDeclaration2, rearrangeClassList, isReferenceElseFunctionDefinition))	//should find exact match as class definitions have already been created for all new function definitions (and their implicit declarations have been added to their function argument lists)
 			{
 				addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(functionDeclaration2, functionDeclaration);
-				addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(functionDeclaration, &(firstCodeBlockInTree->parameters));
+				if(!isLibraryFunction)
+				{
+					addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(functionDeclaration, &(firstCodeBlockInTree->parameters));
+				}
 			}
 		}
 		#endif

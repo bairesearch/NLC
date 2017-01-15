@@ -9,14 +9,7 @@ void printFunction(vector<printClass*> &printClassList, vector<NLCgenericEntityC
 		for(unordered_map<string, vector<NLCgenericEntityClass*> *> ::iterator iter1 = printObject->propertyListAll.begin(); iter1 != printObject->propertyListAll.end(); iter1++) 
 		{
 			vector<NLCgenericEntityClass*> * propertyList = iter1->second;
-			print(printClassList, propertyList);
-			
-			/*
-			for(vector<NLCgenericEntityClass*> ::iterator iter2 = propertyList.begin(); iter2 < propertyList.end(); iter2++) 
-			{
-				NLCgenericEntityClass * property = *iter2;
-			}
-			*/
+			printFunction(printClassList, propertyList);
 		}
 	}
 }
@@ -38,6 +31,15 @@ void moveFunction(vector<moveClass*> &moveClassList, vector<NLCgenericEntityClas
 					NLCgenericEntityClass* fromConditionObject = iter1->second;
 					NLCgenericEntityToConditionList = getConditionListByConditionName(fromConditionObject, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME); 
 				}
+			}
+		}
+		if(NLCgenericEntityFromConditionList == NULL)
+		{
+			//in case the moveObject was defined as "in"/"at" (condition) and not a property of the parent, eg The ball is near the park. Move the ball to the mountain.
+			unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityFromConditionList = getConditionListByConditionName(fromConditionObject, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_CONDITION_AT_NAME); 
+			if(NLCgenericEntityFromConditionList == NULL)
+			{
+				NLCgenericEntityFromConditionList = getConditionListByConditionName(fromConditionObject, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_CONDITION_IN_NAME);
 			}
 		}
 
@@ -74,15 +76,6 @@ void moveFunction(vector<moveClass*> &moveClassList, vector<NLCgenericEntityClas
 						}
 						else
 						{
-							/*
-							//in case the moveObject was defined as "in"/"at" (condition) and not a property of the parent //no not required because "in" conditions will be attaced to the the moveObject and not the move action
-
-							unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityFromObjectAtConditionList = getConditionListByConditionName(fromConditionObject, "at"); 
-							if(NLCgenericEntityFromObjectAtConditionList == NULL)
-							{
-								NLCgenericEntityFromObjectAtConditionList = getConditionListByConditionName(fromConditionObject, "in");
-							}
-							*/
 							cout << "move() error: move object parent not found" << endl;
 						}
 					}
@@ -100,6 +93,7 @@ void moveFunction(vector<moveClass*> &moveClassList, vector<NLCgenericEntityClas
 	}
 }
 
+//writeFunction() limitation: this only writes property lists at present (not condition lists)
 void writeFunction(vector<moveClass*> &writeClassList, vector<NLCgenericEntityClass*> &writeObjectClassList)
 {
 	for(vector<NLCgenericEntityClass*> ::iterator iter1 = writeClassList.begin(); iter1 < writeClassList.end(); iter1++) 
@@ -114,7 +108,11 @@ void writeFunction(vector<moveClass*> &writeClassList, vector<NLCgenericEntityCl
 				NLCgenericEntityClass* toConditionObject = iter2->second;
 				if(toConditionObject->name == NLC_USE_LIBRARY_WRITE_FUNCTION_ACTIONOBJECT_FILE_NAME)
 				{
-					
+					#ifdef NLC_DEBUG_LIBRARY
+					cout << "writeFunction() pass" << endl;
+					#endif
+					XMLparserTag * firstTagInXMLFile = new XMLparserTag();
+					writeFunctionRecurse(firstTagInXMLFile, writeObjectClassList);
 				}
 			}
 		}
@@ -124,6 +122,65 @@ void writeFunction(vector<moveClass*> &writeClassList, vector<NLCgenericEntityCl
 		}
 	}
 }
+void writeToFileRecurse(XMLparserTag * firstTagInList, vector<NLCgenericEntityClass*> &writeObjectClassList)
+{
+	XMLparserTag * currentTagInList = firstTagInList;
+	for(vector<NLCgenericEntityClass*> ::iterator iter1 = writeObjectClassList.begin(); iter1 < writeObjectClassList.end(); iter1++) 
+	{
+		writeObject = *iter2;
+		#ifdef NLC_DEBUG_LIBRARY
+		cout << "writeToFileRecurse(): writeObject->name = " << writeObject->name << endl;
+		#endif
+		
+		currentTagInList->name = writeObject->name;
+		currentTagInList->nextTag = new XMLparserTag();
+		currentTagInList = currentTagInList->nextTag;
+
+		for(unordered_map<string, vector<NLCgenericEntityClass*>  *> ::iterator iter2 = writeObject->propertyListAll.begin(); iter2 != writeObject->propertyListAll.end(); iter2++)
+		{
+			string propertyListKey = iter2->first;
+			vector<NLCgenericEntityClass*> * propertyList = iter2->second;
+			
+			currentTagInList->firstLowerLevelTag = new XMLparserTag();
+			writeToFileRecurse(currentTagInList->firstLowerLevelTag, propertyList);
+		}
+	}
+}
+
+
+void readFunction(vector<moveClass*> &readClassList, vector<NLCgenericEntityClass*> &readObjectClassList)
+{
+	for(vector<NLCgenericEntityClass*> ::iterator iter1 = readClassList.begin(); iter1 < readClassList.end(); iter1++) 
+	{
+		readAction = *iter2;
+		unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityToConditionList = getConditionListByConditionName(writeAction, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME); 
+
+		if(NLCgenericEntityToConditionList != NULL)
+		{
+			for(unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> ::iterator iter2 = NLCgenericEntityToConditionList.begin(); iter2 != NLCgenericEntityToConditionList.end(); iter2++)
+			{
+				NLCgenericEntityClass* toConditionObject = iter2->second;
+				if(toConditionObject->name == NLC_USE_LIBRARY_WRITE_FUNCTION_ACTIONOBJECT_FILE_NAME)
+				{
+					#ifdef NLC_DEBUG_LIBRARY
+					cout << "writeFunction() pass" << endl;
+					#endif
+					XMLparserTag * firstTagInXMLFile = new XMLparserTag();
+					writeFunctionRecurse(firstTagInXMLFile, writeObjectClassList);
+				}
+			}
+		}
+		else
+		{
+			cout << "move() error: write action 'to' condition not found" << endl;
+		}
+	}
+}
+void readFromFileRecurse(vector<NLCgenericEntityClass*> &writeObjectClassList)
+{
+
+}
+
 
 
 

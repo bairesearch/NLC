@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2d 09-January-2015
+ * Project Version: 1n2e 09-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -165,7 +165,6 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				else
 				{				
 				#endif
-					//cout << "at-1" << endl;
 					functionContents = functionContents + indentationContents;
 				
 					//now for each sentence on line:
@@ -174,19 +173,46 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					while(stillSentenceToParseOnLine)
 					{
 						bool lineFullStopDetected = false;
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						int startOfSentenceIndexNew = 0;
+						int startOfSentenceIndexTemp = 0;
+						while((startOfSentenceIndexTemp = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndexTemp)) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+						{
+							cout << "startOfSentenceIndexTemp2 = " << startOfSentenceIndexTemp << endl;
+							bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
+							if(startOfSentenceIndexTemp < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"
+							{	
+								char characterImmediatelySucceedingFullStop = lineContents[startOfSentenceIndexTemp+1];
+								fullStopImmediatelySucceededByAlphabeticalCharacter = charInCharArray(characterImmediatelySucceedingFullStop, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
+								//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: characterImmediatelySucceedingFullStop = " << characterImmediatelySucceedingFullStop << endl;
+							}
+							if(!fullStopImmediatelySucceededByAlphabeticalCharacter)
+							{
+								lineFullStopDetected = true;
+							}
+							if(startOfSentenceIndexTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+							{
+								startOfSentenceIndexNew = startOfSentenceIndexTemp;
+							}
+							startOfSentenceIndexTemp++;
+						}					
+						#else
 						int startOfSentenceIndexNew = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndex);
 						if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
 							lineFullStopDetected = true;
+	
 						}
-						else
+						#endif
+						if(!lineFullStopDetected)	//look for question mark instead
 						{
 							startOfSentenceIndexNew = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR, startOfSentenceIndex);	//NB '.' and '?' are currently supported as sentence delimiters
 							if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 							{
 								lineFullStopDetected = true;
 							}
-						}						
+						}
+												
 						string sentenceContents = "";
 						if(lineFullStopDetected)
 						{
@@ -353,10 +379,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							}
 							#endif
 							
-							#ifdef NLC_DEBUG_PREPROCESSOR
+							//#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "create new sentence" << endl;
 							cout << sentenceIndex << ": sentenceContents = " << sentenceContents << endl;
-							#endif
+							//#endif
 							currentNLCsentenceInList->sentenceContents = sentenceContents;	//full stop should already be appended
 							currentNLCsentenceInList->sentenceIndex = sentenceIndex;
 							currentNLCsentenceInList->indentation = currentIndentation;
@@ -366,6 +392,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							
 							if(startOfSentenceIndexNew == lineContents.length()-1)
 							{
+								//cout << "stillSentenceToParseOnLine = false" << endl;
 								stillSentenceToParseOnLine = false;
 							}
 						}

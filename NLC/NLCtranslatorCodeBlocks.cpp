@@ -936,7 +936,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 						if(!(conditionConnection->parsedForNLCcodeBlocks) && !(conditionEntity->parsedForNLCcodeBlocks))
 						{
-							cout << "!(conditionConnection->parsedForNLCcodeBlocks): " << conditionObject->entityName << endl;
+							//cout << "!(conditionConnection->parsedForNLCcodeBlocks): " << conditionObject->entityName << endl;
 
 							#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS		
 							if(assumedToAlreadyHaveBeenDeclared(conditionObject))
@@ -944,7 +944,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								NLCcodeblock * firstCodeBlockInSection2 = *currentCodeBlockInTree;
 
 								//use function argument PropertyList (do not create a new property to insert into condition); eg "the house" in "Tom is near a house"
-								cout << "conditionObject->entityName = " << conditionObject->entityName << endl;
+								//cout << "conditionObject->entityName = " << conditionObject->entityName << endl;
 								//for(all items in context){
 
 								//bool entityHasParent = getEntityContext(conditionObject, &(conditionObjectClass->context), false, sentenceIndex, true);	//removed 1e6b

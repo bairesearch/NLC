@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j14b 13-September-2014
+ * Project Version: 1j15a 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -621,7 +621,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 						//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 						#else
 						//1j implementation
-						entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
+						//entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
 						#endif					
 					//}
 					#endif
@@ -698,7 +698,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 									//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 									#else
 									//1j implementation
-									entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
+									//entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
 									#endif
 								}
 								#endif

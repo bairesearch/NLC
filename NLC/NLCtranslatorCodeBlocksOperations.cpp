@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j14b 13-September-2014
+ * Project Version: 1j15a 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -340,7 +340,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 	}
 	
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
+	if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
 	{
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
@@ -512,7 +512,9 @@ bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentity
 	bool result = true;
 	
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-	if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
+	cout << "entity->entityName = " << entity->entityName << endl;
+	cout << "entity->grammaticalDefiniteTemp = " << entity->grammaticalDefiniteTemp << endl;
+	if((entity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(entity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
 	{
 		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");

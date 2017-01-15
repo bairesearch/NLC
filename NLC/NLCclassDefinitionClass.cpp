@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r2b 15-October-2015
+ * Project Version: 1r3a 11-December-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -317,11 +317,11 @@ bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDep
 	return result;
 }
 
-bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDefinitionFunctionDependencyInListByIndex(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound)
 {
 	bool foundFunctionDefinitionFunctionDependency = false;
 	NLCclassDefinition* functionDefinitionClassDefinitionFound = NULL;
-	if(findFunctionDefinitionClassDefinitionInList(classDefinitionList, functionIndex, &functionDefinitionClassDefinitionFound))
+	if(findFunctionDependencyClassDefinitionInListByIndex(classDefinitionList, functionIndex, &functionDefinitionClassDefinitionFound))
 	{
 		*functionDependencyFound = functionDefinitionClassDefinitionFound->functionDependency;
 		if(!((*functionDependencyFound)->isReferenceElseFunctionDefinition))	//redundant test (as already testing functionIndex)
@@ -332,7 +332,7 @@ bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>*
 	return foundFunctionDefinitionFunctionDependency;
 }
 
-bool findFunctionDefinitionClassDefinitionInList(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinition** functionDefinitionFound)
+bool findFunctionDependencyClassDefinitionInListByIndex(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinition** functionDefinitionFound)
 {
 	bool foundFunctionDefinitionClassDefinition = false;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)

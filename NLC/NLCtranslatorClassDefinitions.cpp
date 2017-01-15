@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r2b 15-October-2015
+ * Project Version: 1r3a 11-December-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -889,7 +889,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 string generateSubstanceConceptClassName(GIAentityNode* substanceConceptEntity)
 {
 	string substanceConceptClassName = substanceConceptEntity->entityName;
-	generateSubstanceConceptClassNameRecurse(substanceConceptEntity, &substanceConceptClassName, NULL);
+	generateSubstanceConceptClassNameRecurse(substanceConceptEntity, &substanceConceptClassName);
 	substanceConceptClassName = substanceConceptClassName + NLC_CLASS_NAME_APPEND;
 	return substanceConceptClassName;
 }
@@ -907,7 +907,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 			{
 				GIAentityNode* substanceConceptConditionObject = (substanceConceptCondition->conditionObjectEntity->back())->entity;
 				*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION;
-				*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+				*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject, substanceConceptClassName);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
 			}
 			else
 			{
@@ -921,7 +921,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 	{
 		GIAentityNode* substanceConceptProperty = (*entityIter)->entity;
 		*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
-		*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptProperty, substanceConceptEntity);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+		*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptProperty, substanceConceptClassName);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
 	}
 }
 			

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r2b 15-October-2015
+ * Project Version: 1r3a 11-December-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -396,7 +396,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 				cout << "(nextNLCfullSentenceInList->indentation <= firstNLCsentenceInFullSentence->indentation)" << endl;
 				#endif			
 				*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
-				//NB if(nextNLCfullSentenceInList->indentation < firstNLCsentenceInFullSentence->indentation) will be processed later by generateCodeBlocks()
+				//NB if(nextNLCfullSentenceInList->indentation < firstNLCsentenceInFullSentence->indentation) will be processed later by generateCodeBlocks{}
 			}
 			else
 			{
@@ -486,7 +486,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					#ifdef NLC_GENERATE_TYPE_LISTS
 					//number of statements must be expressed using definite variables, but they will not be advanced referenced by GIA (and so must be located in the typeList)
 						//"the number of x" will have already been declared, but is not advanced referenced, so much search the typeList
-					entity->grammaticalDefiniteTemp = false;	//this triggers generateContextBlocks() to execute createCodeBlockForOrInPropertyList() on parent rather than createCodeBlockForOrInLocalList()					
+					entity->grammaticalDefiniteTemp = false;	//this triggers generateContextBlocks{} to execute createCodeBlockForOrInPropertyList{} on parent rather than createCodeBlockForOrInLocalList{}				
 					if(!assumedToAlreadyHaveBeenDeclared(entity))	
 					{
 						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, entity);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
@@ -530,7 +530,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 2A - for logical conditions only" << endl;
+			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} part 2A - for logical conditions only" << endl;
 			#endif
 			
 			//for NLP parsable phrase;
@@ -623,7 +623,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								else
 								{
 									#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() pass: getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
+									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} pass: getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
 									#endif
 									
 									foundParsablePhrase = true;
@@ -661,7 +661,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			#ifdef NLC_USE_MATH_OBJECTS
 			
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 2B - for non logical conditions only" << endl;
+			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} part 2B - for non logical conditions only" << endl;
 			#endif
 			
 			/*for NLP parsable phrase;
@@ -958,7 +958,7 @@ bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNod
 							}
 							else
 							{
-								cout << "checkIfPhraseContainsSubstanceConceptWithDefinitionLink() warning: !(!isDefiniteEntity(entity)) && !isDefiniteEntity(definitionEntityTemp))" << endl;
+								cout << "checkIfPhraseContainsSubstanceConceptWithDefinitionLink{} warning: !(!isDefiniteEntity(entity)) && !isDefiniteEntity(definitionEntityTemp))" << endl;
 							}
 						}
 					}
@@ -1016,12 +1016,12 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 								}
 								else
 								{
-									cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(entity) || foundDefiniteParentOfEntity))" << endl;
+									cout << "checkIfPhraseContainsSubstanceWithDefinitionLink{} warning: !(isDefiniteEntity(entity) || foundDefiniteParentOfEntity))" << endl;
 								}
 							}
 							else
 							{
-								cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: isDefiniteEntity(definitionEntityTemp))" << endl;
+								cout << "checkIfPhraseContainsSubstanceWithDefinitionLink{} warning: isDefiniteEntity(definitionEntityTemp))" << endl;
 							}
 						}
 					}

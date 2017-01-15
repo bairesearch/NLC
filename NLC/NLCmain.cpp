@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r2b 15-October-2015
+ * Project Version: 1r3a 11-December-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -139,17 +139,6 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 int main(int argc, char** argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
-
-	#ifdef GIA_TRIAL_WORD_NET_SYNONYM_LOOKUP
-	initialiseWordNet();
-	string wordExample = "like";
-	bool wordIsFound = false;
-	string listOfSynonyms[WORDNET_FINDTHEINFO_OUTPUT_MAX_NUMBER_SYNONYMS];
-	int wordNetPOS = VERB;	//NOUN	VERB
-	checkIfSynsetListContainsSynonymousEntityNamesAndRecordMostPopularSynset(wordExample, &wordIsFound, wordNetPOS);
-	//findSynonymsOLD(wordExample, &wordIsFound, listOfSynonyms, wordNetPOS);
-	exit(0);
-	#endif
 
 	//print execution time
 	struct tm* current;
@@ -639,7 +628,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1r2b 15-October-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1r3a 11-December-2015" << endl;
 			exit(1);
 		}
 
@@ -1596,7 +1585,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinition* functionDefinitionClassDefinition = NULL;
-		if(findFunctionDefinitionClassDefinitionInList(classDefinitionList, functionDefinitionIndex, &functionDefinitionClassDefinition))
+		if(findFunctionDependencyClassDefinitionInListByIndex(classDefinitionList, functionDefinitionIndex, &functionDefinitionClassDefinition))
 		{	
 			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions->at(functionDefinitionIndex);
 			
@@ -1735,7 +1724,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinition* functionDefinitionClassDefinition = NULL;
-		if(findFunctionDependencyClassDefinitionInList(&functionDependencyList, functionDefinitionIndex, &functionDefinitionClassDefinition))
+		if(findFunctionDependencyClassDefinitionInListByIndex(&functionDependencyList, functionDefinitionIndex, &functionDefinitionClassDefinition))
 		{
 			if(functionDefinitionClassDefinition->functionDependency != NULL)
 			{

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14b 21-October-2014
+ * Project Version: 1k14c 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -329,15 +329,15 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 {			
 	bool contextFound = false;
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	string parentEntityAliasClassName = "";
-	if(findEntityNameInFunctionAliasList(parentEntity->entityName, &parentEntityAliasClassName))
+	string parentEntityAliasName = "";
+	if(findAliasInEntity(parentEntity, &parentEntityAliasName))
 	{
 		//added 1k14b;
-		GIAentityNode artificialAliasEntity;
-		artificialAliasEntity.entityName = parentEntityAliasClassName;
-		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, &artificialAliasEntity, genericListAppendName);
-		*currentCodeBlockInTree = createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(*currentCodeBlockInTree, parentEntity->entityName, &artificialAliasEntity, genericListAppendName);
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, &artificialAliasEntity, genericListAppendName);
+		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+		*currentCodeBlockInTree = createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(*currentCodeBlockInTree, parentEntityAliasName, parentEntity, genericListAppendName);
+		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+		parentEntity->NLCcontextGenerated = true;
+		contextFound = true;
 	}
 	else
 	{
@@ -2084,6 +2084,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 
 //"Tom rides a bike. Tom is a red dog."
+/*
 void fillFunctionAliasClassList(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete)
 {	
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -2141,6 +2142,7 @@ void fillFunctionAliasClassList(NLCcodeblock ** currentCodeBlockInTree, vector<G
 	cout << "end fillFunctionAliasClassList():" << endl;
 	#endif
 }
+*/
 
 //"A red dog rides a bike. The name of the red dog is Tom."/"A red dog rides a bike. Tom is the red Dog."
 void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
@@ -2169,13 +2171,10 @@ void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, ve
 							string aliasName = aliasEntity->entityName;
 							string aliasClassName = aliasClassEntity->entityName;
 							
-							string aliasClassNameTemp = "";
-							if(findEntityNameInFunctionAliasList(aliasName, &aliasClassNameTemp))
+							string aliasNameTemp = "";
+							if(findAliasInEntity(aliasEntity, &aliasNameTemp)) //*
 							{
-								if(aliasClassName == aliasClassNameTemp)
-								{
-									aliasAlreadyInitialised = true;
-								}
+								aliasAlreadyInitialised = true;
 							}
 							if(!aliasAlreadyInitialised)
 							{
@@ -2185,8 +2184,10 @@ void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, ve
 								cout << "aliasClassName = " << aliasClassName << endl;
 								#endif
 							
+								/*
 								unordered_map<string, string> *  functionAliasClassList = getFunctionAliasClassList();
 								functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
+								*/
 								
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//CHECKTHIS
 								bool generatedParentContext = false;	//CHECKTHIS
@@ -2205,6 +2206,20 @@ void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, ve
 								{
 									*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
 								}
+								
+								//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
+								for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
+								{
+									GIAentityNode * entity2 = (*entityIter2);
+									if(entity2->entityName == aliasName)
+									{
+										if(entity2->sentenceIndexTemp > aliasEntity->sentenceIndexTemp)	//this test isn't required because of *
+										{
+											entity2->aliasList.push_back(aliasName);
+											entity2->entityName = aliasClassName;	
+										}
+									}
+								}	
 							}
 						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 						}

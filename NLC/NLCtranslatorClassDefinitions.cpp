@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14b 21-October-2014
+ * Project Version: 1k14c 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -609,6 +609,7 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	#endif
 	#endif
 	
+	/*
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	string aliasClassName = "";
 	if(findEntityNameInFunctionAliasList(entityNode->entityName, &aliasClassName))
@@ -616,7 +617,8 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 		entityNode->entityName = aliasClassName;	//entity name can be overwritten as generateCodeBlocks has already been executed 
 	}
 	#endif
-		
+	*/
+	
 	return validClass;
 }
 
@@ -668,6 +670,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	#endif
 	#endif
 	
+	/*
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	string aliasClassName = "";
 	if(findEntityNameInFunctionAliasList(targetEntity->entityName, &aliasClassName))
@@ -675,6 +678,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 		targetEntity->entityName = aliasClassName;	//entity name can be overwritten as generateCodeBlocks has already been executed 
 	}
 	#endif
+	*/
 	
 	return validClassContents;
 }

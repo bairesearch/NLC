@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5p 15-August-2016
+ * Project Version: 1r6a 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
 //#define NLC_USE_LIBRARY_USER
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
-      //#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
+      #define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
 #endif
 
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -123,10 +123,13 @@
 	#ifndef NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
 		//#define NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE	//1r5i (never enabled or tested): alternate implementation of NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
 	#endif
-	//#define NLC_API	//1r5d		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+		#define NLC_API	//1r6a (coded ~1r5d)		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+	#endif
 	#ifdef NLC_API
+		#define NLC_API_DEBUG
 		#define NLC_API_DEFAULT_SOURCE_FOLDER_NAME "/home/systemusername/source/NLCthirdpartyAPI/"
-		#define NLC_API_DEFAULT_CLASS_LIST_FILE_NAME "NLCthirdpartyAPIclassList.txt"
+		#define NLC_API_DEFAULT_CLASS_LIST_FILE_NAME "APIclassList.txt"
 		#define DOXYGEN_XML_OUTPUT_FOLDER "xml/"	//relative path
 		#define DOXYGEN_XML_CLASS_FILE_NAME_PREPEND "class"
 		#define DOXYGEN_XML_CLASS_FILE_NAME_EXTENSION ".xml"

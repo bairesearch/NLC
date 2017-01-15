@@ -26,7 +26,7 @@
  * File Name: NLCapi.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5p 15-August-2016
+ * Project Version: 1r6a 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,13 +41,15 @@
 #ifdef NLC_API
 bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vector<NLCclassDefinition*>* classDefinitionList, int progLang)
 {
+	bool result = true;
+
 	string doxygenXMLclassFileName = string(DOXYGEN_XML_CLASS_FILE_NAME_PREPEND) + APIclassName + DOXYGEN_XML_CLASS_FILE_NAME_EXTENSION;
 	string doxygenXMLclassFileNameFullPath =  APIsourceFolder + DOXYGEN_XML_OUTPUT_FOLDER + doxygenXMLclassFileName;
 
-	bool result = true;
-	
  	XMLparserTag* firstTagInXMLFile = new XMLparserTag();
 
+	cout << "doxygenXMLclassFileNameFullPath = " << doxygenXMLclassFileNameFullPath << endl;
+	
  	if(!readXMLfile(doxygenXMLclassFileNameFullPath, firstTagInXMLFile))
  	{
 		result = false;
@@ -60,104 +62,144 @@ bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vecto
 	}
 	else
 	{
-		cout << "parseSemanticNetTag error: semanticNetwork tag not detected";
+		cout << "parseDoxygenClassXMLfile error: " << NET_XML_TAG_doxygen << " tag not detected";
 		result = false;
 	}
 
 	if(result)
 	{
 		XMLparserTag* currentTagUpdatedL2 = currentTagUpdatedL1->firstLowerLevelTag;
-		if(currentTagUpdatedL2->name == NET_XML_TAG_compoundname)
+		if(currentTagUpdatedL2->name == NET_XML_TAG_compounddef)
 		{
-			if(currentTagUpdatedL2->value != APIclassName)
+			XMLparserTag* currentTagUpdatedL3 = currentTagUpdatedL2->firstLowerLevelTag;
+			if(currentTagUpdatedL3->name == NET_XML_TAG_compoundname)	//always expect first tag in NET_XML_TAG_compounddef to be NET_XML_TAG_compoundname
 			{
-				cout << "parseDoxygenClassXMLfile{} error: (NET_XML_TAG_compoundname value != doxygenXMLclassFileName)" << endl;
-				exit(0);
-			}
-		
-			string className = generateClassName(APIclassName);
-			NLCclassDefinition* classDefinition = NULL;
-			if(addClassDefinitionToList(classDefinitionList, className, &classDefinition))
-			{//this should always be true considering APIclassNames should be unique
-			
-				string APIsourceHeaderFileName = "";
-				#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
-				string printedClassDefinitionHeaderFileName = generateCodeClassDefinitionHeaderFileName(classDefinition->name);	//eg "NLCgeneratedInterfaceXClass.hpp"
-				string printedClassDefinitionSourceFileName = generateCodeClassDefinitionSourceFileName(classDefinition->name);	//eg "NLCgeneratedInterfaceXClass.cpp"	
-				#endif
-				string APIwrapperSourceWrapObjectFunctionHeaderText = generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_WRAP_FUNCTION_NAME, APIclassName, progLang);	//wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
-				string APIwrapperSourceUnwrapObjectFunctionHeaderText = generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_UNWRAP_FUNCTION_NAME, APIclassName, progLang);	//unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
-				string APIwrapperSourceWrapObjectFunctionText = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceWrapObjectFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang];		//void APIclassNameClass::wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject){
-				string APIwrapperSourceUnwrapObjectFunctionText = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceUnwrapObjectFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang];	//void APIclassNameClass::unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject){
-				string APIwrapperSourceWrapFunctionFunctionsText = "";
-				string APIwrapperHeaderWrapFunctionFunctionsText = "";
-				string APIwrapperSourceText = "";
-				string APIwrapperHeaderText = "";
-				#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
-				APIwrapperSourceText = APIwrapperSourceText + generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);	//eg #include "NLCgeneratedInterfaceXClass.hpp";
-				#endif
-
-				XMLparserTag* currentTagUpdatedL3 = currentTagUpdatedL2->firstLowerLevelTag;
-				while(currentTagUpdatedL3->nextTag != NULL)
+				if(currentTagUpdatedL3->value != APIclassName)
 				{
-					if(currentTagUpdatedL3->name == NET_XML_TAG_includes)
-					{	
-						APIsourceHeaderFileName = currentTagUpdatedL3->value;
-					}
-					if(currentTagUpdatedL3->name == NET_XML_TAG_basecompoundref)
+					cout << "parseDoxygenClassXMLfile{} error: (NET_XML_TAG_compoundname value != doxygenXMLclassFileName)" << endl;
+					result = false;	
+				}
+				currentTagUpdatedL3 = currentTagUpdatedL3->nextTag;
+			}
+			else
+			{
+				cout << "parseDoxygenClassXMLfile error: " << NET_XML_TAG_compoundname << " tag not detected";
+				result = false;	
+			}
+			
+			if(result)
+			{
+				string className = generateClassName(APIclassName);
+				NLCclassDefinition* classDefinition = NULL;
+				if(addClassDefinitionToList(classDefinitionList, className, &classDefinition))
+				{//this should always be true considering APIclassNames should be unique
+
+					string APIsourceHeaderFileName = "";
+					#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+					string printedClassDefinitionHeaderFileName = generateCodeClassDefinitionHeaderFileName(classDefinition->name);	//eg "NLCgeneratedInterfaceXClass.hpp"
+					string printedClassDefinitionSourceFileName = generateCodeClassDefinitionSourceFileName(classDefinition->name);	//eg "NLCgeneratedInterfaceXClass.cpp"	
+					#endif
+					string APIwrapperSourceWrapObjectFunctionHeaderText = generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_WRAP_FUNCTION_NAME, APIclassName, progLang);	//wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
+					string APIwrapperSourceUnwrapObjectFunctionHeaderText = generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_UNWRAP_FUNCTION_NAME, APIclassName, progLang);	//unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
+					string APIwrapperSourceWrapObjectFunctionText = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceWrapObjectFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang];		//void APIclassNameClass::wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject){
+					string APIwrapperSourceUnwrapObjectFunctionText = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceUnwrapObjectFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang];	//void APIclassNameClass::unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject){
+					string APIwrapperSourceWrapFunctionFunctionsText = "";
+					string APIwrapperHeaderWrapFunctionFunctionsText = "";
+					string APIwrapperSourceText = "";
+					string APIwrapperHeaderText = "";
+					#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+					APIwrapperSourceText = APIwrapperSourceText + generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);	//eg #include "NLCgeneratedInterfaceXClass.hpp";
+					#endif
+
+					#ifdef NLC_API_DEBUG
+					cout << "APIclassName = " << APIclassName << endl;
+					#endif
+
+					while(currentTagUpdatedL3->nextTag != NULL)
 					{
-						string APIclassParentName = currentTagUpdatedL3->value;	//TODO support template classes eg "QIntDict&lt; char &gt;" (QIntDict<char>)
-						NLCclassDefinition* parentClassDefinition = NULL;
-						addClassDefinitionToList(classDefinitionList, APIclassParentName, &parentClassDefinition);
-						addDefinitionToClassDefinition(classDefinition, parentClassDefinition);
-					}
-					if(currentTagUpdatedL3->name == NET_XML_TAG_sectiondef)
-					{	
-						string sectionType = "";
-						if(getAttribute(currentTagUpdatedL3, NET_XML_ATTRIBUTE_kind, &sectionType))
+						if(currentTagUpdatedL3->name == NET_XML_TAG_includes)
+						{	
+							APIsourceHeaderFileName = currentTagUpdatedL3->value;
+							#ifdef NLC_API_DEBUG
+							cout << "NET_XML_TAG_includes found, APIsourceHeaderFileName = " << APIsourceHeaderFileName << endl;
+							#endif
+						}
+						if(currentTagUpdatedL3->name == NET_XML_TAG_basecompoundref)
 						{
-							if(sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_privateattrib || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_publicattrib || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_protectedattrib)
+							string APIclassParentName = currentTagUpdatedL3->value;	//TODO support template classes eg "QIntDict&lt; char &gt;" (QIntDict<char>)
+							#ifdef NLC_API_DEBUG
+							cout << "NET_XML_TAG_basecompoundref found, APIclassParentName = " << APIclassParentName << endl;
+							#endif
+							NLCclassDefinition* parentClassDefinition = NULL;
+							addClassDefinitionToList(classDefinitionList, APIclassParentName, &parentClassDefinition);
+							addDefinitionToClassDefinition(classDefinition, parentClassDefinition);
+						}
+						if(currentTagUpdatedL3->name == NET_XML_TAG_sectiondef)
+						{	
+							#ifdef NLC_API_DEBUG
+							cout << "NET_XML_TAG_sectiondef found" << endl;
+							#endif
+					
+							string sectionType = "";
+							if(getAttribute(currentTagUpdatedL3, NET_XML_ATTRIBUTE_kind, &sectionType))
 							{
-								generatePropertyClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapObjectFunctionText, &APIwrapperSourceUnwrapObjectFunctionText, progLang);
-							}
-							else if(sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_privatefunc || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_publicfunc || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_protectedfunc)
-							{
-								generateFunctionClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapFunctionFunctionsText, &APIwrapperHeaderWrapFunctionFunctionsText, progLang);
+								if(sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_privateattrib || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_publicattrib || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_protectedattrib)
+								{
+									generatePropertyClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapObjectFunctionText, &APIwrapperSourceUnwrapObjectFunctionText, progLang);
+								}
+								else if(sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_privatefunc || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_publicfunc || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_protectedfunc)
+								{
+									generateFunctionClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapFunctionFunctionsText, &APIwrapperHeaderWrapFunctionFunctionsText, progLang);
+								}
 							}
 						}
+
+						currentTagUpdatedL3 = currentTagUpdatedL3->nextTag;
 					}
+				
+					#ifdef NLC_API_DEBUG
+					cout << "finished1" << endl;
+					#endif
+					
+					APIwrapperSourceWrapObjectFunctionText = APIwrapperSourceWrapObjectFunctionText + progLangCloseBlock[progLang] + CHAR_NEWLINE + CHAR_NEWLINE;
+					APIwrapperSourceUnwrapObjectFunctionText = APIwrapperSourceUnwrapObjectFunctionText + progLangCloseBlock[progLang] + CHAR_NEWLINE + CHAR_NEWLINE;
+					APIwrapperSourceText = APIwrapperSourceText + APIwrapperSourceWrapObjectFunctionText;
+					APIwrapperSourceText = APIwrapperSourceText + APIwrapperSourceUnwrapObjectFunctionText;
+					APIwrapperSourceText = APIwrapperSourceText + APIwrapperSourceWrapFunctionFunctionsText;
 
-					currentTagUpdatedL3 = currentTagUpdatedL3->nextTag;
+					string APIsourceFileFullPath = APIsourceFolder + APIsourceHeaderFileName;
+					APIwrapperHeaderText = APIwrapperHeaderText + generateCodeHashIncludeReference(APIsourceFolder, APIsourceHeaderFileName, progLang);	//eg #include "APIsourceFileFullPath" / #include "APIsourceFolder/APIsourceHeaderFileName"
+					APIwrapperHeaderText = APIwrapperHeaderText + progLangClassMemberFunctionTypeDefault[progLang] + APIwrapperSourceWrapObjectFunctionHeaderText + progLangEndLine[progLang];	//void wrapThirdPartyAPIobjectAPIclassName(APIclassName* thirdpartyAPIobject);
+					APIwrapperHeaderText = APIwrapperHeaderText + progLangClassMemberFunctionTypeDefault[progLang] + APIwrapperSourceUnwrapObjectFunctionHeaderText + progLangEndLine[progLang];	//void unwrapThirdPartyAPIobjectAPIclassName(APIclassName* thirdpartyAPIobject);
+					APIwrapperHeaderText = APIwrapperHeaderText + APIwrapperHeaderWrapFunctionFunctionsText;
+
+					#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+					string printedClassDefinitionAPIwrapperHeaderFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgeneratedInterfaceXClass.hpp
+					string printedClassDefinitionAPIwrapperSourceFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgeneratedInterfaceXClass.cpp
+					writeStringToFile(printedClassDefinitionAPIwrapperSourceFileName, &APIwrapperSourceText);
+					writeStringToFile(printedClassDefinitionAPIwrapperHeaderFileName, &APIwrapperHeaderText);
+					#else
+					classDefinition->APIclass = true;
+					classDefinition->APIsourceFileFullPath = APIsourceFileFullPath;
+					string* APIwrapperSourceTextHeap = new string(APIwrapperSourceText); 
+					string* APIwrapperHeaderTextHeap = new string(APIwrapperHeaderText); 
+					classDefinition->APIwrapperSourceText = APIwrapperSourceTextHeap;
+					classDefinition->APIwrapperHeaderText = APIwrapperSourceTextHeap;
+					#endif
+					
+					#ifdef NLC_API_DEBUG
+					cout << "finished2" << endl;
+					#endif
 				}
-
-				APIwrapperSourceWrapObjectFunctionText = APIwrapperSourceWrapObjectFunctionText + progLangCloseBlock[progLang] + CHAR_NEWLINE + CHAR_NEWLINE;
-				APIwrapperSourceUnwrapObjectFunctionText = APIwrapperSourceUnwrapObjectFunctionText + progLangCloseBlock[progLang] + CHAR_NEWLINE + CHAR_NEWLINE;
-				APIwrapperSourceText = APIwrapperSourceText + APIwrapperSourceWrapObjectFunctionText;
-				APIwrapperSourceText = APIwrapperSourceText + APIwrapperSourceUnwrapObjectFunctionText;
-				APIwrapperSourceText = APIwrapperSourceText + APIwrapperSourceWrapFunctionFunctionsText;
-
-				string APIsourceFileFullPath = APIsourceFolder + APIsourceHeaderFileName;
-				APIwrapperHeaderText = APIwrapperHeaderText + generateCodeHashIncludeReference(APIsourceFolder, APIsourceHeaderFileName, progLang);	//eg #include "APIsourceFileFullPath" / #include "APIsourceFolder/APIsourceHeaderFileName"
-				APIwrapperHeaderText = APIwrapperHeaderText + progLangClassMemberFunctionTypeDefault[progLang] + APIwrapperSourceWrapObjectFunctionHeaderText + progLangEndLine[progLang];	//void wrapThirdPartyAPIobjectAPIclassName(APIclassName* thirdpartyAPIobject);
-				APIwrapperHeaderText = APIwrapperHeaderText + progLangClassMemberFunctionTypeDefault[progLang] + APIwrapperSourceUnwrapObjectFunctionHeaderText + progLangEndLine[progLang];	//void unwrapThirdPartyAPIobjectAPIclassName(APIclassName* thirdpartyAPIobject);
-				APIwrapperHeaderText = APIwrapperHeaderText + APIwrapperHeaderWrapFunctionFunctionsText;
-
-				#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
-				string printedClassDefinitionAPIwrapperHeaderFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgeneratedInterfaceXClass.hpp
-				string printedClassDefinitionAPIwrapperSourceFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgeneratedInterfaceXClass.cpp
-				writeStringToFile(printedClassDefinitionAPIwrapperSourceFileName, &APIwrapperSourceText);
-				writeStringToFile(printedClassDefinitionAPIwrapperHeaderFileName, &APIwrapperHeaderText);
-				#else
-				classDefinition->APIclass = true;
-				classDefinition->APIsourceFileFullPath = APIsourceFileFullPath;
-				string* APIwrapperSourceTextHeap = new string(APIwrapperSourceText); 
-				string* APIwrapperHeaderTextHeap = new string(APIwrapperHeaderText); 
-				classDefinition->APIwrapperSourceText = APIwrapperSourceTextHeap;
-				classDefinition->APIwrapperHeaderText = APIwrapperSourceTextHeap;
-				#endif
 			}
 		}
+		else
+		{
+			cout << "parseDoxygenClassXMLfile error: " << NET_XML_TAG_compounddef << " tag not detected";
+			result = false;		
+		}
 	}
+	return result;
 }			
 
 void generatePropertyClassLists(XMLparserTag* currentTagUpdated, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, string APIclassName, string* APIwrapperSourceWrapObjectFunctionText, string* APIwrapperSourceUnwrapObjectFunctionText, int progLang)

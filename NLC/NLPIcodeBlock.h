@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e2e 22-November-2013
+ * Project Version: 1e3a 22-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -59,12 +59,13 @@ using namespace std;
 #define NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE (6)	
 #define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (7)
 #define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (8)
+#define NLPI_CODEBLOCK_TYPE_CREATE_NEW_LIST_VARIABLE (9)
 
 //containers:
-#define NLPI_CODEBLOCK_TYPE_FOR (10)				//forall(context.param1){
-#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (11)			//main(){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)		//if(!(context1->param1->param2PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)		//if(!(context1->param1->param2param3ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+#define NLPI_CODEBLOCK_TYPE_FOR (20)				//forall(context.param1){
+#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (21)			//main(){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (22)		//if(!(context1->param1->param2PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (23)		//if(!(context1->param1->param2param3ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR)
 
 
@@ -110,6 +111,7 @@ NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockIn
 NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
+NLPIcodeblock * createCodeBlockAddNewListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
 NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string NLPIfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete);
 	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS

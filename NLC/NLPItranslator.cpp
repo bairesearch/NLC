@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e2e 22-November-2013
+ * Project Version: 1e3a 22-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -123,6 +123,33 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						generateObjectInitialisationsBasedOnPropertiesAndConditions(actionEntity, &currentCodeBlockInTree, sentenceIndex);
 						generateObjectInitialisationsBasedOnSubstanceConcepts(actionEntity, &currentCodeBlockInTree, sentenceIndex);
 						firstCodeBlockInSentence = currentCodeBlockInTree;	
+						#endif
+						
+						#ifdef NLPI_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
+						if(actionHasSubject)
+						{
+							if(!assumedToAlreadyHaveBeenDeclared(subjectEntity))
+							{
+								currentCodeBlockInTree = createCodeBlockAddNewListVariable(currentCodeBlockInTree, subjectEntity, sentenceIndex);
+								generateObjectInitialisationsBasedOnPropertiesAndConditions(subjectEntity, &currentCodeBlockInTree, sentenceIndex);	
+								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+								generateObjectInitialisationsBasedOnSubstanceConcepts(subjectEntity, &currentCodeBlockInTree, sentenceIndex);
+								#endif
+							}
+						}
+						if(actionHasObject)
+						{
+							if(!assumedToAlreadyHaveBeenDeclared(objectEntity))
+							{
+								currentCodeBlockInTree = createCodeBlockAddNewListVariable(currentCodeBlockInTree, objectEntity, sentenceIndex);
+								generateObjectInitialisationsBasedOnPropertiesAndConditions(objectEntity, &currentCodeBlockInTree, sentenceIndex);	
+								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+								generateObjectInitialisationsBasedOnSubstanceConcepts(objectEntity, &currentCodeBlockInTree, sentenceIndex);
+								#endif
+							}
+						}						
 						#endif
 					}
 					
@@ -285,6 +312,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
 		currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, entityClass);
 		*item = new NLPIitem(entity, itemType);	//OLD: NLPI_ITEM_TYPE_TEMPVAR
+		//cout << "generateConditionBlocks, entity = " << entity->entityName << endl;
 		//cout << "!parsedForNLPIcodeBlocks, entity = " << entity->entityName << endl;
 		
 		currentCodeBlockInTree = createCodeBlockIfStatements(currentCodeBlockInTree, *item, entity, sentenceIndex);
@@ -318,7 +346,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 					if(!(entity->NLPIisSingularArgument))
 					{
-						cout << "entity->entityName = " << entity->entityName << endl;
+						//cout << "entity->entityName = " << entity->entityName << endl;
 						//for(all items in context){
 						NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
 						bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
@@ -330,7 +358,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
 					{
 						//use function argument PropertyList (do not create a new property); eg "the ball" in "Tom has the ball"
-						cout << "propertyEntity->entityName = " << propertyEntity->entityName << endl;
+						//cout << "propertyEntity->entityName = " << propertyEntity->entityName << endl;
 						//for(all items in context){
 						if(!(propertyEntity->NLPIisSingularArgument))
 						{
@@ -384,7 +412,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 					if(!(entity->NLPIisSingularArgument))
 					{
-						cout << "entity->entityName = " << entity->entityName << endl; 
+						//cout << "entity->entityName = " << entity->entityName << endl; 
 						//for(all items in context){
 						NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
 						bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
@@ -403,7 +431,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					if(foundConditionObject && assumedToAlreadyHaveBeenDeclared(conditionObject))
 					{
 						//use function argument PropertyList (do not create a new property to insert into condition); eg "the house" in "Tom is near a house"
-						cout << "conditionObject->entityName = " << conditionObject->entityName << endl;
+						//cout << "conditionObject->entityName = " << conditionObject->entityName << endl;
 						//for(all items in context){
 						if(!(conditionObject->NLPIisSingularArgument))
 						{
@@ -476,10 +504,31 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 		bool alreadyAdded = checkDuplicateProperty(propertyEntity, entity);
 		if(!alreadyAdded)
 		{
+			NLPIcodeblock * firstCodeBlockInSection = *currentCodeBlockInTree;
+			bool loopUsed = false;
+			#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+			if(!(entity->NLPIisSingularArgument))
+			{
+				//cout << "entity->entityName = " << entity->entityName << endl;
+				//for(all items in context){
+				NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
+				bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
+				*currentCodeBlockInTree = createCodeBlockFor(*currentCodeBlockInTree, entityClass);
+				loopUsed = true;		
+			}
+			#endif
+			
 			//cout << "sentenceIndexA = " << sentenceIndex << endl;
 			*currentCodeBlockInTree = createCodeBlockAddNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
+			
+			if(loopUsed)
+			{
+				*currentCodeBlockInTree = firstCodeBlockInSection->next;
+			}
+			
 			entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
 			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex);		//updated 9 November 2013 - support recursion of complex substance concept definition
+				
 		}
 	}
 	//state initialisations
@@ -490,11 +539,34 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 
 		bool alreadyAdded = checkDuplicateCondition(conditionEntity, entity);
 		if(!alreadyAdded)
-		{						
+		{	
+			NLPIcodeblock * firstCodeBlockInSection = *currentCodeBlockInTree;
+			bool loopUsed = false;
+			#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+			if(!(entity->NLPIisSingularArgument))
+			{
+				//cout << "entity->entityName = " << entity->entityName << endl;
+				//for(all items in context){
+				NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
+				bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
+				*currentCodeBlockInTree = createCodeBlockFor(*currentCodeBlockInTree, entityClass);
+				loopUsed = true;		
+			}
+			#endif
+								
 			//cout << "sentenceIndexB = " << sentenceIndex << endl;
 			*currentCodeBlockInTree = createCodeBlockAddNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+			
+			if(loopUsed)
+			{
+				*currentCodeBlockInTree = firstCodeBlockInSection->next;
+			}
+			
 			entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
 			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, conditionEntity, currentCodeBlockInTree, sentenceIndex);	//updated 9 November 2013 - support recursion of complex substance concept definition
+		
+
+
 		}
 	}
 }		

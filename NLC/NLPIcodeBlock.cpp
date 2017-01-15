@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e2e 22-November-2013
+ * Project Version: 1e3a 22-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -155,6 +155,18 @@ NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTr
 	{
 		cout << "error: condition does not have object" << endl;
 	}
+	
+	return currentCodeBlockInTree;
+}
+
+NLPIcodeblock * createCodeBlockAddNewListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
+{
+	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_CREATE_NEW_LIST_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
 }

@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e2e 22-November-2013
+ * Project Version: 1e3a 22-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -342,6 +342,18 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			#endif		
 			string codeBlockTextDeclareNewVariable = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param1->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	
 			printLine(codeBlockTextDeclareNewVariable, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_CREATE_NEW_LIST_VARIABLE)
+		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_CREATE_NEW_LIST_VARIABLE" << endl;
+			#endif			
+			string localListDeclarationText = generateCodePropertyListDefinitionText(param1->className, progLang) + progLangEndLine[progLang];	//vector<param1Class*> param1PropertyList;
+			printLine(localListDeclarationText, level, code);			
+			string codeBlockTextCreate = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param1->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param1Class * param1 = new param1Class();
+			printLine(codeBlockTextCreate, level, code);
+			string codeBlockText = param1->className + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param1->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//>param1PropertyList.push_back(param1);
+			printLine(codeBlockText, level, code);
 		}	
 		else
 		{

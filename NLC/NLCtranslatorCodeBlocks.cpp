@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3d 28-July-2014
+ * Project Version: 1h3e 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -340,21 +340,29 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 					//#endif
 					int sentenceIndexOfFullSentence = currentSentence->sentenceIndex;
 					cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
-					for(int phraseIndex=0; phraseIndex<currentSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
+					if(currentSentence->mathTextNLPparsablePhraseTotal > 0)
 					{
-						if(parsablePhrase->mathTextNLPparsablePhraseIndex != phraseIndex)
+						for(int phraseIndex=0; phraseIndex<currentSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
 						{
-							cout << "generateCodeBlocksFromMathText() error: (currentSentence->mathTextNLPparsablePhraseIndex != i)" << endl;
+							if(parsablePhrase->mathTextNLPparsablePhraseIndex != phraseIndex)
+							{
+								cout << "generateCodeBlocksFromMathText() error: (currentSentence->mathTextNLPparsablePhraseIndex != i)" << endl;
+							}
+							if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, firstNLCsentenceInFullSentence, parsablePhrase, phraseIndex, sentenceIndexOfFullSentence, caseIndex))
+							{
+								result = false;
+							}
+							cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase()" << endl;
+							parsablePhrase = parsablePhrase->next;
 						}
-						if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, firstNLCsentenceInFullSentence, parsablePhrase, phraseIndex, sentenceIndexOfFullSentence, caseIndex))
-						{
-							result = false;
-						}
-						cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase()" << endl;
-						parsablePhrase = parsablePhrase->next;
+						caseIndex++;
+						currentSentence = parsablePhrase;
 					}
-					caseIndex++;
-					currentSentence = parsablePhrase;
+					else
+					{
+						caseIndex++;
+						currentSentence = parsablePhrase->next;						
+					}
 				}
 				else
 				{

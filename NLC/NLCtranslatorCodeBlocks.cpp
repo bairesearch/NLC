@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3e 01-November-2014
+ * Project Version: 1l4a 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1037,54 +1037,10 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 					if(!assumedToAlreadyHaveBeenDeclared(entity))
 					{//indefinite entity found	
 						//cout << "pass3: " << entity->entityName << endl;
-						/*
-						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-						*/
 						if(declareLocalPropertyListsForIndefiniteEntity(currentCodeBlockInTree, entity, currentNLCsentenceInList))
 						{
 							result = true;
 						}
-						/*
-						#else
-						//only declare local property lists for indefinite entities if they do not occur when generating the context (generateContextBlocks) of a definite entity within their sentence
-						//ie, do not create a new "an apple" in the following cases;
-						//The chicken that has an apple is tall.
-						//The chicken that is near an apple is tall.
-						//The chicken that ate an apple rows the boat.
-						
-						bool indefiniteEntityPartOfContext = false;
-						for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
-						{
-							GIAentityNode * entity2 = (*entityIter2);
-							if(checkSentenceIndexParsingCodeBlocks(entity2, entity->sentenceIndexTemp, false))
-							{
-								if(assumedToAlreadyHaveBeenDeclared(entity2))
-								{//definite entity found	
-									NLCcodeblock * currentCodeBlockInTreeTemp = new NLCcodeblock();
-									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-									generateContextBlocksVariables.identifyIndefiniteEntityInContext = true;
-									generateContextBlocksVariables.identifyIndefiniteEntityInContextEntity = entity;
-									generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
-									if(generateContextBlocksSimple(&currentCodeBlockInTreeTemp, entity2, entity->sentenceIndexTemp, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
-									{
-										if(generateContextBlocksVariables.identifyIndefiniteEntityInContextResult)
-										{
-											indefiniteEntityPartOfContext = true;	
-											cout << "indefiniteEntityPartOfContext: " << entity->entityName << endl;
-										}
-									}
-								}
-							}
-						}
-						if(!indefiniteEntityPartOfContext)
-						{
-							if(declareLocalPropertyListsForIndefiniteEntity(currentCodeBlockInTree, entity, currentNLCsentenceInList))
-							{
-								result = true;
-							}
-						}
-						#endif
-						*/
 					}
 				}
 			}
@@ -1208,15 +1164,16 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock ** currentCodeBlo
 		GIAentityNode * entity = *entityIter;
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceConcept) && !(entity->isCondition) && !(entity->isActionConcept))
+			if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceConcept) && !(entity->isActionConcept) && !(entity->isCondition))
 			{
 				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 				generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, entity, sentenceIndex);
 				#else
+				//This code is effectively identical to generateCodeBlocksObjectInitialisationsForEntity(), without the generateParentContext argument;
 				GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);
 				if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity , sentenceIndex, false))
 				{
-					generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", false);
+					generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", false, false);
 				}
 				#endif
 			}

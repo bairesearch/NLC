@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3e 01-November-2014
+ * Project Version: 1l4a 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1307,45 +1307,36 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock ** currentCode
 	#endif
 		//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
 		//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
-		if(!(parentEntity->isConcept))
+		if(!(parentEntity->isConcept) && !(parentEntity->isAction) && !(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
 		{
 			if(!(parentEntity->NLCparsedForCodeBlocks))	// && !(entity->parsedForNLCcodeBlocksActionRound)
 			{
 				if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
 				{
-					if(!(parentEntity->isAction))	//added 1e6d
+					#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+					if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))	//this is redundant with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 					{
-						#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-						if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))	//this is redundant with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+					#endif
+						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+						if(parentEntity->sentenceIndexTemp == sentenceIndex)	//ie "wasReference" is not a sufficient condition to initialise parent
 						{
 						#endif
-							if(!(parentEntity->isCondition))
+							#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+							if(!(parentEntity->NLCcontextGenerated))	//added 1k20b
 							{
-								if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
-								{
-									#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-									if(parentEntity->sentenceIndexTemp == sentenceIndex)	//ie "wasReference" is not a sufficient condition to initialise parent
-									{
-									#endif
-										#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-										if(!(parentEntity->NLCcontextGenerated))	//added 1k20b
-										{
-										#endif
-											//cout << "generateParentInitialisationCodeBlock: parentEntity = " << parentEntity->entityName << endl;
-											generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex);
-											result = true;
-										#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-										}		
-										#endif								
-									#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-									}
-									#endif
-								}
-							}
-						#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+							#endif
+								//cout << "generateParentInitialisationCodeBlock: parentEntity = " << parentEntity->entityName << endl;
+								generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex);
+								result = true;
+							#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+							}		
+							#endif								
+						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 						}
 						#endif
+					#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 					}
+					#endif
 				}
 			}
 		}

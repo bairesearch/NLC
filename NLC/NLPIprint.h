@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4a 29-October-2013
+ * Project Version: 1c4b 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -53,7 +53,7 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 		void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 			string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-			string generateCodePropertyDefinitionText(string propertyClassName, int progLang);		
+			string generateCodePropertyDefinitionText(string propertyClassName, string propertyInstanceName, int progLang);		
 		void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 			string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang);
 			//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);

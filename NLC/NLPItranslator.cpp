@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4a 29-October-2013
+ * Project Version: 1c4b 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -746,7 +746,7 @@ bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLPIitem*> * 
 		NLPIitem * currentItem = *parametersIterator;
 		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)
 		{
-			if(propertyEntity->entityName == currentItem->className)
+			if(generateClassName(propertyEntity) == currentItem->className)
 			{
 				alreadyAdded = true;
 			}
@@ -764,13 +764,13 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLPIitem*> 
 		NLPIitem * currentItem = *parametersIterator;
 		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
 		{
-			string conditionObjectEntityName = "";
+			GIAentityNode * conditionObjectEntity = NULL;
 			if(!(conditionEntity->conditionObjectEntity->empty()))
 			{
-				conditionObjectEntityName = (conditionEntity->conditionObjectEntity->back())->entity->entityName;
+				conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
 			}
-
-			if((conditionEntity->entityName == currentItem->className) && (conditionObjectEntityName == currentItem->className2))
+			
+			if((generateClassName(conditionEntity) == currentItem->className) && (generateClassName(conditionObjectEntity) == currentItem->className2))
 			{
 				alreadyAdded = true;
 			}

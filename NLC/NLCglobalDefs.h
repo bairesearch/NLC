@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17a 30-January-2015
+ * Project Version: 1n17b 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -657,7 +657,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 //#define NLC_DEBUG_PREPROCESSOR_MATH
 //#define NLC_DEBUG_PREPROCESSOR
 //#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-//#define NLC_DEBUG
+#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES
 
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n17a 30-January-2015
+ * Project Version: 1n17b 30-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -918,11 +918,16 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 	{
 		GIAentityConnection* targetConnection = (*targetNodeListIterator);
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-		//cout << "targetConnection->NLCparsedForCodeBlocks = " << targetConnection->NLCparsedForCodeBlocks << endl;
+		cout << "entity->entityName = " << entity->entityName  << endl;
+		cout << "targetConnection->NLCparsedForCodeBlocks = " << targetConnection->NLCparsedForCodeBlocks << endl;
+		cout << "generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = " << generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet << endl;
+		cout << "targetConnection->sameReferenceSet = " << targetConnection->sameReferenceSet << endl;
 		if((targetConnection->NLCparsedForCodeBlocks) || sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
 		{
 		#endif
 			GIAentityNode* targetEntity = targetConnection->entity;
+			cout << "targetEntity->entityName = " << targetEntity->entityName  << endl;
+			
 			#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
 			if(!(generateContextBlocksVariables->parseParentEfficient) || (targetEntity != generateContextBlocksVariables->childEntityNotToParse))
 			{
@@ -2755,63 +2760,67 @@ void identifyAliasesInCurrentSentence(NLCcodeblock** currentCodeBlockInTree, vec
 				{
 					if(definitionConnection->isAlias)
 					{
-						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-						if(definitionConnection->sentenceIndexTemp == sentenceIndex)
+						if(!(definitionConnection->sameReferenceSet))
 						{
-						#endif
-							bool aliasAlreadyInitialised = false;
-							string aliasName = aliasEntity->entityName;
-							string aliasClassName = aliasClassEntity->entityName;
-							
-							string aliasNameTemp = "";
-							if(findAliasInEntity(aliasEntity, &aliasNameTemp)) //*
+							#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+							if(definitionConnection->sentenceIndexTemp == sentenceIndex)
 							{
-								aliasAlreadyInitialised = true;
-							}
-							if(!aliasAlreadyInitialised)
-							{
-								#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-								cout << "identifyAliasesInCurrentSentence():" << endl;
-								cout << "aliasName = " << aliasName << endl;
-								cout << "aliasClassName = " << aliasClassName << endl;
-								#endif
-							
-								/*
-								unordered_map<string, string>*  functionAliasClassList = getFunctionAliasClassList();
-								functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
-								*/
-								
-								NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//CHECKTHIS
-								bool generatedParentContext = false;	//CHECKTHIS
-								NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
-								if(!generateContextBlocks(currentCodeBlockInTree, aliasClassEntity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+							#endif
+								bool aliasAlreadyInitialised = false;
+								string aliasName = aliasEntity->entityName;
+								string aliasClassName = aliasClassEntity->entityName;
+
+								string aliasNameTemp = "";
+								if(findAliasInEntity(aliasEntity, &aliasNameTemp)) //*
+								{
+									aliasAlreadyInitialised = true;
+								}
+								if(!aliasAlreadyInitialised)
 								{
 									#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-									cout << "identifyAliasesInCurrentSentence(): !generateContextBlocks: aliasClassEntity = " << aliasClassEntity->entityName << endl;
+									cout << "identifyAliasesInCurrentSentence():" << endl;
+									cout << "aliasName = " << aliasName << endl;
+									cout << "aliasClassName = " << aliasClassName << endl;
 									#endif
-								}
-								
-								*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, aliasClassEntity, aliasName);
-								
-								*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
-								
-								//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
-								for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
-								{
-									GIAentityNode* entity2 = (*entityIter2);
-									if(entity2->entityName == aliasName)
+
+									/*
+									unordered_map<string, string>*  functionAliasClassList = getFunctionAliasClassList();
+									functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
+									*/
+
+									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+									generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
+									bool generatedParentContext = false;	//CHECKTHIS
+									NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+									if(!generateContextBlocks(currentCodeBlockInTree, aliasClassEntity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
 									{
-										if(entity2->sentenceIndexTemp > aliasEntity->sentenceIndexTemp)	//this test isn't required because of* 
-										{
-											entity2->aliasList.push_back(aliasName);
-											entity2->entityName = aliasClassName;	
-										}
+										#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+										cout << "identifyAliasesInCurrentSentence(): !generateContextBlocks: aliasClassEntity = " << aliasClassEntity->entityName << endl;
+										#endif
 									}
-								}	
+
+									*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, aliasClassEntity, aliasName);
+
+									*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
+
+									//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
+									for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
+									{
+										GIAentityNode* entity2 = (*entityIter2);
+										if(entity2->entityName == aliasName)
+										{
+											if(entity2->sentenceIndexTemp > aliasEntity->sentenceIndexTemp)	//this test isn't required because of* 
+											{
+												entity2->aliasList.push_back(aliasName);
+												entity2->entityName = aliasClassName;	
+											}
+										}
+									}	
+								}
+							#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 							}
-						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+							#endif
 						}
-						#endif
 					}
 				}
 			}

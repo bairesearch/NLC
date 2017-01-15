@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13b 18-October-2014
+ * Project Version: 1k13c 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -73,6 +73,11 @@ NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDef
 	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog::fight"
 		
 	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+	bool createClassDefinition = true;
+	#else
+	bool createClassDefinition = false;
+	#endif
+	
 	string functionClassDefinitionName = functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
 	string functionOwnerClassDefinitionName = "";
 	bool passNewFunctionDefinitionChecks = true;
@@ -92,9 +97,9 @@ NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDef
 	{	
 		cout << "createNewClassDefinitionFunctionDeclaration (!isReference): functionName  = " << functionName << endl;
 		NLCclassDefinitionFunctionDependency * parentFunctionDependencyTemp = NULL;
-		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, false, parentFunctionDependencyTemp, functionDependencyList, false);
+		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, false, parentFunctionDependencyTemp, functionDependencyList, false, createClassDefinition);
 	}
-	#endif
+	
 	
 	functionDependency->functionNameListIndex = functionIndex;
 	

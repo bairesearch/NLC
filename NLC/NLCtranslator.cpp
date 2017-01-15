@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslator.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n4a 16-January-2015
+ * Project Version: 1n5a 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 
 #include "NLCtranslator.h"
 #include "NLCtranslatorCodeBlocks.h"
-#include "NLCtranslatorCodeBlocksLogicalConditions.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced
+#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced
 #include "NLCtranslatorClassDefinitions.h"
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 #include "GIAtranslatorDefs.h"

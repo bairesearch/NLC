@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n4a 16-January-2015
+ * Project Version: 1n5a 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,870 +38,705 @@
 #include <cmath>
 
 #include "NLCtranslatorCodeBlocksLogicalConditions.h"
+#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
 #include "NLCtranslatorCodeBlocksOperations.h"
-#include "GIAquery.h"	//required for testReferencedEntityNodeForExactNameMatch2/traceEntityNode
-#include "GIAtranslatorDefs.h"
+#include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
-#ifdef NLC_USE_PREPROCESSOR
-static bool useNLCpreprocessor;
-static NLCcodeblock * codeBlockAtPreviousLogicalConditionBaseLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-static bool currentSentenceContainsLogicalCondition;
-static NLCcodeblock * codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
-static int currentLogicalConditionCase[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
-#endif
-void initialiseLogicalConditionLevelRecordArray(bool newUseNLCpreprocessor)
+		
+#ifdef NLC_PREPROCESSOR_MATH
+bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * firstNLCsentenceInFullSentence, string NLCfunctionName)
 {
-	useNLCpreprocessor = newUseNLCpreprocessor;
-	for(int i=0; i<NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS; i++)
-	{
-		codeBlockAtPreviousLogicalConditionBaseLevelArray[i] = NULL;
-	}
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	setCurrentLogicalConditionLevel(0);
-	currentSentenceContainsLogicalCondition = false;
-	for(int i=0; i<NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS; i++)
-	{
-		codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[i] = NULL;
-		currentLogicalConditionCase[i] = 0;
-	}
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+	cout << "\n generateCodeBlocksFromMathText(): sentenceIndex = " << sentenceIndex << endl;
 	#endif
-}
-bool getUseNLCpreprocessor()
-{
-	return useNLCpreprocessor;
-}
-NLCcodeblock * getCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index)
-{
-	return codeBlockAtPreviousLogicalConditionBaseLevelArray[index];
-}
-void setCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index, NLCcodeblock * codeBlockToSet)
-{
-	codeBlockAtPreviousLogicalConditionBaseLevelArray[index] = codeBlockToSet;
-}
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-bool getCurrentSentenceContainsLogicalCondition()
-{
-	return currentSentenceContainsLogicalCondition;
-}
-void setCurrentSentenceContainsLogicalCondition(bool value)
-{
-	currentSentenceContainsLogicalCondition = value;
-}
-int getCurrentLogicalConditionCase(int level)
-{
-	return currentLogicalConditionCase[level];
-}
-#endif
-#endif
+	bool result = true;
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList)
-{
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	NLCcodeblock * currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+	string whileLogicalConditionConjunctionBooleanName = generateWhileLogicalConditionConjunctionBooleanName(firstNLCsentenceInFullSentence->indentation);
+	
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
-		GIAentityNode * logicalConditionOperationEntity = (*entityIter);
-		if(logicalConditionOperationEntity->isCondition)
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 		{
-			if(checkSentenceIndexParsingCodeBlocks(logicalConditionOperationEntity, sentenceIndex, true))	//could be set to false instead
-			{
-				bool foundLogicalConditionOperation = false;
-				int logicalOperation = INT_DEFAULT_VALUE;
-				if(logicalConditionOperationEntity->NLClogicalConditionOperation)	//used to test more complex sentence context requirements of some logical condition operations eg "for" is required to be immediately succeeded by "each", "all", or every
+			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
+			currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlockWhileHasBool(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName);
+			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, false);
+		}
+						
+		//CHECKTHIS; is NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE required for non-logical condition mathText?
+		if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
+		{
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			cout << "firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF" << endl;
+			#endif
+			int caseIndex = 0;
+			int currentLevel = firstNLCsentenceInFullSentence->indentation;
+			int currentLogicalConditionOperator = firstNLCsentenceInFullSentence->logicalConditionOperator;
+			bool stillFindingLogicalConditionAtCurrentLevel = true;
+			NLCsentence * currentSentence = firstNLCsentenceInFullSentence;
+			while(stillFindingLogicalConditionAtCurrentLevel)
+			{//this loop is only required by NLC_LOGICAL_CONDITION_OPERATIONS_IF (it is not used by NLC_LOGICAL_CONDITION_OPERATIONS_WHILE and NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+				
+				#ifdef NLC_DISABLE_1i_CODE_FOR_DEBUG
+				declareLocalPropertyListsForIndefiniteEntities(currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentSentence);	//indefinite logical condition objects (eg "a house" in "if a house is green, do this") must have been previously declared else output code will not compile [as these statements implicitly assume the existence of "a house"; which may or may not be "green"]
+				#endif
+				
+				#ifdef NLC_PREPROCESSOR_MATH_USE_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BACKWARDS_COMPATIBLE_VARIABLE_NAMES
+				if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 				{
-					bool foundLogicalConditionOperationBasic = textInTextArray(logicalConditionOperationEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
-					if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR) || (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE))
-					{//these are the only logical condition operations supported by NLC at this time
-						foundLogicalConditionOperation = true;
+					//use the same logical condition check naming scheme as NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED;
+					string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(currentSentence->indentation, caseIndex, NLC_LOGICAL_CONDITION_OPERATIONS_IF);							
+					*currentCodeBlockInTree = createCodeBlockDeclareNewBoolArray(*currentCodeBlockInTree, logicalConditionConjunctionBooleanName, false);
+				}
+				#endif
+			
+				bool isLogicalConditionOperatorAtCurrentLevel = false;
+				if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
+				{
+					if(currentSentence == firstNLCsentenceInFullSentence)
+					{
+						isLogicalConditionOperatorAtCurrentLevel = true;
+					}
+					else if(currentSentence->hasLogicalConditionOperator)
+					{
+						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						cout << "currentSentence->hasLogicalConditionOperator: " << logicalConditionOperationsArray[currentSentence->logicalConditionOperator] << endl;
+						#endif
+						if(currentSentence->indentation == firstNLCsentenceInFullSentence->indentation)
+						{
+							if((currentSentence->logicalConditionOperator > firstNLCsentenceInFullSentence->logicalConditionOperator) || (currentSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF))	//allow multiple else if statements
+							{
+								isLogicalConditionOperatorAtCurrentLevel = true;
+							}
+							else
+							{
+								stillFindingLogicalConditionAtCurrentLevel = false;
+							}
+						}
+						else if(currentSentence->indentation > firstNLCsentenceInFullSentence->indentation)
+						{
+							//gone up a level, ignore all logical condition operators
+						}
+						else if(currentSentence->indentation < firstNLCsentenceInFullSentence->indentation)
+						{
+							//gone down (back) a level; quit search for logical Condition operator sentences at current level (if, else if, else)
+							stillFindingLogicalConditionAtCurrentLevel = false;
+						}			
 					}
 				}
-				if(foundLogicalConditionOperation)
+				else
+				{//while and for loops do not use cases (only if statements use cases)
+					isLogicalConditionOperatorAtCurrentLevel = true;	//NB currentSentence == firstNLCsentenceInFullSentence
+					stillFindingLogicalConditionAtCurrentLevel = false;
+				}
+				
+				
+				if(isLogicalConditionOperatorAtCurrentLevel)
 				{
-					GIAentityNode * logicalConditionOperationSubject = NULL;
-					GIAentityNode * logicalConditionOperationObject = NULL;
-					bool foundConditionSubject = false;
-					bool foundConditionObject = false;
-					if(!(logicalConditionOperationEntity->conditionSubjectEntity->empty()))
+					int sentenceIndexOfFullSentence = currentSentence->sentenceIndex;
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+					cout << "isLogicalConditionOperatorAtCurrentLevel: " << currentSentence->sentenceIndex << ", " << currentSentence->sentenceContents << endl;
+					cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
+					#endif
+					
+					if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR) && (currentSentence->mathTextNLPparsablePhraseTotal > 1))
 					{
-						logicalConditionOperationSubject = (logicalConditionOperationEntity->conditionSubjectEntity->back())->entity;
-						foundConditionSubject = true;
+						//assume "and" conjunction(s) has been specified; eg "For all baskets in the house and apples in the tree, eat the pie."
 					}
-					if(!(logicalConditionOperationEntity->conditionObjectEntity->empty()))
+					
+					if(currentSentence->mathTextNLPparsablePhraseTotal > 0)
 					{
-						logicalConditionOperationObject = (logicalConditionOperationEntity->conditionObjectEntity->back())->entity;
-						foundConditionObject = true;
-					}
-					if(foundConditionSubject && foundConditionObject)
-					{
-						bool simpleNonConjunctionLogicalConditionNegative = false;
-						if(logicalConditionOperationObject->negative)
+						NLCsentence * parsablePhrase = currentSentence;
+						for(int phraseIndex=0; phraseIndex<currentSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
 						{
-							simpleNonConjunctionLogicalConditionNegative = true;
-						}
-						
-						#ifdef NLC_USE_PREPROCESSOR
-						bool elseIfDetected = false;	
-						bool elseDetected = false;		
-						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-						if(currentNLCsentenceInList->elseIfDetected)
-						{
-							elseIfDetected = true;
-						}
-						#else
-						for(vector<GIAentityConnection*>::iterator propertyIter = logicalConditionOperationObject->propertyNodeList->begin(); propertyIter != logicalConditionOperationObject->propertyNodeList->end(); propertyIter++)
-						{
-							GIAentityNode * propertyEntity = (*propertyIter)->entity;
-							if(propertyEntity->entityName == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_STRING)
-							{//this is only known to hold using Stanford NLP
-								elseIfDetected = true;
-							}
-						}
-						#endif
-						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-						if((logicalConditionOperationObject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) && (currentNLCsentenceInList->elseDetected))
-						#else
-						if(logicalConditionOperationObject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION)
-						#endif
-						{
-							elseDetected = true;
-						}
-						#endif
-						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-						//perform additional checks;
-						if(currentNLCsentenceInList->ifDetected || currentNLCsentenceInList->elseIfDetected || currentNLCsentenceInList->elseDetected)
-						{
-							if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_IF)
+							if(parsablePhrase->mathTextNLPparsablePhraseIndex != phraseIndex)
 							{
-								cout << "generateCodeBlocksPart2logicalConditions() error: (currentNLCsentenceInList->ifDetected || currentNLCsentenceInList->elseIfDetected || currentNLCsentenceInList->elseDetected) && (logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_IF)" << endl;
+								cout << "generateCodeBlocksFromMathText() error: (currentSentence->mathTextNLPparsablePhraseIndex != i)" << endl;
 							}
-						}
-						#endif
-						if(!(currentNLCsentenceInList->hasLogicalConditionOperator))
-						{
-							cout << "generateCodeBlocksPart2logicalConditions() error: !(currentNLCsentenceInList->hasLogicalConditionOperator)" << endl;
-						}
-						
-
-						//cout << "foundConditionSubject && foundConditionObject" << endl;
-						//1. disable all classStructure formation based on condition object subset
-
-						NLCcodeblock * currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
-						NLCcodeblock * previousCodeBlockInTreeAtBaseLevel = currentCodeBlockInTreeAtBaseLevel;
-
-						bool passedLogicalConditionObject = false;
-						if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isConcept || logicalConditionOperationObject->isSubstanceConcept))
-						{//eg If red dogs are pies, eat the cabbage
-							//cout << "logicalConditionOperationObject->isSubstanceConcept = " << logicalConditionOperationObject->isSubstanceConcept << endl;
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
-							//isSubstanceConcept case not yet coded
-							//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
-							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
-							if(logicalConditionOperationObject->isConcept)
+							if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 							{
-								cout << "generateCodeBlocks() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
-								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
-							}
-							else if(logicalConditionOperationObject->isSubstanceConcept)
-							{
-								cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
-								GIAentityNode * substanceConceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
-								GIAentityNode * substanceConceptEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(substanceConceptEntityCompare);
-
-								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject, true))
+								if(!generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, &currentCodeBlockInTreeAtBaseLevel, firstNLCsentenceInFullSentence))
 								{
-									if(!simpleNonConjunctionLogicalConditionNegative)
-									{
-										passedLogicalConditionObject = true;
-									}
+									result = false;
 								}
-								logicalConditionOperationSubject->disabled = false;
-							}
-							#endif
-						}
-						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionConcept))
-						{
-							#ifdef NLC_USE_PREPROCESSOR
-							if(elseDetected)
-							{
-								*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
-								passedLogicalConditionObject = true;
 							}
 							else
 							{
-							#endif
-								//eg The sun fights. If the sun fights, the dog is happy. / If the sun fights, eat the cabbage.
+								GIAentityNode * logicalConditionOperationObject = NULL;
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
+								if(checkIfPhraseContainsAction(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
+								{//eg "The sun fights. / If the sun fights, the dog is happy."
+								
+									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
+									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 
-								//cout << "logicalConditionOperationObject->isAction" << endl;
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
-								//verify the truth of the if statement now
-								//NO: get class and see if it has the relevant action (function) defined with the relevant action object
-								//perform an exact trace of logicalConditionOperationObject (actionEntityCompare) with every actionEntity that matches actionEntityCompare->entityName to verify that such a specific action already [ie sentence <= currentSentence] exists (actionEntityCompare)
-
-								GIAentityNode * actionEntityCompare = logicalConditionOperationObject;	//if statement comparison...
-								GIAentityNode * actionEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(actionEntityCompare);
-
-								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject, false))
-								{
-									if(!simpleNonConjunctionLogicalConditionNegative)
+									setDummyReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
+									GIAentityNode * actionEntityCompare = logicalConditionOperationObject;	//if statement comparison...
+									GIAentityNode * actionEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(actionEntityCompare);
+									if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject, false))
 									{
-										passedLogicalConditionObject = true;
-									}
-									//cout << "passedLogicalConditionObject" << endl;
-								}
-								logicalConditionOperationSubject->disabled = false;
+										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
+										#ifdef NLC_DEBUG
+										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC: passed logical condition" << endl;
+										#endif
+									}								
+								} else 
 								#endif
-							#ifdef NLC_USE_PREPROCESSOR
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
+								if(checkIfPhraseContainsSubstanceConceptWithDefinitionLink(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
+								{//eg "Red dogs are pies. / If red dogs are pies, eat the cabbage."
+								
+									//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
+									//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
+								
+									//cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
+									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
+									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
+
+									setDummyReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
+									GIAentityNode * substanceConceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
+									GIAentityNode * substanceConceptEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(substanceConceptEntityCompare);
+									if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject, true))
+									{
+										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
+										#ifdef NLC_DEBUG
+										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS: passed logical condition" << endl;
+										#endif
+									}
+								} else
+								#endif
+								if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, caseIndex))
+								{
+									result = false;
+								}
 							}
+							#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+							cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase()" << endl;
 							#endif
+							parsablePhrase = parsablePhrase->next;
 						}
-						else
-						{//eg If/While the sun is bright, the dog is happy. / If/While the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
-
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-							/*
-							eg; for all the reds dog near the park, and the blue tea trees, eat the pie
-							for(all the red dog near the park)
-							{
-								for(all blue tea trees)
-								{
-									eat the pie
-								}
-							}
-
-							eg; if the red dog near the park has an apple, and the tea tree is blue, eat the pie
-							bool logicalCondition[100] = {false};
-							if(the red dog near the park has an apple)
-							{
-								logicalCondition[1] = true;
-							}
-							if(the tea tree is blue)
-							{
-								logicalCondition[2] = true;
-							}
-							if(logicalCondition[1] && logicalCondition[2])	//where && is dynamic (it could be ||)
-							{
-								whileLogicalCondition = true;
-								eat the pie
-							}
-
-							eg; while the red dog near the park has an apple, and the tea tree is blue, eat the pie
-							bool whileLogicalCondition = true;
-							while(whileLogicalCondition)
-							{
-								whileLogicalCondition = false;
-								bool logicalCondition[100] = {false};
-								if(the red dog near the park has an apple)
-								{
-									logicalCondition[1] = true;
-								}
-								if(the tea tree is blue)
-								{
-									logicalCondition[2] = true;
-								}
-								if(logicalCondition[1] && logicalCondition[2])	//where && is dynamic (it could be ||)
-								{
-									whileLogicalCondition = true;
-									eat the pie
-								}
-							}
-							*/
-							
-							#ifdef NLC_USE_PREPROCESSOR
-							NLCcodeblock * firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
-							NLCcodeblock * firstCodeBlockAtStartOfIfStatement = NULL;
-							NLCcodeblock * previousCodeBlockInTree = NULL;
-							if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-							{
-								if(setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, elseIfDetected, elseDetected))
-								{
-									currentLogicalConditionCase[getCurrentLogicalConditionLevel()] = currentLogicalConditionCase[getCurrentLogicalConditionLevel()] + 1;
-								}
-								else
-								{
-									//!elseIfDetected
-									currentLogicalConditionCase[getCurrentLogicalConditionLevel()] = 0;
-								}
-							}	
-							#endif
-								
-							#ifndef NLC_USE_PREPROCESSOR
-							int currentLogicalConditionCase[1] = {0};	//multiple cases not supported (ie else if, else)
-							#endif
-							string whileLogicalConditionConjunctionBooleanName = generateWhileLogicalConditionConjunctionBooleanName(getCurrentLogicalConditionLevel());
-							if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-							{
-								*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
-								currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
-								*currentCodeBlockInTree = createCodeBlockWhileHasBool(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName);
-								*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, false);
-							}
-							
-							NLClogicalConditionConjunction logicalConditionConjunctionArray[NLC_MAXIMUM_NUMBER_OF_CONJUNCTIONS_IN_SENTENCE];
-							int logicalConditionConjunctionIndex = 0;	// try to start all variables seen by the user at 1 instead of 0: NOT POSSIBLE HERE AS USES ARRAY
-							if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-							{
-								for(int i=0; i<NLC_MAXIMUM_NUMBER_OF_CONJUNCTIONS_IN_SENTENCE; i++)
-								{
-									logicalConditionConjunctionArray[i].conjunctionType = INT_DEFAULT_VALUE;
-									logicalConditionConjunctionArray[i].negative = false;
-								}
-								string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(getCurrentLogicalConditionLevel(), currentLogicalConditionCase[getCurrentLogicalConditionLevel()], logicalOperation);
-								
-								*currentCodeBlockInTree = createCodeBlockDeclareNewBoolArray(*currentCodeBlockInTree, logicalConditionConjunctionBooleanName, false);
-								
-								//logicalConditionOperationObject->NLCparsedForCodeBlocks = true;	//is this required?????? [NB only connections are being parsed...]
-								if(logicalConditionOperationObject->negative)
-								{//added 1g6i
-									logicalConditionConjunctionArray[logicalConditionConjunctionIndex].negative = true;
-								}
-							}
-							logicalConditionOperationObject->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value
-
-							if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-							{
-								previousCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
-							}
-							#ifdef NLC_USE_PREPROCESSOR
-							previousCodeBlockInTree = *currentCodeBlockInTree;
-							#endif
-							
-							//cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName << endl;
-							addNewLogicalCondition(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionOperationObject);
-
-
-							#ifdef NLC_USE_PREPROCESSOR
-							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-							//CHECKTHIS
-							if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE) || (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
-							{
-								*currentCodeBlockInTree = createCodeBlocksDeclareContextList(*currentCodeBlockInTree, currentNLCsentenceInList->indentation+1);
-								(*currentCodeBlockInTree)->isLogicalCondition = true;
-								(*currentCodeBlockInTree)->contextLevel = currentNLCsentenceInList->indentation+1;
-								if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-								{
-									//must create a new code block to embed for statment 
-									*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);
-								}
-							}
-							#endif	
-							#endif
-								
-							if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-							{
-								#ifdef NLC_USE_PREPROCESSOR
-								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-								{
-									restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, elseIfDetected, elseDetected, &previousCodeBlockInTree);
-								}
-								#endif
-							
-								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-								cout << "conj: 1" << endl;
-								#endif
-								int logicalConditionConjunctionIndexMax = logicalConditionConjunctionIndex;
-								//error checking:
-								for(int i=1; i<logicalConditionConjunctionIndexMax; i++)	//i=0 should not have a conjunction type assigned
-								{
-									if(logicalConditionConjunctionArray[i].conjunctionType == INT_DEFAULT_VALUE)
-									{
-										cout << "generateCodeBlocksPart2logicalConditions() error: missing conjunction type: " << i << endl;
-									}
-								}
-								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-								cout << "generateCodeBlocksPart2logicalConditions(): 2" << endl;
-								#endif
-								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-								{
-									currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
-								}
-								
-								#ifndef NLC_USE_PREPROCESSOR
-								bool elseIfDetected = false;
-								#endif
-								int logicalOperation2 = logicalOperation;
-								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-								{
-									logicalOperation2 = NLC_LOGICAL_CONDITION_OPERATIONS_IF;
-								}
-
-								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, logicalOperation2, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax, getCurrentLogicalConditionLevel(), currentLogicalConditionCase[getCurrentLogicalConditionLevel()], elseIfDetected);
-								
-								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-								{
-									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
-								}
-								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-								cout << "generateCodeBlocksPart2logicalConditions(): 3" << endl;
-								#endif
-
-							}
-						#else
-							//this code is suitable for for/while/if logical conditions without conjunctions:
-
-							//code copied from [*^]
-							//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
-							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-							generateContextBlocksVariables.logicalOperation = logicalOperation;
-							generateContextBlocksVariables.negative = simpleNonConjunctionLogicalConditionNegative;
-								//NB this will set NLCparsedForCodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component							
-							
-							#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
-							if(!assumedToAlreadyHaveBeenDeclared(logicalConditionOperationObject))
-							{
-								#ifdef NLC_GENERATE_TYPE_LISTS
-								//1i implementation
-								currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(currentCodeBlockInTree, logicalConditionOperationObject);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
-								//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
-								//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
-								#else
-								//1j implementation
-								entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
-								#endif
-							}
-							#endif
-							getParentAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, &generateContextBlocksVariables, true);
-
-							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
-						#endif
-
-							passedLogicalConditionObject = true;
-						}
-
-						if(passedLogicalConditionObject)
-						{
-							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-							cout << "generateCodeBlocksPart2logicalConditions(): 4" << endl;
-							#endif
-							//check if logicalConditionOperationSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
-
-							if(logicalConditionOperationSubject->isConcept || logicalConditionOperationSubject->isSubstanceConcept)
-							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
-								if(logicalConditionOperationSubject->isConcept)
-								{
-									cout << "generateCodeBlocks() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
-									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
-								}
-								else if(logicalConditionOperationSubject->isSubstanceConcept)
-								{
-									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);
-								}
-								#endif
-							}
-							else
-							{
-								if(logicalConditionOperationSubject->isAction)
-								{
-									#ifdef NLC_USE_PREPROCESSOR
-									if(logicalConditionOperationSubject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION)
-									{
-										//eg If the sun is bright, do this.
-										//leave action entity as tagged NLCparsedForlogicalConditionOperations (such that it is not processed by generateActionCodeBlocks)
-										//assume the next line(s) is indented and contains the real logical condition command
-									}
-									else
-									{
-									#endif
-										//eg If the sun is bright, eat the cabbage.
-										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
-										generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex, NLCfunctionName);
-									#ifdef NLC_USE_PREPROCESSOR
-									}
-									#endif
-								}
-								else
-								{
-									//eg If the sun is bright, the dog is happy.
-									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
-									#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-									generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex);
-									#else
-									GIAentityNode * parentEntity = getParent(logicalConditionOperationSubject, sentenceIndex, true);		//CHECKTHIS check parseConditionParents value here
-									if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
-									{
-										generateObjectInitialisationsBasedOnPropertiesAndConditions(logicalConditionOperationSubject, currentCodeBlockInTree , sentenceIndex, "", "", false, false);
-									}
-									#endif
-								}
-
-								#ifdef NLC_USE_PREPROCESSOR
-								if(useNLCpreprocessor)
-								{
-									if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && !elseIfDetected && !elseDetected)
-									{
-										//cout << "codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray " << getCurrentLogicalConditionLevel() << "is being defined" << endl;
-										codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()] = previousCodeBlockInTreeAtBaseLevel;
-									}
-								
-									currentSentenceContainsLogicalCondition = true;
-									if(currentNLCsentenceInList->next->indentation == (currentNLCsentenceInList->indentation + 1))
-									{
-										//do not, just record the in the tree
-										codeBlockAtPreviousLogicalConditionBaseLevelArray[getCurrentLogicalConditionLevel()] = currentCodeBlockInTreeAtBaseLevel->next;
-										setCurrentLogicalConditionLevel(getCurrentLogicalConditionLevel + 1);
-									}
-									else if(currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation)
-									{
-										*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
-										//NB if(currentNLCsentenceInList->next->indentation < currentNLCsentenceInList->indentation) will be processed later by generateCodeBlocks()
-									}
-									else
-									{
-										cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
-										cout << "currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation + 1" << endl;
-										cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
-										cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
-									}
-								}
-								else
-								{
-									*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
-								}
-								#else
-								*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
-								#endif
-							}
-							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-							cout << "generateCodeBlocksPart2logicalConditions(): 5" << endl;
-							#endif
-						}
+						caseIndex++;
+						currentSentence = parsablePhrase;
+					}
+					else
+					{
+						caseIndex++;
+						currentSentence = currentSentence->next;						
+					}
+				}
+				else
+				{
+					if(currentSentence->next != NULL)
+					{
+						currentSentence = currentSentence->next;
+					}
+					else
+					{
+						stillFindingLogicalConditionAtCurrentLevel = false;
 					}
 				}
 			}
+		
+			if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
+			{
+				currentCodeBlockInTreeAtBaseLevel = (*currentCodeBlockInTree);
+			}			
 		}
-	}
-	return true;
-}
-
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentLogicalConditionObject, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray, GIAentityNode * previousLogicalConditionConjunction)
-{
-	NLCcodeblock * currentCodeBlockInTreeAtCurrentLevel1 = *currentCodeBlockInTree;
-
-	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-	cout << "addNewLogicalCondition(): currentLogicalConditionObject = " << currentLogicalConditionObject->entityName << endl;
-	#endif
-
-	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-	{
-		//set currentLogicalConditionObject to isDefiniteTemp, eg "chicken" in "For every/each chicken.." NB "chicken" in "For all chickens..." is parsed as definite by GIA fillGrammaticalArraysStanford() already
-		currentLogicalConditionObject->grammaticalDefiniteTemp = true;
-	}
-
-	//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
-	NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-	generateContextBlocksVariables.logicalOperation = logicalOperation;
-	generateContextBlocksVariables.logicalConditionConjunctionIndex = *logicalConditionConjunctionIndex;
-	generateContextBlocksVariables.primaryEntityInLogicalConditionConjunctionSubset = previousLogicalConditionConjunction;
-		//NB this will set NLCparsedForCodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
-
-	if(checkSentenceIndexParsingCodeBlocks(currentLogicalConditionObject, sentenceIndex, false))
-	{
-		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
-		if(!assumedToAlreadyHaveBeenDeclared(currentLogicalConditionObject))
+		else if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE))
 		{
-			#ifdef NLC_GENERATE_TYPE_LISTS
-			//1i implementation
-			currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(currentCodeBlockInTree, currentLogicalConditionObject);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
-			//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
-			//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
-			#else
-			//1j implementation
-			entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
-			#endif	
+			currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;		
 		}
-		#endif
-		getParentAndGenerateContextBlocks(currentCodeBlockInTree, currentLogicalConditionObject, sentenceIndex, &generateContextBlocksVariables, true))
-
-		if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+		else
 		{
-			#ifndef NLC_USE_PREPROCESSOR
-			int currentLogicalConditionCase[1] = {0};	//multiple cases not supported
-			#endif
-			string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(getCurrentLogicalConditionLevel(), currentLogicalConditionCase[getCurrentLogicalConditionLevel()], *logicalConditionConjunctionIndex, logicalOperation);
-			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, logicalConditionConjunctionBooleanName, true);
-			currentCodeBlockInTreeAtCurrentLevel1 = currentCodeBlockInTreeAtCurrentLevel1->next;
-			*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;
+			cout << "generateCodeBlocksFromMathText() error: illegal firstNLCsentenceInFullSentence->logicalConditionOperator" << endl;
+			exit(0);
 		}
-		*logicalConditionConjunctionIndex = *logicalConditionConjunctionIndex + 1;
-		#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-		cout << "*logicalConditionConjunctionIndex = " << *logicalConditionConjunctionIndex << endl;
+		
+		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+		{
+			(*currentCodeBlockInTree)->isLogicalCondition = true;
+			(*currentCodeBlockInTree)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+		}
 		#endif
 	}
 	else
 	{
-		*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;
-	}
-
-	tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(currentLogicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
-	if(generateContextBlocksVariables.foundLogicalConditionConjunction != NULL)
-	{
-		#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-		cout << "generateContextBlocksVariables.foundLogicalConditionConjunction defined: " << generateContextBlocksVariables.foundLogicalConditionConjunction->entityName << endl;
-		cout << "generateContextBlocksVariables.foundLogicalConditionConjunction->subject: " << (generateContextBlocksVariables.foundLogicalConditionConjunction->conditionObjectEntity->back())->entity->entityName << endl;
-		#endif
-		checkConditionForLogicalCondition(currentCodeBlockInTree, generateContextBlocksVariables.foundLogicalConditionConjunction, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
-	}
-	
-	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-	cout << "addNewLogicalCondition(): end" << endl;
 	#endif
-}
-
-void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * conditionEntity, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray)
-{
-	int conjunctionType = INT_DEFAULT_VALUE;
-	bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-	if(conjunctionConditionFound)
-	{
-		if(!(conditionEntity->NLCconjunctionCondition))
+		NLCsentence * parsablePhrase = firstNLCsentenceInFullSentence;
+		for(int phraseIndex=0; phraseIndex<firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
 		{
-			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
-			conditionEntity->NLCconjunctionCondition = true;
-			GIAentityConnection * logicalConditionConjunctionObjectConnection = conditionEntity->conditionObjectEntity->back();
-			GIAentityConnection * logicalConditionConjunctionSubjectConnection = conditionEntity->conditionSubjectEntity->back();
-			GIAentityNode * logicalConditionConjunctionObjectEntity = logicalConditionConjunctionObjectConnection->entity;
-			GIAentityNode * logicalConditionConjunctionSubjectEntity = logicalConditionConjunctionSubjectConnection->entity;
+			if(parsablePhrase->mathTextNLPparsablePhraseIndex != phraseIndex)
+			{
+				cout << "generateCodeBlocksFromMathText() error: (currentSentence->mathTextNLPparsablePhraseIndex != i)" << endl;
+			}
+			if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, firstNLCsentenceInFullSentence, parsablePhrase, phraseIndex, 0))
+			{
+				result = false;
+			}
+			parsablePhrase = parsablePhrase->next;
+		}
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	}
+	#endif	
 
-			if(checkSentenceIndexParsingCodeBlocks(logicalConditionConjunctionObjectEntity, logicalConditionConjunctionObjectConnection, sentenceIndex, false))
-			{//added 1g7a for safety: shouldnt be required
-				if(logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE)
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
+		{
+			firstNLCsentenceInFullSentence->mathText.replace(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_WHILE_STRING).length(), string(NLC_LOGICAL_CONDITION_OPERATIONS_IF_STRING));	//replace "while" with "if" for the purposes of generating final code (while loop has already been defined)
+		}
+			
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+		{
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			cout << "createCodeBlockMathTextWithLogicalOperator: firstNLCsentenceInFullSentence->mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
+			#endif
+			*currentCodeBlockInTree = createCodeBlockMathTextWithLogicalOperator(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->mathText);
+		}
+		
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
+		{
+			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
+		}
+		
+		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+		*currentCodeBlockInTree = createCodeBlocksDeclareContextList(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->indentation+1);
+		#endif
+		
+		if(firstNLCsentenceInFullSentence->next != NULL)
+		{
+			NLCsentence * nextNLCfullSentenceInList = firstNLCsentenceInFullSentence;
+			bool hasNextSentence = false;
+			if(firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal > 0)
+			{
+				for(int phraseIndex=0; phraseIndex<firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
 				{
-					#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-					cout << "logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE: " << logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex << endl;
-					#endif
-					if(logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex > 0)
-					{//conjunction type (eg and/or) is not set for first logicalCondition in array
-						logicalConditionConjunctionArray[logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex].conjunctionType = conjunctionType;
-					}
-					logicalConditionConjunctionArray[logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex].negative = logicalConditionConjunctionSubjectEntity->negative;
-					(conditionEntity->conditionSubjectEntity->back())->NLCparsedForCodeBlocks = true;
-				}
-				else
-				{
-					cout << "checkConditionForLogicalCondition() error: logicalConditionConjunctionSubjectEntity = " << logicalConditionConjunctionSubjectEntity->entityName << endl;
-					cout << "logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex == INT_DEFAULT_VALUE" << endl;
-				}
-
-				if(logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE)
-				{
-					#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-					cout << "logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE: " << logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex << endl;
-					#endif
-					if(logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex > 0)
-					{//conjunction type (eg and/or) is not set for first logicalCondition in array
-						logicalConditionConjunctionArray[logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex].conjunctionType = conjunctionType;
-					}
-					logicalConditionConjunctionArray[logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex].negative = logicalConditionConjunctionObjectEntity->negative;
-					(conditionEntity->conditionObjectEntity->back())->NLCparsedForCodeBlocks = true;
-				}
-				else
-				{
-					#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-					cout << "logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex == INT_DEFAULT_VALUE: " << logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex << endl;
-					#endif
-					logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex = *logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value
-					if(logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex > 0)
-					{//conjunction type (eg and/or) is not set for first logicalCondition in array
-						logicalConditionConjunctionArray[logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex].conjunctionType = conjunctionType;
-					}
-					logicalConditionConjunctionArray[logicalConditionConjunctionObjectEntity->NLClogicalConditionConjunctionIndex].negative = logicalConditionConjunctionObjectEntity->negative;
-					(conditionEntity->conditionObjectEntity->back())->NLCparsedForCodeBlocks = true;
-
-					if(logicalConditionConjunctionObjectEntity->isCondition)
-					{//added 1g5g
-						addNewLogicalCondition(currentCodeBlockInTree, (logicalConditionConjunctionObjectEntity->conditionSubjectEntity->back())->entity, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionConjunctionObjectEntity);
-					}
-					else
-					{
-						addNewLogicalCondition(currentCodeBlockInTree, logicalConditionConjunctionObjectEntity, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionConjunctionObjectEntity);
-					}
+					nextNLCfullSentenceInList = nextNLCfullSentenceInList->next;
 				}
 			}
 			else
 			{
-				cout << "addNewLogicalCondition() error: logicalConditionConjunctionObjectEntity has bad sentence index" << endl;
+				nextNLCfullSentenceInList = firstNLCsentenceInFullSentence->next;			
+			}
+			
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	
+			cout << "firstNLCsentenceInFullSentence->sentenceContents = " << firstNLCsentenceInFullSentence->sentenceContents << endl;
+			cout << "nextNLCfullSentenceInList->sentenceContents = " << nextNLCfullSentenceInList->sentenceContents << endl;
+			cout << "firstNLCsentenceInFullSentence->indentation = " << firstNLCsentenceInFullSentence->indentation << endl;
+			cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
+			#endif
+			
+			if(nextNLCfullSentenceInList->indentation == (firstNLCsentenceInFullSentence->indentation + 1))
+			{
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				cout << "(nextNLCfullSentenceInList->indentation == (firstNLCsentenceInFullSentence->indentation + 1))" << endl;
+				#endif
+				//do not, just record the in the tree
+				setCodeBlockAtPreviousLogicalConditionBaseLevelArray(firstNLCsentenceInFullSentence->indentation, currentCodeBlockInTreeAtBaseLevel->next);
+			}
+			else if(nextNLCfullSentenceInList->indentation <= firstNLCsentenceInFullSentence->indentation)
+			{
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				cout << "(nextNLCfullSentenceInList->indentation <= firstNLCsentenceInFullSentence->indentation)" << endl;
+				#endif			
+				*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
+				//NB if(nextNLCfullSentenceInList->indentation < firstNLCsentenceInFullSentence->indentation) will be processed later by generateCodeBlocks()
+			}
+			else
+			{
+				cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions() error: invalid indentation of nextNLCfullSentenceInList, sentenceIndex = " << sentenceIndex << endl;
+				cout << "nextNLCfullSentenceInList->indentation <= firstNLCsentenceInFullSentence->indentation + 1" << endl;
+				cout << "firstNLCsentenceInFullSentence->indentation = " << firstNLCsentenceInFullSentence->indentation << endl;
+				cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
 			}
 		}
-		else
-		{
-			cout << "addNewLogicalCondition() error: (conditionEntity->NLCconjunctionCondition)" << endl;
-		}
+									
 	}
-}
-
-#endif
-
-
-void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(GIAentityNode * entity, int sentenceIndex, bool tagOrUntag)
-{
-	for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
+	else
 	{
-		if(i != GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE)
+	#endif
+		*currentCodeBlockInTree = createCodeBlockMathTextLine(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->mathText);
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	}
+	#endif
+	
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+	cout << "finished generateCodeBlocksFromMathText()" << endl;
+	#endif
+	
+	return result;
+}	
+
+bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * currentFullSentence, NLCsentence * parsablePhrase, int phraseIndex, int caseIndex)
+{
+	bool foundParsablePhrase = false;
+	
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+	cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 1" << endl;
+	#endif
+	//generate NLP parsable phrase eg "the number of chickens" in "if(the number of chickens > the number of apples...)"
+	NLCcodeblock * currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
+	string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentFullSentence->sentenceIndex, parsablePhrase);	//parsablePhraseGenerateNumberOfElementCounterName
+	*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName, 0);	//?this will need to be changed to createCodeBlockDeclareNewIntArray in the future to support multiple cases (ie if, else if, else)
+	
+	//if !NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE, currently only accept entities with $qVar defined, eg "Number of red dogs". prep_of(number-4, dogs-7) [NLP] / _quantity(dog[8], _$qVar[1]) [GIA]
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			for(vector<GIAentityConnection*>::iterator connectionIter = entity->entityVectorConnectionsArray[i].begin(); connectionIter != entity->entityVectorConnectionsArray[i].end(); connectionIter++)
-			{
-				GIAentityConnection * connection = (*connectionIter);
-				GIAentityNode * connectedEntity = connection->entity;
-				if((tagOrUntag && !(connectedEntity->NLCparsedForlogicalConditionOperations)) || (!tagOrUntag && (connectedEntity->NLCparsedForlogicalConditionOperations)))
+			if(!(entity->isConcept) && !(entity->isCondition))
+			{//redundant	
+				#ifdef NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
+				if(entity->isQuery)
+				#else
+				if(entity->isNumberOf)
+				#endif
 				{
-					if(!(connectedEntity->NLClogicalConditionOperation))
-					{//don't cross the "if" boundary
-						if(checkSentenceIndexParsingCodeBlocks(connectedEntity, connection, sentenceIndex, false))
+					#ifdef NLC_DEBUG
+					//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): sentenceIndex = " << sentenceIndex << endl;
+					//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): " << entity->entityName << ", entity->sentenceIndexTemp = " << entity->sentenceIndexTemp << endl;
+					#endif
+					
+					if(foundParsablePhrase)
+					{
+						cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: more than one parsable phrase primary entity found" << endl;
+					}
+					foundParsablePhrase = true;
+
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found 'number of' designation, entity: " << entity->entityName << endl;
+					#endif
+					NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+					#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
+					//number of statements must be expressed using definite variables, but they will not be advanced referenced by GIA (and so must be located in the typeList)
+					//if(!assumedToAlreadyHaveBeenDeclared(entity))	//"the number of x" will have already been declared, but is not advanced referenced, so much search the typeList
+					//{
+						#ifdef NLC_GENERATE_TYPE_LISTS
+						//1i implementation
+						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, entity);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
+						//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
+						//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
+						#else
+						//1j implementation
+						entity->grammaticalDefiniteTemp = true;		//removed 1j15a
+						#endif					
+					//}
+					#endif
+					if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+					{
+						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: " << entity->entityName << endl;
+						#endif
+					}
+
+					*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName);
+
+					*currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockAtStartOfparsablePhrase);				
+				}
+			}
+		}
+	}	
+	if(!foundParsablePhrase)
+	{
+		#ifndef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !foundParsablePhrase" << endl;		
+		#endif
+		*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;	//redundant
+		clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);
+	
+	
+		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		
+		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 2" << endl;
+		#endif
+		
+		#ifdef NLC_PREPROCESSOR_MATH_USE_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BACKWARDS_COMPATIBLE_VARIABLE_NAMES
+		parsablePhraseReferenceName = generateLogicalConditionConjunctionBooleanName(currentFullSentence->indentation, caseIndex, phraseIndex, NLC_LOGICAL_CONDITION_OPERATIONS_IF);
+		#else
+		*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);	//?this will need to be changed to createCodeBlockDeclareNewBoolArray in the future to support multiple cases (ie if, else if, else)
+		#endif
+		
+		//generate NLP parsable phrase eg "the red chicken is next to the house" in "if(the red chicken is next to the house && the blue box has an apple)"
+		if(currentFullSentence->hasLogicalConditionOperator)	//CHECKTHIS; is NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE required for non-logical condition mathText?
+		{
+			foundParsablePhrase = false;
+			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+			{
+				GIAentityNode * entity = (*entityIter);
+				if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+				{
+					if(!(entity->isConcept) && !(entity->isCondition))
+					{//required			
+						#ifdef NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
+						if(entity->isQuery)
+						#else
+						if(entity->isNumberOf)
+						#endif
 						{
-							if(connectedEntity->isConcept)
+							#ifdef NLC_DEBUG
+							//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: entity->isNumberOf && !(entity->NLCcontextGenerated): part 1 must have failed" << endl;
+							#endif
+						}
+						else
+						{		
+							if(!foundParsablePhrase)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
-								cout << "connectedEntity = " << connectedEntity->entityName;
-							}
-							else
-							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
-								connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
+								#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found entity: " << entity->entityName << endl;
 								#endif
-								if(tagOrUntag)
+
+								GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+
+								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+								NLCcodeblock * NLCcodeBlockBeforeGenerateContext = *currentCodeBlockInTree; 
+								bool contextFound = false;
+
+								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
+								//if/while statements can be expressed using either definite or indefinate variables, but if they indefinite they will not be advanced referenced by GIA (and so must be located in the typeList)
+								if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
 								{
-									#ifdef NLC_DEBUG
-									//cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(): tagged: " << connectedEntity->entityName << endl;
+									#ifdef NLC_GENERATE_TYPE_LISTS
+									//1i implementation
+									*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, parentEntity);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
+									//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
+									//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
+									#else
+									//1j implementation
+									//parentEntity->grammaticalDefiniteTemp = true;		//removed 1j15a
 									#endif
-									connection->NLCparsedForlogicalConditionOperations = true;
-									connectedEntity->NLCparsedForlogicalConditionOperations = true;
+								}
+								#endif
+								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+								{
+									contextFound = true;
+								}
+								#else
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);
+								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
+								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
+								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+								{
+									contextFound = true;
+								}
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = false;
+								#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+								generateContextBlocksVariables.testNumerosity = true;
+								#endif
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + parentEntity->entityName);
+								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION))
+								{
+									contextFound = true;
+								}	
+								#endif
+	
+								if(!contextFound)
+								{
+									#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
+									#endif
+									
+									*currentCodeBlockInTree = NLCcodeBlockBeforeGenerateContext;
+									clearCodeBlock(*currentCodeBlockInTree);							
 								}
 								else
 								{
-									#ifdef NLC_DEBUG
-									//cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(): untagged: " << connectedEntity->entityName << endl;
+									#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() pass: getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
 									#endif
-									connection->NLCparsedForlogicalConditionOperations = false;
-									connectedEntity->NLCparsedForlogicalConditionOperations = false;
+									
+									foundParsablePhrase = true;
+									
+									if(generateContextBlocksVariables.negativeDetectedInContextBlocks)
+									{
+										int parsablePhraseReferenceNamePosInMathText = currentFullSentence->mathText.find(parsablePhraseReferenceName);
+										if(parsablePhraseReferenceNamePosInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)	//&& (parsablePhraseReferenceNamePosInMathText > 0
+										{
+											currentFullSentence->mathText.insert(parsablePhraseReferenceNamePosInMathText, 1, NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR);
+											#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+											cout << "negativeDetectedInContextBlocks detected; inserting NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR into mathText logical condition" << endl;
+											#endif
+										}
+									}
+									
+									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
+
+									*currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockAtStartOfparsablePhrase);								
 								}
-								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(connectedEntity, sentenceIndex, tagOrUntag);
 							}
 						}
 					}
 				}
-			}
+			}			
 		}
-	}
-}
-
-
-#ifdef NLC_USE_PREPROCESSOR
-bool setCurrentCodeBlockInTreeToStartOfIfStatement(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock ** firstCodeBlockAtStartOfIfStatement, NLCcodeblock * firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected)
-{
-	bool result = false;
-	if(useNLCpreprocessor)
-	{
-		if(elseDetected || elseIfDetected)
+		#endif
+		if(!foundParsablePhrase)
 		{
-			if(codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()] != NULL)
-			{
-				result = true;
-				#ifdef NLC_DEBUG
-				cout << "setCurrentCodeBlockInTreeToStartOfIfStatement():" << endl;
-				#endif
-				*firstCodeBlockAtStartOfIfStatement = codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()]->next;
-				*currentCodeBlockInTree = codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()];
-				(*currentCodeBlockInTree)->next = new NLCcodeblock; //temporarily disconnect the if statment such that additional condition bools can be declared (required for new else statement)
-				(*currentCodeBlockInTree) = (*currentCodeBlockInTree)->next;
-			}
-			else
-			{
-				cout << "setCurrentCodeBlockInTreeToStartOfIfStatement() error: codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()] is undefined and new else (if) statement is being created" << endl;
-			}
+			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !foundParsablePhrase" << endl;		
+			*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;	//redundant
+			clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);
 		}
-	}
-	return result;
-}
-
-bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock * firstCodeBlockAtStartOfIfStatement, NLCcodeblock * firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected, NLCcodeblock ** previousCodeBlockInTree)
-{
-	bool result = false;
-	if(useNLCpreprocessor)
-	{
-		if(elseIfDetected || elseDetected)
-		{
-			#ifdef NLC_DEBUG
-			cout << "restoreCurrentCodeBlockInTreeToStartOfElseStatement():" << endl;
-			#endif
-			//restore currentCodeBlockInTree
-			(*previousCodeBlockInTree)->next = firstCodeBlockAtStartOfIfStatement;
-			*currentCodeBlockInTree = firstCodeBlockAtStartOfElseStatement;
-			result = true;
-		}
-	}
-	return result;
-}
-#endif
-
-
-#endif
-
-
-bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity, bool compareSubstanceConcepts)
-{
-	bool result = false;
-
-	//code copied from identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts() in GIAtranslatorDefineReferencing.cpp
-
-	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
-
-	bool traceModeIsQuery = false;
-	GIAreferenceTraceParameters referenceTraceParameters;
-	referenceTraceParameters.referenceSetID = referenceSetID;
-	if(!compareSubstanceConcepts)
-	{
-		referenceTraceParameters.linkSpecificConceptsAndActions = true;
 	}
 	
-	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareConcept->associatedInstanceNodeList->begin(); entityIter != entityCompareConcept->associatedInstanceNodeList->end(); entityIter++)
+	return foundParsablePhrase;
+}
+
+bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * currentFullSentence, NLCsentence * parsablePhrase, int phraseIndex, NLCcodeblock ** currentCodeBlockInTreeAtBaseLevel, NLCsentence * firstNLCsentenceInFullSentence)
+{
+	bool foundParsablePhrase = false;
+	
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+	cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor()" << endl;
+	#endif
+	//generate NLP parsable phrase eg "all apples in the cart" in "for(all the apples in the cart)"
+	
+	if((currentFullSentence->hasLogicalConditionOperator) && (currentFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
 	{
-		GIAentityNode * entityCompare = (*entityIter)->entity;
-		#ifdef GIA_DREAMMODE_REFERENCING_DEBUG
-		cout << "searchForEquivalentSubnetToIfStatement(): identifyReferenceSetsSpecificConcepts: " << entityCompare->entityName << endl;
-		#endif
-
-		if(!(entityCompare->disabled))
+		foundParsablePhrase = false;
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
-			if(entity != entityCompare)
+			GIAentityNode * entity = (*entityIter);
+			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{
-				GIAqueryTraceParameters queryTraceParameters;		//not used
-
-				#ifdef NLC_DEBUG
-				//cout << "searchForEquivalentSubnetToIfStatement():" << endl;
-				//cout << "entityCompare->entityName = " << entityCompare->entityName << endl;
-				//cout << "entity->entityName = " << entity->entityName << endl;
-				#endif
-				
-				int numberOfMatchedNodesTemp = 0;
-				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
-				bool exactMatch = testReferencedEntityNodeForExactNameMatch2(entity, entityCompare, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
-
-				if(exactMatch)
-				{
-					if(numberOfMatchedNodesTemp > 0)
+				if(!(entity->isConcept) && !(entity->isCondition))
+				{//required
+					if(!foundParsablePhrase)
 					{
-						//cout << "exactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
-						result = true;
-					}
-				}
+						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+						#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						generateContextBlocksVariables.setCodeBlockInTreeAtBaseLevel = true;
+						#endif
+						NLCcodeblock * NLCcodeBlockBeforeGenerateContext = *currentCodeBlockInTree; 
+						/*//for statements must be expressed using definite variables, and they will be advanced referenced by GIA (ie "for all the chickens...", not "for a chicken..")
+						if(!assumedToAlreadyHaveBeenDeclared(entity))
+						{
+						      *currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, entity);   //eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
+						      //if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
+						      //if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
+						}
+						*/
+						if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+						{
+							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+							cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
+							#endif
 
-				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
-				int irrelevant;
-				string printEntityNodeString = "";
-				bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
-				traceEntityNode(entityCompare, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
-				traceEntityNode(entity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
+							*currentCodeBlockInTree = NLCcodeBlockBeforeGenerateContext;
+							clearCodeBlock(*currentCodeBlockInTree);							
+						}
+						else
+						{
+							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+							*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
+							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+							(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
+							(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+							#endif
+							#endif
+							foundParsablePhrase = true;
+						}
+					}	
+				}
 			}
 		}
 	}
+	return foundParsablePhrase;
+}
+					
+#endif
+
+#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+bool findAndSetDummyNumericalValueForReplacement(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, int dummyNumericalValue, string numericalVariableName)
+{
+	bool result = true;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+		{
+			if(entity->quantityNumber == dummyNumericalValue)
+			{
+				#ifdef NLC_DEBUG
+				//cout << "findAndSetDummyNumericalValueForReplacement(): " << endl;
+				//cout << "entity->quantityNumber = " << entity->quantityNumber << endl;
+				//cout << "dummyNumericalValue = " << dummyNumericalValue << endl;
+				//cout << "sentenceIndex = " << sentenceIndex << endl;
+				#endif
+				entity->NLCoriginalNumericalVariableName = numericalVariableName;
+				result = true;
+			}
+		}	
+	}
 	return result;
 }
+#endif
 
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
+bool checkIfPhraseContainsAction(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject)
+{
+	bool phraseContainsAction = false;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * connectedEntity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
+		{		
+			if(connectedEntity->isAction || connectedEntity->isActionConcept)
+			{
+				phraseContainsAction = true;
+				*logicalConditionOperationObject = connectedEntity;
+			}
+		}
+	}
+	return phraseContainsAction;
+}
+#endif
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
+bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject)
+{
+	bool phraseContainsSubstanceConcept = false;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * connectedEntity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
+		{		
+			if(connectedEntity->isSubstanceConcept)
+			{
+				if(!(connectedEntity->entityNodeDefinitionList->empty()))
+				{
+					phraseContainsSubstanceConcept = true;
+					*logicalConditionOperationObject = connectedEntity;
+				}
+			}
+		}
+	}
+	return phraseContainsSubstanceConcept;
+}
+#endif
+
+void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
+{
+	//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase: " << endl;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * connectedEntity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
+		{			
+			connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
+			#ifdef NLC_DEBUG
+			//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase():" << endl;
+			//cout << "connectedEntity = " << connectedEntity->entityName << endl;
+			//cout << "connectedEntity->isConcept = " << connectedEntity->isConcept << endl;
+			#endif
+		}
+	}
+}
 

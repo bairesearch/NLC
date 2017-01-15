@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6j 09-July-2014
+ * Project Version: 1g7a 10-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -116,12 +116,17 @@ public:
 	~NLClogicalConditionConjunctionVariables(void);
 
 	int logicalOperation;
+	//#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	bool negative;
+	//#endif
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	int logicalConditionConjunctionIndex;
 	GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset;
 	GIAentityNode * foundLogicalConditionConjunction;
+	#endif
 };
 
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 class NLClogicalConditionConjunction
 {
 public:
@@ -132,6 +137,7 @@ public:
 	int conjunctionType;
 	bool negative;
 };
+#endif
 
 class NLCcodeblock
 {

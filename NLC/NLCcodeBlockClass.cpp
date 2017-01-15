@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6j 09-July-2014
+ * Project Version: 1g7a 10-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,18 +43,20 @@
 NLClogicalConditionConjunctionVariables::NLClogicalConditionConjunctionVariables(void)
 {
 	logicalOperation = NLC_CONDITION_LOGICAL_OPERATIONS_FOR;
-	#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	//#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	negative = BOOL_IRRELEVANT;
-	#endif
+	//#endif
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	logicalConditionConjunctionIndex = INT_DEFAULT_VALUE;
 	primaryEntityInLogicalConditionConjunctionSubset = NULL;
 	foundLogicalConditionConjunction = NULL;
+	#endif
 }
 NLClogicalConditionConjunctionVariables::~NLClogicalConditionConjunctionVariables(void)
 {
 }
 
-
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 NLClogicalConditionConjunction::NLClogicalConditionConjunction(void)
 {
 	conjunctionType = INT_DEFAULT_VALUE;
@@ -63,6 +65,7 @@ NLClogicalConditionConjunction::NLClogicalConditionConjunction(void)
 NLClogicalConditionConjunction::~NLClogicalConditionConjunction(void)
 {
 }
+#endif
 
 
 NLCcodeblock::NLCcodeblock(void)

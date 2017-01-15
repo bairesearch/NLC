@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11e 25-August-2014
+ * Project Version: 1i11f 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1155,7 +1155,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				//research context in case, eg "The chicken has the ball which is near the park." (ie when initialisation property is definite; as distinguished from "The chicken has a ball near the park.")	
 				bool generatedContext = false;
 				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-				GIAentityNode * parentEntity = getSameReferenceSetDefiniteParent(propertyEntity, sentenceIndex, entity);
+				GIAentityNode * parentEntity = getSameReferenceSetDefiniteContextUngeneratedParent(propertyEntity, sentenceIndex, entity);
 				#ifdef NLC_DEBUG_PARSE_CONTEXT4
 				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions() qt propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
 				#endif					
@@ -1168,18 +1168,26 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					#endif
 
 					#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
+					if(generateCategories(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
+					{
+						if(parentEntity == entity)
+						{
+							propertyConnection->NLCparsedForCodeBlocks = true;
+						}
+						parentEntity->NLCcontextGenerated = true;				
 					#else
 					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
-					#endif
 					{
-						//cout << "1c: propertyEntity = " << propertyEntity->entityName << endl;
+					#endif
+						cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
+						cout << "1c: parentEntity = " << parentEntity->entityName << endl;
 						generatedContext = true;
 						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 						propertyEntityClass->context.push_back(generateInstanceName(parentEntity));
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);						
 						*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);
 						propertyEntity->NLClocalListVariableHasBeenInitialised = true;
+						performedAtLeastOneObjectInitialisationAtThisLevel = true;
 					}
 				}
 				else 
@@ -1424,7 +1432,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							//research context in case, eg "The chicken has the ball which is near the park." (ie when initialisation property is definite; as distinguished from "The chicken has a ball near the park.")	
 							bool generatedContext = false;
 							#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-							GIAentityNode * parentEntity = getSameReferenceSetDefiniteParent(conditionObject, sentenceIndex, entity);
+							GIAentityNode * parentEntity = getSameReferenceSetDefiniteContextUngeneratedParent(conditionObject, sentenceIndex, entity);
 							if(parentEntity != conditionObject)
 							{
 								#ifdef NLC_DEBUG_PARSE_CONTEXT4
@@ -1432,11 +1440,13 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								#endif
 
 								#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
+								if(generateCategories(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
+								{
+									conditionConnection->NLCparsedForCodeBlocks = true;
 								#else
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
-								#endif
 								{
+								#endif
 									generatedContext = true;
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 									conditionObjectEntityClass->context.push_back(generateInstanceName(parentEntity));
@@ -1644,7 +1654,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 }
 
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-GIAentityNode * getSameReferenceSetDefiniteParent(GIAentityNode * currentEntity, int sentenceIndex, GIAentityNode * generateObjectInitialisationsLastParent)
+GIAentityNode * getSameReferenceSetDefiniteContextUngeneratedParent(GIAentityNode * currentEntity, int sentenceIndex, GIAentityNode * generateObjectInitialisationsLastParent)
 {
 	GIAentityNode * parentEntityNew = currentEntity;
 	
@@ -1665,9 +1675,13 @@ GIAentityNode * getSameReferenceSetDefiniteParent(GIAentityNode * currentEntity,
 				if(parentEntity != generateObjectInitialisationsLastParent)
 				{
 				*/
-					if(assumedToAlreadyHaveBeenDeclared(parentEntity))
+					//added 1i11f
+					if(!(parentEntity->NLCcontextGenerated))
 					{
-						parentEntityNew = getSameReferenceSetDefiniteParent(parentEntity, sentenceIndex, generateObjectInitialisationsLastParent);
+						if(assumedToAlreadyHaveBeenDeclared(parentEntity))
+						{
+							parentEntityNew = getSameReferenceSetDefiniteContextUngeneratedParent(parentEntity, sentenceIndex, generateObjectInitialisationsLastParent);
+						}
 					}
 				/*
 				}

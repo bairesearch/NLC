@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6c 08-July-2014
+ * Project Version: 1g6d 08-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -370,10 +370,11 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 	cout << "q2" << endl;
 	
 #ifdef generateContextBlocksAndInitialiseParentIfNecessary_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
+	*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;	
 	if(logicalConditionConjunctionVariables.foundLogicalConditionConjunction != NULL)
 	{		
 		checkConditionForLogicalCondition(currentCodeBlockInTree, logicalConditionConjunctionVariables.foundLogicalConditionConjunction, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
-	}	
+	}
 #else	
 	//handle condition logical operations; eg "If the basket is near the house" in "If the basket is near the house, the dog is happy." //added GIA 1g3a
 	//if object near a red car / if object has a red car (if object has a car which is red)

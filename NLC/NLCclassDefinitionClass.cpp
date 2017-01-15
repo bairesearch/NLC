@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p5a 02-July-2015
+ * Project Version: 1p5b 02-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -114,6 +114,73 @@ bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode* entity, int sentence
 	return result;
 }
 */
+
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+
+NLCclassDefinition* findClassDefinitionFunction(vector<NLCclassDefinition*>* functionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool* foundClassDefinition)
+{
+	NLCclassDefinition* classDefinitionFound = NULL;
+	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = functionList->begin(); classDefinitionIter != functionList->end(); classDefinitionIter++)
+	{
+		NLCclassDefinition* currentClassDef = *classDefinitionIter;
+		if(!(currentClassDef->isConditionInstance))
+		{
+			bool passed = false;
+			if(findItemInList(&(currentClassDef->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, functionName))
+			{
+				passed = true;
+			}
+			if(passed)
+			{
+				if(hasFunctionOwnerClass)
+				{
+					passed = false;
+					if(findItemInList(&(currentClassDef->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, functionOwnerName))
+					{
+						passed = true;
+					}
+				}
+			}
+			if(passed)
+			{
+				if(hasFunctionObjectClass)
+				{
+					passed = false;
+					if(findItemInList(&(currentClassDef->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, functionObjectName))
+					{
+						passed = true;
+					}
+				}
+			}
+			if(passed)
+			{
+				//cout << "findClassDefinitionFunction: className = " << currentClassDef->name << endl;
+				classDefinitionFound = currentClassDef;
+				*foundClassDefinition = true;					
+			}
+		}
+	}
+	return classDefinitionFound;
+}
+
+bool findItemInList(vector<NLCitem*>* parameters, int itemType, string itemName)
+{
+	bool foundItem = false;
+	for(vector<NLCitem*>::iterator parametersIter = parameters->begin(); parametersIter != parameters->end(); parametersIter++)
+	{
+		NLCitem* currentItem = *parametersIter;
+		if(currentItem->itemType == itemType)
+		{
+			if(currentItem->name == itemName)
+			{
+				foundItem = true;
+			}			
+		}
+	}
+	return foundItem;
+}
+
+#endif
 
 NLCclassDefinition* findClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string name, bool* foundClassDefinition)
 {

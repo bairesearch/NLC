@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -731,7 +731,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									}
 								}
 
-
 								if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);		//eg thedogsvalue = true;
@@ -740,19 +739,22 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								{
 									if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
 									{
-										*currentCodeBlockInTree = createCodeBlockSetDecimalPointerToEntityMathNumericalValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->numericalValue);
+										*currentCodeBlockInTree = createCodeBlockSetDecimalPointerToEntityMathObjectNumericalValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->mathObjectNumericalValue);
+										*currentCodeBlockInTree = createCodeBlockSetMathObjectTypeAsNumerical(*currentCodeBlockInTree, childEntity);				//childEntity->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
 									}
 									#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 									#ifdef NLC_USE_MATH_OBJECTS_STRING
 									else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
 									{
-										*currentCodeBlockInTree = createCodeBlockSetStringPointerToEntityMathStringValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->stringValue);
+										*currentCodeBlockInTree = createCodeBlockSetStringPointerToEntityMathObjectStringValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->mathObjectStringValue);
+										*currentCodeBlockInTree = createCodeBlockSetMathObjectTypeAsString(*currentCodeBlockInTree, childEntity);				//childEntity->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
 									}
 									#endif
 									#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
 									else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
 									{
-										*currentCodeBlockInTree = createCodeBlockSetBooleanPointerToEntityMathBooleanValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->booleanValue);
+										*currentCodeBlockInTree = createCodeBlockSetBooleanPointerToEntityMathObjectBooleanValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->mathObjectBooleanValue);
+										*currentCodeBlockInTree = createCodeBlockSetMathObjectTypeAsBoolean(*currentCodeBlockInTree, childEntity);				//childEntity->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
 									}
 									#endif
 									#endif

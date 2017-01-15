@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -145,31 +145,34 @@
 	#define NLC_CODEBLOCK_TYPE_REMOVE_CONDITION (66)
 #endif
 #ifdef NLC_USE_MATH_OBJECTS
-	#define NLC_CODEBLOCK_TYPE_SET_MATH_NUMERICAL_VALUE (67)
+	#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_NUMERICAL_VALUE (67)
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE (68)
-	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE (69)
+	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_OBJECT_NUMERICAL_VALUE (69)
+	#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_NUMERICAL (70)
 	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE (70)
-		#define NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY (71)
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE (71)
+		#define NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY (72)
 		#ifdef NLC_USE_MATH_OBJECTS_STRING
-		#define NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE (72)
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE (73)
-		#define NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE (74)
+		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_STRING_VALUE (73)
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE (74)
+		#define NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_OBJECT_STRING_VALUE (75)
+		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_STRING (76)
 		#endif
 		#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-		#define NLC_CODEBLOCK_TYPE_SET_MATH_BOOLEAN_VALUE (75)
-		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOLEAN_POINTER_VARIABLE (76)
-		#define NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_BOOLEAN_VALUE (77)
+		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_BOOLEAN_VALUE (77)
+		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOLEAN_POINTER_VARIABLE (78)
+		#define NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_OBJECT_BOOLEAN_VALUE (79)
+		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_BOOLEAN (80)
 		#endif
 	#endif
 	#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
-		#define NLC_CODEBLOCK_TYPE_TEST_POINTER_VALUE (78)
+		#define NLC_CODEBLOCK_TYPE_TEST_POINTER_VALUE (81)
 	#endif
 #endif
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
-	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE (79)
+	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE (82)
 	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
-		#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION (80)
+		#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION (83)
 	#endif
 #endif
 
@@ -243,7 +246,7 @@
 	#ifndef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
 		#define NLC_CODEBLOCK_TYPE_CHECK_POINTER_VALUE (137)
 	#endif
-	#define NLC_CODEBLOCK_TYPE_TEST_MATH_NUMERICAL_VALUE (138)
+	#define NLC_CODEBLOCK_TYPE_TEST_MATH_OBJECT_NUMERICAL_VALUE (138)
 #endif
 #define NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_NAME_EQUALS_CLASS_NAME (139)
 
@@ -637,22 +640,25 @@ NLCcodeblock* createCodeBlockAddConditionInverseNewFunction(NLCcodeblock* curren
 #endif
 
 #ifdef NLC_USE_MATH_OBJECTS
-NLCcodeblock* createCodeBlockTestMathNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
-NLCcodeblock* createCodeBlockSetMathNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
+NLCcodeblock* createCodeBlockTestMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
+NLCcodeblock* createCodeBlockSetMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);
-NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathNumericalValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockSetMathObjectTypeAsNumerical(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 #ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName);
 NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName, GIAentityNode* entity);
 #ifdef NLC_USE_MATH_OBJECTS_STRING
-NLCcodeblock* createCodeBlockSetMathStringValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
+NLCcodeblock* createCodeBlockSetMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName);
-NLCcodeblock* createCodeBlockSetStringPointerToEntityMathStringValue(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockSetStringPointerToEntityMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockSetMathObjectTypeAsString(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 #endif
 #ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-NLCcodeblock* createCodeBlockSetMathBooleanValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
+NLCcodeblock* createCodeBlockSetMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewBooleanPointerVar(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName);
-NLCcodeblock* createCodeBlockSetBooleanPointerToEntityMathBooleanValue(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockSetBooleanPointerToEntityMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockSetMathObjectTypeAsBoolean(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 #endif
 #endif
 #ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT

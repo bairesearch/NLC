@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -273,15 +273,17 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEndLine[progLang];	//double numericalValue;
+							string classDefinitionValueCode = progLangInteger[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NAME) + progLangEndLine[progLang];	//int mathObjectType;
+							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
+							classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEndLine[progLang];	//double mathObjectNumericalValue;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 							#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 							#ifdef NLC_USE_MATH_OBJECTS_STRING
-							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME) + progLangEndLine[progLang];	//double stringValue;
+							classDefinitionValueCode = progLangStringType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME) + progLangEndLine[progLang];	//string mathObjectStringValue;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME) + progLangEndLine[progLang];	//double booleanValue;
+							classDefinitionValueCode = progLangBooleanType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME) + progLangEndLine[progLang];	//boolean mathObjectBooleanValue;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#endif
@@ -512,9 +514,22 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						{//top level NLClibraryEntity class found
 						#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string setValueCode = string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//value = numeric_limits<double>::quiet_NaN();
+							string setValueCode = string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NAME) + progLangEquals[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN_DEFNAME) + progLangEndLine[progLang];	//mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+							printLine(setValueCode, 1, &printedClassDefinitionHeaderText);
+							setValueCode = string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//mathObjectNumericalValue = INT_DEFAULT_VALUE;
+							printLine(setValueCode, 1, &printedClassDefinitionSourceText);
+							#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+							#ifdef NLC_USE_MATH_OBJECTS_STRING
+							setValueCode = string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME) + progLangEquals[progLang] + progLangDefaultStringValue[progLang] + progLangEndLine[progLang];	//mathObjectStringValue = "";
 							printLine(setValueCode, 1, &printedClassDefinitionSourceText);
 							#endif
+							#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+							setValueCode = string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME) + progLangEquals[progLang] + progLangDefaultBooleanValue[progLang] + progLangEndLine[progLang];	//mathObjectBooleanValue = false;
+							printLine(setValueCode, 1, &printedClassDefinitionSourceText);
+							#endif
+							#endif
+							#endif
+							
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 							string classDefinitionInverseConditionCode = string(NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME) + progLangEquals[progLang] + progLangFalse[progLang] + progLangEndLine[progLang];	//inverseConditionTwoWay = false;
 							printLine(classDefinitionInverseConditionCode, 1, &printedClassDefinitionSourceText);

@@ -26,7 +26,7 @@
  * File Name: NLCapi.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -477,7 +477,7 @@ void generateCodeWrapObject(string variableName, string variableType1ClassName, 
 		if(variableTypeStandard)
 		{
 			//untested
-			string mathtextVariableReferenceName = generateCodeEntityMathValueText(intermediaryVariableInstanceName, mathtextVariableType, progLang);
+			string mathtextVariableReferenceName = generateCodeEntityMathObjectValueText(intermediaryVariableInstanceName, mathtextVariableType, progLang);
 			string setText = generateCodeSetText(mathtextVariableReferenceName, APIclassInstanceName, progLang);	// intermediaryVariableInstanceName->variableNumerical[/String] = APIclassInstanceName;
 			printLine(setText, level+1, APIwrapperSourceWrapObjectFunctionText);
 		}
@@ -499,7 +499,7 @@ void generateCodeWrapObject(string variableName, string variableType1ClassName, 
 		if(variableTypeStandard)
 		{
 			//tested
-			string mathtextVariableReferenceName = generateCodeEntityMathValueText(intermediaryVariableInstanceName, mathtextVariableType, progLang);
+			string mathtextVariableReferenceName = generateCodeEntityMathObjectValueText(intermediaryVariableInstanceName, mathtextVariableType, progLang);
 			string APIobjectVariableReferenceName = generateCodeReferenceText(NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME, variableName, progLang);
 			string setText = generateCodeSetText(mathtextVariableReferenceName, APIobjectVariableReferenceName, progLang);	// intermediaryVariableInstanceName->variableNumerical[/String] = thirdpartyAPIobject->variableName;
 			printLine(setText, level, APIwrapperSourceWrapObjectFunctionText);
@@ -534,7 +534,7 @@ void generateCodeUnwrapObject(string variableName, string variableType1ClassName
 		string variableReferenceName = "";
 		if(variableTypeStandard)
 		{
-			variableReferenceName = generateCodeEntityMathValueText(variableType1InstanceName, mathtextVariableType, progLang);	//variableType1Instance->numericalValue/stringValue/booleanValue
+			variableReferenceName = generateCodeEntityMathObjectValueText(variableType1InstanceName, mathtextVariableType, progLang);	//variableType1Instance->mathObjectNumericalValue/mathObjectStringValue/mathObjectBooleanValue
 		}
 		else
 		{
@@ -543,12 +543,12 @@ void generateCodeUnwrapObject(string variableName, string variableType1ClassName
 		if(useLocalList)
 		{
 			string APIobjectVariableReferenceName = variableName;
-			generateCodeAddEntityToList(variableReferenceName, APIobjectVariableReferenceName, progLang, APIwrapperSourceUnwrapObjectFunctionText, level+1);	//variableName.push_back(variableType1Instance->thirdpartyAPIobject/numericalValue/stringValue/booleanValue);
+			generateCodeAddEntityToList(variableReferenceName, APIobjectVariableReferenceName, progLang, APIwrapperSourceUnwrapObjectFunctionText, level+1);	//variableName.push_back(variableType1Instance->thirdpartyAPIobject/mathObjectNumericalValue/mathObjectStringValue/mathObjectBooleanValue);
 		}
 		else
 		{
 			string APIobjectVariableReferenceName = generateCodeReferenceText(NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME, variableName, progLang);
-			generateCodeAddEntityToList(variableReferenceName, APIobjectVariableReferenceName, progLang, APIwrapperSourceUnwrapObjectFunctionText, level+1);	//thirdpartyAPIobject->variableName.push_back(variableType1Instance->thirdpartyAPIobject/numericalValue/stringValue/booleanValue);
+			generateCodeAddEntityToList(variableReferenceName, APIobjectVariableReferenceName, progLang, APIwrapperSourceUnwrapObjectFunctionText, level+1);	//thirdpartyAPIobject->variableName.push_back(variableType1Instance->thirdpartyAPIobject/mathObjectNumericalValue/mathObjectStringValue/mathObjectBooleanValue);
 		}
 
 		printLine(progLangCloseBlock[progLang], level, APIwrapperSourceUnwrapObjectFunctionText);
@@ -569,7 +569,7 @@ void generateCodeUnwrapObject(string variableName, string variableType1ClassName
 		string variableReferenceName = "";
 		if(variableTypeStandard)
 		{
-			variableReferenceName = generateCodeEntityMathValueText(variableType1InstanceName, mathtextVariableType, progLang);	//variableType1Instance->numericalValue/stringValue/booleanValue
+			variableReferenceName = generateCodeEntityMathObjectValueText(variableType1InstanceName, mathtextVariableType, progLang);	//variableType1Instance->mathObjectNumericalValue/mathObjectStringValue/mathObjectBooleanValue
 		}
 		else
 		{
@@ -579,12 +579,12 @@ void generateCodeUnwrapObject(string variableName, string variableType1ClassName
 		if(useLocalList)
 		{
 			string APIobjectVariableReferenceName = variableName;
-			setText = generateCodeSetText(APIobjectVariableReferenceName, variableReferenceName, progLang);	//variableName = variableType1Instance->thirdpartyAPIobject/numericalValue/stringValue/booleanValue;
+			setText = generateCodeSetText(APIobjectVariableReferenceName, variableReferenceName, progLang);	//variableName = variableType1Instance->thirdpartyAPIobject/mathObjectNumericalValue/mathObjectStringValue/mathObjectBooleanValue;
 		}
 		else
 		{
 			string APIobjectVariableReferenceName = generateCodeReferenceText(NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME, variableName, progLang);
-			setText = generateCodeSetText(APIobjectVariableReferenceName, variableReferenceName, progLang);	//thirdpartyAPIobject->variableName = variableType1Instance->thirdpartyAPIobject/numericalValue/stringValue/booleanValue;
+			setText = generateCodeSetText(APIobjectVariableReferenceName, variableReferenceName, progLang);	//thirdpartyAPIobject->variableName = variableType1Instance->thirdpartyAPIobject/mathObjectNumericalValue/mathObjectStringValue/mathObjectBooleanValue;
 		}
 		printLine(setText, level, APIwrapperSourceUnwrapObjectFunctionText);
 	}

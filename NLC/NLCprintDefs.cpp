@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -888,15 +888,15 @@ string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang)
 
 
 #ifdef NLC_USE_MATH_OBJECTS
-string generateCodeTestEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang)
+string generateCodeTestEntityMathObjectNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang)
 {
-	string testEntityMathNumericalValueText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathNumericalValueText(param1, progLang) + progLangStringEqualsTest[progLang] + param2->name + progLangCloseParameterSpace[progLang];	//if(param1->numericalValue == param2)
+	string testEntityMathNumericalValueText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathObjectNumericalValueText(param1, progLang) + progLangStringEqualsTest[progLang] + param2->name + progLangCloseParameterSpace[progLang];	//if(param1->mathObjectNumericalValue == param2)
 	return testEntityMathNumericalValueText;
 }
 
-string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang)
+string generateCodeEntityMathObjectNumericalValueText(NLCitem* param1, int progLang)
 {
-	string entityMathNumericalValueText = generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, progLang);
+	string entityMathNumericalValueText = generateCodeEntityMathObjectValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, progLang);
 	return entityMathNumericalValueText;
 }
 string generateCodeEntityMathValuePointerText(string entityName, int progLang)
@@ -909,10 +909,10 @@ string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int pro
 	string declareNewDecimalPointerVariableText = progLangDecimalPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //double* param1 = NULL;
 	return declareNewDecimalPointerVariableText;
 }
-string generateCodeSetDecimalPointerToEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang)
+string generateCodeSetDecimalPointerToEntityMathObjectNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang)
 {
-	string setDecimalPointerToEntityMathNumericalValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathNumericalValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->numericalValue);
-	return setDecimalPointerToEntityMathNumericalValueText;
+	string setDecimalPointerToEntityMathObjectNumericalValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathObjectNumericalValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->mathObjectNumericalValue);
+	return setDecimalPointerToEntityMathObjectNumericalValueText;
 }
 #ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang)
@@ -926,35 +926,35 @@ string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem*
 	return setGenericEntityPointerToEntityText;
 }
 #ifdef NLC_USE_MATH_OBJECTS_STRING
-string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang)
+string generateCodeEntityMathObjectStringValueText(NLCitem* param1, int progLang)
 {
-	return generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING, progLang);
+	return generateCodeEntityMathObjectValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING, progLang);
 }
 string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang)
 {
 	string declareNewDecimalPointerVariableText = progLangStringPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //string* param1 = NULL;
 	return declareNewDecimalPointerVariableText;
 }
-string generateCodeSetStringPointerToEntityMathStringValueText(NLCitem* param1, NLCitem* param2, int progLang)
+string generateCodeSetStringPointerToEntityMathObjectStringValueText(NLCitem* param1, NLCitem* param2, int progLang)
 {
-	string setStringPointerToEntityMathStringValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathStringValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->stringValue);
-	return setStringPointerToEntityMathStringValueText;
+	string setStringPointerToEntityMathObjectStringValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathObjectStringValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->mathObjectStringValue);
+	return setStringPointerToEntityMathObjectStringValueText;
 }
 #endif
 #ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-string generateCodeEntityMathBooleanValueText(NLCitem* param1, int progLang)
+string generateCodeEntityMathObjectBooleanValueText(NLCitem* param1, int progLang)
 {
-	return generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN, progLang);
+	return generateCodeEntityMathObjectValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN, progLang);
 }
 string generateCodeDeclareNewBooleanPointerVariableText(NLCitem* param1, int progLang)
 {
-	string declareNewDecimalPointerVariableText = progLangBooleanPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //string* param1 = NULL;
+	string declareNewDecimalPointerVariableText = progLangBooleanPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //bool* param1 = NULL;
 	return declareNewDecimalPointerVariableText;
 }
-string generateCodeSetBooleanPointerToEntityMathBooleanValueText(NLCitem* param1, NLCitem* param2, int progLang)
+string generateCodeSetBooleanPointerToEntityMathObjectBooleanValueText(NLCitem* param1, NLCitem* param2, int progLang)
 {
-	string setBooleanPointerToEntityMathBooleanValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathBooleanValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->booleanValue);
-	return setBooleanPointerToEntityMathBooleanValueText;
+	string setBooleanPointerToEntityMathObjectBooleanValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathObjectBooleanValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->mathObjectBooleanValue);
+	return setBooleanPointerToEntityMathObjectBooleanValueText;
 }
 #endif
 #endif
@@ -968,10 +968,15 @@ string generateCodePointerValueText(string entityName, int progLang)
 	string pointerValueText = progLangPointer[progLang] + entityName;	//*entityName
 	return pointerValueText;
 }
-string generateCodeEntityMathValueText(string entityName, int mathtextVariableType, int progLang)
+string generateCodeEntityMathObjectValueText(string entityName, int mathtextVariableType, int progLang)
 {
-	string entityMathValueText = entityName + progLangObjectReferenceDelimiter[progLang] + preprocessorMathObjectVariables[mathtextVariableType];		//eg entity->numericalValue
+	string entityMathValueText = entityName + progLangObjectReferenceDelimiter[progLang] + preprocessorMathObjectVariables[mathtextVariableType];		//eg entity->mathObjectNumericalValue
 	return entityMathValueText;
+}
+string generateCodeEntityMathObjectTypeText(NLCitem* param1, int progLang)
+{
+	string entityMathObjectTypeText = generateEntityName(param1) + progLangObjectReferenceDelimiter[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NAME;	 //entity->mathObjectType;
+	return entityMathObjectTypeText;
 }
 #endif
 

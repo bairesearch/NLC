@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
 //#define NLC_USE_LIBRARY_USER
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
-	//#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
+	#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
 #endif
 
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -325,20 +325,25 @@
 	//#endif
 	#define NLC_USE_MATH_OBJECTS	//1p2a (first declared 1n3b) - each entity has a (double) value which can be set by NLC mathText
 	#ifdef NLC_USE_MATH_OBJECTS
-		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME "numericalValue"
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NAME "mathObjectType"
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME "mathObjectNumericalValue"
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 			#ifdef NLC_USE_MATH_OBJECTS_STRING
-				#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME "stringValue"
+				#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME "mathObjectStringValue"
 			#endif
 			#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-				#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME "booleanValue"
+				#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME "mathObjectBooleanValue"
 			#endif
 		#endif
 		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL (0)
 		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING (1)
 		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN (2)
-		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN (3)	//informal (NLC internal use only)
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN (3)
 		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT (4)	//informal (NLC internal use only) - eg "if the dog is happy"
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_DEFNAME "NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL"
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DEFNAME "NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING"
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_DEFNAME "NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN"
+		#define NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN_DEFNAME "NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN"
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 			#define NLC_USE_MATH_OBJECTS_VARIABLE_NUMBER_OF_TYPES (3)
 			static string preprocessorMathObjectVariables[NLC_USE_MATH_OBJECTS_VARIABLE_NUMBER_OF_TYPES] = {NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME};

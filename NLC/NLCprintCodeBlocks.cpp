@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1185,22 +1185,22 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		#endif
 		#endif
 		#ifdef NLC_USE_MATH_OBJECTS
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_MATH_NUMERICAL_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_MATH_OBJECT_NUMERICAL_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_MATH_NUMERICAL_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_MATH_OBJECT_NUMERICAL_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string testEntityMathNumericalValueText = generateCodeTestEntityMathNumericalValueText(param1, param2, progLang);	//if(param1->numericalValue == param2)
+			string testEntityMathNumericalValueText = generateCodeTestEntityMathObjectNumericalValueText(param1, param2, progLang);	//if(param1->mathObjectNumericalValue == param2)
 			printLine(testEntityMathNumericalValueText, level, &printedCodeBlocksSourceText);
 		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_NUMERICAL_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_NUMERICAL_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_NUMERICAL_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_NUMERICAL_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setMathValueText = generateCodeEntityMathNumericalValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->numericalValue = param2;
+			string setMathValueText = generateCodeEntityMathObjectNumericalValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->mathObjectNumericalValue = param2;
 			printLine(setMathValueText, level, &printedCodeBlocksSourceText);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE)
@@ -1211,14 +1211,22 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string declareNewDecimalPointerVariableText = generateCodeDeclareNewDecimalPointerVariableText(param1, progLang);	 //double* param1 = NULL;
 			printLine(declareNewDecimalPointerVariableText, level, &printedCodeBlocksSourceText);
 		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_OBJECT_NUMERICAL_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_OBJECT_NUMERICAL_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setDecimalPointerToEntityMathNumericalValueText = generateCodeSetDecimalPointerToEntityMathNumericalValueText(param1, param2, progLang);	 //param1 = &(param2->numericalValue);
-			printLine(setDecimalPointerToEntityMathNumericalValueText, level, &printedCodeBlocksSourceText);
+			string setDecimalPointerToEntityMathObjectNumericalValueText = generateCodeSetDecimalPointerToEntityMathObjectNumericalValueText(param1, param2, progLang);	 //param1 = &(param2->mathObjectNumericalValue);
+			printLine(setDecimalPointerToEntityMathObjectNumericalValueText, level, &printedCodeBlocksSourceText);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_NUMERICAL)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_NUMERICAL" << endl;
+			#endif
+			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+			printLine(setMathTypeText, level, &printedCodeBlocksSourceText);
 		}
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE)
@@ -1239,13 +1247,13 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(setGenericEntityPointerToEntityText, level, &printedCodeBlocksSourceText);
 		}
 		#ifdef NLC_USE_MATH_OBJECTS_STRING
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_STRING_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_STRING_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setStringValueText = generateCodeEntityMathStringValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->stringValue = param2;
+			string setStringValueText = generateCodeEntityMathObjectStringValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->mathObjectStringValue = param2;
 			printLine(setStringValueText, level, &printedCodeBlocksSourceText);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE)
@@ -1256,24 +1264,32 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string declareNewStringPointerVariableText = generateCodeDeclareNewStringPointerVariableText(param1, progLang);	 //string* param1 = NULL;
 			printLine(declareNewStringPointerVariableText, level, &printedCodeBlocksSourceText);
 		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_OBJECT_STRING_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_OBJECT_STRING_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setStringPointerToEntityMathStringValueText = generateCodeSetStringPointerToEntityMathStringValueText(param1, param2, progLang);	 //param1 = &(param2->stringValue);
-			printLine(setStringPointerToEntityMathStringValueText, level, &printedCodeBlocksSourceText);
+			string setStringPointerToEntityMathObjectStringValueText = generateCodeSetStringPointerToEntityMathObjectStringValueText(param1, param2, progLang);	 //param1 = &(param2->mathObjectStringValue);
+			printLine(setStringPointerToEntityMathObjectStringValueText, level, &printedCodeBlocksSourceText);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_STRING)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_STRING" << endl;
+			#endif
+			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
+			printLine(setMathTypeText, level, &printedCodeBlocksSourceText);
 		}
 		#endif
 		#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_BOOLEAN_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_BOOLEAN_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_BOOLEAN_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_BOOLEAN_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setBooleanValueText = generateCodeEntityMathBooleanValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->stringValue = param2;
+			string setBooleanValueText = generateCodeEntityMathObjectBooleanValueText(param1, progLang) + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1->mathObjectStringValue = param2;
 			printLine(setBooleanValueText, level, &printedCodeBlocksSourceText);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOLEAN_POINTER_VARIABLE)
@@ -1284,14 +1300,22 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string declareNewBooleanPointerVariableText = generateCodeDeclareNewBooleanPointerVariableText(param1, progLang);	 //string* param1 = NULL;
 			printLine(declareNewBooleanPointerVariableText, level, &printedCodeBlocksSourceText);
 		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_BOOLEAN_VALUE)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_OBJECT_BOOLEAN_VALUE)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_STRING_VALUE" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_OBJECT_STRING_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setBooleanPointerToEntityMathBooleanValueText = generateCodeSetBooleanPointerToEntityMathBooleanValueText(param1, param2, progLang);	 //param1 = &(param2->stringValue);
-			printLine(setBooleanPointerToEntityMathBooleanValueText, level, &printedCodeBlocksSourceText);
+			string setBooleanPointerToEntityMathObjectBooleanValueText = generateCodeSetBooleanPointerToEntityMathObjectBooleanValueText(param1, param2, progLang);	 //param1 = &(param2->mathObjectStringValue);
+			printLine(setBooleanPointerToEntityMathObjectBooleanValueText, level, &printedCodeBlocksSourceText);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_BOOLEAN)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_BOOLEAN" << endl;
+			#endif
+			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			printLine(setMathTypeText, level, &printedCodeBlocksSourceText);
 		}
 		#endif
 		#endif

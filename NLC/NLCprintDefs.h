@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u1c 24-September-2016
+ * Project Version: 1u2a 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -231,11 +231,25 @@ static string progLangFalse[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"false", "fa
 static string progLangTrue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"true", "true", "true", "true", "true", "true", "true"};
 static string progLangInteger[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
 static string progLangForIndex[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"index", "index", "index", "index", "index", "index", "index"};
+#ifdef NLC_USE_MATH_OBJECTS
 static string progLangDecimalType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double ", "double ", "double ", "double ", "double ", "double ", "double "};
 static string progLangDecimalPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double* ", "double* ", "double* ", "double* ", "double* ", "double* ", "double* "};
-static string progLangGenericPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void* ", "void* ", "void* ", "void* ", "void* ", "void* ", "void* "};
+static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"INT_DEFAULT_VALUE", "INT_DEFAULT_VALUE", "INT_DEFAULT_VALUE", "INT_DEFAULT_VALUE", "INT_DEFAULT_VALUE", "INT_DEFAULT_VALUE", "INT_DEFAULT_VALUE"};	//numeric_limits<double>::quiet_NaN()
+#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+static string progLangStringType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
 static string progLangStringPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string* ", "string* ", "string* ", "string* ", "string* ", "string* ", "string* "};
+static string progLangDefaultStringValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\"\"", "\"\"", "\"\"", "\"\"", "\"\"", "\"\"", "\"\""};
+#endif
+#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+static string progLangBooleanType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"bool ", "bool ", "bool ", "bool ", "bool ", "bool ", "bool "};
 static string progLangBooleanPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"bool* ", "bool* ", "bool* ", "bool* ", "bool* ", "bool* ", "bool* "};
+static string progLangDefaultBooleanValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"false", "false", "false", "false", "false", "false", "false"};
+#endif
+#endif
+#endif
+static string progLangGenericPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void* ", "void* ", "void* ", "void* ", "void* ", "void* ", "void* "};
+
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};
@@ -326,9 +340,6 @@ static string progLangNullPointer[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"NULL"
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 static string progLangGetAtPositionPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".at(", ".at(", ".at(", ".at(", ".at(", ".at(", ".at("};
 static string progLangGetAtPositionPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"-1)", "-1)", "-1)", "-1)", "-1)", "-1)", "-1)"};
-#endif
-#ifdef NLC_USE_MATH_OBJECTS
-static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()", "numeric_limits<double>::quiet_NaN()"};
 #endif
 
 #ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
@@ -511,28 +522,29 @@ string generateCodeClassNameVariableDefinitionText(NLCitem* param1, int progLang
 string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
 
 #ifdef NLC_USE_MATH_OBJECTS
-string generateCodeTestEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
-string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang);
+string generateCodeTestEntityMathObjectNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeEntityMathObjectNumericalValueText(NLCitem* param1, int progLang);
 string generateCodeEntityMathValuePointerText(string entityName, int progLang);
 string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetDecimalPointerToEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeSetDecimalPointerToEntityMathObjectNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
 #ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang);
 string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang);
 #ifdef NLC_USE_MATH_OBJECTS_STRING
-string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang);
+string generateCodeEntityMathObjectStringValueText(NLCitem* param1, int progLang);
 string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetStringPointerToEntityMathStringValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeSetStringPointerToEntityMathObjectStringValueText(NLCitem* param1, NLCitem* param2, int progLang);
 #endif
 #ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
-string generateCodeEntityMathBooleanValueText(NLCitem* param1, int progLang);
+string generateCodeEntityMathObjectBooleanValueText(NLCitem* param1, int progLang);
 string generateCodeDeclareNewBooleanPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetBooleanPointerToEntityMathBooleanValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeSetBooleanPointerToEntityMathObjectBooleanValueText(NLCitem* param1, NLCitem* param2, int progLang);
 #endif
 #endif
 string generateCodePointerValueText(NLCitem* param1, int progLang);
 string generateCodePointerValueText(string entityName, int progLang);
-string generateCodeEntityMathValueText(string entityName, int mathtextVariableType, int progLang);
+string generateCodeEntityMathObjectValueText(string entityName, int mathtextVariableType, int progLang);
+string generateCodeEntityMathObjectTypeText(NLCitem* param1, int progLang);
 #endif
 string generateReferenceText(string entityName, int progLang);
 string generatePointerText(string entityName, int progLang);

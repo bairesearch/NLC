@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3j 28-July-2014
+ * Project Version: 1h3k 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,13 +105,15 @@
 			//#define NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES 	//global defs are disabled by default
 		#endif
 		
-		#define NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-		#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES (7)
-			static string preprocessorMathNaturalLanguageVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"bool", "char", "short", "int", "integer", "float", "double"};
-			//static string preprocessorMathMathTextVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"$0", "$1", "$2", "$4", "$4", "#4", "#8"};
-			static string preprocessorMathMathTextVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"bool$", "char$", "short$", "int$", "integer$", "float$", "double$"};
+		#if NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS <= 2
+			#define NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+			#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+				#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES (7)
+				static string preprocessorMathNaturalLanguageVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"bool", "char", "short", "int", "integer", "float", "double"};
+				static string preprocessorMathMathTextVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"bool$", "char$", "short$", "int$", "integer$", "float$", "double$"};	//{"$0", "$1", "$2", "$4", "$4", "#4", "#8"};
+			#endif
 		#endif
+		
 		#define NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT "double$ "

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15c 16-September-2014
+ * Project Version: 1j16a 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,6 +53,7 @@ using namespace std;
 #include "NLCclassDefinitionClass.h"
 
 bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+	bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode);
 	#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 	string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity);
 	void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName);

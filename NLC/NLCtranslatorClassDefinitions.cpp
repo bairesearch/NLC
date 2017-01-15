@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15c 16-September-2014
+ * Project Version: 1j16a 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,27 +50,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 
 		//cout << "entityNode = " << entityNode->entityName << endl;
 		//valid class checks added 1g12f 14-July-2014
-		bool validClass = true;
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-		if(entityNode->NLClogicalConditionOperation)
-		{
-			validClass = false;
-		}
-		#ifdef NLC_USE_PREPROCESSOR
-		if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
-		{
-			validClass = false;
-		}
-		#endif
-		#endif
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-		bool conjunctionConditionFound = textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-		if(conjunctionConditionFound)
-		{
-			validClass = false;
-		}
-		#endif
-		if(validClass)
+		if(generateClassHeirarchyValidClassChecks(entityNode))
 		{
 			if(!(entityNode->disabled))
 			{
@@ -323,6 +303,40 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 	#endif
 
 	return true;
+}
+
+
+bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
+{
+	bool validClass = true;
+	
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	if(entityNode->NLClogicalConditionOperation)
+	{
+		validClass = false;
+	}
+	#ifdef NLC_USE_PREPROCESSOR
+	if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
+	{
+		validClass = false;
+	}
+	#endif
+	#endif
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	bool conjunctionConditionFound = textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
+	if(conjunctionConditionFound)
+	{
+		validClass = false;
+	}
+	#endif
+	#ifdef NLC_PREPROCESSOR_MATH
+	if(entityNode->entityName == REFERENCE_TYPE_QUESTION_COMPARISON_VARIABLE)
+	{
+		validClass = false;	
+	}
+	#endif
+	
+	return validClass;
 }
 
 #ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS

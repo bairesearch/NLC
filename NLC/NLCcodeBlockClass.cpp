@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15c 16-September-2014
+ * Project Version: 1j16a 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -606,22 +606,25 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 				if(!entity->NLCisSingularArgument)
 				{
 				#endif
-					//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
-					//detected "the x" without declaring x (ie implicit declaration)
-					NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
-					parameters->push_back(thisFunctionArgumentInstanceItem);
-					
-					//added 1j5d
-					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-					entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
-					#else
-					GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-					if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+					if(generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
 					{
-						entity->NLClocalListVariableHasBeenDeclared = true;
-						conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+						//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
+						//detected "the x" without declaring x (ie implicit declaration)
+						NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
+						parameters->push_back(thisFunctionArgumentInstanceItem);
+
+						//added 1j5d
+						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+						entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
+						#else
+						GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+						if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+						{
+							entity->NLClocalListVariableHasBeenDeclared = true;
+							conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+						}
+						#endif
 					}
-					#endif
 				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 				}
 				#endif
@@ -629,6 +632,21 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 		}
 	}
 }
+
+bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(GIAentityNode* entityNode)
+{
+	bool validClass = true;
+	
+	#ifdef NLC_PREPROCESSOR_MATH
+	if(entityNode->entityName == REFERENCE_TYPE_QUESTION_COMPARISON_VARIABLE)
+	{
+		validClass = false;	
+	}
+	#endif
+	
+	return validClass;
+}
+
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;

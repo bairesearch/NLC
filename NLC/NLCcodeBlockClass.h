@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15c 16-September-2014
+ * Project Version: 1j16a 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -246,8 +246,10 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 	NLCcodeblock * createCodeBlocksAddVariableToNewList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLCitem*> * parameters);
-		bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);
+		bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(GIAentityNode* entityNode);
 	#endif
+	
+bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);
 
 NLCcodeblock * createCodeBlock(NLCcodeblock * currentCodeBlockInTree, int codeBlockType);
 NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree);

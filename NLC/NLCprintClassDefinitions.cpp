@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1a 29-October-2014
+ * Project Version: 1l1b 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -469,7 +469,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionL
 			{
 				if(!(localClassDefinition->printed))
 				{
-					cout << "!printed: localClassDefinition->name = " << localClassDefinition->name << endl;
+					//cout << "!printed: localClassDefinition->name = " << localClassDefinition->name << endl;
 					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)	//NB function subject entity cant be printed without its function, and function cant be printed without its subject
 					{
@@ -481,7 +481,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionL
 				}
 				else
 				{
-					cout << "printed: localClassDefinition->name = " << localClassDefinition->name << endl;
+					//cout << "printed: localClassDefinition->name = " << localClassDefinition->name << endl;
 				}
 			}
 			else

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1a 29-October-2014
+ * Project Version: 1l1b 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -723,11 +723,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 
 					*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName);
 
-					*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;
-					while((*currentCodeBlockInTree)->next != NULL)
-					{
-						(*currentCodeBlockInTree) = (*currentCodeBlockInTree)->next;
-					}				
+					*currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockAtStartOfparsablePhrase);				
 				}
 			}
 		}
@@ -854,11 +850,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 									
 									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
 
-									*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;
-									while((*currentCodeBlockInTree)->next != NULL)
-									{
-										(*currentCodeBlockInTree) = (*currentCodeBlockInTree)->next;
-									}								
+									*currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockAtStartOfparsablePhrase);								
 								}
 							}
 						}

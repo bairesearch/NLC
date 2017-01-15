@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1a 29-October-2014
+ * Project Version: 1l1b 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,11 +44,6 @@
 //#define NLC_DISABLE_1k_CODE_FOR_DEBUG	//aka NLC_ENABLE_1j_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 
 
-#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
-	#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS	//1k18a
-	#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1k18a
-	//#define NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS	//~1k19a
-#endif
 
 #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 	#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//added 1e, removed 1j2b+, optional 1k11a+
@@ -98,6 +93,14 @@
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 					#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN	//eg "If the basket has 3 pies, eat the apple."
 				#endif
+			#endif
+		#endif
+		#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
+			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1k18a
+			#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1k18b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN 
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+				#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS	//1k18b
+				#define NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS	//1k18b
 			#endif
 		#endif
 	#endif

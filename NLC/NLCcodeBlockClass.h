@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1a 29-October-2014
+ * Project Version: 1l1b 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -246,6 +246,9 @@ public:
 	bool testNumerosity;
 	int childQuantity;
 	#endif
+	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	bool enterGeneratedCategoryList;
+	#endif
 };
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -453,5 +456,7 @@ string generateCategoryListPropertyCountVariableName(GIAentityNode * entity);
 
 //see NLCclassDefinitionClass.cpp for other versions of this function;
 bool findFunctionArgument(vector<NLCitem*> * parameters, GIAentityNode * entity, int itemType, NLCitem ** functionArgument);
+
+NLCcodeblock * getLastCodeBlockInLevel(NLCcodeblock * currentCodeBlockInTree);
 
 #endif

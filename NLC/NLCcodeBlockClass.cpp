@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1a 29-October-2014
+ * Project Version: 1l1b 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -100,6 +100,9 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	testNumerosity = false;
 	childQuantity = 1;
+	#endif
+	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	enterGeneratedCategoryList = true;
 	#endif
 }
 NLCgenerateContextBlocksVariables::~NLCgenerateContextBlocksVariables(void)
@@ -2163,6 +2166,16 @@ bool findFunctionArgument(vector<NLCitem*> * parameters, GIAentityNode * entity,
 	}
 	return foundFunctionArgument;
 }
+
+NLCcodeblock * getLastCodeBlockInLevel(NLCcodeblock * currentCodeBlockInTree)
+{
+	while(currentCodeBlockInTree->next != NULL)
+	{
+		currentCodeBlockInTree = currentCodeBlockInTree->next;
+	}
+	return currentCodeBlockInTree;
+}
+
 
 
 

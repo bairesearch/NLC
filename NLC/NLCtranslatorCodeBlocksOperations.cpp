@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1a 29-October-2014
+ * Project Version: 1l1b 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -104,23 +104,52 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 
 		}
 
+		NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+		
 		if(actionHasObject)
 		{
-			NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//not used
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
+			#ifdef NLC_USE_ADVANCED_REFERENCING
+			generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
+			NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+			#else
+			generateContextBlocksVariables.enterGeneratedCategoryList = false;
+			#endif
+			#endif
 			if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 			{
 				//cout << "actionHasObject: parent and its children initialised" << endl;
 			}
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
+			#ifdef NLC_USE_ADVANCED_REFERENCING
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
+			#endif
+			#endif
+			
 			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
 			NLCitem *functionSubjectItem = NULL;
 			if(actionHasSubject)
 			{
-				NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//not used
-				//cout  << "subjectEntity = " << subjectEntity->entityName << endl;
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+				#ifdef NLC_USE_ADVANCED_REFERENCING
+				generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
+				codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+				cout << "subjectEntity = " << subjectEntity->entityName << endl;
+				#else
+				generateContextBlocksVariables.enterGeneratedCategoryList = false;	
+				#endif
+				#endif
 				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 				{
 					//cout << "actionHasSubject2: parent and its children initialised" << endl;
 				}
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+				#ifdef NLC_USE_ADVANCED_REFERENCING
+				*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
+				cout << "passcontext2: subjectEntity = " << subjectEntity->entityName << endl;
+				#endif
+				#endif
+					
 				functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
 			
 				#ifdef NLC_NOT_NECESSARY
@@ -152,11 +181,24 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		}
 		else if(actionHasSubject)
 		{
-			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+			#ifdef NLC_USE_ADVANCED_REFERENCING
+			generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
+			NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+			#else
+			generateContextBlocksVariables.enterGeneratedCategoryList = false;	
+			#endif
+			#endif
 			if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 			{
 				//cout << "actionHasSubject: parent and its children initialised" << endl;
 			}
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+			#ifdef NLC_USE_ADVANCED_REFERENCING
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
+			#endif
+			#endif
+
 			//cout << "subjectRequiredTempVar" << endl;
 			NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
 				
@@ -216,11 +258,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 	}
 	#endif
 	
-	*currentCodeBlockInTree = firstCodeBlockInSentence;
-	while((*currentCodeBlockInTree)->next != NULL)
-	{
-		*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
-	}
+	*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
 }
 
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
@@ -284,7 +322,10 @@ bool initialiseParentIfNecessaryOrGenerateCodeBlocks(NLCcodeblock ** currentCode
 	}
 	else
 	{
-		generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+		if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))
+		{
+			result = true;	//added 1k18b but not used
+		}
 	}
 
 	return result;
@@ -406,65 +447,75 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		#endif
 		#endif
 
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY
-		if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
-		{
-			#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
-			#ifndef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
-			#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-			*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
-			#endif
-			NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
-			*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1);
-			*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
-			*currentCodeBlockInTree = lastCodeBlockInTree2->next;
-			#endif
-			#endif
-
-			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
-			{
-				generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
-			}
-			#endif
-			#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
-			*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false, genericListAppendName);	//added 1j5a
-			*currentCodeBlockInTree = createCodeBlockGetBackCategoryEntityList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-			#else
-			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-			#endif
-		}
-		else
+		
+		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+		if(generateContextBlocksVariables->enterGeneratedCategoryList)
 		{
 		#endif
-			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-			if(generateContextBlocksVariables->testNumerosity)
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY
+			if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
 			{
-				//test numerosity of parent
-				if(parentEntity->hasQuantity)
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
+				#ifndef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
+				#endif
+				NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
+				*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1);
+				*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
+				*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+				#endif
+				#endif
+
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
 				{
-					#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
-					#endif
-					*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, parentEntity->quantityNumber);
+					generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 				}
+				#endif
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
+				*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false, genericListAppendName);	//added 1j5a
+				*currentCodeBlockInTree = createCodeBlockGetBackCategoryEntityList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+				#else
+				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+				#endif
 			}
-			#endif
-
-			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
+			else
 			{
-				generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+			#endif
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+				if(generateContextBlocksVariables->testNumerosity)
+				{
+					//test numerosity of parent
+					if(parentEntity->hasQuantity)
+					{
+						#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+						*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
+						#endif
+						*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, parentEntity->quantityNumber);
+					}
+				}
+				#endif
+
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
+				{
+					generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+				}
+				#endif
+				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY
 			}
 			#endif
-			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY
-		}
-		#endif
 
-		#ifdef NLC_USE_ADVANCED_REFERENCING
-		*currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, sentenceIndex);
+			#ifdef NLC_USE_ADVANCED_REFERENCING
+			*currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, sentenceIndex);
+			#endif
+		
+		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+		}	
 		#endif
+		
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	}
 	#endif
@@ -598,11 +649,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 				
 				addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables);
 				
-				*currentCodeBlockInTree = (*lastCodeBlockInTree);
-				while((*currentCodeBlockInTree)->next != NULL)
-				{
-					(*currentCodeBlockInTree) = (*currentCodeBlockInTree)->next;
-				}
+				*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 				*lastCodeBlockInTree = *currentCodeBlockInTree;
 				#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
 				cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements(): contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance << endl;
@@ -1068,11 +1115,7 @@ bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCod
 		}
 		else
 		{
-			*currentCodeBlockInTree = originalCodeBlockInLevel;
-			while((*currentCodeBlockInTree)->next != NULL)
-			{
-				(*currentCodeBlockInTree) = (*currentCodeBlockInTree)->next;
-			}
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(originalCodeBlockInLevel);
 			#ifdef NLC_DEBUG_PARSE_CONTEXT
 			cout << "\tpass generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
 			#endif
@@ -1204,10 +1247,7 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 	*currentCodeBlockInTree = lastCodeBlockInTree;
 	if(performedAtLeastParentObjectInitialisation)
 	{
-		while((*currentCodeBlockInTree)->next != NULL)
-		{
-			*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
-		}
+		*currentCodeBlockInTree = getLastCodeBlockInLevel(*currentCodeBlockInTree);
 	}
 	else
 	{
@@ -1941,11 +1981,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockP
 		{
 			clearCodeBlock(firstCodeBlockBeforeRecursion);
 
-			*currentCodeBlockInTree = firstCodeBlockInSection;
-			while((*currentCodeBlockInTree)->next != NULL)
-			{
-				*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
-			}
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSection);
 		}
 		else
 		{
@@ -1956,11 +1992,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockP
 	}
 	else
 	{
-		*currentCodeBlockInTree = firstCodeBlockInSection;
-		while((*currentCodeBlockInTree)->next != NULL)
-		{
-			*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
-		}
+		*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSection);
 	}
 	if(performedAtLeastOneObjectInitialisationAtThisLevel || performedAtLeastOneObjectInitialisationAtALowerLevel)
 	{
@@ -2256,11 +2288,7 @@ void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, ve
 								
 								*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, aliasClassEntity, aliasName);
 								
-								*currentCodeBlockInTree = firstCodeBlockInSentence;
-								while((*currentCodeBlockInTree)->next != NULL)
-								{
-									*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
-								}
+								*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
 								
 								//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
 								for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)

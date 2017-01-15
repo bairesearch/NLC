@@ -13,6 +13,21 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		moduleClass* newmoduleClass = new moduleClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmoduleClass);
 	}
+	if(name == "think")
+	{
+		thinkClass* newthinkClass = new thinkClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newthinkClass);
+	}
+	if(name == "about")
+	{
+		aboutClass* newaboutClass = new aboutClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newaboutClass);
+	}
+	if(name == "bike")
+	{
+		bikeClass* newbikeClass = new bikeClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
+	}
 	if(name == "tall")
 	{
 		tallClass* newtallClass = new tallClass();
@@ -23,10 +38,9 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		somethingClass* newsomethingClass = new somethingClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newsomethingClass);
 	}
-	if(name == "do")
+	if(newGenericObject != NULL)
 	{
-		doClass* newdoClass = new doClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdoClass);
+		newGenericObject->lastSentenceReferenced.push(0);
 	}
 	return newGenericObject;
 }
@@ -44,6 +58,21 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 		moduleClass* newmoduleClass = new moduleClass(*(static_cast<moduleClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmoduleClass);
 	}
+	if(name == "think")
+	{
+		thinkClass* newthinkClass = new thinkClass(*(static_cast<thinkClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newthinkClass);
+	}
+	if(name == "about")
+	{
+		aboutClass* newaboutClass = new aboutClass(*(static_cast<aboutClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newaboutClass);
+	}
+	if(name == "bike")
+	{
+		bikeClass* newbikeClass = new bikeClass(*(static_cast<bikeClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
+	}
 	if(name == "tall")
 	{
 		tallClass* newtallClass = new tallClass(*(static_cast<tallClass*>(entityToCopy)));
@@ -53,11 +82,6 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 	{
 		somethingClass* newsomethingClass = new somethingClass(*(static_cast<somethingClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newsomethingClass);
-	}
-	if(name == "do")
-	{
-		doClass* newdoClass = new doClass(*(static_cast<doClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdoClass);
 	}
 	return newGenericObject;
 }

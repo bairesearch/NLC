@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1k5a 13-October-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1k5b 13-October-2014" << endl;
 			exit(1);
 		}
 
@@ -989,6 +989,7 @@ int main(int argc,char **argv)
 	}
 
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		//updates all classDefinition functionList function arguments corresponding to a single defined function (i)
@@ -1008,10 +1009,12 @@ int main(int argc,char **argv)
 			cout << "formalFunctionArgument->itemType = " << formalFunctionArgument->itemType << endl;
 		}
 		*/
-		reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLCfunctionName);
-
+		
+		reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLCfunctionName);
+		
 		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 	}
+	#endif
 	
 	string code = "";
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
@@ -1020,6 +1023,7 @@ int main(int argc,char **argv)
 	}
 	#endif
 
+	//create predefined NLC functions
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	NLCcodeblock * currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
 	while(currentCodeBlockInTree->next != NULL)

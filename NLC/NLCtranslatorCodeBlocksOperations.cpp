@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -76,7 +76,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		if(actionHasObject || actionHasSubject)
 		{
 			//[q**^]
-			functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION);
+			functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
 
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 			initialiseFunctionArguments(currentCodeBlockInTree, actionEntity, sentenceIndex);
@@ -111,7 +111,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 
 				#ifdef NLC_NOT_NECESSARY
 				//required just for implictlyDeclaredFunctionList...;
-				NLCitem * functionItemFullContextForRecordOnly = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION);
+				NLCitem * functionItemFullContextForRecordOnly = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
 				getEntityContext(subjectEntity, &(functionItemFullContextForRecordOnly->context), true, sentenceIndex, true);
 				implictlyDeclaredFunctionList.push_back(functionItemFullContextForRecordOnly);
 				#endif
@@ -126,8 +126,8 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#endif
 
 			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-			NLCitem *objectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_OBJECT);
-			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, objectItem);
+			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
+			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionObjectItem);
 
 			actionEntity->NLCparsedForCodeBlocks = true;
 			//actionEntity->parsedForNLCcodeBlocksActionRound = true;

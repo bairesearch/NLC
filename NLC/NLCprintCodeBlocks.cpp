@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1082,10 +1082,10 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	else
 	{
-		#ifdef NLC_DEBUG5
+		//#ifdef NLC_DEBUG5
 		cout << "warning: !foundLocalClassDefinition: param1->instanceName = " << param1->instanceName << endl;
 		cout << "(action probably has no subject)." << endl;
-		#endif
+		//#endif
 		parameters = codeBlockParameters;
 	}
 	#else
@@ -1097,34 +1097,46 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	{
 		NLCitem * currentItem = *parametersIterator;
 
-		if(currentItem->itemType == NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+		cout << "at1" << endl;
+		cout << "currentItem->itemType = " << currentItem->itemType << endl;
+		if((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST))	//not currently used
 		{
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION)
+		else if((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION))
 		{
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			#endif
+		}
+		else if((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT))
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			#else
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			#endif
 		}
 		#endif
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OBJECT)
-		{
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
-		}
+		/*
 		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_CONDITION)
 		{
 			if(*functionArguments != "")
 			{
@@ -1132,7 +1144,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			*functionArguments = *functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
 		}
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_PROPERTY)
 		{
 			if(*functionArguments != "")
 			{
@@ -1141,7 +1153,22 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 		}
 		#endif
+		*/
 	}
+}
+
+
+string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang)
+{
+	string codePropertyTypeText = generateEntityLocalListName(functionArgumentItem);
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	if(functionArgumentItem->functionArgumentPassCastRequired)
+	{	
+		cout << "generateCodePluralReferenceText() error: functionArgumentItem->functionArgumentPassCastRequired not yet coded" << endl;
+		//CHECKTHIS	//v2.assign(v1.begin(), v1.end());
+	}
+	#endif
+	return codePropertyTypeText;
 }
 
 string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int progLang)
@@ -1172,7 +1199,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCi
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem * currentItem = *parametersIterator;
-		if(currentItem->itemType == NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			if(*functionArguments != "")
 			{
@@ -1190,23 +1217,33 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem * currentItem = *parametersIterator;
-		//cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
-		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION)
+		cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
+		cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 		{
+			cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION" << endl;
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
+			*functionArguments = *functionArguments + generateCodeEntityListDefinitionText(currentItem, progLang);
+			#else
 			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + STRING_SPACE + generateEntityLocalListName(currentItem);
+			#endif
 		}
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OBJECT)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
 		{
+			cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT" << endl;
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
+			*functionArguments = *functionArguments + generateCodeEntityListDefinitionText(currentItem, progLang);
+			#else
 			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + STRING_SPACE + generateEntityLocalListName(currentItem);
+			#endif			
 		}
 	}
 }
@@ -1224,7 +1261,7 @@ string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang)
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem * currentItem = *parametersIterator;
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OWNER)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
 			functionOwnerContext = progLangClassMemberFunctionType[progLang] + currentItem->className + progLangFunctionOwnerClassDelimiter[progLang];
 			foundFunctionOwner = true;

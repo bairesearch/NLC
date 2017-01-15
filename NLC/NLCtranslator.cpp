@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -405,9 +405,8 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 #endif
 
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-
-void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, string NLCfunctionName)
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, string NLCfunctionName)
 {
 	//reconcile function arguments (both class function header and code function reference)
 	string functionName = "";
@@ -424,26 +423,26 @@ void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVaria
 			//cout << "currentClassDef->name = " << currentClassDef->name << endl;
 			for(vector<NLCclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
 			{
-				NLCclassDefinition * functionClassDefinition = *localListIter;
-				//cout << "functionClassDefinition->functionNameSpecial = " << functionClassDefinition->functionNameSpecial << endl;
+				NLCclassDefinition * functionClassDeclaration = *localListIter;
+				//cout << "functionClassDeclaration->functionNameSpecial = " << functionClassDeclaration->functionNameSpecial << endl;
 				//cout << "functionName = " << functionName << endl;
-				if(functionClassDefinition->functionNameSpecial == generateFunctionName(functionName))
+				if(functionClassDeclaration->functionNameSpecial == generateFunctionName(functionName))
 				{
 					#ifdef NLC_DEBUG
-					cout << "reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() functionName = " << functionName << endl;
+					cout << "reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() functionName = " << functionName << endl;
 					#endif
 					//contrast and compare function class arguments vs
 
-					findFormalFunctionArgumentCorrelateInExistingList(functionClassDefinition, &(firstCodeBlockInTree->parameters), classDefinitionList);
+					findFormalFunctionArgumentCorrelateInExistingList(functionClassDeclaration, &(firstCodeBlockInTree->parameters), classDefinitionList);
 				}
 			}
 		}
 	}
 }
 
-bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDefinition, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
+bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDeclaration, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
 {
-	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDefinition->parameters);
+	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDeclaration->parameters);
 
 	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
 	{
@@ -453,7 +452,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 		NLCitem * existingFunctionArgument = NULL;
 		bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
 		int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLC_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;
-		if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+		if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			#ifdef NLC_DEBUG
 			cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
@@ -478,7 +477,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 					#ifdef NLC_DEBUG
 					cout << "foundClassDefinitionCorrespondingToExistingFunctionArgument: " << classDefinitionCorrespondingToExistingFunctionArgument->name << endl;
 					#endif
-					if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+					if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 					{//CHECKTHIS; do not currently distinguish between plural and singular variables - this will need to be updated in future
 						int inheritanceLevel = 0;
 						NLCclassDefinition * tempClassDef = NULL;
@@ -521,7 +520,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 			{
 				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 				bool foundFunctionArgumentInActionSubjectContents = false;
-				GIAentityNode * actionEntity = functionClassDefinition->actionOrConditionInstance;
+				GIAentityNode * actionEntity = functionClassDeclaration->actionOrConditionInstance;
 				if(!(actionEntity->actionSubjectEntity->empty()))
 				{
 					GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
@@ -593,7 +592,9 @@ bool findParentClass(NLCclassDefinition * classDefinition, string variableName, 
 	}
 	return foundVariable;
 }
+#endif
 
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 bool getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList, int * numberOfInputFilesInList)
 {
 	bool result = true;

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -377,7 +377,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 
 #define NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES	//1e3a
 
-#define NLC_SUPPORT_INPUT_FILE_LISTS	//added 1d1x
+#define NLC_SUPPORT_INPUT_FILE_LISTS	//added 1d1x	//required for NLC functions
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	#define NLC_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING (99)
 	#define NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS	//added 1d1b
@@ -385,11 +385,15 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 	#define NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH (1)
 	#define NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER "+"
 	#define NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH (1)
+	#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION	//added ?
 #endif
 
 #define NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 //#define NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS	//removed 1e1a; now pass action action and action object as arguments cf NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS (do not pass action subject properties and conditions as arguments)
 #define NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS	//added 1e1a
+#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	//#define NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS	//added 1k5c
+#endif
 
 #define NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 //#define NLC_BAD_IMPLEMENTATION
@@ -399,5 +403,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 #ifdef NLC_PRINT_EXPLICIT_LOCAL_CONTEXT
 	#define NLC_LOCAL_CONTEXT_NAME "locaL"
 #endif
+
+//defined NLC_NOT_NECESSARY
 
 #endif

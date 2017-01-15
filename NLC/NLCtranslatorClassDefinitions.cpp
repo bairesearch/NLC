@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -251,12 +251,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
 										classDefinition->functionList.push_back(targetClassDefinition);
 
-										NLCitem * classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION);	//added 1e1c
+										NLCitem * classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
 										targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
 										if(!(targetEntity->actionObjectEntity->empty()))
 										{
 											GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
-											NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+											NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
 											targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 										}
 										#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
@@ -521,7 +521,7 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 			{
 				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
 			}
-			NLCitem * argumentConditionItem = new NLCitem(actionCondition, NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
+			NLCitem * argumentConditionItem = new NLCitem(actionCondition, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_CONDITION);
 			argumentConditionItem->className2 = generateClassName(conditionObject);
 			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);
 			parameters->push_back(argumentConditionItem);
@@ -537,7 +537,7 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 		}
 		if(!alreadyAdded)
 		{
-			NLCitem * argumentPropertyItem = new NLCitem(actionProperty, NLC_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY);
+			NLCitem * argumentPropertyItem = new NLCitem(actionProperty, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_PROPERTY);
 			parameters->push_back(argumentPropertyItem);
 		}
 	}
@@ -549,7 +549,7 @@ bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLCitem*> * p
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem * currentItem = *parametersIterator;
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_PROPERTY)
 		{
 			if(generateClassName(propertyEntity) == currentItem->className)
 			{
@@ -567,7 +567,7 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLCitem*> *
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem * currentItem = *parametersIterator;
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_CONDITION)
 		{
 			GIAentityNode * conditionObjectEntity = NULL;
 			if(!(conditionEntity->conditionObjectEntity->empty()))

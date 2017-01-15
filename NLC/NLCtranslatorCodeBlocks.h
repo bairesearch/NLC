@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5a 13-October-2014
+ * Project Version: 1k5b 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -34,8 +34,6 @@
 
 #ifndef HEADER_NLC_TRANSLATOR_CODEBLOCKS
 #define HEADER_NLC_TRANSLATOR_CODEBLOCKS
-
-//#define NLC_NOT_NECESSARY
 
 #include <iostream>
 #include <fstream>

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,95 +37,104 @@
 
 #include "NLCglobalDefs.h"
 #include "NLCitemClass.h"
+#include "NLCprintDefs.h"
 
+
+class NLCprintCodeBlocksFunctionsClass
+{
+	private: SHAREDvarsClass SHAREDvars;
+	private: NLCprintDefsClass NLCprintDefs;
+	private: NLCitemClassClass NLCitemClass;
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 #ifdef NLC_ADVANCED_REFERENCING
-void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsNewFunction(const int progLang, string* code, const int level);
-void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool castToCategoryType);
+	public: void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool castToCategoryType);
 #endif
 #endif
 #ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
-void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsNewFunction(const int progLang, string* code, const int level);
-void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool castToCategoryType);
+	public: void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeAddToCategoryIfPassPluralDefiniteReferencingTestsExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool castToCategoryType);
 #endif
 #ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
-void generateCodeAddEntityToReferenceContextListNewFunction(const int progLang, string* code, const int level);
-void generateCodeAddEntityToReferenceContextListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
-void generateCodeClearReferenceContextListNewFunction(const int progLang, string* code, const int level);
-void generateCodeClearReferenceContextListExecuteFunction(const NLCitem* param1, const int progLang, string* code, const int level);
+	public: void generateCodeAddEntityToReferenceContextListNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeAddEntityToReferenceContextListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
+	public: void generateCodeClearReferenceContextListNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeClearReferenceContextListExecuteFunction(const NLCitem* param1, const int progLang, string* code, const int level);
 #endif
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-void generateCodeCastVectorNewFunction(const int progLang, string* code, const int level);
-void generateCodeCastVectorExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeCastVectorNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeCastVectorExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 #endif
 #ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
-void generateCodeFindAliasAndAddToCategoryListNewFunction(const int progLang, string* code, const int level);
-void generateCodeFindAliasAndAddToCategoryListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
-void generateCodeFindAliasNewFunction(const int progLang, string* code, const int level);
-void generateCodeFindAliasExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeFindAliasAndAddToCategoryListNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeFindAliasAndAddToCategoryListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
+	public: void generateCodeFindAliasNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeFindAliasExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 #endif
 #ifdef NLC_REDEFINITIONS
-void generateCodeCheckParentClassNameNewFunction(const int progLang, string* code, const int level);
-void generateCodeCheckParentClassNameExecuteFunction1(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-void generateCodeCheckParentClassNameExecuteFunction2(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeCheckParentClassNameNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeCheckParentClassNameExecuteFunction1(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeCheckParentClassNameExecuteFunction2(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 #endif
 
-void generateCodeAddProperty(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-	void generateCodeAddPropertyEntityToList(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-		void generateCodeAddEntityToList(const string entityName, const string listName, const int progLang, string* code, const int level);
+	public: void generateCodeAddProperty(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+		private: void generateCodeAddPropertyEntityToList(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+			public: void generateCodeAddEntityToList(const string entityName, const string listName, const int progLang, string* code, const int level);
 #ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeAddPropertyExecuteFunction(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-void generateCodeAddPropertyNewFunction(const int progLang, string* code, const int level);
+	private: void generateCodeAddPropertyExecuteFunction(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeAddPropertyNewFunction(const int progLang, string* code, const int level);
 #endif
 
-void generateCodeRemoveProperty(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-void generateCodeRemoveProperties(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeRemoveProperty(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeRemoveProperties(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 #ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeRemovePropertyExecuteFunction(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-void generateCodeRemovePropertiesExecuteFunction(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	private: void generateCodeRemovePropertyExecuteFunction(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	private: void generateCodeRemovePropertiesExecuteFunction(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 #endif
 
-void generateCodeAddCondition(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition);
-void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition);
+	public: void generateCodeAddCondition(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition);
+	private: void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition);
 #ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeAddConditionExecuteFunction(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition);
-void generateCodeAddConditionNewFunction(const int progLang, string* code, const int level, const bool inverseCondition);
+	private: void generateCodeAddConditionExecuteFunction(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition);
+	public: void generateCodeAddConditionNewFunction(const int progLang, string* code, const int level, const bool inverseCondition);
 #endif
 
-void generateCodeRemoveCondition(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
-void generateCodeRemoveConditions(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
+	public: void generateCodeRemoveCondition(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
+	public: void generateCodeRemoveConditions(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
 #ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeRemoveConditionExecuteFunction(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
-void generateCodeRemoveConditionsExecuteFunction(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
+	private: void generateCodeRemoveConditionExecuteFunction(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
+	private: void generateCodeRemoveConditionsExecuteFunction(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level);
 #endif
 
-void generateCodeAddActionSubject(const NLCitem* functionArgument, const NLCitem* functionOwnerArgument, const int progLang, string* code, const int level);
+	public: void generateCodeAddActionSubject(const NLCitem* functionArgument, const NLCitem* functionOwnerArgument, const int progLang, string* code, const int level);
 #ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeAddActionSubjectExecuteFunction(const NLCitem* functionArgument, const NLCitem* functionOwnerArgument, const int progLang, string* code, const int level);
+	private: void generateCodeAddActionSubjectExecuteFunction(const NLCitem* functionArgument, const NLCitem* functionOwnerArgument, const int progLang, string* code, const int level);
 #endif
-void generateCodeAddActionObject(const NLCitem* functionArgument, const NLCitem* functionObjectArgument, const int progLang, string* code, const int level);
+	public: void generateCodeAddActionObject(const NLCitem* functionArgument, const NLCitem* functionObjectArgument, const int progLang, string* code, const int level);
 #ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeAddActionObjectExecuteFunction(const NLCitem* functionArgument, const NLCitem* functionObjectArgument, const int progLang, string* code, const int level);
-#endif
-
-void generateCodeAddNewEntityToLocalList(const NLCitem* param1, const int progLang, string* code, const int level);
-#ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeAddNewEntityToLocalListExecuteFunction(const NLCitem* param1, const int progLang, string* code, const int level);
-#endif
-void generateCodeAddEntityToLocalList(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
-#ifdef NLC_LIBRARY_BASE_EXTENDED
-void generateCodeAddEntityToLocalListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	private: void generateCodeAddActionObjectExecuteFunction(const NLCitem* functionArgument, const NLCitem* functionObjectArgument, const int progLang, string* code, const int level);
 #endif
 
-void generateCodeForPropertyList(const NLCitem* param1, const string contextParam1, const int progLang, string* code, const int level);
-void generateCodeForLocalList(const NLCitem* param1, const int progLang, string* code, const int level);
-	void generateCodeForEntityList(const string entityClassName, const string entityListName, const string entityInstanceName, const int progLang, string* code, const int level);
-void generateCodeForConditionList(const NLCitem* param1, const NLCitem* param2, const string contextParam1, const int progLang, string* code, const int level);
-	void generateCodeForConditionList(const string entityClassName1, const string entityClassName2, const string entityListName, const string entityInstanceName1, const string entityInstanceName2, const int progLang, string* code, const int level);
+	public: void generateCodeAddNewEntityToLocalList(const NLCitem* param1, const int progLang, string* code, const int level);
+#ifdef NLC_LIBRARY_BASE_EXTENDED
+	private: void generateCodeAddNewEntityToLocalListExecuteFunction(const NLCitem* param1, const int progLang, string* code, const int level);
+#endif
+	public: void generateCodeAddEntityToLocalList(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+#ifdef NLC_LIBRARY_BASE_EXTENDED
+	private: void generateCodeAddEntityToLocalListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+#endif
+
+	public: void generateCodeForPropertyList(const NLCitem* param1, const string contextParam1, const int progLang, string* code, const int level);
+	public: void generateCodeForLocalList(const NLCitem* param1, const int progLang, string* code, const int level);
+		public: void generateCodeForEntityList(const string entityClassName, const string entityListName, const string entityInstanceName, const int progLang, string* code, const int level);
+	public: void generateCodeForConditionList(const NLCitem* param1, const NLCitem* param2, const string contextParam1, const int progLang, string* code, const int level);
+		public: void generateCodeForConditionList(const string entityClassName1, const string entityClassName2, const string entityListName, const string entityInstanceName1, const string entityInstanceName2, const int progLang, string* code, const int level);
 
 #ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
-void generateCodeVerifyDefiniteReferenceExistenceNewFunction(const int progLang, string* code, const int level);
-void generateCodeVerifyDefiniteReferenceExistenceExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void generateCodeVerifyDefiniteReferenceExistenceNewFunction(const int progLang, string* code, const int level);
+	public: void generateCodeVerifyDefiniteReferenceExistenceExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 #endif
+};
+
 
 #endif

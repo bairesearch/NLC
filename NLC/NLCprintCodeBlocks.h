@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,29 +37,41 @@
 
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
+#include "NLCprintCodeBlocksFunctions.h"
+#include "NLCprintDefs.h"
+#include "GIAtranslatorDefs.h"	//required for ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND/ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_OR
 
-bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, const int level);	//classDefinitionList is required by NLC_INPUT_FUNCTION_LISTS only
-	void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(vector<NLCclassDefinition*>* classDefinitionList, vector<NLCitem*>* codeBlockParameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
-		string generateCodePluralReferenceText(const NLCitem* functionArgumentItem, const int progLang, const bool categoryList, const string categoryVarAppendName);
-		string generateCodeSingularReferenceText(const NLCitem* functionArgumentItem, const int progLang);
+class NLCprintCodeBlocksClass
+{
+	private: NLCitemClassClass NLCitemClass;
+	private: NLCclassDefinitionClassClass NLCclassDefinitionClass;
+	private: SHAREDvarsClass SHAREDvars;
+	private: NLCprintDefsClass NLCprintDefs;
+	private: NLCprintCodeBlocksFunctionsClass NLCprintCodeBlocksFunctions;
+	public: bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, const int level);	//classDefinitionList is required by NLC_INPUT_FUNCTION_LISTS only
+		private: void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(vector<NLCclassDefinition*>* classDefinitionList, vector<NLCitem*>* codeBlockParameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
+			private: string generateCodePluralReferenceText(const NLCitem* functionArgumentItem, const int progLang, const bool categoryList, const string categoryVarAppendName);
+			private: string generateCodeSingularReferenceText(const NLCitem* functionArgumentItem, const int progLang);
 			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-			string printCodeBlockCastVectorExecuteFunction(const NLCitem* functionArgumentItem, const int progLang, const string codeFunctionArgumentName);
+				private: string printCodeBlockCastVectorExecuteFunction(const NLCitem* functionArgumentItem, const int progLang, const string codeFunctionArgumentName);
 			#endif
 		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateCodeConditionPairReferenceText(NLCitem* functionArgumentConditionItem, const int progLang);
+			private: string generateCodeConditionPairReferenceText(NLCitem* functionArgumentConditionItem, const int progLang);
 		#endif
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-	void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*>* parameters, string* functionArguments, int progLang);
+		private: void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*>* parameters, string* functionArguments, int progLang);
 	#endif
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-	void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>* parameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
+		private: void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>* parameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
 	#endif
-	string generateFunctionOwnerContext(vector<NLCitem*>* parameters, const int progLang, string* functionOwnerName);
+		private: string generateFunctionOwnerContext(vector<NLCitem*>* parameters, const int progLang, string* functionOwnerName);
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, const int progLang);
+	private: string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, const int progLang);
 #endif
 #ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
-string generateMainFunctionText(vector<NLCitem*>* parameters, const int progLang);
+	private: string generateMainFunctionText(vector<NLCitem*>* parameters, const int progLang);
 #endif
+};
+
 
 #endif

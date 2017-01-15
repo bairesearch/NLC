@@ -26,25 +26,19 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCpreprocessor.h"
-#include "NLCpreprocessorSentenceClass.h"
-#include "NLCpreprocessorMath.h"
-#include "NLCpreprocessorMathLogicalConditions.h"
 
 //#include "NLCprintDefs.h" //required for progLangOpenParameterSpace
-#include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
-#include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-#include "GIAlrp.h"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_TRANSLATOR_UNIQUE_CONCATENATION_TYPES_QUOTES_DELIMITER
 
 #ifdef NLC_PREPROCESSOR
 
-bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName)
+bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName)
 {
 	*numberOfInputFilesInList = 0;
 
@@ -58,7 +52,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 	}
 	else
 	{
-		setCurrentDirectory(tempFolder);	//save output files to temp folder
+		SHAREDvars.setCurrentDirectory(tempFolder);	//save output files to temp folder
 
 		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 		NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
@@ -80,7 +74,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 			#ifndef NLC_MATH_OBJECTS_ADVANCED
 			#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 			string updatedLineTextWithQuotationsReducedToSingleWords = "";
-			if(reduceQuotesToSingleWords(currentLine, &updatedLineTextWithQuotationsReducedToSingleWords))
+			if(this->reduceQuotesToSingleWords(currentLine, &updatedLineTextWithQuotationsReducedToSingleWords))
 			{
 				currentLine = updatedLineTextWithQuotationsReducedToSingleWords;
 			}
@@ -88,7 +82,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 			#endif
 
 			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
-			if(detectFunctionHeader(&currentLine))
+			if(this->detectFunctionHeader(&currentLine))
 			{
 				//extract functions from file and generate separate files
 				if(*detectedFunctions)
@@ -99,7 +93,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 					cout << "create new function = " << NLCfunctionName << endl;
 					cout << "functionContents = " << functionContents << endl;
 					#endif
-					writeStringToFile(functionFileName, &functionContents);
+					SHAREDvars.writeStringToFile(functionFileName, &functionContents);
 					currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
@@ -114,8 +108,8 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 					*detectedFunctions = true;
 				}
 				sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
-				NLCfunctionName = getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
-				functionFileName = generateNLCfunctionFileName(NLCfunctionName);
+				NLCfunctionName = this->getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
+				functionFileName = this->generateNLCfunctionFileName(NLCfunctionName);
 				inputTextFileNameList->push_back(functionFileName);
 				functionContents = "";
 			}
@@ -125,7 +119,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 				int currentIndentation = 0;
 				string lineContents = "";
 				string indentationContents = "";
-				extractIndentationFromCurrentLine(&currentLine, &currentIndentation, &lineContents, &indentationContents);	//this will remove the indentation from the current line
+				this->extractIndentationFromCurrentLine(&currentLine, &currentIndentation, &lineContents, &indentationContents);	//this will remove the indentation from the current line
 				#ifdef NLC_DEBUG_PREPROCESSOR
 				//cout << "currentIndentation = " << currentIndentation << endl;
 				#endif
@@ -137,7 +131,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 				#ifdef NLC_PREPROCESSOR_MATH
 
 				int lineLogicalConditionOperator;
-				if(detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
+				if(this->detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
 				{
 					#ifdef NLC_DEBUG
 					//cout << "hasLogicalConditionOperator" << endl;
@@ -150,13 +144,13 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 				}
 				else
 				{
-					if(detectMathSymbolsInLine(&lineContents))
+					if(NLCpreprocessorMath.detectMathSymbolsInLine(&lineContents))
 					{
 						currentNLCsentenceInList->isMath = true;
 					}
 
 					//#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					if(detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
+					if(NLCpreprocessorMath.detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
 					{
 						currentNLCsentenceInList->isMath = true;
 					}
@@ -173,11 +167,11 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 					NLCsentence* firstSentenceInLogicalConditionCommandTemp = new NLCsentence();
 					if(currentNLCsentenceInList->hasLogicalConditionOperator)
 					{
-						splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(&lineContents, currentIndentation, currentNLCsentenceInList, firstSentenceInLogicalConditionCommandTemp, &detectedLogicalConditionCommand);
+						NLCpreprocessorMath.splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(&lineContents, currentIndentation, currentNLCsentenceInList, firstSentenceInLogicalConditionCommandTemp, &detectedLogicalConditionCommand);
 					}
 					#endif
 
-					splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+					NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 
 					#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 					if(detectedLogicalConditionCommand)
@@ -185,13 +179,13 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 						NLCsentence* currentSentenceInLogicalConditionCommandTemp = firstSentenceInLogicalConditionCommandTemp;
 						while(currentSentenceInLogicalConditionCommandTemp->next != NULL)
 						{
-							if(detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents)))
+							if(NLCpreprocessorMath.detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents)))
 							{
-								splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+								NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 							}
 							else
 							{
-								addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex,  currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
+								this->addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex,  currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
 								functionContents = functionContents + (currentSentenceInLogicalConditionCommandTemp->sentenceContents) + CHAR_NEWLINE;
 							}
 							currentSentenceInLogicalConditionCommandTemp = currentSentenceInLogicalConditionCommandTemp->next;
@@ -229,7 +223,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 								#ifdef NLC_DEBUG
 								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
 								#endif
-								if(isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
+								if(GIAlrp.isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
 								{
 									//cout << "isIntrawordPunctuationMark" << endl;
 									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
@@ -286,14 +280,14 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 
 						}
 						#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-						currentNLCsentenceInList->sentenceContentsOriginal = removePrependingWhiteSpace(sentenceContents);
+						currentNLCsentenceInList->sentenceContentsOriginal = this->removePrependingWhiteSpace(sentenceContents);
 						#endif
 
 						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 
 						#ifdef NLC_PREPROCESSOR_MATH
 						#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-						replaceNumericalVariablesWithDummyNumberIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
+						NLCpreprocessorMath.replaceNumericalVariablesWithDummyNumberIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
 						#endif
 						#endif
 						#ifdef NLC_DEBUG
@@ -301,7 +295,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 						#endif
 
 						#ifdef NLC_MATH_OBJECTS_ADVANCED
-						if(detectMathObjectStringDelimiter(&sentenceContents))
+						if(this->detectMathObjectStringDelimiter(&sentenceContents))
 						{
 							cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
 						}
@@ -309,7 +303,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 
 						bool sentenceIsLogicalCondition = false;
 						int sentenceLogicalConditionOperator;
-						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
+						if(this->detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
 							sentenceIsLogicalCondition = true;
 							#ifdef NLC_DEBUG_PREPROCESSOR
@@ -352,7 +346,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 						#else
 						//error checking only:
 						int sentenceLogicalConditionOperator;
-						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
+						if(this->detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
 							cout << "preprocessTextForNLC{} error: !NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
 						}
@@ -366,7 +360,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 							for(int i=startOfSentenceIndex; i<sentenceContents.length(); i++)
 							{
 								char c = sentenceContents[i];
-								if(!isWhiteSpace(c))
+								if(!SHAREDvars.isWhiteSpace(c))
 								{
 									nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine = true;
 									#ifdef NLC_DEBUG
@@ -381,7 +375,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 								cout << "(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine && sentenceIsLogicalCondition)" << endl;
 								#endif
 
-								string lowerCaseSentenceContents = convertStringToLowerCase(&sentenceContents);
+								string lowerCaseSentenceContents = SHAREDvars.convertStringToLowerCase(&sentenceContents);
 								string dummyCommand = "";
 								if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 								{
@@ -433,7 +427,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 						}
 						else
 						{
-							addNonLogicalConditionSentenceToList(&sentenceContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, currentNLCfunctionInList, firstNLCfunctionInList);
+							this->addNonLogicalConditionSentenceToList(&sentenceContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, currentNLCfunctionInList, firstNLCfunctionInList);
 
 							if(startOfSentenceIndexNew == lineContents.length()-1)
 							{
@@ -465,7 +459,7 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 			cout << "create new function, functionFileName = " << functionFileName << endl;
 			cout << "functionContents = " << functionContents << endl;
 			#endif
-			writeStringToFile(functionFileName, &functionContents);
+			SHAREDvars.writeStringToFile(functionFileName, &functionContents);
 			currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
 			currentNLCfunctionInList->next = new NLCfunction();
 			currentNLCfunctionInList = currentNLCfunctionInList->next;
@@ -479,13 +473,13 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 			cout << "create preprocessed file, outputFileName = " << outputFileName << endl;
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
-			writeStringToFile(outputFileName, &functionContents);
+			SHAREDvars.writeStringToFile(outputFileName, &functionContents);
 			*numberOfInputFilesInList = *numberOfInputFilesInList+1;
 		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif
 
-		setCurrentDirectory(workingFolder);	//set current directory back to the original workingFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's workingFolder is changed to tempFolder as it should be in the case of NLC preprocessed input)
+		SHAREDvars.setCurrentDirectory(workingFolder);	//set current directory back to the original workingFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's workingFolder is changed to tempFolder as it should be in the case of NLC preprocessed input)
 	}
 
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
@@ -539,11 +533,11 @@ bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunct
 	return result;
 }
 
-void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	#ifdef NLC_PREPROCESSOR_MATH
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-	replaceNumericalVariablesWithDummyNumberIfNecessary(sentenceContents, *currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
+	NLCpreprocessorMath.replaceNumericalVariablesWithDummyNumberIfNecessary(sentenceContents, *currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
 	#endif
 	#endif
 	#ifdef NLC_DEBUG
@@ -551,14 +545,14 @@ void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence*
 	#endif
 
 	#ifdef NLC_MATH_OBJECTS_ADVANCED
-	if(detectMathObjectStringDelimiter(sentenceContents))
+	if(this->detectMathObjectStringDelimiter(sentenceContents))
 	{
 		cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
 	}
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-	if(isStringValidVariableName(*sentenceContents, true))
+	if(NLCpreprocessorSentenceClass.isStringValidVariableName(*sentenceContents, true))
 	{
 		#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 		string actionName = sentenceContents->substr(0, sentenceContents->length()-1);
@@ -586,7 +580,7 @@ void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence*
 }
 
 #ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
-bool reduceQuotesToSingleWords(const string lineText, string* updatedLineText)
+bool NLCpreprocessorClass::reduceQuotesToSingleWords(const string lineText, string* updatedLineText)
 {
 	bool result = false;
 	*updatedLineText = "";
@@ -660,10 +654,10 @@ bool reduceQuotesToSingleWords(const string lineText, string* updatedLineText)
 #endif
 
 
-void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents)
+void NLCpreprocessorClass::extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents)
 {
 	int i = 0;
-	while((i < currentLine->length()) && (isWhiteSpace((*currentLine)[i]) || (*currentLine)[i] == NLC_PREPROCESSOR_INDENTATION_CHAR))	//in case NLC_PREPROCESSOR_INDENTATION_CHAR is not a form of white space
+	while((i < currentLine->length()) && (SHAREDvars.isWhiteSpace((*currentLine)[i]) || (*currentLine)[i] == NLC_PREPROCESSOR_INDENTATION_CHAR))	//in case NLC_PREPROCESSOR_INDENTATION_CHAR is not a form of white space
 	{
 		char c = (*currentLine)[i];
 		if(c == NLC_PREPROCESSOR_INDENTATION_CHAR)
@@ -677,7 +671,7 @@ void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentat
 }
 
 #ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
-bool detectFunctionHeader(const string* lineContents)
+bool NLCpreprocessorClass::detectFunctionHeader(const string* lineContents)
 {
 	bool functionHeaderFound = false;
 	int index = lineContents->find(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING));
@@ -690,7 +684,7 @@ bool detectFunctionHeader(const string* lineContents)
 	}
 	return functionHeaderFound;
 }
-string getFunctionNameFromFunctionHeader(const string* lineContents)
+string NLCpreprocessorClass::getFunctionNameFromFunctionHeader(const string* lineContents)
 {
 	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length() + string(NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR).length());
 	#ifdef NLC_DEBUG
@@ -699,14 +693,14 @@ string getFunctionNameFromFunctionHeader(const string* lineContents)
 	return NLCfunctionName;
 
 }
-string generateNLCfunctionFileName(const string NLCfunctionName)
+string NLCpreprocessorClass::generateNLCfunctionFileName(const string NLCfunctionName)
 {
 	string functionFileName = NLCfunctionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
 	return functionFileName;
 }
 #endif
 
-bool detectLogicalConditionOperatorAtStartOfLine(const string* lineContents, int* logicalConditionOperator)
+bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const string* lineContents, int* logicalConditionOperator)
 {
 	#ifdef NLC_DEBUG
 	//cout << "detectLogicalConditionOperatorAtStartOfLine() lineContents = " <<* lineContents << endl;
@@ -715,7 +709,7 @@ bool detectLogicalConditionOperatorAtStartOfLine(const string* lineContents, int
 	*logicalConditionOperator = INT_DEFAULT_VALUE;
 	bool logicalConditionOperatorFound = false;
 
-	string lowerCaseSentenceContents = convertStringToLowerCase(lineContents);
+	string lowerCaseSentenceContents = SHAREDvars.convertStringToLowerCase(lineContents);
 	//get first word in line
 	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
 	{
@@ -732,7 +726,7 @@ bool detectLogicalConditionOperatorAtStartOfLine(const string* lineContents, int
 	return logicalConditionOperatorFound;
 }
 
-string removePrependingWhiteSpace(string sentenceContents)
+string NLCpreprocessorClass::removePrependingWhiteSpace(string sentenceContents)
 {
 	//this function is used in case the current sentence occurs after a previous sentence on the same line (ie after ". ")
 	if(sentenceContents.length() > 0)
@@ -747,7 +741,7 @@ string removePrependingWhiteSpace(string sentenceContents)
 }
 
 #ifdef NLC_MATH_OBJECTS_ADVANCED
-bool detectMathObjectStringDelimiter(string* lineContents)
+bool NLCpreprocessorClass::detectMathObjectStringDelimiter(string* lineContents)
 {
 	bool result = false;
 	if(lineContents->find(NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR) != CPP_STRING_FIND_RESULT_FAIL_VALUE)

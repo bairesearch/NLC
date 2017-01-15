@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,6 +36,7 @@
 #define HEADER_NLC_PREPROCESSOR_SENTENCE_CLASS
 
 #include "NLCglobalDefs.h"
+#include "SHAREDvars.h"
 
 class NLCvariable
 {
@@ -110,20 +111,24 @@ public:
 
 
 #ifdef NLC_PREPROCESSOR_MATH
-string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCsentence* currentPhrase);
+class NLCpreprocessorSentenceClassClass
+{
+	private: SHAREDvarsClass SHAREDvars;
+	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCsentence* currentPhrase);
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-int generateDummyNumber(const int predefinedVariableIndex);
+	public: int generateDummyNumber(const int predefinedVariableIndex);
 #endif
 #endif
-bool isStringNLPparsableWord(string phrase, const bool preprocessorMath);
-bool isStringValidVariableName(string phrase, const bool preprocessor);
-bool isStringNumberPreprocessorMath(string phrase);
-bool isStringNumberOrFractional(string phrase);
-	bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
-bool isStringAliasFileName(const string phrase);
+	public: bool isStringNLPparsableWord(string phrase, const bool preprocessorMath);
+	public: bool isStringValidVariableName(string phrase, const bool preprocessor);
+	public: bool isStringNumberPreprocessorMath(string phrase);
+	public: bool isStringNumberOrFractional(string phrase);
+		private: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
+	public: bool isStringAliasFileName(const string phrase);
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
-bool isStringIllegalTargetSourceCharacter(const string phrase);
+	public: bool isStringIllegalTargetSourceCharacter(const string phrase);
 #endif
-bool sentencePertainsToLogicalCondition(const NLCsentence* currentNLCsentenceInList);
+	public: bool sentencePertainsToLogicalCondition(const NLCsentence* currentNLCsentenceInList);
+};
 
 #endif

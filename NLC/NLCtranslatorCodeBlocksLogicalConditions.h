@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,56 +42,74 @@
 #include "NLCclassDefinitionClass.h"
 //#ifdef NLC_PREPROCESSOR
 #include "NLCpreprocessorSentenceClass.h"
+#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
+#include "NLCtranslatorCodeBlocksOperations.h"
+#include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance{}
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#include "NLCpreprocessorMath.h"	//required for findCharacterAtIndexOrAfterSpace{}
 //#endif
 
 
 #ifdef NLC_PREPROCESSOR_MATH
-bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCsentence* firstNLCsentenceInFullSentence, const string NLCfunctionName);	
-	bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListParsablePhrase, int sentenceIndex, NLCsentence* currentFullSentence, const NLCsentence* parsablePhrase, const int phraseIndex, const int caseIndex);
+class NLCtranslatorCodeBlocksLogicalConditionsClass
+{
+	private: SHAREDvarsClass SHAREDvars;
+	private: NLCcodeBlockClassClass NLCcodeBlockClass;
+	private: NLCitemClassClass NLCitemClass;
+	private: GIAtranslatorOperationsClass GIAtranslatorOperations;
+	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
+	private: NLCprintDefsClass NLCprintDefs;
+	private: NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass NLCtranslatorCodeBlocksLogicalConditionsAdvanced;
+	private: NLCtranslatorCodeBlocksOperationsClass NLCtranslatorCodeBlocksOperations;
+	private: NLCpreprocessorMathClass NLCpreprocessorMath;
+	public: bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCsentence* firstNLCsentenceInFullSentence, const string NLCfunctionName);	
+		private: bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListParsablePhrase, int sentenceIndex, NLCsentence* currentFullSentence, const NLCsentence* parsablePhrase, const int phraseIndex, const int caseIndex);
 		#ifdef NLC_MATH_OBJECTS_ADVANCED
-		int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, NLCsentence* currentFullSentence, const NLCsentence* parsablePhrase);
-			bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex);
-				bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp, int* subphraseEndPositionTemp);
-		string generateAssignMathTextValueExecuteFunctionMathText(const NLCsentence* currentFullSentence, string parsablePhraseReferenceName, const bool hasLogicalConditionOperator);
-			bool findInvertedCommasEitherSideOfCharacter(const string* mathText, int indexOfCharacter);
-			string getTargetValueText(const string* mathText, int indexOfCommand, string command, int progLang);
-			string getSourceValueText(const string* mathText, const int indexOfCommand, int progLang);
+			private: int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, NLCsentence* currentFullSentence, const NLCsentence* parsablePhrase);
+				private: bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex);
+					private: bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp, int* subphraseEndPositionTemp);
+			private: string generateAssignMathTextValueExecuteFunctionMathText(const NLCsentence* currentFullSentence, string parsablePhraseReferenceName, const bool hasLogicalConditionOperator);
+				private: bool findInvertedCommasEitherSideOfCharacter(const string* mathText, int indexOfCharacter);
+				private: string getTargetValueText(const string* mathText, int indexOfCommand, string command, int progLang);
+				private: string getSourceValueText(const string* mathText, const int indexOfCommand, int progLang);
 				#ifdef NLC_MATH_OBJECTS_ADVANCED_ADDITIONS
-				string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang);
+					private: string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang);
 				#endif
-			bool removeSurroundingBracketsOfSubphrase(string* subphraseText);
+				private: bool removeSurroundingBracketsOfSubphrase(string* subphraseText);
 		#endif
-		bool isNumberOf(const GIAentityNode* entity);
-	bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, const NLCsentence* currentFullSentence, const NLCsentence* parsablePhrase, const int phraseIndex, NLCcodeblock** currentCodeBlockInTreeAtBaseLevel, const NLCsentence* firstNLCsentenceInFullSentence);
+			private: bool isNumberOf(const GIAentityNode* entity);
+		private: bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, const NLCsentence* currentFullSentence, const NLCsentence* parsablePhrase, const int phraseIndex, NLCcodeblock** currentCodeBlockInTreeAtBaseLevel, const NLCsentence* firstNLCsentenceInFullSentence);
 		#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
-		void parseLogicalConditionEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, const bool hasLogicalConditionOperator, GIAentityNode** childEntity, NLCgenerateContextBlocksVariables* generateContextBlocksVariables);
+			private: void parseLogicalConditionEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, const bool hasLogicalConditionOperator, GIAentityNode** childEntity, NLCgenerateContextBlocksVariables* generateContextBlocksVariables);
 		#else
-		bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* parentEntity, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** childEntity, const int logicalConditionOperator);
+			private: bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* parentEntity, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** childEntity, const int logicalConditionOperator);
 		#endif
 	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
-	bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject);
+		private: bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject);
 	#endif
 	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
-	bool checkIfPhraseContainsConceptWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject);
+		private: bool checkIfPhraseContainsConceptWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject);
 	#else
-	bool checkIfPhraseContainsConcept(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject);
+		private: bool checkIfPhraseContainsConcept(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject);
 	#endif
 	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_REDEFINITIONS
-	bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject, constEffective GIAentityNode** definitionEntity);
+		private: bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject, constEffective GIAentityNode** definitionEntity);
 	#endif
 	#endif
-	void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex);
-#endif
+		private: void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex);
+	#endif
 /*
 #ifdef NLC_PREPROCESSOR_MATH
 string parsablePhraseGenerateNumberOfElementCounterName(int phraseIndex);
 #endif
 */
-bool readParsablePhraseEntryEntityChecks(const GIAentityNode* entity);
-#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-bool findDummyNumberAndReplaceWithOriginalNumericalVariableName(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const int dummyNumber, string numericalVariableName);
-#endif
+	private: bool readParsablePhraseEntryEntityChecks(const GIAentityNode* entity);
+	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+	public: bool findDummyNumberAndReplaceWithOriginalNumericalVariableName(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const int dummyNumber, string numericalVariableName);
+	#endif
+};
+
 
 
 #endif

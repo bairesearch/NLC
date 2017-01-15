@@ -26,20 +26,15 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCtranslatorCodeBlocks.h"
-#include "NLCtranslatorCodeBlocksLogicalConditions.h"
-#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
-#include "NLCtranslatorCodeBlocksOperations.h"
-#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
-#include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance()
 
-bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
+bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
 {
 	bool result = true;
 
@@ -50,15 +45,15 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocks{}: initialiseFunctionAliasClassList:" << endl;
 	#endif
-	initialiseFunctionAliasClassList();
+	NLCcodeBlockClass.initialiseFunctionAliasClassList();
 	#endif
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocks{}: fillFunctionAliasClassList:" << endl;
 	#endif
-	fillFunctionAliasClassList(entityNodesActiveListComplete);
+	NLCtranslatorCodeBlocksOperations.fillFunctionAliasClassList(entityNodesActiveListComplete);
 	#endif
 
-	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete, currentNLCfunctionInList);
+	currentCodeBlockInTree = this->createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete, currentNLCfunctionInList);
 
 	//#ifdef NLC_PREPROCESSOR
 	NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
@@ -67,9 +62,9 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 	#ifdef NLC_PREPROCESSOR
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	if(getUseNLCpreprocessor())
+	if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor())
 	{
-		currentCodeBlockInTree = createCodeBlocksDeclareContextList(currentCodeBlockInTree, 0);
+		currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksDeclareContextList(currentCodeBlockInTree, 0);
 	}
 	#endif
 	#endif
@@ -81,7 +76,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocks{}: declareLocalPropertyListsForIndefiniteEntities:" << endl;
 	#endif
-	declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, 0, NLCfunctionName, currentNLCsentenceInList);
+	this->declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, 0, NLCfunctionName, currentNLCsentenceInList);
 	#endif
 	#endif
 
@@ -114,21 +109,21 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 
 		#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-		if(getUseNLCpreprocessor())
+		if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor())
 		{
 			if(currentNLCsentenceInList->isMath)
 			{
 				#ifdef NLC_DEBUG
 				//cout << "currentNLCsentenceInList->sentenceOriginal = " << currentNLCsentenceInList->sentenceOriginal << endl;
 				#endif
-				currentCodeBlockInTree = createCodeBlockCommentSingleLine(currentCodeBlockInTree, currentNLCsentenceInList->sentenceOriginal);
+				currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockCommentSingleLine(currentCodeBlockInTree, currentNLCsentenceInList->sentenceOriginal);
 			}
 			else
 			{
 				#ifdef NLC_DEBUG
 				//cout << "currentNLCsentenceInList->sentenceContentsOriginal = " << currentNLCsentenceInList->sentenceContentsOriginal << endl;
 				#endif
-				currentCodeBlockInTree = createCodeBlockCommentSingleLine(currentCodeBlockInTree, currentNLCsentenceInList->sentenceContentsOriginal);
+				currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockCommentSingleLine(currentCodeBlockInTree, currentNLCsentenceInList->sentenceContentsOriginal);
 			}
 		}
 		#endif
@@ -136,12 +131,12 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 		#ifdef NLC_PREPROCESSOR
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-		if(getUseNLCpreprocessor())
+		if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor())
 		{
 			#ifdef NLC_DEBUG
 			//cout << "setCurrentLogicalConditionLevel: currentNLCsentenceInList->indentation) = " << currentNLCsentenceInList->indentation) << endl;
 			#endif
-			setCurrentLogicalConditionLevel(currentNLCsentenceInList->indentation);
+			NLCcodeBlockClass.setCurrentLogicalConditionLevel(currentNLCsentenceInList->indentation);
 		}
 		#endif
 		#endif
@@ -153,7 +148,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#ifdef NLC_DEBUG
 		cout << "declareLocalPropertyListsForIndefiniteEntities:" << endl;
 		#endif
-		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
+		this->declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
 		#endif
 		#endif
 
@@ -161,25 +156,25 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#ifdef NLC_DEBUG
 		cout << "generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities:" << endl;
 		#endif
-		generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
+		this->generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
 
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-		if(getUseNLCpreprocessor())
+		if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor())
 		{
 			//reconcile temporary variable name replacement
 			for(int i=0; i<currentNLCsentenceInList->variableNamesDetected.size(); i++)
 			{
 				if(!(currentNLCsentenceInList->isMath))
 				{//only replace variables names (and reconcile temporary variable name replacement) for non math text
-					int dummyNumber = generateDummyNumber(i+1);
+					int dummyNumber = NLCpreprocessorSentenceClass.generateDummyNumber(i+1);
 					string numericalVariableName = currentNLCsentenceInList->variableNamesDetected[i];
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
 					cout << "currentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
 					cout << "dummyNumber = " << dummyNumber << endl;
 					cout << "numericalVariableName = " << numericalVariableName << endl;
 					#endif
-					if(!findDummyNumberAndReplaceWithOriginalNumericalVariableName(entityNodesActiveListSentence, sentenceIndex, dummyNumber, numericalVariableName))
+					if(!NLCtranslatorCodeBlocksLogicalConditions.findDummyNumberAndReplaceWithOriginalNumericalVariableName(entityNodesActiveListSentence, sentenceIndex, dummyNumber, numericalVariableName))
 					{
 						cout << "generateCodeBlocks{} error: !findDummyNumberAndReplaceWithOriginalNumericalVariableName, dummyNumericalValueToRestore = " << dummyNumber << ", numericalVariableName = " << numericalVariableName << endl;
 					}
@@ -193,7 +188,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 
 		#ifdef NLC_PREPROCESSOR_MATH
-		if(getUseNLCpreprocessor() && (currentNLCsentenceInList->isMath))
+		if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor() && (currentNLCsentenceInList->isMath))
 		{
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 			cout << "generateCodeBlocksFromMathText{}: currentNLCsentenceInList->mathText = " << currentNLCsentenceInList->mathText << endl;
@@ -203,7 +198,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksFromMathText:" << endl;
 			#endif
-			if(!generateCodeBlocksFromMathText(&currentCodeBlockInTree, sentenceIter, sentenceIndex, currentNLCsentenceInList, NLCfunctionName))
+			if(!NLCtranslatorCodeBlocksLogicalConditions.generateCodeBlocksFromMathText(&currentCodeBlockInTree, sentenceIter, sentenceIndex, currentNLCsentenceInList, NLCfunctionName))
 			{
 				result = false;
 			}
@@ -216,7 +211,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			//added 1q10b - used prevent redeclarations of xSubjectCategoryList/xObjectCategoryList//xCategoryList
 			//NB createCodeBlocksCreateContextBlock be executed after generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities because newlyDeclaredEntityInCategoryList=false is set (ie category lists are not created)
 			NLCcodeblock* firstCodeBlockInSentence = currentCodeBlockInTree;
-			currentCodeBlockInTree = createCodeBlocksCreateContextBlock(currentCodeBlockInTree);
+			currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksCreateContextBlock(currentCodeBlockInTree);
 			#endif
 
 			#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -224,7 +219,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart2logicalConditions:" << endl;
 			#endif
-			if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
+			if(!NLCtranslatorCodeBlocksLogicalConditionsAdvanced.generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
 			{
 				result = false;
 			}
@@ -235,7 +230,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			cout << "generateCodeBlocksPart3subjectObjectConnections:" << endl;
 			#endif
 			NLCgenerateContextBlocksVariables generateContextBlocksVariablesLogicalConditionStatement;	//not used
-			if(!generateCodeBlocksPart3subjectObjectConnections(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, &generateContextBlocksVariablesLogicalConditionStatement))
+			if(!NLCtranslatorCodeBlocksOperations.generateCodeBlocksPart3subjectObjectConnections(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, &generateContextBlocksVariablesLogicalConditionStatement))
 			{
 				result = false;
 			}
@@ -249,19 +244,19 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-		clearContextGeneratedVariable(entityNodesActiveListSentence);
+		this->clearContextGeneratedVariable(entityNodesActiveListSentence);
 		#endif
 
 
 		#ifdef NLC_PREPROCESSOR
-		if(getUseNLCpreprocessor())
+		if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor())
 		{
 			if(currentNLCsentenceInList->next != NULL)
 			{
 				#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 				NLCsentence* nextNLCfullSentenceInList = currentNLCsentenceInList->next;
-				bool currentSentenceContainsLogicalCondition = getCurrentSentenceContainsLogicalCondition();
-				int currentLogicalConditionLevel = getCurrentLogicalConditionLevel();
+				bool currentSentenceContainsLogicalCondition = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCurrentSentenceContainsLogicalCondition();
+				int currentLogicalConditionLevel = NLCcodeBlockClass.getCurrentLogicalConditionLevel();
 				#elif defined NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				NLCsentence* nextNLCfullSentenceInList = currentNLCsentenceInList;
 				if(currentNLCsentenceInList->mathTextNLPparsablePhraseTotal > 0)
@@ -293,7 +288,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 				{
 					if(currentSentenceContainsLogicalCondition)
 					{
-						//indentation already correctly processed in generateCodeBlocksPart2logicalConditions()
+						//indentation already correctly processed in NLCtranslatorCodeBlocksLogicalConditionsAdvanced.generateCodeBlocksPart2logicalConditions()
 					}
 					else
 					{
@@ -307,7 +302,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 				{
 					if(currentSentenceContainsLogicalCondition)
 					{
-						//indentation already correctly processed in generateCodeBlocksPart2logicalConditions()
+						//indentation already correctly processed in NLCtranslatorCodeBlocksLogicalConditionsAdvanced.generateCodeBlocksPart2logicalConditions()
 					}
 					else
 					{
@@ -325,9 +320,9 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 					}
 					else
 					{
-						currentCodeBlockInTree = getCodeBlockAtPreviousLogicalConditionBaseLevelArray(nextNLCfullSentenceInList->indentation);
+						currentCodeBlockInTree = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCodeBlockAtPreviousLogicalConditionBaseLevelArray(nextNLCfullSentenceInList->indentation);
 						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-						setCurrentLogicalConditionLevel(nextNLCfullSentenceInList->indentation);
+						NLCcodeBlockClass.setCurrentLogicalConditionLevel(nextNLCfullSentenceInList->indentation);
 						#endif
 					}
 				}
@@ -368,7 +363,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 				#endif
 			}
 			#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-			setCurrentSentenceContainsLogicalCondition(false);
+			NLCtranslatorCodeBlocksLogicalConditionsAdvanced.setCurrentSentenceContainsLogicalCondition(false);
 			#endif
 		}
 		else
@@ -383,9 +378,9 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 	#ifdef NLC_PREPROCESSOR
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	if(getUseNLCpreprocessor())
+	if(NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getUseNLCpreprocessor())
 	{
-		currentCodeBlockInTree = createCodeBlocksClearContextListVariableExecuteFunction(currentCodeBlockInTree, 0);
+		currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksClearContextListVariableExecuteFunction(currentCodeBlockInTree, 0);
 	}
 	#endif
 	#endif
@@ -394,30 +389,30 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	return result;
 }
 
-bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCsentence* currentNLCsentenceInList)
+bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCsentence* currentNLCsentenceInList)
 {
 	bool result = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
 		#ifdef NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
-		if(!checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
+		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 		#else
-		if(!checkSpecialCaseEntity(entity, true))
+		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true))
 		#endif
 		{
-			if(declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(entity))
+			if(this->declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(entity))
 			{
 				#ifdef NLC_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 				if(!(entity->disabled))	//added 1k7f
 				{
 				#else
-				if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+				if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 				{
 				#endif
-					if(!assumedToAlreadyHaveBeenDeclared(entity))
+					if(!NLCcodeBlockClass.assumedToAlreadyHaveBeenDeclared(entity))
 					{//indefinite entity found
-						if(declareLocalPropertyListsForIndefiniteEntity(currentCodeBlockInTree, entity, currentNLCsentenceInList))
+						if(this->declareLocalPropertyListsForIndefiniteEntity(currentCodeBlockInTree, entity, currentNLCsentenceInList))
 						{
 							#ifdef NLC_DEBUG
 							cout << "declareLocalPropertyListsForIndefiniteEntities{}: " << entity->entityName << endl;
@@ -428,7 +423,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBl
 					#ifdef NLC_GENERATE_TYPE_LISTS_ADD_DEFINITE_FUNCTION_ARGUMENTS_TO_TYPE_LIST
 					else
 					{
-						*currentCodeBlockInTree = createIfNecessaryAndAddToTypeList(*currentCodeBlockInTree, entity);
+						*currentCodeBlockInTree = NLCcodeBlockClass.createIfNecessaryAndAddToTypeList(*currentCodeBlockInTree, entity);
 					}
 					#endif
 				}
@@ -438,7 +433,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBl
 	return result;
 }
 
-bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCsentence* currentNLCsentenceInList)
+bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCsentence* currentNLCsentenceInList)
 {
 	bool result = true;
 
@@ -448,18 +443,18 @@ bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBloc
 	NLCcodeblock* firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
 	NLCcodeblock* firstCodeBlockAtStartOfIfStatement = NULL;
 	NLCcodeblock* previousCodeBlockInTree = NULL;
-	setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected);
+	NLCtranslatorCodeBlocksLogicalConditionsAdvanced.setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected);
 	previousCodeBlockInTree = *currentCodeBlockInTree;
 	#endif
 	#endif
 	#endif
 
-	*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(*currentCodeBlockInTree, entity);
+	*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksDeclareNewLocalListVariableIfNecessary(*currentCodeBlockInTree, entity);
 
 	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	#ifdef NLC_PREPROCESSOR
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected, &previousCodeBlockInTree);
+	NLCtranslatorCodeBlocksLogicalConditionsAdvanced.restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected, &previousCodeBlockInTree);
 	#endif
 	#endif
 	#endif
@@ -471,7 +466,7 @@ bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBloc
 	return result;
 }
 
-bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNode* entityNode)
+bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNode* entityNode)
 {
 	bool validClassContents = true;
 
@@ -491,21 +486,21 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 	#endif
 
 	//added 1k7g
-	if(isStringNumberOrFractional(entityNode->entityName))
+	if(NLCpreprocessorSentenceClass.isStringNumberOrFractional(entityNode->entityName))
 	{
 		validClassContents = false;
 		//entityNode->disabled = true;	//this could be used instead (more general implementation)
 	}
 
 	//added 1q14e
-	if(isStringAliasFileName(entityNode->entityName))
+	if(NLCpreprocessorSentenceClass.isStringAliasFileName(entityNode->entityName))
 	{
 		validClassContents = false;
 	}
 
 	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 	//added 1q14e - CHECKTHIS: is this required?
-	if(isStringIllegalTargetSourceCharacter(entityNode->entityName))
+	if(NLCpreprocessorSentenceClass.isStringIllegalTargetSourceCharacter(entityNode->entityName))
 	{
 		if(validClassContents)
 		{
@@ -529,7 +524,7 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 
 
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveListComplete)
+bool NLCtranslatorCodeBlocksClass::clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveListComplete)
 {
 	bool result = true;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -543,25 +538,25 @@ bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveList
 
 
 #ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
-bool generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
+bool NLCtranslatorCodeBlocksClass::generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
 {
 	bool result = true;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
-		if(!checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
+		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
 		{
 			if(entity->sentenceIndexTemp == sentenceIndex)	//changed 1l15a
 			//if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{
 				if(!(entity->disabled))
 				{
-					if(assumedToAlreadyHaveBeenDeclared(entity))
+					if(NLCcodeBlockClass.assumedToAlreadyHaveBeenDeclared(entity))
 					{//definite entity found
 						#ifdef NLC_DEBUG
 						cout << "generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities{}: entity: " << entity->entityName << endl;
 						#endif
-						generateObjectInitialisationsBasedOnConcepts(entity, entity, currentCodeBlockInTree, sentenceIndex, false);
+						NLCtranslatorCodeBlocksOperations.generateObjectInitialisationsBasedOnConcepts(entity, entity, currentCodeBlockInTree, sentenceIndex, false);
 					}
 				}
 			}
@@ -572,7 +567,7 @@ bool generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(NLCcodeb
 #endif
 
 
-NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*>* entityNodesActiveListComplete, constEffective NLCfunction* currentNLCfunctionInList)
+NLCcodeblock* NLCtranslatorCodeBlocksClass::createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*>* entityNodesActiveListComplete, constEffective NLCfunction* currentNLCfunctionInList)
 {
 	#ifdef NLC_INPUT_FUNCTION_LISTS
 	//gets "fight" from "dog::fight"
@@ -581,7 +576,7 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	string functionOwnerName = "";
 	bool hasFunctionObjectClass = false;
 	string functionObjectName = "";
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+	NLCitemClass.parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 
 	GIAentityNode* functionOwner = NULL;
 	GIAentityNode* functionObject = NULL;
@@ -689,27 +684,27 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	#endif
 
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-	generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters), currentNLCfunctionInList);
+	this->generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters), currentNLCfunctionInList);
 	#endif
 
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_NEW_FUNCTION);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_NEW_FUNCTION);
 
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	#ifndef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 	if(functionOwner != NULL)
 	{
-		currentCodeBlockInTree = createCodeBlockDeclareAndInitialiseVariableForActionSubject(currentCodeBlockInTree, functionOwner);
-		currentCodeBlockInTree = createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, functionOwner);
+		currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockDeclareAndInitialiseVariableForActionSubject(currentCodeBlockInTree, functionOwner);
+		currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, functionOwner);
 	}
 	#endif
 	#ifndef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 	if(functionObject != NULL)
 	{
-		currentCodeBlockInTree = createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, functionObject);
+		currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, functionObject);
 	}
 	if(function != NULL)
 	{
-		currentCodeBlockInTree = createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, function);
+		currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, function);
 	}
 	#endif
 	#endif
@@ -720,19 +715,19 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*>* entityNodesActiveListComplete, vector<NLCitem*>* parameters, constEffective NLCfunction* currentNLCfunctionInList)
+void NLCtranslatorCodeBlocksClass::generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*>* entityNodesActiveListComplete, vector<NLCitem*>* parameters, constEffective NLCfunction* currentNLCfunctionInList)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = *entityIter;
-		if(isDefiniteEntityInitialisation(entity, currentNLCfunctionInList))
+		if(this->isDefiniteEntityInitialisation(entity, currentNLCfunctionInList))
 		{
 			#ifdef NLC_DEBUG
 			//cout << "isDefiniteEntityInitialisation, entity = " << entity->entityName << endl;
 			#endif
 
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-			if(!findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entityNodesActiveListComplete, entity))	//NB findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() could be reimplemented to be performed during generateCodeBlocks() sentence parsing, but then generateLocalFunctionArgumentsBasedOnImplicitDeclarations() could not be decared at start of generateCodeBlocks(), ie it would have to be moved out of createCodeBlockNewFunction()
+			if(!this->findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entityNodesActiveListComplete, entity))	//NB this->findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() could be reimplemented to be performed during generateCodeBlocks() sentence parsing, but then generateLocalFunctionArgumentsBasedOnImplicitDeclarations() could not be decared at start of generateCodeBlocks(), ie it would have to be moved out of createCodeBlockNewFunction()
 			{
 			#endif
 				#ifdef NLC_DEBUG
@@ -742,7 +737,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 				#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 				bool entityIsAlias = false;
 				string aliasClassName = "";
-				if(findEntityNameInFunctionAliasList(entity->entityName, &aliasClassName))
+				if(NLCcodeBlockClass.findEntityNameInFunctionAliasList(entity->entityName, &aliasClassName))
 				{
 					entityIsAlias = true;
 				}
@@ -761,12 +756,12 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 				{
 				#endif
 					#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
-					if(!findPropernounDefinitionLink(entityNodesActiveListComplete, entity))
+					if(!this->findPropernounDefinitionLink(entityNodesActiveListComplete, entity))
 					{
 					#endif
 						#ifdef NLC_ADVANCED_REFERENCING
 						NLCitem* functionArgumentTemp = NULL;
-						if(!findFunctionArgument(parameters, entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+						if(!NLCitemClass.findFunctionArgument(parameters, entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 						{
 						#endif
 							#ifdef NLC_DEBUG
@@ -780,7 +775,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 							#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 							entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
 							#else
-							GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
+							GIAentityNode* networkIndexEntity = GIAtranslatorOperations.getPrimaryNetworkIndexNodeDefiningInstance(entity);
 							if(!(networkIndexEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
 							{
 								entity->NLClocalListVariableHasBeenDeclared = true;
@@ -804,22 +799,22 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 }
 
 
-bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList)
+bool NLCtranslatorCodeBlocksClass::isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList)
 {
 	bool foundDefiniteEntity = false;
 	
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE_SUBJECT_PASS_AS_FUNCTION_ARGUMENT
 	bool isLogicalConditionIndefiniteSubjectEntity = false;
-	if(!isDefiniteEntity(entity))
+	if(!NLCcodeBlockClass.isDefiniteEntity(entity))
 	{
 		if(entity->entityName != NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT)
 		{
 			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
 			{
 				NLCsentence* sentence = NULL;
-				if(getSentenceInFunction(entity, currentNLCfunctionInList, &sentence))
+				if(this->getSentenceInFunction(entity, currentNLCfunctionInList, &sentence))
 				{
-					if(sentencePertainsToLogicalCondition(sentence))
+					if(NLCpreprocessorSentenceClass.sentencePertainsToLogicalCondition(sentence))
 					{
 						bool entityIsEffectiveSubject = false;
 
@@ -827,28 +822,28 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfun
 						bool foundActionIncoming = false;
 						bool foundChildEntity = false;
 						int sentenceIndex = entity->sentenceIndexTemp;
-						GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(entity, sentenceIndex, &foundChildEntity);
+						GIAentityNode* childEntity = NLCcodeBlockClass.getSameReferenceSetSubstanceNonQualityChild(entity, sentenceIndex, &foundChildEntity);
 
 						GIAentityNode* targetEntity = NULL;
 						GIAentityConnection* connection = NULL;
-						if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
+						if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
 						{
 							entityIsEffectiveSubject = true;
 						}
-						else if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
+						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
 						{
 							entityIsEffectiveSubject = true;
 						}
-						else if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
+						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
 						{
 							entityIsEffectiveSubject = true;
 						}
-						else if(getEntityCheckSameReferenceSetAndSentence(entity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(entity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
 						{
 							foundActionIncoming = true;
 							GIAentityNode* actionSubject = NULL;
 							GIAentityConnection* actionSubjectConnection = NULL;
-							if(!getEntityCheckSameReferenceSetAndSentence(targetEntity, &actionSubject, &actionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT))
+							if(!NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(targetEntity, &actionSubject, &actionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT))
 							{
 								entityIsEffectiveSubject = true;	//this is required to sync with generateCodeBlocksPart3subjectObjectConnection implementation
 							}
@@ -866,9 +861,9 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfun
 			}
 		}
 	}
-	if(isDefiniteEntity(entity) || isLogicalConditionIndefiniteSubjectEntity)
+	if(NLCcodeBlockClass.isDefiniteEntity(entity) || isLogicalConditionIndefiniteSubjectEntity)
 	#else
-	if(isDefiniteEntity(entity))
+	if(NLCcodeBlockClass.isDefiniteEntity(entity))
 	#endif
 	{
 		if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))
@@ -882,7 +877,7 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfun
 			{
 			#endif	
 			#endif
-				if(generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
+				if(this->generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
 				{
 					foundDefiniteEntity = true;
 				}
@@ -894,7 +889,7 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfun
 	return foundDefiniteEntity;
 }
 
-bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(const GIAentityNode* entityNode)
+bool NLCtranslatorCodeBlocksClass::generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(const GIAentityNode* entityNode)
 {
 	bool validClass = true;
 
@@ -914,7 +909,7 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(c
 	return validClass;
 }
 
-bool getSentenceInFunction(const GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList, constEffective NLCsentence** sentenceFound)
+bool NLCtranslatorCodeBlocksClass::getSentenceInFunction(const GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList, constEffective NLCsentence** sentenceFound)
 {
 	bool result = false;
 	constEffective NLCsentence* currentNLCsentence = currentNLCfunctionInList->firstNLCsentenceInFunction;
@@ -935,7 +930,7 @@ bool getSentenceInFunction(const GIAentityNode* entity, constEffective NLCfuncti
 
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity)
+bool NLCtranslatorCodeBlocksClass::findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity)
 {
 	bool foundIndefiniteEntity = false;
 
@@ -959,7 +954,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = *entityIter;
-		if(isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entity, definiteEntity))
+		if(this->isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entity, definiteEntity))
 		{
 			foundIndefiniteEntity = true;
 		}
@@ -968,7 +963,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	return foundIndefiniteEntity;
 }
 
-bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentityNode* indefiniteEntity, const GIAentityNode* definiteEntity)
+bool NLCtranslatorCodeBlocksClass::isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentityNode* indefiniteEntity, const GIAentityNode* definiteEntity)
 {
 	bool foundIndefiniteEntity = false;
 
@@ -977,15 +972,15 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentit
 		if(!(indefiniteEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
 		{		
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
-			if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
+			if(!NLCcodeBlockClass.assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
 			#else
-			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
+			if(!NLCcodeBlockClass.assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 			#endif
 			{
 				if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && ((definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) || (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_UNDEFINED))) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
 				{
 					int indentationDifferenceFound = INT_DEFAULT_VALUE;	//not used
-					if(checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(indefiniteEntity, definiteEntity, &indentationDifferenceFound))
+					if(NLCtranslatorCodeBlocksOperations.checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(indefiniteEntity, definiteEntity, &indentationDifferenceFound))
 					{
 						foundIndefiniteEntity = true;
 						#ifdef NLC_DEBUG
@@ -1005,7 +1000,7 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentit
 #endif
 
 #ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
-bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity)
+bool NLCtranslatorCodeBlocksClass::findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity)
 {
 	//find a propernoun of the same name with a definition link within the context (function)
 	//requirements: this function assumes that it will also be tested that the propernoun is not an alias

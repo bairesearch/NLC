@@ -26,7 +26,7 @@
  * File Name: NLCmain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,21 +38,49 @@
 #include "NLCglobalDefs.h"
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
+#include "NLCtranslator.h"
+#include "NLCprint.h"
+#include "NLCprintClassDefinitions.h"
+#include "NLCprintCodeBlocks.h"
+#include "NLCpreprocessor.h"
+#include "NLCtranslatorClassDefinitions.h"
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, setProgLang
+#include "NLCapi.h"
+#include "NLCtranslatorCodeBlocksOperations.h"
+#include "GIAmain.h"
+#include "GIAdatabase.h"
+#include "GIAwordnet.h"
+#include "GIAsemanticParserDatabase.h"
+#include "GIAtranslatorOperations.h"
+#include "GIAtranslatorDefs.h"
+#include "XMLrulesClass.h"
+#include "SHAREDvars.h"
 
 int main(const int argc, const char** argv);
-	string removeFileNameExtensions(string NLCfunctionName);
+
+class NLCmainClass
+{
+	private: GIAentityNodeClassClass GIAentityNodeClass;
+	private: GIAtranslatorOperationsClass GIAtranslatorOperations;
+	private: NLCclassDefinitionClassClass NLCclassDefinitionClass;
+	private: NLCtranslatorClass NLCtranslator;
+	private: NLCtranslatorClassDefinitionsClass NLCtranslatorClassDefinitions;
+	private: NLCcodeBlockClassClass NLCcodeBlockClass;
+		private: string removeFileNameExtensions(string NLCfunctionName);
 	#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
-	string removeNLCfileNameExtension(string NLCfunctionName);
+		public: string removeNLCfileNameExtension(string NLCfunctionName);
 	#endif
 	#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
-	void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete);
+		public: void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete);
 	#endif
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList);
+		public: bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList);
 	#endif
 	#ifndef NLC_LIBRARY
-	void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
+		private: void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
 	#endif
+};
+	
 
 
 #endif

@@ -26,31 +26,28 @@
  * File Name: NLCprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCprint.h"
-#include "NLCprintClassDefinitions.h"
-#include "NLCprintCodeBlocks.h"
-#include "NLCprintDefs.h"
 
 #ifndef NLC_INPUT_FUNCTION_LISTS
-bool printCode(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, NLCfunction* firstNLCfunctionInList)
+bool NLCprintClass::printCode(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-	if(!printClassDefinitions(classDefinitionList, progLang, code, false, firstNLCfunctionInList))
+	if(!NLCprintClassDefinitions.printClassDefinitions(classDefinitionList, progLang, code, false, firstNLCfunctionInList))
 	{
 		result = false;
 	}
 	#endif
 
 	int level = 0;
-	if(!printCodeBlocks(firstCodeBlockInLevel, classDefinitionList, progLang, code, level))
+	if(!NLCprintCodeBlocks.printCodeBlocks(firstCodeBlockInLevel, classDefinitionList, progLang, code, level))
 	{
 		result = false;
 	}

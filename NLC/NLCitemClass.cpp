@@ -26,15 +26,13 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCitemClass.h"
-#include "GIAtranslatorOperations.h"
-#include "SHAREDvars.h"	//required for convertLongToString()
 
 
 NLCitem::NLCitem(void)
@@ -64,9 +62,9 @@ NLCitem::NLCitem(void)
 NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType)
 {
 	itemType = newItemType;
-	className = generateClassName(entity);
-	instanceName = generateInstanceName(entity);
-	functionName = generateFunctionName(entity);	//added 9 November 2013
+	className = NLCitemClassClass().generateClassName(entity);
+	instanceName = NLCitemClassClass().generateInstanceName(entity);
+	functionName = NLCitemClassClass().generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
@@ -88,9 +86,9 @@ NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType)
 NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const int sentenceIndex)
 {
 	itemType = newItemType;
-	className = generateClassName(entity);
-	instanceName = generateInstanceName(entity);
-	functionName = generateFunctionName(entity);	//added 9 November 2013
+	className = NLCitemClassClass().generateClassName(entity);
+	instanceName = NLCitemClassClass().generateInstanceName(entity);
+	functionName = NLCitemClassClass().generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
@@ -107,14 +105,14 @@ NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const int s
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = entity->entityName;
-	genericObjectName = generateCategoryListGenericObjectName(entity, sentenceIndex);
+	genericObjectName = NLCitemClassClass().generateCategoryListGenericObjectName(entity, sentenceIndex);
 }
 NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const string newGenericObjectName)
 {
 	itemType = newItemType;
-	className = generateClassName(entity);
-	instanceName = generateInstanceName(entity);
-	functionName = generateFunctionName(entity);	//added 9 November 2013
+	className = NLCitemClassClass().generateClassName(entity);
+	instanceName = NLCitemClassClass().generateInstanceName(entity);
+	functionName = NLCitemClassClass().generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
@@ -136,13 +134,13 @@ NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const strin
 NLCitem::NLCitem(const string newName, const int newItemType)
 {
 	itemType = newItemType;
-	className = generateClassName(newName);	//changed 9 November 2013
+	className = NLCitemClassClass().generateClassName(newName);	//changed 9 November 2013
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	instanceName = newName;		//added 21 November 2013
 	#else
 	instanceName = ""
 	#endif
-	functionName = generateFunctionName(newName);	//added 9 November 2013
+	functionName = NLCitemClassClass().generateFunctionName(newName);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
@@ -190,42 +188,42 @@ NLCitem::~NLCitem(void)
 {
 }
 
-string generateCategoryListGenericObjectName(const GIAentityNode* entity, const int sentenceIndex)
+string NLCitemClassClass::generateCategoryListGenericObjectName(const GIAentityNode* entity, const int sentenceIndex)
 {
 	#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
-	string categoryListInstanceName = entity->entityName + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME) + convertLongToString(entity->idInstance) + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME) + convertIntToString(sentenceIndex);
+	string categoryListInstanceName = entity->entityName + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME) + SHAREDvars.convertLongToString(entity->idInstance) + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME) + SHAREDvars.convertIntToString(sentenceIndex);
 	#else
-	string categoryListInstanceName = generateInstanceName(entity);
+	string categoryListInstanceName = this->generateInstanceName(entity);
 	#endif
 	return categoryListInstanceName;
 }
 
-string generateClassName(const GIAentityNode* entity)
+string NLCitemClassClass::generateClassName(const GIAentityNode* entity)
 {
-	string className = generateClassName(entity->entityName);
+	string className = this->generateClassName(entity->entityName);
 	return className;
 }
-string generateClassName(const string entityName)
+string NLCitemClassClass::generateClassName(const string entityName)
 {
 	string className = entityName + NLC_CLASS_NAME_APPEND;
 	return className;
 }
-string generateFunctionName(const GIAentityNode* entity)
+string NLCitemClassClass::generateFunctionName(const GIAentityNode* entity)
 {
-	return generateFunctionName(entity->entityName);
+	return this->generateFunctionName(entity->entityName);
 }
-string generateFunctionName(const string entityName)
+string NLCitemClassClass::generateFunctionName(const string entityName)
 {
 	string functionName = entityName + NLC_FUNCTION_NAME_APPEND;
 	return functionName;
 }
-string generateInstanceName(const GIAentityNode* entity)
+string NLCitemClassClass::generateInstanceName(const GIAentityNode* entity)
 {
-	return generateInstanceName(entity->entityName, entity->idInstance);
+	return this->generateInstanceName(entity->entityName, entity->idInstance);
 }
-string generateInstanceName(const string entityName, const long idInstance)
+string NLCitemClassClass::generateInstanceName(const string entityName, const long idInstance)
 {
-	string idInstanceString = convertLongToString(idInstance);
+	string idInstanceString = SHAREDvars.convertLongToString(idInstance);
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 	if(idInstance == NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_COMPARISON_IDINSTANCE)
 	{
@@ -236,13 +234,13 @@ string generateInstanceName(const string entityName, const long idInstance)
 	return instanceName;
 }
 
-string generateTypeName(string entityName)
+string NLCitemClassClass::generateTypeName(string entityName)
 {
 	string typeName = entityName;
 	return typeName;
 }
 
-string removeClassTextFromClassDefinitionName(const string className)
+string NLCitemClassClass::removeClassTextFromClassDefinitionName(const string className)
 {
 	string classNameRaw = "";
 	int classTextIndex = className.find(NLC_CLASS_NAME_APPEND);
@@ -260,38 +258,38 @@ string removeClassTextFromClassDefinitionName(const string className)
 
 
 #ifdef NLC_INPUT_FUNCTION_LISTS
-string parseFunctionNameFromNLCfunctionName(string NLCfunctionName)
+string NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionName)
 {
 	//gets "fight" from "dog::fight"
 	string functionName = "";
 	bool hasFunctionOwnerClass = false;
 	string functionOwnerName = "";
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass);
+	this->parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass);
 	return functionName;
 }
 
-void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass)
+void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass)
 {
 	//gets "fight" from "dog::fight"
 	bool hasFunctionObjectClass = false;
 	string functionObjectName = "";
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+	this->parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 }
 
-void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass)
+void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass)
 {
 	vector<NLCitem*> additionalArgumentsTempNotUsed;
-	parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, &additionalArgumentsTempNotUsed);
+	this->parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, &additionalArgumentsTempNotUsed);
 }
 
 #ifdef NLC_LIBRARY
-void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
+void NLCitemClassClass::parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
 {
-	parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, additionalArguments);
+	this->parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, additionalArguments);
 }
 #endif
 
-void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
+void NLCitemClassClass::parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
 {
 	//gets "fight" from "dog::fight"
 	*hasFunctionOwnerClass = false;
@@ -385,7 +383,7 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 	#endif
 }
 
-string generateNLCfunctionHeader(const string functionName, const string functionOwnerName, const bool hasFunctionOwnerClass, const string functionObjectName, const bool hasFunctionObjectClass)
+string NLCitemClassClass::generateNLCfunctionHeader(const string functionName, const string functionOwnerName, const bool hasFunctionOwnerClass, const string functionObjectName, const bool hasFunctionObjectClass)
 {
 	string NLCfunctionHeader = string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING) + NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR;
 	if(hasFunctionOwnerClass)
@@ -403,7 +401,7 @@ string generateNLCfunctionHeader(const string functionName, const string functio
 
 #endif
 
-bool findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* entity, const int itemType, constEffective NLCitem** functionArgument)
+bool NLCitemClassClass::findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* entity, const int itemType, constEffective NLCitem** functionArgument)
 {
 	bool foundFunctionArgument = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
@@ -418,7 +416,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* ent
 			//cout << "(currentItem->itemType == itemType)" << endl;
 			#endif
 			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-			if(currentItem->instanceName == generateInstanceName(entity))
+			if(currentItem->instanceName == this->generateInstanceName(entity))
 			#else
 			if(currentItem->name == entity->entityName)	//or if(currentItem->className == generateClassName(entity->entityName))
 			#endif
@@ -434,7 +432,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* ent
 	return foundFunctionArgument;
 }
 
-bool detectPredeterminer(GIAentityNode* entity, int sentenceIndex)
+bool NLCitemClassClass::detectPredeterminer(GIAentityNode* entity, int sentenceIndex)
 {
 	bool predeterminerDetected = false;
 	
@@ -443,11 +441,11 @@ bool detectPredeterminer(GIAentityNode* entity, int sentenceIndex)
 	if(iterTemp !=  entity->grammaticalPredeterminerTempSentenceArray.end())
 	//if(entity->grammaticalPredeterminerTempSentenceArray.at(sentenceIndex) != -1)
 	{
-		//predeterminerDetected = intInIntArray(grammaticalPredeterminerTempSentenceArray.at(sentenceIndex)->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
-		predeterminerDetected = intInIntArray(iterTemp->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+		//predeterminerDetected = SHAREDvars.intInIntArray(grammaticalPredeterminerTempSentenceArray.at(sentenceIndex)->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+		predeterminerDetected = SHAREDvars.intInIntArray(iterTemp->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
 	}
 	#else
-	predeterminerDetected = intInIntArray(entity->grammaticalPredeterminerTemp, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+	predeterminerDetected = SHAREDvars.intInIntArray(entity->grammaticalPredeterminerTemp, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
 	#endif
 	
 	return predeterminerDetected;

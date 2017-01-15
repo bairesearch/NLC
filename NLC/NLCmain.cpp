@@ -26,42 +26,23 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3a 14-January-2017
+ * Project Version: 1w3b 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCmain.h"
-#include "NLCcodeBlockClass.h"
-#include "NLCclassDefinitionClass.h"
-#include "NLCtranslator.h"
-#include "NLCprint.h"
-#include "NLCprintClassDefinitions.h"
-#include "NLCprintCodeBlocks.h"
 //#ifdef NLC_PREPROCESSOR
-#include "NLCpreprocessor.h"
 //#endif
-#include "NLCtranslatorClassDefinitions.h"
-#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, setProgLang
 #ifdef NLC_API
-#include "NLCapi.h"
 #endif
-#include "NLCtranslatorCodeBlocksOperations.h"
-#include "GIAmain.h"
-#include "GIAdatabase.h"
 #ifdef USE_WORDNET
-#include "GIAwordnet.h"
 #endif
 #ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
-#include "GIAsemanticParserDatabase.h"
 #endif
-#include "GIAtranslatorOperations.h"
 #ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
-#include "GIAtranslatorDefs.h"
 #endif
-#include "XMLrulesClass.h"
-#include "SHAREDvars.h"
 
 
 static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
@@ -144,7 +125,7 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 int main(const int argc, const char** argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
-	setProgLang(progLang);
+	NLCprintDefsClass().setProgLang(progLang);
 
 	//print execution time
 	struct tm* current;
@@ -275,224 +256,224 @@ int main(const int argc, const char** argv)
 	//basic execution flow outline; if no dataset or xml inputText file is specified, just form network - do not train network
 
 	#ifdef USE_CE
-	if(argumentExists(argc, argv, "-icodeextensions"))
+	if(SHAREDvarsClass().argumentExists(argc, argv, "-icodeextensions"))
 	#else
-	if(argumentExists(argc, argv, "-itxt") || argumentExists(argc, argv, "-ionlprel") || argumentExists(argc, argv, "-ixml"))
+	if(SHAREDvarsClass().argumentExists(argc, argv, "-itxt") || SHAREDvarsClass().argumentExists(argc, argv, "-ionlprel") || SHAREDvarsClass().argumentExists(argc, argv, "-ixml"))
 	#endif
 	{
-		if(argumentExists(argc, argv, "-itxt"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-itxt"))
 		{
-			inputTextPlainTXTfileName = getStringArgument(argc, argv, "-itxt");
+			inputTextPlainTXTfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-itxt");
 			useInputTextPlainTXTFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-ionlprel"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ionlprel"))
 		{
-			inputTextNLPrelationXMLfileName = getStringArgument(argc, argv, "-ionlprel");
+			inputTextNLPrelationXMLfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ionlprel");
 			useInputTextNLPrelationXMLFile = true;
 		}
-		if(argumentExists(argc, argv, "-ionlptag"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ionlptag"))
 		{
-			inputTextNLPfeatureXMLfileName = getStringArgument(argc, argv, "-ionlptag");
+			inputTextNLPfeatureXMLfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ionlptag");
 			useInputTextNLPfeatureXMLFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-ixml"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ixml"))
 		{
-			inputTextXMLFileName = getStringArgument(argc, argv, "-ixml");
+			inputTextXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ixml");
 			//train = true;
 			useInputTextXMLFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-itxtq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-itxtq"))
 		{
-			inputQueryPlainTXTFileName = getStringArgument(argc, argv, "-itxtq");
+			inputQueryPlainTXTFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-itxtq");
 			useInputQueryPlainTXTFile = true;
 			useInputQuery = true;
 		}
 
-		if(argumentExists(argc, argv, "-ionlprelq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ionlprelq"))
 		{
-			inputQueryNLPrelationXMLFileName = getStringArgument(argc, argv, "-ionlprelq");
+			inputQueryNLPrelationXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ionlprelq");
 			useInputQueryNLPrelationXMLFile = true;
 			useInputQuery = true;
 		}
-		if(argumentExists(argc, argv, "-ionlptagq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ionlptagq"))
 		{
-			inputQueryNLPfeatureXMLFileName = getStringArgument(argc, argv, "-ionlptagq");
+			inputQueryNLPfeatureXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ionlptagq");
 			useInputQueryNLPfeatureXMLFile = true;
 			useInputQuery = true;
 		}
 
-		if(argumentExists(argc, argv, "-ixmlq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ixmlq"))
 		{
-			inputQueryXMLFileName = getStringArgument(argc, argv, "-ixmlq");
+			inputQueryXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ixmlq");
 			useInputQueryXMLFile = true;
 			useInputQuery = true;
 		}
 
 	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-		if(argumentExists(argc, argv, "-ilist"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ilist"))
 		{
 			NLCinputFileList = true;
 		}
 	#endif
 	#ifdef NLC_PREPROCESSOR
-		if(argumentExists(argc, argv, "-ipreprocess"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ipreprocess"))
 		{
 			useNLCpreprocessor = true;
 		}
 	#endif
 	#ifdef NLC_API
-		if(argumentExists(argc, argv, "-api"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-api"))
 		{
 			NLCapi = true;
 		}
-		if(argumentExists(argc, argv, "-apisourcefolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-apisourcefolder"))
 		{
-			APIsourceFolder = getStringArgument(argc, argv, "-apisourcefolder");
+			APIsourceFolder = SHAREDvarsClass().getStringArgument(argc, argv, "-apisourcefolder");
 		}
-		if(argumentExists(argc, argv, "-apiclasslist"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-apiclasslist"))
 		{
-			APIclassListFileName = getStringArgument(argc, argv, "-apiclasslist");
+			APIclassListFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-apiclasslist");
 		}
 	#endif
 
-		if(argumentExists(argc, argv, "-ocff"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocff"))
 		{
-			outputTextCFFFileName = getStringArgument(argc, argv, "-ocff");
+			outputTextCFFFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocff");
 			useOutputTextCFFFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-oxml"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oxml"))
 		{
-			outputTextXMLFileName = getStringArgument(argc, argv, "-oxml");
+			outputTextXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oxml");
 			useOutputTextXMLFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-ocxl"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocxl"))
 		{
-			outputTextCXLFileName = getStringArgument(argc, argv, "-ocxl");
+			outputTextCXLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocxl");
 			useOutputTextCXLFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-oldr"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oldr"))
 		{
-			outputTextLDRFileName = getStringArgument(argc, argv, "-oldr");
+			outputTextLDRFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oldr");
 			useOutputTextLDRFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc, argv, "-oppm"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oppm"))
 		{
-			outputTextPPMFileName = getStringArgument(argc, argv, "-oppm");
+			outputTextPPMFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oppm");
 			useOutputTextPPMFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc, argv, "-osvg"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-osvg"))
 		{
-			outputTextSVGFileName = getStringArgument(argc, argv, "-osvg");
+			outputTextSVGFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-osvg");
 			useOutputTextSVGFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc, argv, "-ocffq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocffq"))
 		{
-			outputQueryCFFFileName = getStringArgument(argc, argv, "-ocffq");
+			outputQueryCFFFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocffq");
 			useOutputQueryCFFFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-oxmlq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oxmlq"))
 		{
-			outputQueryXMLFileName = getStringArgument(argc, argv, "-oxmlq");
+			outputQueryXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oxmlq");
 			useOutputQueryXMLFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-ocxlq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocxlq"))
 		{
-			outputQueryCXLFileName = getStringArgument(argc, argv, "-ocxlq");
+			outputQueryCXLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocxlq");
 			useOutputQueryCXLFile = true;
 		}
 
-		if(argumentExists(argc, argv, "-oldrq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oldrq"))
 		{
-			outputQueryLDRFileName = getStringArgument(argc, argv, "-oldrq");
+			outputQueryLDRFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oldrq");
 			useOutputQueryLDRFile = true;
 			printOutputQuery = true;
 		}
 
-		if(argumentExists(argc, argv, "-oppmq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oppmq"))
 		{
-			outputQueryPPMFileName = getStringArgument(argc, argv, "-oppmq");
+			outputQueryPPMFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oppmq");
 			useOutputQueryPPMFile = true;
 			printOutputQuery = true;
 		}
 
-		if(argumentExists(argc, argv, "-osvgq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-osvgq"))
 		{
-			outputQuerySVGFileName = getStringArgument(argc, argv, "-osvgq");
+			outputQuerySVGFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-osvgq");
 			useOutputQuerySVGFile = true;
 			printOutputQuery = true;
 		}
 
-		if(argumentExists(argc, argv, "-oall"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oall"))
 		{
-			outputTextAllFileName = getStringArgument(argc, argv, "-oall");
+			outputTextAllFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oall");
 			useOutputTextAllFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc, argv, "-oanswer"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oanswer"))
 		{
-			outputTextAnswerPlainTXTFileName = getStringArgument(argc, argv, "-oanswer");
+			outputTextAnswerPlainTXTFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oanswer");
 			useOutputTextAnswerPlainTXTFile = true;
 		}
 
 		/*
-		if(argumentExists(argc, argv, "-train"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-train"))
 		{
 			int trainInt
-			trainInt = getFloatArgument(argc, argv, "-train");
+			trainInt = SHAREDvarsClass().getFloatArgument(argc, argv, "-train");
 			train = (bool)trainInt;
 		}
 		*/
 
-		if(argumentExists(argc, argv, "-notshow"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-notshow"))
 		{
 			displayInOpenGLAndOutputScreenshot = false;
 		}
 
-		if(argumentExists(argc, argv, "-width"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-width"))
 		{
-			rasterImageWidth = getFloatArgument(argc, argv, "-width");
+			rasterImageWidth = SHAREDvarsClass().getFloatArgument(argc, argv, "-width");
 		}
 
-		if(argumentExists(argc, argv, "-height"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-height"))
 		{
-			rasterImageHeight = getFloatArgument(argc, argv, "-height");
+			rasterImageHeight = SHAREDvarsClass().getFloatArgument(argc, argv, "-height");
 		}
 
-		string currentFolder = getCurrentDirectory();
+		string currentFolder = SHAREDvarsClass().getCurrentDirectory();
 
-		if(argumentExists(argc, argv, "-nlprelation"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlprelation"))
 		{
-			NLPdependencyRelationsParser = int(getFloatArgument(argc, argv, "-nlprelation"));
+			NLPdependencyRelationsParser = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-nlprelation"));
 		}
 
-		if(argumentExists(argc, argv, "-nlpfeature"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlpfeature"))
 		{
-			NLPfeatureParser = int(getFloatArgument(argc, argv, "-nlpfeature"));
+			NLPfeatureParser = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-nlpfeature"));
 		}
 		else
 		{
 			NLPfeatureParser = NLPdependencyRelationsParser;
 		}
-		if(argumentExists(argc, argv, "-nlpcompmode"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlpcompmode"))
 		{
 			if(queryNLPdependencyRelationsParser == GIA_NLP_PARSER_RELEX)
 			{
-				int nlpcompmode = int(getFloatArgument(argc, argv, "-nlpcompmode"));
+				int nlpcompmode = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-nlpcompmode"));
 				if(nlpcompmode == 1)
 				{
 					NLPrelexCompatibilityMode = true;
@@ -510,24 +491,24 @@ int main(const int argc, const char** argv)
 			}
 		}
 
-		if(argumentExists(argc, argv, "-nlprelationq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlprelationq"))
 		{
-			queryNLPdependencyRelationsParser = int(getFloatArgument(argc, argv, "-nlprelationq"));
+			queryNLPdependencyRelationsParser = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-nlprelationq"));
 		}
 
-		if(argumentExists(argc, argv, "-nlpfeatureq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlpfeatureq"))
 		{
-			queryNLPfeatureParser = int(getFloatArgument(argc, argv, "-nlpfeatureq"));
+			queryNLPfeatureParser = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-nlpfeatureq"));
 		}
 		else
 		{
 			queryNLPfeatureParser = queryNLPdependencyRelationsParser;
 		}
-		if(argumentExists(argc, argv, "-nlpcompmodeq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlpcompmodeq"))
 		{
 			if(queryNLPdependencyRelationsParser == GIA_NLP_PARSER_RELEX)
 			{
-				int nlpcompmodeq = int(getFloatArgument(argc, argv, "-nlpcompmodeq"));
+				int nlpcompmodeq = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-nlpcompmodeq"));
 				if(nlpcompmodeq == 1)
 				{
 					queryNLPrelexCompatibilityMode = true;
@@ -546,58 +527,58 @@ int main(const int argc, const char** argv)
 		}
 
 	#ifdef GIA_DATABASE
-		if(argumentExists(argc, argv, "-dbread"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbread"))
 		{
 			readFromDatabase = true;
 			useDatabase = true;
 		}
-		if(argumentExists(argc, argv, "-dbwrite"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbwrite"))
 		{
 			writeToDatabase = true;
 			useDatabase = true;
 		}
-		if(argumentExists(argc, argv, "-dbfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbfolder"))
 		{
-			databaseFolderName = getStringArgument(argc, argv, "-dbfolder");
+			databaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbfolder");
 			databaseFolderName = databaseFolderName + '/';
 		}
 	#endif
 	#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
-		if(argumentExists(argc, argv, "-dbsemanticparserfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbsemanticparserfolder"))
 		{
-			semanticParserDatabaseFolderName = getStringArgument(argc, argv, "-dbsemanticparserfolder");
+			semanticParserDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbsemanticparserfolder");
 			semanticParserDatabaseFolderName = semanticParserDatabaseFolderName + '/';
 		}
 	#endif
 
 	#ifdef GIA_LRP
-		if(argumentExists(argc, argv, "-lrp"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-lrp"))
 		{
 			useLRP = true;
 		}
-		if(argumentExists(argc, argv, "-olrptxt"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-olrptxt"))
 		{
-			outputLRPTextPlainTXTFileName = getStringArgument(argc, argv, "-olrptxt");
+			outputLRPTextPlainTXTFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-olrptxt");
 			useOutputLRPTextPlainTXTFile = true;
 		}
-		if(argumentExists(argc, argv, "-olrptxtnlp"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-olrptxtnlp"))
 		{
-			outputLRPTextForNLPonlyPlainTXTFileName = getStringArgument(argc, argv, "-olrptxtnlp");
+			outputLRPTextForNLPonlyPlainTXTFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-olrptxtnlp");
 			useOutputLRPTextForNLPonlyPlainTXTFile = true;
 		}
-		if(argumentExists(argc, argv, "-olrptxtq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-olrptxtq"))
 		{
-			outputQueryLRPTextPlainTXTFileName = getStringArgument(argc, argv, "-olrptxtq");
+			outputQueryLRPTextPlainTXTFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-olrptxtq");
 			useOutputQueryLRPTextPlainTXTFile = true;
 		}
-		if(argumentExists(argc, argv, "-olrptxtnlpq"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-olrptxtnlpq"))
 		{
-			outputQueryLRPTextForNLPonlyPlainTXTFileName = getStringArgument(argc, argv, "-olrptxtnlpq");
+			outputQueryLRPTextForNLPonlyPlainTXTFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-olrptxtnlpq");
 			useOutputQueryLRPTextForNLPonlyPlainTXTFile = true;
 		}
-		if(argumentExists(argc, argv, "-lrpfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-lrpfolder"))
 		{
-			lrpDataFolderName = getStringArgument(argc, argv, "-lrpfolder");
+			lrpDataFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-lrpfolder");
 			lrpDataFolderName = lrpDataFolderName + '/';
 		}
 		else
@@ -606,60 +587,60 @@ int main(const int argc, const char** argv)
 		}
 	#endif
 	#ifdef USE_WORDNET
-		if(argumentExists(argc, argv, "-syndet"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-syndet"))
 		{
-			synonymnDetectionStatus = int(getFloatArgument(argc, argv, "-syndet"));
+			synonymnDetectionStatus = int(SHAREDvarsClass().getFloatArgument(argc, argv, "-syndet"));
 		}
 	#endif
 
-		if(argumentExists(argc, argv, "-workingfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-workingfolder"))
 		{
-			workingFolder =getStringArgument(argc, argv, "-workingfolder");
+			workingFolder =SHAREDvarsClass().getStringArgument(argc, argv, "-workingfolder");
 		}
 		else
 		{
 			workingFolder = currentFolder;
 		}
 
-		if(argumentExists(argc, argv, "-nlprelexfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlprelexfolder"))
 		{
-			NLPexeFolderArray[GIA_NLP_PARSER_RELEX] =getStringArgument(argc, argv, "-nlprelexfolder");
+			NLPexeFolderArray[GIA_NLP_PARSER_RELEX] =SHAREDvarsClass().getStringArgument(argc, argv, "-nlprelexfolder");
 		}
 		else
 		{
 			NLPexeFolderArray[GIA_NLP_PARSER_RELEX] = currentFolder;
 		}
-		if(argumentExists(argc, argv, "-nlpstanfordcorenlpfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlpstanfordcorenlpfolder"))
 		{
-			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_CORENLP] =getStringArgument(argc, argv, "-nlpstanfordcorenlpfolder");
+			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_CORENLP] =SHAREDvarsClass().getStringArgument(argc, argv, "-nlpstanfordcorenlpfolder");
 		}
 		else
 		{
 			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_CORENLP] = currentFolder;
 		}
-		if(argumentExists(argc, argv, "-nlpstanfordparserfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-nlpstanfordparserfolder"))
 		{
-			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] =getStringArgument(argc, argv, "-nlpstanfordparserfolder");
+			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] =SHAREDvarsClass().getStringArgument(argc, argv, "-nlpstanfordparserfolder");
 		}
 		else
 		{
 			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] = currentFolder;
 		}
 
-		if(argumentExists(argc, argv, "-tempfolder"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-tempfolder"))
 		{
-			tempFolder = getStringArgument(argc, argv, "-tempfolder");
+			tempFolder = SHAREDvarsClass().getStringArgument(argc, argv, "-tempfolder");
 		}
 		else
 		{
 			tempFolder = currentFolder;
 		}
 
-		setCurrentDirectory(workingFolder);
+		SHAREDvarsClass().setCurrentDirectory(workingFolder);
 
-		if(argumentExists(argc, argv, "-version"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1w3a 14-January-2017" << endl;
+			cout << "OpenNLC.exe - Project Version: 1w3b 14-January-2017" << endl;
 			exit(1);
 		}
 
@@ -673,7 +654,7 @@ int main(const int argc, const char** argv)
 	}
 
 	//not currently used;
-	if(!parseNLCrulesXMLfile())
+	if(!XMLrulesClassClass().parseNLCrulesXMLfile())
 	{
 		cout << "warning: NLCrules.xml file not detected" << endl;
 		//exit(0);
@@ -700,7 +681,7 @@ int main(const int argc, const char** argv)
 	{
 		if(useInputTextPlainTXTFile)
 		{
-			if(!getFilesFromFileList(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
+			if(!NLCtranslatorClass().getFilesFromFileList(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextPlainTXTfileName << endl;
 			}
@@ -712,32 +693,32 @@ int main(const int argc, const char** argv)
 					//collapse all input list text files into single input text file
 					inputTextPlainTXTfileName = inputTextPlainTXTfileName + NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR_COMBINED_FILE_NAME_APPEND_TEXT;
 					string tempStr = "";
-					setCurrentDirectory(tempFolder);
-					writeStringToFile(inputTextPlainTXTfileName, &tempStr);
-					setCurrentDirectory(workingFolder);
+					SHAREDvarsClass().setCurrentDirectory(tempFolder);
+					SHAREDvarsClass().writeStringToFile(inputTextPlainTXTfileName, &tempStr);
+					SHAREDvarsClass().setCurrentDirectory(workingFolder);
 					for(vector<string>::iterator inputTextPlainTXTFileNameListIter = inputTextPlainTXTFileNameList.begin(); inputTextPlainTXTFileNameListIter != inputTextPlainTXTFileNameList.end(); inputTextPlainTXTFileNameListIter++)
 					{
 						string inputTextPlainTXTfileNameSeparate = *inputTextPlainTXTFileNameListIter;
-						string NLCfunctionName = removeNLCfileNameExtension(inputTextPlainTXTfileNameSeparate);
+						string NLCfunctionName = NLCmainClass().removeNLCfileNameExtension(inputTextPlainTXTfileNameSeparate);
 						string functionName = "";
 						string functionOwnerName = "";
 						string functionObjectName = "";
 						bool hasFunctionOwnerClass = false;
 						bool hasFunctionObjectClass = false;
-						parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
-						string NLCfunctionHeader = generateNLCfunctionHeader(functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass);
-						string functionContents = getFileContents(inputTextPlainTXTfileNameSeparate);
+						NLCitemClassClass().parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+						string NLCfunctionHeader = NLCitemClassClass().generateNLCfunctionHeader(functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass);
+						string functionContents = SHAREDvarsClass().getFileContents(inputTextPlainTXTfileNameSeparate);
 						#ifdef NLC_DEBUG
 						//cout << "inputTextPlainTXTfileNameSeparate = " << inputTextPlainTXTfileNameSeparate << endl;
 						//cout << "NLCfunctionHeader = " << NLCfunctionHeader << endl;
 						//cout << "functionContents = " << functionContents << endl;
 						#endif
 						string functionText = NLCfunctionHeader + CHAR_NEWLINE + functionContents + CHAR_NEWLINE;
-						setCurrentDirectory(tempFolder);
-						appendStringToFile(inputTextPlainTXTfileName, &functionText);
-						setCurrentDirectory(workingFolder);
+						SHAREDvarsClass().setCurrentDirectory(tempFolder);
+						SHAREDvarsClass().appendStringToFile(inputTextPlainTXTfileName, &functionText);
+						SHAREDvarsClass().setCurrentDirectory(workingFolder);
 					}
-					setCurrentDirectory(tempFolder);	//this is required such that NLC preprocessor can read the combined input file
+					SHAREDvarsClass().setCurrentDirectory(tempFolder);	//this is required such that NLC preprocessor can read the combined input file
 					inputTextPlainTXTFileNameList.clear();	//this is required such that NLC preprocessor can fill inputTextPlainTXTFileNameList
 					numberOfInputFilesInList = 1;		//this is required such that NLC preprocessor can fill inputTextPlainTXTFileNameList
 				}
@@ -747,21 +728,21 @@ int main(const int argc, const char** argv)
 		#ifdef NLC_GIA_NLP_OR_XML_INPUT
 		if(useInputTextNLPrelationXMLFile)
 		{
-			if(!getFilesFromFileList(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
+			if(!NLCtranslatorClass().getFilesFromFileList(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextNLPrelationXMLfileName << endl;
 			}
 		}
 		if(useInputTextNLPfeatureXMLFile)
 		{
-			if(!getFilesFromFileList(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
+			if(!NLCtranslatorClass().getFilesFromFileList(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextNLPfeatureXMLfileName << endl;
 			}
 		}
 		if(useInputTextXMLFile)
 		{
-			if(!getFilesFromFileList(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
+			if(!NLCtranslatorClass().getFilesFromFileList(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextXMLFileName << endl;
 			}
@@ -797,7 +778,7 @@ int main(const int argc, const char** argv)
 		}
 		#endif
 
-		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
+		if(NLCpreprocessorClass().preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
 			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(preprocessorDetectedFunctions)
@@ -832,7 +813,7 @@ int main(const int argc, const char** argv)
 
 	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES
-	initialiseFunctionAliasClassList();
+	NLCcodeBlockClassClass().initialiseFunctionAliasClassList();
 	#endif
 	#endif
 
@@ -843,7 +824,7 @@ int main(const int argc, const char** argv)
 	vector<string> nlcLibraryFunctionList;
 	int nlcLibraryFunctionListSizeTemp;
 	#ifdef NLC_LIBRARY_STANDARD
-	if(!getFilesFromFileList(NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
+	if(!NLCtranslatorClass().getFilesFromFileList(NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
@@ -851,7 +832,7 @@ int main(const int argc, const char** argv)
 	}
 	#endif
 	#ifdef NLC_LIBRARY_USER
-	if(!getFilesFromFileList(NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
+	if(!NLCtranslatorClass().getFilesFromFileList(NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
@@ -861,10 +842,10 @@ int main(const int argc, const char** argv)
 	for(vector<string>::iterator nlcLibraryFunctionListIter = nlcLibraryFunctionList.begin(); nlcLibraryFunctionListIter != nlcLibraryFunctionList.end(); nlcLibraryFunctionListIter++)
 	{
 		string nlcLibraryFunctionName = (*nlcLibraryFunctionListIter);
-		if(detectFunctionHeader(&nlcLibraryFunctionName))
+		if(NLCpreprocessorClass().detectFunctionHeader(&nlcLibraryFunctionName))
 		{
-			string NLCfunctionName = getFunctionNameFromFunctionHeader(&nlcLibraryFunctionName);
-			createFunctionDefinitionClassDefinition(&classDefinitionList, NLCfunctionName, FUNCTION_INDEX_LIBRARY_FUNCTION, true);
+			string NLCfunctionName = NLCpreprocessorClass().getFunctionNameFromFunctionHeader(&nlcLibraryFunctionName);
+			NLCtranslatorClass().createFunctionDefinitionClassDefinition(&classDefinitionList, NLCfunctionName, FUNCTION_INDEX_LIBRARY_FUNCTION, true);
 			#ifdef NLC_DEBUG
 			//cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			//FUTURE NLC - update createFunctionDefinitionClassDefinition/parseFunctionNameFromNLCfunctionName to extract ! delimited tags also to identify auxilliary function arguments
@@ -919,7 +900,7 @@ int main(const int argc, const char** argv)
 		}
 		#endif
 
-		setCurrentDirectory(workingFolder);	//NB executeGIA must be executed with current directory set to the original workingFolder (such that GIArules.xml can be read)
+		SHAREDvarsClass().setCurrentDirectory(workingFolder);	//NB executeGIA must be executed with current directory set to the original workingFolder (such that GIArules.xml can be read)
 		string workingFolderOrig = workingFolder;
 		#ifdef NLC_PREPROCESSOR
 		if(useNLCpreprocessor)
@@ -928,15 +909,15 @@ int main(const int argc, const char** argv)
 		}
 		#endif
 
-		setFirstNLCsentenceInList(currentNLCfunctionInList->firstNLCsentenceInFunction);
+		NLCtranslatorCodeBlocksOperationsClass().setFirstNLCsentenceInList(currentNLCfunctionInList->firstNLCsentenceInFunction);
 		#ifdef GIA_NLC_INTEGRATION
-		setFirstNLCsentenceInListGIA(currentNLCfunctionInList->firstNLCsentenceInFunction);
+		GIAtranslatorOperationsClass().setFirstNLCsentenceInListGIA(currentNLCfunctionInList->firstNLCsentenceInFunction);
 		#endif
 
 		#ifdef USE_CS_WORKAROUND
-		executeGIA2();
+		GIAmainClass().executeGIA2();
 		#endif
-		executeGIA(
+		GIAmainClass().executeGIA(
 
 			NLPfeatureParser,
 			NLPdependencyRelationsParser,
@@ -1049,7 +1030,7 @@ int main(const int argc, const char** argv)
 			&maxNumberSentences
 		);
 
-		setCurrentDirectory(tempFolder);	//redundant	//NB executeGIA will change the current directory to the tempFolder, meaning NLC does not have to set the current directory to the tempFolder after executing GIA
+		SHAREDvarsClass().setCurrentDirectory(tempFolder);	//redundant	//NB executeGIA will change the current directory to the tempFolder, meaning NLC does not have to set the current directory to the tempFolder after executing GIA
 		workingFolder = workingFolderOrig;
 
 		string NLCfunctionName = "";
@@ -1057,7 +1038,7 @@ int main(const int argc, const char** argv)
 		if(NLCinputFileList)
 		{
 			NLCfunctionName = inputTextPlainTXTfileName;
-			NLCfunctionName = removeNLCfileNameExtension(NLCfunctionName);
+			NLCfunctionName = NLCmainClass().removeNLCfileNameExtension(NLCfunctionName);
 		}
 		else
 		{
@@ -1107,7 +1088,7 @@ int main(const int argc, const char** argv)
 		#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 		NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
 		#else
-		NLCfunctionName = removeFileNameExtensions(NLCfunctionName);
+		NLCfunctionName = NLCmainClass().removeFileNameExtensions(NLCfunctionName);
 		#endif
 		#endif
 
@@ -1123,7 +1104,7 @@ int main(const int argc, const char** argv)
 		cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:" << endl;
 		#endif
 		#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
-		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
+		NLCmainClass().transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
 
 		#ifdef NLC_DEBUG
@@ -1131,9 +1112,9 @@ int main(const int argc, const char** argv)
 		#endif
 
 		//generate class definition function declaration for new function definition (creates both functionDependency object and classDefinition object)
-		createFunctionDefinitionClassDefinition(&classDefinitionList, NLCfunctionName, functionDefinitionIndex, false);
+		NLCtranslatorClass().createFunctionDefinitionClassDefinition(&classDefinitionList, NLCfunctionName, functionDefinitionIndex, false);
 
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
+		NLCtranslatorClass().translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
 
 		#ifdef NLC_PREPROCESSOR
 		if(useNLCpreprocessor)
@@ -1145,14 +1126,14 @@ int main(const int argc, const char** argv)
 
 
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	if(!generateClassDefinitionFunctionDeclarationsAndReconcileArguments(numberOfInputFilesInList, &classDefinitionList, &entityNodesActiveListCompleteFunctions, &firstCodeBlockInTreeList))
+	if(!NLCmainClass().generateClassDefinitionFunctionDeclarationsAndReconcileArguments(numberOfInputFilesInList, &classDefinitionList, &entityNodesActiveListCompleteFunctions, &firstCodeBlockInTreeList))
 	{
 		result = false;
 	}
 	#endif
 
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
-	preventDoubleDeclarationsOfClassDefinitionVariablesInHeirachy(&classDefinitionList);	//moved 1q9a
+	NLCtranslatorClassDefinitionsClass().preventDoubleDeclarationsOfClassDefinitionVariablesInHeirachy(&classDefinitionList);	//moved 1q9a
 	#endif
 
 	string code = "";
@@ -1167,21 +1148,21 @@ int main(const int argc, const char** argv)
 		#else
 		vector<NLCclassDefinition*>* classDefinitionListAPI = new vector<NLCclassDefinition*>;
 		#endif
-		if(!getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
+		if(!NLCtranslatorClass().getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
 		{
 			cout << "main{} error: !getFilesFromFileList: " << APIclassListFileName << endl;
 		}
 		for(vector<string>::iterator iter = APIclassList.begin(); iter != APIclassList.end(); iter++)
 		{
 			string APIclassName = *iter;
-			if(!parseDoxygenClassXMLfile(APIclassName, APIsourceFolder, classDefinitionListAPI, progLang))
+			if(!NLCapiClass().parseDoxygenClassXMLfile(APIclassName, APIsourceFolder, classDefinitionListAPI, progLang))
 			{
-				cout << "main{} error: !parseDoxygenClassXMLfile(: " << APIsourceFolder + "..." + APIclassName + "..." << endl;
+				cout << "main{} error: !NLCapiClass().parseDoxygenClassXMLfile(: " << APIsourceFolder + "..." + APIclassName + "..." << endl;
 			}
 		}
 		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 		#else
-		if(printClassDefinitions(classDefinitionListAPI, progLang, &code, true, firstNLCfunctionInList))
+		if(NLCprintClassDefinitionsClass().printClassDefinitions(classDefinitionListAPI, progLang, &code, true, firstNLCfunctionInList))
 		{
 
 		}
@@ -1191,7 +1172,7 @@ int main(const int argc, const char** argv)
 
 	#ifdef NLC_INPUT_FUNCTION_LISTS
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-	if(!printClassDefinitions(&classDefinitionList, progLang, &code, false, firstNLCfunctionInList))
+	if(!NLCprintClassDefinitionsClass().printClassDefinitions(&classDefinitionList, progLang, &code, false, firstNLCfunctionInList))
 	{
 		result = false;
 	}
@@ -1201,7 +1182,7 @@ int main(const int argc, const char** argv)
 	#ifndef NLC_LIBRARY
 	//create predefined NLC functions
 	NLCcodeblock* currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
-	printPredefinedNLCfunctions(currentCodeBlockInTree);
+	NLCmainClass().printPredefinedNLCfunctions(currentCodeBlockInTree);
 	#endif
 
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
@@ -1209,12 +1190,12 @@ int main(const int argc, const char** argv)
 		NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDefinitionIndex);
 		int level = 0;
 		#ifdef NLC_INPUT_FUNCTION_LISTS
-		if(!printCodeBlocks(firstCodeBlockInTree, &classDefinitionList, progLang, &code, level))
+		if(!NLCprintCodeBlocksClass().printCodeBlocks(firstCodeBlockInTree, &classDefinitionList, progLang, &code, level))
 		{
 			result = false;
 		}
 		#else
-		if(!printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code, firstNLCfunctionInList))
+		if(!NLCprintClass().printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code, firstNLCfunctionInList))
 		{
 			result = false;
 		}
@@ -1231,7 +1212,7 @@ int main(const int argc, const char** argv)
 	cout << "NLC execution time: " << timeAndDateString << " (finish)" << endl;
 }
 
-string removeFileNameExtensions(string NLCfunctionName)
+string NLCmainClass::removeFileNameExtensions(string NLCfunctionName)
 {
 	string NLCfunctionNameCleaned = NLCfunctionName;
 	int indexOfFirstFileExtension = NLCfunctionName.find(".");
@@ -1242,7 +1223,7 @@ string removeFileNameExtensions(string NLCfunctionName)
 	return NLCfunctionNameCleaned;
 }
 
-string removeNLCfileNameExtension(string NLCfunctionName)
+string NLCmainClass::removeNLCfileNameExtension(string NLCfunctionName)
 {
 	string NLCfunctionNameCleaned = NLCfunctionName;
 	int indexOfFirstFileExtension = NLCfunctionName.find(NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION);
@@ -1264,14 +1245,14 @@ string removeNLCfileNameExtension(string NLCfunctionName)
 
 #ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
 //this is required for NLC
-void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete)
+void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* actionEntity = (*entityIter);
 		if((actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) && !(actionEntity->disabled))
 		{
-			if(isActionSpecialPossessive(actionEntity))
+			if(GIAentityNodeClass.isActionSpecialPossessive(actionEntity))
 			{
 				bool actionHasObject = false;
 				GIAentityNode* actionObjectEntity = NULL;
@@ -1320,7 +1301,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
+						GIAtranslatorOperations.connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
@@ -1331,7 +1312,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
+						GIAtranslatorOperations.connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
@@ -1570,11 +1551,11 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							sentenceIndex = actionEntity->sentenceIndexTemp;
 							#endif
 							*/
-							setCurrentSentenceIndex(sentenceIndex);
+							GIAtranslatorOperations.setCurrentSentenceIndex(sentenceIndex);
 							#endif
 							//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-							GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet);
-							GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet);
+							GIAentityConnection* propertyConnection = GIAtranslatorOperations.writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet);
+							GIAentityConnection* propertyConnectionReverse = GIAtranslatorOperations.writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet);
 							#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 							if(actionEntity->negative)
 							{
@@ -1588,7 +1569,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							propertyConnectionReverse->sameReferenceSet = false;
 							#endif
 							#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
-							//added 1l8h - NB overwrite isReference is required these values will have been incorrectly determined by writeVectorConnection() - an alternative means of correction would be to use "int sentenceIndex = (actionEntity->actionSubjectEntity->front())->sentenceIndexTemp;", as the first connection added between 2 nodes is always deemed to be !isReference, and all additional connections are auto designated as isReference
+							//added 1l8h - NB overwrite isReference is required these values will have been incorrectly determined by GIAtranslatorOperations.writeVectorConnection() - an alternative means of correction would be to use "int sentenceIndex = (actionEntity->actionSubjectEntity->front())->sentenceIndexTemp;", as the first connection added between 2 nodes is always deemed to be !isReference, and all additional connections are auto designated as isReference
 							propertyConnection->isReference = isReference;
 							propertyConnectionReverse->isReference = isReference;
 							#endif
@@ -1616,7 +1597,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					actionEntity->disabled = true;	//disable have instance entity
 					if(!(actionEntity->entityNodeDefiningThisInstance->empty()))
 					{
-						getPrimaryNetworkIndexNodeDefiningInstance(actionEntity)->disabled = true;	//disable have networkIndex entity
+						GIAtranslatorOperations.getPrimaryNetworkIndexNodeDefiningInstance(actionEntity)->disabled = true;	//disable have networkIndex entity
 					}
 				}
 			}
@@ -1628,7 +1609,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList)
+bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList)
 {
 	bool result = true;
 
@@ -1637,12 +1618,12 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int 
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinition* functionDefinitionClassDefinition = NULL;
-		if(findFunctionDependencyClassDefinitionInListByIndex(classDefinitionList, functionDefinitionIndex, &functionDefinitionClassDefinition))
+		if(NLCclassDefinitionClass.findFunctionDependencyClassDefinitionInListByIndex(classDefinitionList, functionDefinitionIndex, &functionDefinitionClassDefinition))
 		{
 			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions->at(functionDefinitionIndex);
 
 			//NLC translator Part 2b.
-			if(!generateClassHeirarchyFunctions(classDefinitionList, entityNodesActiveListComplete, functionDefinitionClassDefinition))
+			if(!NLCtranslatorClassDefinitions.generateClassHeirarchyFunctions(classDefinitionList, entityNodesActiveListComplete, functionDefinitionClassDefinition))
 			{
 				result = false;
 			}
@@ -1755,7 +1736,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int 
 								cout << "start reconcile: functionObject = " << functionDefinitionFunctionDependency->functionObjectName << endl;
 								cout << "start reconcile: functionOwner = " << functionDefinitionFunctionDependency->functionOwnerName << endl;
 								#endif
-								reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, classDefinition);
+								NLCtranslator.reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, classDefinition);
 
 								functionDefinitionFunctionDependency->reconciledFunctionDeclarationArguments = true;
 							}
@@ -1784,7 +1765,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int 
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinition* functionDefinitionClassDefinition = NULL;
-		if(findFunctionDependencyClassDefinitionInListByIndex(&functionDependencyList, functionDefinitionIndex, &functionDefinitionClassDefinition))
+		if(NLCclassDefinitionClass.findFunctionDependencyClassDefinitionInListByIndex(&functionDependencyList, functionDefinitionIndex, &functionDefinitionClassDefinition))
 		{
 			if(functionDefinitionClassDefinition->functionDependency != NULL)
 			{
@@ -1803,7 +1784,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int 
 					#endif
 					isLibraryFunction = false;
 
-					reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDefinitionClassDefinition);
+					NLCtranslator.reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDefinitionClassDefinition);
 
 					//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 				}
@@ -1829,36 +1810,36 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int 
 
 
 #ifndef NLC_LIBRARY
-void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
+void NLCmainClass::printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
 {
 	//create predefined NLC functions
-	currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.getLastCodeBlockInLevel(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree);
 	#ifdef NLC_ADVANCED_REFERENCING
-	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree);
 	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
-	currentCodeBlockInTree = createCodeBlocksAddEntityToContextLevelListNewFunction(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlocksClearContextListNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksAddEntityToContextLevelListNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksClearContextListNewFunction(currentCodeBlockInTree);
 	#endif
 	#endif
 	#ifndef NLC_NONOO
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	currentCodeBlockInTree = createCodeBlocksCastVectorNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksCastVectorNewFunction(currentCodeBlockInTree);
 	#endif
 	#endif
 	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	currentCodeBlockInTree = createCodeBlocksFindAliasAndAddToCategoryListNewFunction(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlocksFindAliasNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksFindAliasAndAddToCategoryListNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksFindAliasNewFunction(currentCodeBlockInTree);
 	#endif
 	#ifdef NLC_REDEFINITIONS
-	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);
 	#endif
 	#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
-	currentCodeBlockInTree = createCodeBlockAddPropertyNewFunction(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlockAddConditionNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockAddPropertyNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockAddConditionNewFunction(currentCodeBlockInTree);
 	#endif
 	#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
-	currentCodeBlockInTree = createCodeVerifyDefiniteReferenceExistenceNewFunction(currentCodeBlockInTree);	
+	currentCodeBlockInTree = NLCcodeBlockClass.createCodeVerifyDefiniteReferenceExistenceNewFunction(currentCodeBlockInTree);	
 	#endif
 }
 #endif

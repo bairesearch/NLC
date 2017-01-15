@@ -1,9 +1,9 @@
-#include "NLCgeneratedmountainClass.hpp"
+#include "NLCgeneratedgarageClass.hpp"
 #include "NLClibrary.hpp"
 
-mountainClass::mountainClass(void)
+garageClass::garageClass(void)
 {
-	name = "mountain";
+	name = "garage";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

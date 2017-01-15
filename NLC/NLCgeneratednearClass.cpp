@@ -1,9 +1,9 @@
-#include "NLCgeneratedboneClass.hpp"
+#include "NLCgeneratednearClass.hpp"
 #include "NLClibrary.hpp"
 
-boneClass::boneClass(void)
+nearClass::nearClass(void)
 {
-	name = "bone";
+	name = "near";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

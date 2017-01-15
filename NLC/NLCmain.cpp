@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q4a 18-August-2015
+ * Project Version: 1q5a 19-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1q4a 18-August-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1q5a 19-August-2015" << endl;
 			exit(1);
 		}
 
@@ -692,7 +692,9 @@ int main(int argc, char** argv)
 					//collapse all input list text files into single input text file
 					inputTextPlainTXTfileName = inputTextPlainTXTfileName + NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR_COMBINED_FILE_NAME_APPEND_TEXT;
 					string tempStr = "";
+					setCurrentDirectory(tempFolder);
 					writeStringToFile(inputTextPlainTXTfileName, &tempStr);
+					setCurrentDirectory(workingFolder);
 					for(vector<string>::iterator inputTextPlainTXTFileNameListIter = inputTextPlainTXTFileNameList.begin(); inputTextPlainTXTFileNameListIter != inputTextPlainTXTFileNameList.end(); inputTextPlainTXTFileNameListIter++)
 					{
 						string inputTextPlainTXTfileNameSeparate = *inputTextPlainTXTFileNameListIter;
@@ -709,8 +711,13 @@ int main(int argc, char** argv)
 						//cout << "NLCfunctionHeader = " << NLCfunctionHeader << endl;
 						//cout << "functionContents = " << functionContents << endl;
 						string functionText = NLCfunctionHeader + CHAR_NEWLINE + functionContents + CHAR_NEWLINE;
+						setCurrentDirectory(tempFolder);
 						appendStringToFile(inputTextPlainTXTfileName, &functionText);
+						setCurrentDirectory(workingFolder);
 					}
+					setCurrentDirectory(tempFolder);	//this is required such that NLC preprocessor can read the combined input file
+					inputTextPlainTXTFileNameList.clear();	//this is required such that NLC preprocessor can fill inputTextPlainTXTFileNameList
+					numberOfInputFilesInList = 1;		//this is required such that NLC preprocessor can fill inputTextPlainTXTFileNameList
 				}
 			}
 			#endif
@@ -754,6 +761,7 @@ int main(int argc, char** argv)
 		cout << "useNLCpreprocessor" << endl;
 		#endif
 		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + NLC_USE_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT;
+		cout << "outputPreprocessedTextForNLConlyPlainTXTFileName = " << outputPreprocessedTextForNLConlyPlainTXTFileName << endl;
 		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		if(!useInputTextPlainTXTFile)
 		{
@@ -842,7 +850,7 @@ int main(int argc, char** argv)
 	}	
 	#endif
 	#endif
-	
+		
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		int maxNumberSentences;
@@ -883,7 +891,9 @@ int main(int argc, char** argv)
 			#endif
 		}
 		#endif
-
+		
+		setCurrentDirectory(workingFolder);	//NB executeGIA must be executed with current directory set to the original workingFolder (such that GIArules.xml can be read)
+		string workingFolderOrig = workingFolder;
 		#ifdef NLC_USE_PREPROCESSOR
 		if(useNLCpreprocessor)
 		{
@@ -894,6 +904,7 @@ int main(int argc, char** argv)
 		#ifdef GIA_SUPPORT_NLC_INTEGRATION
 		setFirstNLCsentenceInList(currentNLCfunctionInList->firstNLCsentenceInFunction);
 		#endif
+		
 		#ifdef USE_CS_WORKAROUND
 		executeGIA2();
 		#endif
@@ -1013,6 +1024,9 @@ int main(int argc, char** argv)
 			&maxNumberSentences
 		);
 
+		setCurrentDirectory(tempFolder);	//redundant	//NB executeGIA will change the current directory to the tempFolder, meaning NLC does not have to set the current directory to the tempFolder after executing GIA
+		workingFolder = workingFolderOrig;
+		
 		string NLCfunctionName = "";
 		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
 		if(NLCinputFileList)

@@ -18,45 +18,70 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		NLCimplicitlyDeclaredFunctionArtificialClass* newNLCimplicitlyDeclaredFunctionArtificialClass = new NLCimplicitlyDeclaredFunctionArtificialClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredFunctionArtificialClass);
 	}
-	if(name == "red")
+	if(name == "africa")
 	{
-		redClass* newredClass = new redClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newredClass);
+		africaClass* newafricaClass = new africaClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newafricaClass);
 	}
-	if(name == "dog")
+	if(name == "country")
 	{
-		dogClass* newdogClass = new dogClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdogClass);
+		countryClass* newcountryClass = new countryClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcountryClass);
+	}
+	if(name == "castle")
+	{
+		castleClass* newcastleClass = new castleClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcastleClass);
+	}
+	if(name == "knight")
+	{
+		knightClass* newknightClass = new knightClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newknightClass);
+	}
+	if(name == "declare")
+	{
+		declareClass* newdeclareClass = new declareClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdeclareClass);
+	}
+	if(name == "war")
+	{
+		warClass* newwarClass = new warClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newwarClass);
+	}
+	if(name == "terrible")
+	{
+		terribleClass* newterribleClass = new terribleClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newterribleClass);
+	}
+	if(name == "tom")
+	{
+		tomClass* newtomClass = new tomClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtomClass);
+	}
+	if(name == "ride")
+	{
+		rideClass* newrideClass = new rideClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newrideClass);
+	}
+	if(name == "bike")
+	{
+		bikeClass* newbikeClass = new bikeClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
 	}
 	if(name == "blue")
 	{
 		blueClass* newblueClass = new blueClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newblueClass);
 	}
-	if(name == "bird")
-	{
-		birdClass* newbirdClass = new birdClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbirdClass);
-	}
 	if(name == "near")
 	{
 		nearClass* newnearClass = new nearClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newnearClass);
 	}
-	if(name == "mountain")
+	if(name == "garage")
 	{
-		mountainClass* newmountainClass = new mountainClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmountainClass);
-	}
-	if(name == "elephant")
-	{
-		elephantClass* newelephantClass = new elephantClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newelephantClass);
-	}
-	if(name == "bone")
-	{
-		boneClass* newboneClass = new boneClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newboneClass);
+		garageClass* newgarageClass = new garageClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgarageClass);
 	}
 	return newGenericObject;
 }
@@ -79,45 +104,70 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 		NLCimplicitlyDeclaredFunctionArtificialClass* newNLCimplicitlyDeclaredFunctionArtificialClass = new NLCimplicitlyDeclaredFunctionArtificialClass(*(static_cast<NLCimplicitlyDeclaredFunctionArtificialClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredFunctionArtificialClass);
 	}
-	if(name == "red")
+	if(name == "africa")
 	{
-		redClass* newredClass = new redClass(*(static_cast<redClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newredClass);
+		africaClass* newafricaClass = new africaClass(*(static_cast<africaClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newafricaClass);
 	}
-	if(name == "dog")
+	if(name == "country")
 	{
-		dogClass* newdogClass = new dogClass(*(static_cast<dogClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdogClass);
+		countryClass* newcountryClass = new countryClass(*(static_cast<countryClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcountryClass);
+	}
+	if(name == "castle")
+	{
+		castleClass* newcastleClass = new castleClass(*(static_cast<castleClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newcastleClass);
+	}
+	if(name == "knight")
+	{
+		knightClass* newknightClass = new knightClass(*(static_cast<knightClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newknightClass);
+	}
+	if(name == "declare")
+	{
+		declareClass* newdeclareClass = new declareClass(*(static_cast<declareClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdeclareClass);
+	}
+	if(name == "war")
+	{
+		warClass* newwarClass = new warClass(*(static_cast<warClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newwarClass);
+	}
+	if(name == "terrible")
+	{
+		terribleClass* newterribleClass = new terribleClass(*(static_cast<terribleClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newterribleClass);
+	}
+	if(name == "tom")
+	{
+		tomClass* newtomClass = new tomClass(*(static_cast<tomClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtomClass);
+	}
+	if(name == "ride")
+	{
+		rideClass* newrideClass = new rideClass(*(static_cast<rideClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newrideClass);
+	}
+	if(name == "bike")
+	{
+		bikeClass* newbikeClass = new bikeClass(*(static_cast<bikeClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
 	}
 	if(name == "blue")
 	{
 		blueClass* newblueClass = new blueClass(*(static_cast<blueClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newblueClass);
 	}
-	if(name == "bird")
-	{
-		birdClass* newbirdClass = new birdClass(*(static_cast<birdClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbirdClass);
-	}
 	if(name == "near")
 	{
 		nearClass* newnearClass = new nearClass(*(static_cast<nearClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newnearClass);
 	}
-	if(name == "mountain")
+	if(name == "garage")
 	{
-		mountainClass* newmountainClass = new mountainClass(*(static_cast<mountainClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmountainClass);
-	}
-	if(name == "elephant")
-	{
-		elephantClass* newelephantClass = new elephantClass(*(static_cast<elephantClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newelephantClass);
-	}
-	if(name == "bone")
-	{
-		boneClass* newboneClass = new boneClass(*(static_cast<boneClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newboneClass);
+		garageClass* newgarageClass = new garageClass(*(static_cast<garageClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgarageClass);
 	}
 	return newGenericObject;
 }

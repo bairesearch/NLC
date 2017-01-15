@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q4a 18-August-2015
+ * Project Version: 1q5a 19-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -444,6 +444,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif
+		
+		setCurrentDirectory(workingFolder);	//set current directory back to the original workingFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's workingFolder is changed to tempFolder as it should be in the case of NLC preprocessed input)
 	}
 	
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT

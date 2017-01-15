@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11a 21-August-2015
+ * Project Version: 1q11b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -436,7 +436,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 	NLCcodeblock* currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
 	string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentFullSentence->sentenceIndex, parsablePhrase);	//parsablePhraseGenerateNumberOfElementCounterName
 	*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName, 0);	//?this will need to be changed to createCodeBlockDeclareNewIntArray in the future to support multiple cases (ie if, else if, else)
-	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 	NLCcodeblock* firstCodeBlockInPhrase = *currentCodeBlockInTree;
 	*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);		
 	#endif
@@ -508,7 +508,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 	}	
 	if(foundParsablePhrase)
 	{
-		#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+		#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 		*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
 		#endif	
 	}
@@ -535,7 +535,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			#else
 			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);	//?this will need to be changed to createCodeBlockDeclareNewBoolArray in the future to support multiple cases (ie if, else if, else)
 			#endif
-			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 			firstCodeBlockInPhrase = *currentCodeBlockInTree;
 			*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);		
 			#endif
@@ -645,7 +645,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			}	
 			if(foundParsablePhrase)
 			{
-				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 				*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
 				#endif			
 			}
@@ -677,7 +677,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			*/
 			
 			*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//double* thedogsvalue = NULL;
-			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 			firstCodeBlockInPhrase = *currentCodeBlockInTree;
 			*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);		
 			#endif
@@ -743,7 +743,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 				#else
 				*currentCodeBlockInTree = createCodeBlockCheckDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);		 //if(thedogsvalue != NULL)
 				#endif
-				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 				*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
 				#endif
 			}
@@ -767,7 +767,19 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 	cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor{}" << endl;
 	#endif
 	//generate NLP parsable phrase eg "all apples in the cart" in "for(all the apples in the cart)"
-	
+
+	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
+	NLCcodeblock* firstCodeBlockInPhrase = *currentCodeBlockInTree;
+	*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);	
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	*currentCodeBlockInTreeAtBaseLevel = firstCodeBlockInPhrase;
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
+	(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+	#endif
+	#endif
+	#endif
+		
 	if((currentFullSentence->hasLogicalConditionOperator) && (currentFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
 	{
 		foundParsablePhrase = false;
@@ -798,11 +810,13 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 						parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
 
+						#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 						#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 						*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
 						#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 						(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
 						(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+						#endif
 						#endif
 						#endif
 						foundParsablePhrase = true;	
@@ -820,12 +834,14 @@ bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int senten
 	*childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
 	
 	generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-	{
-		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-		generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel = true;
-		#endif
+	{	
+		generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel = true;	
 	}
+	#endif
+	#endif
 	
 	//cout << "foundChildEntity = " << foundChildEntity << endl;
 	//cout << "childEntity = " << (*childEntity)->entityName << endl;

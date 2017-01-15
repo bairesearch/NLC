@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11a 21-August-2015
+ * Project Version: 1q11b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,19 +53,27 @@
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
 	#define NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES	//1q10d
-
-	//#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-
-	//#else	
-		//#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES		//has not been defined yet		
-			//#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE	//1q10b, disabled 1q11a - this can be used to prevent redeclarations of xCategoryList/xSubjectCategoryList/xObjectCategoryList	//full support with !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES, but its current implementation does not support consecutive for loops with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES enabled 
+	#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
+		#define NLC_PREVENT_REDECLARATIONS_OF_CATEGORY_LISTS
+	#else	
+		//#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES		//has not yet been defined; category list redeclarations are only a problem for NLC_USE_ADVANCED_REFERENCING when using NLC aliases		
+			#define NLC_PREVENT_REDECLARATIONS_OF_CATEGORY_LISTS	//1q10b+
 		//#endif
-	//#endif
-	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
-		#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX	//1q11a
-		#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
-			#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME "I"
-			#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME "S"
+	#endif
+	#ifdef NLC_PREVENT_REDECLARATIONS_OF_CATEGORY_LISTS	
+		#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE	//1q10b
+		#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
+			#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
+				#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS	//1q11b	//required with !NLC_USE_ADVANCED_REFERENCING to support consecutive for loops (iterating across same primary entity). Not required with NLC_USE_ADVANCED_REFERENCING (due to category lists being uniquely named between sentences), and currently unsupported by NLC_USE_ADVANCED_REFERENCING (due to referenceContextList maintenance)
+			#endif
+			//#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FULL_SENTENCES	//not yet implemented (requires integration with logical condition context level record system)
+		#else
+			#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX	//tested 1q11a (but disabled since) - this can be used to prevent redeclarations of xCategoryList/xSubjectCategoryList/xObjectCategoryList	
+			#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
+				#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME "I"
+				#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME "S"
+			#endif
 		#endif
 	#endif
 	//#define NLC_SUPPORT_GIA_NLP_OR_XML_INPUT	//disabled 1q2b

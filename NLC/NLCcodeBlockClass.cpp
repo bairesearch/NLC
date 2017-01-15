@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11a 21-August-2015
+ * Project Version: 1q11b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -92,8 +92,10 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	#endif
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	negativeDetectedInContextBlocks = false;
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 	setCodeBlockInTreeAtBaseLevel = false;
 	currentCodeBlockInTreeAtBaseLevel = NULL;
+	#endif
 	#endif
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	testNumerosity = false;

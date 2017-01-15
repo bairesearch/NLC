@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11a 21-August-2015
+ * Project Version: 1q11b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -162,11 +162,13 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 				#endif
 				#endif
 
+				#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
 				{
 					generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 				}
+				#endif
 				#endif
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
 				*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false, genericListAppendName, sentenceIndex);	//added 1j5a
@@ -192,11 +194,13 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 				}
 				#endif
 
+				#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
 				{
 					generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 				}
+				#endif
 				#endif
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName, sentenceIndex);
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY
@@ -229,12 +233,14 @@ bool generateContextBlocksSimple(NLCcodeblock** currentCodeBlockInTree, GIAentit
 	//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextBlocksSimple{}: ") + parentEntity->entityName);
 	//#endif
 
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 	#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
 	{
 		generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 	}
+	#endif
 	#endif
 	#endif
 			

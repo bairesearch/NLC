@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1f 15-September-2013
+ * Project Version: 1a1g 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -122,7 +122,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							if(subjectRequiredTempVar)
 							{	
 								cout << "subjectRequiredTempVar" << endl;						
-								functionItem->context.push_back(subjectItem->name);
+								functionItem->context.push_back(subjectItem->instanceName);
 
 								#ifdef NLPI_NOT_NECESSARY
 								//required just for implictlyDeclaredFunctionList...;

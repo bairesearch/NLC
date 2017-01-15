@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j8a 10-September-2014
+ * Project Version: 1j9a 11-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1j8a 10-September-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1j9a 11-September-2014" << endl;
 			exit(1);
 		}
 
@@ -1012,7 +1012,7 @@ int main(int argc,char **argv)
 
 		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 	}
-
+	
 	string code = "";
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
 	{
@@ -1020,6 +1020,15 @@ int main(int argc,char **argv)
 	}
 	#endif
 
+	#ifdef NLC_USE_ADVANCED_REFERENCING
+	NLCcodeblock * currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
+	while(currentCodeBlockInTree->next != NULL)
+	{
+		currentCodeBlockInTree = currentCodeBlockInTree->next;
+	}
+	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedNewFunction(currentCodeBlockInTree);
+	#endif
+	
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);

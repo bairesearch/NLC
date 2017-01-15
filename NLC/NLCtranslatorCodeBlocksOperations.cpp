@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j8a 10-September-2014
+ * Project Version: 1j9a 11-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -315,14 +315,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
 	{
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
-		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, true);
-		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);
-		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
-		lastCodeBlockInTree2 = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
-		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, parentEntity);
-		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(*currentCodeBlockInTree, parentEntity, parentEntity);
 	}
 	else
 	{
@@ -547,14 +540,13 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 				#ifdef NLC_USE_ADVANCED_REFERENCING
 				if(parentInstance->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
 				{
-					NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
-					*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentInstance, true);
-					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);
-					*currentCodeBlockInTree = lastCodeBlockInTree2->next;
-					lastCodeBlockInTree2 = *currentCodeBlockInTree;
-					*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
-					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenced(*currentCodeBlockInTree, parentInstance, childSubstance);
-					*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
+					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(*currentCodeBlockInTree, parentInstance, childSubstance);
+				}
+				else
+				{
+					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
+					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);	
 				}
 				#else
 				*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);

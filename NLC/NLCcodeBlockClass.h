@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j8a 10-September-2014
+ * Project Version: 1j9a 11-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,13 +97,14 @@ using namespace std;
 		#define NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC (33)
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED (34)
-		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (35)	//execute for all new/undeclared/indefinite entities and accessed category items
+		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_EXECUTE_FUNCTION (34)
+		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_NEW_FUNCTION (35)		
+		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (36)	//execute for all new/undeclared/indefinite entities and accessed category items
 	#endif
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
-	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (36)
-	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2 (37)
+	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (37)
+	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2 (38)
 #endif
 
 //containers:
@@ -313,7 +314,8 @@ NLCcodeblock * createCodeBlockIfHasMoreThanOneCategoryItem(NLCcodeblock * curren
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedNewFunction(NLCcodeblock * currentCodeBlockInTree);
 #endif
 	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
@@ -325,7 +327,8 @@ NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenc
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	NLCcodeblock * createCodeBlockIfHasPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
 	NLCcodeblock * createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 	#endif
 #endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11b 21-August-2015
+ * Project Version: 1q11c 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,10 @@
 #include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance{}
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
-		
+#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST
+GIAentityNode* logicalConditionForLoopPrimaryEntityTemp;
+#endif
+							
 #ifdef NLC_PREPROCESSOR_MATH
 bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCsentence* firstNLCsentenceInFullSentence, string NLCfunctionName)
 {
@@ -345,6 +348,15 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 		
 		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 		*currentCodeBlockInTree = createCodeBlocksDeclareContextList(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->indentation+1);
+		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+		{
+			if(result)	//verify that logicalConditionForLoopPrimaryEntityTemp has been set by generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor (ie foundParsablePhrase)
+			{
+				*currentCodeBlockInTree = createCodeBlocksAddEntityToContextLevelListExecuteFunction(*currentCodeBlockInTree, getCurrentLogicalConditionLevel()+1, logicalConditionForLoopPrimaryEntityTemp, sentenceIndex);
+			}
+		}
+		#endif
 		#endif
 		
 		if(firstNLCsentenceInFullSentence->next != NULL)
@@ -809,7 +821,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 						GIAentityNode* childEntity = NULL;
 						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 						parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
-
+						
+						#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST
+						logicalConditionForLoopPrimaryEntityTemp = childEntity;
+						#endif
+									
 						#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 						#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 						*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;

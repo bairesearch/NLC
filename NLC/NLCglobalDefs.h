@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11b 21-August-2015
+ * Project Version: 1q11c 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,6 +52,11 @@
 //#define NLC_DISABLE_1q_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+	#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
+		//#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//has not yet been defined
+			#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST	//1q11c
+		//#endif
+	#endif
 	#define NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES	//1q10d
 	#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
 		#define NLC_PREVENT_REDECLARATIONS_OF_CATEGORY_LISTS

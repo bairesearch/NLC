@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b3a 03-October-2013
+ * Project Version: 1b4a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -332,7 +332,8 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 					string targetName = "";
 					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 					{
-						targetName = generateInstanceName(targetEntity);
+						targetName = generateActionName(targetEntity);
+						//targetName = generateInstanceName(targetEntity);
 					}
 					else
 					{
@@ -369,17 +370,27 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->conditionList.push_back(targetClassDefinition);
 						}						
-					}				
-					else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE))
+					}	
+					#ifndef NLPI_BAD_IMPLEMENTATION
+					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) 
 					{//declare inheritance
-						//definitionList
-						bool foundLocalClassDefinition = false;
-						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-						if(!foundLocalClassDefinition)
+						if(targetName != className)	//eg do not create a separate class for substance concept definitions
 						{
-							//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
-							classDefinition->definitionList.push_back(targetClassDefinition);
+					#else			
+					else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE))
+					{//declare inheritance					
+					#endif
+							//definitionList
+							bool foundLocalClassDefinition = false;
+							NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+							if(!foundLocalClassDefinition)
+							{
+								//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
+								classDefinition->definitionList.push_back(targetClassDefinition);
+							}
+						#ifndef NLPI_BAD_IMPLEMENTATION
 						}
+						#endif
 					}
 					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 					{//declare functions

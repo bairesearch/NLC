@@ -7,152 +7,178 @@ functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(voi
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 
-void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtificialFunction(vector<NLCimplicitlyDeclaredFunctionArtificialClass*>& NLCimplicitlyDeclaredFunctionArtificialClassList)
+void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtificialFunction(vector<NLCimplicitlyDeclaredFunctionArtificialClass*>& NLCimplicitlyDeclaredFunctionArtificialClassList, vector<boatClass*>& boatClassList, vector<cabbageClass*>& cabbageClassList, vector<sunClass*>& sunClassList)
 {
 	vector<NLCgenericEntityClass*> referenceContextList0;
-	vector<appleClass*> appleClassList;
-	vector<pieClass*> pieClassList;
-	//An apple is near a pie.
-	vector<appleClass*> apple1SubjectCategoryList;
-	vector<appleClass*> apple1CategoryList;
-	appleClass* apple1 = addNewEntityToLocalList<appleClass>(&(appleClassList));
-	apple1CategoryList.push_back(apple1);
-	addEntityToReferenceContextList(referenceContextList0, apple1, 1);
-	for(vector<appleClass*>::iterator iter1 = apple1CategoryList.begin(); iter1 < apple1CategoryList.end(); iter1++) 
+	//2 cabbages are near the boat.
+	vector<cabbageClass*> cabbage1SubjectCategoryList;
+	vector<cabbageClass*> cabbage1CategoryList;
+	for(int index1 = 0; index1 < 2; index1++) 
 	{
-		appleClass* apple1 = *iter1;
-		addToCategoryIfPassPluralDefiniteReferencingTests<appleClass, appleClass> (apple1SubjectCategoryList, apple1);
+		cabbageClass* cabbage1 = addNewEntityToLocalList<cabbageClass>(&(cabbageClassList));
+		cabbage1CategoryList.push_back(cabbage1);
+		addEntityToReferenceContextList(referenceContextList0, cabbage1, 1);
 	}
-	vector<pieClass*> pie1ObjectCategoryList;
-	vector<pieClass*> pie1CategoryList;
-	pieClass* pie1 = addNewEntityToLocalList<pieClass>(&(pieClassList));
-	pie1CategoryList.push_back(pie1);
-	addEntityToReferenceContextList(referenceContextList0, pie1, 1);
-	for(vector<pieClass*>::iterator iter1 = pie1CategoryList.begin(); iter1 < pie1CategoryList.end(); iter1++) 
+	for(vector<cabbageClass*>::iterator iter1 = cabbage1CategoryList.begin(); iter1 < cabbage1CategoryList.end(); iter1++) 
 	{
-		pieClass* pie1 = *iter1;
-		addToCategoryIfPassPluralDefiniteReferencingTests<pieClass, pieClass> (pie1ObjectCategoryList, pie1);
+		cabbageClass* cabbage1 = *iter1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage1SubjectCategoryList, cabbage1);
 	}
-	for(vector<appleClass*>::iterator iter1 = apple1SubjectCategoryList.begin(); iter1 < apple1SubjectCategoryList.end(); iter1++) 
+	vector<boatClass*> boat1ObjectCategoryList;
+	vector<boatClass*> boat1CategoryList;
+	for(vector<boatClass*>::iterator iter1 = boatClassList.begin(); iter1 < boatClassList.end(); iter1++) 
 	{
-		appleClass* apple1 = *iter1;
-		for(vector<pieClass*>::iterator iter2 = pie1ObjectCategoryList.begin(); iter2 < pie1ObjectCategoryList.end(); iter2++) 
+		boatClass* boat1 = *iter1;
+		//Singular definite referencing tests
+		addToCategoryIfPassSingularDefiniteReferencingTests<boatClass, boatClass> (boat1CategoryList, boat1);
+	}
+	if(!(boat1CategoryList.empty()))
+	{
+		boatClass* boat1 = boat1CategoryList.back();
+		boat1->lastSentenceReferenced.top() = 1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<boatClass, boatClass> (boat1ObjectCategoryList, boat1);
+	}
+	for(vector<cabbageClass*>::iterator iter1 = cabbage1SubjectCategoryList.begin(); iter1 < cabbage1SubjectCategoryList.end(); iter1++) 
+	{
+		cabbageClass* cabbage1 = *iter1;
+		for(vector<boatClass*>::iterator iter2 = boat1ObjectCategoryList.begin(); iter2 < boat1ObjectCategoryList.end(); iter2++) 
 		{
-			pieClass* pie1 = *iter2;
-			addCondition<appleClass, nearClass, pieClass>(apple1, &(apple1->nearClasspieClassConditionList), "near", pie1);
-			addCondition<pieClass, nearClass, appleClass>(pie1, &(pie1->nearClassappleClassConditionList), "near", apple1);
+			boatClass* boat1 = *iter2;
+			addCondition<cabbageClass, nearClass, boatClass>(cabbage1, &(cabbage1->nearClassboatClassConditionList), "near", boat1);
+			addCondition<boatClass, nearClass, cabbageClass>(boat1, &(boat1->nearClasscabbageClassConditionList), "near", cabbage1);
 		}
 	}
-	//If the apple is near the pie
-	bool theappleisnearthepie2 = false;
-	vector<appleClass*> apple2CategoryList;
-	int apple2CategoryListPropertyCount = 0;
-	for(vector<appleClass*>::iterator iter1 = appleClassList.begin(); iter1 < appleClassList.end(); iter1++) 
+	//Cabbage 1 is brown.
+	vector<cabbageClass*> cabbage2SubjectCategoryList;
+	vector<cabbageClass*> cabbage2CategoryList;
+	if(1 <= cabbageClassList.size())
 	{
-		appleClass* apple2 = *iter1;
-		for(unordered_map<nearClass*, pieClass*>::iterator iter2 = apple2->nearClasspieClassConditionList.begin(); iter2 != apple2->nearClasspieClassConditionList.end(); iter2++) 
+		cabbageClass* cabbage2 = cabbageClassList.at(1-1);
+		//Singular definite referencing tests
+		addToCategoryIfPassSingularDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage2CategoryList, cabbage2);
+	}
+	if(!(cabbage2CategoryList.empty()))
+	{
+		cabbageClass* cabbage2 = cabbage2CategoryList.back();
+		cabbage2->lastSentenceReferenced.top() = 2;
+		addToCategoryIfPassPluralDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage2SubjectCategoryList, cabbage2);
+	}
+	vector<brownClass*> brown1ObjectCategoryList;
+	vector<brownClass*> brownClassList;
+	vector<brownClass*> brown1CategoryList;
+	brownClass* brown1 = addNewEntityToLocalList<brownClass>(&(brownClassList));
+	brown1CategoryList.push_back(brown1);
+	addEntityToReferenceContextList(referenceContextList0, brown1, 2);
+	for(vector<brownClass*>::iterator iter1 = brown1CategoryList.begin(); iter1 < brown1CategoryList.end(); iter1++) 
+	{
+		brownClass* brown1 = *iter1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<brownClass, brownClass> (brown1ObjectCategoryList, brown1);
+	}
+	for(vector<cabbageClass*>::iterator iter1 = cabbage2SubjectCategoryList.begin(); iter1 < cabbage2SubjectCategoryList.end(); iter1++) 
+	{
+		cabbageClass* cabbage2 = *iter1;
+		for(vector<brownClass*>::iterator iter2 = brown1ObjectCategoryList.begin(); iter2 < brown1ObjectCategoryList.end(); iter2++) 
 		{
-			pieClass* pie2 = iter2->second;
-			pieClass* pieCandidate = pie2;
-			vector<pieClass*> pie2CategoryList;
-			int pie2CategoryListPropertyCount = 0;
-			for(vector<pieClass*>::iterator iter3 = pieClassList.begin(); iter3 < pieClassList.end(); iter3++) 
-			{
-				pieClass* pie2 = *iter3;
-				//Singular definite referencing tests
-				addToCategoryIfPassSingularDefiniteReferencingTests<pieClass, pieClass> (pie2CategoryList, pie2);
-				pie2CategoryListPropertyCount = pie2CategoryListPropertyCount + 1;
-			}
-			if(!(pie2CategoryList.empty()))
-			{
-				pieClass* pie2 = pie2CategoryList.back();
-				pie2->lastSentenceReferenced.top() = 2;
-				if(pieCandidate == pie2)
-				{
-					//Singular definite referencing tests
-					addToCategoryIfPassSingularDefiniteReferencingTests<appleClass, appleClass> (apple2CategoryList, apple2);
-					apple2CategoryListPropertyCount = apple2CategoryListPropertyCount + 1;
-				}
-			}
+			brownClass* brown1 = *iter2;
+			addProperty<cabbageClass, brownClass>(cabbage2, &(cabbage2->brownClassPropertyList), brown1);
 		}
 	}
-	if(!(apple2CategoryList.empty()))
+	//Cabbage 2 is happy.
+	vector<cabbageClass*> cabbage3SubjectCategoryList;
+	vector<cabbageClass*> cabbage3CategoryList;
+	if(2 <= cabbageClassList.size())
 	{
-		appleClass* apple2 = apple2CategoryList.back();
-		apple2->lastSentenceReferenced.top() = 2;
-		theappleisnearthepie2 = true;
+		cabbageClass* cabbage3 = cabbageClassList.at(2-1);
+		//Singular definite referencing tests
+		addToCategoryIfPassSingularDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage3CategoryList, cabbage3);
 	}
-	if(theappleisnearthepie2)
+	if(!(cabbage3CategoryList.empty()))
 	{
-		vector<NLCgenericEntityClass*> referenceContextList1;
-		//The apple is happy.
-		vector<appleClass*> apple3SubjectCategoryList;
-		vector<appleClass*> apple3CategoryList;
-		for(vector<appleClass*>::iterator iter2 = appleClassList.begin(); iter2 < appleClassList.end(); iter2++) 
-		{
-			appleClass* apple3 = *iter2;
-			//Singular definite referencing tests
-			addToCategoryIfPassSingularDefiniteReferencingTests<appleClass, appleClass> (apple3CategoryList, apple3);
-		}
-		if(!(apple3CategoryList.empty()))
-		{
-			appleClass* apple3 = apple3CategoryList.back();
-			apple3->lastSentenceReferenced.top() = 3;
-			addToCategoryIfPassPluralDefiniteReferencingTests<appleClass, appleClass> (apple3SubjectCategoryList, apple3);
-		}
-		vector<happyClass*> happy1ObjectCategoryList;
-		vector<happyClass*> happyClassList;
-		vector<happyClass*> happy1CategoryList;
-		happyClass* happy1 = addNewEntityToLocalList<happyClass>(&(happyClassList));
-		happy1CategoryList.push_back(happy1);
-		addEntityToReferenceContextList(referenceContextList1, happy1, 3);
-		for(vector<happyClass*>::iterator iter2 = happy1CategoryList.begin(); iter2 < happy1CategoryList.end(); iter2++) 
+		cabbageClass* cabbage3 = cabbage3CategoryList.back();
+		cabbage3->lastSentenceReferenced.top() = 3;
+		addToCategoryIfPassPluralDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage3SubjectCategoryList, cabbage3);
+	}
+	vector<happyClass*> happy1ObjectCategoryList;
+	vector<happyClass*> happyClassList;
+	vector<happyClass*> happy1CategoryList;
+	happyClass* happy1 = addNewEntityToLocalList<happyClass>(&(happyClassList));
+	happy1CategoryList.push_back(happy1);
+	addEntityToReferenceContextList(referenceContextList0, happy1, 3);
+	for(vector<happyClass*>::iterator iter1 = happy1CategoryList.begin(); iter1 < happy1CategoryList.end(); iter1++) 
+	{
+		happyClass* happy1 = *iter1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<happyClass, happyClass> (happy1ObjectCategoryList, happy1);
+	}
+	for(vector<cabbageClass*>::iterator iter1 = cabbage3SubjectCategoryList.begin(); iter1 < cabbage3SubjectCategoryList.end(); iter1++) 
+	{
+		cabbageClass* cabbage3 = *iter1;
+		for(vector<happyClass*>::iterator iter2 = happy1ObjectCategoryList.begin(); iter2 < happy1ObjectCategoryList.end(); iter2++) 
 		{
 			happyClass* happy1 = *iter2;
-			addToCategoryIfPassPluralDefiniteReferencingTests<happyClass, happyClass> (happy1ObjectCategoryList, happy1);
+			addProperty<cabbageClass, happyClass>(cabbage3, &(cabbage3->happyClassPropertyList), happy1);
 		}
-		for(vector<appleClass*>::iterator iter2 = apple3SubjectCategoryList.begin(); iter2 < apple3SubjectCategoryList.end(); iter2++) 
+	}
+	//The sun fights.
+	vector<fightClass*> fightClassList;
+	vector<fightClass*> fight1CategoryList;
+	fightClass* fight1 = addNewEntityToLocalList<fightClass>(&(fightClassList));
+	fight1CategoryList.push_back(fight1);
+	addEntityToReferenceContextList(referenceContextList0, fight1, 4);
+	vector<sunClass*> sun1SubjectCategoryList;
+	vector<sunClass*> sun1CategoryList;
+	for(vector<sunClass*>::iterator iter1 = sunClassList.begin(); iter1 < sunClassList.end(); iter1++) 
+	{
+		sunClass* sun1 = *iter1;
+		//Singular definite referencing tests
+		addToCategoryIfPassSingularDefiniteReferencingTests<sunClass, sunClass> (sun1CategoryList, sun1);
+	}
+	if(!(sun1CategoryList.empty()))
+	{
+		sunClass* sun1 = sun1CategoryList.back();
+		sun1->lastSentenceReferenced.top() = 4;
+		addToCategoryIfPassPluralDefiniteReferencingTests<sunClass, sunClass> (sun1SubjectCategoryList, sun1);
+	}
+	for(vector<sunClass*>::iterator iter1 = sun1SubjectCategoryList.begin(); iter1 < sun1SubjectCategoryList.end(); iter1++) 
+	{
+		sunClass* sun1 = *iter1;
+		addActionSubject<fightClass, sunClass>(fight1, sun1, &(sun1->fightClassActionList), &(fight1->sunClassActionSubjectList));
+	}
+	(new sunClass)->fightFunction(sun1SubjectCategoryList, fightClassList);
+	//If the sun fights, print the cabbage.
+	bool thesunfights5 = false;
+	vector<sunClass*> sun2CategoryList;
+	int sun2CategoryListPropertyCount = 0;
+	for(vector<sunClass*>::iterator iter1 = sunClassList.begin(); iter1 < sunClassList.end(); iter1++) 
+	{
+		sunClass* sun2 = *iter1;
+		for(vector<fightClass*>::iterator iter2 = sun2->fightClassActionList.begin(); iter2 < sun2->fightClassActionList.end(); iter2++) 
 		{
-			appleClass* apple3 = *iter2;
-			for(vector<happyClass*>::iterator iter3 = happy1ObjectCategoryList.begin(); iter3 < happy1ObjectCategoryList.end(); iter3++) 
-			{
-				happyClass* happy1 = *iter3;
-				addProperty<appleClass, happyClass>(apple3, &(apple3->happyClassPropertyList), happy1);
-			}
+			fightClass* fight2 = *iter2;
+			//Singular definite referencing tests
+			addToCategoryIfPassSingularDefiniteReferencingTests<sunClass, sunClass> (sun2CategoryList, sun2);
+			sun2CategoryListPropertyCount = sun2CategoryListPropertyCount + 1;
 		}
+	}
+	if(!(sun2CategoryList.empty()))
+	{
+		sunClass* sun2 = sun2CategoryList.back();
+		sun2->lastSentenceReferenced.top() = 5;
+		thesunfights5 = true;
+	}
+	if(thesunfights5print )
+	{
+		vector<NLCgenericEntityClass*> referenceContextList1;
+		//
 		clearReferenceContextList(referenceContextList1);
 	}
-	//Print the apple.
-	vector<printClass*> printClassList;
-	vector<printClass*> print1CategoryList;
-	printClass* print1 = addNewEntityToLocalList<printClass>(&(printClassList));
-	print1CategoryList.push_back(print1);
-	addEntityToReferenceContextList(referenceContextList0, print1, 4);
-	vector<appleClass*> apple4ObjectCategoryList;
-	vector<appleClass*> apple4CategoryList;
-	for(vector<appleClass*>::iterator iter1 = appleClassList.begin(); iter1 < appleClassList.end(); iter1++) 
-	{
-		appleClass* apple4 = *iter1;
-		//Singular definite referencing tests
-		addToCategoryIfPassSingularDefiniteReferencingTests<appleClass, appleClass> (apple4CategoryList, apple4);
-	}
-	if(!(apple4CategoryList.empty()))
-	{
-		appleClass* apple4 = apple4CategoryList.back();
-		apple4->lastSentenceReferenced.top() = 4;
-		addToCategoryIfPassPluralDefiniteReferencingTests<appleClass, appleClass> (apple4ObjectCategoryList, apple4);
-	}
-	for(vector<appleClass*>::iterator iter1 = apple4ObjectCategoryList.begin(); iter1 < apple4ObjectCategoryList.end(); iter1++) 
-	{
-		appleClass* apple4 = *iter1;
-		addActionObject<printClass, appleClass>(print1, apple4, &(apple4->printClassActionIncomingList), &(print1->appleClassActionObjectList));
-	}
-	printFunction(castVector<printClass, NLCgenericEntityClass>(printClassList), castVector<appleClass, NLCgenericEntityClass>(apple4ObjectCategoryList));
 	clearReferenceContextList(referenceContextList0);
 }
 
 int main()
 {
 	vector<NLCimplicitlyDeclaredFunctionArtificialClass*> NLCimplicitlyDeclaredFunctionArtificialClassList;
-	(new functionsWithNoSubjectArtificialClass)->NLCimplicitlyDeclaredFunctionArtificialFunction(NLCimplicitlyDeclaredFunctionArtificialClassList);
+	vector<boatClass*> boatClassList;
+	vector<cabbageClass*> cabbageClassList;
+	vector<sunClass*> sunClassList;
+	(new functionsWithNoSubjectArtificialClass)->NLCimplicitlyDeclaredFunctionArtificialFunction(NLCimplicitlyDeclaredFunctionArtificialClassList, boatClassList, cabbageClassList, sunClassList);
 }

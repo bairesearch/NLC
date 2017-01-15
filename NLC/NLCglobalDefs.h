@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6a 20-August-2015
+ * Project Version: 1q6b 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,6 +38,9 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
+#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
+#define NLC_USE_LIBRARY_USER
+	
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1j_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1k_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -111,7 +114,9 @@
 				#define NLC_USE_ENUM_LISTS_CONDITIONS
 				//#define NLC_USE_ENUM_LISTS_ACTIONS	//not yet coded
 			#endif
-			//#define NLC_USE_GENERIC_FUNCTIONS	//for test only (should produce same result)	//note generic functions represent the foundation for the NLC commercial library (enable library functions to be defined irrespective of entity name)
+			#ifdef NLC_USE_LIBRARY_STANDARD
+				//#define NLC_USE_LIBRARY_STANDARD_GENERIC_FUNCTIONS	//for test only (should produce same result)	//note generic functions represent the foundation for the NLC commercial library (enable library functions to be defined irrespective of entity name)
+			#endif
 		#else
 			#define NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED	//generates inline addProperty/addCondition functions only
 		#endif

@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10d 21-August-2015
+ * Project Version: 1q11a 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -86,6 +86,54 @@ NLCitem::NLCitem(GIAentityNode* entity, int newItemType)
 	name = entity->entityName;
 	genericObjectName = "";
 }
+NLCitem::NLCitem(GIAentityNode* entity, int newItemType, int sentenceIndex)
+{
+	itemType = newItemType;
+	className = generateClassName(entity);
+	instanceName = generateInstanceName(entity);
+	functionName = generateFunctionName(entity);	//added 9 November 2013
+	className2 = "";
+	instanceName2 = "";
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
+	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
+	functionArgumentPassCastClassName = "";
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+	functionArgumentExecutionEntityName = "";
+	#endif
+	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
+	#endif
+	negative = false;
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	conjunctionType = INT_DEFAULT_VALUE;
+	#endif
+	name = entity->entityName;
+	genericObjectName = generateCategoryListGenericObjectName(entity, sentenceIndex);
+}
+NLCitem::NLCitem(GIAentityNode* entity, int newItemType, string newGenericObjectName)
+{
+	itemType = newItemType;
+	className = generateClassName(entity);
+	instanceName = generateInstanceName(entity);
+	functionName = generateFunctionName(entity);	//added 9 November 2013
+	className2 = "";
+	instanceName2 = "";
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
+	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
+	functionArgumentPassCastClassName = "";
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+	functionArgumentExecutionEntityName = "";
+	#endif
+	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
+	#endif
+	negative = false;
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	conjunctionType = INT_DEFAULT_VALUE;
+	#endif
+	name = entity->entityName;
+	genericObjectName = newGenericObjectName;
+}
 NLCitem::NLCitem(string newName, int newItemType)
 {
 	itemType = newItemType;
@@ -141,6 +189,16 @@ NLCitem::NLCitem(NLCitem* newItem)
 }
 NLCitem::~NLCitem(void)
 {
+}
+
+string generateCategoryListGenericObjectName(GIAentityNode* entity, int sentenceIndex)
+{
+	#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
+	string categoryListInstanceName = entity->entityName + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME) + convertLongToString(entity->idInstance) + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME) + convertIntToString(sentenceIndex);
+	#else
+	string categoryListInstanceName = generateInstanceName(entity);
+	#endif
+	return categoryListInstanceName;
 }
 
 string generateClassName(GIAentityNode* entity)

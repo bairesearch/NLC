@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10d 21-August-2015
+ * Project Version: 1q11a 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -80,6 +80,8 @@ public:
 
 	NLCitem(void);
 	NLCitem(GIAentityNode* entity, int newItemType);
+	NLCitem(GIAentityNode* entity, int newItemType, int sentenceIndex);	//for categoryList/subjectCategoryList/objectCategoryList genericObjects only (it will execute generateCategoryListGenericObjectName to generate genericObjectName)
+	NLCitem(GIAentityNode* entity, int newItemType, string newGenericObjectName);
 	NLCitem(string newName, int newItemType);
 	NLCitem(NLCitem* newItem);
 	~NLCitem(void);
@@ -111,6 +113,7 @@ public:
 	string genericObjectName;	//added 1i7a	//NB name could be co-opted for this purpose (ie instead of using genericObjectName)
 };
 
+string generateCategoryListGenericObjectName(GIAentityNode* entity, int sentenceIndex);
 
 string generateClassName(GIAentityNode* entity);
 	string generateClassName(string entityName);

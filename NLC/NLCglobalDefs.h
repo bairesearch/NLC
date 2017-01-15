@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10d 21-August-2015
+ * Project Version: 1q11a 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,7 +53,21 @@
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
 	#define NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES	//1q10d
-	#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE	//1q10b - this is required to prevent redeclarations of xSubjectCategoryList/xObjectCategoryList//xCategoryLis
+
+	//#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+
+	//#else	
+		//#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES		//has not been defined yet		
+			//#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE	//1q10b, disabled 1q11a - this can be used to prevent redeclarations of xCategoryList/xSubjectCategoryList/xObjectCategoryList	//full support with !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES, but its current implementation does not support consecutive for loops with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES enabled 
+		//#endif
+	//#endif
+	#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+		#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX	//1q11a
+		#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
+			#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME "I"
+			#define NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME "S"
+		#endif
+	#endif
 	//#define NLC_SUPPORT_GIA_NLP_OR_XML_INPUT	//disabled 1q2b
 	#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR	//1q2b
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR

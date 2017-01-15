@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15d 28-January-2015
+ * Project Version: 1n15e 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1016,16 +1016,21 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 									bool parseConditionParents = true;	//default value
 									bool checkIsDefinite = false;	//CHECKTHIS; support isolated definite objects, indefinite parents, and definite parents; eg 1. "the chicken that is next to the pie." , 2. "the chicken that is next to a dog's pie." and 3. "the chicken that is next to the dog's pie."
 									parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, entity, &foundParentEntityNew, parseConditionParents, checkIsDefinite);
+									/*
 									if((!sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || targetConnection->rcmodIndicatesSameReferenceSet))	//ie auxiliaryIndicatesDifferentReferenceSet "is" or rcmodIndicatesSameReferenceSet "that is"
 									{
-										if(isDefiniteEntity(objectEntity) || foundParentEntityNew)	//ie objectEntity is explicitly or implicitly definite
-										{
-											verifyObject = true;
-										}
+									*/
+									if(isDefiniteEntity(objectEntity) || foundParentEntityNew)	//ie objectEntity is explicitly or implicitly definite
+									{
+										verifyObject = true;
 									}
+									/*
+									}
+									*/
 								}
 								if(verifyObject)
 								{
+									cout << "verifyObject = " << verifyObject << endl;
 									//save objectEntity as tempVariable objectEntityCandidate
 									string candidateObjectClassName = generateClassName(objectEntity);
 									string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);

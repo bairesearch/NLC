@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14e 02-September-2015
+ * Project Version: 1q14f 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -854,76 +854,30 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	#endif
 	*/
 	
+	//added 1q14f
+	if(isStringAliasFileName(entityNode->entityName))
+	{
+		validClass = false;
+	}
+
+	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
+	//added 1q14f - CHECKTHIS: is this required?
+	if(isStringIllegalTargetSourceCharacter(entityNode->entityName))
+	{
+		if(validClass)
+		{
+			cout << "printClassHeirarchyValidDefinitionClassChecks{} error: isStringIllegalTargetSourceCharacter; entityNode->entityName = " << entityNode->entityName << endl;
+		}
+		validClass = false;
+	}
+	#endif
+	
 	return validClass;
 }
 
 bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 {
-	bool validClass = true;
-
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	if(targetEntity->NLClogicalConditionOperation)
-	{
-		validClass = false;
-	}
-	/*OLD:
-	if(!(connection->NLCparsedForlogicalConditionOperations) && !(targetEntity->NLCparsedForlogicalConditionOperations))
-	{
-
-	}
-	*/
-	#ifdef NLC_USE_PREPROCESSOR
-	if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
-	{
-		validClass = false;
-	}
-	#endif
-	#endif
-	
-	//#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED	//this criteria was used [perhaps unintentionally] before 1k6a
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-	if(conjunctionConditionFound)
-	{
-		validClass = false;
-	}
-	#endif
-	//#endif	
-	
-	//these checks are not required as single word sentences utilise both replacement action and replacement object			
-	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-	if(targetEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
-	{
-		//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
-		validClass = false;	
-	}
-	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
-	if(targetEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION)
-	{
-		validClass = false;	
-	}
-	#endif
-	#endif
-	
-	if(targetEntity->isConcept)	//added 1n2f
-	{
-		validClass = false;
-	}
-
-	if(isStringNumberOrFractional(targetEntity->entityName))
-	{
-		validClass = false;
-	}
-	
-	/*
-	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	string aliasClassName = "";
-	if(findEntityNameInFunctionAliasList(targetEntity->entityName, &aliasClassName))
-	{
-		targetEntity->entityName = aliasClassName;	//entity name can be overwritten as generateCodeBlocks has already been executed 
-	}
-	#endif
-	*/
+	bool validClass = generateClassHeirarchyValidClassChecks(targetEntity);
 	
 	return validClass;
 }

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14a 02-September-2015
+ * Project Version: 1q14b 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1q14a 02-September-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1q14b 02-September-2015" << endl;
 			exit(1);
 		}
 
@@ -821,18 +821,22 @@ int main(int argc, char** argv)
 	//parse list of NLClibraryStandardFunctionList.txt and NLClibraryUserFunctionList.txt
 	vector<string> nlcLibraryFunctionList;
 	int nlcLibraryFunctionListSizeTemp;
+	#ifdef NLC_USE_LIBRARY_STANDARD
 	if(!getFilesFromFileList(NLC_USE_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_USE_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_USE_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
 		#endif
 	}
+	#endif
+	#ifdef NLC_USE_LIBRARY_USER
 	if(!getFilesFromFileList(NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_USE_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;		
 		#endif
 	}
+	#endif
 	for(vector<string>::iterator nlcLibraryFunctionListIter = nlcLibraryFunctionList.begin(); nlcLibraryFunctionListIter != nlcLibraryFunctionList.end(); nlcLibraryFunctionListIter++)
 	{
 		string nlcLibraryFunctionName = (*nlcLibraryFunctionListIter);

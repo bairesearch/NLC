@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14a 02-September-2015
+ * Project Version: 1q14b 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,8 +38,8 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
-//#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
-#define NLC_USE_LIBRARY_USER
+#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
+//#define NLC_USE_LIBRARY_USER
 	
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1j_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING

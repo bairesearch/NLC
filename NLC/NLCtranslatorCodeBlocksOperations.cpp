@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j14a 13-September-2014
+ * Project Version: 1j14b 13-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1053,6 +1053,9 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 	*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity, sentenceIndex);
 
 	parentEntity->NLCparsedForCodeBlocks = true;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	parentEntity->NLClocalListVariableHasBeenInitialised = true;
+	#endif
 	//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS

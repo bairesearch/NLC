@@ -63,10 +63,6 @@ public:
 */
 bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code)
 {
-	cout << "" << endl;
-	cout << "" << endl;
-	cout << "" << endl;
-	
 	printLine(progLangDependenciesStandardLibaries[progLang], 0, code);
 	printLine("", 0, code);
 	printLine("", 0, code);

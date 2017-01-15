@@ -260,7 +260,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 	{
 		NLCclassDefinition * classDefinition = *classDefinitionIter;
 
-		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES);
+		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES);	//changed from GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS, 1k8b
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->functionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
 	}
@@ -434,6 +434,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 #ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition * classDefinition, vector<NLCclassDefinition*> * classDefinitionSublist, int variableType)
 {
+	//cout << "classDefinition->name = " << classDefinition->name << endl;
 	for(vector<NLCclassDefinition*>::iterator localListIter = classDefinitionSublist->begin(); localListIter != classDefinitionSublist->end();)
 	{
 		bool localListIterErased = false;
@@ -444,14 +445,15 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 		{
 			if(!localListIterErased)
 			{
-				NLCclassDefinition * targetClassDefinition = *parentListIter;
+				NLCclassDefinition * targetClassDefinition = *parentListIter;	
 				//cout << "\ttargetClassDefinition->name = " << targetClassDefinition->name << endl;
 
-				if(findVariableInParentClass(classDefinition, variableName, variableType))
+				if(findVariableInParentClass(targetClassDefinition, variableName, variableType))
 				{
 					localListIter = classDefinitionSublist->erase(localListIter);
 					localListIterErased = true;
-					//cout << "\t\tclassDefinition->name = " << classDefinition->name << endl;
+					//cout << "\t\tlocalListIterErased" << endl;
+					//cout << "classDefinition->name = " << classDefinition->name << endl;
 					//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
 				}
 			}

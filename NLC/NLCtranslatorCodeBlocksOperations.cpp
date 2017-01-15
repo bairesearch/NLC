@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j13d 12-September-2014
+ * Project Version: 1j13e 12-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1065,8 +1065,17 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 	cout << "sentenceIndex = " << sentenceIndex << endl;
 	#endif
 
+	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
 	performedAtLeastParentObjectInitialisation = generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "", false, true);
 	
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	*currentCodeBlockInTree = lastCodeBlockInTree;
+	while((*currentCodeBlockInTree)->next != NULL)
+	{
+		*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
+	}
+	#endif
+			
 	return performedAtLeastParentObjectInitialisation;
 }
 

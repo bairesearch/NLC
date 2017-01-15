@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h4c 29-July-2014
+ * Project Version: 1h5a 29-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,9 +59,10 @@
 
 #endif
 
-#define NLC_USE_PREPROCESSOR	//1g17a 18-July-2014
+
+#define NLC_USE_PREPROCESSOR	//1g17a 18-July-2014	//reimplementation 1h1a+ 22-July-2014 //first working 1h1f
 #ifdef NLC_USE_PREPROCESSOR
-	#define NLC_PREPROCESSOR_MATH	//1h1a 22-July-2014	//requires NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE for preprocessor isLogicalConditionOperator detection
+	#define NLC_PREPROCESSOR_MATH	//1h1a 22-July-2014	//requires NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE for preprocessor isLogicalConditionOperator detection	//first working 1h2f
 	#ifdef NLC_PREPROCESSOR_MATH
 		#define NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR (CHAR_FULLSTOP)	//this is defined by NLP/English
 		#define NLC_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR (CHAR_QUESTIONMARK)	//this is defined by NLP/English
@@ -120,15 +121,15 @@
 		#endif
 		
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL " is "
-		#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	//replaces NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED implementation
+		#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	//replaces NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED implementation	//first working 1h3i
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 			
 			#define NLC_PREPROCESSOR_MATH_PARSABLE_PHRASE_START_TEXT_INDICATING_LOGICAL_CONDITION_COMMAND ", "
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 			#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-				#define NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_ON_ONE_LINE		//eg "if the house is blue, write the letter and read the book"/"else write the letter and read the book."
-				#define NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_MATHTEXT_COMMANDS_ON_SAME_LINE 		//eg "if the house is blue, X = 3+5"
-				#define NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_IMPLICIT_CONJUNCTIONS			//eg "if the house is blue, the cat is green, and the bike is tall, ride the bike"
+				//#define NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_ON_ONE_LINE		//eg "if the house is blue, write the letter and read the book"/"else write the letter and read the book."	//Not yet implemented
+				#define NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_MATHTEXT_COMMANDS_ON_SAME_LINE 		//eg "if the house is blue, X = 3+5"	//untested
+				#define NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_IMPLICIT_CONJUNCTIONS			//eg "if the house is blue, the cat is green, and the bike is tall, ride the bike"	//testing now
 				#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_AND_INDEX (0)	//&&
 				#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_OR_INDEX (1)	//||
 			#endif

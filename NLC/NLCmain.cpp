@@ -1399,13 +1399,13 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						#endif
 						#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE
-						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION
+						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
 						if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES_HAVE)
 						{
 						#endif
 							propertyConnection->possessionAuxiliaryHave = true;	//added 1p10a
 							propertyConnectionReverse->possessionAuxiliaryHave = true;	//added 1p10a
-						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION
+						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
 						}
 						#endif
 						#endif

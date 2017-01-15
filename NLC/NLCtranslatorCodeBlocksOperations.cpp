@@ -727,7 +727,6 @@ bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode*
 	}
 	else
 	{
-		cout << "createCodeBlockForStatements" << endl;
 		contextFound = true;
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		parentEntity->NLCcontextGenerated = true;	//added 1g14b 15-July-2014

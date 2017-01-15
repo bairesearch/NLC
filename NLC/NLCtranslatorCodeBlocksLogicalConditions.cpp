@@ -566,7 +566,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								bool generatedContextForChild = false;
 								if(foundChildEntity)
 								{
-									cout << "foundChildEntity" << endl;
+									//cout << "foundChildEntity" << endl;
 									if(generateContextBlocksForParentEntity(currentCodeBlockInTree, childEntity, parentEntity, sentenceIndex, &generateContextBlocksVariables))
 									{
 										generatedContextForChild = true;
@@ -582,12 +582,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								generateContextBlocksVariables.testNumerosity = true;
 								#endif
 								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + parentEntity->entityName);
-								cout << "q1, childEntity = " << childEntity->entityName << endl;
+								//cout << "generateContextBlocks():, childEntity = " << childEntity->entityName << endl;
 								if(generateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
 								{
 									contextFound = true;
 								}
-								cout << "q2" << endl;
 									
 								/*
 								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);

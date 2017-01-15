@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b7a 04-October-2013
+ * Project Version: 1b7b 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -52,12 +52,12 @@ using namespace std;
 #define NLPI_CODEBLOCK_TYPE_UNDEFINED (-1)
 #define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (1)		//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 #define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT (2)	//context1.param1(); 	[param1 = function, context1 = subject]
-#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)			//context1.param1.param2PropertyList.addProperty(context2.param2);
-#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)			//context1.param1.param3ConditionList.addCondition(context3.param3, param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)			//context1->param1->param2PropertyList.push_back(param2);		//OLD2: context1.param1.param2PropertyList.addProperty(context2.param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)			//context1->param1->param2param3ConditionList.insert(param2, param3);	//OLD2: context1.param1.param3ConditionList.addCondition(context3.param3, param2);
 #define NLPI_CODEBLOCK_TYPE_FOR (5)				//forall(context.param1){
 #define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (6)			//main(){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)		//if(context1.param1.param2PropertyList.findProperty(context2.param2)){			//OLD: if(context.param1->has(param2)){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)		//if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)		//if(!(context1->param1->param2PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)		//if(!(context1->param1->param2param3ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR)
 
 #define NLPI_PROGRAMMING_LANGUAGE_CPP (0)
@@ -96,7 +96,7 @@ static string progLangNewObject[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ",
 static string progLangAddProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
 static string progLangFindProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty", "empty", "empty", "empty", "empty", "empty", "empty"};
-static string progLangFindCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"hasCondition", "hasCondition", "hasCondition", "hasCondition", "hasCondition", "hasCondition", "hasCondition"};
+static string progLangFindCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty", "empty", "empty", "empty", "empty", "empty", "empty"};
 /*
 #define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"
 #define NLPI_ITEM_TYPE_CONDITIONLISTADDFUNCTION "addCondition"

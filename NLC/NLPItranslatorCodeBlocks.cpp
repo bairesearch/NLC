@@ -276,16 +276,19 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 								{
 									if(!(parentEntity->isCondition))
 									{
-										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-										currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(currentCodeBlockInTree, parentEntity);
-										parentEntity->parsedForNLPIcodeBlocks = true;
-										parentEntity->NLPIlocalListVariableHasBeenDeclared = true;
-										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+										if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
+										{
+											//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+											currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(currentCodeBlockInTree, parentEntity);
+											parentEntity->parsedForNLPIcodeBlocks = true;
+											parentEntity->NLPIlocalListVariableHasBeenDeclared = true;
+											//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 
-										#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-										//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-										generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, &currentCodeBlockInTree, sentenceIndex);
-										#endif
+											#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+											//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+											generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, &currentCodeBlockInTree, sentenceIndex);
+											#endif
+										}
 									}
 								}
 							}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4e 27-June-2015
+ * Project Version: 1p4f 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -517,10 +517,21 @@ void reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclare
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 
+//fine; this function is not duplicating arguments
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(vector<NLCitem*>* functionDefinitionSourceArgumentList, NLCclassDefinition* functionDefinition)
 {
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
-	vector<NLCitem*>* functionDeclarationArgumentList = &(functionDefinition->parameters);
+	vector<NLCitem*>* functionDefinitionArgumentList = &(functionDefinition->parameters);
+	
+	/*
+	cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
+	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionArgumentList->begin(); parametersIterator < functionDefinitionArgumentList->end(); parametersIterator++)
+	{
+		NLCitem* temp = *parametersIterator;
+		cout << "temp->name = " << temp->name << endl;
+	}
+	*/
+	
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
 		NLCitem* functionDefinitionSourceArgument = *parametersIterator;
@@ -528,7 +539,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctio
 		{
 			//add a new function argument to the existing function argument list
 			NLCitem* functionArgumentTemp = NULL;
-			if(!findFunctionArgument(functionDeclarationArgumentList, functionDefinitionSourceArgument, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			if(!findFunctionArgument(functionDefinitionArgumentList, functionDefinitionSourceArgument, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 			{
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "addImplicitlyDeclaredVariablesInCurrentfunctionDefinitionSourceToFunctionDeclaration: functionDefinitionSourceArgument->name = " << functionDefinitionSourceArgument->name << endl;
@@ -536,26 +547,27 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctio
 				#endif
 				NLCitem* newFunctionArgument = new NLCitem(functionDefinitionSourceArgument);	//NLC by default uses plural (lists) not singular entities
 				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
-				functionDeclarationArgumentList->push_back(newFunctionArgument);
+				functionDefinitionArgumentList->push_back(newFunctionArgument);
 			}
 		}
 	}
 }
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+//fine; this function is not duplicating arguments
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition(NLCclassDefinition* functionDefinitionSource, NLCclassDefinition* functionDefinition)
 {
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition{}: functionDefinitionSource->name = " << functionDefinitionSource->name << endl;
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
-	vector<NLCitem*>* functionDeclarationSourceArgumentList = &(functionDefinitionSource->parameters);
-	vector<NLCitem*>* functionDeclarationArgumentList = &(functionDefinition->parameters);
-	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
+	vector<NLCitem*>* functionDefinitionSourceArgumentList = &(functionDefinitionSource->parameters);
+	vector<NLCitem*>* functionDefinitionArgumentList = &(functionDefinition->parameters);
+	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
 		NLCitem* functionDeclarationSourceArgument = *parametersIterator;
 		if(functionDeclarationSourceArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			//add a new function argument to the existing function argument list
 			NLCitem* functionArgumentTemp = NULL;
-			if(!findFunctionArgument(functionDeclarationArgumentList, functionDeclarationSourceArgument, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			if(!findFunctionArgument(functionDefinitionArgumentList, functionDeclarationSourceArgument, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 			{
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition: functionDeclarationSourceArgument->name = " << functionDeclarationSourceArgument->name << endl;
@@ -563,17 +575,18 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefiniti
 				#endif
 				NLCitem* newFunctionArgument = new NLCitem(functionDeclarationSourceArgument);
 				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
-				functionDeclarationArgumentList->push_back(newFunctionArgument);
+				functionDefinitionArgumentList->push_back(newFunctionArgument);
 			}
 		}
 	}
 }
 
+//fine; this function is not duplicating arguments
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinitionArguments(NLCclassDefinition* functionDefinitionSource, vector<NLCitem*>* functionDefinitionArgumentList)
 {
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinitionArguments{}: functionDefinitionSource->name = " << functionDefinitionSource->name << endl;
-	vector<NLCitem*>* functionDeclarationSourceArgumentList = &(functionDefinitionSource->parameters);
-	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
+	vector<NLCitem*>* functionDefinitionSourceArgumentList = &(functionDefinitionSource->parameters);
+	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
 		NLCitem* functionDeclarationSourceArgument = *parametersIterator;
 		if(functionDeclarationSourceArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)

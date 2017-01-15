@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4e 27-June-2015
+ * Project Version: 1p4f 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -584,16 +584,6 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 			}
 			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
 		}
-		//#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)	//this is required as function arguments in function definition may be copied to function arguments in function declaration [although they are not currently copied to function arguments in function execution references]
-		{
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
-		}
-		//#endif
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)

@@ -23,7 +23,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f4a 14-December-2013
+ * Project Version: 1f4b 14-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -87,6 +87,28 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 		currentCodeBlockInTree->parameters.push_back(propertyItem);
 
 		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
+		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	#ifdef NLC_SUPPORT_QUANTITIES
+	}
+	#endif		
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+{
+	#ifdef NLC_SUPPORT_QUANTITIES
+	for(int i=0; i<propertyEntity->quantityNumber; i++)
+	{
+	#endif
+		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(entityItem);
+
+		NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+		//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST;
 		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	#ifdef NLC_SUPPORT_QUANTITIES
 	}
@@ -191,13 +213,10 @@ NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree
 
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	//getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
-	currentCodeBlockInTree->parameters.push_back(entityItem);
-	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_CREATE_NEW_LOCAL_LIST_VARIABLE;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
+	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
+
+	currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(currentCodeBlockInTree, entity, entity);
+
 	return currentCodeBlockInTree;
 }
 

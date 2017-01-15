@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14j 02-September-2015
+ * Project Version: 1q14k 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -239,7 +239,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						#endif
 							string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
 							printLine(classDefinitionNameCode, 1, &printedClassDefinitionHeaderText);
-							#ifdef NLC_USE_ADVANCED_REFERENCING
+							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 							string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//stack<int> lastSentenceReferenced;
 							printLine(classDefinitionLastSentenceReferencedCode, 1, &printedClassDefinitionHeaderText);
 							#endif
@@ -1043,6 +1043,10 @@ void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* cl
 			printLine(progLangCloseBlock[progLang], level, code);	
 		}
 	}
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_UPDATE_GENERATE_OBJECT_BY_NAME
+	string codeBlockUpdateLastSentenceReferencedText = newGenericObject->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackAdd[progLang] + progLangOpenParameterSpace[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_DEFAULT_SENTENCE_INDEX + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//newGenericObject->lastSentenceReferenced.push(0);		
+	printLine(codeBlockUpdateLastSentenceReferencedText, level, code);
+	#endif	
 	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newObject;
 	printLine(codeBlockTextReturnNewVector, level, code);
 	level--;

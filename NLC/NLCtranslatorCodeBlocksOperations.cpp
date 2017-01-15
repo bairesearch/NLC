@@ -2774,8 +2774,7 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** 
 							foundParentProperty = true;
 							if(topLevel)
 							{						
-								NLCitem* parentEntityClass = new NLCitem(parentEntity, NLC_ITEM_TYPE_OBJECT);
-								*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, parentEntityClass);	
+								*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, parentEntity);	
 							}
 							
 							*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entity, generateInstanceName(parentEntity));	

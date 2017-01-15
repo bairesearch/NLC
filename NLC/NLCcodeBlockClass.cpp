@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u9a 29-September-2016
+ * Project Version: 1u9b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1401,6 +1401,16 @@ bool isDefiniteEntity(GIAentityNode* entity)
 	#else
 	if((entity->grammaticalDefiniteTemp) || ((entity->grammaticalProperNounTemp))
 	#endif
+	{
+		isDefiniteEntity = true;
+	}
+	return isDefiniteEntity;
+}
+
+bool isDefiniteEntityStrict(GIAentityNode* entity)
+{
+	bool isDefiniteEntity = false;
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
 	{
 		isDefiniteEntity = true;
 	}

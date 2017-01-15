@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u9a 29-September-2016
+ * Project Version: 1u9b 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -617,7 +617,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 			if(generateContextBlocksVariables->logicalConditionStatement)
 			{
-				if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
+				if(!isDefiniteEntityStrict(parentEntity))
 				{
 					testPlurality = false;
 				}
@@ -884,7 +884,7 @@ bool addEntityToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityNod
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 	if(generateContextBlocksVariables->logicalConditionStatement)
 	{
-		if(!assumedToAlreadyHaveBeenDeclared(entity))
+		if(!isDefiniteEntityStrict(entity))
 		{
 			singular = false;
 		}
@@ -1914,7 +1914,7 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 			if(generateContextBlocksVariables->logicalConditionStatement)
 			{
-				if(!assumedToAlreadyHaveBeenDeclared(*parentEntity))
+				if(!isDefiniteEntityStrict(*parentEntity))
 				{
 					//code copied from generateCodeBlocksFromMathTextNLPparsablePhrase
 

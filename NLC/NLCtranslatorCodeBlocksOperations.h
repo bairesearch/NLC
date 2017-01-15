@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v12b 24-October-2016
+ * Project Version: 1v13a 25-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,7 +54,6 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 		#endif
 
 bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, int sentenceIndex, bool sameReferenceSet, int connectionType);
-	bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** entityConnection, int connectionType);
 
 		
 bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName);
@@ -117,8 +116,8 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeB
 				bool getConditionObjectEntityConnection(GIAentityNode* conditionEntity, int sentenceIndex, GIAentityConnection** conditionObjectConnection);
 			*/
 			bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, int sentenceIndex, bool sameReferenceSet, int connectionType);
-				bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** actionSubjectConnection, int connectionType);
 				bool connectionTypeIsCondition(int connectionType);
+				bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** entityConnection, int connectionType);
 
 GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex);
 	GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables);

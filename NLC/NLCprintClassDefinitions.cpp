@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7g 14-October-2014
+ * Project Version: 1k8a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -63,6 +63,10 @@ public:
 */
 bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code)
 {
+	cout << "" << endl;
+	cout << "" << endl;
+	cout << "" << endl;
+	
 	printLine(progLangDependenciesStandardLibaries[progLang], 0, code);
 	printLine("", 0, code);
 	printLine("", 0, code);
@@ -208,6 +212,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							NLCclassDefinition * targetClassDefinition = *localListIter;
 							string targetName = targetClassDefinition->functionNameSpecial;
 							string functionArguments = "";
+							//cout << "function targetName = " << targetName << endl;
 
 							generateFunctionArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 							string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];

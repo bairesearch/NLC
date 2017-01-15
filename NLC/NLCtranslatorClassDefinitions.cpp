@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7g 14-October-2014
+ * Project Version: 1k8a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -253,19 +253,19 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		}
 	}
 
-
+	
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	//disable all double declarations
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition * classDefinition = *classDefinitionIter;
 
-		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
+		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES);
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->functionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
 	}
 	#endif
-
+	
 	#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 	//create a high level "genericEntity" class definition (for generic NLC library functions - that cannot rely on specific class names)
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
@@ -439,16 +439,19 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 		bool localListIterErased = false;
 		NLCclassDefinition * variableClassDefinition = *localListIter;
 		string variableName = variableClassDefinition->name;
+		//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
 		for(vector<NLCclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
 		{
 			if(!localListIterErased)
 			{
 				NLCclassDefinition * targetClassDefinition = *parentListIter;
+				//cout << "\ttargetClassDefinition->name = " << targetClassDefinition->name << endl;
+
 				if(findVariableInParentClass(classDefinition, variableName, variableType))
 				{
 					localListIter = classDefinitionSublist->erase(localListIter);
 					localListIterErased = true;
-					//cout << "classDefinition->name = " << classDefinition->name << endl;
+					//cout << "\t\tclassDefinition->name = " << classDefinition->name << endl;
 					//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
 				}
 			}

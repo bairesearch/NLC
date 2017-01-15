@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a2b 15-September-2013
+ * Project Version: 1a2c 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -81,6 +81,23 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 		NLPIclassDefinition * classDefinition = *classDefinitionIter;
 		string className = classDefinition->name;
 		string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className;
+		
+		bool foundDefinition = false;
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+		{
+			if(!foundDefinition)
+			{
+				foundDefinition = true;
+				classDefinitionEntryText = classDefinitionEntryText + " : ";
+			}
+			else
+			{
+				classDefinitionEntryText = classDefinitionEntryText + ", ";
+			}
+			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			string targetName = targetClassDefinition->name;
+			classDefinitionEntryText = classDefinitionEntryText + "public " + targetName;
+		}
 		printLine(classDefinitionEntryText, 0, code);
 		printLine(progLangOpenClass[progLang], 0, code);
 		printLine(progLangClassIntro[progLang], 0, code);
@@ -108,14 +125,6 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			string targetName = targetClassDefinition->name;
 			string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName +  progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangEndLine[progLang];
-			printLine(localListDeclarationText, 1, code);	
-		}
-		
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
-		{
-			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->name;
-			string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName +  progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION + progLangEndLine[progLang];
 			printLine(localListDeclarationText, 1, code);	
 		}
 		

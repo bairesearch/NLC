@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k4b 12-October-2014
+ * Project Version: 1k5a 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -165,8 +165,8 @@ static string progLangNewObject[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ", 
 static string progLangAddEntityToList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddProperty[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
-static string progLangFindProperty[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
-static string progLangFindCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
+static string progLangHasEntity[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
+static string progLangHasCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
 
 static string progLangMainEntryPointFunctionName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"main", "main", "main", "main", "main", "main", "main"};
 
@@ -234,8 +234,8 @@ static string progLangTemplateUseClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LANGUA
 #endif
 
 void printLine(string command, int level, string * code);
-string generatePropertyListName(string propertyInstanceName);
-string generateEntityLocalListName(NLCitem * param);	//added 1i6a
+string generatePropertyListName(string propertyClassName);
+string generateEntityLocalListName(NLCitem * entityParam);	//added 1i6a
 string generateGenericListName(string genericObjectName, string genericListAppendName);
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
@@ -244,12 +244,13 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 	string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
 		string generateStringFromContextVector(vector<string> * context, int progLang);
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
-	string generateCodePropertyListDefinitionTypeText(string propertyClassName, int progLang);
+string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
+	string generateCodeEntityListDefinitionTypeText(string propertyClassName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
 
 #ifdef NLC_GENERATE_TYPE_LISTS
-string generateCodePropertyListDefinitionTypeText2(string propertyClassName, int progLang);
+string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
 #endif
 
 string generateTempVariableDeclaration(NLCitem * param, int progLang);

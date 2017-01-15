@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k4b 12-October-2014
+ * Project Version: 1k5a 13-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,23 +48,23 @@ void printLine(string command, int level, string * code)
 	//}
 }
 
-string generatePropertyListName(string propertyInstanceName)
+string generatePropertyListName(string propertyClassName)
 {
-	string propertyListName = propertyInstanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+	string propertyListName = propertyClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
 	return propertyListName;
 }
 
-string generateEntityLocalListName(NLCitem * param)
+string generateEntityLocalListName(NLCitem * entityParam)
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-		string instanceName = param->instanceName;
+		string instanceName = entityParam->instanceName;
 		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
 		string entityListName = instanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
 		#else
-		string entityListName = instanceName + NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION + NLC_ITEM_TYPE_LISTVAR_APPENDITION;	
+		string entityListName = instanceName + NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION;	
 		#endif
 	#else
-		string className = param->className;
+		string className = entityParam->className;
 		string entityListName = className + NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
 	#endif
 	return entityListName;
@@ -154,14 +154,20 @@ string generateStringFromContextVector(vector<string> * context, int progLang)
 
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang)
 {
-	string codePropertyListDefinitionText = generateCodePropertyListDefinitionTypeText(propertyClassName, progLang) + propertyClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+	string codePropertyListDefinitionText = generateCodeEntityListDefinitionTypeText(propertyClassName, progLang) + generatePropertyListName(propertyClassName);
 	return codePropertyListDefinitionText;
 }
 
-string generateCodePropertyListDefinitionTypeText(string propertyClassName, int progLang)
+string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
 {
-	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + propertyClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
-	return codePropertyListDefinitionText;
+	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(entityParam->className, progLang) + generateEntityLocalListName(entityParam);
+	return codeEntityListDefinitionText;
+}
+
+string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang)
+{
+	string codeEntityListDefinitionTypeText = progLangClassListTypeStart[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
+	return codeEntityListDefinitionTypeText;
 }
 
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang)
@@ -172,15 +178,15 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang)
 {
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
+	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	#else
-	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
+	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	#endif
-	return codeConditionListDefinitionText;
+	return codeConditionListDefinitionTypeText;
 }
 
 #ifdef NLC_GENERATE_TYPE_LISTS
-string generateCodePropertyListDefinitionTypeText2(string propertyClassName, int progLang)
+string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang)
 {
 	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + progLangClassListTypeStart[progLang] + propertyClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + progLangClassListTypeEnd[progLang];
 	return codePropertyListDefinitionText;

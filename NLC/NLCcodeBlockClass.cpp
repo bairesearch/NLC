@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n3b 15-January-2015
+ * Project Version: 1n4a 16-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -233,6 +233,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 	if(copyNewItemsToLocalList)
 	{
+		//cout << "copyNewItemsToLocalList: entity->entityName = " << entity->entityName << endl;	
 		if(propertyEntity->NLClocalListVariableHasBeenDeclared)
 		{//added 1g8a 11-July-2014
 			currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(currentCodeBlockInTree, propertyEntity, propertyEntity);
@@ -243,7 +244,16 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 			//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
 			//cout << debugString << endl;
 			#endif
+			//cout << "(propertyEntity->NLClocalListVariableHasBeenDeclared): entity->entityName = " << entity->entityName << endl;	
 		}
+		else
+		{
+			//cout << "!(propertyEntity->NLClocalListVariableHasBeenDeclared): entity->entityName = " << entity->entityName << endl;	
+		}
+	}
+	else
+	{
+		//cout << "!copyNewItemsToLocalList: entity->entityName = " << entity->entityName << endl;	
 	}
 	#endif
 
@@ -545,10 +555,11 @@ NLCcodeblock * createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodeblo
 	{//added 1g8a 11-July-2014
 		entity->NLClocalListVariableHasBeenDeclared = true;
 	#else
+	entity->NLClocalListVariableHasBeenDeclared = true;	//added 1n4a
 	GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
 	if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))
 	{
-		entity->NLClocalListVariableHasBeenDeclared = true;
+		
 		conceptEntity->NLClocalListVariableHasBeenDeclared = true;
 	#endif
 	

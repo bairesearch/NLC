@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l1b 29-October-2014
+ * Project Version: 1l1c 29-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1395,7 +1395,8 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			bool categoryList = false;
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
@@ -1406,8 +1407,15 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
+			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			bool categoryList = false;
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+			categoryList = true;
+			#endif
+			#endif
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
@@ -1420,7 +1428,8 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			bool categoryList = false;
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
@@ -1433,7 +1442,13 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
+			bool categoryList = false;
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
+			categoryList = true;
+			#endif
+			#endif
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
@@ -1463,9 +1478,26 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 }
 
 
-string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang)
+string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang, bool categoryList)
 {
-	string codePropertyTypeText = generateEntityListName(functionArgumentItem);
+	string codePropertyTypeText = "";
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	if(categoryList)
+	{
+		codePropertyTypeText = generateGenericListName(functionArgumentItem->name, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+	}
+	else
+	{
+	#endif
+	#endif
+		codePropertyTypeText = generateEntityListName(functionArgumentItem);
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	}
+	#endif
+	#endif
+	
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
@@ -1473,10 +1505,11 @@ string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progL
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "generateCodePluralReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
 		#endif
-		codePropertyTypeText = printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang);
+		codePropertyTypeText = printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang, categoryList);
 	}
 	#endif
 	#endif
+
 	return codePropertyTypeText;
 }
 
@@ -1490,7 +1523,7 @@ string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int pro
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "generateCodeSingularReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
 		#endif
-		codePropertyTypeText = progLangDynamicCastStart[progLang] + functionArgumentItem->functionArgumentPassCastClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + functionArgumentItem->instanceName + progLangCloseParameterSpace[progLang];	//dynamic_cast<parentClass*>(childClassInstance);
+		codePropertyTypeText = generateDynamicCastOfEntity(functionArgumentItem->instanceName, functionArgumentItem->functionArgumentPassCastClassName, false); 	//dynamic_cast<parentClass*>(childClassInstance);
 	}
 	#endif
 	#endif
@@ -1498,15 +1531,32 @@ string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int pro
 }
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang)
+string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang, bool categoryList)
 {
 	//see NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION
 	//NO: v2.assign(v1.begin(), v1.end());
 	
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + functionArgumentItem->functionArgumentPassCastClassName + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
-	string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
-	//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
-	//string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
+	string codeBlockExecuteFunctionText = "";
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	if(categoryList)
+	{
+		codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateGenericListName(functionArgumentItem->instanceName, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1CategoryList)				
+	}
+	else
+	{
+	#endif
+	#endif
+		codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
+		//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
+		//string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	
+	}
+	#endif
+	#endif
+	
 	return codeBlockExecuteFunctionText;
 }
 #endif

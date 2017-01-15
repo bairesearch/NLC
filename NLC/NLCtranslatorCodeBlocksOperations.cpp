@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2c 06-September-2014
+ * Project Version: 1j3a 07-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -208,7 +208,7 @@ void initialiseFunctionArguments(NLCcodeblock ** currentCodeBlockInTree, GIAenti
 	//declare an "abstract" variable for the action (that will be filled with the its properties and conditions) and passed as an argument to the function; eg "fast" of "run fast"
 	//cout << "functionItem->instanceName = " << functionItem->instanceName << endl;
 	//cout << "functionItem->className = " << functionItem->className << endl;
-	*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, actionEntity);	//changed 1e10b
+	*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, actionEntity, sentenceIndex);	//changed 1e10b
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_AT_ALL_TIMES
 	generateObjectInitialisationsBasedOnPropertiesAndConditions(actionEntity, currentCodeBlockInTree, sentenceIndex, "", "", true);	//NB generateParentContext added 1i8c, removed 1i8e
@@ -310,16 +310,22 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		contextFound = true;
 	}
 
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
+	#ifdef NLC_USE_ADVANCED_REFERENCING
 	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
 	{
+		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
 		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockIfHasCategory(*currentCodeBlockInTree, parentEntity, false);
-		*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
+		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, true);
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);
+		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+		lastCodeBlockInTree2 = *currentCodeBlockInTree;
+		*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, parentEntity);
 		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
 	}
-	#endif
+	#else
 	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);
+	#endif
 
 	*currentCodeBlockInTree = lastCodeBlockInTree->next;
 	lastCodeBlockInTree = *currentCodeBlockInTree;
@@ -344,15 +350,37 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 	}
 	
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-	*currentCodeBlockInTree = createCodeBlockGetBackPropertyListCategory(*currentCodeBlockInTree, parentEntity);	
-	#else
-	*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentEntity);
+	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
+	{
+		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
+
+		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
+		*currentCodeBlockInTree = createCodeBlockIfHasMoreThanOneCategoryItem(*currentCodeBlockInTree, parentEntity);
+		*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
+		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+		
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
+		*currentCodeBlockInTree = createCodeBlockGetBackPropertyListCategory(*currentCodeBlockInTree, parentEntity);
+		#else
+		*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentEntity);
+		#endif
+	}
+	else
+	{
+	#endif
+		*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentEntity);
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	}
+	#endif
+	#ifdef NLC_USE_ADVANCED_REFERENCING
+	*currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, sentenceIndex);
 	#endif
 	
 	return contextFound;
 
 }
 
+/*
 bool generateCategories(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
 {			
 	bool contextFound = true;
@@ -398,6 +426,8 @@ bool generateCategories(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * 
 	return contextFound;
 
 }
+*/
+
 bool generateContextBlocksSimple(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
 #else
 bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
@@ -507,7 +537,21 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 					contextFound = true;
 				}
 				
+				#ifdef NLC_USE_ADVANCED_REFERENCING
+				if(parentInstance->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
+				{
+					NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
+					*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentInstance, true);
+					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);
+					*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+					lastCodeBlockInTree2 = *currentCodeBlockInTree;
+					*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
+					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenced(*currentCodeBlockInTree, parentInstance, childSubstance);
+					*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+				}
+				#else
 				*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);
+				#endif
 				*currentCodeBlockInTree = (*lastCodeBlockInTree);
 				while((*currentCodeBlockInTree)->next != NULL)
 				{
@@ -1017,13 +1061,13 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 										#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 										if(parentEntity->NLClocalListVariableHasBeenDeclared)
 										{//added 1g8a 11-July-2014
-											*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity);
+											*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity, sentenceIndex);
 										}
 										else
 										{
 										#endif
 
-											*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);	//is this ever called with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES?
+											*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity, sentenceIndex);	//is this ever called with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES?
 										#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 										}
 										#endif

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2c 06-September-2014
+ * Project Version: 1j3a 07-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -177,6 +177,10 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						#endif
 							string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
 							printLine(classDefinitionNameCode, 1, code);
+							#ifdef NLC_USE_ADVANCED_REFERENCING
+							string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//int lastSentenceReferenced;
+							printLine(classDefinitionLastSentenceReferencedCode, 1, code);
+							#endif
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						}
 						#endif
@@ -218,6 +222,11 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						printLine(progLangOpenClass[progLang], 0, code);
 						string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
 						printLine(classConstructorNameCode, 1, code);
+						#ifdef NLC_USE_ADVANCED_REFERENCING
+						string classConstructorLastSentenceReferencedCode = "";
+						classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangClassNameVariableEquals[progLang] + "0" + progLangEndLine[progLang];	//lastSentenceReferenced = 0;
+						printLine(classConstructorLastSentenceReferencedCode, 1, code);		
+						#endif
 						printLine(progLangCloseClass[progLang], 0, code);
 						printLine("", 0, code);
 					}

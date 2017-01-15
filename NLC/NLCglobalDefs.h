@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2c 06-September-2014
+ * Project Version: 1j3a 07-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,10 +74,16 @@
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES	//1i4a
 	#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2 "Category"
-	#define NLC_CATEGORIES_TEST_PLURALITY	//1j1a
-	#define NLC_CATEGORIES_TEST_PLURALITY_OLD	//1j1a
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
-		#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE "Execution warning: multiple objects are being added to a singular definite variable (category) - should the entity have been defined as plural instead?"
+	#ifndef NLC_ACTIVATE_PRE1j_CODE_FOR_DEBUG
+		#define NLC_USE_ADVANCED_REFERENCING	//added 1j3a+ (replaces GIA_USE_ADVANCED_REFERENCING)
+		#ifdef NLC_USE_ADVANCED_REFERENCING
+			#define NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME "lastSentenceReferenced"
+		#endif
+		#define NLC_CATEGORIES_TEST_PLURALITY	//1j1a
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY
+			#define NLC_CATEGORIES_TEST_PLURALITY_ENFORCE	//interpret user definite singular references as singular even if an appropriate plural match exists
+			#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE "Execution warning: multiple objects have been added to a singular definite variable (category) - should the entity have been defined as plural instead?"
+		#endif
 	#endif
 #endif
 

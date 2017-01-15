@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g11a 13-July-2014
+ * Project Version: 1g11b 13-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -126,6 +126,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
+	#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 	if(copyNewItemsToLocalList)
 	{
 		if(propertyEntity->NLClocalListVariableHasBeenDeclared)
@@ -134,6 +135,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 			propertyEntity->NLClocalListVariableHasBeenInitialised = true;
 		}
 	}
+	#endif
 						
 	#ifdef NLC_SUPPORT_QUANTITIES
 	if(propertyEntity->quantityNumber > 1)
@@ -236,6 +238,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
 		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 		
+		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		if(copyNewItemsToLocalList)
 		{
 			if(conditionObject->NLClocalListVariableHasBeenDeclared)
@@ -244,6 +247,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 				conditionObject->NLClocalListVariableHasBeenInitialised = true;
 			}
 		}
+		#endif
 										
 		#ifdef NLC_SUPPORT_QUANTITIES
 		if(conditionObject->quantityNumber > 1)

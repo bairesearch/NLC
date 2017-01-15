@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g11a 13-July-2014
+ * Project Version: 1g11b 13-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1118,14 +1118,18 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 					cout << "createCodeBlocksCreateNewLocalListVariable: " << currentEntity->entityName << endl;
 					#endif
 					
+					#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 					if(currentEntity->NLClocalListVariableHasBeenDeclared)
 					{//added 1g8a 11-July-2014
 						*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, currentEntity, currentEntity);
 					}
 					else
 					{
+					#endif
 						*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, currentEntity);
-					}			
+					#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+					}
+					#endif		
 					currentEntity->parsedForNLCcodeBlocks = true;
 					currentEntity->NLClocalListVariableHasBeenInitialised = true;
 					//NLCcodeblock firstCodeBlockInSection = *currentCodeBlockInTree;
@@ -1223,14 +1227,18 @@ void generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIA
 									#ifdef NLC_DEBUG
 									cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 									#endif
+									#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 									if(parentEntity->NLClocalListVariableHasBeenDeclared)
 									{//added 1g8a 11-July-2014
 										*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity);
 									}
 									else
 									{
+									#endif
 										*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
+									#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 									}
+									#endif
 									parentEntity->parsedForNLCcodeBlocks = true;
 									parentEntity->NLClocalListVariableHasBeenInitialised = true;
 									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;

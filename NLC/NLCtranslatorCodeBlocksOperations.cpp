@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11j 25-August-2014
+ * Project Version: 1i11k 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1138,7 +1138,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	#endif
 	
 	bool performedAtLeastOneObjectInitialisation = false;
-	if(!(entity->isSubstanceConcept) && !(entity->isActionConcept))
+	if(!(entity->isSubstanceConcept) && !(entity->isActionConcept) || (parentName != ""))		//|| (parentName != "") added 1i11k
 	{
 		//property initialisations
 		for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)

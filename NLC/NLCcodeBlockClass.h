@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1f 26-July-2014
+ * Project Version: 1g18f 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -80,34 +80,27 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_REMOVE_PROPERTIES_FROM_LOCAL_LIST (23)
 	#define NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS (24)
 #endif
-#ifdef NLC_PREPROCESSOR_MATH
-	#define NLC_CODEBLOCK_TYPE_MATHTEXT_LINE (25)
-#endif
-#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_INT_VARIABLE (26)
-#define NLC_CODEBLOCK_TYPE_INCREMENT_INT_VARIABLE (27)
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (30)		//forall(context1.param1PropertyList){
-#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (31)	//forall(param1instance){
-#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (32)		//forall(context1.param1param2ConditionList){
-#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (33)
-#define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (34)			//main(){
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (35)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (36)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (37)		//while(!(context1->param1PropertyList.empty())){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (38)		//while(!(context1->param1param2ConditionList.empty())){
+#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (31)		//forall(context1.param1param2ConditionList){
+#define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (32)			//main(){
+#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (33)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (34)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 #endif
+#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (35)	//forall(param1instance){
+#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (36)		//while(!(context1->param1PropertyList.empty())){
+	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (37)		//while(!(context1->param1param2ConditionList.empty())){
 #endif
-#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (39)
+#define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (38)
+#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (39)
 #define NLC_CODEBLOCK_TYPE_ELSE (40)
-#define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (41)
-#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (42)
-#ifdef NLC_PREPROCESSOR_MATH
-	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (43)
-#endif
+#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (41)
+#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (42)
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
+
 
 
 /*
@@ -132,10 +125,10 @@ public:
 	~NLClogicalConditionConjunctionVariables(void);
 
 	int logicalOperation;
-	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	//#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	bool negative;
 	//#endif
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	int logicalConditionConjunctionIndex;
 	GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset;
 	GIAentityNode * foundLogicalConditionConjunction;
@@ -145,7 +138,7 @@ public:
 	#endif
 };
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 class NLClogicalConditionConjunction
 {
 public:
@@ -189,12 +182,11 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 	NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-
 NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForPropertyListLocal(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
 #ifdef NLC_SUPPORT_QUANTITIES
-NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, string numberIterationsOrVariable);
+NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, int numberIterations);
 #endif
 NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete);
 	NLCcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner);
@@ -221,41 +213,31 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass, string * functionObjectName, bool * foundFunctionObjectClass);
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree, string whileLogicalConditionConjunctionBooleanName);
 NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree);
 NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction * logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel, int logicalConditionCase, bool elseIfDetected);
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalOperation);
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalConditionConjunctionIndex, int logicalOperation);
+string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel);
 NLCcodeblock * createCodeBlockDeclareNewBoolArray(NLCcodeblock * currentCodeBlockInTree, string boolArrayName, bool value);
+NLCcodeblock * createCodeBlockDeclareNewBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value);
+NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value);
 #else
 NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
 NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
 NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
 NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
 #endif
-#endif
-NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree, string whileLogicalConditionConjunctionBooleanName);
-string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel);
-NLCcodeblock * createCodeBlockDeclareNewBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value);
-NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value);
-
 
 NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning);
+
+string intToString(int integer);
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 NLCcodeblock * createCodeBlockRemoveProperties(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockRemovePropertiesFromLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlockRemoveConditions(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity);
 #endif
-
-#ifdef NLC_PREPROCESSOR_MATH
-NLCcodeblock * createCodeBlockMathTextLine(NLCcodeblock * currentCodeBlockInTree, string mathText);
-NLCcodeblock * createCodeBlockMathTextWithLogicalOperator(NLCcodeblock * currentCodeBlockInTree, string mathText);
-#endif
-NLCcodeblock * createCodeBlockDeclareNewIntVar(NLCcodeblock * currentCodeBlockInTree, string intVariableName, int value);
-NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInTree, string intVariableName);
-
-void clearCodeBlock(NLCcodeblock * codeBlock);
 
 #endif

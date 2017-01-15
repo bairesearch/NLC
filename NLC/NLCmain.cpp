@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u13b 02-October-2016
+ * Project Version: 1u14a 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1u13b 02-October-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1u14a 03-October-2016" << endl;
 			exit(1);
 		}
 
@@ -1120,7 +1120,7 @@ int main(int argc, char** argv)
 		#ifdef NLC_DEBUG
 		cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:" << endl;
 		#endif
-		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+		#ifdef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
 
@@ -1260,8 +1260,8 @@ string removeNLCfileNameExtension(string NLCfunctionName)
 
 
 
-#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
-//this is required for NLC as NLC assumes GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
+//this is required for NLC
 void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -1379,6 +1379,9 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						if(isReference != (actionEntity->actionObjectEntity->back())->isReference)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: isReference inconsistent between action object and action subject" << endl;
+							cout << " actionEntity->entityName = " <<  actionEntity->entityName << endl;
+							cout << " (actionEntity->actionSubjectEntity->back())->entityName = " <<  (actionEntity->actionSubjectEntity->back())->entityName << endl;
+							cout << " (actionEntity->actionObjectEntity->back())->entityName = " <<  (actionEntity->actionObjectEntity->back())->entityName << endl;
 							exit(0);
 						}
 						#endif

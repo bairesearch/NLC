@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u13b 02-October-2016
+ * Project Version: 1u14a 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -667,7 +667,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								{
 									generateContextBlocksVariables.logicalConditionStatement = true;
 								}
-								getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntityTemp, &newInitialisation);
+								getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntityTemp, &newInitialisation, false);
 								#else
 								//initialise parsing of indefinate entities (set how to intepret these, eg "a house")
 								bool parentEntityWasNotDeclared = false;
@@ -915,6 +915,12 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 						#endif
 					}
 				}
+				#ifdef NLC_SUPPORT_EXPLETIVES
+				if(entity->isExpletive)
+				{
+					foundBooleanStatementExpression = true;
+				}
+				#endif
 			}
 		}
 	}

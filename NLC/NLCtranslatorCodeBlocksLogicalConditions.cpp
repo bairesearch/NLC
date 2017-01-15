@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2j 15-September-2016
+ * Project Version: 1t2k 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1316,7 +1316,9 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 				string mathTextSubphraseContainingNLPparsablePhraseUpdated = sourceValueText + NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING + targetValueText;
 				#endif
 				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
+				#ifdef NLC_DEBUG
 				cout << "mathTextUpdated = " << mathTextUpdated << endl;
+				#endif
 				//progLangParameterSpaceNextParam
 			}
 		}

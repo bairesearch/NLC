@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2j 15-September-2016
+ * Project Version: 1t2k 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -45,7 +45,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 	void addDefinitionToClassDefinition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition);	
 	void addPropertyListToClassDefinition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition);
 	#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
-	bool isSubstanceEntityDefinitionAChildOfTheSubstanceEntity(GIAentityNode* childEntity, GIAentityNode* parentEntity, GIAentityConnection* connection);
+	bool isSubstanceEntityDefinitionAChildOfTheSubstanceEntity(GIAentityNode* substanceEntity, GIAentityNode* parentEntity, GIAentityConnection* connection);
 	#endif
 	#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_LOGICAL_CONDITION_CONCEPTS
 	bool entityIsConceptAndInLogicalCondition(GIAentityNode* entity, NLCfunction* currentNLCfunctionInList);

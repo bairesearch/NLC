@@ -2550,7 +2550,8 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 		{
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 			firstCodeBlockAtLevel2 = *currentCodeBlockInTree;
-			if(checkNumerosity(subjectEntity) || checkNumerosity(objectEntity))
+			
+			if((foundSubject && checkNumerosity(subjectEntity)) || checkNumerosity(objectEntity))
 			{
 				string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(objectEntity);
 				*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 0);
@@ -2565,7 +2566,7 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 		
 	#ifdef NLC_RECORD_ACTION_HISTORY
 	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
-	{	
+	{
 		if(createCodeBlockForGivenAction(currentCodeBlockInTree, generateInstanceName(subjectEntity), actionOrConditionEntity, sentenceIndex, &generateContextBlocksVariables, &objectEntityTemp, &generateContextForObjectTemp))
 		{
 			#ifdef NLC_DEBUG
@@ -2729,7 +2730,7 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 			if(objectEntity != NULL)
 			{
-				if(checkNumerosity(subjectEntity) || checkNumerosity(objectEntity))
+				if((foundSubject && checkNumerosity(subjectEntity)) || checkNumerosity(objectEntity))
 				{
 					//eg If the basket has 3 pies, eat the apple.
 					string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(objectEntity);

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4c 27-June-2015
+ * Project Version: 1p4d 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p4c 27-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p4d 27-June-2015" << endl;
 			exit(1);
 		}
 
@@ -1465,8 +1465,12 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 			if(classDefinition->functionDependency != NULL)
 			{
 				NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = classDefinition->functionDependency;
-				cout << "functionDefinitionFunctionDependency->functionName = " << functionDefinitionFunctionDependency->functionName << endl;
+				//cout << "functionDefinitionFunctionDependency->functionName = " << functionDefinitionFunctionDependency->functionName << endl;
+				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+				if(functionDefinitionFunctionDependency->functionDefinitionListIndex != FUNCTION_INDEX_LIBRARY_FUNCTION)	//redundant check (NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES: functionDependencies are now only defined for functionDefinition classDefinitions)
+				#else
 				if(functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE)	//redundant check (NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES: functionDependencies are now only defined for functionDefinition classDefinitions)
+				#endif
 				{
 					if(!(functionDefinitionFunctionDependency->isReferenceElseFunctionDefinition))	//redundant check (checking functionDefinitionListIndex already)
 					{
@@ -1477,8 +1481,12 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 							for(vector<NLCclassDefinition*>::iterator classDefinitionListIter2 = classDefinition->functionDependencyList.begin(); classDefinitionListIter2 != classDefinition->functionDependencyList.end(); classDefinitionListIter2++)
 							{
 								NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependencyChild = (*classDefinitionListIter2)->functionDependency;
-								cout << "functionDefinitionFunctionDependencyChild->functionName = " << functionDefinitionFunctionDependencyChild->functionName << endl;
+								//cout << "functionDefinitionFunctionDependencyChild->functionName = " << functionDefinitionFunctionDependencyChild->functionName << endl;
+								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+								if(functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != FUNCTION_INDEX_LIBRARY_FUNCTION)
+								#else
 								if(functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE)
+								#endif
 								{
 									if(!(functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition))	//redundant check (checking functionDefinitionListIndex already)
 									{

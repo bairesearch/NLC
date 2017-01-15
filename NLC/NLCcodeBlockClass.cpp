@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4c 27-June-2015
+ * Project Version: 1p4d 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1461,7 +1461,7 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 				argumentName = NLCfunctionName.substr(indexOfArgument, NLCfunctionName.length()-indexOfArgument);
 				stillFindingArguments = false;
 			}
-			cout << "argumentName = " << argumentName << endl;
+			//cout << "argumentName = " << argumentName << endl;
 			NLCitem* functionArgumentItem = new NLCitem(argumentName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);	//NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST
 			additionalArguments->push_back(functionArgumentItem);
 			indexOfArgument = indexOfArgumentNew+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER_LENGTH;

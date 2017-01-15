@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4c 27-June-2015
+ * Project Version: 1p4d 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,7 +105,7 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListC
 #endif
 
 bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string NLCfunctionName, int functionDefinitionIndex, bool libraryFunctionDeclaration);
-	bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, int functionDefinitionIndex, bool isReferenceElseFunctionDefinition);
+	NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, int functionDefinitionIndex, bool isReferenceElseFunctionDefinition);
 
 
 #endif

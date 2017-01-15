@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s7a 08-September-2016
+ * Project Version: 1s7b 08-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1668,6 +1668,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 			#ifdef NLC_USE_MATH_OBJECTS
 			if(isStringNumberOrFractional(definitionEntity->entityName)) 
 			{
+				result = true;
 				//eg The value is 5.5
 				#ifdef NLC_DEBUG
 				//cout << "NLC_USE_MATH_OBJECTS: generateCodeBlocksAddConnection{} found value = " << definitionEntity->entityName << endl;

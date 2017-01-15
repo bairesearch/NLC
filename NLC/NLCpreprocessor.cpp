@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3b 28-July-2014
+ * Project Version: 1h3c 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1304,7 +1304,21 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 								cout << "insert subject content" << endl;
 								cout << "old currentPhraseReferenceToPrimarySubject->sentenceContents = " << currentPhraseReferenceToPrimarySubject->sentenceContents << endl;
 								#endif
+								string parsablePhraseReferenceOld = generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentPhraseReferenceToPrimarySubject);
+								
 								currentPhraseReferenceToPrimarySubject->sentenceContents.insert(indexOfSecondaryAuxillaryReferencingSubject, subjectText);
+						
+								string parsablePhraseReferenceNew = generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentPhraseReferenceToPrimarySubject);
+								int parsablePhraseReferenceOldPos = firstNLCsentenceInFullSentence->mathText.find(parsablePhraseReferenceOld);
+								if(parsablePhraseReferenceOldPos != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+								{
+									firstNLCsentenceInFullSentence->mathText.replace(parsablePhraseReferenceOldPos, parsablePhraseReferenceOld.length(), parsablePhraseReferenceNew);
+								}
+								else
+								{
+									cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: parsablePhraseReferenceOld " << parsablePhraseReferenceOld << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
+								}
+								
 								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 								cout << "new currentPhraseReferenceToPrimarySubject->sentenceContents = " << currentPhraseReferenceToPrimarySubject->sentenceContents << endl;
 								#endif

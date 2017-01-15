@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1e 25-July-2014
+ * Project Version: 1h1f 26-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -93,6 +93,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	}
 	else
 	{
+		setCurrentDirectory(tempFolderCharStar);	//save output files to temp folder
+
 		NLCfunction * currentNLCfunctionInList = firstNLCfunctionInList;
 		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		string currentLine;
@@ -106,7 +108,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		{
 			currentLineNumber++;
 			#ifdef NLC_DEBUG_PREPROCESSOR
-			cout << currentLineNumber << ": " << currentLine;
+			cout << currentLineNumber << ": " << currentLine << endl;
 			#endif
 			
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -135,8 +137,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					#endif
 					*detectedFunctions = true;
 				}
+				sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 				functionName = getFunctionNameFromFunctionHeader(&currentLine);
-				functionContents = currentLine;
+				inputTextFileNameList->push_back(functionName);
+				functionContents = "";
 			}
 			else
 			{
@@ -145,7 +149,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				string lineContents = "";
 				string indentationContents = "";
 				extractIndentationFromCurrentLine(&currentLine, &currentIndentation, &lineContents, &indentationContents);	//this will remove the indentation from the current line
-				 
+				#ifdef NLC_DEBUG_PREPROCESSOR
+				//cout << "currentIndentation = " << currentIndentation << endl;
+				#endif
+				
 				#ifdef NLC_PREPROCESSOR_MATH
 				if(detectMathSymbolsInLine(&lineContents))
 				{
@@ -155,6 +162,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				int lineLogicalConditionOperator;
 				if(detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
 				{
+					//cout << "hasLogicalConditionOperator" << endl;
 					currentNLCsentenceInList->hasLogicalConditionOperator = true;
 					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					currentNLCsentenceInList->logicalConditionOperator = lineLogicalConditionOperator;
@@ -189,47 +197,55 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					replaceNumericalVariablesWithDummyNameIfNecessary(&lineContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
 					#endif
 				#endif
+					//cout << "at-1" << endl;
 					functionContents = functionContents + indentationContents;
 				
 					//now for each sentence on line:
 					int startOfSentenceIndex = 0;
 					bool stillSentenceToParseOnLine = true;
-					bool lineFullStopDetected = false;
 					while(stillSentenceToParseOnLine)
 					{
-						bool lineFullStopDetected = true;
+						bool lineFullStopDetected = false;
 						int startOfSentenceIndexNew = lineContents.find(CHAR_FULLSTOP, startOfSentenceIndex);
-						if(startOfSentenceIndexNew == CPP_STRING_FIND_RESULT_FAIL_VALUE)
+						if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+						{
+							lineFullStopDetected = true;
+						}
+						else
 						{
 							startOfSentenceIndexNew = lineContents.find(CHAR_QUESTIONMARK, startOfSentenceIndex);	//NB '.' and '?' are currently supported as sentence delimiters
-							if(startOfSentenceIndexNew == CPP_STRING_FIND_RESULT_FAIL_VALUE)
+							if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 							{
-								lineFullStopDetected = false;
+								lineFullStopDetected = true;
 							}
-						}
-						
+						}						
 						string sentenceContents = "";
 						if(lineFullStopDetected)
 						{
+							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "lineFullStopDetected" << endl;
+							#endif
 							sentenceContents = lineContents.substr(startOfSentenceIndex, startOfSentenceIndexNew-startOfSentenceIndex+1);	//+1 append the full stop
 
 						}
 						else
 						{
+							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "!lineFullStopDetected" << endl;
+							#endif
 							sentenceContents = lineContents.substr(startOfSentenceIndex, lineContents.length());
 
 						}
-						cout << "sentenceContents = " << sentenceContents << endl;
+						//cout << "sentenceContents = " << sentenceContents << endl;
 
 						bool sentenceIsLogicalCondition = false;
 						int sentenceLogicalConditionOperator;
 						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
 							sentenceIsLogicalCondition = true;
+							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "sentenceIsLogicalCondition: " << logicalConditionOperationsArray[sentenceLogicalConditionOperator] << endl;
-			
+							#endif
 							currentNLCsentenceInList->hasLogicalConditionOperator = true;
 							
 							/*logicalConditionOperator is only used by mathText with parsable phrases at present (ie lineLogicalConditionOperator)
@@ -239,14 +255,17 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							*/
 												
 							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+							//cout << "at0" << endl;
 							if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 							{
+								//cout << "at1" << endl;
 								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 								currentNLCsentenceInList->ifDetected = true;
 								#endif
 							}
 							else if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF)
 							{
+								//cout << "at2" << endl;
 								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 								currentNLCsentenceInList->elseIfDetected = true;
 								//replace "else if" with "If"
@@ -257,6 +276,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							}
 							else if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 							{
+								//cout << "at3" << endl;
 								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 								currentNLCsentenceInList->elseDetected = true;
 								#endif
@@ -268,21 +288,26 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						}		
 						
 						if(!lineFullStopDetected)
-						{								
+						{															
 							stillSentenceToParseOnLine = false;
 							
 							bool nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine = false;
-							for(int i=startOfSentenceIndexNew; i<sentenceContents.length(); i++)
+							for(int i=startOfSentenceIndex; i<sentenceContents.length(); i++)
 							{
 								char c = sentenceContents[i];
 								if(!isWhiteSpace(c))
 								{
 									nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine = true;
+									//cout << "nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine" << endl;
 								}
 							}
 							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine && sentenceIsLogicalCondition)
 							{
+								#ifdef NLC_DEBUG_PREPROCESSOR
+								cout << "(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine && sentenceIsLogicalCondition)" << endl;
+								#endif
+								
 								string lowerCaseSentenceContents = convertStringToLowerCase(&sentenceContents);
 								string dummyCommand = "";
 								if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
@@ -309,7 +334,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 								//add dummy text ", do this." to the end of the logical condition, such that NLP can parse the logical condition header, and NLC can parse the multi-sentence logical condition based on its indentation.
 								#ifdef NLC_DEBUG_PREPROCESSOR
 								cout << "create new sentence" << endl;
-								cout << "sentenceContents = " << sentenceContents + string(dummyCommand) << endl;
+								cout << sentenceIndex << ": sentenceContents = " << sentenceContents + string(dummyCommand) << endl;
 								#endif
 								sentenceContents = sentenceContents + string(dummyCommand);
 								currentNLCsentenceInList->sentenceContents = sentenceContents;
@@ -336,7 +361,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						{
 							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "create new sentence" << endl;
-							cout << "sentenceContents = " << sentenceContents + currentToken << endl;
+							cout << sentenceIndex << ": sentenceContents = " << sentenceContents << endl;
 							#endif
 							currentNLCsentenceInList->sentenceContents = sentenceContents;	//full stop should already be appended
 							currentNLCsentenceInList->sentenceIndex = sentenceIndex;
@@ -344,9 +369,13 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							currentNLCsentenceInList->next = new NLCsentence();
 							currentNLCsentenceInList = currentNLCsentenceInList->next;
 							sentenceIndex++;
-
+							
+							if(startOfSentenceIndexNew == lineContents.length()-1)
+							{
+								stillSentenceToParseOnLine = false;
+							}
 						}
-						functionContents = functionContents + sentenceContents;
+						functionContents = functionContents + sentenceContents + CHAR_NEWLINE;
 						startOfSentenceIndex = startOfSentenceIndexNew + 1;	//is +1 required? (to prevent current CHAR_FULLSTOP from being redetected)
 					}
 
@@ -383,6 +412,11 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		}
 		#endif
 	}
+	
+	#ifdef NLC_DEBUG_PREPROCESSOR
+	cout << "Premature quit for debug" << endl;
+	exit(0);
+	#endif
 
 	return result;
 }
@@ -415,7 +449,7 @@ void extractIndentationFromCurrentLine(string * currentLine, int * currentIndent
 		i++;
 	}
 	*indentationContents = currentLine->substr(0, i);
-	*lineContents = currentLine->substr(i, (lineContents->length()-i));
+	*lineContents = currentLine->substr(i, (currentLine->length()-i));
 }
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -426,14 +460,15 @@ bool detectFunctionHeader(string * lineContents)
 	if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
 	{
 		functionHeaderFound = true;
-		cout << "detectFunctionHeader(): functionHeaderFound = " << NLC_PREPROCESSOR_FUNCTION_HEADER_STRING << endl; 
+		
+		//cout << "detectFunctionHeader(): functionHeaderFound = " << NLC_PREPROCESSOR_FUNCTION_HEADER_STRING << endl; 
 	}
 	return functionHeaderFound;
 }
 string getFunctionNameFromFunctionHeader(string * lineContents)
 {
 	string functionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
-	cout << "getFunctionNameFromFunctionHeader(): functionName = " << functionName << endl; 
+	//cout << "getFunctionNameFromFunctionHeader(): functionName = " << functionName << endl; 
 	return functionName;
 	
 }
@@ -442,6 +477,8 @@ string getFunctionNameFromFunctionHeader(string * lineContents)
 
 bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * logicalConditionOperator)
 {
+	//cout << "detectLogicalConditionOperatorAtStartOfLine() lineContents = " << *lineContents << endl;
+
 	*logicalConditionOperator = INT_DEFAULT_VALUE;
 	bool logicalConditionOperatorFound = false;
 	
@@ -449,12 +486,14 @@ bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * lo
 	//get first word in line
 	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
 	{
-		int index = lineContents->find(logicalConditionOperationsArray[i]);
+		int index = lowerCaseSentenceContents.find(logicalConditionOperationsArray[i]);
 		if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
 		{
 			logicalConditionOperatorFound = true;
 			*logicalConditionOperator = i;
-			cout << "detectLogicalConditionOperatorAtStartOfLine(): logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl; 
+			#ifdef NLC_DEBUG_PREPROCESSOR
+			cout << "detectLogicalConditionOperatorAtStartOfLine(): logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl;
+			#endif
 		}
 	}
 	return logicalConditionOperatorFound;
@@ -489,7 +528,9 @@ bool detectAndReplaceIsEqualToInformalTextWithSymbol(string * lineContents)
 		{
 			lineContents->replace(indexOfIs, string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL).length(), string(NLC_PREPROCESSOR_MATH_OPERATOR_IS_EQUAL_TO));
 			result = true;
-			cout << "found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
+			#ifdef NLC_DEBUG_PREPROCESSOR
+			cout << "detectAndReplaceIsEqualToInformalTextWithSymbol(): found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
+			#endif
 		}	
 	}
 	//the following is not supported by NLC at present: "if x is the number of chickens", the user must say "if the number of chickens is equal to x"
@@ -572,7 +613,6 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 			if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
 			{
 				//add final word in sentence to phrase if it is legal
-				wordIndex++;
 				finalWordInSentenceFoundAndIsLegal = true;
 			}
 		}
@@ -621,6 +661,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					currentPhrase = currentPhrase + currentWord + c;	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText   
 					mathText = mathText + currentPhrase;
 					currentPhrase = "";	//restart phrase (assuming it contains text)
+					wordIndex = 0;
 				}
 			}
 			else if(wordDelimiterCharacterFound)
@@ -633,7 +674,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				currentPhrase = currentPhrase + currentWord + c;	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText   
 				mathText = mathText + currentPhrase;
 				currentPhrase = "";	//restart phrase (assuming it contains text)
-				
+				wordIndex = 0;
 			}
 			//restart word
 			currentWord = "";

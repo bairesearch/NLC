@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1e 25-July-2014
+ * Project Version: 1h1f 26-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,7 +43,7 @@
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS
 	
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES (9)
-	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when", "else if", "else"};	//should be dynamically defined in NLCrules.xml
+	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when", "else", "else if"};	//should be dynamically defined in NLCrules.xml
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_IF_STRING "if"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_STRING "else"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF_STRING "else if"
@@ -51,8 +51,8 @@
 
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_FOR (0)	//default
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_IF (1)
-	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF (2)
-	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (3)	//not used
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF (8)
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (7)	//not used
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_WHILE (5)
 	
 	#define NLC_WHILE_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME "whileLogicalConditionL"	//eg whileLogicalConditionL0
@@ -89,7 +89,7 @@
 			//#define NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES 	//global defs are disabled by default
 		#endif
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL " is "
-		#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	//replaces NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED implementation
+		//#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	//replaces NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED implementation
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_GREATER_THAN "greater than"
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_LESS_THAN "less than"

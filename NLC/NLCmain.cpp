@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1e 25-July-2014
+ * Project Version: 1h1f 26-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1h1e 25-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1h1f 26-July-2014" << endl;
 			exit(1);
 		}
 
@@ -785,6 +785,13 @@ int main(int argc,char **argv)
 		}
 		#endif
 
+		#ifdef NLC_USE_PREPROCESSOR
+		if(useNLCpreprocessor)
+		{
+			workingFolderCharStar = tempFolderCharStar;	//this is required such that GIA uses the temp folder as its input folder (ie workingFolder), considering NLP has already written its output to this folder
+		}
+		#endif
+		
 		#ifdef USE_CS_WORKAROUND
 		executeGIA2();
 		#endif

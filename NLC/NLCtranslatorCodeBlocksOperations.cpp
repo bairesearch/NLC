@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9b 11-September-2016
+ * Project Version: 1s9c 11-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -367,13 +367,14 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 					}
 					
 					#ifdef NLC_DEBUG
-					//cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;
-					//cout << "childSubstance = " << childSubstance->entityName << endl;
+					cout << "parentInstance = " << parentInstance->entityName << endl;
+					cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;
+					cout << "childSubstance = " << childSubstance->entityName << endl;
 					#endif
-					if(checkParentExists(parentSubstanceConcept, childSubstance->entityName))	//verify that "bananas are fruit"/"Chess is a game."
+					if((parentSubstanceConcept->entityName != childSubstance->entityName) && checkParentExists(parentSubstanceConcept, childSubstance->entityName))	//verify that "bananas are fruit"/"Chess is a game."
 					{
 						#ifdef NLC_DEBUG
-						//cout << "checkParentExists" << endl;
+						cout << "checkParentExists" << endl;
 						#endif
 						*currentCodeBlockInTree = createCodeBlockIfTempVariableNameEqualsClassName(*currentCodeBlockInTree, childSubstance, parentSubstanceConcept->entityName);	//verify that the substance (eg "the fruit") in its local list has previously been renamed to "banana" (see NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS:generateCodeBlocksAddConnection:GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 						

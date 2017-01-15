@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6d 08-July-2014
+ * Project Version: 1g6e 08-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -613,6 +613,12 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 					}
 					#endif
 				}
+				#ifdef generateContextBlocksAndInitialiseParentIfNecessary_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
+				else
+				{
+					logicalConditionConjunctionVariables->foundLogicalConditionConjunction = conditionEntity;
+				}
+				#endif
 				#endif
 			}
 		//}
@@ -663,20 +669,20 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 
 #ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 #ifdef generateContextBlocksAndInitialiseParentIfNecessary_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
-bool hasConjunctionConditionConnection(GIAentityNode * currentEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
+bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 {
 	bool conjunctionConditionConnectionFound = false;
-	if(currentEntity != primaryEntityInLogicalConditionConjunctionSubset)
+	if(conditionEntity != primaryEntityInLogicalConditionConjunctionSubset)
 	{//ignore primaryEntityInLogicalConditionConjunctionSubset
-		for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = currentEntity->conditionNodeList->begin(); conditionNodeListIterator < currentEntity->conditionNodeList->end(); conditionNodeListIterator++)
+		for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = conditionEntity->conditionNodeList->begin(); conditionNodeListIterator < conditionEntity->conditionNodeList->end(); conditionNodeListIterator++)
 		{
 			GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-			GIAentityNode* conditionEntity = conditionConnection->entity;
-			bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
+			GIAentityNode* conditionEntity2 = conditionConnection->entity;
+			bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 			if(conjunctionConditionFound)
 			{
 				conjunctionConditionConnectionFound = true;
-				*foundLogicalConditionConjunction = conditionEntity;
+				*foundLogicalConditionConjunction = conditionEntity2;
 			}
 		}
 	}
@@ -684,7 +690,7 @@ bool hasConjunctionConditionConnection(GIAentityNode * currentEntity, GIAentityN
 	//for debugging only:
 	if(!conjunctionConditionConnectionFound)
 	{
-		if((currentEntity->NLClogicalConditionConjunctionIndex != logicalConditionConjunctionIndex) && (currentEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE))
+		if((conditionEntity->NLClogicalConditionConjunctionIndex != logicalConditionConjunctionIndex) && (conditionEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE))
 		{
 			cout << "hasConjunctionConditionConnection() error: child of primaryEntityInLogicalConditionConjunctionSubset has been declared as pertaining to a different logicalConditionConjunctionSubset - is this a shared context?" << endl;
 		}

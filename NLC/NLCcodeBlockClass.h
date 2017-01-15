@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n30b 06-February-2015
+ * Project Version: 1o1a 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -289,6 +289,8 @@ public:
 	bool parseParentEfficient;
 	GIAentityNode* childEntityNotToParse;
 	#endif
+	bool getParentCheckLastParent;
+	GIAentityNode* lastParent;
 };
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
@@ -526,7 +528,7 @@ bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 #endif
 #endif
 
-void clearCodeBlock(NLCcodeblock* codeBlock);
+NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock);
 
 NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string warning);
 

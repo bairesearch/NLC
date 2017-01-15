@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n30b 06-February-2015
+ * Project Version: 1o1a 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1802,7 +1802,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			
 			bool categoryList = false;
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
 			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
@@ -1819,7 +1819,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION);
 			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
@@ -1840,7 +1840,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 			bool categoryList = false;
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
 			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
@@ -1857,7 +1857,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION);
 			#else
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
@@ -1894,13 +1894,13 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 }
 
 
-string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLang, bool categoryList)
+string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLang, bool categoryList, string categoryVarAppendName)
 {
 	string codePropertyTypeText = "";
 	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_AS_FUNCTION_EXECUTION_ARGUMENTS
 	if(categoryList)
 	{
-		codePropertyTypeText = generateGenericListName(functionArgumentItem->instanceName, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
+		codePropertyTypeText = generateGenericListName(functionArgumentItem->instanceName, categoryVarAppendName);
 	}
 	else
 	{

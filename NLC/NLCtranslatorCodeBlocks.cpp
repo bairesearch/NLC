@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n30b 06-February-2015
+ * Project Version: 1o1a 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,7 +37,8 @@
 #include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
-
+#include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
+	
 bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
 {
 	bool result = true;
@@ -165,13 +166,6 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 		generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
-		
-		#ifdef NLC_MARK_ACTION_SUBJECT_OBJECT_INDEFINITE_ENTITY_ACTIONS_AS_NOT_SAME_REFERENCE_SET
-		#ifdef NLC_DEBUG
-		cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet:" << endl;
-		#endif
-		markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
-		#endif
 
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 		if(getUseNLCpreprocessor())
@@ -231,34 +225,14 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			}
 			#endif
 
-			//Part 3; actions (eg Tom rides the boat)
+			//Part 3; subject object connections (object initialisations; actions, properties, conditions, redefinitions) (eg Tom rides the boat, Tom has a boat, Tom is near a boat, The dog is an Alsation)
 			#ifdef NLC_DEBUG
-			cout << "generateCodeBlocksPart3actions:" << endl;
+			cout << "generateCodeBlocksPart3subjectObjectConnections:" << endl;
 			#endif
-			if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
+			if(!generateCodeBlocksPart3subjectObjectConnections(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
 			{
 				result = false;
 			}
-
-			//Part 4: object initialisations (eg Tom has a boat) [without actions]
-			#ifdef NLC_DEBUG
-			cout << "generateCodeBlocksPart4objectInitialisations:" << endl;
-			#endif
-			if(!generateCodeBlocksPart4objectInitialisations(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName))
-			{
-				result = false;
-			}
-			
-			#ifdef NLC_SUPPORT_REDEFINITIONS
-			//Part 4: redefinitions (eg The dog is an Alsation)
-			#ifdef NLC_DEBUG
-			cout << "generateCodeBlocksPart5redefinitions:" << endl;
-			#endif
-			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListSentence, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
-			{
-				result = false;
-			}
-			#endif
 			
 		#ifdef NLC_PREPROCESSOR_MATH
 		}
@@ -410,130 +384,6 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 
 	return result;
 }
-
-#ifdef NLC_MARK_ACTION_SUBJECT_OBJECT_INDEFINITE_ENTITY_ACTIONS_AS_NOT_SAME_REFERENCE_SET
-bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
-{
-	bool result = true;
-	//e.g. "a chicken" in "A chicken that ate a pie rows the boat."/"A chicken that ate the pie rows the boat" - set all actions as !sameReferenceSet such that they are not parsed by future references to generateContextBlocks(), but are instead treated as actions
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-	{
-		GIAentityNode* actionEntity = (*entityIter);
-		if(actionEntity->isAction)
-		{
-			if(!(actionEntity->isActionConcept))	//CHECKTHIS
-			{
-				for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
-				{
-					GIAentityConnection* actionSubjectConnection = *iter;
-					GIAentityNode* actionSubjectEntity = actionSubjectConnection->entity;
-					if(!assumedToAlreadyHaveBeenDeclared(actionSubjectEntity))
-					{//indefinite action subject entity found
-						if(actionSubjectConnection->sameReferenceSet)
-						{
-							//Only perform markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet for the first sentence in which the action is defined. Although not required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (as actions are never assigned connections across multiple sentence indices), this is critically important for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (ie GIA_ADVANCED_REFERENCING); eg to prevent the action connections in the second sentence of "A chicken that ate a pie rows the boat. The chicken that ate the pie is happy." from being changed to !sameReferenceSet 
-							if(actionEntity->sentenceIndexTemp == actionSubjectConnection->sentenceIndexTemp) 
-							{
-								bool hasSameSentenceSameReferenceSetActionObject = false;
-								bool hasSameSentenceSameReferenceSetIndefiniteActionObject = false;
-								for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
-								{
-									GIAentityConnection* actionObjectConnection = *iter;
-									GIAentityNode* actionObjectEntity = actionObjectConnection->entity;
-									if(actionObjectConnection->sentenceIndexTemp == actionSubjectConnection->sentenceIndexTemp)
-									{
-										if(actionObjectConnection->sameReferenceSet)
-										{
-											hasSameSentenceSameReferenceSetActionObject = true;
-											if(!assumedToAlreadyHaveBeenDeclared(actionObjectEntity))
-											{//indefinite action subject entity found
-												//e.g. "A chicken that ate a pie rows the boat." [not: "A chicken that ate the pie rows the boat." as the context of "the pie" will be parsed by generateContextBlocks()]
-												actionObjectConnection->sameReferenceSet = false;
-												#ifdef NLC_DEBUG
-												cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet() 1: actionObjectEntity = " << actionObjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
-												#endif
-												hasSameSentenceSameReferenceSetIndefiniteActionObject = true;
-											}
-										}
-									}
-								}
-								if(!hasSameSentenceSameReferenceSetActionObject || hasSameSentenceSameReferenceSetIndefiniteActionObject)
-								{
-									//e.g. "A chicken that ate rows the boat."/"A chicken that ate a pie rows the boat."
-									actionSubjectConnection->sameReferenceSet = false;
-									#ifdef NLC_DEBUG
-									cout << "markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet() 2: actionSubjectEntity = " << actionSubjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
-									#endif
-								}
-								else if(hasSameSentenceSameReferenceSetActionObject)
-								{
-									//e.g. "A chicken that ate the pie rows the boat." - mark "a chicken" as definite such that its context will be parsed by generateContextBlocks()
-									//actionSubjectEntity->grammaticalDefiniteTemp = true;
-									actionSubjectEntity->NLClocalListVariableHasBeenInitialised = true;	//added 1n22b
-									//cout << "actionSubjectEntity = " << actionSubjectEntity->entityName << endl;
-								}
-							}
-						}
-					}
-				}
-				for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
-				{
-					GIAentityConnection* actionObjectConnection = *iter;
-					GIAentityNode* actionObjectEntity = actionObjectConnection->entity;
-					if(!assumedToAlreadyHaveBeenDeclared(actionObjectEntity))
-					{//indefinite action object entity found
-						if(actionObjectConnection->sameReferenceSet)
-						{
-							//Only perform markActionObjectSubjectIndefiniteEntityActionsAsNotSameReferenceSet for the first sentence in which the action is defined. Although not required for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (as actions are never assigned connections across multiple sentence indices), this is critically important for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (ie GIA_ADVANCED_REFERENCING); eg to prevent the action connections in the second sentence of "A chicken that ate a pie rows the boat. The chicken that ate the pie is happy." from being changed to !sameReferenceSet 
-							if(actionEntity->sentenceIndexTemp == actionObjectConnection->sentenceIndexTemp) 
-							{
-								bool hasSameSentenceSameReferenceSetActionSubject = false;
-								bool hasSameSentenceSameReferenceSetIndefiniteActionSubject = false;
-								for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
-								{
-									GIAentityConnection* actionSubjectConnection = *iter;
-									GIAentityNode* actionSubjectEntity = actionSubjectConnection->entity;
-									if(actionSubjectConnection->sentenceIndexTemp == actionObjectConnection->sentenceIndexTemp)
-									{
-										if(actionSubjectConnection->sameReferenceSet)
-										{
-											hasSameSentenceSameReferenceSetActionSubject = true;
-											if(!assumedToAlreadyHaveBeenDeclared(actionSubjectEntity))
-											{//indefinite action object entity found
-												//e.g. "A pie that was eaten by a chicken rows the boat." [not: "A pie that was eaten by the chicken rows the boat." as the context of "the chicken" will be parsed by generateContextBlocks()]
-												actionSubjectConnection->sameReferenceSet = false;
-												#ifdef NLC_DEBUG
-												cout << "markActionObjectSubjectIndefiniteEntityActionsAsNotSameReferenceSet() 3: actionSubjectEntity = " << actionSubjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
-												#endif
-												hasSameSentenceSameReferenceSetIndefiniteActionSubject = true;
-											}
-										}
-									}
-								}
-								if(!hasSameSentenceSameReferenceSetActionSubject || hasSameSentenceSameReferenceSetIndefiniteActionSubject)
-								{
-									//e.g. "A pie that was eaten by a chicken rows the boat."/"A pie that was eaten rows the boat."
-									actionObjectConnection->sameReferenceSet = false;
-									#ifdef NLC_DEBUG
-									cout << "markActionObjectSubjectIndefiniteEntityActionsAsNotSameReferenceSet() 4: actionObjectEntity = " << actionObjectEntity->entityName << ", action = " << actionEntity->entityName << endl;
-									#endif
-								}
-								else if(hasSameSentenceSameReferenceSetActionSubject)
-								{
-									//NOTNECESSARY based on current implementation of generateCodeBlocksFromMathTextNLPparsablePhrase():
-									//e.g. "A pie that was eaten by the chicken rows the boat." -  mark "a pie" as definite such that its context will be parsed by generateContextBlocks()
-									//actionObjectEntity->grammaticalDefiniteTemp = true;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return result;
-}	
-#endif
 		
 bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
 {
@@ -638,255 +488,6 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 
 
 
-bool generateCodeBlocksPart3actions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
-{
-	bool result = true;
-	
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-	{
-		GIAentityNode* actionEntity = (*entityIter);
-		if(actionEntity->isAction)
-		{
-			if(!(actionEntity->isActionConcept))
-			{
-				#ifdef NLC_DEBUG
-				//cout << "generateCodeBlocksPart3actions(): " << endl;
-				//cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
-				//cout << "currentNLCsentenceInList->singleWordSentenceActionName = " << currentNLCsentenceInList->singleWordSentenceActionName << endl;
-				//cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
-				//cout << "actionEntity->hasAssociatedInstance = " << actionEntity->hasAssociatedInstance << endl;
-				#endif
-				
-				if(checkSentenceIndexParsingCodeBlocks(actionEntity, sentenceIndex, true))
-				{
-					#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
-					if(actionEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION)
-					{
-						actionEntity->entityName = currentNLCsentenceInList->singleWordSentenceActionName;
-					}
-					#endif
-
-					generateActionCodeBlocks(currentCodeBlockInTree, actionEntity, sentenceIndex, NLCfunctionName);
-				}
-			}
-		}
-	}
-	
-	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//note NLCcategoryListCreatedTemp is only required to be cleared between sentences for !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
-	//clear for next sentence 
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-	{
-		GIAentityNode* entity = (*entityIter);
-		if(entity->NLCcategoryListCreatedTemp)
-		{
-			entity->NLCcategoryListCreatedTemp = false;
-		}
-	}
-	#endif
-	#endif
-	
-	return result;
-}
-
-
-
-
-
-
-bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex, string NLCfunctionName)
-{
-	bool result = true;
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-	{
-		GIAentityNode* entity = *entityIter;
-		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
-		{
-			if(!checkSpecialCaseEntity(entity, true))
-			{
-				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-				generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, entity, sentenceIndex);
-				#else
-				//This code is effectively identical to generateCodeBlocksObjectInitialisationsForEntity(), without the generateParentContext argument;
-				GIAentityNode* parentEntity = getParent(entity, sentenceIndex);
-				if(!checkSpecialCaseEntity(parentEntity, true))
-				{
-					if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity , sentenceIndex, false))
-					{
-						generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, NULL, "", false, false);
-					}
-				}
-				#endif
-			}
-		}
-	}
-	return result;
-}
-
-#ifdef NLC_SUPPORT_REDEFINITIONS
-bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
-{
-	bool result = true;
-
-	bool phraseContainsSubstanceWithDefinitionLink = false;
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-	{
-		GIAentityNode* entity = (*entityIter);
-		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
-		{
-			if(!checkSpecialCaseEntity(entity, true))
-			{		
-				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
-				{
-					GIAentityConnection* definitionConnection = *iter;
-					GIAentityNode* definitionEntity = definitionConnection->entity;
-					if(checkSentenceIndexParsingCodeBlocks(definitionEntity, definitionConnection, sentenceIndex, false))
-					{
-						if(!(definitionConnection->sameReferenceSet))
-						{
-							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-							if(definitionConnection->isAlias)
-							{
-								bool aliasAlreadyInitialised = false;
-								string aliasName = definitionEntity->entityName;
-								string aliasClassName = entity->entityName;
-
-								string aliasNameTemp = "";
-								if(findAliasInEntity(definitionEntity, &aliasNameTemp)) //*
-								{
-									aliasAlreadyInitialised = true;
-								}
-								if(!aliasAlreadyInitialised)
-								{	
-									//check this code
-									#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-									cout << "generateCodeBlocksPart5redefinitions (alias):" << endl;
-									cout << "definitionEntity (aliasName) = " << definitionEntity << endl;
-									cout << "entity (aliasClassName) = " << entity << endl;
-									#endif
-
-									/*
-									unordered_map<string, string>*  functionAliasClassList = getFunctionAliasClassList();
-									functionAliasClassList->insert(pair<string, string>(aliasName, entity));
-									*/
-									
-									NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
-									GIAentityNode* parentEntity = NULL;
-									
-									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-									//generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
-									generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
-									bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
-
-									/*OLD:
-									bool generatedParentContext = false;
-									if(!generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
-									{
-										#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-										cout << "identifyAliasesInCurrentSentence(): !generateContextBlocks: entity = " << entity->entityName << endl;
-										#endif
-									}
-									*/
-
-									*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, entity, aliasName);
-
-									*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
-
-									//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
-									for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
-									{
-										GIAentityNode* entity2 = (*entityIter2);
-										if(entity2->entityName == aliasName)
-										{
-											if(entity2->sentenceIndexTemp > definitionEntity->sentenceIndexTemp)	//this test isn't required because of* 
-											{
-												entity2->aliasList.push_back(aliasName);
-												entity2->entityName = aliasClassName;	
-											}
-										}
-									}	
-								}
-							
-							}
-							else
-							{
-							#endif
-								//eg [Alsations are dogs. The pound has a dog. The dog is happy.] The dog is an alsation.  ; converts dog to alsation
-
-								#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-								//eg chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
-								if(!isDefiniteEntity(definitionEntity))
-								{
-									bool foundDefiniteParentOfEntity = false;
-									bool parseConditionParents = true;	//use default value here
-									bool checkIsDefinite = true;
-									GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
-									if(isDefiniteEntity(entity) || foundDefiniteParentOfEntity)
-									{
-								#endif
-										if(entity->entityName != definitionEntity->entityName)
-										{//ignore substanceConcept definitions for for entities of same name
-											
-											#ifdef NLC_DEBUG
-											cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
-											cout << "sentenceIndex = " << sentenceIndex << endl;
-											cout << "entity = " << entity->entityName << endl;
-											cout << "definitionEntity = " << definitionEntity->entityName << endl;
-											#endif
-											
-											NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
-
-											GIAentityNode* parentEntity = NULL;
-
-											//1. and 2. get parent of the dog (eg pound) and generate context of the dog
-											NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-											generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
-											bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
-
-											//3. verify that alsations are dogs
-											*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);
-
-											//4. cast the dog to alsation
-											*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, entity, definitionEntity);
-
-											//5. add alsation to alsation property list of pound 
-												//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
-												//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
-											if(parentEntity != entity)
-											{
-												*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, parentEntity, definitionEntity, sentenceIndex);
-											}
-
-											//6. add alsation to alsation local list
-											*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
-
-											*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
-
-										}
-								#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-									}
-									else
-									{
-										cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(entity) || foundDefiniteParentOfEntity))" << endl;
-									}
-								}
-								else
-								{
-									cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: isDefiniteEntity(definitionEntity))" << endl;
-								}
-								#endif
-							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES						
-							}
-							#endif
-						}
-					}
-				}
-			}
-		}
-	}
-	return result;
-}
-#endif
 
 
 
@@ -932,3 +533,264 @@ bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities
 	return result;
 }
 #endif
+
+
+bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
+{
+	bool result = true;
+	
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
+	{
+		GIAentityNode* entity = (*entityIter);
+		NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+		
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, true))
+		{
+			if(!checkConceptTypeEntity(entity))
+			{
+				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+				if(!(entity->NLCparsedForlogicalConditionOperations))
+				{
+				#endif
+					GIAentityNode* subjectEntity = NULL;
+					GIAentityNode* objectEntity = NULL;
+					GIAentityConnection* connection = NULL;
+					GIAentityNode* subjectParentEntity = NULL;
+
+					bool foundSubject = false;
+					bool foundObject = false;
+					bool foundSubjectObjectConnection = false;
+
+					int connectionType = -1;
+					bool actionIsSingleWord = false;
+	
+					if(entity->isAction)
+					{
+						/*//CHECKTHIS;
+						if(!(entity->isActionConcept))
+						{
+						*/
+						#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+						if(!isPotentialAction(entity))
+						{
+						#endif
+							//GIAentityConnection* actionSubjectConnection = NULL;
+							//if(getActionSubjectEntityConnection(entity, sentenceIndex, &actionSubjectConnection))		//NOT REQUIRED because actions should not be connected to multiple entities based on current GIA implementation
+							if(!(entity->actionSubjectEntity->empty()))
+							{		
+								if(!((entity->actionSubjectEntity->back())->sameReferenceSet))
+								{
+									subjectEntity = (entity->actionSubjectEntity->back())->entity;
+									if(!checkConceptTypeEntity(subjectEntity))	//redundant
+									{
+										foundSubject = true;	
+									}
+								}
+							}
+							//GIAentityConnection* actionObjectConnection = NULL;
+							//if(getActionObjectEntityConnection(entity, sentenceIndex, &actionObjectConnection))	//NOT REQUIRED because actions should not be connected to multiple entities based on current GIA implementation
+							if(!(entity->actionObjectEntity->empty()))
+							{
+								if(!((entity->actionObjectEntity->back())->sameReferenceSet))
+								{		
+									objectEntity = (entity->actionObjectEntity->back())->entity;
+									if(!checkConceptTypeEntity(objectEntity))	//redundant
+									{
+										foundObject = true;
+										#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+										if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+										{
+											actionIsSingleWord = true;
+											foundObject = false;
+											objectEntity->disabled = true;	//prevent parsing of dummyActionObject
+											foundSubjectObjectConnection = true;
+										}
+										#endif	
+									}
+								}
+							}
+							if(foundSubject || foundObject)
+							{
+								foundSubjectObjectConnection = true;	
+								connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS;
+							}
+						#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
+						}
+						#endif
+						/*
+						}
+						*/
+					}
+					else if(entity->isCondition)
+					{
+						if(!(entity->conditionSubjectEntity->empty()))
+						{		
+							if(!((entity->conditionSubjectEntity->back())->sameReferenceSet))
+							{
+								subjectEntity = (entity->conditionSubjectEntity->back())->entity;
+								foundSubject = true;	
+							}
+						}
+						if(!(entity->conditionObjectEntity->empty()))
+						{
+							if(!((entity->conditionObjectEntity->back())->sameReferenceSet))
+							{		
+								objectEntity = (entity->conditionObjectEntity->back())->entity;
+								foundObject = true;	
+							}
+						}
+						if(foundSubject && foundObject)
+						{
+							foundSubjectObjectConnection = true;	
+							connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
+						}
+					}
+					else
+					{
+						for(vector<GIAentityConnection*>::iterator iter = entity->propertyNodeList->begin(); iter < entity->propertyNodeList->end(); iter++)
+						{
+							GIAentityConnection* propertyConnection = *iter;
+							GIAentityNode* propertyEntity = propertyConnection->entity;
+							if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, true))
+							{
+								if(!(propertyConnection->sameReferenceSet))
+								{
+									if(!checkConceptTypeEntity(propertyEntity))	//redundant
+									{
+										subjectEntity = entity;
+										objectEntity = propertyEntity;
+										foundSubject = true;
+										foundObject = true;
+										foundSubjectObjectConnection = true;	
+										connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES;
+										connection = propertyConnection;
+									}
+								}
+							}
+						}
+
+						for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
+						{
+							GIAentityConnection* definitionConnection = *iter;
+							GIAentityNode* definitionEntity = definitionConnection->entity;
+							if(checkSentenceIndexParsingCodeBlocks(definitionEntity, definitionConnection, sentenceIndex, true))
+							{
+								if(!(definitionConnection->sameReferenceSet))
+								{
+									if(definitionEntity->entityName != entity->entityName)	//ignore these dream mode definition connections
+									{
+										subjectEntity = entity;
+										objectEntity = definitionEntity;
+										foundSubject = true;
+										foundSubjectObjectConnection = true;	
+										connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS;
+										connection = definitionConnection;
+									}
+								}
+							}
+						}
+					}
+					
+					if(foundSubjectObjectConnection)
+					{
+						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+						
+						//entity->NLCparsedForCodeBlocks = true;
+						if(entity->isAction)
+						{
+							//initialise the action
+							if(initialiseFunctionArguments(currentCodeBlockInTree, entity, sentenceIndex))
+							{
+							
+							}
+						}
+						
+						#ifdef NLC_DEBUG
+						cout << "connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+						#endif
+						
+						if(foundSubject)
+						{
+							#ifdef NLC_DEBUG
+							cout << "subjectEntity = " << subjectEntity->entityName << endl;
+							#endif
+							generateContextBlocksVariables.getParentCheckLastParent = true;
+							generateContextBlocksVariables.lastParent = objectEntity;	//is this required? (designed for dual/two-way condition connections only)
+													
+							NLCcodeblock* codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+							*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, subjectEntity, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION);	//create new subject category list
+							if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, false, &subjectParentEntity))
+							{
+								*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, subjectEntity, subjectEntity, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION);
+							}
+							
+							*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
+						}
+						if(foundObject)
+						{
+							#ifdef NLC_DEBUG
+							cout << "objectEntity = " << objectEntity->entityName << endl;
+							#endif
+							generateContextBlocksVariables.getParentCheckLastParent = true;
+							generateContextBlocksVariables.lastParent = subjectEntity;
+							
+							NLCcodeblock* codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+							*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION);	//create new object category list
+							GIAentityNode* objectParentEntity = NULL;
+							if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, false, &objectParentEntity))
+							{
+								*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, objectEntity, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION);
+							}
+
+							*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
+							
+						}
+						
+						bool isPrimary = true;
+						if(generateCodeBlocksAddObject(currentCodeBlockInTree, connectionType, connection, subjectEntity, objectEntity, entity, foundSubject, foundObject, sentenceIndex, subjectParentEntity, isPrimary))
+						{
+							
+						}
+
+						*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
+					}
+				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+				}
+				#endif	
+			}
+		}
+	}
+	
+	return result;
+}
+
+
+#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+bool initialiseFunctionArguments(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
+{
+	bool result = true;
+	actionEntity->NLCisSingularArgument = true;	//added 1e2c
+
+	//declare an "abstract" variable for the action (that will be filled with the its properties and conditions) and passed as an argument to the function; eg "fast" of "run fast"
+	if(!generateObjectInitialisations(currentCodeBlockInTree, actionEntity, sentenceIndex))
+	{
+		result = false;
+	}
+	return result;
+}
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

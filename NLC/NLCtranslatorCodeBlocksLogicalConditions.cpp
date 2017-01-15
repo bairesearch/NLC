@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n30b 06-February-2015
+ * Project Version: 1o1a 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -491,8 +491,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 		#ifndef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !foundParsablePhrase" << endl;		
 		#endif
-		*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;	//redundant
-		clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);
+		*currentCodeBlockInTree = clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);	//NB "*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase"; redundant
 	
 	
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -622,8 +621,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
 									#endif
 									
-									*currentCodeBlockInTree = NLCcodeBlockBeforeGenerateContext;
-									clearCodeBlock(*currentCodeBlockInTree);							
+									*currentCodeBlockInTree = clearCodeBlock(NLCcodeBlockBeforeGenerateContext);							
 								}
 								else
 								{
@@ -659,8 +657,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 		if(!foundParsablePhrase)
 		{
 			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !foundParsablePhrase" << endl;		
-			*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;	//redundant
-			clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);
+			*currentCodeBlockInTree = clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);	//NB "*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;" redundant
 		}
 	}
 	

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n30b 06-February-2015
+ * Project Version: 1o1a 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -101,6 +101,8 @@
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 #define NLC_ITEM_TYPE_ALIAS_VAR_APPENDITION "alias"
 #endif
+#define NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION "SubjectCategory"
+#define NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION "ObjectCategory"
 
 #define NLC_ITEM_TYPE_CLASSLIST_VAR_APPENDITION NLC_ITEM_TYPE_CLASS_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"ClassList"
 #define NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION NLC_ITEM_TYPE_PROPERTY_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"PropertyList"

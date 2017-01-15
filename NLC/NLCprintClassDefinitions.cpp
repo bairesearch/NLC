@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14e 21-October-2014
+ * Project Version: 1k14f 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -451,7 +451,14 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionL
 			}
 			else
 			{
-				cout << "arefunctionArgumentsPrinted(): error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+				if(!((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)))
+				{//NB function definition/declaration names and function object names will not necessarily have a class definition (they will if the function is executed, or if the function object is used)
+				#endif
+					cout << "arefunctionArgumentsPrinted(): error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS	
+				}
+				#endif
 			}
 		}
 	}

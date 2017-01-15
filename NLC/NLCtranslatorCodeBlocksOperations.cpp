@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q2c 18-August-2015
+ * Project Version: 1q3a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -110,12 +110,15 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 				GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
 				if(parentSubstanceConcept->isSubstanceConcept)
 				{	
-					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-					cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren{}: parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
-					#endif
-					if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, parentSubstanceConcept, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
+					if(parentSubstanceConcept->entityName == parentEntity->entityName)	//added 1q3a
 					{
-						contextFound = true;
+						#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+						cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren{}: parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
+						#endif
+						if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, parentSubstanceConcept, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
+						{
+							contextFound = true;
+						}
 					}
 				}
 			}

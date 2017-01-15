@@ -4,14 +4,14 @@
 #include "NLClibraryGenericEntityClass.hpp"
 #include "NLCgeneratedfunctionsWithNoSubjectArtificialClass.hpp"
 #include "NLCgeneratedmoveClass.hpp"
-#include "NLCgeneratedmainClass.hpp"
-#include "NLCgeneratedblueClass.hpp"
-#include "NLCgenerateddogClass.hpp"
-#include "NLCgeneratedfatClass.hpp"
-#include "NLCgeneratedrideClass.hpp"
-#include "NLCgeneratedbikeClass.hpp"
-#include "NLCgeneratedenergyClass.hpp"
-#include "NLCgenerateddecreaseClass.hpp"
+#include "NLCgeneratedNLCimplicitlyDeclaredClass.hpp"
+#include "NLCgeneratedyellowClass.hpp"
+#include "NLCgeneratedbananaClass.hpp"
+#include "NLCgeneratedfruitClass.hpp"
+#include "NLCgeneratedappleClass.hpp"
+#include "NLCgeneratedonClass.hpp"
+#include "NLCgeneratedtreeClass.hpp"
+#include "NLCgeneratedgreenClass.hpp"
 
 NLCgenericEntityClass* generateObjectByName(string name);
 NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* entityToCopy);

@@ -7,74 +7,77 @@ functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(voi
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 
-void functionsWithNoSubjectArtificialClass::mainFunction(vector<mainClass*>& mainClassList, vector<bikeClass*>& bikeClassList)
+void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunction(vector<bananaClass*>& bananaClassList, vector<treeClass*>& treeClassList)
 {
 	vector<NLCgenericEntityClass*> referenceContextList0;
-	vector<dogClass*> dogClassList;
-	//Blue dogs are fat.
-	//A blue dog rides the bike.
-	vector<rideClass*> rideClassList;
-	vector<rideClass*> ride1CategoryList;
-	rideClass* ride1 = addNewEntityToLocalList<rideClass>(&(rideClassList));
-	ride1CategoryList.push_back(ride1);
-	addEntityToReferenceContextList(referenceContextList0, ride1, 2);
-	vector<dogClass*> dog2SubjectCategoryList;
-	vector<dogClass*> dog2CategoryList;
-	dogClass* dog2 = addNewEntityToLocalList<dogClass>(&(dogClassList));
-	dog2CategoryList.push_back(dog2);
-	addEntityToReferenceContextList(referenceContextList0, dog2, 2);
-	for(vector<dogClass*>::iterator iter1 = dog2CategoryList.begin(); iter1 < dog2CategoryList.end(); iter1++) 
+	vector<appleClass*> appleClassList;
+	//The yellow banana is a fruit.
+	vector<bananaClass*> banana1SubjectCategoryList;
+	vector<bananaClass*> banana1CategoryList;
+	for(vector<bananaClass*>::iterator iter1 = bananaClassList.begin(); iter1 < bananaClassList.end(); iter1++) 
 	{
-		dogClass* dog2 = *iter1;
-		vector<fatClass*> fat1CategoryList;
-		fatClass* fat1 = new fatClass();
-		addProperty<dogClass, fatClass>(dog2, &(dog2->fatClassPropertyList), fat1);
-		fat1CategoryList.push_back(fat1);
-		addEntityToReferenceContextList(referenceContextList0, fat1, 2);
-	}
-	for(vector<dogClass*>::iterator iter1 = dog2CategoryList.begin(); iter1 < dog2CategoryList.end(); iter1++) 
-	{
-		dogClass* dog2 = *iter1;
-		vector<blueClass*> blueClassList;
-		vector<blueClass*> blue2CategoryList;
-		blueClass* blue2 = addNewEntityToLocalList<blueClass>(&(blueClassList));
-		blue2CategoryList.push_back(blue2);
-		addEntityToReferenceContextList(referenceContextList0, blue2, 2);
-		for(vector<blueClass*>::iterator iter2 = blue2CategoryList.begin(); iter2 < blue2CategoryList.end(); iter2++) 
+		bananaClass* banana1 = *iter1;
+		for(vector<yellowClass*>::iterator iter2 = banana1->yellowClassPropertyList.begin(); iter2 < banana1->yellowClassPropertyList.end(); iter2++) 
 		{
-			blueClass* blue2 = *iter2;
-			addProperty<dogClass, blueClass>(dog2, &(dog2->blueClassPropertyList), blue2);
+			yellowClass* yellow1 = *iter2;
+			//Singular definite referencing tests
+			addToCategoryIfPassSingularDefiniteReferencingTests<bananaClass, bananaClass> (banana1CategoryList, banana1);
 		}
 	}
-	for(vector<dogClass*>::iterator iter1 = dog2CategoryList.begin(); iter1 < dog2CategoryList.end(); iter1++) 
+	if(!(banana1CategoryList.empty()))
 	{
-		dogClass* dog2 = *iter1;
-		addToCategoryIfPassPluralDefiniteReferencingTests<dogClass, dogClass> (dog2SubjectCategoryList, dog2);
+		bananaClass* banana1 = banana1CategoryList.back();
+		banana1->lastSentenceReferenced.top() = 1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<bananaClass, bananaClass> (banana1SubjectCategoryList, banana1);
 	}
-	vector<bikeClass*> bike1ObjectCategoryList;
-	vector<bikeClass*> bike1CategoryList;
-	for(vector<bikeClass*>::iterator iter1 = bikeClassList.begin(); iter1 < bikeClassList.end(); iter1++) 
+	for(vector<bananaClass*>::iterator iter1 = banana1SubjectCategoryList.begin(); iter1 < banana1SubjectCategoryList.end(); iter1++) 
 	{
-		bikeClass* bike1 = *iter1;
-		//Singular definite referencing tests
-		addToCategoryIfPassSingularDefiniteReferencingTests<bikeClass, bikeClass> (bike1CategoryList, bike1);
+		bananaClass* banana1 = *iter1;
+		if(checkParentClassName(static_cast<NLCgenericEntityClass*>(new fruitClass), "banana"))
+		{
+			fruitClass* fruit1 = static_cast<fruitClass*>(banana1);
+			fruit1->name = "fruit";
+			addEntityToLocalList<fruitClass>(&(fruitClassList), fruit1);
+		}
 	}
-	if(!(bike1CategoryList.empty()))
+	//Apples are fruit.
+	//An apple is on the green tree.
+	vector<appleClass*> apple2SubjectCategoryList;
+	vector<appleClass*> apple2CategoryList;
+	appleClass* apple2 = addNewEntityToLocalList<appleClass>(&(appleClassList));
+	apple2CategoryList.push_back(apple2);
+	addEntityToReferenceContextList(referenceContextList0, apple2, 3);
+	for(vector<appleClass*>::iterator iter1 = apple2CategoryList.begin(); iter1 < apple2CategoryList.end(); iter1++) 
 	{
-		bikeClass* bike1 = bike1CategoryList.back();
-		bike1->lastSentenceReferenced.top() = 2;
-		addToCategoryIfPassPluralDefiniteReferencingTests<bikeClass, bikeClass> (bike1ObjectCategoryList, bike1);
+		appleClass* apple2 = *iter1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<appleClass, appleClass> (apple2SubjectCategoryList, apple2);
 	}
-	for(vector<dogClass*>::iterator iter1 = dog2SubjectCategoryList.begin(); iter1 < dog2SubjectCategoryList.end(); iter1++) 
+	vector<treeClass*> tree1ObjectCategoryList;
+	vector<treeClass*> tree1CategoryList;
+	for(vector<treeClass*>::iterator iter1 = treeClassList.begin(); iter1 < treeClassList.end(); iter1++) 
 	{
-		dogClass* dog2 = *iter1;
-		addActionSubject<rideClass, dogClass>(ride1, dog2, &(dog2->rideClassActionList), &(ride1->dogClassActionSubjectList));
+		treeClass* tree1 = *iter1;
+		for(vector<greenClass*>::iterator iter2 = tree1->greenClassPropertyList.begin(); iter2 < tree1->greenClassPropertyList.end(); iter2++) 
+		{
+			greenClass* green1 = *iter2;
+			//Singular definite referencing tests
+			addToCategoryIfPassSingularDefiniteReferencingTests<treeClass, treeClass> (tree1CategoryList, tree1);
+		}
 	}
-	for(vector<bikeClass*>::iterator iter1 = bike1ObjectCategoryList.begin(); iter1 < bike1ObjectCategoryList.end(); iter1++) 
+	if(!(tree1CategoryList.empty()))
 	{
-		bikeClass* bike1 = *iter1;
-		addActionObject<rideClass, bikeClass>(ride1, bike1, &(bike1->rideClassActionIncomingList), &(ride1->bikeClassActionObjectList));
+		treeClass* tree1 = tree1CategoryList.back();
+		tree1->lastSentenceReferenced.top() = 3;
+		addToCategoryIfPassPluralDefiniteReferencingTests<treeClass, treeClass> (tree1ObjectCategoryList, tree1);
 	}
-	(new dogClass)->rideFunction(dog2SubjectCategoryList, rideClassList, bike1ObjectCategoryList);
+	for(vector<appleClass*>::iterator iter1 = apple2SubjectCategoryList.begin(); iter1 < apple2SubjectCategoryList.end(); iter1++) 
+	{
+		appleClass* apple2 = *iter1;
+		for(vector<treeClass*>::iterator iter2 = tree1ObjectCategoryList.begin(); iter2 < tree1ObjectCategoryList.end(); iter2++) 
+		{
+			treeClass* tree1 = *iter2;
+			addCondition<appleClass, onClass, treeClass>(apple2, &(apple2->onClasstreeClassConditionList), "on", tree1);
+		}
+	}
 	clearReferenceContextList(referenceContextList0);
 }

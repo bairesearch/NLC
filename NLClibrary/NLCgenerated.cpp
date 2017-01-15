@@ -18,45 +18,45 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		NLCgenericEntityClass* newNLCgenericEntityClass = new NLCgenericEntityClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCgenericEntityClass);
 	}
-	if(name == "main")
+	if(name == "NLCimplicitlyDeclared")
 	{
-		mainClass* newmainClass = new mainClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmainClass);
+		NLCimplicitlyDeclaredClass* newNLCimplicitlyDeclaredClass = new NLCimplicitlyDeclaredClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredClass);
 	}
-	if(name == "blue")
+	if(name == "yellow")
 	{
-		blueClass* newblueClass = new blueClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newblueClass);
+		yellowClass* newyellowClass = new yellowClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newyellowClass);
 	}
-	if(name == "dog")
+	if(name == "banana")
 	{
-		dogClass* newdogClass = new dogClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdogClass);
+		bananaClass* newbananaClass = new bananaClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbananaClass);
 	}
-	if(name == "fat")
+	if(name == "fruit")
 	{
-		fatClass* newfatClass = new fatClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfatClass);
+		fruitClass* newfruitClass = new fruitClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfruitClass);
 	}
-	if(name == "ride")
+	if(name == "apple")
 	{
-		rideClass* newrideClass = new rideClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newrideClass);
+		appleClass* newappleClass = new appleClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newappleClass);
 	}
-	if(name == "bike")
+	if(name == "on")
 	{
-		bikeClass* newbikeClass = new bikeClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
+		onClass* newonClass = new onClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newonClass);
 	}
-	if(name == "energy")
+	if(name == "tree")
 	{
-		energyClass* newenergyClass = new energyClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newenergyClass);
+		treeClass* newtreeClass = new treeClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtreeClass);
 	}
-	if(name == "decrease")
+	if(name == "green")
 	{
-		decreaseClass* newdecreaseClass = new decreaseClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdecreaseClass);
+		greenClass* newgreenClass = new greenClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgreenClass);
 	}
 	return newGenericObject;
 }
@@ -79,45 +79,45 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 		NLCgenericEntityClass* newNLCgenericEntityClass = new NLCgenericEntityClass(*(static_cast<NLCgenericEntityClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCgenericEntityClass);
 	}
-	if(name == "main")
+	if(name == "NLCimplicitlyDeclared")
 	{
-		mainClass* newmainClass = new mainClass(*(static_cast<mainClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmainClass);
+		NLCimplicitlyDeclaredClass* newNLCimplicitlyDeclaredClass = new NLCimplicitlyDeclaredClass(*(static_cast<NLCimplicitlyDeclaredClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredClass);
 	}
-	if(name == "blue")
+	if(name == "yellow")
 	{
-		blueClass* newblueClass = new blueClass(*(static_cast<blueClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newblueClass);
+		yellowClass* newyellowClass = new yellowClass(*(static_cast<yellowClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newyellowClass);
 	}
-	if(name == "dog")
+	if(name == "banana")
 	{
-		dogClass* newdogClass = new dogClass(*(static_cast<dogClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdogClass);
+		bananaClass* newbananaClass = new bananaClass(*(static_cast<bananaClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbananaClass);
 	}
-	if(name == "fat")
+	if(name == "fruit")
 	{
-		fatClass* newfatClass = new fatClass(*(static_cast<fatClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfatClass);
+		fruitClass* newfruitClass = new fruitClass(*(static_cast<fruitClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfruitClass);
 	}
-	if(name == "ride")
+	if(name == "apple")
 	{
-		rideClass* newrideClass = new rideClass(*(static_cast<rideClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newrideClass);
+		appleClass* newappleClass = new appleClass(*(static_cast<appleClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newappleClass);
 	}
-	if(name == "bike")
+	if(name == "on")
 	{
-		bikeClass* newbikeClass = new bikeClass(*(static_cast<bikeClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newbikeClass);
+		onClass* newonClass = new onClass(*(static_cast<onClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newonClass);
 	}
-	if(name == "energy")
+	if(name == "tree")
 	{
-		energyClass* newenergyClass = new energyClass(*(static_cast<energyClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newenergyClass);
+		treeClass* newtreeClass = new treeClass(*(static_cast<treeClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newtreeClass);
 	}
-	if(name == "decrease")
+	if(name == "green")
 	{
-		decreaseClass* newdecreaseClass = new decreaseClass(*(static_cast<decreaseClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newdecreaseClass);
+		greenClass* newgreenClass = new greenClass(*(static_cast<greenClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgreenClass);
 	}
 	return newGenericObject;
 }

@@ -1,9 +1,9 @@
-#include "NLCgeneratedmainClass.hpp"
+#include "NLCgeneratedonClass.hpp"
 #include "NLClibrary.hpp"
 
-mainClass::mainClass(void)
+onClass::onClass(void)
 {
-	name = "main";
+	name = "on";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

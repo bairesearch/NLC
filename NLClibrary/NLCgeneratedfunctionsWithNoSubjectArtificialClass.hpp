@@ -3,13 +3,13 @@
 
 #include "NLClibraryGenericEntityClass.hpp"
 
-class mainClass;
-class bikeClass;
+class bananaClass;
+class treeClass;
 class functionsWithNoSubjectArtificialClass : public NLCgenericEntityClass
 {
 public:
 	functionsWithNoSubjectArtificialClass(void);
-	void mainFunction(vector<mainClass*>& mainClassList, vector<bikeClass*>& bikeClassList);
+	void NLCimplicitlyDeclaredFunction(vector<bananaClass*>& bananaClassList, vector<treeClass*>& treeClassList);
 };
 
 #endif

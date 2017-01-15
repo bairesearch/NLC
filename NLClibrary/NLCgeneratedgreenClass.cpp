@@ -1,9 +1,9 @@
-#include "NLCgeneratedfatClass.hpp"
+#include "NLCgeneratedgreenClass.hpp"
 #include "NLClibrary.hpp"
 
-fatClass::fatClass(void)
+greenClass::greenClass(void)
 {
-	name = "fat";
+	name = "green";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

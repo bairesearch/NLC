@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n18b 31-January-2015
+ * Project Version: 1n18c 31-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -391,8 +391,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						}
 						#endif
 						//cout << "currentPhrase = " << currentPhrase << endl;
+						bool lastCharacterOfPhraseIsFullStop = false;
+						if(currentPhrase[currentPhrase.length()-1] == NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR)
+						{
+							lastCharacterOfPhraseIsFullStop = true;
+						}
 						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
-						if(currentPhrase[currentPhrase.length()-1] != NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR)
+						if(!lastCharacterOfPhraseIsFullStop)
 						{
 						#endif
 							(*currentNLCsentenceInList)->sentenceContents = currentPhrase + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;	//append a fullstop to the NLP parsable phrase to make it readable by NLP
@@ -405,7 +410,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						#endif
 						(*currentNLCsentenceInList)->sentenceIndex = *sentenceIndex;
 						//(*currentNLCsentenceInList)->indentation = currentIndentation;	//indentation not recorded for NLC parsable phrases
+						//cout << "generateMathTextNLPparsablePhraseReference = " << endl;
+						//cout << "(*currentNLCsentenceInList)->sentenceContents = " << (*currentNLCsentenceInList)->sentenceContents << endl;
 						mathText = mathText + generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, (*currentNLCsentenceInList));
+						//cout << "mathText = " << mathText << endl;
 						#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 						if(spaceAtEndOfPhrase)
 						{
@@ -420,14 +428,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 
 						//restart phrase
 						currentPhrase = "";
-						#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
-						if(!finalWordInSentenceFoundAndIsLegal)
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						if(!finalWordInSentenceFoundAndIsLegal || lastCharacterOfPhraseIsFullStop)	//ie !finalWordInSentenceFoundAndIsLegal || (finalWordInSentenceFoundAndIsLegal && lastCharacterOfPhraseIsFullStop)
+						{
+						#else
+						if(!finalWordInSentenceFoundAndIsLegal)			//!finalWordInSentenceFoundAndIsLegal (because fullstop will already have been added to sentenceContents and therefore mathText)
 						{
 						#endif
 							mathText = mathText + c;
-						#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
 						}
-						#endif
+						
 						#ifdef NLC_DEBUG_PREPROCESSOR_MATH	
 						cout << "mathText = " << mathText << endl;
 						#endif			

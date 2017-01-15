@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u11c 30-September-2016
+ * Project Version: 1u12a 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -234,6 +234,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 
 									GIAentityNode* parentEntity = getParent(logicalConditionOperationObject, sentenceIndex);
 									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+									generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 									generateContextBlocksVariables.searchConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition)
 									bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
 									//bool generatedContextBlocks = generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
@@ -495,6 +496,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: found 'number of' designation, entity: " << entity->entityName << endl;
 					#endif
 					NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+					generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 					#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
 					#ifdef NLC_GENERATE_TYPE_LISTS
 					//number of statements must be expressed using definite variables, but they will not be advanced referenced by GIA (and so must be located in the typeList)
@@ -660,6 +662,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								GIAentityNode* parentEntityTemp = NULL;	//already determined
 								bool newInitialisation = false;
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;	//irrelevant (as no !sameReferenceSet connection)
 								if(currentFullSentence->hasLogicalConditionOperator)
 								{
 									generateContextBlocksVariables.logicalConditionStatement = true;
@@ -740,6 +743,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								#endif
 									childEntity = NULL;
 									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+									generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;	//irrelevant (as no !sameReferenceSet connection)
 									bool contextFound = parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
 
 								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
@@ -1664,6 +1668,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 
 						GIAentityNode* childEntity = NULL;
 						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+						generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;	//irrelevant (as no !sameReferenceSet connection)
 						parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
 
 						#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST

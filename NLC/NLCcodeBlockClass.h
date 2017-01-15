@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u11c 30-September-2016
+ * Project Version: 1u12a 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -380,7 +380,7 @@ NLCcodeblock* createCodeBlockRecordHistoryActionObject(NLCcodeblock* currentCode
 
 NLCcodeblock* createCodeBlockCreateNewProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList);
 	NLCcodeblock* createCodeBlockAddNewProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList);
-		NLCcodeblock* createCodeBlockAddEntityToLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
+		NLCcodeblock* createCodeBlockAddEntityToLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* localListEntity, GIAentityNode* entity);
 		NLCcodeblock* createCodeBlockAddProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
 
 NLCcodeblock* createCodeBlockCreateNewCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList);
@@ -436,26 +436,13 @@ NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlock
 #ifdef NLC_SUPPORT_QUANTITIES
 NLCcodeblock* createCodeBlockForInteger(NLCcodeblock* currentCodeBlockInTree, string numberIterationsOrVariable);
 #endif
-NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*>* entityNodesActiveListComplete);
-	NLCcodeblock* createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* functionOwner);
-	NLCcodeblock* createCodeBlocksAddVariableToNewList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
-	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*>* entityNodesActiveListComplete, vector<NLCitem*>* parameters);
-		bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(GIAentityNode* entityNode);
-		#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
-		bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, GIAentityNode* definiteEntity);
-		#endif
-		#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-		bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, GIAentityNode* definiteEntity);
-			bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode* indefiniteEntity, GIAentityNode* definiteEntity);
-		#endif
-	#endif
+NLCcodeblock* createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* functionOwner);
+NLCcodeblock* createCodeBlocksAddVariableToNewList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);
 	bool isDefiniteEntity(GIAentityNode* entity);
 	bool isDefiniteEntityStrict(GIAentityNode* entity);
 bool assumedToAlreadyHaveBeenDeclaredInitialisation(GIAentityNode* entity);
-	bool isDefiniteEntityInitialisation(GIAentityNode* entity);
 
 NLCcodeblock* createCodeBlock(NLCcodeblock* currentCodeBlockInTree, int codeBlockType);
 NLCcodeblock* createLowerLevel(NLCcodeblock* currentCodeBlockInTree);
@@ -673,5 +660,7 @@ bool checkNumericalReferenceToEntity(GIAentityNode* entity);
 NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceNewFunction(NLCcodeblock* currentCodeBlockInTree);
 NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int sentenceIndex);
 #endif
+
+GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parentEntity, int sentenceIndex, bool *foundChildEntity);
 
 #endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u11c 30-September-2016
+ * Project Version: 1u12a 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,6 +52,10 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
 		void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement, bool checkParent);
 		#endif
+
+bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, int sentenceIndex, bool sameReferenceSet, int connectionType);
+	bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** actionSubjectConnection, int connectionType);
+
 		
 bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName);
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
@@ -100,8 +104,9 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeB
 				bool isPotentialAction(GIAentityNode* actionEntity);
 				#endif
 			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
-			bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, GIAentityNode* subjectParentEntity, bool primary, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement);
+			bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, bool primary, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement);
 			#endif
+			/*
 			bool getActionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** subjectEntity, GIAentityConnection** actionSubjectConnection, int sentenceIndex, bool sameReferenceSet);
 				bool getActionSubjectEntityConnection(GIAentityNode* actionEntity, int sentenceIndex, GIAentityConnection** actionSubjectConnection);
 			bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** objectEntity, GIAentityConnection** actionObjectConnection, int sentenceIndex, bool sameReferenceSet);
@@ -110,6 +115,10 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeB
 				bool getConditionSubjectEntityConnection(GIAentityNode* conditionEntity, int sentenceIndex, GIAentityConnection** conditionSubjectConnection);
 			bool getConditionObjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** objectEntity, GIAentityConnection** conditionObjectConnection, int sentenceIndex, bool sameReferenceSet);
 				bool getConditionObjectEntityConnection(GIAentityNode* conditionEntity, int sentenceIndex, GIAentityConnection** conditionObjectConnection);
+			*/
+			bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, int sentenceIndex, bool sameReferenceSet, int connectionType);
+				bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** actionSubjectConnection, int connectionType);
+				bool connectionTypeIsCondition(int connectionType);
 
 GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex);
 	GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables);
@@ -120,7 +129,6 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
 	GIAentityNode* getSameReferenceSetUniqueParent(GIAentityNode* currentEntity, int sentenceIndex, GIAentityNode* generateObjectInitialisationsLastParent, bool* foundParentEntityNew, bool parseConditionParents, bool checkIsDefinite);
 	#endif
-GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parentEntity, int sentenceIndex, bool *foundChildEntity);
 
 #ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, bool newlyDeclaredEntityInCategoryList);

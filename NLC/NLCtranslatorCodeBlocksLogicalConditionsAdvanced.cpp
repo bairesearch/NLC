@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u11c 30-September-2016
+ * Project Version: 1u12a 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -447,6 +447,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							//code copied from [*^]
 							//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
 							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 							generateContextBlocksVariables.logicalOperation = logicalOperation;
 							generateContextBlocksVariables.negative = simpleNonConjunctionLogicalConditionNegative;
 								//NB this will set NLCparsedForCodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
@@ -601,6 +602,7 @@ void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode
 
 	//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
 	NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+	generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 	generateContextBlocksVariables.logicalOperation = logicalOperation;
 	generateContextBlocksVariables.logicalConditionConjunctionIndex = *logicalConditionConjunctionIndex;
 	generateContextBlocksVariables.primaryEntityInLogicalConditionConjunctionSubset = previousLogicalConditionConjunction;

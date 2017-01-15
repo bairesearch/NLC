@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n28b 05-February-2015
+ * Project Version: 1n28c 05-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -675,7 +675,7 @@ bool generateCodeBlocksPart3actions(NLCcodeblock** currentCodeBlockInTree, vecto
 	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//note NLCcategoryListCreatedTemp is only required to be cleared between sentences for !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 	//clear for next sentence 
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
 		if(entity->NLCcategoryListCreatedTemp)

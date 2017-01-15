@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n28b 05-February-2015
+ * Project Version: 1n28c 05-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/

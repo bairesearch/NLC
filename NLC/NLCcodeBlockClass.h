@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g1a 30-June-2014
+ * Project Version: 1g2a 01-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,8 +55,8 @@ using namespace std;
 
 #define NLC_CODEBLOCK_TYPE_UNDEFINED (-1)
 //statements:
-#define NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION (1)		//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
-#define NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY (3)			//context1->param1->param2PropertyList.push_back(param2);		//OLD2: context1.param1.param2PropertyList.addProperty(context2.param2);
+#define NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION (1)				//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
+#define NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY (3)				//context1->param1->param2PropertyList.push_back(param2);		//OLD2: context1.param1.param2PropertyList.addProperty(context2.param2);
 #define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION (4)			//context1->param1->param2param3ConditionList.insert(param2, param3);	//OLD2: context1.param1.param3ConditionList.addCondition(context3.param3, param2);
 #define NLC_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE (5)
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE (6)
@@ -70,12 +70,14 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE (14)
 
 //containers:
-#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (20)		//forall(context.param1){
-#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (21)		//forall(context.param1){
+#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (20)		//forall(context1.param1PropertyList){
+#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (21)		//forall(context1.param1param2ConditionList){
 #define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (22)			//main(){
-#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (23)		//if(!(context1->param1->param2PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
-#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (24)		//if(!(context1->param1->param2param3ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (23)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
+#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (24)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (25)	//forall(param1instance){
+#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (26)		//while(!(context1->param1PropertyList.empty())){
+#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (27)		//while(!(context1->param1param2ConditionList.empty())){
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 
@@ -159,5 +161,8 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 
 NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
 NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
+NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
+NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
+
 
 #endif

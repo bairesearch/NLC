@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g1a 30-June-2014
+ * Project Version: 1g2a 01-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,6 +48,17 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 		NLCitem * param1 = currentCodeBlockInLevel->parameters.at(0);
 		string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 
+		//for logical operations only (NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY/NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION/NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY/NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION);
+		string negativeModifierString = "";
+		if(param1->negative)
+		{
+			negativeModifierString = "";
+		}
+		else
+		{
+			negativeModifierString = progLangNot[progLang];
+		}
+			
 		if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION)
 		{
 			#ifdef NLC_DEBUG
@@ -219,16 +230,6 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);	//IS THIS REQUIRED????
 			*/
-			string negativeModifierString = "";
-			if(param1->negative)
-			{
-				negativeModifierString = "";
-			}
-			else
-			{
-				negativeModifierString = progLangNot[progLang];
-			}
-
 			//string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangFunctionReferenceDelimiter[progLang] + param2->className + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangFindProperty[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//OLD	//if(!(context1->param1->param2PropertyList.empty())){
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + generatePropertyListName(param1->className) + progLangFunctionReferenceDelimiter[progLang] + progLangFindProperty[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(context1->param1->param2PropertyList.empty())){
 		
@@ -247,21 +248,34 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
 			*/
-
-			string negativeModifierString = "";
-			if(param1->negative)
-			{
-				negativeModifierString = "";
-			}
-			else
-			{
-				negativeModifierString = progLangNot[progLang];
-			}
 			//string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeConditionListDefinitionTypeText(param1->className, param2->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//OLD
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangFunctionReferenceDelimiter[progLang] + progLangFindCondition[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(!(context1->param1->param2param3ConditionList.empty())){
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY" << endl;
+			#endif
+
+			string codeBlockText = progLangWhile[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + generatePropertyListName(param1->className) + progLangFunctionReferenceDelimiter[progLang] + progLangFindProperty[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//while(!(context1->param1->param2PropertyList.empty())){
+		
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION" << endl;
+			#endif
+
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+
+			string codeBlockText = progLangWhile[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangFunctionReferenceDelimiter[progLang] + progLangFindCondition[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//while(!(context1->param1->param2param3ConditionList.empty())){
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE)
 		{
 			#ifdef NLC_DEBUG

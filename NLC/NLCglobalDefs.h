@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g1a 30-June-2014
+ * Project Version: 1g2a 01-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,6 +56,7 @@
 	#endif
 	static string conditionLogicalOperationsArray[NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES] = {"if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_IF (0)
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_WHILE (4)
 	#ifdef GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS	//hasnt been coded [always use substance concept nodes rather than raw concept nodes to store concept relationships]
 		#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
 		#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n13a 27-January-2015
+ * Project Version: 1n14a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -647,6 +647,18 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 						}
 						*/
 						//cout << "getParentAndGenerateContextBlocks:" << endl;
+						
+						/*DO THIS;
+						bool foundDefiniteParentEntity = false;
+						bool parseConditionParents = true;	//default value
+						GIAentityNode* parentEntity = getSameReferenceSetDefiniteUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentEntity, parseConditionParents);
+						if(!foundDefiniteParentEntity)
+						{
+							parentEntity = entity;
+						}
+						~GIAentityNode* parentEntity = getSameReferenceSetDefiniteChild(entity, sentenceIndex, &foundDefiniteParentEntity, parseConditionParents);
+						*/
+						
 						if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
 						{
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE

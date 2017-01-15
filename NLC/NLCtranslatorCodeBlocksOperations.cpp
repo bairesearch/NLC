@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n13a 27-January-2015
+ * Project Version: 1n14a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -161,7 +161,7 @@ void generateActionCodeBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNo
 				//*currentCodeBlockInTree = createCodeBlockSetTempVariable(*currentCodeBlockInTree, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_PARENT_TEMP_VARIABLE_NAME, parentEntityFunctionObject);
 				GIAentityNode* parentEntityFromCondition = new GIAentityNode();
 				parentEntityFromCondition->entityName = NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME;
-				addOrConnectConditionToEntity(actionEntity, parentEntityFunctionObject, parentEntityFromCondition, false);	//this is required so that generateClassHeirarchyFunctions() adds the "from" condition to the action, but need to check that GIA supports NLC's use of the addOrConnectConditionToEntity() function
+				addOrConnectConditionToEntity(actionEntity, parentEntityFunctionObject, parentEntityFromCondition, false, false);	//this is required so that generateClassHeirarchyFunctions() adds the "from" condition to the action, but need to check that GIA supports NLC's use of the addOrConnectConditionToEntity() function
 				*currentCodeBlockInTree = createCodeBlockAddNewConditionExistingObjectSimple(*currentCodeBlockInTree, actionEntity, parentEntityFromCondition, parentEntityFunctionObject);
 				#endif
 
@@ -939,6 +939,13 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 					if(!conjunctionConditionConnectionFound)
 					{
 					#endif
+						/*FINISH THIS;
+						look for rcmodIndicatesSameReferenceSet...
+						#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET
+						bool generatedContextForChild = generateContextForChildEntity(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex, false);
+						#endif
+						*/
+						
 						bool resultTemp = false;
 						if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 						{

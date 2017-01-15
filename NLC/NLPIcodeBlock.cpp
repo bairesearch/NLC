@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d3a 09-November-2013
+ * Project Version: 1e1a 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -68,7 +68,7 @@ NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, N
 {
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 
-	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT);
+	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
 //add property
@@ -128,19 +128,32 @@ NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIi
 
 
 NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string NLPIfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
-{
+{	
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	//gets "fight" from "dog::fight"
 	string functionName = "";
 	bool foundFunctionOwnerClass = false;
 	string functionOwnerName = "";
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);
+	bool foundFunctionObjectClass = false;
+	string functionObjectName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = *entityIter;
 		if(entity->entityName == functionOwnerName)
 		{
-			entity->NLPIuseThisAlias = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+			entity->NLPIisArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+			
+			//"Dog dog1 = this;"
+			NLPIitem * functionOwnerItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+			currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
+			NLPIitem * actionSubjectInstanceReplacementItem = new NLPIitem(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLPI_ITEM_TYPE_OBJECT);
+			currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
+			currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
+		}
+		if(entity->entityName == functionObjectName)
+		{
+			entity->NLPIisArgument = true;
 		}
 	}	
 	#else
@@ -174,20 +187,12 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 			if(!(entity->isConcept))
 			{	
 				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-				if(!entity->NLPIuseThisAlias)
+				if(!entity->NLPIisArgument)
 				{
 				#endif
 					//detected "the x" without declaring x (ie implicit declaration)
-					if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
-					{
-						NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
-						parameters->push_back(thisFunctionArgumentInstanceItem);
-					}
-					else
-					{
-						NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE);
-						parameters->push_back(thisFunctionArgumentInstanceItem);			
-					}
+					NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
+					parameters->push_back(thisFunctionArgumentInstanceItem);
 				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 				}
 				#endif
@@ -462,20 +467,56 @@ string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
 void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
 {
 	//gets "fight" from "dog::fight"
+	bool foundFunctionObjectClass = false;
+	string functionObjectName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, functionName, functionOwnerName, foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);	
+}
+
+void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass, string * functionObjectName, bool * foundFunctionObjectClass)
+{
+	//gets "fight" from "dog::fight"
 	*foundFunctionOwnerClass = false;
 	*functionOwnerName = "";
+	*foundFunctionObjectClass = false;
+	*functionObjectName = "";
 	*functionName = NLPIfunctionName;
-	int indexOfClassContext = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER);
-	if(indexOfClassContext != string::npos)
+	int indexOfActionName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER);
+	int indexOfObjectName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_OPEN);
+	if(indexOfActionName != string::npos)
 	{
-		*functionName = NLPIfunctionName.substr(indexOfClassContext+NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfClassContext);
-		*functionOwnerName = NLPIfunctionName.substr(0, indexOfClassContext);
-		*foundFunctionOwnerClass = true;
-		/*
+		if(indexOfObjectName != string::npos)
+		{
+			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfActionName);
+			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
+			*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH);	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
+			*foundFunctionOwnerClass = true;
+			*foundFunctionObjectClass = true;	
+			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
+			cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+			cout << "functionName = " << *functionName << endl;
+			cout << "functionOwnerName = " << *functionOwnerName << endl;
+			cout << "functionObjectName = " << *functionObjectName << endl;	
+		}
+		else
+		{
+			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfActionName);
+			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
+			*foundFunctionOwnerClass = true;
+			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
+			cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+			cout << "functionName = " << *functionName << endl;
+			cout << "functionOwnerName = " << *functionOwnerName << endl;
+		}
+	}
+	else if(indexOfObjectName != string::npos)
+	{
+		*functionName = NLPIfunctionName.substr(0, indexOfObjectName);
+		*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH);	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
+		*foundFunctionObjectClass = true;
+		cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
 		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
 		cout << "functionName = " << *functionName << endl;
-		cout << "functionOwnerName = " << *functionOwnerName << endl;
-		*/
+		cout << "functionObjectName = " << *functionObjectName << endl;	
 	}
 }
 #endif

@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d3a 09-November-2013
+ * Project Version: 1e1a 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -127,21 +127,26 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 		string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 		string generateCodePropertyListDefinitionText(string targetClassName, int progLang);
 	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code, int level);	//classDefinitionList is required by NLPI_SUPPORT_INPUT_FILE_LISTS only
-		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
-			string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang);
+		void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 			string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang);
 			string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang);
-		void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIclassDefinition *> * classDefinitionList, vector<NLPIitem*> * codeBlockParameters, string * functionArguments, int progLang);
-			string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang);
+			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+			string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang);
+			#endif
+		void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLPIclassDefinition *> * classDefinitionList, vector<NLPIitem*> * codeBlockParameters, string * functionArguments, int progLang);
 			string generateCodeSingularReferenceText(NLPIitem * functionArgumentPropertyItem, int progLang);
 				string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
-		#endif
+			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+			string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang);
+			#endif
 		void printLine(string command, int level, string * code);
 		string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 		string generateConditionPairName(string conditionClassName, string conditionObjectClassName);
 		#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 		void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+		#endif
+		#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+		void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 		#endif
 		string generateFunctionOwnerContext(vector<NLPIitem*> * parameters, int progLang);
 string generateStringFromContextVector(vector<string> * context, int progLang);

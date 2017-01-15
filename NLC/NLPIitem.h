@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d3a 09-November-2013
+ * Project Version: 1e1a 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -61,15 +61,18 @@ using namespace std;
 #define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
 #define NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
 #define NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
-#define NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION (4)
-#define NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY (5)
-#define NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE (6)
+#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+	#define NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION (4)
+	#define NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY (5)
+#endif
 #define NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL (6)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST (7)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST (8)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT (9)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION (10)
 #define NLPI_ITEM_TYPE_FUNCTION_OWNER (11)
+#define NLPI_ITEM_TYPE_FUNCTION_SUBJECT (12)	//should be merged with NLPI_ITEM_TYPE_FUNCTION_OWNER
+#define NLPI_ITEM_TYPE_FUNCTION_OBJECT (13)
 
 #define NLPI_CLASS_NAME_APPEND "Class"
 #define NLPI_FUNCTION_NAME_APPEND "Function"

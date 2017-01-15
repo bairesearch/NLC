@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d3a 09-November-2013
+ * Project Version: 1e1a 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -142,17 +142,8 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 				NLPIclassDefinition * targetClassDefinition = *localListIter;
 				string targetName = targetClassDefinition->functionNameSpecial;
 				string functionArguments = "";
-				if(targetClassDefinition->parameters.size() > 0)
-				{
-					NLPIitem * param1 = targetClassDefinition->parameters.at(0);
-					if(param1->itemType == NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT)
-					{
-						functionArguments = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName;
-					}
-				}
-				#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-				generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
-				#endif
+
+				generateFunctionArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 				string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 				printLine(localListDeclarationText, 1, code);
 			}
@@ -195,20 +186,15 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			#ifdef NLPI_DEBUG
 			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION" << endl;
 			#endif
-			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 			//cout << "z7a" << endl;
 			//cout << "param1->className = " << param1->className << endl;
 			//cout << "param2->className = " << param2->className << endl;
 			//cout << "contextParam1 = " << contextParam1 << endl;						
 			
 			//cout << "contextParam2 = " << contextParam2 << endl;
-		
-			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
-			string functionArguments = contextParam2 + param2->instanceName;
-	
-			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS					
-			generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
-			#endif
+
+			string functionArguments = "";
+			generateFunctionExecutionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			
 			string codeBlockText = contextParam1 + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 				//OLD before 1c5a: param1->instanceName
@@ -216,23 +202,6 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			printLine(codeBlockText, level, code);
 			
 			//cout << "z9" << endl;
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT)
-		{
-			#ifdef NLPI_DEBUG
-			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT" << endl;
-			#endif
-			string functionArguments = "";
-			
-			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS			
-			generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
-			#endif
-					
-			string codeBlockText = contextParam1 + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
-				//OLD before 1c5a: param1->instanceName
-			printLine(codeBlockText, level, code);
-			
-			//cout << "z9b" << endl;
 		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_ADD_PROPERTY)
 		{
@@ -294,6 +263,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			#endif	
+			#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+			generateFunctionArgumentsBasedOnActionAndActionObjectVars(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
+			#endif
 			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang);
 			string codeBlockText = functionOwnerContext + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
 			printLine(codeBlockText, level, code);		
@@ -324,6 +296,28 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE)
+		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE" << endl;
+			#endif
+			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
+			
+			string codeBlockTextDeclareAndInitialiseVariable = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + param2->className + progLangEndLine[progLang];	
+			printLine(codeBlockTextDeclareAndInitialiseVariable, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE)
+		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE" << endl;
+			#endif		
+			string codeBlockTextDeclareNewVariable = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param1->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	
+			printLine(codeBlockTextDeclareNewVariable, level, code);
+		}	
+		else
+		{
+			cout << "printCodeBlocks: error: currentCodeBlockInLevel->codeBlockType = " << currentCodeBlockInLevel->codeBlockType << endl;
+		}
 		/*
 		else if(currentCodeBlockInLevel->codeBlockType == ...)
 		{
@@ -345,35 +339,13 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 }
 
 
-#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang)
+void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang)
 {
 	for(vector<NLPIitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		//do: ADD: if(functionArgumentCertified);
 		NLPIitem * currentItem = *parametersIterator;
-		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
-		{
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-			*functionArguments = *functionArguments + generateCodeConditionPairDefinitionText(currentItem, progLang);
-		}
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-		else if((currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY) || (currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE))		
-		#else
-		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)
-		#endif
-		{
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
-		}
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-		else if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+		if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
 		{
 			if(*functionArguments != "")
 			{
@@ -381,34 +353,43 @@ void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceStrin
 			}
 			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
 		}
+		#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION)		
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
+		}
+		#endif
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_OBJECT)		
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
+		}
+		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeConditionPairDefinitionText(currentItem, progLang);
+		}
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
+		}
 		#endif
 	}
-}
-
-string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang)
-{
-	string conditionClassName = currentItem->className;
-	string conditionObjectClassName = currentItem->className2;
-	#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + STRING_SPACE + conditionClassName + NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
-	#else
-	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang]+ STRING_SPACE + generateConditionPairName(conditionClassName, conditionObjectClassName);				
-	#endif
-	return codeConditionListDefinitionText;
-}
-
-string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang)
-{	
-	string propertyClassName = currentItem->className;
-	string propertyInstanceName = currentItem->instanceName;
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	if(currentItem->functionArgumentPassCastRequired)
-	{
-		propertyClassName = currentItem->functionArgumentPassCastClassName;
-	}
-	#endif	
-	string codePropertyDefinitionText = propertyClassName + progLangPointer[progLang] + STRING_SPACE + propertyInstanceName;
-	return codePropertyDefinitionText;
 }
 
 string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang)
@@ -425,8 +406,35 @@ string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang)
 	return codePluralDefinitionText;
 }
 
+string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang)
+{	
+	string propertyClassName = currentItem->className;
+	string propertyInstanceName = currentItem->instanceName;
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	if(currentItem->functionArgumentPassCastRequired)
+	{
+		propertyClassName = currentItem->functionArgumentPassCastClassName;
+	}
+	#endif	
+	string codePropertyDefinitionText = propertyClassName + progLangPointer[progLang] + STRING_SPACE + propertyInstanceName;
+	return codePropertyDefinitionText;
+}
 
-void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIclassDefinition *> * classDefinitionList, vector<NLPIitem*> * codeBlockParameters, string * functionArguments, int progLang)
+#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang)
+{
+	string conditionClassName = currentItem->className;
+	string conditionObjectClassName = currentItem->className2;
+	#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + STRING_SPACE + conditionClassName + NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	#else
+	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang]+ STRING_SPACE + generateConditionPairName(conditionClassName, conditionObjectClassName);				
+	#endif
+	return codeConditionListDefinitionText;
+}
+#endif
+
+void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLPIclassDefinition *> * classDefinitionList, vector<NLPIitem*> * codeBlockParameters, string * functionArguments, int progLang)
 {
 	vector<NLPIitem*> * parameters;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
@@ -452,19 +460,7 @@ void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInherit
 		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
 		//do: ADD: if(functionArgumentCertified);
 		
-		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
-		{
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-			*functionArguments = *functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
-		}
-		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-		else if((currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY) || (currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE) || (currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL))
-		#else
-		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)		
-		#endif
+		if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)		
 		{
 			if(*functionArguments != "")
 			{
@@ -472,18 +468,43 @@ void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInherit
 			}
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 		}
+		#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION)		
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+		}
+		#endif
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_OBJECT)		
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+		}
+		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
+		}
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)		
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+		}		
+		#endif
 	}
-}
-
-string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang)
-{
-	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
-	#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + functionArgumentConditionItem->className + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersClose[progLang];
-	#else
-	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + functionArgumentConditionItem->className + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + functionArgumentConditionItem->className2 + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersClose[progLang];			
-	#endif
-	return codeConditionPairTypeText;
 }
 
 string generateCodeSingularReferenceText(NLPIitem * functionArgumentItem, int progLang)
@@ -498,7 +519,6 @@ string generateCodeSingularReferenceText(NLPIitem * functionArgumentItem, int pr
 	return codePropertyTypeText;
 }
 
-
 string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang)
 {
 	string instanceNameWithContext = "";
@@ -508,6 +528,17 @@ string generateInstanceNameWithContext(string instanceName, vector<string> * con
 	return instanceNameWithContext;
 }
 
+#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang)
+{
+	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
+	#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + functionArgumentConditionItem->className + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersClose[progLang];
+	#else
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + functionArgumentConditionItem->className + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + functionArgumentConditionItem->className2 + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang) + progLangClassMemberFunctionParametersClose[progLang];			
+	#endif
+	return codeConditionPairTypeText;
+}
 #endif
 
 
@@ -553,7 +584,17 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPI
 			}
 			*functionArguments = *functionArguments + progLangClassListTypeStart[progLang] + currentItem->className + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + currentItem->instanceName;
 		}
-		else if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE)
+	}
+}		
+#endif
+
+#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLPIitem*> * parameters, string * functionArguments, int progLang)
+{
+	for(vector<NLPIitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+	{
+		NLPIitem * currentItem = *parametersIterator;
+		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION)
 		{
 			if(*functionArguments != "")
 			{
@@ -561,9 +602,18 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPI
 			}
 			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + currentItem->instanceName;
 		}
-	}
-}		
+		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_OBJECT)
+		{
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + currentItem->instanceName;
+		}		
+	}	
+}
 #endif
+			
 
 
 string generateFunctionOwnerContext(vector<NLPIitem*> * parameters, int progLang)

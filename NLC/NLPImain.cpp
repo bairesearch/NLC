@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d3a 09-November-2013
+ * Project Version: 1e1a 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -609,7 +609,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1d3a 09-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1e1a 20-November-2013" << endl;
 			exit(1);
 		}
 

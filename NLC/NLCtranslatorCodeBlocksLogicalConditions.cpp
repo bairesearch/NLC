@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5e 15-August-2016
+ * Project Version: 1r5f 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1064,7 +1064,7 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		{
 			foundParsablePhraseReferenceNameAssignment = true;
 			string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);	//eg thedogsvalue
-			mathTextUpdated = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(thedogsvalue, thechickensvalue)", eg1 "assignMathTextValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
+			mathTextUpdated = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(thedogsvalue, thechickensvalue)", eg1 "assignMathTextValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
 		}
 	}
 	if(!foundParsablePhraseReferenceNameAssignment)
@@ -1074,9 +1074,16 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			//mathText eg: "X =" OR "X="
-			string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);
-			targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_GET_MATHTEXT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
-			mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
+			if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) == (indexOfMathEqualsSetCommand + 2))
+			{
+				//only create one instance of = getMathObjectValue(.. per sentence
+			}
+			else
+			{
+				string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);
+				targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
+				mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
+			}
 		}
 	}
 	
@@ -1129,7 +1136,7 @@ string getTargetValueText(string* mathText, int indexOfMathEqualsSetCommand, int
 	}
 	for(int i=0; i<numberOfAdditionsFound; i++)
 	{
-		targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_ADD_MATHTEXT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText;
+		targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_ADD_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText;
 	}
 	if(numberOfAdditionsFound > 0)
 	{
@@ -1143,7 +1150,7 @@ string getTargetValueText(string* mathText, int indexOfMathEqualsSetCommand, int
 #ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
 string generateAddMathTextValueExecuteFunctionMathText(string mathTextObjectA, string mathTextObjectB, progLang)
 {
-	string addMathTextCommand = NLC_USE_MATH_OBJECTS_STRING_ADD_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + mathTextObjectA + progLangClassMemberFunctionParametersNext[progLang] + mathTextObjectB + progLangCloseParameterSpace[progLang];	//eg thedogsvalue + 5 + theNumberOfApplesNearTheFarm  ->  addMathTextValue(thedogsvalue, addMathTextValue(5, theNumberOfApplesNearTheFarm))
+	string addMathTextCommand = NLC_USE_MATH_OBJECTS_STRING_ADD_MATHOBJECT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + mathTextObjectA + progLangClassMemberFunctionParametersNext[progLang] + mathTextObjectB + progLangCloseParameterSpace[progLang];	//eg thedogsvalue + 5 + theNumberOfApplesNearTheFarm  ->  addMathTextValue(thedogsvalue, addMathTextValue(5, theNumberOfApplesNearTheFarm))
 	return addMathTextCommand;
 }	
 #endif

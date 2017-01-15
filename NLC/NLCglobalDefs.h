@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5e 15-August-2016
+ * Project Version: 1r5f 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,12 +58,12 @@
 #ifndef NLC_DISABLE_1r_CODE_FOR_DEBUG
 	#define NLC_USE_MATH_OBJECTS_STRING	//1r5c	//requires NLC_USE_LIBRARY_BASE_EXTENDED
 	#ifdef NLC_USE_MATH_OBJECTS_STRING
-		#define NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME "assignMathTextValue"
-		#define NLC_USE_MATH_OBJECTS_STRING_GET_MATHTEXT_VALUE_FUNCTION_NAME "getMathTextValue"
+		#define NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME "assignMathObjectValue"
+		#define NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME "getMathObjectValue"
 		#define NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
 		#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
 			#define NLC_USE_MATH_OBJECTS_STRING_ADDITIONS_DELIMITER "+"
-			#define NLC_USE_MATH_OBJECTS_STRING_ADD_MATHTEXT_VALUE_FUNCTION_NAME "addMathTextValue"
+			#define NLC_USE_MATH_OBJECTS_STRING_ADD_MATHOBJECT_VALUE_FUNCTION_NAME "addMathObjectValue"
 		#endif
 	#endif
 	//#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE	//1r5b	//CHECKTHIS

@@ -761,7 +761,7 @@ void readNLCflatfilePropertyLists(string fileName, vector<NLCgenericEntityClass*
 
 			bool foundHeader = true;
 			int currentIndexInHeader = 0;
-			bool stillFindingColumns = false;
+			bool stillFindingColumns = true;
 			while(stillFindingColumns)
 			{
 				string currentVariableName = "";
@@ -805,25 +805,27 @@ void readNLCflatfilePropertyLists(string fileName, vector<NLCgenericEntityClass*
 				{
 					lineIndex++;
 					vector<string> lineVariableList;
-					currentIndexInHeader = 0;
+					int currentIndexInContents = 0;
 					for(int i=0; i<numberOfVariables; i++)
 					{
 						string currentVariable = "";
-						int nextIndexInHeader = currentLine.find(delimiter, currentIndexInHeader);
-						if(nextIndexInHeader == CPP_STRING_FIND_RESULT_FAIL_VALUE)
+						int nextIndexInContents = currentLine.find(delimiter, currentIndexInContents);
+						if(nextIndexInContents == CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
 							stillFindingColumns = false;
-							currentVariable = currentLine.substr(currentIndexInHeader, currentLine.length()-currentIndexInHeader);
+							currentVariable = currentLine.substr(currentIndexInContents, currentLine.length()-currentIndexInContents);
 						}
 						else
 						{
-							currentVariable = currentLine.substr(currentIndexInHeader, nextIndexInHeader-currentIndexInHeader);
+							currentVariable = currentLine.substr(currentIndexInContents, nextIndexInContents-currentIndexInContents);
 						}
 						#ifdef NLC_DEBUG_LIBRARY
 						cout << "readNLCflatfilePropertyLists() reading line; currentVariable = " << currentVariable << endl;
 						#endif
 						lineVariableList.push_back(currentVariable);
+						currentIndexInContents = nextIndexInContents+1;
 					}
+					
 					if(lineVariableList.size() == numberOfVariables)
 					{	
 						NLCgenericEntityClass* parentObject = readObjectClassList->back();	//assume parent object list has at least one variable already (defined by NLC); use this as the first variable to be filled

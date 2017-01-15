@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s5a 06-September-2016
+ * Project Version: 1s6a 08-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -606,6 +606,7 @@ void generateCodeCheckParentClassNameExecuteFunction1(NLCitem* param1, NLCitem* 
 	string classNameToFind = param2->name;
 	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	string codeBlockExecuteFunctionText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + string(NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + generateStaticCastOfEntity(objectName, genericEntityClassName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + classNameToFind + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(checkParentClassName(static_cast<NLCgenericEntityClass*>(param1), param2))
+	cout << "codeBlockExecuteFunctionText = " << codeBlockExecuteFunctionText << endl;
 	printLine(codeBlockExecuteFunctionText, level, code);
 	printLine(progLangOpenBlock[progLang], level, code);	//{
 }

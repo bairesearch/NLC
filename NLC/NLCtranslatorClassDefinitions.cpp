@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s5a 06-September-2016
+ * Project Version: 1s6a 08-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -391,7 +391,7 @@ bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* 
 	
 	GIAentityNode* parentConceptEntity = parentEntity;
 	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
-	if(!(parentEntity->isConcept))	//added 1r7a
+	if(!(parentEntity->isConcept))	//added 1r1a
 	{
 	#endif
 		parentConceptEntity = getPrimaryConceptNodeDefiningInstance(parentEntity);

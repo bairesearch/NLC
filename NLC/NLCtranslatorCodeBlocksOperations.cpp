@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s5a 06-September-2016
+ * Project Version: 1s6a 08-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -478,7 +478,11 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 		//cout << "generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = " << generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet << endl;
 		//cout << "targetConnection->sameReferenceSet = " << targetConnection->sameReferenceSet << endl;
 		#endif
-		if((targetConnection->NLCparsedForCodeBlocks) || sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
+		#ifdef NLC_SUPPORT_SENTENCES_WITH_MULTIPLE_NON_SAME_REFERENCE_SET_CONNECTIONS
+		if(((targetConnection->NLCparsedForCodeBlocks) && (sentenceIndex > targetConnection->sentenceIndexTemp)) || sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
+		#else
+		if((targetConnection->NLCparsedForCodeBlocks) || sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check		
+		#endif
 		{
 		#endif
 			GIAentityNode* targetEntity = targetConnection->entity;
@@ -2462,7 +2466,7 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* target
 	}
 	#endif
 	#else
-	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS	//removed condition 1r8a
+	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS	//removed condition 1r2a
 	//added 6 December 2013: take into account plain concepts; eg "Dogs are fat. The dog rides the bike." <- the dog will be given the property 'fat'
 	GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
 	generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(targetEntity, conceptEntity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);	
@@ -2479,7 +2483,7 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* target
 		#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
 		if((definitionEntity->isSubstanceConcept) || (definitionEntity->isActionConcept))	//added (definitionEntity->isActionConcept)  changed 1e2e
 		#else
-		if((definitionEntity->isSubstanceConcept) || (definitionEntity->isActionConcept) || (definitionEntity->isConcept))	//added (definitionEntity->isActionConcept) 1e2e	//added (definitionEntity->isConcept) 1r8a
+		if((definitionEntity->isSubstanceConcept) || (definitionEntity->isActionConcept) || (definitionEntity->isConcept))	//added (definitionEntity->isActionConcept) 1e2e	//added (definitionEntity->isConcept) 1r2a
 		#endif
 		{
 			#ifndef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS

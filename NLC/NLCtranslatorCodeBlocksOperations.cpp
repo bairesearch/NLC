@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9e 25-January-2015
+ * Project Version: 1n9f 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -597,7 +597,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 				if(generateContextBlocksVariables->testNumerosity)
 				{
 					//test numerosity of parent
-					if(parentEntity->hasQuantity)
+					if(checkNumerosity(parentEntity))
 					{
 						#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 						*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
@@ -661,7 +661,7 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 		if(assumedToAlreadyHaveBeenDeclared(parentEntity))
 		{
 			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			if(parentEntity->hasQuantity)
+			if(checkNumericalReferenceToEntity(parentEntity))
 			{
 				*currentCodeBlockInTree = createCodeBlockInLocalList(*currentCodeBlockInTree, parentEntity, parentEntity->quantityNumber);
 				#ifdef NLC_DEBUG_PARSE_CONTEXT3
@@ -682,7 +682,7 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 		else
 		{
 			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			if(parentEntity->hasQuantity)
+			if(checkNumericalReferenceToEntity(parentEntity))
 			{
 				*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, parentEntity, parentEntity->quantityNumber);
 				#ifdef NLC_DEBUG_PARSE_CONTEXT3
@@ -1023,7 +1023,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, str
 	}
 	#else
 	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES
-	if(propertyEntity->hasQuantity)
+	if(checkNumericalReferenceToEntity(propertyEntity))
 	{
 		*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, propertyEntity, propertyEntity->quantityNumber);
 	}
@@ -1056,7 +1056,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, str
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 	if(generateContextBlocksVariables->testNumerosity)
 	{
-		if(propertyEntity->hasQuantity)
+		if(checkNumerosity(propertyEntity))
 		{
 			generateContextBlocksVariables->childQuantity = propertyEntity->quantityNumber;
 			//cout << "generateContextBlocksVariables->childQuantity = " << generateContextBlocksVariables->childQuantity << endl;
@@ -1118,7 +1118,7 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 			if(generateContextBlocksVariables->testNumerosity)
 			{
-				if(conditionObject->hasQuantity)
+				if(checkNumerosity(conditionObject))
 				{
 					generateContextBlocksVariables->childQuantity = conditionObject->quantityNumber;
 				}
@@ -2119,7 +2119,7 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 			generatedContextForChild = true;
 			#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			if(childEntity->hasQuantity)
+			if(checkNumericalReferenceToEntity(childEntity))
 			{
 				*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntityNew), childEntity->quantityNumber);	
 			}
@@ -2793,7 +2793,7 @@ void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock ** currentC
 #endif
 			
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntity)
+bool checkConditionLogicalConditionAdvancedTests(GIAentityNode * conditionEntity)
 {
 	bool logicalConditionTests = true;
 	//prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed - this enables generateCodeBlocksPart2logicalConditions():getParentAndGenerateContextBlocks() to parseConditionParents
@@ -2819,4 +2819,27 @@ bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntit
 }
 #endif
 
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+bool checkNumerosity(GIAentityNode * entity)
+{
+	bool hasNumerosity = false;
+	if((entity->hasQuantity) && (entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
+	{
+		hasNumerosity = true;
+	}
+	return hasNumerosity;
+}
+#endif
+					
+#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+bool checkNumericalReferenceToEntity(GIAentityNode * entity)
+{
+	bool numericalReference = false;
+	if((entity->hasQuantity) && (entity->grammaticalNumber != GRAMMATICAL_NUMBER_PLURAL))
+	{
+		numericalReference = true;
+	}
+	return numericalReference;
+}
+#endif
 

@@ -68,21 +68,26 @@ void clearReferenceContextList(vector<NLCgenericEntityClass*> &referenceContextL
 
 //NLC_USE_ADVANCED_REFERENCING and GIA_USE_ADVANCED_REFERENCING
 template <class E1, class E2>
-vector<E1*> castVector(vector<E1*> &E1List)
+vector<E1*> * castVector(vector<E1*> &E1List)
 {
+	vector<E2*> * E2List = reinterpret_cast<vector<E2*> *>(&E1List);
+	/*
 	vector<E2*> E2List;
 	for(typename vector<E1*> ::iterator iter1 = E1List.begin(); iter1 < E1List.end(); iter1++) 
 	{
 		E1* E1entity = *iter1;
 		E2List.push_back(dynamic_cast<E2*>(E1entity));
 	}
+	*/
 	return E2List;
 }
 
-//NLC_USE_ADVANCED_REFERENCING
+//not currently used;
 template <class E1, class E2, class E3, class E4>
-vector<E1*> castUnorderedMap(unordered_map<E1*, E2*> &E1E2List)
+unordered_map<E3*, E4*> * castUnorderedMap(unordered_map<E1*, E2*> &E1E2List)
 {
+	unordered_map<E3*, E4*> * E3E4List = reinterpret_cast<unordered_map<E3*, E4*> *>(&E1E2List);
+	/*
 	unordered_map<E3*, E4*> E3E4List;
 	for(unordered_map<E1*, E2*> ::iterator iter1 = E1E2List.begin(); iter1 != E1E2List.end(); iter1++) 
 	{
@@ -90,6 +95,7 @@ vector<E1*> castUnorderedMap(unordered_map<E1*, E2*> &E1E2List)
 		E2* E2entity = iter1->second;
 		E3E4List.insert(pair<E3*, E4*>(dynamic_cast<E3*>(E1entity), dynamic_cast<E4*>(E2entity)));
 	}
+	*/	
 	return E3E4List;
 }
 

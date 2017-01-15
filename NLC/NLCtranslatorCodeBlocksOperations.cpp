@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2c 08-January-2015
+ * Project Version: 1n2d 09-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -126,7 +126,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				//firstCodeBlockInSentence = *currentCodeBlockInTree;		//removed 1f1b... [CHECKTHIS]
 				/*
 				#ifdef NLC_USE_LIBRARY
-				*currentCodeBlockInTree = createCodeBlockDeclareTempVariable(*currentCodeBlockInTree, generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE), NLC_USE_LIBRARY_MOVE_FUNCTION_OBJECT_PARENT_TEMP_VARIABLE_NAME);	//NLCgenericEntity * functionObjectParent;
+				*currentCodeBlockInTree = createCodeBlockDeclareTempVariable(*currentCodeBlockInTree, generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE), NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_PARENT_TEMP_VARIABLE_NAME);	//NLCgenericEntity * functionObjectParent;
 				#endif
 				*/
 				#endif
@@ -166,9 +166,9 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 					#endif
 				}
 				#ifdef NLC_USE_LIBRARY
-				//*currentCodeBlockInTree = createCodeBlockSetTempVariable(*currentCodeBlockInTree, NLC_USE_LIBRARY_MOVE_FUNCTION_OBJECT_PARENT_TEMP_VARIABLE_NAME, parentEntityFunctionObject);
+				//*currentCodeBlockInTree = createCodeBlockSetTempVariable(*currentCodeBlockInTree, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_PARENT_TEMP_VARIABLE_NAME, parentEntityFunctionObject);
 				GIAentityNode * parentEntityFromCondition = new GIAentityNode();
-				parentEntityFromCondition->entityName = NLC_USE_LIBRARY_MOVE_FUNCTION_FROM_CONDITION_NAME;
+				parentEntityFromCondition->entityName = NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME;
 				addOrConnectConditionToEntity(actionEntity, parentEntityFunctionObject, parentEntityFromCondition, false);	//this is required so that generateClassHeirarchyFunctions() adds the "from" condition to the action, but need to check that GIA supports NLC's use of the addOrConnectConditionToEntity() function
 				*currentCodeBlockInTree = createCodeBlockAddNewConditionExistingObjectSimple(*currentCodeBlockInTree, actionEntity, parentEntityFromCondition, parentEntityFunctionObject);
 				#endif

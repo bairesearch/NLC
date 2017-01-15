@@ -1,6 +1,6 @@
 #include "NLClibraryStandard.h"
 
-void printFunction(vector<printClass*> printClassList, vector<NLCgenericEntityClass*> &printObjectClassList)
+void printFunction(vector<printClass*> &printClassList, vector<NLCgenericEntityClass*> &printObjectClassList)
 {
 	for(vector<NLCgenericEntityClass*> ::iterator iter1 = printObjectClassList.begin(); iter1 < printObjectClassList.end(); iter1++) 
 	{
@@ -21,13 +21,13 @@ void printFunction(vector<printClass*> printClassList, vector<NLCgenericEntityCl
 	}
 }
 
-void moveFunction(vector<moveClass*> moveClassList, vector<NLCgenericEntityClass*> &moveObjectClassList)
+void moveFunction(vector<moveClass*> &moveClassList, vector<NLCgenericEntityClass*> &moveObjectClassList)
 {
 	for(vector<NLCgenericEntityClass*> ::iterator iter1 = moveClassList.begin(); iter1 < moveClassList.end(); iter1++) 
 	{
 		moveAction = *iter2;
-		unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityFromConditionList = getConditionListByConditionName(moveAction, "from"); 
-		unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityToConditionList = getConditionListByConditionName(moveAction, "to"); 
+		unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityFromConditionList = getConditionListByConditionName(moveAction, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME); 
+		unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityToConditionList = getConditionListByConditionName(moveAction, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME); 
 
 		if(NLCgenericEntityToConditionList == NULL)		//Stanford Parser/GIA usually connects "to" condition to the from condition object if there is a preceeding "from" condition
 		{
@@ -36,7 +36,7 @@ void moveFunction(vector<moveClass*> moveClassList, vector<NLCgenericEntityClass
 				for(unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> ::iterator iter1 = NLCgenericEntityFromConditionList.begin(); iter1 != NLCgenericEntityFromConditionList.end(); iter1++) 
 				{
 					NLCgenericEntityClass* fromConditionObject = iter1->second;
-					NLCgenericEntityToConditionList = getConditionListByConditionName(fromConditionObject, "to"); 
+					NLCgenericEntityToConditionList = getConditionListByConditionName(fromConditionObject, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME); 
 				}
 			}
 		}
@@ -99,6 +99,32 @@ void moveFunction(vector<moveClass*> moveClassList, vector<NLCgenericEntityClass
 		}
 	}
 }
+
+void writeFunction(vector<moveClass*> &writeClassList, vector<NLCgenericEntityClass*> &writeObjectClassList)
+{
+	for(vector<NLCgenericEntityClass*> ::iterator iter1 = writeClassList.begin(); iter1 < writeClassList.end(); iter1++) 
+	{
+		writeAction = *iter2;
+		unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> * NLCgenericEntityToConditionList = getConditionListByConditionName(writeAction, NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME); 
+
+		if(NLCgenericEntityToConditionList != NULL)
+		{
+			for(unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> ::iterator iter2 = NLCgenericEntityToConditionList.begin(); iter2 != NLCgenericEntityToConditionList.end(); iter2++)
+			{
+				NLCgenericEntityClass* toConditionObject = iter2->second;
+				if(toConditionObject->name == NLC_USE_LIBRARY_WRITE_FUNCTION_ACTIONOBJECT_FILE_NAME)
+				{
+					
+				}
+			}
+		}
+		else
+		{
+			cout << "move() error: write action 'to' condition not found" << endl;
+		}
+	}
+}
+
 
 
 //New NLC library Functions (generic property and condition lists) >= NLC1nXy

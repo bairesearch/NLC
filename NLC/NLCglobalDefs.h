@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2c 08-January-2015
+ * Project Version: 1n2d 09-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,9 +49,10 @@
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
 	#define NLC_USE_LIBRARY
 	#ifdef NLC_USE_LIBRARY
-		#define NLC_USE_LIBRARY_MOVE_FUNCTION_FROM_CONDITION_NAME "from"	//must sync with "NLClibraryStandard.h"
-		#define NLC_USE_LIBRARY_MOVE_FUNCTION_TO_CONDITION_NAME "to"		//must sync with "NLClibraryStandard.h"
-		#define NLC_USE_LIBRARY_MOVE_FUNCTION_OBJECT_PARENT_TEMP_VARIABLE_NAME "functionObjectParent" 
+		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"	//must sync with "NLClibraryStandard.h"
+		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_TO_NAME "to"		//must sync with "NLClibraryStandard.h"
+		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTIONOBJECT_PARENT_TEMP_VARIABLE_NAME "functionObjectParent"
+		#define NLC_USE_LIBRARY_WRITE_FUNCTION_ACTIONOBJECT_FILE_NAME "file"
 	#endif
 	//#define NLC_NONOO
 	#ifdef NLC_NONOO

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2c 08-January-2015
+ * Project Version: 1n2d 09-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -354,6 +354,7 @@ string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
 	string generateCodeEntityListDefinitionTypeText(int progLang);
 	#else
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);
+	string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang);
 	#ifdef NLC_GENERATE_TYPE_LISTS
 	string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
 	#endif
@@ -367,6 +368,7 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 	string generateCodeConditionListDefinitionTypeText(int progLang);
 	#else
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	
+	string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang);
 	#endif
 
 void generateCodeAddConditionAndObjectEntityToList(NLCitem * param1, NLCitem * param2, NLCitem * param3, int progLang, string * code, int level);

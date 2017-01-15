@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12b 07-November-2014
+ * Project Version: 1l12c 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1531,12 +1531,22 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		propertyEntityClass->context.push_back(parentName);
 		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);
 
-		//Tom's bright apple is blue.
+		//eg Tom's bright apple is blue.
 		//generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables);
 		//parse the children (properties and conditions) of an undeclared definite parent
 		NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 		generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
 		createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(entity), entity, sentenceIndex, &generateContextBlocksVariables);		//added 1i11n
+		
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION	
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		if(!assumedToAlreadyHaveBeenDeclared(entity))	//is this necessary?
+		{	
+			//eg Tom's boat is red. Jack is near the red boat.
+			addIntermediaryImplicitlyDeclaredEntityToLocalList(currentCodeBlockInTree, entity);
+		}
+		#endif
+		#endif
 	}
 	else
 	{
@@ -1603,6 +1613,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	}
 	#endif
 	
+	#ifdef NLC_DEBUG_PARSE_CONTEXT2
+	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions finished parsing parent entity: ") + entity->entityName);
+	#endif
+					
 	bool performedAtLeastOneObjectInitialisation = false;
 	if(!checkSpecialCaseEntity(entity, false))
 	{
@@ -1915,17 +1929,9 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 			NLCitem * propertyEntityClass = new NLCitem(childEntity, NLC_ITEM_TYPE_OBJECT);
 			propertyEntityClass->context.push_back(generateInstanceName(parentEntityNew));
 			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);	
-			#endif		
-			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION
-			#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES
-			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-			*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, generateInstanceName(childEntity), NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION, childEntity);	
-			#else
-			*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, childEntity->entityName, NLC_ITEM_TYPE_CLASS_VAR_APPENDITION, childEntity);		//OR; ... , generateClassName(entity), "", ...		
 			#endif
-			#else
-			*currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, childEntity, childEntity);	//removed 1j10a
-			#endif
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
+			addIntermediaryImplicitlyDeclaredEntityToLocalList(currentCodeBlockInTree, childEntity);
 			#endif
 			childEntity->NLClocalListVariableHasBeenInitialised = true;
 		}
@@ -1940,7 +1946,7 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 		#endif
 			//eg Tom has the blue ball 
 			#ifdef NLC_DEBUG
-			cout << "generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared && !generatedContextForChild: childEntity = " << childEntity->entityName << endl;
+			cout << "generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared: childEntity = " << childEntity->entityName << endl;
 			#endif
 			#ifdef NLC_DEBUG_PARSE_CONTEXT4
 			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared(childEntity): ") + childEntity->entityName);
@@ -2482,4 +2488,20 @@ bool getActionObjectEntityConnection(GIAentityNode * actionEntity, int sentenceI
 	#endif
 	return actionHasObject;
 }
+
+#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
+void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * childEntity)
+{
+	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, generateInstanceName(childEntity), NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION, childEntity);	
+	#else
+	*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, childEntity->entityName, NLC_ITEM_TYPE_CLASS_VAR_APPENDITION, childEntity);		//OR; ... , generateClassName(entity), "", ...		
+	#endif
+	#else
+	*currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, childEntity, childEntity);	//removed 1j10a, restored 1j12b for NLC_LOCAL_LISTS_USE_INSTANCE_NAMES only, restored for !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES 1l12a
+	#endif
+}
+#endif
+			
 	

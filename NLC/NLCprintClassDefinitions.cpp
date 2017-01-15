@@ -25,8 +25,8 @@
  *
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p5b 02-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ public:
 	...
 };
 */
-bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, int progLang, string* code)
+bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code)
 {
 	bool result = true;
 	printLine(progLangDependenciesStandardLibaries[progLang], 0, code);
@@ -79,7 +79,7 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 				if(classDefinition->name != generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE))
 				{
 				#endif
-					if(!(classDefinition->isActionOrConditionInstanceNotClass))
+					if(printClassHeirarchyValidDefinitionClassChecks(classDefinition))
 					{
 						#ifdef NLC_DEBUG
 						//cout << "printClassDefinitions{}: classDefinition->name:" << classDefinition->name << endl;
@@ -127,7 +127,7 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 							}
 							else
 							{
-								cout << "printClassDefinitions() error: !foundClassDefinitionConditionClass, targetClassDefinition->name = " << targetClassDefinition->name << endl;
+								cout << "printClassDefinitions{} error: !foundClassDefinitionConditionClass, targetClassDefinition->name = " << targetClassDefinition->name << endl;
 								exit(0);
 							}
 							/*
@@ -151,10 +151,17 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 						{
 							NLCclassDefinition* targetClassDefinition = *localListIter;
-							if(!arefunctionArgumentsPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
+							#ifdef NLC_USE_LIBRARY
+							if(!(targetClassDefinition->isLibraryFunctionDefinition))
 							{
-								printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+							#endif
+								if(!arefunctionArgumentsPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
+								{
+									printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+								}
+							#ifdef NLC_USE_LIBRARY
 							}
+							#endif
 						}
 						#endif
 
@@ -226,18 +233,22 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 								printLine(classDefinitionValueCode, 1, code);
 								#endif
 								#ifdef NLC_USE_LIBRARY
-								string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*> * > propertyListAll;
+								string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> propertyLists;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);		//unordered_map<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>* > conditionListAll;
+								allListDeclarationText = generateCodeAllPropertyIncomingListDefinitionText(progLang);	//vector<NLCgenericEntityClass*> propertyIncomingList;
+								printLine(allListDeclarationText, 1, code);
+								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);		//unordered_map<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>*> conditionLists;
+								printLine(allListDeclarationText, 1, code);
+								allListDeclarationText = generateCodeAllConditionIncomingListDefinitionText(progLang);	//unordered_map<string, NLCgenericEntityClass*> conditionIncomingList;
 								printLine(allListDeclarationText, 1, code);
 								#ifdef NLC_RECORD_ACTION_HISTORY
-								allListDeclarationText = generateCodeAllActionListDefinitionText(progLang);		//unordered_map<string, vector<NLCgenericEntityClass*> * > actionListAll;
+								allListDeclarationText = generateCodeAllActionListDefinitionText(progLang);		//unordered_map<string, vector<NLCgenericEntityClass*>*> actionLists;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllActionIncomingListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*> * > actionIncomingListAll;
+								allListDeclarationText = generateCodeAllActionIncomingListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionIncomingLists;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllActionSubjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*> * > actionSubjectListAll;
+								allListDeclarationText = generateCodeAllActionSubjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionSubjectLists;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllActionObjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*> * > actionObjectListAll;
+								allListDeclarationText = generateCodeAllActionObjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionObjectLists;
 								printLine(allListDeclarationText, 1, code);
 								#endif
 								#endif
@@ -277,23 +288,14 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 							{
 								NLCclassDefinition* targetClassDefinition = *localListIter;
-								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-								if(targetClassDefinition->functionDependency != NULL)
-								{
-								#endif
-								#endif
-									string targetName = targetClassDefinition->functionNameSpecial;
-									string functionArguments = "";
 
-									generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
-									string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-									printLine(localListDeclarationText, 1, code);
-								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-								}
-								#endif
-								#endif
+								string targetName = targetClassDefinition->functionNameSpecial;
+								string functionArguments = "";
+
+								//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
+								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
+								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
 							}
 
 							#ifndef NLC_NONOO
@@ -434,7 +436,7 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 								string parentClassName = targetClassDefinition->name;
 								string parentEntityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
 								/*
-								string parentEntityDefinitionText = generateCodeNewTempEntity(parentClassName, parentEntityName, progLang);	//parentClassDefinitionClass* parentClassDefinition = new parentClassDefinitionClass();
+								string parentEntityDefinitionText = generateCodeNewEntity(parentClassName, parentEntityName, progLang);	//parentClassDefinitionClass* parentClassDefinition = new parentClassDefinitionClass();
 								printLine(parentEntityDefinitionText, 1, code);
 								*/
 								string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
@@ -461,41 +463,103 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 	
 	#ifdef NLC_USE_LIBRARY
 	//print generateObjectByName
-	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-	string codeBlockTextFunctionHeader =  genericEntityClassName + progLangPointer[progLang] + STRING_SPACE + NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangCloseParameterSpace[progLang];	//NLCgenericEntity* generateObjectByName(string name)
 	int level = 0;
+	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, code, level);
+	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, code, level);
+	#endif
+
+	return result;
+}
+
+void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, int level)
+{
+	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
+	NLCitem* itemName = new NLCitem(progLangClassNameVariableType[progLang], NLC_ITEM_TYPE_OBJECT);
+	itemName->name = progLangClassNameVariableName[progLang];
+	string codeBlockTextFunctionHeader =  genericEntityClassName + progLangPointer[progLang] + STRING_SPACE + NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeNameVariableDefinitionText(itemName, progLang) + progLangCloseParameterSpace[progLang];	//NLCgenericEntity* generateObjectByName(string name)
 	printLine(codeBlockTextFunctionHeader, level, code);
 	printLine(progLangOpenBlock[progLang], level, code);	//{
 	level++;
-	string newGenericObjectName = "newGenericObject";
-	string codeBlockTextDeclareNewGenericObject = generateTempEntityDeclaration(genericEntityClassName, newGenericObjectName, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newObject = NULL;
+	
+	NLCitem* newGenericObject = new NLCitem(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE, NLC_ITEM_TYPE_OBJECT);
+	newGenericObject->instanceName = "newGenericObject";
+	string codeBlockTextDeclareNewGenericObject = generateCodeEntityDefinitionText(newGenericObject, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newObject = NULL;
 	printLine(codeBlockTextDeclareNewGenericObject, level, code);	
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
-		if(!(classDefinition->isActionOrConditionInstanceNotClass))
+		if(printClassHeirarchyValidDefinitionClassChecks(classDefinition))
 		{
-			string classNameCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + progLangClassNameVariableName[progLang] + progLangStringEqualsTest[progLang] + progLangStringOpenClose[progLang] + removeClassTextFromClassDefinitionName(classDefinition->name) + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang];	//if(name == classDefinitionName)
+			string classNameCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + itemName->name + progLangStringEqualsTest[progLang] + progLangStringOpenClose[progLang] + removeClassTextFromClassDefinitionName(classDefinition->name) + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang];	//if(name == classDefinitionName)
 			printLine(classNameCheckText, level, code);	
 			printLine(progLangOpenBlock[progLang], level, code);
 			level++;
 			string newSpecificObjectName = string("new") + classDefinition->name;
-			string codeBlockTextDeclareNewSpecificObject = generateTempEntityDeclaration(classDefinition->name, newSpecificObjectName, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + classDefinition->name + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//classDefinitionClassName* newSpecificObject = new classDefinitionClassName();
+			string codeBlockTextDeclareNewSpecificObject = generateCodeEntityDefinitionText(classDefinition->name, newSpecificObjectName, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + classDefinition->name + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//classDefinitionClassName* newSpecificObject = new classDefinitionClassName();
 			printLine(codeBlockTextDeclareNewSpecificObject, level, code);
-			string codeBlockCastNewSpecificObject = newGenericObjectName + progLangClassNameVariableEquals[progLang] + progLangReinterpretCastStart[progLang] + generateClassName(genericEntityClassName) + progLangPointer[progLang] + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + newSpecificObjectName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//newGenericObject = reinterpret_cast<NLCgenericEntity*>(newSpecificObject);
+			string codeBlockCastNewSpecificObject = newGenericObject->instanceName + progLangClassNameVariableEquals[progLang] + progLangReinterpretCastStart[progLang] + generateClassName(genericEntityClassName) + progLangPointer[progLang] + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + newSpecificObjectName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//newGenericObject = reinterpret_cast<NLCgenericEntity*>(newSpecificObject);
 			printLine(codeBlockCastNewSpecificObject, level, code);
 			level--;
 			printLine(progLangCloseBlock[progLang], level, code);	
 		}
 	}
-	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObjectName + progLangEndLine[progLang];		//return newObject;
+	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newObject;
 	printLine(codeBlockTextReturnNewVector, level, code);
 	level--;
 	printLine(progLangCloseBlock[progLang], level, code);	//}
 	printLine("", level, code);
-	#endif
+}	
+	
+	
+void generateCodeCopyObjectByNameNewFunction(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, int level)
+{	
+	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
+	NLCitem* itemName = new NLCitem(progLangClassNameVariableType[progLang], NLC_ITEM_TYPE_OBJECT);
+	itemName->name = progLangClassNameVariableName[progLang];
+	NLCitem* itemEntityToCopy = new NLCitem(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE, NLC_ITEM_TYPE_OBJECT);
+	itemEntityToCopy->instanceName = "entityToCopy";
+	string codeBlockTextFunctionHeader =  genericEntityClassName + progLangPointer[progLang] + STRING_SPACE + NLC_USE_LIBRARY_COPY_OBJECT_BY_NAME_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeNameVariableDefinitionText(itemName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityDefinitionText(itemEntityToCopy, progLang) + progLangCloseParameterSpace[progLang];	//NLCgenericEntity* copyObjectByName(string name, NLCgenericEntity* itemEntityToCopy)
+	printLine(codeBlockTextFunctionHeader, level, code);
+	printLine(progLangOpenBlock[progLang], level, code);	//{
+	level++;
+	
+	NLCitem* newGenericObject = new NLCitem(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE, NLC_ITEM_TYPE_OBJECT);
+	newGenericObject->instanceName = "newGenericObject";
+	string codeBlockTextDeclareNewGenericObject = generateCodeEntityDefinitionText(newGenericObject, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newObject = NULL;
+	printLine(codeBlockTextDeclareNewGenericObject, level, code);	
+	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+	{
+		NLCclassDefinition* classDefinition = *classDefinitionIter;
+		if(printClassHeirarchyValidDefinitionClassChecks(classDefinition))
+		{
+			string classNameCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + itemName->name + progLangStringEqualsTest[progLang] + progLangStringOpenClose[progLang] + removeClassTextFromClassDefinitionName(classDefinition->name) + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang];	//if(name == classDefinitionName)
+			printLine(classNameCheckText, level, code);	
+			printLine(progLangOpenBlock[progLang], level, code);
+			level++;
+			string newSpecificObjectName = string("new") + classDefinition->name;
+			string codeBlockTextDeclareNewSpecificObject = generateCodeEntityDefinitionText(classDefinition->name, newSpecificObjectName, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + classDefinition->name + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(itemEntityToCopy->instanceName, classDefinition->name, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//classDefinitionClassName* newSpecificObject = new classDefinitionClassName(dynamic_cast<classDefinitionClassName*>(itemEntityToCopy));
+			printLine(codeBlockTextDeclareNewSpecificObject, level, code);
+			string codeBlockCastNewSpecificObject = newGenericObject->instanceName + progLangClassNameVariableEquals[progLang] + progLangReinterpretCastStart[progLang] + generateClassName(genericEntityClassName) + progLangPointer[progLang] + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + newSpecificObjectName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//newGenericObject = reinterpret_cast<NLCgenericEntity*>(newSpecificObject);
+			printLine(codeBlockCastNewSpecificObject, level, code);
+			level--;
+			printLine(progLangCloseBlock[progLang], level, code);	
+		}
+	}
+	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newObject;
+	printLine(codeBlockTextReturnNewVector, level, code);
+	level--;
+	printLine(progLangCloseBlock[progLang], level, code);	//}
+	printLine("", level, code);
+}
 
-	return result;
+bool printClassHeirarchyValidDefinitionClassChecks(NLCclassDefinition* classDefinition)
+{
+	bool validClass = true;
+	if(classDefinition->isActionOrConditionInstanceNotClass) 
+	{
+		validClass = false;
+	}
+	return validClass;
 }
 
 void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vector<NLCitem*>* parameters, string* functionArguments, int progLang)
@@ -513,7 +577,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
 		#endif
 		
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			if(*functionArguments != "")
 			{
@@ -521,20 +585,11 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 			}
 			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
 		}
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)	//this is required as function arguments in function definition may be copied to function arguments in function declaration [although they are not currently copied to function arguments in function execution references]
-		{
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
-		}
-		#endif
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
+			//cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString; NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER = " << currentItem->name << endl;
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
@@ -546,7 +601,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 			#endif
 		}
 		#endif
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 		{
 			if(*functionArguments != "")
 			{
@@ -558,7 +613,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
 			#endif
 		}
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
 		{
 			if(*functionArguments != "")
 			{
@@ -627,7 +682,7 @@ string generateCodeSingularDefinitionText(NLCitem* currentItem, int progLang)
 	}
 	#endif
 	#endif
-	string codeSingularDefinitionText = generateTempEntityDeclaration(currentItem, progLang);
+	string codeSingularDefinitionText = generateCodeEntityDefinitionText(currentItem, progLang);
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	currentItem->className = backupClassName;
@@ -652,7 +707,7 @@ string generateCodeConditionPairDefinitionText(NLCitem* currentItem, int progLan
 
 
 
-bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionList, vector<NLCitem*>* parameters)
+bool arefunctionArgumentsPrinted(vector<NLCclassDefinition*>* classDefinitionList, vector<NLCitem*>* parameters)
 {
 	bool functionArgumentsPrinted = true;
 
@@ -670,22 +725,22 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 		#endif
 		
 		bool functionArgumentFound = false;
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			functionArgumentFound = true;
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
 			functionArgumentFound = true;
 		}
 		#endif
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 		{
 			functionArgumentFound = true;
 		}
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
 		{
 			functionArgumentFound = true;
 		}
@@ -711,7 +766,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 				{
 					//cout << "!printed: localClassDefinition->name = " << localClassDefinition->name << endl;
 					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)	//NB function subject entity cant be printed without its function, and function cant be printed without its subject
+					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)	//NB function subject entity cant be printed without its function, and function cant be printed without its subject
 					{
 					#endif
 						functionArgumentsPrinted = false;
@@ -729,11 +784,11 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 			else
 			{
 				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-				if(!((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)))
+				if(!((currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION) || (currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)))
 				{//NB function definition/declaration names and function object names will not necessarily have a class definition (they will if the function is executed, or if the function object is used)
 				#endif
 					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
+					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 					{
 					#endif
 						cout << "arefunctionArgumentsPrinted{}: error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
@@ -749,7 +804,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 	return functionArgumentsPrinted;
 }
 
-bool isConditionObjectPrinted(vector<NLCclassDefinition* >* classDefinitionList, vector<NLCitem*>* parameters)
+bool isConditionObjectPrinted(vector<NLCclassDefinition*>* classDefinitionList, vector<NLCitem*>* parameters)
 {
 	bool functionArgumentsPrinted = true;
 

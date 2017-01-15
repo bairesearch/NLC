@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p6a 04-July-2015
+ * Project Version: 1p5b 02-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -104,7 +104,7 @@ void generateCodeAddActionSubjectExecuteFunction(NLCitem* functionArgument, NLCi
 #endif
 void generateCodeAddActionObject(NLCitem* functionArgument, NLCitem* functionObjectArgument, int progLang, string* code, int level);
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-void generateCodeAddActionObjectExecuteFunction(NLCitem* functionArgument, NLCitem* functionObjectArgument, int progLang, string* code, int level);
+void generateCodeAddActionObjectExecuteFunction(NLCitem* functionArgument, NLCitem* functionOwnerArgument, int progLang, string* code, int level);
 #endif
 
 void generateCodeAddNewEntityToLocalList(NLCitem* param1, int progLang, string* code, int level);

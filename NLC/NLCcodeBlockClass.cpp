@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n27b 04-February-2015
+ * Project Version: 1n28b 05-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -996,8 +996,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, GIAentityNode* definiteEntity, NLCsentence* firstNLCsentenceInList)
 {
 	bool foundIndefiniteEntity = false;
-	cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext: definiteEntity = " << definiteEntity->entityName << endl;
-	
+
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED
 	int referenceSetID = 0;
 	//see identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts()
@@ -1009,11 +1008,10 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	{
 		bool traceModeIsQuery = false;
 
-		//#ifdef NLC_DEBUG
-		cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
-		cout << "definiteEntity = " << definiteEntity->entityName << endl;
-		cout << "referenceSetID = " << definiteEntity->referenceSetID << endl;
-		//#endif
+		#ifdef NLC_DEBUG
+		//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
+		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
+		#endif
 		
 		GIAreferenceTraceParameters referenceTraceParameters;
 		referenceTraceParameters.referenceSetID = referenceSetID;
@@ -1021,6 +1019,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 		referenceTraceParameters.referenceSetDefiniteEntity = true;	//referenceSetDefiniteEntity
 		//referenceTraceParameters.firstSentenceInList = firstNLCsentenceInList;
 		#endif
+		referenceTraceParameters.ensureSameReferenceSetQueryConnections = true;	//added 1n28b
 
 		#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
 		int irrelevant;
@@ -1038,13 +1037,9 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 			{//indefiniteEntityFound
 			
-				//#ifdef NLC_DEBUG
-				if(definiteEntity->entityName == indefiniteEntity->entityName)
-				{
-					referenceTraceParameters.traceFindIndefiniteEntityCorrelate = true;
-					cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
-				}
-				//#endif
+				#ifdef NLC_DEBUG
+				//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
+				#endif
 				
 				GIAqueryTraceParameters queryTraceParameters;		//not used
 				int numberOfMatchedNodesTemp = 0;
@@ -1054,10 +1049,6 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 
 				if(exactMatch)
 				{
-					if(referenceTraceParameters.traceFindIndefiniteEntityCorrelate)
-					{
-						cout << "exactMatch fin" << endl;
-					}
 					if(numberOfMatchedNodesTemp > 0)
 					{
 						#ifdef NLC_DEBUG
@@ -1068,10 +1059,6 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 						if(numberOfMatchedNodesTemp == maxNumberOfMatchedNodesPossible)
 						{
 						#endif
-							if(referenceTraceParameters.traceFindIndefiniteEntityCorrelate)
-							{
-								cout << "foundIndefiniteEntity" << endl;
-							}
 							foundIndefiniteEntity = true;
 						#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
 						}
@@ -1080,14 +1067,10 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 				}
 				else
 				{
-					//#ifdef NLC_DEBUG
-					if(referenceTraceParameters.traceFindIndefiniteEntityCorrelate)
-					{
-						cout << "exactMatch fin" << endl;
-					}
-					//#endif
+					#ifdef NLC_DEBUG
+					//cout << "\t!exactMatch" << endl;
+					#endif
 				}
-				referenceTraceParameters.traceFindIndefiniteEntityCorrelate = false;
 
 				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
 				int irrelevant;
@@ -1096,10 +1079,9 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 				traceEntityNode(definiteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 				traceEntityNode(indefiniteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 
-
-				referenceSetID	= referenceSetID + 1;
 			}
 		}
+		referenceSetID	= referenceSetID + 1;
 	}
 	#else
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)

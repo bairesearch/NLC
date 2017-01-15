@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12a 07-November-2014
+ * Project Version: 1l12b 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1916,8 +1916,16 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 			propertyEntityClass->context.push_back(generateInstanceName(parentEntityNew));
 			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);	
 			#endif		
-			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION
+			#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, generateInstanceName(childEntity), NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION, childEntity);	
+			#else
+			*currentCodeBlockInTree = createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, childEntity, childEntity->entityName, NLC_ITEM_TYPE_CLASS_VAR_APPENDITION, childEntity);		//OR; ... , generateClassName(entity), "", ...		
+			#endif
+			#else
 			*currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, childEntity, childEntity);	//removed 1j10a
+			#endif
 			#endif
 			childEntity->NLClocalListVariableHasBeenInitialised = true;
 		}

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5o 15-August-2016
+ * Project Version: 1r5p 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -691,18 +691,20 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		
 		bool ignoreVariable = false;
 		bool removeVariable = false;
-		#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
 		if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 		{
 			if(textInTextArray(mathTextVariableName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
 			{
+				#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_LOGICAL_CONDITION_OPERATORS_TO_MATH_TEXT_VARIABLES
+				removeVariable = true;	//remove type eg "if"
+				#else
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 				cout << "logical condition operator detected: ignoreVariable = true" << endl;
 				#endif
 				ignoreVariable = true;
+				#endif
 			}
 		}
-		#endif
 		if(textInTextArray(mathTextVariableName, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))	//NB do not check preprocessorMathMathTextVariables because currentWord will not contain the appended $ character 
 		{	
 			#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
@@ -711,8 +713,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 			cout << "mathText variable type detected: ignoreVariable = true" << endl;
 			#endif
-			#endif
 			ignoreVariable = true;
+			#endif
 		}
 		
 		if(removeVariable)

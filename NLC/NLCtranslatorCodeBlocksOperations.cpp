@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9f 14-October-2014
+ * Project Version: 1k10a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1078,7 +1078,6 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock ** currentCode
 	if(!(parentEntity->NLCparsedForlogicalConditionOperations) || parseLogicalConditions)	//CHECKTHIS; change from !(entity->NLCparsedForlogicalConditionOperations) to !(parentEntity->NLCparsedForlogicalConditionOperations) 1g14a 15-July-2014
 	{
 	#endif
-		#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
 		//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
 		//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
 		if(!(parentEntity->isConcept))
@@ -1115,7 +1114,6 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock ** currentCode
 				}
 			}
 		}
-		#endif
 
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	}

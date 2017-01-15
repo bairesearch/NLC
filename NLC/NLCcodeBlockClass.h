@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9f 14-October-2014
+ * Project Version: 1k10a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -51,6 +51,9 @@ using namespace std;
 #include "NLCitemClass.h"
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
+//#ifdef NLC_USE_PREPROCESSOR
+#include "NLCpreprocessorSentenceClass.h"	//required for findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext()
+//#endif
 
 #define NLC_CODEBLOCK_TYPE_UNDEFINED (-1)
 
@@ -275,12 +278,15 @@ NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockIn
 #ifdef NLC_SUPPORT_QUANTITIES
 NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, string numberIterationsOrVariable);
 #endif
-NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete);
+NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete, NLCsentence * firstNLCsentenceInList);
 	NLCcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner);
 	NLCcodeblock * createCodeBlocksAddVariableToNewList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLCitem*> * parameters);
+	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLCitem*> * parameters, NLCsentence * firstNLCsentenceInList);
 		bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(GIAentityNode* entityNode);
+		#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
+		bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*> * entityNodesActiveListComplete, GIAentityNode * definiteEntity, NLCsentence * firstNLCsentenceInList);
+		#endif
 	#endif
 	
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);

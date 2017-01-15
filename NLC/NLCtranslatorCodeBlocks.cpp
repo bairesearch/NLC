@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9f 14-October-2014
+ * Project Version: 1k10a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,15 +52,16 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	vector<NLCitem *> implictlyDeclaredFunctionList;	//implictlyDeclaredFunctionList is used to capture implicitly declared functions; to be added to object class definitions at end
 	vector<NLCitem *> implictlyDeclaredFunctionListTopLevel;	//top level function list (used to store implicitly declared functions without subject/context/owner)
 	#endif
-
-	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete);
-
-	//NLCcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
-	//for each action (command) in sentence;
+	
+	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete, (currentNLCfunctionInList->firstNLCsentenceInFunction));
 
 	//#ifdef NLC_USE_PREPROCESSOR
 	NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 	//#endif
+	
+	//NLCcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
+	//for each action (command) in sentence;
+
 
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 	#ifdef NLC_USE_PREPROCESSOR

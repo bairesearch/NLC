@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n1a 04-January-2014
+ * Project Version: 1n2a 07-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,8 +48,8 @@ using namespace std;
 #include "NLCglobalDefs.h"
 #include "NLCitemClass.h"
 
-#ifdef USE_NLCNONOO
 //based on GIAentityNode.h;
+#ifdef NLC_NONOO
 #define NLCNONOO_GENERIC_ENTITY_NODE_NAME "GIAentityNode"
 #define GIA_ENTITYNODECLASS_ENTITYNAME_NAME "entityName"
 #define GIA_ENTITYNODECLASS_PROPERTYNODELIST_NAME "propertyNodeList"
@@ -63,6 +63,15 @@ using namespace std;
 #define GIA_ENTITYNODECLASS_ACTIONSUBJECTLIST_NAME "actionSubjectEntity"
 #define GIA_ENTITYNODECLASS_ACTIONOBJECTLIST_NAME "actionObjectEntity"
 #endif
+
+#ifdef NLC_USE_LIBRARY
+#define NLC_USE_LIBRARY_ALL_PROPERTY_LIST_NAME "propertyListAll"
+#define NLC_USE_LIBRARY_ALL_CONDITION_LIST_NAME "conditionListAll"
+#define NLC_USE_LIBRARY_ALL_CONDITIONOBJECT_LIST_NAME "conditionObjectListAll"
+#define NLC_USE_LIBRARY_ALL_ACTION_LIST_NAME "actionListAll"
+#define NLC_USE_LIBRARY_ALL_INCOMINGACTION_LIST_NAME "incomingActionListAll"
+#endif
+
 
 #define NLC_PROGRAMMING_LANGUAGE_CPP (0)
 #define NLC_PROGRAMMING_LANGUAGE_JAVA (1)
@@ -132,6 +141,9 @@ static string progLangClassPairTypeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = 
 static string progLangClassPairTypeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 
 static string progLangDependenciesStandardLibaries[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"#include <string>\n#include <vector>\n#include <stack>\n#include <unordered_map>\n#include <utility>\n#include <algorithm>\n#include <iostream>\nusing namespace std;\n", "", "", "", "", "", ""};
+#ifdef NLC_USE_LIBRARY
+static string progLangDependenciesNLClibary[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"#include \"NLClibrary.h\"", "", "", "", "", "", ""};
+#endif
 static string progLangClassConstructorParameters[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void", "void", "void", "void", "void", "void", "void"};
 
 static string progLangClassNameVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
@@ -274,7 +286,7 @@ static string progLangReturn[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"return ", 
 static string progLangAliasNameVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
 static string progLangAliasListVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"vector<string> ", "vector<string> ", "vector<string> ", "vector<string> ", "vector<string> ", "vector<string> ", "vector<string> "};
 #endif
-static string progLangForIterEntityPairListEntityReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->second", "->second", "->second", "->second", "->second", "->second", "->second"};
+static string progLangForIterEntityMapListEntityReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->second", "->second", "->second", "->second", "->second", "->second", "->second"};
 static string progLangTestEntityPairFindPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"if(", "if(", "if(", "if(", "if(", "if(", "if("};
 static string progLangTestEntityPairFindPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" != ", " != ", " != ", " != ", " != ", " != ", " != "};
 static string progLangTestEntityPairFindPart3[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->end())", "->end())", "->end())", "->end())", "->end())", "->end())", "->end())"};
@@ -283,16 +295,22 @@ static string progLangTypeName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"typename
 
 static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};
 
+#ifdef NLC_USE_LIBRARY
+static string progLangAddList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
+static string progLangMakePair[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair"};
+#define NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE "string"
+#endif
+
 
 void printLine(string command, int level, string * code);
-#ifdef USE_NLCNONOO
+#ifdef NLC_NONOO
 string generatePropertyListName(string propertyClassName);	//backwards compatibility wrapper only
 string generatePropertyListName();
 #else
 string generatePropertyListName(string propertyClassName);
 #endif
 #ifdef NLC_RECORD_ACTION_HISTORY
-#ifdef USE_NLCNONOO
+#ifdef NLC_NONOO
 string generateActionListName(string actionClassName);	//backwards compatibility wrapper only
 string generateActionIncomingListName(string actionClassName);	//backwards compatibility wrapper only
 string generateActionSubjectListName(string actionSubjectClassName);	//backwards compatibility wrapper only
@@ -310,7 +328,7 @@ string generateActionObjectListName(string actionObjectClassName);
 string generateEntityListName(NLCitem * entityParam);	//added 1i6a
 string generateEntityListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
-#ifdef USE_NLCNONOO
+#ifdef NLC_NONOO
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionListName();
 string generateGIAconditionListName();
@@ -328,7 +346,7 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 		
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
 string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
-	#ifdef USE_NLCNONOO
+	#ifdef NLC_NONOO
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//backwards compatibility wrapper only
 	string generateCodeEntityListDefinitionTypeText(int progLang);
 	#else
@@ -341,7 +359,7 @@ string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int 
 	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
 string generateCodeGenericListDefinitionText(NLCitem * entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-	#ifdef USE_NLCNONOO
+	#ifdef NLC_NONOO
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//backwards compatibility wrapper only
 	string generateCodeConditionListDefinitionTypeText(int progLang);
 	#else
@@ -352,8 +370,7 @@ void generateCodeAddConditionAndObjectEntityToList(NLCitem * param1, NLCitem * p
 void generateCodeAddPropertyEntityToList(NLCitem * param1, NLCitem * param2, int progLang, string * code, int level);
 	
 
-
-#ifdef USE_NLCNONOO
+#ifdef NLC_NONOO
 string generateGIAentityName();
 string generateCodeEntityNameTestText(NLCitem * param, int progLang);
 #endif
@@ -366,9 +383,9 @@ string generateCodeNewTempEntity(NLCitem * param, int progLang);
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 
-string generateCodeEntityStringPairListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
-string generateCodeEntityStringPairListDefinitionTypeText(string entityClassName, int progLang);
-string generateEntityStringPairListName(string genericListNameStart, string genericListAppendName);
+string generateCodeEntityStringMapListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
+string generateCodeEntityStringMapListDefinitionTypeText(string entityClassName, int progLang);
+string generateEntityStringMapListName(string genericListNameStart, string genericListAppendName);
 string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang);
 
 string generateNewObject(string objectName, int progLang);

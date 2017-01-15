@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n1a 04-January-2014
+ * Project Version: 1n2a 07-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -557,7 +557,7 @@ NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInT
 	currentCodeBlockInTree->parameters.push_back(item);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	#ifdef USE_NLCNONOO
+	#ifdef NLC_NONOO
 	currentCodeBlockInTree = createCodeBlockIfPropertyName(currentCodeBlockInTree, item);	
 	#endif
 	return currentCodeBlockInTree;
@@ -576,14 +576,14 @@ NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockIn
 	currentCodeBlockInTree->parameters.push_back(objectItem);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	#ifdef USE_NLCNONOO
+	#ifdef NLC_NONOO
 	currentCodeBlockInTree = createCodeBlockIfConditionName(currentCodeBlockInTree, item, objectItem);		
 	#endif
 	return currentCodeBlockInTree;
 }
 
 
-#ifdef USE_NLCNONOO
+#ifdef NLC_NONOO
 NLCcodeblock * createCodeBlockIfPropertyName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
@@ -613,7 +613,7 @@ NLCcodeblock * createCodeBlockForActionList(NLCcodeblock * currentCodeBlockInTre
 	currentCodeBlockInTree->parameters.push_back(item);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_ACTION_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	#ifdef USE_NLCNONOO
+	#ifdef NLC_NONOO
 	currentCodeBlockInTree = createCodeBlockIfActionName(currentCodeBlockInTree, item);			
 	#endif
 	return currentCodeBlockInTree;
@@ -623,7 +623,7 @@ NLCcodeblock * createCodeBlockForActionIncomingList(NLCcodeblock * currentCodeBl
 	currentCodeBlockInTree->parameters.push_back(item);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_ACTION_INCOMING_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	#ifdef USE_NLCNONOO
+	#ifdef NLC_NONOO
 	currentCodeBlockInTree = createCodeBlockIfActionName(currentCodeBlockInTree, item);			
 	#endif
 	return currentCodeBlockInTree;

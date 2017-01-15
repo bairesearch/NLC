@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n1a 04-January-2014
+ * Project Version: 1n2a 07-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,7 +69,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			bool hasActionSubject = false;
 			NLCitem * functionOwnerArgument = NULL;
 			
-			#ifndef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string functionOwnerNameWithReferenceDelimiter = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 			{
@@ -90,13 +90,13 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			}
 			
 			string functionArguments = "";
-			//#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			//#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string functionDeclarationOwnerName = "";
 			string functionDeclarationObjectName = "";
 			//#endif
 			generateFunctionExecutionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
 			
-			#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string codeBlockText = functionDeclarationOwnerName + functionArgument->name + functionDeclarationObjectName + NLC_FUNCTION_NAME_APPEND + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]			
 			#else
 			string codeBlockText = functionOwnerNameWithReferenceDelimiter + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]			
@@ -250,7 +250,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeConditionListDefinitionTypeText(param1->className, param2->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string tempVarDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] +  progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];
 			printLine(tempVarDeclarationText, (level+1), code);
 			string tempVarDeclarationText2 = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangOpenParameterSpace[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + generateGIAconditionObjectListName() + progLangEndLine[progLang];
@@ -260,7 +260,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(tempVarDeclarationText, (level+1), code);
 			#endif
 		}
-		#ifdef USE_NLCNONOO
+		#ifdef NLC_NONOO
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_PROPERTY_NAME)
 		{
 			string tempVarEntityNameCheckText = progLangIf[progLang] + generateCodeEntityNameTestText(param1, progLang);	 //if(tempPropertyEntity->entityName == param1->name) {
@@ -359,7 +359,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			
 			string functionArguments = "";
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-			//#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			//#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string functionDeclarationOwnerName = "";
 			string functionDeclarationObjectName = "";
 			//#endif
@@ -370,11 +370,11 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			#endif
 			
-			#ifndef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang);
 			#endif
 			
-			#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string codeBlockText = functionDeclarationOwnerName + functionArgument->name + functionDeclarationObjectName + NLC_FUNCTION_NAME_APPEND + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
 			#else
 			string codeBlockText = functionOwnerContext + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
@@ -748,7 +748,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string genericListAppendName = param3->name;
 			
 			string codeBlockText = "";
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string codeBlockTextTemplateDefinition = "";
 			#else
 			string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class> 
@@ -765,7 +765,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 			
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string templateName1 = NLCNONOO_GENERIC_ENTITY_NODE_NAME;
 			string templateName2 = NLCNONOO_GENERIC_ENTITY_NODE_NAME;
 			string codeBlockTextTemplateHeader = "";
@@ -934,7 +934,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string genericListAppendName = param3->name;
 			
 			string codeBlockText = "";
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string codeBlockTextTemplateDefinition = "";
 			#else
 			string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	////<param1class, param2class> 
@@ -951,7 +951,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 			
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string templateName1 = NLCNONOO_GENERIC_ENTITY_NODE_NAME;
 			string templateName2 = NLCNONOO_GENERIC_ENTITY_NODE_NAME;
 			string codeBlockTextTemplateHeader = "";
@@ -1301,7 +1301,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			
 			
 			/*
-			string codeBlockTextAddEntityToAliasList = generateEntityStringPairListName(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateEntityStringPairTexts(param1->name, genericEntityClassName, generateDynamicCastOfEntity(param2->instanceName, genericEntityClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//AliasList.insert(pair<string, param2className*>(param1, dynamic_cast<genericEntity*>param2));
+			string codeBlockTextAddEntityToAliasList = generateEntityStringMapListName(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateEntityStringPairTexts(param1->name, genericEntityClassName, generateDynamicCastOfEntity(param2->instanceName, genericEntityClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//AliasList.insert(pair<string, param2className*>(param1, dynamic_cast<genericEntity*>param2));
 			*/
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION)
@@ -1316,7 +1316,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string aliasListName = NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION;
 			string aliasName = NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_NAME;
 
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string templateName1 = NLCNONOO_GENERIC_ENTITY_NODE_NAME;
 			#else
 			string templateName1 = "E1";
@@ -1326,7 +1326,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);	//NLCgenericEntity
 			string tempVariableAliasListName = tempVariableName + progLangObjectReferenceDelimiter[progLang] + NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION;
 
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string codeBlockTextTemplateHeader = "";
 			#else
 			string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateHeaderPart2[progLang];  //template <class E1>
@@ -1367,18 +1367,18 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 			/*
 			//NEW (optimised):
-			string codeBlockTextFindAliasEntity = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringPairListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + aliasListName + progLangObjectReferenceDelimiter[progLang] + progLangOpenParameterSpace[progLang] + aliasName progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];  	//unordered_map<string, genericEntityClassName*>::iterator iter1 = AliasList->find(aliasName);
+			string codeBlockTextFindAliasEntity = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringMapListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + aliasListName + progLangObjectReferenceDelimiter[progLang] + progLangOpenParameterSpace[progLang] + aliasName progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];  	//unordered_map<string, genericEntityClassName*>::iterator iter1 = AliasList->find(aliasName);
 			printLine(codeBlockTextFindAliasEntity, level+1, code);
 			string codeBlockTextTestFindAliasEntity = progLangTestEntityPairFindPart1[progLang] + progLangForIterName[progLang] + iterIndexString + progLangTestEntityPairFindPart2[progLang] + aliasListName + progLangTestEntityPairFindPart3[progLang] //if(iter1 != aliasListName->end())
 			printLine(codeBlockTextTestFindAliasEntity, level+1, code);
 			printLine(progLangOpenBlock[progLang], level+1, code);	//{
-				string tempVarDeclarationText = generateTempEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityPairListEntityReference[progLang] + progLangEndLine[progLang];	//genericEntityClass* genericEntity = iter1->second;
+				string tempVarDeclarationText = generateTempEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityMapListEntityReference[progLang] + progLangEndLine[progLang];	//genericEntityClass* genericEntity = iter1->second;
 				printLine(tempVarDeclarationText, (level+2), code);
 			//OLD (unoptimised):
-			//string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringPairListDefinitionText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateEntityStringPairListName(genericEntityClassName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + generateEntityStringPairListName(genericEntityClassName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
+			//string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringMapListDefinitionText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateEntityStringMapListName(genericEntityClassName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + generateEntityStringMapListName(genericEntityClassName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
 			//printLine(codeBlockText, level+1, code);
 			//printLine(progLangOpenBlock[progLang], level+1, code);
-			//string tempVarDeclarationText = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityPairListEntityReference[progLang] + progLangEndLine[progLang];
+			//string tempVarDeclarationText = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityMapListEntityReference[progLang] + progLangEndLine[progLang];
 			//printLine(tempVarDeclarationText, (level+2), code);	
 				//printLine(progLangOpenBlock[progLang], (level+1), code);	//{
 				//UNFINISHED; string codeBlockTextIfEntityNameEqualsAliasName = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(genericEntity->entityName == aliasName)
@@ -1399,7 +1399,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 
-			#ifdef USE_NLCNONOO
+			#ifdef NLC_NONOO
 			string codeBlockTextTemplateDefinition = "";
 			#else
 			string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param2class>
@@ -1520,7 +1520,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			{
 				functionOwnerArgument->functionArgumentPassCastRequired = true;
 				functionOwnerArgument->functionArgumentPassCastClassName = generateClassName(functionOwnerArgumentDeclaration->name);
-				#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+				#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 				*functionDeclarationOwnerName = functionOwnerArgumentDeclaration->name;
 				#endif
 			}
@@ -1540,7 +1540,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			{
 				functionObjectArgument->functionArgumentPassCastRequired = true;
 				functionObjectArgument->functionArgumentPassCastClassName = generateClassName(functionObjectArgumentDeclaration->name);
-				#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+				#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 				*functionDeclarationObjectName = functionObjectArgumentDeclaration->name;
 				#endif
 			}
@@ -1605,7 +1605,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 			
-			#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			if(*functionDeclarationOwnerName == "")
 			{
 				*functionDeclarationOwnerName = currentItem->name;	
@@ -1643,7 +1643,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 			
-			#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			if(*functionDeclarationObjectName == "")
 			{
 				*functionDeclarationObjectName = currentItem->name;	
@@ -1803,7 +1803,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#else
 			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif
-			#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			*functionDeclarationOwnerName = currentItem->name;
 			#endif
 		}
@@ -1838,7 +1838,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#else
 			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif	
-			#ifdef USE_NLCNONOO_DISABLE_CLASS_HEIRACHY
+			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			*functionDeclarationObjectName = currentItem->name;
 			#endif		
 		}

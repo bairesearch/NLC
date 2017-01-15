@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n1a 04-January-2014
+ * Project Version: 1n2a 07-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -65,6 +65,9 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 {
 	bool result = true;
 	printLine(progLangDependenciesStandardLibaries[progLang], 0, code);
+	#ifdef NLC_USE_LIBRARY
+	printLine(progLangDependenciesNLClibary[progLang], 0, code);
+	#endif
 	printLine("", 0, code);
 	printLine("", 0, code);
 	bool stillUnprintedClassDefinitions = true;
@@ -77,260 +80,320 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 
 			if(!(classDefinition->printed))
 			{
-				if(!(classDefinition->isActionOrConditionInstanceNotClass))
+				#ifdef NLC_USE_LIBRARY
+				if(classDefinition->name != generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE))
 				{
-					#ifdef NLC_DEBUG
-					//cout << "printClassDefinitions(): classDefinition->name:" << classDefinition->name << endl;
-					#endif
-					
-					bool printedParentClassDefinitions = true;
-				
-					#ifdef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES
-					//only print class definitions once their parent class definitions have been printed
-					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+				#endif
+					if(!(classDefinition->isActionOrConditionInstanceNotClass))
 					{
-						NLCclassDefinition * targetClassDefinition = *localListIter;
-						if(!(targetClassDefinition->printed))
-						{
-							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}
-					}
-					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
-					{
-						NLCclassDefinition * targetClassDefinition = *localListIter;
-						if(!(targetClassDefinition->printed))
-						{
-							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}
-					}
-					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
-					{
-						NLCclassDefinition * targetClassDefinition = *localListIter;
-						
-						bool foundClassDefinitionConditionClass;
-						NLCclassDefinition * targetClassDefinitionConditionClass = findClassDefinition(classDefinitionList, targetClassDefinition->name, &foundClassDefinitionConditionClass);
-						if(foundClassDefinitionConditionClass)
-						{
-							if(!(targetClassDefinitionConditionClass->printed))
-							{
-								printedParentClassDefinitions = false;
-							}
-						}
-						else
-						{
-							cout << "printClassDefinitions() error: !foundClassDefinitionConditionClass, targetClassDefinition->name = " << targetClassDefinition->name << endl;
-							exit(0);
-						}
-						/*
-						//OLD: not possible with 1m3a implementation (use of findClassDefinitionCondition and isConditionInstance) as targetClassDefinition will be a condition instance and will therefore not be printed
-						if(!(targetClassDefinition->printed))
-						{
-							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}
-						*/
-						
-						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-						//FUTURE: must upgrade printClassDefinitions() to generate classes in separate files such that they can reference each other (bidirectional)
-						#else
-						//isConditionObjectPrinted() is required because conditions are stored as a tuple (to prevent use of isConditionObjectPrinted, NLCclassDefinition conditionLists could be stored as an array[2]; ie vector<NLCclassDefinition *> conditionList[2])
-						if(!isConditionObjectPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
-						{
-							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}
-						#endif
-					}
-					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
-					{
-						NLCclassDefinition * targetClassDefinition = *localListIter;
-						if(!arefunctionArgumentsPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
-						{
-							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
-						}
-					}
-					#endif
-					
-					if(printedParentClassDefinitions)
-					{//only print class definitions once their parent class definitions have been printed
-
-						string className = classDefinition->name;
-
 						#ifdef NLC_DEBUG
-						cout << "printClassDefinitions: className:" << className << endl;
+						//cout << "printClassDefinitions(): classDefinition->name:" << classDefinition->name << endl;
 						#endif
 
-						bool foundDefinition = false;
-						string classTitleText = "";
+						bool printedParentClassDefinitions = true;
 
+						#ifdef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES
+						//only print class definitions once their parent class definitions have been printed
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 						{
 							NLCclassDefinition * targetClassDefinition = *localListIter;
-
-							if(!foundDefinition)
+							if(!(targetClassDefinition->printed))
 							{
-								foundDefinition = true;
-								classTitleText = classTitleText + " : ";
+								#ifdef NLC_USE_LIBRARY
+								if(targetClassDefinition->name != generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE))
+								{
+								#endif
+									printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+								#ifdef NLC_USE_LIBRARY
+								}
+								#endif
 							}
-							else
-							{
-								classTitleText = classTitleText + ", ";
-							}
-							string targetName = targetClassDefinition->name;
-							classTitleText = classTitleText + progLangClassInheritanceHeader[progLang] + targetName;
 						}
-
-						printedClassDefinitionThisRound = true;
-						classDefinition->printed = true;
-
-						string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className + classTitleText;
-
-						printLine(classDefinitionEntryText, 0, code);
-						printLine(progLangOpenClass[progLang], 0, code);
-						printLine(progLangClassIntro[progLang], 0, code);
-						string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
-						printLine(classConstructorDeclaration, 1, code);
-						#ifdef NLC_USE_DESTRUCTORS
-						string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
-						printLine(classDestructorDeclaration, 1, code);
-						#endif
-						string classNameRaw = removeClassTextFromClassDefinitionName(className);
-						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
-
-						#ifndef USE_NLCNONOO
-						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
-						if(classDefinition->definitionList.empty())
-						{//top level NLClibraryEntity class found
-						#endif
-							string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
-							printLine(classDefinitionNameCode, 1, code);
-							#ifdef NLC_USE_ADVANCED_REFERENCING
-							string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//stack<int> lastSentenceReferenced;
-							printLine(classDefinitionLastSentenceReferencedCode, 1, code);
-							#endif
-							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-							string classDefinitionAliasListCode = progLangAliasListVariableType[progLang] + string(NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangEndLine[progLang];	//vector<string> aliasList;
-							printLine(classDefinitionAliasListCode, 1, code);			
-							#endif
-						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
-						}
-						#endif
-						#endif
-
-						#ifndef USE_NLCNONOO
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 						{
 							NLCclassDefinition * targetClassDefinition = *localListIter;
-							string propertyClassName = targetClassDefinition->name;
-							//NLCitem * param1 = targetClassDefinition->parameters.at(0);	//not required to be used
-							string localListDeclarationText = generateCodePropertyListDefinitionText(propertyClassName, progLang) + progLangEndLine[progLang];
-							printLine(localListDeclarationText, 1, code);
+							if(!(targetClassDefinition->printed))
+							{
+								printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+							}
 						}
-
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
 						{
 							NLCclassDefinition * targetClassDefinition = *localListIter;
-							//string targetName = targetClassDefinition->name;	//condition instance name not used
-							NLCitem * param1 = targetClassDefinition->parameters.at(0);
-							string localListDeclarationText = generateCodeConditionListDefinitionText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
-							printLine(localListDeclarationText, 1, code);
-						}
-						#endif
 
+							bool foundClassDefinitionConditionClass;
+							NLCclassDefinition * targetClassDefinitionConditionClass = findClassDefinition(classDefinitionList, targetClassDefinition->name, &foundClassDefinitionConditionClass);
+							if(foundClassDefinitionConditionClass)
+							{
+								if(!(targetClassDefinitionConditionClass->printed))
+								{
+									printedParentClassDefinitions = false;
+								}
+							}
+							else
+							{
+								cout << "printClassDefinitions() error: !foundClassDefinitionConditionClass, targetClassDefinition->name = " << targetClassDefinition->name << endl;
+								exit(0);
+							}
+							/*
+							//OLD: not possible with 1m3a implementation (use of findClassDefinitionCondition and isConditionInstance) as targetClassDefinition will be a condition instance and will therefore not be printed
+							if(!(targetClassDefinition->printed))
+							{
+								printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+							}
+							*/
+
+							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+							//FUTURE: must upgrade printClassDefinitions() to generate classes in separate files such that they can reference each other (bidirectional)
+							#else
+							//isConditionObjectPrinted() is required because conditions are stored as a tuple (to prevent use of isConditionObjectPrinted, NLCclassDefinition conditionLists could be stored as an array[2]; ie vector<NLCclassDefinition *> conditionList[2])
+							if(!isConditionObjectPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
+							{
+								printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+							}
+							#endif
+						}
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 						{
 							NLCclassDefinition * targetClassDefinition = *localListIter;
-							#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-							#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-							if(targetClassDefinition->functionDependency != NULL)
+							if(!arefunctionArgumentsPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
 							{
-							#endif
-							#endif
-								string targetName = targetClassDefinition->functionNameSpecial;
-								string functionArguments = "";
+								printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+							}
+						}
+						#endif
 
-								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
-								string localListDeclarationText = progLangClassMemberFunctionDefaultType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, code);
-							#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-							#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
+						if(printedParentClassDefinitions)
+						{//only print class definitions once their parent class definitions have been printed
+
+							string className = classDefinition->name;
+
+							#ifdef NLC_DEBUG
+							cout << "printClassDefinitions: className:" << className << endl;
+							#endif
+
+							bool foundDefinition = false;
+							string classTitleText = "";
+
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+
+								if(!foundDefinition)
+								{
+									foundDefinition = true;
+									classTitleText = classTitleText + " : ";
+								}
+								else
+								{
+									classTitleText = classTitleText + ", ";
+								}
+								string targetName = targetClassDefinition->name;
+								classTitleText = classTitleText + progLangClassInheritanceHeader[progLang] + targetName;
+							}
+
+							printedClassDefinitionThisRound = true;
+							classDefinition->printed = true;
+
+							string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className + classTitleText;
+
+							printLine(classDefinitionEntryText, 0, code);
+							printLine(progLangOpenClass[progLang], 0, code);
+							printLine(progLangClassIntro[progLang], 0, code);
+							string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
+							printLine(classConstructorDeclaration, 1, code);
+							#ifdef NLC_USE_DESTRUCTORS
+							string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
+							printLine(classDestructorDeclaration, 1, code);
+							#endif
+							string classNameRaw = removeClassTextFromClassDefinitionName(className);
+							//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
+
+							#ifndef NLC_USE_LIBRARY
+							#ifndef NLC_NONOO
+							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
+							if(classDefinition->definitionList.empty())
+							{//top level NLClibraryEntity class found
+							#endif
+								string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
+								printLine(classDefinitionNameCode, 1, code);
+								#ifdef NLC_USE_ADVANCED_REFERENCING
+								string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//stack<int> lastSentenceReferenced;
+								printLine(classDefinitionLastSentenceReferencedCode, 1, code);
+								#endif
+								#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+								string classDefinitionAliasListCode = progLangAliasListVariableType[progLang] + string(NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangEndLine[progLang];	//vector<string> aliasList;
+								printLine(classDefinitionAliasListCode, 1, code);			
+								#endif
+							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 							}
 							#endif
 							#endif
-						}
-						
-						#ifndef USE_NLCNONOO
-						#ifdef NLC_RECORD_ACTION_HISTORY
-						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
-						{
-							NLCclassDefinition * targetClassDefinition = *localListIter;
-							GIAentityNode entityAction;
-							entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
-							NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
-							entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
-							string genericListAppendName = NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
-							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
-							printLine(localListDeclarationText, 1, code);
-						}
-						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
-						{
-							NLCclassDefinition * targetClassDefinition = *localListIter;
-							GIAentityNode entityAction;
-							entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
-							NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
-							entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
-							string genericListAppendName = NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
-							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
-							printLine(localListDeclarationText, 1, code);
-						}
-						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionSubjectList.begin(); localListIter != classDefinition->actionSubjectList.end(); localListIter++)
-						{
-							NLCclassDefinition * targetClassDefinition = *localListIter;
-							GIAentityNode entityActionSubject;
-							entityActionSubject.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
-							NLCitem entityParamActionSubject(&entityActionSubject, NLC_ITEM_TYPE_OBJECT);
-							entityParamActionSubject.genericObjectName = generateClassName(entityActionSubject.entityName);
-							string genericListAppendName = NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION;
-							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionSubject, genericListAppendName, progLang) + progLangEndLine[progLang];
-							printLine(localListDeclarationText, 1, code);
-						}
-						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionObjectList.begin(); localListIter != classDefinition->actionObjectList.end(); localListIter++)
-						{
-							NLCclassDefinition * targetClassDefinition = *localListIter;
-							GIAentityNode entityActionObject;
-							entityActionObject.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
-							NLCitem entityParamActionObject(&entityActionObject, NLC_ITEM_TYPE_OBJECT);
-							entityParamActionObject.genericObjectName = generateClassName(entityActionObject.entityName);
-							string genericListAppendName = NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION;
-							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionObject, genericListAppendName, progLang) + progLangEndLine[progLang];
-							printLine(localListDeclarationText, 1, code);
-						}
-						#endif
-						#endif
+							#endif
 
-						printLine(progLangCloseClass[progLang], 0, code);
-						printLine("", 0, code);
+							#ifndef NLC_NONOO
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								string propertyClassName = targetClassDefinition->name;
+								//NLCitem * param1 = targetClassDefinition->parameters.at(0);	//not required to be used
+								string localListDeclarationText = generateCodePropertyListDefinitionText(propertyClassName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
+							}
 
-						string classConstructorEntryText = classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang];
-						printLine(classConstructorEntryText, 0, code);
-						printLine(progLangOpenClass[progLang], 0, code);
-						#ifndef USE_NLCNONOO
-						string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
-						printLine(classConstructorNameCode, 1, code);
-						#ifdef NLC_USE_ADVANCED_REFERENCING
-						#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-						//string classConstructorLastSentenceReferencedCode = "";
-						//classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangObjectReferenceDelimiter2[progLang] + progLangStackAdd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + "0" + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];	//lastSentenceReferenced.push(0);
-						//printLine(classConstructorLastSentenceReferencedCode, 1, code);	
-						#else
-						string classConstructorLastSentenceReferencedCode = "";
-						classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangClassNameVariableEquals[progLang] + "0" + progLangEndLine[progLang];	//lastSentenceReferenced = 0;
-						printLine(classConstructorLastSentenceReferencedCode, 1, code);	
-						#endif
-						#endif
-						#endif
-						printLine(progLangCloseClass[progLang], 0, code);
-						printLine("", 0, code);
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								//string targetName = targetClassDefinition->name;	//condition instance name not used
+								NLCitem * param1 = targetClassDefinition->parameters.at(0);
+								string localListDeclarationText = generateCodeConditionListDefinitionText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
+							}
+							#endif
+
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
+								if(targetClassDefinition->functionDependency != NULL)
+								{
+								#endif
+								#endif
+									string targetName = targetClassDefinition->functionNameSpecial;
+									string functionArguments = "";
+
+									generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
+									string localListDeclarationText = progLangClassMemberFunctionDefaultType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
+									printLine(localListDeclarationText, 1, code);
+								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
+								}
+								#endif
+								#endif
+							}
+
+							#ifndef NLC_NONOO
+							#ifdef NLC_RECORD_ACTION_HISTORY
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								GIAentityNode entityAction;
+								entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
+								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
+								string genericListAppendName = NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
+								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
+							}
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								GIAentityNode entityAction;
+								entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
+								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
+								string genericListAppendName = NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
+								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
+							}
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionSubjectList.begin(); localListIter != classDefinition->actionSubjectList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								GIAentityNode entityActionSubject;
+								entityActionSubject.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								NLCitem entityParamActionSubject(&entityActionSubject, NLC_ITEM_TYPE_OBJECT);
+								entityParamActionSubject.genericObjectName = generateClassName(entityActionSubject.entityName);
+								string genericListAppendName = NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION;
+								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionSubject, genericListAppendName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
+							}
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionObjectList.begin(); localListIter != classDefinition->actionObjectList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								GIAentityNode entityActionObject;
+								entityActionObject.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								NLCitem entityParamActionObject(&entityActionObject, NLC_ITEM_TYPE_OBJECT);
+								entityParamActionObject.genericObjectName = generateClassName(entityActionObject.entityName);
+								string genericListAppendName = NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION;
+								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionObject, genericListAppendName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationText, 1, code);
+							}
+							#endif
+							#endif
+
+							printLine(progLangCloseClass[progLang], 0, code);
+							printLine("", 0, code);
+
+							string classConstructorEntryText = classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang];
+							printLine(classConstructorEntryText, 0, code);
+							printLine(progLangOpenClass[progLang], 0, code);
+							#ifndef NLC_NONOO
+							string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
+							printLine(classConstructorNameCode, 1, code);
+							#ifdef NLC_USE_ADVANCED_REFERENCING
+							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+							//string classConstructorLastSentenceReferencedCode = "";
+							//classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangObjectReferenceDelimiter2[progLang] + progLangStackAdd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + "0" + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];	//lastSentenceReferenced.push(0);
+							//printLine(classConstructorLastSentenceReferencedCode, 1, code);	
+							#else
+							string classConstructorLastSentenceReferencedCode = "";
+							classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangClassNameVariableEquals[progLang] + "0" + progLangEndLine[progLang];	//lastSentenceReferenced = 0;
+							printLine(classConstructorLastSentenceReferencedCode, 1, code);	
+							#endif
+							#endif
+							#endif
+							
+							#ifdef NLC_USE_LIBRARY
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								string propertyClassName = targetClassDefinition->name;
+								//NLCitem * param1 = targetClassDefinition->parameters.at(0);	//not required to be used
+								string localListDeclarationStoreText = generateCodePropertyListDefinitionStoreText(propertyClassName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationStoreText, 1, code);
+							}
+
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								//string targetName = targetClassDefinition->name;	//condition instance name not used
+								NLCitem * param1 = targetClassDefinition->parameters.at(0);
+								string localListDeclarationStoreText = generateCodeConditionListDefinitionStoreText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationStoreText, 1, code);
+							}
+
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								GIAentityNode entityAction;
+								entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
+								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
+								string genericListAppendName = NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
+								string localListDeclarationStoreText = generateCodeGenericListDefinitionStoreText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationStoreText, 1, code);
+							}
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								GIAentityNode entityAction;
+								entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
+								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
+								string genericListAppendName = NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
+								string localListDeclarationStoreText = generateCodeGenericListDefinitionStoreText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
+								printLine(localListDeclarationStoreText, 1, code);
+							}
+							#endif
+
+							printLine(progLangCloseClass[progLang], 0, code);
+							printLine("", 0, code);
+						}
 					}
+				#ifdef NLC_USE_LIBRARY
 				}
+				#endif	
 			}
 		}
 		if(!printedClassDefinitionThisRound)

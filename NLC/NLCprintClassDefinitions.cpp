@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13c 17-April-2014
+ * Project Version: 1f13d 17-May-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -99,9 +99,9 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			printLine(classDefinitionEntryText, 0, code);
 			printLine(progLangOpenClass[progLang], 0, code);
 			printLine(progLangClassIntro[progLang], 0, code);
-			string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang];
+			string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
 			printLine(classConstructorDeclaration, 1, code);
-			string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
+			string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
 			printLine(classDestructorDeclaration, 1, code);
 			string classNameRaw = className.substr(0, className.length()-strlen(NLC_CLASS_NAME_APPEND));
 			//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";

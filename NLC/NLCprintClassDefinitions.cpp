@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q5d 19-August-2015
+ * Project Version: 1q5e 19-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 	string NLCgeneratedCodeSource = "";
 	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
 	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
-	*code = code + NLCgeneratedCodeSource;
+	*code = *code + NLCgeneratedCodeSource;
 	#endif
 	
 	#endif

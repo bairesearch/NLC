@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8h 11-July-2014
+ * Project Version: 1g8i 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,43 +105,75 @@ NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLC
 }
 
 //add property
-NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList)
 {
 	#ifdef NLC_SUPPORT_QUANTITIES
-	for(int i=0; i<propertyEntity->quantityNumber; i++)
+	NLCcodeblock * origCurrentCodeBlockInTree = currentCodeBlockInTree;
+	if(propertyEntity->quantityNumber > 1)
 	{
-	#endif
-		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(entityItem);
-
-		NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(propertyItem);
-
-		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	#ifdef NLC_SUPPORT_QUANTITIES
+		currentCodeBlockInTree = createCodeBlockForInteger(currentCodeBlockInTree, propertyEntity->quantityNumber);
 	}
+	//for(int i=0; i<propertyEntity->quantityNumber; i++)
+	//{
 	#endif
+	
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	if(copyNewItemsToLocalList)
+	{
+		if(propertyEntity->NLClocalListVariableHasBeenDeclared)
+		{//added 1g8a 11-July-2014
+			currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, propertyEntity, propertyEntity);
+		}
+	}
+						
+	#ifdef NLC_SUPPORT_QUANTITIES
+	if(propertyEntity->quantityNumber > 1)
+	{
+		currentCodeBlockInTree = origCurrentCodeBlockInTree->next;
+	}
+	//}
+	#endif
+	
 	return currentCodeBlockInTree;
 }
 
 NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
 {
 	#ifdef NLC_SUPPORT_QUANTITIES
-	for(int i=0; i<propertyEntity->quantityNumber; i++)
+	NLCcodeblock * origCurrentCodeBlockInTree = currentCodeBlockInTree;
+	if(propertyEntity->quantityNumber > 1)
 	{
-	#endif
-		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(entityItem);
-
-		NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(propertyItem);
-
-		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	#ifdef NLC_SUPPORT_QUANTITIES
+		currentCodeBlockInTree = createCodeBlockForInteger(currentCodeBlockInTree, propertyEntity->quantityNumber);
 	}
+	//for(int i=0; i<propertyEntity->quantityNumber; i++)
+	//{
 	#endif
+	
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	#ifdef NLC_SUPPORT_QUANTITIES
+	if(propertyEntity->quantityNumber > 1)
+	{
+		currentCodeBlockInTree = origCurrentCodeBlockInTree->next;
+	}
+	//}
+	#endif
+	
 	return currentCodeBlockInTree;
 }
 
@@ -175,30 +207,48 @@ NLCcodeblock * createCodeBlockAddProperty(NLCcodeblock * currentCodeBlockInTree,
 
 
 //add state
-NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 
 		#ifdef NLC_SUPPORT_QUANTITIES
-		for(int i=0; i<conditionObject->quantityNumber; i++)
+		NLCcodeblock * origCurrentCodeBlockInTree = currentCodeBlockInTree;
+		if(conditionObject->quantityNumber > 1)
 		{
+			currentCodeBlockInTree = createCodeBlockForInteger(currentCodeBlockInTree, conditionObject->quantityNumber);
+		}
+		//for(int i=0; i<conditionObject->quantityNumber; i++)
+		//{
 		#endif
 
-			NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-			currentCodeBlockInTree->parameters.push_back(entityItem);
+		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(entityItem);
 
-			NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
-			currentCodeBlockInTree->parameters.push_back(conditionItem);
+		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(conditionItem);
 
-			NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-			currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
-			int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
-			currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-		#ifdef NLC_SUPPORT_QUANTITIES
+		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
+		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+		
+		if(copyNewItemsToLocalList)
+		{
+			if(conditionObject->NLClocalListVariableHasBeenDeclared)
+			{//added 1g8a 11-July-2014
+				currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, conditionObject, conditionObject);
+			}
 		}
+										
+		#ifdef NLC_SUPPORT_QUANTITIES
+		if(conditionObject->quantityNumber > 1)
+		{
+			currentCodeBlockInTree = origCurrentCodeBlockInTree->next;
+		}
+		//}
 		#endif
 	}
 	else
@@ -279,6 +329,16 @@ NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockIn
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+
+#ifdef NLC_SUPPORT_QUANTITIES
+NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, int numberIterations)
+{
+	NLCitem * integerItem = new NLCitem(numberIterations, NLC_ITEM_TYPE_VARIABLE);	
+	currentCodeBlockInTree->parameters.push_back(integerItem);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_INTEGER;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
 
 
 

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14c 02-September-2015
+ * Project Version: 1q14d 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -513,5 +513,8 @@ string generateCodeIterReference(string iterIndexString, int progLang);
 string generateCodeIterReferenceConditionObject(string iterIndexString, int progLang);
 string generateCodeIterName(string iterIndexString, int progLang);
 
+#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+string generateCodeEntityInverseConditionText(NLCitem* param1, int progLang);
+#endif
 
 #endif

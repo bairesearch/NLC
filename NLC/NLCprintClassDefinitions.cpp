@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14c 02-September-2015
+ * Project Version: 1q14d 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -137,7 +137,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						*/
 
 						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-						//FUTURE: must upgrade printClassDefinitions() to generate classes in separate files such that they can reference each other (bidirectional)
+						//requries NLClibrary such that printClassDefinitions() can generate classes in separate files such that they can reference each other (bidirectional)
 						#else
 						//isConditionObjectPrinted() is required because conditions are stored as a tuple (to prevent use of isConditionObjectPrinted, NLCclassDefinition conditionLists could be stored as an array[2]; ie vector<NLCclassDefinition* > conditionList[2])
 						if(!isConditionObjectPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
@@ -247,11 +247,15 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							string classDefinitionAliasListCode = progLangAliasListVariableType[progLang] + string(NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangEndLine[progLang];	//vector<string> aliasList;
 							printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionHeaderText);			
 							#endif
-
 							#ifdef NLC_USE_MATH_OBJECTS
 							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEndLine[progLang];	//double value;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 							#endif
+							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+							string classDefinitionInverseConditionCode = progLangBoolType[progLang] + string(NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME) + progLangEndLine[progLang];	//bool inverseConditionTwoWay;
+							printLine(classDefinitionInverseConditionCode, 1, &printedClassDefinitionHeaderText);							
+							#endif
+							
 							#ifdef NLC_USE_LIBRARY
 							string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> propertyLists;
 							printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
@@ -464,9 +468,13 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						{//top level NLClibraryEntity class found
 						#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang];	//value = 0.0;
+							string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//value = numeric_limits<double>::quiet_NaN();
 							printLine(setValueCode, 1, &printedClassDefinitionSourceText);
-							#endif							
+							#endif	
+							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+							string classDefinitionInverseConditionCode = string(NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME) + progLangEquals[progLang] + progLangFalse[progLang] + progLangEndLine[progLang];	//inverseConditionTwoWay = false;
+							printLine(classDefinitionInverseConditionCode, 1, &printedClassDefinitionHeaderText);							
+							#endif						
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						}
 						#endif

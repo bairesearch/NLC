@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14c 02-September-2015
+ * Project Version: 1q14d 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -732,25 +732,32 @@ void generateCodeRemovePropertiesExecuteFunction(NLCitem* param1, NLCitem* param
 #endif
 
 
-void generateCodeAddCondition(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
+void generateCodeAddCondition(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool inverseCondition)
 {
 	#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-	generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level);
+	generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level, inverseCondition);
 	#else
 	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
-	generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level);
+	generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level, inverseCondition);
 	#else
-	generateCodeAddConditionAndObjectEntityToList(param1, param2, param3, progLang, code, level);
+	generateCodeAddConditionAndObjectEntityToList(param1, param2, param3, progLang, code, level, inverseCondition);
 	#endif
 	#endif
 }
 //NB NLC_NONOO requires !NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING
-void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
+void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool inverseCondition)
 {
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	#ifndef NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING
 	string codeBlockTextCreate2 = generateCodeNewEntity(param2, progLang);
 	printLine(codeBlockTextCreate2, level, code);
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+	if(inverseCondition)
+	{
+		string codeBlockTextSetInverseCondition = generateCodeSetBoolTextTrue(generateCodeEntityInverseConditionText(param2, progLang), progLang);	//param2->inverseConditionTwoWay = true;
+		printLine(codeBlockTextSetInverseCondition, level, code);		
+	}
+	#endif
 	#endif
 	#ifdef NLC_NONOO
 	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateGIAconditionListName() + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2ConditionList.push_back(param2);
@@ -773,21 +780,38 @@ void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* par
 	#endif
 }
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-void generateCodeAddConditionExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
+void generateCodeAddConditionExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool inverseCondition)
 {
+	string functionName = NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION;
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+	if(inverseCondition)
+	{
+		functionName = NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION_INVERSE;
+	}
+	#endif
+	
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUseClassSeparator[progLang] + param3->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class, param3class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addCondition<param1class, param2class, param3class>(context1->param1, &(context1->param1.param2param3ConditionList), "param2", param3);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + functionName + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addCondition<param1class, param2class, param3class>(context1->param1, &(context1->param1.param2param3ConditionList), "param2", param3);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
 #ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
-void generateCodeAddConditionNewFunction(int progLang, string* code, int level)
+void generateCodeAddConditionNewFunction(int progLang, string* code, int level, bool inverseCondition)
 {
 	#ifdef NLC_USE_ENUM_LISTS
 	cout << "NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED:generateCodeAddConditionNewFunction{} error: does not support NLC_USE_ENUM_LISTS, use NLC_USE_LIBRARY:NLC_USE_LIBRARY_BASE_EXTENDED instead (NLClibraryBase.cpp)" << endl;
 	#else
+	
+	string functionName = NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION;
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+	if(inverseCondition)
+	{
+		functionName = NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION_INVERSE;
+	}
+	#endif
+	
 	string templateName1 = "E1";
 	string templateName2 = "E2";
 	string templateName3 = "E3";
@@ -799,7 +823,7 @@ void generateCodeAddConditionNewFunction(int progLang, string* code, int level)
 	param3->instanceName = templateName3 + generateEntityListAppendName();
 
 	string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateUseClassSeparator[progLang] + progLangTemplateHeaderClassType[progLang] + templateName3 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION + progLangOpenParameterSpace[progLang] +  generateCodeEntityDefinitionText(param1, progLang) + progLangParameterSpaceNextParam[progLang] + generateCodeConditionListDefinitionText(param2, param3, progLang) + progLangParameterSpaceNextParam[progLang] + generateCodeClassNameVariableDefinitionText(param2, progLang) + progLangParameterSpaceNextParam[progLang] + generateCodeEntityDefinitionText(param3, progLang) + progLangCloseParameterSpace[progLang];	//e.g. void addCondition(E1* E1Instance, unordered_map<E2*, E3*>* E2E3conditionList, string E2className, E3* E3Instance)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + functionName + progLangOpenParameterSpace[progLang] +  generateCodeEntityDefinitionText(param1, progLang) + progLangParameterSpaceNextParam[progLang] + generateCodeConditionListDefinitionText(param2, param3, progLang) + progLangParameterSpaceNextParam[progLang] + generateCodeClassNameVariableDefinitionText(param2, progLang) + progLangParameterSpaceNextParam[progLang] + generateCodeEntityDefinitionText(param3, progLang) + progLangCloseParameterSpace[progLang];	//e.g. void addCondition(E1* E1Instance, unordered_map<E2*, E3*>* E2E3conditionList, string E2className, E3* E3Instance)
 
 	int q = 0;
 	printLine("", level+q, code);
@@ -810,6 +834,13 @@ void generateCodeAddConditionNewFunction(int progLang, string* code, int level)
 	q++;		
 	string codeBlockTextCreate2 = generateCodeNewEntity(param2, progLang);
 	printLine(codeBlockTextCreate2, level+q, code);
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+	if(inverseCondition)
+	{
+		string codeBlockTextSetInverseCondition = generateCodeSetBoolTextTrue(generateCodeEntityInverseConditionText(param2, progLang), progLang);	//param2->inverseConditionTwoWay = true;
+		printLine(codeBlockTextSetInverseCondition, level+q, code);		
+	}
+	#endif
 	#ifdef NLC_CONDITION_LISTS_VECTOR
 	string codeBlockText = generateConditionListName(param2, param3) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionNewPairText(param2->name, generatePointerTypeText(param2->className, progLang), param2->instanceName, generatePointerTypeText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param2param3ConditionList.push_back(new pair<param2className*, param3className*>(param2, param3));	
 	#else

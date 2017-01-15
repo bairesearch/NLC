@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14c 02-September-2015
+ * Project Version: 1q14d 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -84,11 +84,11 @@ void generateCodeRemovePropertyExecuteFunction(NLCitem* param1, NLCitem* param2,
 void generateCodeRemovePropertiesExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
 #endif
 
-void generateCodeAddCondition(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
-void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
+void generateCodeAddCondition(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool inverseCondition);
+void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool inverseCondition);
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-void generateCodeAddConditionExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
-void generateCodeAddConditionNewFunction(int progLang, string* code, int level);
+void generateCodeAddConditionExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level, bool inverseCondition);
+void generateCodeAddConditionNewFunction(int progLang, string* code, int level, bool inverseCondition);
 #endif
 
 void generateCodeRemoveCondition(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);

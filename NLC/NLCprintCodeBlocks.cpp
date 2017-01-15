@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14c 02-September-2015
+ * Project Version: 1q14d 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -220,7 +220,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string codeBlockTextCreate = generateCodeNewEntity(param3, progLang);
 			printLine(codeBlockTextCreate, level, &printedCodeBlocksSourceText);
 
-			generateCodeAddCondition(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level);
+			generateCodeAddCondition(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, false);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_PROPERTY)
 		{
@@ -247,8 +247,20 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			
-			generateCodeAddCondition(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level);
+			generateCodeAddCondition(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, false);
 		}
+		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
+			
+			generateCodeAddCondition(param1, param2, param3, progLang, &printedCodeBlocksSourceText, level, true);
+		}
+		#endif
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 		{
 			string iterIndexString = convertIntToString(level);
@@ -1162,8 +1174,17 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_CONDITION_NEW_FUNCTION" << endl;
 			#endif	
-			generateCodeAddConditionNewFunction(progLang, &printedCodeBlocksSourceText, level);
-		}		
+			generateCodeAddConditionNewFunction(progLang, &printedCodeBlocksSourceText, level, false);
+		}	
+		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION" << endl;
+			#endif	
+			generateCodeAddConditionNewFunction(progLang, &printedCodeBlocksSourceText, level, true);
+		}
+		#endif	
 		#endif
 		#ifdef NLC_USE_MATH_OBJECTS
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_VALUE)

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14c 02-September-2015
+ * Project Version: 1q14d 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -140,6 +140,11 @@
 		#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_PROPERTY "addProperty"
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION "addCondition"
+			#ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+				//#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS	//has not yet been defined
+					#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION_INVERSE "addConditionInverse"		
+				//#endif
+			#endif
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTY "removeProperty"
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITION "removeCondition"
 			#define NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTIES "removeProperties"
@@ -249,9 +254,15 @@
 	#ifdef GIA_LRP_NORMALISE_TWOWAY_PREPOSITIONS
 		#define NLC_NORMALISE_TWOWAY_PREPOSITIONS
 		#ifdef GIA_LRP_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED	//GIA dual conditions are enabled (NLC will not parse GIA entities with inverseConditionTwoWay set; prevents infinite loop parsing - relies on GIA advanced referencing to parse inverted sentence contents. E.g. sentenceIndex1: a new two way condition is created (the inverted condition of which has a inverseConditionTwoWay set) (eg Tom is near the house). This inverted condition is referenced using GIA advanced referencing by a new sentenceIndex2 with inverted sentence contents (eg The house that is near Tom). Yet the condition connection created for the referenced condition (sentenceIndex2) will not be inverted, therefore it will be correctly parsed by NLC)
 		#else
-			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED	//GIA dual conditions are disabled (NLC will create dual condition links; required for parsing of inverted sentence contents; eg Tom is near the house. The house that is near Tom is red.)
+			#ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+				#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS	//added 1q14d (required for NLClibrary) - will set inverseConditionTwoWay for NLC condition entities	//does not support NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING
+				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
+					#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME "inverseConditionTwoWay"
+				#endif
+			#endif
 		#endif
 	#endif
 	#define NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION ".nlc"

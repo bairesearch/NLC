@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10a 21-August-2015
+ * Project Version: 1q10b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2119,11 +2119,7 @@ NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSi
 NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION;
@@ -2168,11 +2164,7 @@ NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPl
 NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 		
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION;
@@ -2316,13 +2308,8 @@ NLCcodeblock* createCodeBlocksDeclareContextList(NLCcodeblock* currentCodeBlockI
 NLCcodeblock* createCodeBlocksAddEntityToContextLevelListNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2333,13 +2320,8 @@ NLCcodeblock* createCodeBlocksAddEntityToContextLevelListNewFunction(NLCcodebloc
 NLCcodeblock* createCodeBlocksClearContextListNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2379,27 +2361,27 @@ NLCcodeblock* createCodeBlocksClearContextListVariableExecuteFunction(NLCcodeblo
 	
 	return currentCodeBlockInTree;
 }
+#endif
 
 NLCcodeblock* createCodeBlocksCreateContextBlock(NLCcodeblock* currentCodeBlockInTree)
 {
+	//required because printCodeBlocks requires at least 1 param
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_CONTEXT_BLOCK;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	return currentCodeBlockInTree;
 }
-#endif
+
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS	
 NLCcodeblock* createCodeBlocksCastVectorNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_CAST_VECTOR_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2447,13 +2429,8 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodebl
 	#endif
 	
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2498,13 +2475,8 @@ NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBloc
 	#endif
 	
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FIND_ALIAS_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2715,13 +2687,8 @@ NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock* 
 NLCcodeblock* createCodeBlockCheckParentClassNameNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2808,13 +2775,8 @@ NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCod
 NLCcodeblock* createCodeBlockAddPropertyNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_PROPERTY_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2825,13 +2787,8 @@ NLCcodeblock* createCodeBlockAddPropertyNewFunction(NLCcodeblock* currentCodeBlo
 NLCcodeblock* createCodeBlockAddConditionNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
-	string genericObjectName = "dummyentity";
-	GIAentityNode* entity = new GIAentityNode();
-	entity->entityName = genericObjectName;
-
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* entityItem = new NLCitem("dummyentity", NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-	entityItem->genericObjectName = genericObjectName;
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_CONDITION_NEW_FUNCTION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
@@ -2906,7 +2863,6 @@ NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeB
 #endif
 
 #endif
-
 
 
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER

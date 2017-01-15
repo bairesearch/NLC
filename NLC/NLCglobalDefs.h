@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10a 21-August-2015
+ * Project Version: 1q10b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,6 +52,7 @@
 //#define NLC_DISABLE_1q_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+	#define NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE	//1q10b - this is required to prevent redeclarations of xSubjectCategoryList/xObjectCategoryList//xCategoryLis
 	//#define NLC_SUPPORT_GIA_NLP_OR_XML_INPUT	//disabled 1q2b
 	#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR	//1q2b
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR

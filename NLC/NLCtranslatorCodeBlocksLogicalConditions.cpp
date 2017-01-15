@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10a 21-August-2015
+ * Project Version: 1q10b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -436,7 +436,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 	NLCcodeblock* currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
 	string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentFullSentence->sentenceIndex, parsablePhrase);	//parsablePhraseGenerateNumberOfElementCounterName
 	*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName, 0);	//?this will need to be changed to createCodeBlockDeclareNewIntArray in the future to support multiple cases (ie if, else if, else)
-		
+	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+	NLCcodeblock* firstCodeBlockInPhrase = *currentCodeBlockInTree;
+	*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);		
+	#endif
+					
 	//if !NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE, currently only accept entities with $qVar defined, eg "Number of red dogs". prep_of(number-4, dogs-7) [NLP] / _quantity(dog[8], _$qVar[1]) [GIA]
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -502,7 +506,13 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			}
 		}
 	}	
-	if(!foundParsablePhrase)
+	if(foundParsablePhrase)
+	{
+		#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+		*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
+		#endif	
+	}
+	else
 	{
 		#ifndef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !foundParsablePhrase" << endl;		
@@ -524,6 +534,10 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			parsablePhraseReferenceName = generateLogicalConditionConjunctionBooleanName(currentFullSentence->indentation, caseIndex, phraseIndex, NLC_LOGICAL_CONDITION_OPERATIONS_IF);
 			#else
 			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);	//?this will need to be changed to createCodeBlockDeclareNewBoolArray in the future to support multiple cases (ie if, else if, else)
+			#endif
+			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			firstCodeBlockInPhrase = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);		
 			#endif
 		
 			foundParsablePhrase = false;
@@ -629,7 +643,13 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					}
 				}
 			}	
-			if(!foundParsablePhrase)
+			if(foundParsablePhrase)
+			{
+				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+				*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
+				#endif			
+			}
+			else
 			{
 				cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !foundParsablePhrase" << endl;		
 				*currentCodeBlockInTree = clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);	//NB "*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;" redundant
@@ -657,7 +677,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			*/
 			
 			*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//double* thedogsvalue = NULL;
-		
+			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			firstCodeBlockInPhrase = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);		
+			#endif
+			
 			foundParsablePhrase = false;
 			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 			{
@@ -718,6 +742,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 				*currentCodeBlockInTree = createCodeBlockTestDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);			 //if(thedogsvalue == NULL) { cout << "error" << endl;}
 				#else
 				*currentCodeBlockInTree = createCodeBlockCheckDecimalPointerValue(*currentCodeBlockInTree, parsablePhraseReferenceName);		 //if(thedogsvalue != NULL)
+				#endif
+				#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+				*currentCodeBlockInTree = firstCodeBlockInPhrase->next;	
 				#endif
 			}
 			else

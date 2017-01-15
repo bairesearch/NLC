@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10a 21-August-2015
+ * Project Version: 1q10b 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -130,7 +130,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			}		
 		}
 		#endif
-
+		
 		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 		#ifdef NLC_USE_PREPROCESSOR
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -209,6 +209,14 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		else
 		{
 		#endif	
+		
+			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			//added 1q10b - used prevent redeclarations of xSubjectCategoryList/xObjectCategoryList//xCategoryList
+			//NB createCodeBlocksCreateContextBlock be executed after generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities because newlyDeclaredEntityInCategoryList=false is set (ie category lists are not created)
+			NLCcodeblock* firstCodeBlockInSentence = currentCodeBlockInTree;
+			currentCodeBlockInTree = createCodeBlocksCreateContextBlock(currentCodeBlockInTree);		
+			#endif
+		
 			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 			//Part 2 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
 			#ifdef NLC_DEBUG
@@ -228,6 +236,10 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			{
 				result = false;
 			}
+			
+			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+			currentCodeBlockInTree = firstCodeBlockInSentence->next;	
+			#endif
 			
 		#ifdef NLC_PREPROCESSOR_MATH
 		}
@@ -363,7 +375,6 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#else
 		sentenceIter++;
 		#endif
-
 	}
 	
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1b 14-November-2014
+ * Project Version: 1m1c 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -832,8 +832,12 @@ string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity)
 	return substanceConceptClassName;
 }
 
-void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName, GIAentityNode * previousParentEntity)
+void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName)
 {
+	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	substanceConceptEntity->NLCcontextGeneratedTemp = true;
+	#endif
+
 	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->conditionNodeList->begin(); entityIter != substanceConceptEntity->conditionNodeList->end(); entityIter++)
 	{
 		GIAentityNode * substanceConceptCondition = (*entityIter)->entity;
@@ -841,11 +845,11 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 		{
 			GIAentityNode * substanceConceptConditionObject = (substanceConceptCondition->conditionObjectEntity->back())->entity;
 			#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
-			if(previousParentEntity != substanceConceptConditionObject)	//prevent infinite loop for 2 way conditions
+			if(!(substanceConceptConditionObject->NLCcontextGeneratedTemp))		//prevent infinite loop for 2 way conditions
 			{
 			#endif
 				*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION;
-				*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject, substanceConceptEntity);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+				*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
 			#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
 			}
 			#endif
@@ -861,7 +865,12 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 		*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
 		*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptProperty, substanceConceptEntity);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
 	}
+	
+	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	substanceConceptEntity->NLCcontextGeneratedTemp = false;
+	#endif
 }
+			
 #endif
 
 #ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES

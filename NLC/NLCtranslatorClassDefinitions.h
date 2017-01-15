@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1b 14-November-2014
+ * Project Version: 1m1c 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,7 +58,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 	bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity);
 	#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 	string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity);
-		void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName, GIAentityNode * previousParentEntity);
+		void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName);
 	#endif
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition * classDefinition, vector<NLCclassDefinition*> * classDefinitionSublist, int variableType);

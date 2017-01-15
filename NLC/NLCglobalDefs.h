@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u5a 28-September-2016
+ * Project Version: 1u6a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,6 +60,12 @@
 //#define NLC_DISABLE_1t_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1u_CODE_FOR_DEBUG
 #ifndef NLC_DISABLE_1u_CODE_FOR_DEBUG
+	//#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN	//has not yet been defined
+		#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN	//1u6a	//allows user to declare "function main"; will be executed by int main()
+		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN
+			#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN_FUNCTION_NAME "main"
+		#endif
+	//#endif
 	#define NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED	//1u4a
 	//#define NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES_RETAIN_OLD_CODE_FOR_DEBUGGING	//removed 1u3a
 	#ifndef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES_RETAIN_OLD_CODE_FOR_DEBUGGING

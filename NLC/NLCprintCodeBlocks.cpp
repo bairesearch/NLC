@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u5a 28-September-2016
+ * Project Version: 1u6a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1889,8 +1889,32 @@ string generateMainFunctionText(vector<NLCitem*>* parameters, int progLang)
 			implicitlyDeclaredFunctionDetected = true;
 			functionName = functionArgument->functionName;
 		}
+		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN
+		if(functionArgument->className == generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN_FUNCTION_NAME))
+		{
+			implicitlyDeclaredFunctionDetected = true;
+			functionName = functionArgument->functionName;
+		}		
+		#endif
 	}
-
+	NLCitem* functionOwnerArgument = NULL;
+	string functionOwnerName = "";
+	if(findFunctionArgument(parameters, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))	//this may not be set
+	{
+		if(functionOwnerArgument->className == generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME))
+		{
+			functionOwnerName = NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME;
+		}
+		else
+		{
+			implicitlyDeclaredFunctionDetected = false;
+		}
+	}
+	else
+	{
+		functionOwnerName = NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME;	
+	}
+	
 	if(implicitlyDeclaredFunctionDetected)
 	{
 		string functionArgumentsDeclaration = "";
@@ -1911,7 +1935,7 @@ string generateMainFunctionText(vector<NLCitem*>* parameters, int progLang)
 		}
 		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + CHAR_NEWLINE + progLangMainFunctionDeclaration[progLang] + CHAR_NEWLINE + progLangOpenBlock[progLang] + CHAR_NEWLINE;	//int main()\n{
 		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + functionArgumentsDeclaration;
-		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + CHAR_TAB + generateExternalFunctionContext(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME, progLang) + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang] + CHAR_NEWLINE;	//\tNLCimplicitlyDeclaredFunctionArtificialFunction(xClassList, ...);\n
+		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + CHAR_TAB + generateExternalFunctionContext(functionOwnerName, progLang) + functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang] + CHAR_NEWLINE;	//(new functionsWithNoSubjectArtificial)->NLCimplicitlyDeclaredFunctionArtificialFunction/mainFunction(xClassList, ...);\n
 		printedCodeBlocksSourceMainFunctionText = printedCodeBlocksSourceMainFunctionText + progLangCloseBlock[progLang] + CHAR_NEWLINE;		//}\n
 	}
 

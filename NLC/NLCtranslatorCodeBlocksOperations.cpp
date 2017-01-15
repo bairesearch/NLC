@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n18c 31-January-2015
+ * Project Version: 1n18d 31-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1027,6 +1027,13 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 							{
 								result = true;
 
+								#ifdef NLC_RECORD_ACTION_HISTORY
+								if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+								{
+									targetEntity->NLCcontextGeneratedTemp = true;
+								}
+								#endif	
+								
 								#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
 								//FINISH THIS;
 								bool verifyObject = false;
@@ -1078,6 +1085,13 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 								#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
 								}
 								#endif
+								
+								#ifdef NLC_RECORD_ACTION_HISTORY
+								if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+								{
+									targetEntity->NLCcontextGeneratedTemp = false;
+								}
+								#endif								
 
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 								targetEntity->NLClogicalConditionConjunctionIndex = generateContextBlocksVariables->logicalConditionConjunctionIndex;

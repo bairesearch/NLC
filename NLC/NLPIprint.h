@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c1a 27-October-2013
+ * Project Version: 1c2a 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -47,15 +47,20 @@ using namespace std;
 
 bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
 	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
+		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang);
+			string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang);
+		#endif	
 	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
 		void printLine(string command, int level, string * code);
-		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS	
-		string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang);
-			string generateCodeConditionPairReferenceText(GIAentityNode * conditionEntity, GIAentityNode * conditionObjectEntity, int progLang);
-			//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
-				string generateInstanceNameWithContext(GIAentityNode * entity, int progLang);
-		string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-		string generateCodePropertyDefinitionText(string propertyClassName, int progLang);
+		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		string generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang);			
+			string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang);
+				string generateCodeConditionPairReferenceText(GIAentityNode * conditionEntity, GIAentityNode * conditionObjectEntity, int progLang);
+				//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
+					string generateInstanceNameWithContext(GIAentityNode * entity, int progLang);
+			string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
+			string generateCodePropertyDefinitionText(string propertyClassName, int progLang);
 		#endif
 		string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 		string generateConditionPairName(string conditionClassName, string conditionObjectClassName);

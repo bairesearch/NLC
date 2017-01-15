@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c1a 27-October-2013
+ * Project Version: 1c2a 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -150,37 +150,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 					functionArguments = generateClassName(actionObject) + progLangPointer[progLang] + STRING_SPACE + generateInstanceName(actionObject);
 				}
 				#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-				//for(unordered_map<string, string>::iterator localListIter2 = targetClassDefinition->actionConditionList.begin(); localListIter2 != targetClassDefinition->actionConditionList.end(); localListIter2++)
-				//for(vector<string>::iterator localListIter2 = targetClassDefinition->actionOrConditionInstance->conditionNodeList.begin(); localListIter2 != targetClassDefinition->actionOrConditionInstance->conditionNodeList.end(); localListIter2++)
-				for(vector<GIAentityConnection*>::iterator entityIter = targetClassDefinition->actionOrConditionInstance->conditionNodeList->begin(); entityIter != targetClassDefinition->actionOrConditionInstance->conditionNodeList->end(); entityIter++)
-				{
-					//string actionConditionObject = (*localListIter2)->second;
-					//string actionConditionObject = *localListIter2;
-					if(functionArguments != "")
-					{
-						functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-					}					
-					GIAentityNode * actionCondition = (*entityIter)->entity;
-					string conditionObjectClassName = "";
-					if(!(actionCondition->conditionObjectEntity->empty()))
-					{
-						conditionObjectClassName = generateClassName((actionCondition->conditionObjectEntity->back())->entity);
-					}
-					string conditionClassName = generateClassName(actionCondition);				
-					functionArguments = functionArguments + generateCodeConditionPairDefinitionText(conditionClassName, conditionObjectClassName, progLang);
-				}
-				//for(vector<string>::iterator localListIter2 = targetClassDefinition->actionOrConditionInstance->propertyNodeList.begin(); localListIter2 != targetClassDefinition->actionOrConditionInstance->propertyNodeList.end(); localListIter2++)
-				for(vector<GIAentityConnection*>::iterator entityIter = targetClassDefinition->actionOrConditionInstance->propertyNodeList->begin(); entityIter != targetClassDefinition->actionOrConditionInstance->propertyNodeList->end(); entityIter++)				
-				{
-					//string actionProperty = *localListIter2;
-					GIAentityNode * actionProperty = (*entityIter)->entity;
-					if(functionArguments != "")
-					{
-						functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-					}
-					string propertyClassName = generateClassName(actionProperty);
-					functionArguments = functionArguments + generateCodePropertyDefinitionText(propertyClassName, progLang);
-				}
+				functionArguments = generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetClassDefinition->actionOrConditionInstance, functionArguments, progLang);
 				#endif
 				string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 				printLine(localListDeclarationText, 1, code);
@@ -193,6 +163,62 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 		#endif			
 	}
 }
+
+#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang)
+{
+	functionArguments = generateFunctionPropertyConditionArguments(actionEntity, functionArguments, progLang);
+	
+	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+	//Part b: generate object initialisations based on action concepts (class inheritance)
+	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+	{
+		GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+		definitionConnection->parsedForNLPIcodeBlocks = true;
+		GIAentityNode* definitionEntity = definitionConnection->entity;
+		if(definitionEntity->isActionConcept)
+		{
+			functionArguments = generateFunctionPropertyConditionArguments(definitionEntity, functionArguments, progLang);
+		}
+	}
+	#endif
+	
+	return functionArguments;
+}
+
+string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang)
+{
+	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+	{
+		//string actionConditionObject = (*localListIter2)->second;
+		//string actionConditionObject = *localListIter2;
+		if(functionArguments != "")
+		{
+			functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+		}					
+		GIAentityNode * actionCondition = (*entityIter)->entity;
+		string conditionObjectClassName = "";
+		if(!(actionCondition->conditionObjectEntity->empty()))
+		{
+			conditionObjectClassName = generateClassName((actionCondition->conditionObjectEntity->back())->entity);
+		}
+		string conditionClassName = generateClassName(actionCondition);				
+		functionArguments = functionArguments + generateCodeConditionPairDefinitionText(conditionClassName, conditionObjectClassName, progLang);
+	}
+	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
+	{
+		//string actionProperty = *localListIter2;
+		GIAentityNode * actionProperty = (*entityIter)->entity;
+		if(functionArguments != "")
+		{
+			functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+		}
+		string propertyClassName = generateClassName(actionProperty);
+		functionArguments = functionArguments + generateCodePropertyDefinitionText(propertyClassName, progLang);
+	}
+	return functionArguments;
+}
+#endif
 
 bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level)
 {
@@ -219,7 +245,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			string functionArguments = contextParam2 + param2->instanceName;
 						
 			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-			functionArguments = generateFunctionPropertyConditionArguments(param1->actionInstance, functionArguments, progLang);
+			functionArguments = generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(param1->actionInstance, functionArguments, progLang);
 			#endif
 			
 			string codeBlockText = contextParam1 + param1->instanceName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
@@ -232,7 +258,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 		{
 			string functionArguments = "";
 			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-			functionArguments = generateFunctionPropertyConditionArguments(param1->actionInstance, functionArguments, progLang);
+			functionArguments = generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(param1->actionInstance, functionArguments, progLang);
 			#endif
 					
 			string codeBlockText = contextParam1 + param1->name + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
@@ -328,7 +354,27 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 }
 
 #ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang)
+
+string generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang)
+{
+	functionArguments = generateFunctionExecutionPropertyConditionArguments(actionEntity, functionArguments, progLang);
+	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+	//Part b: generate object initialisations based on action concepts (class inheritance)
+	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+	{
+		GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+		definitionConnection->parsedForNLPIcodeBlocks = true;
+		GIAentityNode* definitionEntity = definitionConnection->entity;
+		if(definitionEntity->isActionConcept)
+		{
+			functionArguments = generateFunctionExecutionPropertyConditionArguments(definitionEntity, functionArguments, progLang);
+		}
+	}
+	#endif
+	return functionArguments;
+}
+
+string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang)
 {
 	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
 	{

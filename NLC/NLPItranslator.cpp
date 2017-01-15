@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c1a 27-October-2013
+ * Project Version: 1c2a 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -231,7 +231,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			GIAentityNode * entity = *entityIter;
 			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{	
-				if(!(entity->isSubstanceConcept))
+				if(!(entity->isSubstanceConcept) && !(entity->isActionConcept))
 				{	
 					//property initialisations
 					for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
@@ -269,6 +269,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					}
 				}	
 				
+				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 				//Part 2b: generate object initialisations based on substance concepts (class inheritance)
 				for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
 				{
@@ -313,7 +314,8 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						}	
 					}
 					//}
-				}				
+				}
+				#endif				
 			}
 		}
 
@@ -417,7 +419,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						classDefinitionList->push_back(targetClassDefinition);
 					}
 					#ifndef NLPI_BAD_IMPLEMENTATION
-					if((targetEntity->isAction) || (targetEntity->isCondition) && !(targetEntity->isConcept))
+					if((targetEntity->isAction) || (targetEntity->isActionConcept) ||(targetEntity->isCondition) && !(targetEntity->isConcept))
 					{
 						targetClassDefinition->isActionOrConditionInstanceNotClass = true;
 						//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;

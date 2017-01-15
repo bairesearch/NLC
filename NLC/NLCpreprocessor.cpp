@@ -582,7 +582,7 @@ void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence*
 	(*currentNLCsentenceInList)->indentation = currentIndentation;
 	(*currentNLCsentenceInList)->next = new NLCsentence();
 	(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
-	(*sentenceIndex)++;
+	(*sentenceIndex) = (*sentenceIndex)+1;
 }
 
 #ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS

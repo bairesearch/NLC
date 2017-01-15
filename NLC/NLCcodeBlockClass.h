@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2i 15-September-2016
+ * Project Version: 1t2j 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -209,11 +209,9 @@
 #endif
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_GENERIC_ENTITY (119)
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
-		#define NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM (120)
-		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY (121)
-		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION (122)
-	#endif
+	#define NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM (120)
+	//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY (121)
+	//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION (122)
 #endif
 #define NLC_CODEBLOCK_TYPE_CONTEXT_BLOCK (123)
 #ifdef NLC_RECORD_ACTION_HISTORY
@@ -319,7 +317,7 @@ public:
 	NLCcodeblock* currentCodeBlockInTreeAtBaseLevel;	//added 1k16c - for loop support
 	#endif
 	#endif
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
 	bool testNumerosity;
 	int childQuantity;
 	#endif
@@ -563,7 +561,7 @@ NLCcodeblock* createCodeBlockForPropertyTypeClass(NLCcodeblock* currentCodeBlock
 	NLCcodeblock* createCodeBlockForGenericList2(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 #endif
 
-#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 NLCcodeblock* createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock* currentCodeBlockInTree, string intVariableName, int value);
 /*
 NLCcodeblock* createCodeBlockIfHasMoreThanNumProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* propertyEntity, int value, string parentInstanceName);
@@ -601,7 +599,7 @@ bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 
 NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string warning);
 
-#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 string generateCategoryListPropertyCountVariableName(GIAentityNode* entity);
 #endif
 

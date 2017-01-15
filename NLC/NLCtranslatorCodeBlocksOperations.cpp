@@ -266,7 +266,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		
 		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 		//modified 1t2e
-		bool parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite = false;
 		if(foundSubject)
 		{		
 			if(!assumedToAlreadyHaveBeenDeclared(subjectEntity))	//!isDefiniteEntity
@@ -294,7 +293,8 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 				}
 			}
 		}
-		#endif	
+		#endif
+		
 	}
 	#endif
 		
@@ -502,7 +502,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 	{
 	#endif
 		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, genericListAppendName, sentenceIndex);
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN_BASIC
 		if(generateContextBlocksVariables->testNumerosity)
 		{
 			string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
@@ -569,13 +569,14 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 		}
 		#endif
 
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN_BASIC
 		if(generateContextBlocksVariables->testNumerosity)
 		{
 			//test numerosity of child
+			//cout << "parentEntity = " << parentEntity->entityName << endl;
 			if(generateContextBlocksVariables->childQuantity > 1)
 			{
+				//cout << "parentEntity = " << parentEntity->entityName << endl;
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (child)");
 				#endif
@@ -585,8 +586,6 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 
 		}
 		#endif
-		#endif
-
 		
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 		if(generateContextBlocksVariables->enterGeneratedCategoryList)
@@ -625,7 +624,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 			else
 			{
 			#endif
-				#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT_BASIC
 				if(generateContextBlocksVariables->testNumerosity)
 				{
 					//test numerosity of parent
@@ -873,7 +872,7 @@ bool addEntityToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityNod
 	#endif
 	#endif
 
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN_BASIC
 	if(generateContextBlocksVariables->testNumerosity)
 	{
 		string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(entity);
@@ -1391,7 +1390,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, stri
 		}
 	}
 	#endif
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN_BASIC
 	if(generateContextBlocksVariables->testNumerosity)
 	{
 		if(checkNumerosity(propertyEntity))
@@ -1468,7 +1467,7 @@ bool createCodeBlockForGivenCondition(NLCcodeblock** currentCodeBlockInTree, str
 				generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
 			}
 			#endif
-			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN_BASIC
 			if(generateContextBlocksVariables->testNumerosity)
 			{
 				if(checkNumerosity(conditionObject))
@@ -1831,14 +1830,14 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 		{
 			if(!testOnly)
 			{
+				bool logicalConditionBooleanStatement = false;
 				#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
-				bool parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite = false;
 				if(generateContextBlocksVariables->logicalConditionBooleanStatement)
 				{
+					logicalConditionBooleanStatement = true;
 					if((*parentEntity)->NLCbooleanStatmentIndefiniteEntity)
 					{
 						//code copied from generateCodeBlocksFromMathTextNLPparsablePhrase
-						parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite = true;
 		
 						//eg "If a house is green, do this
 						#ifdef NLC_GENERATE_TYPE_LISTS
@@ -1850,7 +1849,7 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 				}
 				#endif
 				
-				if(generateContextForChildEntity(currentCodeBlockInTree, NULL, currentEntity, sentenceIndex, true, parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetUniqueParent()
+				if(generateContextForChildEntity(currentCodeBlockInTree, NULL, currentEntity, sentenceIndex, true, logicalConditionBooleanStatement))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetUniqueParent()
 				{
 					result = true;
 				}
@@ -2511,6 +2510,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 }
 
 #ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
+//assume is logicalConditionBooleanStatement
 bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, GIAentityNode* subjectParentEntity, bool primary, bool* logicalConditionBooleanStatementNegativeDetected)
 {
 	#ifdef NLC_DEBUG
@@ -2524,19 +2524,45 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 	GIAentityNode* objectEntityTemp = NULL;
 	bool generateContextForObjectTemp = false;
 	bool generateTest = false;
+
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT
+	NLCcodeblock* firstCodeBlockAtLevel1 = *currentCodeBlockInTree;
+	#endif
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	NLCcodeblock* firstCodeBlockAtLevel2 = NULL;
+	#endif
 	
 	if(primary)
 	{
-		if(foundSubject)
+		if(foundSubject)	//assume true
 		{
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT
+			if(checkNumerosity(subjectEntity))
+			{
+				string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(subjectEntity);
+				*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 0);
+			}
+			#endif
+			
 			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, subjectEntity, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);
 		}	
-		if(foundObject)
+		if(objectEntity != NULL)
 		{
-			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);
-		}
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+			firstCodeBlockAtLevel2 = *currentCodeBlockInTree;
+			if(checkNumerosity(subjectEntity) || checkNumerosity(objectEntity))
+			{
+				string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(objectEntity);
+				*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 0);
+			}
+			#endif
+			if(foundObject)
+			{
+				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);
+			}
+		}	
 	}
-	
+		
 	#ifdef NLC_RECORD_ACTION_HISTORY
 	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 	{	
@@ -2691,13 +2717,57 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 			targetEntity.entityName = objectEntityTemp->entityName;
 			targetEntity.idInstance = objectEntityTemp->idInstance;
 			secondaryComparisonRestoreIDinstance(objectEntityTemp);
-			
+	
+				
 			if(foundSubject && foundObject)
 			{
+				//eg if the baskets have the pie
 				//ignore cases with indefinite object eg if Tom has a car (in which case foundObject will have been set to false)
-				
 				*currentCodeBlockInTree = createCodeBlockIfTempVariableEqualsEntity(*currentCodeBlockInTree, &targetEntity, objectEntity);	//if(param1 == param2) {
 			}
+			
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+			if(objectEntity != NULL)
+			{
+				if(checkNumerosity(subjectEntity) || checkNumerosity(objectEntity))
+				{
+					//eg If the basket has 3 pies, eat the apple.
+					string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(objectEntity);
+					*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName);
+
+					*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockAtLevel2);
+					if(checkNumerosity(objectEntity))
+					{
+						#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+						*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (child)");
+						#endif
+						*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, objectEntity->quantityNumber);
+					}
+					else
+					{
+						//just verify that at least 1 object item is found
+						*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 1);
+					}
+				}		
+			}	
+			#endif
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT
+			if(foundSubject)	//assume true
+			{
+				if(checkNumerosity(subjectEntity))
+				{
+					//eg If 3 baskets have a pie, eat the apple.
+					string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(subjectEntity);
+					*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName);
+					
+					*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockAtLevel1);
+					#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
+					#endif
+					*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, subjectEntity->quantityNumber);
+				}
+			}
+			#endif			
 		}
 	}
 	
@@ -3063,12 +3133,13 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 {	
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
 	NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 	if(logicalConditionBooleanStatement)
 	{
+		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 		generateContextBlocksVariables.logicalConditionBooleanStatement = true;
+		#endif	
 	}
-	#endif
+	
 	generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
 	//research context in case, eg "The chicken has the ball which is near the park." (ie when initialisation property is definite; as distinguished from "The chicken has a ball near the park.")	
 	bool generatedContextForChild = false;
@@ -3670,12 +3741,14 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** 
 							*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entity, generateInstanceName(parentEntity));	
 							entity->NLCcontextGenerated = true;
 							NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-							#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
+							
 							if(logicalConditionBooleanStatement)
 							{
+								#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 								generateContextBlocksVariables.logicalConditionBooleanStatement = true;	//not used as NLC_LOCAL_LISTS_USE_INSTANCE_NAMES implies that createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction will be executed regardless
+								#endif
 							}
-							#endif
+
 							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;	//CHECKTHIS
 							generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);		//added 1l13b
 							//createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(entity), entity, sentenceIndex, &generateContextBlocksVariables);	//added 1l13a	//or generateContextBlocksSimple(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION)

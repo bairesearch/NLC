@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2i 15-September-2016
+ * Project Version: 1t2j 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -482,9 +482,21 @@
 					#endif
 					#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE "Execution warning: multiple objects have been added to a singular definite variable (category) - should the entity have been defined as plural instead?"
 				#endif
-				#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY	//1j21a - test numerosity of categories and children; only applicable for logical conditions?	//eg "If 3 baskets have a pie, eat the apple."
+				#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY	//1j21a - test numerosity of categories and children; only applicable for logical conditions
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+					#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT	//eg "If 3 baskets have a pie, eat the apple."
 					#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN	//eg "If the basket has 3 pies, eat the apple."
+					#ifndef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
+						#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
+						#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
+							#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT
+								#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_PARENT_BASIC
+							#endif
+							#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+								#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN_BASIC
+							#endif
+						#endif
+					#endif
 				#endif
 			#endif
 		#endif

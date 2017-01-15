@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2i 15-September-2016
+ * Project Version: 1t2j 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1559,7 +1559,7 @@ bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int senten
 	else if(logicalConditionOperator != INT_DEFAULT_VALUE)
 	{
 		generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
 		generateContextBlocksVariables->testNumerosity = true;
 		#endif	
 	}

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2i 15-September-2016
+ * Project Version: 1t2j 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,7 +97,7 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	currentCodeBlockInTreeAtBaseLevel = NULL;
 	#endif
 	#endif
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_BASIC
 	testNumerosity = false;
 	childQuantity = 1;
 	#endif
@@ -2448,7 +2448,7 @@ NLCcodeblock* createCodeBlockForPropertyTypeClass(NLCcodeblock* currentCodeBlock
 }
 #endif
 
-#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 NLCcodeblock* createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock* currentCodeBlockInTree, string intVariableName, int value)
 {
 	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
@@ -2790,7 +2790,7 @@ NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string 
 	return currentCodeBlockInTree;
 }
 
-#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 string generateCategoryListPropertyCountVariableName(GIAentityNode* entity)
 {
 	string categoryListPropertyCountVariableName = generateInstanceName(entity) + NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION + NLC_ITEM_TYPE_LIST_VAR_APPENDITION + NLC_ITEM_TYPE_PROPERTYCOUNT_VAR_APPENDITION;	

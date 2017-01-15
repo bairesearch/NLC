@@ -129,7 +129,7 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 "\n\t-tempfolder [string]               : temp directory name for temporary and output files (def: same as exe)"
 "\n"
 "\n\n\t-version         : print version"
-"\n\n\tThis program performs NLC (Natural Language Programming Interface) operations - generates computer code (eg C++) from natural language statements (it currently requires to be compiled with GIA source code).\n\n";
+"\n\n\tThis program performs NLC (Natural Language Compiler) operations - generates computer code (eg C++) from natural language statements (it currently requires to be compiled with GIA source code).\n\n";
 
 //Dependency Relationship Extractor
 

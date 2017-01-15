@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p7a 07-July-2015
+ * Project Version: 1p8a 09-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 #ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-NLCsuperphrase::NLCsuperphrase(void)
+NLCsubphrase::NLCsubphrase(void)
 {
 	lineIndexOfFirstCharacterInPhrase = INT_DEFAULT_VALUE;
 	phraseContents = "";
@@ -47,7 +47,7 @@ NLCsuperphrase::NLCsuperphrase(void)
 	conjunctionType = INT_DEFAULT_VALUE;
 	next = NULL;
 }
-NLCsuperphrase::~NLCsuperphrase(void)
+NLCsubphrase::~NLCsubphrase(void)
 {
 }
 #endif
@@ -185,7 +185,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence* first
 
 
 
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSuperphraseContents)
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSubphraseContents)
 {
 	bool result = true;
 	
@@ -237,7 +237,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 
 			if(phraseIndexOfFirstLogicalCommand == 0)
 			{//eg If x+5 == 12405, X = 3+5
-				indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(logicalConditionCommandSuperphraseContents);
+				indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(logicalConditionCommandSubphraseContents);
 				//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;
 			}
 			else
@@ -679,7 +679,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, bool* foundImplicitConjunctions, string* logicalConditionCommandSuperphraseContents)
+bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, bool* foundImplicitConjunctions, string* logicalConditionCommandSubphraseContents)
 {
 	bool result = true;
 	
@@ -690,8 +690,8 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 	cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand: lineContents = " <<* lineContents << endl;
 	#endif
 	
-	NLCsuperphrase* firstNLCsuperphraseInList = new NLCsuperphrase();
-	NLCsuperphrase* currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	NLCsubphrase* firstNLCsubphraseInList = new NLCsubphrase();
+	NLCsubphrase* currentNLCsubphraseInList = firstNLCsubphraseInList;
 	
 	int startPosToSearchForComma = 0;
 	int commaIndex = 0;
@@ -705,7 +705,7 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 			indexOfNextComma = lineContents->length();
 		}
 		
-		bool conjunctionFoundInSuperphrase = false;
+		bool conjunctionFoundInSubphrase = false;
 		int conjunctionTypeOfConjunction = INT_DEFAULT_VALUE;
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITHOUT_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
 		{
@@ -715,39 +715,39 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 			//cout << "indexOfConjunctionTemp = " << indexOfConjunctionTemp << endl;	
 			if((indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunctionTemp == expectedPosOfConjunctionIfExistent))
 			{
-				conjunctionFoundInSuperphrase = true;
+				conjunctionFoundInSubphrase = true;
 				conjunctionTypeOfConjunction = i;				
 			}
 		}
 
-		string superphraseContents = lineContents->substr(startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
+		string subphraseContents = lineContents->substr(startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
 		
-		currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase = startPosToSearchForComma;
-		currentNLCsuperphraseInList->hasConjunction = conjunctionFoundInSuperphrase;
-		if(conjunctionFoundInSuperphrase)
+		currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase = startPosToSearchForComma;
+		currentNLCsubphraseInList->hasConjunction = conjunctionFoundInSubphrase;
+		if(conjunctionFoundInSubphrase)
 		{	
-			currentNLCsuperphraseInList->phraseContents = superphraseContents.substr(0, superphraseContents.length()-preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[conjunctionTypeOfConjunction].length());	//super phrase contents must have conjunction removed to enable replaceLogicalConditionNaturalLanguageMathWithSymbols to be on logicalConditionCommandSuperphraseContents in parallel with lineContents, enabling logicalConditionCommandSuperphraseContents to be found within the lineContents of splitMathDetectedLineIntoNLPparsablePhrases() and an nlp parsable phrase phrase index to be assigned to the command
-			currentNLCsuperphraseInList->conjunctionType = conjunctionTypeOfConjunction;
+			currentNLCsubphraseInList->phraseContents = subphraseContents.substr(0, subphraseContents.length()-preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[conjunctionTypeOfConjunction].length());	//sub phrase contents must have conjunction removed to enable replaceLogicalConditionNaturalLanguageMathWithSymbols to be on logicalConditionCommandSubphraseContents in parallel with lineContents, enabling logicalConditionCommandSubphraseContents to be found within the lineContents of splitMathDetectedLineIntoNLPparsablePhrases() and an nlp parsable phrase phrase index to be assigned to the command
+			currentNLCsubphraseInList->conjunctionType = conjunctionTypeOfConjunction;
 		}
 		else
 		{
-			currentNLCsuperphraseInList->phraseContents = superphraseContents;
+			currentNLCsubphraseInList->phraseContents = subphraseContents;
 		}
 		
 		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-		cout << "\ngenerateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: create new NLCsuperphrase" << endl;
+		cout << "\ngenerateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: create new NLCsubphrase" << endl;
 		cout << "lineContents = " <<* lineContents << endl;
 		cout << "startPosToSearchForComma = " << startPosToSearchForComma << endl;
 		cout << "indexOfNextComma = " << indexOfNextComma << endl;
-		cout << "superphraseContents = " << superphraseContents << endl;
-		cout << "currentNLCsuperphraseInList->phraseContents = " << currentNLCsuperphraseInList->phraseContents << endl;
-		cout << "currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase = " << currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase << endl;
-		cout << "currentNLCsuperphraseInList->hasConjunction = " << currentNLCsuperphraseInList->hasConjunction << endl;
-		cout << "currentNLCsuperphraseInList->conjunctionType = " << currentNLCsuperphraseInList->conjunctionType << endl;
+		cout << "subphraseContents = " << subphraseContents << endl;
+		cout << "currentNLCsubphraseInList->phraseContents = " << currentNLCsubphraseInList->phraseContents << endl;
+		cout << "currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase = " << currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase << endl;
+		cout << "currentNLCsubphraseInList->hasConjunction = " << currentNLCsubphraseInList->hasConjunction << endl;
+		cout << "currentNLCsubphraseInList->conjunctionType = " << currentNLCsubphraseInList->conjunctionType << endl;
 		#endif
 		
-		currentNLCsuperphraseInList->next = new NLCsuperphrase();
-		currentNLCsuperphraseInList = currentNLCsuperphraseInList->next;
+		currentNLCsubphraseInList->next = new NLCsubphrase();
+		currentNLCsubphraseInList = currentNLCsubphraseInList->next;
 				
 		if(stillCommasToFind)
 		{
@@ -771,83 +771,83 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 	
 	
 	//all other phrases without a preceeding conjuction are artifically assigned a preceeding conjunction of type based on the conjunction preceeding the last phrase in the logical condition test of command
-	currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	currentNLCsubphraseInList = firstNLCsubphraseInList;
 	bool previousPhraseHadConjunction = false;
 	bool firstPhrase = true;
-	while(currentNLCsuperphraseInList->next != NULL)
+	while(currentNLCsubphraseInList->next != NULL)
 	{
 		if(firstPhrase)
 		{
 		
 		}
-		else if(!(currentNLCsuperphraseInList->hasConjunction))
+		else if(!(currentNLCsubphraseInList->hasConjunction))
 		{
-			NLCsuperphrase* currentNLCsuperphraseInList2 = currentNLCsuperphraseInList;
+			NLCsubphrase* currentNLCsubphraseInList2 = currentNLCsubphraseInList;
 			bool foundConjunctionOfFuturePhrase = false;
 			int conjunctionTypeOfFuturePhrase = INT_DEFAULT_VALUE;
-			while(currentNLCsuperphraseInList2->next != NULL)
+			while(currentNLCsubphraseInList2->next != NULL)
 			{
 				if(!foundConjunctionOfFuturePhrase)
 				{
-					if(currentNLCsuperphraseInList2->hasConjunction)
+					if(currentNLCsubphraseInList2->hasConjunction)
 					{
 						foundConjunctionOfFuturePhrase = true;
-						conjunctionTypeOfFuturePhrase = currentNLCsuperphraseInList2->conjunctionType;
+						conjunctionTypeOfFuturePhrase = currentNLCsubphraseInList2->conjunctionType;
 					}
 				}
-				currentNLCsuperphraseInList2 = currentNLCsuperphraseInList2->next;
+				currentNLCsubphraseInList2 = currentNLCsubphraseInList2->next;
 			}
 			if(foundConjunctionOfFuturePhrase)
 			{
-				currentNLCsuperphraseInList->hasConjunction = true;				//redundant
-				currentNLCsuperphraseInList->conjunctionType = conjunctionTypeOfFuturePhrase;	//redundant
+				currentNLCsubphraseInList->hasConjunction = true;				//redundant
+				currentNLCsubphraseInList->conjunctionType = conjunctionTypeOfFuturePhrase;	//redundant
 				//update the lineContents with an artifical conjunction
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: foundConjunctionOfFuturePhrase" << endl;
-				cout << "update the lineContents with an artifical conjunction: currentNLCsuperphraseInList->phraseContents = " << currentNLCsuperphraseInList->phraseContents << endl;
+				cout << "update the lineContents with an artifical conjunction: currentNLCsubphraseInList->phraseContents = " << currentNLCsubphraseInList->phraseContents << endl;
 				cout << "old lineContents = " <<* lineContents << endl;
 				#endif
-				lineContents->insert(currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase, preprocessorMathOperatorsEquivalentConjunctionsWithoutEndWhiteSpace[conjunctionTypeOfFuturePhrase]);
+				lineContents->insert(currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase, preprocessorMathOperatorsEquivalentConjunctionsWithoutEndWhiteSpace[conjunctionTypeOfFuturePhrase]);
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "new lineContents = " <<* lineContents << endl;
 				#endif
 			}
 		}
 		
-		currentNLCsuperphraseInList = currentNLCsuperphraseInList->next;
+		currentNLCsubphraseInList = currentNLCsubphraseInList->next;
 		firstPhrase = false;
 	}
 	
 
 		
 	//if a phrase without a preceeding conjunction occurs after a phrase with a preceeding conjunction, take this phrase as the start of the logical condition command
-	currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	currentNLCsubphraseInList = firstNLCsubphraseInList;
 	previousPhraseHadConjunction = false;
 	firstPhrase = true;
 	commaIndex = 0;
-	while(currentNLCsuperphraseInList->next != NULL)
+	while(currentNLCsubphraseInList->next != NULL)
 	{
 		if(firstPhrase)	//redundant
 		{
 		
 		}
-		else if(!(currentNLCsuperphraseInList->hasConjunction))
+		else if(!(currentNLCsubphraseInList->hasConjunction))
 		{
 			if(previousPhraseHadConjunction || (commaIndex = numberOfSuperPhrases-1))
 			{
 				//found first phrase in logical condition command
 				*detectedLogicalConditionCommand = true; 
-				//*indexOfLogicalConditionCommand = currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase;
+				//*indexOfLogicalConditionCommand = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
 				//cout << "indexOfLogicalConditionCommand = " <<* indexOfLogicalConditionCommand << endl;
-				*logicalConditionCommandSuperphraseContents = currentNLCsuperphraseInList->phraseContents;
+				*logicalConditionCommandSubphraseContents = currentNLCsubphraseInList->phraseContents;
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: found first phrase in logical condition command" << endl;
-				cout << "logicalConditionCommandSuperphraseContents = " <<* logicalConditionCommandSuperphraseContents << endl;
+				cout << "logicalConditionCommandSubphraseContents = " <<* logicalConditionCommandSubphraseContents << endl;
 				#endif
 			}
 		} 
 		
-		if(currentNLCsuperphraseInList->hasConjunction)
+		if(currentNLCsubphraseInList->hasConjunction)
 		{
 			previousPhraseHadConjunction = true;
 		}
@@ -856,7 +856,7 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 			previousPhraseHadConjunction = false;
 		}
 		
-		currentNLCsuperphraseInList = currentNLCsuperphraseInList->next;
+		currentNLCsubphraseInList = currentNLCsubphraseInList->next;
 		firstPhrase = false;
 		commaIndex++;
 	}

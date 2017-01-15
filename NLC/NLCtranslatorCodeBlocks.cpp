@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g10b 12-July-2014
+ * Project Version: 1g10c 12-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -214,6 +214,8 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 						//cout << "foundConditionSubject && foundConditionObject" << endl;
 						//1. disable all classStructure formation based on condition object subset
 
+						NLCcodeblock * currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+						
 						bool passedConditionObject = false;
 						if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) && (logicalConditionObject->isConcept || logicalConditionObject->isSubstanceConcept))
 						{//eg If red dogs are pies, eat the cabbage
@@ -368,6 +370,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 								cout << "conj: 2" << endl;
 								#endif
+								currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, NLC_CONDITION_LOGICAL_OPERATIONS_IF, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax);
 								if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 								{
@@ -376,7 +379,8 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 								cout << "conj: 3" << endl;
 								#endif
-							}							
+								
+							}						
 						#else
 							//this code is suitable for for/while/if logical conditions without conjunctions:
 
@@ -388,11 +392,13 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 							logicalConditionConjunctionVariables.negative = simpleNonConjunctionLogicalConditionNegative;
 							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, &contextFound, &logicalConditionConjunctionVariables);	//NB this will set parsedForNLCcodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
 							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
+					
 							#ifndef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
 							//handle condition logical operations; eg "If the basket is near the house" in "If the basket is near the house, the dog is happy." //added GIA 1g3a
 							*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, logicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables);	
 							#endif
+							
+							
 							
 						#endif
 							
@@ -426,6 +432,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 								generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex, NLCfunctionName);
+								*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
 							}
 							else
 							{
@@ -433,6 +440,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 								generateInitialisationCodeBlock(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex, NLCfunctionName);
+								*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
 							}
 							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 							cout << "conj: 5" << endl;

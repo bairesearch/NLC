@@ -2173,18 +2173,12 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 	NLCcodeblock* codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 	
-	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS || GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
+	if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
 	{
 		result = true;
 		GIAentityNode* actionEntity = actionOrConditionEntity;
 		if(foundSubject)
 		{
-			if(connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
-			{
-				cout << "generateCodeBlocksAddConnection{} error: foundSubject && (connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)" << endl;
-				exit(0);
-			}
-			
 			if(primary)
 			{
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, subjectEntity, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);
@@ -2196,15 +2190,6 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 		*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
 		if(foundObject)
 		{
-			if(!foundSubject)
-			{
-				if(connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
-				{
-					cout << "generateCodeBlocksAddConnection{} error: foundObject && !foundSubject && (connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)" << endl;
-					exit(0);
-				}
-			}
-			
 			if(primary)
 			{
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);

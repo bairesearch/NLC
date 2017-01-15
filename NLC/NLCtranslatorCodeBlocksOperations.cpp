@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u9b 29-September-2016
+ * Project Version: 1u10a 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -265,22 +265,14 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		generateContextBlocksVariables.logicalConditionStatement = true;
 		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 		//modified 1t2e, 1u7a
-		bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
-		bool checkIsDefinite = false;
 		if(foundSubject)
 		{	
-			/*
-			bool subjectHasSameReferenceSetParent = false;	
-			GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(subjectEntity, sentenceIndex, NULL, &subjectHasSameReferenceSetParent, parseConditionParents, checkIsDefinite);
-			if(!assumedToAlreadyHaveBeenDeclared(subjectEntity) && !subjectHasSameReferenceSetParent)	//!isDefiniteEntity
-			{
-				subjectEntity->NLClogicalConditionIndefiniteEntity = true;
-			}	
-			*/
 			if(connectionType != GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)	//redundant
 			{				
 				if(foundObject)
 				{
+					bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
+					bool checkIsDefinite = false;
 					bool objectHasSameReferenceSetParent = false;
 					GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, NULL, &objectHasSameReferenceSetParent, parseConditionParents, checkIsDefinite);
 					if(!assumedToAlreadyHaveBeenDeclared(objectEntity) && !objectHasSameReferenceSetParent)	//!isDefiniteEntity
@@ -290,20 +282,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 				}
 			}	
 		}
-		/*
-		else
-		{
-			if(foundObject)
-			{
-				bool objectHasSameReferenceSetParent = false;
-				GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, NULL, &objectHasSameReferenceSetParent, parseConditionParents, checkIsDefinite);
-				if(!assumedToAlreadyHaveBeenDeclared(objectEntity) && !assumedToAlreadyHaveBeenDeclared(parentEntityNew))	//!isDefiniteEntity
-				{
-					objectEntity->NLClogicalConditionIndefiniteEntity = true;
-				}
-			}
-		}
-		*/
 		#endif	
 	}
 	#endif
@@ -403,6 +381,9 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		if(!addNewObjectForEachSubject)
 		{
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
+			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
+			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement);
+			#endif
 		}
 	}
 	bool newInitialisationObject = false;
@@ -428,6 +409,9 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		if(!addNewObjectForEachSubject)
 		{
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
+			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
+			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, objectEntity, sentenceIndex, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement);
+			#endif
 		}
 	}
 
@@ -442,6 +426,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	{
 		isPrimary = false;
 	}
+		
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 	if((generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement))
 	{
@@ -471,11 +456,18 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 	}
 	#endif
-	
+
+	if(addNewObjectForEachSubject)
+	{
+		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
+		generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement);
+		#endif
+	}
+			
 	return result;
 }
 
-
+	
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
 {
@@ -486,6 +478,41 @@ bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree
 }
 #endif
 
+#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
+void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
+{	
+	bool testDefiniteEntityExistence = true;
+	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
+	if(generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement)
+	{
+		testDefiniteEntityExistence = false;
+		bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
+		bool checkIsDefinite = true;
+		bool entityHasSameReferenceSetDefiniteParent = false;
+		GIAentityNode* parentEntityNew = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &entityHasSameReferenceSetDefiniteParent, parseConditionParents, checkIsDefinite);
+		if(isDefiniteEntityStrict(entity) || entityHasSameReferenceSetDefiniteParent)
+		{
+			testDefiniteEntityExistence = true;
+		}
+	}
+	#endif
+	if(testDefiniteEntityExistence)
+	{
+		NLCcodeblock* lastCodeBlockInTree2 = *currentCodeBlockInTree;
+		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, entity, true, genericListAppendName, sentenceIndex);
+		if(genericListAppendName == NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION)
+		{
+			*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_WARNING_TEXT + entity->entityName);
+		}
+		else if(genericListAppendName == NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION)
+		{
+			*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_OBJECT_WARNING_TEXT + entity->entityName);		
+		}
+		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+	}
+}
+#endif
+	
 
 
 
@@ -609,6 +636,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 		{
 		#endif
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY
+			bool testDefiniteEntityExistence = true;
 			bool testPlurality = false;
 			if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
 			{
@@ -620,23 +648,36 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 				if(!isDefiniteEntityStrict(parentEntity))
 				{
 					testPlurality = false;
+					testDefiniteEntityExistence = false;
 				}
+			}
+			#endif
+			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES
+			if(testDefiniteEntityExistence)
+			{
+				NLCcodeblock* lastCodeBlockInTree2 = *currentCodeBlockInTree;
+				*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, true, genericListAppendName, sentenceIndex);
+				*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES_WARNING_TEXT + parentEntity->entityName);
+				*currentCodeBlockInTree = lastCodeBlockInTree2->next;
 			}
 			#endif
 			if(testPlurality)
 			{
-				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT_REDUNDANT
 				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
 				#endif
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
 				#ifndef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
+				#endif
 				NLCcodeblock* lastCodeBlockInTree2 = *currentCodeBlockInTree;
 				*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1, sentenceIndex);
 				*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
 				*currentCodeBlockInTree = lastCodeBlockInTree2->next;
 				#endif
 				#endif
-
+				
 				#ifndef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_FOR_LOOPS
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)

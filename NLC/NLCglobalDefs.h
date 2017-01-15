@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u9b 29-September-2016
+ * Project Version: 1u10a 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,6 +60,17 @@
 //#define NLC_DISABLE_1t_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1u_CODE_FOR_DEBUG
 #ifndef NLC_DISABLE_1u_CODE_FOR_DEBUG
+	#define NLC_RUNTIME_ERROR_PREPEND "NLC runtime error: "		//1u10a
+	#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT	//1u10a
+	#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
+		#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_WARNING_TEXT NLC_RUNTIME_ERROR_PREPEND "subject definite entity not found (ensure to initialise all entities before referencing them): "
+		#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_OBJECT_WARNING_TEXT NLC_RUNTIME_ERROR_PREPEND "object definite entity not found (ensure to initialise all entities before referencing them): "
+	#endif
+	#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES	//1u10a
+	#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES
+		#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_CATEGORIES_WARNING_TEXT NLC_RUNTIME_ERROR_PREPEND "category definite entity not found (ensure to initialise all entities before referencing them): "
+	#endif
+	//#define NLC_CATEGORIES_TEST_PLURALITY_COMMENT_REDUNDANT	//removed 1u10a
 	//#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN	//has not yet been defined
 		#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN	//1u6a	//allows user to declare "function main"; will be executed by int main()
 		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN
@@ -71,7 +82,7 @@
 	#ifndef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES_RETAIN_OLD_CODE_FOR_DEBUGGING
 		#define NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS	//1u5a
 		#ifdef NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
-			#define NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS_WARNING_TEXT "warning: function has not been defined: "
+			#define NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS_WARNING_TEXT NLC_RUNTIME_ERROR_PREPEND "function has not been defined: "
 		#endif
 	#endif
 	#define NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION	//1u2c	//requires NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE code
@@ -378,6 +389,9 @@
 		#endif
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_SUPPORT_FRACTIONAL_VALUES	//e.g. 5.5
 		#define NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT	//this prevents execution of mathText out of context
+		#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
+			#define NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT_WARNING_TEXT NLC_RUNTIME_ERROR_PREPEND "math value pointer undefined (referenced value could not be found); mathText execution will crash"
+		#endif
 	#endif
 
 	#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
@@ -494,7 +508,7 @@
 			#ifdef NLC_USE_ADVANCED_REFERENCING
 				#define NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME "lastSentenceReferenced"
 				#define NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassSingularDefiniteReferencingTests"
-				#define NLC_USE_ADVANCED_REFERENCING_COMMENT
+				//#define NLC_USE_ADVANCED_REFERENCING_COMMENT	//disabled 1u10a
 				#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 					#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES	//1k14a - requires GIA_DISABLE_ALIAS_ENTITY_MERGING
 					#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -510,12 +524,12 @@
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY
 				#define NLC_CATEGORIES_TEST_PLURALITY_ENFORCE	//interpret user definite singular references as singular even if an appropriate plural match exists
 				#define NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-				//#define NLC_CATEGORIES_TEST_PLURALITY_WARNING
+				#define NLC_CATEGORIES_TEST_PLURALITY_WARNING	//reenabled 1u10a
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
 					#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 						#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS	//1k6b
 					#endif
-					#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE "Execution warning: multiple objects have been added to a singular definite variable (category) - should the entity have been defined as plural instead?"
+					#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE NLC_RUNTIME_ERROR_PREPEND "multiple objects have been added to a singular definite variable (category) - should the entity have been defined as plural instead?"
 				#endif
 				#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY	//1j21a - test numerosity of categories and children; only applicable for logical conditions
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u9b 29-September-2016
+ * Project Version: 1u10a 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1330,7 +1330,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(ifPointerNotNullText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
 
-			string throwNullPointerErrorText = string(progLangPrintTextOpen[progLang]) + "NLC runtime error: math value pointer undefined (referenced value could not be found); mathText execution will crash" + progLangPrintTextClose[progLang] + progLangEndLine[progLang];
+			string throwNullPointerErrorText = string(progLangPrintTextOpen[progLang]) + NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT_WARNING_TEXT + progLangPrintTextClose[progLang] + progLangEndLine[progLang];
 			printLine(throwNullPointerErrorText, level+1, &printedCodeBlocksSourceText);
 
 			printLine(progLangCloseBlock[progLang], level, &printedCodeBlocksSourceText);	//}

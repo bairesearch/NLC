@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2c 12-June-2015
+ * Project Version: 1p2d 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -659,13 +659,14 @@ void generateCodeAddPropertyEntityToList(NLCitem* param1, NLCitem* param2, int p
 	printLine(codeBlockText, level, code);
 	#endif
 }
+
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 void generateCodeAddPropertyExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
 {
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_PROPERTY + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addProperty(context1->param1, context1->param1.param2PropertyList, param2);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_PROPERTY + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2), progLang) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addProperty(context1->param1, &(context1->param1.param2PropertyList), param2);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
@@ -728,7 +729,7 @@ void generateCodeRemovePropertyExecuteFunction(NLCitem* param1, NLCitem* param2,
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTY + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeProperty(context1->param1, context1->param1.param2PropertyList, param2);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTY + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2), progLang) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeProperty(context1->param1, &(context1->param1.param2PropertyList), param2);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 void generateCodeRemovePropertiesExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
@@ -736,7 +737,7 @@ void generateCodeRemovePropertiesExecuteFunction(NLCitem* param1, NLCitem* param
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTIES + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeProperties(context1->param1, context1->param1.param2PropertyList, param2);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_PROPERTIES + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2), progLang) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeProperties(context1->param1, &(context1->param1.param2PropertyList), param2);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
@@ -784,7 +785,7 @@ void generateCodeAddConditionExecuteFunction(NLCitem* param1, NLCitem* param2, N
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUseClassSeparator[progLang] + param3->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class, param3class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addCondition(context1->param1, context1->param1.param2param3ConditionList, "param2", param3);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_CONDITION + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addCondition(context1->param1, &(context1->param1.param2param3ConditionList), "param2", param3);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
@@ -849,7 +850,7 @@ void generateCodeRemoveConditionExecuteFunction(NLCitem* param1, NLCitem* param2
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUseClassSeparator[progLang] + param3->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class, param3class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITION + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeCondition(context1->param1, context1->param1.param2param3ConditionList, "param2", param3);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITION + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeCondition(context1->param1, &(context1->param1.param2param3ConditionList), "param2", param3);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 void generateCodeRemoveConditionsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
@@ -857,7 +858,7 @@ void generateCodeRemoveConditionsExecuteFunction(NLCitem* param1, NLCitem* param
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + param2->className + progLangTemplateUseClassSeparator[progLang] + param3->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class, param3class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITIONS + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeConditions(context1->param1, context1->param1.param2param3ConditionList, "param2", param3);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_REMOVE_CONDITIONS + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//removeConditions(context1->param1, &(context1->param1.param2param3ConditionList), "param2", param3);
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
@@ -879,7 +880,7 @@ void generateCodeAddActionSubjectExecuteFunction(NLCitem* functionArgument, NLCi
 {
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgument->className + progLangTemplateUseClassSeparator[progLang] + functionOwnerArgument->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ACTIONSUBJECT + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + functionArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + functionOwnerArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateActionListName(functionArgument->className) + progLangClassMemberFunctionParametersNext[progLang] + generateActionSubjectListName(functionOwnerArgument->className) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addActionSubject(param1, param2, param1/actionClassActionList, param2/actionSubjectClassActionSubjectList);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ACTIONSUBJECT + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + functionArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + functionOwnerArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(functionOwnerArgument->instanceName + progLangObjectReferenceDelimiter[progLang] + generateActionListName(functionArgument->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(functionArgument->instanceName + progLangObjectReferenceDelimiter[progLang] + generateActionSubjectListName(functionOwnerArgument->className), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addActionSubject(functionArgument, functionOwnerArgument, &(functionOwnerArgument->actionClassActionList), &(functionArgument->actionSubjectClassActionSubjectList));
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
@@ -896,11 +897,11 @@ void generateCodeAddActionObject(NLCitem* functionArgument, NLCitem* functionObj
 	#endif
 }
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-void generateCodeAddActionObjectExecuteFunction(NLCitem* functionArgument, NLCitem* functionOwnerArgument, int progLang, string* code, int level)
+void generateCodeAddActionObjectExecuteFunction(NLCitem* functionArgument, NLCitem* functionObjectArgument, int progLang, string* code, int level)
 {
-	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgument->className + progLangTemplateUseClassSeparator[progLang] + functionOwnerArgument->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
+	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgument->className + progLangTemplateUseClassSeparator[progLang] + functionObjectArgument->className + progLangTemplateUsePart2[progLang]; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ACTIONOBJECT + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + functionArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + functionOwnerArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateActionIncomingListName(functionArgument->className) + progLangClassMemberFunctionParametersNext[progLang] + generateActionObjectListName(functionOwnerArgument->className) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addActionObject(param1, param2, param1/generateActionIncomingListName, param2/actionObjectClassActionObjectList);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ACTIONOBJECT + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + functionArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + functionObjectArgument->instanceName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(functionObjectArgument->instanceName + progLangObjectReferenceDelimiter[progLang] + generateActionIncomingListName(functionArgument->className), progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateCodeListPointer(functionArgument->instanceName + progLangObjectReferenceDelimiter[progLang] + generateActionObjectListName(functionObjectArgument->className), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addActionObject(functionArgument, functionObjectArgument, &(functionObjectArgument->generateActionIncomingListName), &(functionArgument->actionObjectClassActionObjectList));
 	printLine(codeBlockExecuteFunctionText, level, code);	
 }
 #endif
@@ -923,7 +924,7 @@ void generateCodeAddNewEntityToLocalListExecuteFunction(NLCitem* param1, int pro
 {
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUsePart2[progLang]; 	//<param1class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = generateCodeEntityDefinitionText(param1, progLang) + progLangEquals[progLang] + codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_NEW_ENTITY_TO_LOCAL_LIST + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateLocalListName(param1) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param1class* param1 = addNewEntityToLocalList(param1localList);
+	codeBlockExecuteFunctionText = generateCodeEntityDefinitionText(param1, progLang) + progLangEquals[progLang] + codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_NEW_ENTITY_TO_LOCAL_LIST + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCodeListPointer(generateLocalListName(param1), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param1class* param1 = addNewEntityToLocalList(&(param1localList));
 	printLine(codeBlockExecuteFunctionText, level, code);
 }
 #endif
@@ -942,8 +943,9 @@ void generateCodeAddEntityToLocalListExecuteFunction(NLCitem* param1, NLCitem* p
 {
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUsePart2[progLang]; 	//<param1class>
 	string codeBlockExecuteFunctionText = "";
-	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ENTITY_TO_LOCAL_LIST + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateLocalListName(param1) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addEntityToLocalList(param1localList, param2);
+	codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_LIBRARY_BASE_EXTENDED_FUNCTION_NAME_ADD_ENTITY_TO_LOCAL_LIST + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateCodeListPointer(generateLocalListName(param1), progLang) + progLangClassMemberFunctionParametersNext[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//addEntityToLocalList(&(param1localList), param2);
 	printLine(codeBlockExecuteFunctionText, level, code);
 }
 #endif
+
 

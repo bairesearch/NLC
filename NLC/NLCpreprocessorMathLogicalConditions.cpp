@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u7a 28-September-2016
+ * Project Version: 1u8a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,61 +56,115 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 {
 	bool result = true;
 
-	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	//ignore string quotations during replacement
+	bool stillFindingLineContentsSub = true;
+	int lineContentsSubIndex = 0;
+	int lineContentsSubIndexEnd = 0;
+	string lineContentsNew = "";
+	while(stillFindingLineContentsSub) 
 	{
-		bool foundAtLeastOneInstance = false;
-		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i], &foundAtLeastOneInstance);	//NB this is type sensitive; could be changed in the future
-		/*
-		if(foundAtLeastOneInstance)
+		int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
+		if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
-			cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} foundAtLeastOneInstance" << endl;
+			lineContentsSubIndexEnd = indexOfStringDelimiter;
+		}
+		else
+		{
+			lineContentsSubIndexEnd = lineContents->length();
+			stillFindingLineContentsSub = false;
+		}
+		string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd);
+	#else
+	string lineContentsSub = *lineContents;
+	#endif
+		
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
+		{
+			bool foundAtLeastOneInstance = false;
+			lineContentsSub = replaceAllOccurancesOfString(&lineContentsSub, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i], &foundAtLeastOneInstance);	//NB this is type sensitive; could be changed in the future
+			/*
+			if(foundAtLeastOneInstance)
+			{
+				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} foundAtLeastOneInstance" << endl;
+			}
+			*/
+		}
+
+		/*
+		for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
+		{
+			int index = lineContentsSub.find(logicalConditionOperationsArray[i]);
+			if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
+			{
+				logicalConditionOperatorFound = true;
+				*logicalConditionOperator = i;
+				cout << "detectLogicalConditionOperatorAtStartOfLine{}: logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl;
+			}
 		}
 		*/
-	}
 
+		if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
+		{
+			//detect conjunctions...
+			*additionalClosingBracketRequired = false;
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
+			{
+				int index = lineContentsSub.find(preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
+				if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+				{
+					*additionalClosingBracketRequired = true;
+				}
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				cout << "additionalClosingBracketRequired" << endl;
+				#endif
+			}
+			#endif
+			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+			{
+				lineContentsSub = replaceAllOccurancesOfString(&lineContentsSub, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
+			}
+		}
+
+		#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
+		lineContentsSub = replaceAllOccurancesOfString(&lineContentsSub, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_WITH_PADDING, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING);
+		#endif
+		
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+		lineContentsNew = lineContentsNew + lineContentsSub;
+		if(stillFindingLineContentsSub)
+		{	
+			//add the string quotation text
+			int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd+1);
+			if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{
+				lineContentsSubIndex = indexOfStringDelimiter + 1;
+				lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd, indexOfStringDelimiter-lineContentsSubIndexEnd + 1);
+			}
+			else
+			{
+				//unfinished quotation
+				stillFindingLineContentsSub = false;
+				lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd);	
+				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} error: unfinished quotation detected" << endl;
+			}			
+		}
+	}
+	*lineContents = lineContentsNew;
+	#else
+	*lineContents = lineContentsSub;
+	#endif
+	
+	
 	if(!parallelReplacement)
 	{
 		//replace the logical condition operator with a lower case version if necessary
 		lineContents->replace(0, logicalConditionOperationsArray[logicalConditionOperator].length(), logicalConditionOperationsArray[logicalConditionOperator]);
-	}
-
-	/*
-	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
-	{
-		int index = lineContents->find(logicalConditionOperationsArray[i]);
-		if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
-		{
-			logicalConditionOperatorFound = true;
-			*logicalConditionOperator = i;
-			cout << "detectLogicalConditionOperatorAtStartOfLine{}: logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl;
-		}
-	}
-	*/
-
+	}	
 	if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
-	{
-		//detect conjunctions...
-		*additionalClosingBracketRequired = false;
-		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
-		{
-			int index = (*lineContents).find(preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
-			if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-			{
-				*additionalClosingBracketRequired = true;
-			}
-			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			cout << "additionalClosingBracketRequired" << endl;
-			#endif
-		}
-		#endif
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
-		{
-			*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
-		}
-
+	{	
 		//ensure all logical condition operators have enclosing brackets eg if(...) - this is done to prevent "if" in "if the house is cold" from being merged into an NLP parsable phrase
-
 		if(!parallelReplacement)
 		{
 			char characterAfterLogicalConditionOperator = lineContents->at(logicalConditionOperationsArray[logicalConditionOperator].length());
@@ -142,10 +196,6 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 			}
 		}
 	}
-
-	#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
-	*lineContents = replaceAllOccurancesOfString(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_WITH_PADDING, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING);
-	#endif
 
 	return result;
 }

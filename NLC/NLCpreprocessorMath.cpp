@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u7a 28-September-2016
+ * Project Version: 1u8a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,17 +61,65 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 
 	if(!hasLogicalConditionOperator)
 	{
-		//convert x is equal to/equals the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
+		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+		//ignore string quotations during replacement
+		bool stillFindingLineContentsSub = true;
+		int lineContentsSubIndex = 0;
+		int lineContentsSubIndexEnd = 0;
+		string lineContentsNew = "";
+		while(stillFindingLineContentsSub) 
 		{
-			bool foundAtLeastOneInstance = false;
-			*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i], &foundAtLeastOneInstance);	//NB this is type sensitive; could be changed in the future
-			if(foundAtLeastOneInstance)
+			int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
+			if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{	
+				lineContentsSubIndexEnd = indexOfStringDelimiter;
+			}
+			else
 			{
-				result = true;	//added 1r5d
+				lineContentsSubIndexEnd = lineContents->length();
+				stillFindingLineContentsSub = false;
+			}
+			string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd);
+		#else
+		string lineContentsSub = *lineContents;
+		#endif
+		
+			//convert x is equal to/equals the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
+			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
+			{
+				bool foundAtLeastOneInstance = false;
+				lineContentsSub = replaceAllOccurancesOfString(&lineContentsSub, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i], &foundAtLeastOneInstance);	//NB this is type sensitive; could be changed in the future
+				if(foundAtLeastOneInstance)
+				{
+					result = true;	//added 1r5d
+				}
+			}
+						
+		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+			lineContentsNew = lineContentsNew + lineContentsSub;
+			if(stillFindingLineContentsSub)
+			{	
+				//add the string quotation text
+				int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd+1);
+				if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+				{
+					lineContentsSubIndex = indexOfStringDelimiter + 1;
+					lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd, indexOfStringDelimiter-lineContentsSubIndexEnd + 1);
+				}
+				else
+				{
+					//unfinished quotation
+					stillFindingLineContentsSub = false;
+					lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd);	
+					cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} error: unfinished quotation detected" << endl;
+				}			
 			}
 		}
-
+		*lineContents = lineContentsNew;
+		#else
+		*lineContents = lineContentsSub;
+		#endif
+		
 		//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
 		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.
 		//convert "x is the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
@@ -84,14 +132,15 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 				lineContents->replace(indexOfIs, string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL).length(), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET));
 
 				result = true;
-				#ifdef NLC_DEBUG_PREPROCESSOR
+				//#ifdef NLC_DEBUG_PREPROCESSOR
 				cout << "detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol{}: found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
-				#endif
+				//#endif
 			}
 		}
 		//the following is not supported by NLC at present: "if x is the number of chickens", the user must say "if the number of chickens is equal to x"
-	}
 
+	}
+	
 	return result;
 }
 

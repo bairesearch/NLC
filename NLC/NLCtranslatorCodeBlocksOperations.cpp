@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u7a 28-September-2016
+ * Project Version: 1u8a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -264,7 +264,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	{
 		generateContextBlocksVariables.logicalConditionStatement = true;
 		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
-		//modified 1t2e
+		//modified 1t2e, 1u7a
 		bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 		bool checkIsDefinite = false;
 		if(foundSubject)

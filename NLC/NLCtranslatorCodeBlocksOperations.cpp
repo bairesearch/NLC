@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q8a 20-August-2015
+ * Project Version: 1q8b 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2383,10 +2383,12 @@ GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parent
 #ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, bool newlyDeclaredEntityInCategoryList)
 {
+	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
 	//added 6 December 2013: take into account plain concepts; eg "Dogs are fat. The dog rides the bike." <- the dog will be given the property 'fat'
 	GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
 	generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, conceptEntity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);
-
+	#endif
+	
 	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
 	{
 		GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
@@ -2401,6 +2403,26 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* entity
 			#endif
 			
 			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, definitionEntity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);
+			
+			//added 1q8b
+			if(definitionEntity->entityName != entity->entityName)
+			{
+				GIAentityNode* definitionEntityConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
+				if(definitionEntityConceptEntity->NLClocalListVariableHasBeenDeclared)	//assumedToAlreadyHaveBeenDeclared(definitionEntity)
+				{
+					NLCcodeblock* firstCodeBlockInSection = *currentCodeBlockInTree;
+
+					#ifdef NLC_DEBUG
+					cout << "generateObjectInitialisationsBasedOnSubstanceConcepts{}: add entity to definition local list; definitionEntity->entityName = " << definitionEntity->entityName << ", entity->entityName = " << entity->entityName << endl;
+					#endif
+	
+					*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entity);
+
+					*currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, entity);	//this is required such that GIA can access the entity by its parent name; eg Max is a red dog. The red dog is happy.
+
+					*currentCodeBlockInTree = firstCodeBlockInSection->next;				
+				}
+			}
 		}
 		//}
 	}

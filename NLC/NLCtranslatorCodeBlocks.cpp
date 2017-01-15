@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1f 07-February-2015
+ * Project Version: 1o2a 12-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -628,10 +628,12 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 					}
 					else if(entity->isCondition)
 					{
+						GIAentityConnection* connectionTemp = NULL;
 						if(!(entity->conditionSubjectEntity->empty()))
 						{		
 							if(!((entity->conditionSubjectEntity->back())->sameReferenceSet))
 							{
+								connectionTemp = entity->conditionSubjectEntity->back();
 								subjectEntity = (entity->conditionSubjectEntity->back())->entity;
 								foundSubject = true;	
 							}
@@ -641,18 +643,25 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 							if(!((entity->conditionObjectEntity->back())->sameReferenceSet))
 							{		
 								objectEntity = (entity->conditionObjectEntity->back())->entity;
-								foundObject = true;	
+								foundObject = true;
 							}
 						}
 						if(foundSubject && foundObject)
 						{
-							foundSubjectObjectConnection = true;	
-							connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
-							
-							if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
+							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+							if(!(entity->inverseConditionTwoWay) || connectionTemp->isReference)	//prevent infinite loop for 2 way conditions 
 							{
+							#endif
+								foundSubjectObjectConnection = true;	
+								connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
 
+								if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
+								{
+
+								}
+							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 							}
+							#endif
 						}
 					}
 					else
@@ -791,7 +800,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 
 	bool isPrimary = true;
-	if(generateCodeBlocksAddObject(currentCodeBlockInTree, connectionType, connection, subjectEntity, objectEntity, entity, foundSubject, foundObject, sentenceIndex, subjectParentEntity, isPrimary))
+	if(generateCodeBlocksAddConnection(currentCodeBlockInTree, connectionType, connection, subjectEntity, objectEntity, entity, foundSubject, foundObject, sentenceIndex, subjectParentEntity, isPrimary))
 	{
 
 	}

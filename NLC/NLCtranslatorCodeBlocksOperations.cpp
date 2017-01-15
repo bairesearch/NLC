@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1f 07-February-2015
+ * Project Version: 1o2a 12-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1295,16 +1295,23 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					}
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 					{
-						//foundSubject = true;
-						subjectEntity = entity;
-						actionOrConditionEntity = targetEntity;
-						if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+						if(!(targetEntity->inverseConditionTwoWay) || targetConnection->isReference)	//prevent infinite loop for 2 way conditions 
 						{
-							foundObject = true;
-							recurse = true;
-							recurseEntity = objectEntity;
+						#endif
+							//foundSubject = true;
+							subjectEntity = entity;
+							actionOrConditionEntity = targetEntity;
+							if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+							{
+								foundObject = true;
+								recurse = true;
+								recurseEntity = objectEntity;
+							}
+							addObject = true;
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 						}
-						addObject = true;
+						#endif
 
 					}
 					#ifdef NLC_RECORD_ACTION_HISTORY
@@ -1394,7 +1401,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 
 						result = true;
 						bool isPrimary = false;
-						if(!generateCodeBlocksAddObject(currentCodeBlockInTree, connectionType, targetConnection, subjectEntity, objectEntity, actionOrConditionEntity, foundSubject, foundObject, sentenceIndex, NULL, isPrimary))
+						if(!generateCodeBlocksAddConnection(currentCodeBlockInTree, connectionType, targetConnection, subjectEntity, objectEntity, actionOrConditionEntity, foundSubject, foundObject, sentenceIndex, NULL, isPrimary))
 						{
 
 						}
@@ -1407,7 +1414,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 	return result;
 }
 
-bool generateCodeBlocksAddObject(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, GIAentityNode* subjectParentEntity, bool primary)
+bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, GIAentityNode* subjectParentEntity, bool primary)
 {
 	bool result = false;
 

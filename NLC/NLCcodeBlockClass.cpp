@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10c 21-August-2015
+ * Project Version: 1q10d 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -308,12 +308,23 @@ NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBl
 	//{
 	#endif
 
+	int codeBlockType;
+	#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
+	if(entity->isSubstanceQuality)
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE;
+	}
+	else
+	{
+	#endif
+		codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_ENTITY_TO_LOCAL_LIST;
+	#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES	
+	}
+	#endif
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
-
-	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_ENTITY_TO_LOCAL_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-
+		
 	if(addReferencingContext)
 	{
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
@@ -529,8 +540,15 @@ NLCcodeblock* createCodeBlockAddConditionSimple(NLCcodeblock* currentCodeBlockIn
 
 
 NLCcodeblock* createCodeBlocksCreateNewLocalListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
-{	
-	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
+{
+	#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
+	if(!(entity->isSubstanceQuality))
+	{	
+	#endif
+		currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
+	#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
+	}
+	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
 	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//create new category list
 	#endif

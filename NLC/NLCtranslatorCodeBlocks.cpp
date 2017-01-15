@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10c 21-August-2015
+ * Project Version: 1q10d 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -397,7 +397,11 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBl
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
-		if(!checkSpecialCaseEntity(entity, true))	//1q7c: removed "&& !(entity->isSubstanceQuality)"
+		#ifdef NLC_DO_NOT_CREATE_LOCAL_LISTS_FOR_QUALITIES
+		if(!checkSpecialCaseEntity(entity, true) && !(entity->isSubstanceQuality))
+		#else
+		if(!checkSpecialCaseEntity(entity, true))
+		#endif
 		{	
 			if(declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(entity))
 			{

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21c 02-October-2014
+ * Project Version: 1k1a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -178,7 +178,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
 							printLine(classDefinitionNameCode, 1, code);
 							#ifdef NLC_USE_ADVANCED_REFERENCING
-							string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//int lastSentenceReferenced;
+							string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//stack<int> lastSentenceReferenced;
 							printLine(classDefinitionLastSentenceReferencedCode, 1, code);
 							#endif
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
@@ -224,7 +224,11 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						printLine(classConstructorNameCode, 1, code);
 						#ifdef NLC_USE_ADVANCED_REFERENCING
 						string classConstructorLastSentenceReferencedCode = "";
+						#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+						classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangObjectReferenceDelimiter2[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + "0" + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];	//lastSentenceReferenced.push(0);
+						#else
 						classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangClassNameVariableEquals[progLang] + "0" + progLangEndLine[progLang];	//lastSentenceReferenced = 0;
+						#endif
 						printLine(classConstructorLastSentenceReferencedCode, 1, code);		
 						#endif
 						printLine(progLangCloseClass[progLang], 0, code);

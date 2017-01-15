@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5k 15-August-2016
+ * Project Version: 1r5l 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -77,7 +77,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << currentLineNumber << ": " << currentLine << endl;
 			#endif
 			
-			#ifndef NLC_USE_MATH_OBJECTS_STRING
+			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED
 			#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 			string updatedLineTextWithQuotationsReducedToSingleWords = "";
 			if(reduceQuotesToSingleWords(currentLine, &updatedLineTextWithQuotationsReducedToSingleWords))
@@ -172,7 +172,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				else
 				{				
 				#endif
-					#ifdef NLC_USE_MATH_OBJECTS_STRING
+					#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 					if(detectMathObjectStringDelimiter(&lineContents))
 					{
 						cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
@@ -686,11 +686,11 @@ string removePrependingWhiteSpace(string sentenceContents)
 	return sentenceContents;
 }
 
-#ifdef NLC_USE_MATH_OBJECTS_STRING
+#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 bool detectMathObjectStringDelimiter(string* lineContents)
 {
 	bool result = false;
-	if(lineContents->find(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DELIMITER) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	if(lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		result = true;
 	}

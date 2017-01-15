@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5k 15-August-2016
+ * Project Version: 1r5l 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -894,6 +894,17 @@ string generateCodeSetDecimalPointerToEntityMathNumericalValueText(NLCitem* para
 	string setDecimalPointerToEntityMathNumericalValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathNumericalValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->numericalValue);
 	return setDecimalPointerToEntityMathNumericalValueText;
 }
+#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang)
+{
+	string declareNewDecimalPointerVariableText = generatePointerTypeText(generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE), progLang) + STRING_SPACE + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //NLCgenericEntityClass* param1 = NULL;
+	return declareNewDecimalPointerVariableText;
+}
+string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang)
+{
+	string setGenericEntityPointerToEntityText = param1->name + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1 = param2;
+	return setGenericEntityPointerToEntityText;
+}
 #ifdef NLC_USE_MATH_OBJECTS_STRING
 string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang)
 {
@@ -909,16 +920,23 @@ string generateCodeSetStringPointerToEntityMathStringValueText(NLCitem* param1, 
 	string setStringPointerToEntityMathStringValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathStringValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->stringValue);
 	return setStringPointerToEntityMathStringValueText;
 }
-string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang)
+#endif
+#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+string generateCodeEntityMathBooleanValueText(NLCitem* param1, int progLang)
 {
-	string declareNewDecimalPointerVariableText = generatePointerTypeText(generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE), progLang) + STRING_SPACE + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //NLCgenericEntityClass* param1 = NULL;
+	return generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN, progLang);
+}
+string generateCodeDeclareNewBooleanPointerVariableText(NLCitem* param1, int progLang)
+{
+	string declareNewDecimalPointerVariableText = progLangBooleanPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //string* param1 = NULL;
 	return declareNewDecimalPointerVariableText;
 }
-string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang)
+string generateCodeSetBooleanPointerToEntityMathBooleanValueText(NLCitem* param1, NLCitem* param2, int progLang)
 {
-	string setGenericEntityPointerToEntityText = param1->name + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];	 //param1 = param2;
-	return setGenericEntityPointerToEntityText;
+	string setBooleanPointerToEntityMathBooleanValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathBooleanValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->booleanValue);
+	return setBooleanPointerToEntityMathBooleanValueText;
 }
+#endif
 #endif
 string generateCodePointerValueText(NLCitem* param1, int progLang)
 {

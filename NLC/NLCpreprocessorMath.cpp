@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5k 15-August-2016
+ * Project Version: 1r5l 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -206,7 +206,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	//cout << "lineContents[lineContents->length()-1] = " << (*lineContents)[lineContents->length()-1] << endl;
 	#endif
 	
-	#ifdef NLC_USE_MATH_OBJECTS_STRING
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 	bool parsingQuotation = false;
 	#endif
 	
@@ -237,8 +237,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			NLPparsableMandatoryCharacterFoundInCurrentWord = true;
 		}
 		
-		#ifdef NLC_USE_MATH_OBJECTS_STRING
-		if(c == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DELIMITER)
+		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+		if(c == NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR)
 		{
 			if(parsingQuotation)
 			{
@@ -328,7 +328,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						if(i == currentWord.length())	//word comprises first mathText contents
 						{//first word in mathText (type will automatically be assigned) (eg "X = ")
 							
-							#ifdef NLC_USE_MATH_OBJECTS_STRING
+							#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 							string mathTextSubphraseContainingNLPparsablePhrase = lineContents->substr(indexOfMathEqualsSetCommand);
 							int mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 	
@@ -699,7 +699,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	//{
 	for(vector<NLCvariable*>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariables.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariables.end(); iter++)
 	{
-		string mathTextVariableName = (*iter)->name;
+		NLCvariable* mathTextVariable = (*iter);
+		string mathTextVariableName = mathTextVariable->name;
 		
 		bool ignoreVariable = false;
 		if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
@@ -737,6 +738,17 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 					#endif
 					result = true;
 				} 
+				#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
+				else
+				{
+					/*
+					required for:
+					String l = ""
+					l = the house
+					*/
+					mathTextVariable->type = variableTypeTemp;
+				}
+				#endif
 			}
 		}
 	}	

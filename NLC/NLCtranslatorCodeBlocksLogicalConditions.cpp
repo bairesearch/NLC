@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5k 15-August-2016
+ * Project Version: 1r5l 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -332,7 +332,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 	}
 	#endif	
 
-	#ifdef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 	int progLang = getProgLang();	//CHECKTHIS - note this is an unusual implementation
 	firstNLCsentenceInFullSentence->mathText = replaceAllOccurancesOfString(&(firstNLCsentenceInFullSentence->mathText), NLC_PREPROCESSOR_MATH_OPERATOR_STRING_EQUALS_TEST_WITH_PADDING, progLangStringEqualsTest[progLang]);
 	firstNLCsentenceInFullSentence->mathText = replaceAllOccurancesOfString(&(firstNLCsentenceInFullSentence->mathText), NLC_PREPROCESSOR_MATH_OPERATOR_STRING_ADD_WITH_PADDING, progLangStringAdd[progLang]);
@@ -558,7 +558,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 		*/
 
 		int mathObjectVariableType = getMathObjectVariableType(entityNodesActiveListComplete, sentenceIndex, currentFullSentence, parsablePhrase);
-		if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
+		if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT)
 		{
 			#ifdef NLC_PREPROCESSOR_MATH_USE_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BACKWARDS_COMPATIBLE_VARIABLE_NAMES
 			parsablePhraseReferenceName = generateLogicalConditionConjunctionBooleanName(currentFullSentence->indentation, caseIndex, phraseIndex, NLC_LOGICAL_CONDITION_OPERATIONS_IF);
@@ -566,20 +566,33 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);	//eg bool thedogistall = false;
 			#endif
 		}
-		else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
+		else if((mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL) || (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING) || (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN))
 		{
-			*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//eg double* thedogsvalue = NULL;		
+			if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
+			{
+				*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//eg double* thedogsvalue = NULL;		
+			}
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+			#ifdef NLC_USE_MATH_OBJECTS_STRING
+			else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
+			{
+				*currentCodeBlockInTree = createCodeBlockDeclareNewStringPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//eg string* thedogsvalue = NULL;		
+			}
+			#endif
+			#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+			else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
+			{
+				*currentCodeBlockInTree = createCodeBlockDeclareNewBooleanPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//eg bool* thedogsvalue = NULL;		
+			}
+			#endif
+			#endif
 		}
-		#ifdef NLC_USE_MATH_OBJECTS_STRING
-		else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
-		{
-			*currentCodeBlockInTree = createCodeBlockDeclareNewStringPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//eg string* thedogsvalue = NULL;		
-		}
-		#endif
+		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 		else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 		{
 			*currentCodeBlockInTree = createCodeBlockDeclareNewGenericEntityPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//NLCgenericEntityClass* thedogsvalue = NULL;
 		}
+		#endif
 
 		#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE_LOGICAL_CONDITIONS_PARSABLE_PHRASES
 		firstCodeBlockInPhrase = *currentCodeBlockInTree;
@@ -683,31 +696,41 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								}
 							}
 											
-							if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
+							if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT)
 							{
 								*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);		//eg thedogsvalue = true;  
 							}
-							else if((mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL) || (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING))
+							else if((mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL) || (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING) || (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN))
 							{
 								if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetDecimalPointerToEntityMathNumericalValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->numericalValue);  
 								}
+								#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 								#ifdef NLC_USE_MATH_OBJECTS_STRING
 								else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetStringPointerToEntityMathStringValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->stringValue);  
 								}
 								#endif
+								#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+								else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
+								{
+									*currentCodeBlockInTree = createCodeBlockSetBooleanPointerToEntityMathBooleanValue(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = &(childEntity->booleanValue);  
+								}
+								#endif
+								#endif
 								bool foundParsablePhraseInMathText = false;
 								string parsablePhraseReferenceMathValue = generateCodeEntityMathValuePointerText(parsablePhraseReferenceName, NLC_PROGRAMMING_LANGUAGE_DEFAULT);	//eg *childEntity
 								currentFullSentence->mathText = replaceAllOccurancesOfString(&(currentFullSentence->mathText), parsablePhraseReferenceName, parsablePhraseReferenceMathValue, &foundParsablePhraseInMathText);	//"thedogsvalue" -> "*thedogsvalue"				
 							}
+							#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 							else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)							
 							{
 								*currentCodeBlockInTree = createCodeBlockSetGenericEntityPointerToEntity(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = childEntity;  
 								currentFullSentence->mathText = generateAssignMathTextValueExecuteFunctionMathText(&(currentFullSentence->mathText), parsablePhraseReferenceName, (currentFullSentence->hasLogicalConditionOperator));	//replace "thedogsvalue = ..." with "assignMathTextValue(thedogsvalue, ...)", replace "X = thedogsvalue" with "assignMathTextValue(X, thedogsvalue)" etc
 							}
+							#endif
 
 							foundParsablePhrase = true;
 							if(!(currentFullSentence->hasLogicalConditionOperator))
@@ -769,8 +792,8 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		mathTextSubphraseContainingNLPparsablePhrase = currentFullSentence->mathText;	
 	}
 	
-	//find boolean inflated expressions
-	bool foundBooleanInflatedExpression = false;
+	//find boolean statement expressions
+	bool foundBooleanStatementExpression = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
@@ -789,7 +812,7 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 						#endif
 							if(!(connection->sameReferenceSet))
 							{	
-								foundBooleanInflatedExpression = true;
+								foundBooleanStatementExpression = true;
 							}
 						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 						}
@@ -810,30 +833,61 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 				int indexOfRcmodTemp = currentPhrasePrimarySubject->sentenceContents.rfind(preprocessorMathRcmodSameReferenceSetDelimiter[i2], indexOfAuxiliaryTemp);
 				if((indexOfAuxiliaryTemp != indexOfAuxiliaryTemp-(preprocessorMathRcmodSameReferenceSetDelimiter[i2].length()+1))
 				{
-					foundBooleanInflatedExpression = true;
+					foundBooleanStatementExpression = true;
 				}
 		}
 	}
 	*/
-	if(foundBooleanInflatedExpression)
+	if(foundBooleanStatementExpression)
 	{
 		if(currentFullSentence->hasLogicalConditionOperator)
 		{
-			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
-			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
-			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;	
+			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
+			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT" << endl;	
 			#endif
 		}
 		else
 		{
 			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
-			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanInflatedExpression" << endl;
+			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
 			cout << "parsablePhrase->sentenceContents = " << parsablePhrase->sentenceContents << endl;
 			exit(0);
 		}
 	}
-	/*future:
+	
+	//find numerical expressions
+	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; i++)
+	{
+		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeNumericalOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
+			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL" << endl;
+			#endif
+		}
+	}	
+	
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	
+	//find string expressions
+	//#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS	//optional
+	#ifdef NLC_USE_MATH_OBJECTS_STRING
+	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES; i++)
+	{
+		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeStringOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
+			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING" << endl;
+			#endif
+		}
+	}	
+	#endif
+	//#endif
+
 	//find boolean expressions
+	#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
 	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
 		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeBooleanOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -842,45 +896,69 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;
 		}
 	}	
-	*/
+	#endif
 	
-	//find numerical expressions
-	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; i++)
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
+	if(!(currentFullSentence->hasLogicalConditionOperator))
 	{
-		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeNumericalOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		for(vector<NLCvariable*>::iterator iter = currentFullSentence->mathTextVariables.begin(); iter != currentFullSentence->mathTextVariables.end(); iter++)
 		{
-			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
-			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
-			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL" << endl;
-			#endif
-		}
-	}	
-	
-	//find string expressions
-	//#ifdef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS	//optional
-	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES; i++)
-	{
-		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeStringOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-		{
-			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
-			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
-			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING" << endl;
-			#endif
-		}
-	}	
-	//#endif
-	
-	#ifdef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
-	if(currentFullSentence->hasLogicalConditionOperator)
-	{
-		if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
-		{
-			cout << "NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
-			exit(0);
+			NLCvariable* mathTextVariable = (*iter);
+			int indexOfMathEqualsSetCommand = currentFullSentence->mathText.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR);
+			if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{
+				//find reference to already declared mathtext variable
+				string targetText = currentFullSentence->mathText.substr(0, indexOfMathEqualsSetCommand);
+				if((targetText == mathTextVariable->name) || (targetText == (mathTextVariable->name + STRING_SPACE)))
+				{
+					mathObjectVariableType = mathTextVariable->type;
+					#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
+					cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
+					#endif
+				}
+				
+				//find reference to mathtext variable declaration
+				for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
+				{
+					int indexOfType = targetText.find(preprocessorMathNaturalLanguageVariables[j]);
+					if(indexOfType == 0)
+					{
+						if(targetText == (preprocessorMathNaturalLanguageVariables[j] + STRING_SPACE + mathTextVariable->name))
+						{
+							mathObjectVariableType = mathTextVariable->type;
+							#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
+							cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
+							#endif
+						}
+					}
+				}
+			}
 		}
 	}
 	#endif
 	
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+	if(currentFullSentence->hasLogicalConditionOperator)
+	{
+		if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+		{
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_ASSUME_LOGICAL_CONDITION_STATEMENTS_ARE_BOOLEAN_IF_UNKNOWN
+			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			#else
+			cout << "NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
+			exit(0);
+			#endif
+		}
+	}
+	#endif
+	
+	#else
+	if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+	{
+		mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+	}
+	#endif
+
 	return mathObjectVariableType;	
 }
 
@@ -906,7 +984,7 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 	}
 	if(foundLogicalConditionStartText)
 	{
-		#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
+		#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
 		cout << " mathText = " << mathText << endl;
 		cout << " mathTextLogicalConditionContents = " << mathTextLogicalConditionContents << endl;
 		#endif
@@ -952,7 +1030,7 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 			{
 				int subphraseStartPositionTemp = CPP_STRING_FIND_RESULT_FAIL_VALUE;
 				int subphraseEndPositionTemp = CPP_STRING_FIND_RESULT_FAIL_VALUE;
-				#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
+				#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
 				cout << "subphraseTemp = " << subphraseTemp << endl;
 				#endif
 				if(findMatchingBrackets(subphraseTemp, &subphraseStartPositionTemp, &subphraseEndPositionTemp))
@@ -969,7 +1047,7 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 
 			*mathTextSubphraseContainingNLPparsablePhrase = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
 			*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
-			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
+			#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
 			cout << "*mathTextSubphraseContainingNLPparsablePhrase = " << *mathTextSubphraseContainingNLPparsablePhrase << endl;
 			#endif
 		}
@@ -1049,7 +1127,7 @@ bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp,
 	return result;
 }
 
-#ifdef NLC_USE_MATH_OBJECTS_STRING
+#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, string parsablePhraseReferenceName, bool hasLogicalConditionOperator)
 {
 	bool foundParsablePhraseReferenceNameAssignment = false;
@@ -1062,12 +1140,12 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		bool foundMathEqualsSetCommand = findCharacterAtIndexOrAfterSpace(mathText, parsablePhraseReferenceNameIndex+parsablePhraseReferenceName.length(), NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR, &indexOfMathEqualsSetCommand);	//mathText eg: "thedogsvalue =" OR "thedogsvalue="	
 		if(foundMathEqualsSetCommand)
 		{
-			#ifdef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			//eg1 thedogsvalue = X, eg2 thedogsvalue = thecatssvalue
 			#else
 			//eg1 thedogsvalue = X, eg2 thedogsvalue = thecatssvalue, eg3 thedogsvalue = X + Y, eg4 thedogsvalue = thecatssvalue + Y
 			#endif
-			#ifndef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			if(mathText->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST, indexOfMathEqualsSetCommand) != indexOfMathEqualsSetCommand)
 			{//ignore equals test ("==") expressions
 			#else
@@ -1075,8 +1153,8 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 			#endif
 				foundParsablePhraseReferenceNameAssignment = true;
 				string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, progLang);	//eg thedogsvalue
-				mathTextUpdated = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(thedogsvalue, thechickensvalue)", eg1 "assignMathTextValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
-			#ifndef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+				mathTextUpdated = NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(thedogsvalue, thechickensvalue)", eg1 "assignMathTextValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
+			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			}
 			#endif
 		}
@@ -1088,27 +1166,27 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		int indexOfMathEqualsSetCommand = mathText->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR);
 		if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
-			#ifdef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			//eg1 X = thecatssvalue
 			#else
 			//eg1 X = thecatssvalue, eg2 X = thecatssvalue + themousessvalue
 			#endif
-			#ifndef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			if(mathText->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST, indexOfMathEqualsSetCommand) != indexOfMathEqualsSetCommand)
 			{//a) ignore equals test ("==") expressions
 				if(!findInvertedCommasEitherSideOfCharacter(mathText, indexOfMathEqualsSetCommand))
 				{//b) ignore all equals signs within inverted commas	
 					//mathText eg: "X =" OR "X="
-					if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) != (indexOfMathEqualsSetCommand + 2))
+					if(mathText->find(NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) != (indexOfMathEqualsSetCommand + 2))
 					{//c) only create one instance of = getMathObjectValue(.. per sentence;	eg X = thecatssvalue + themousessvalue
 			#else
 			//redundant as a) !(currentFullSentence->hasLogicalConditionOperator), b) finding first instance of '=', so there will be no '"' characters before the '=' character, and c) there are no additions (+) so there will only be one parsable phrase found in the sentence
 			#endif
 						string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, progLang);
-						targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
+						targetValueText = string(NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
 						mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
 						foundMathtextVariableAssignment = true;
-			#ifndef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 					}
 			
 				}
@@ -1117,7 +1195,7 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		}
 	}
 	
-	#ifndef NLC_USE_MATH_OBJECTS_STRING_USE_UNIQUE_STRING_OPERATORS
+	#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 	if(hasLogicalConditionOperator)
 	{
 		bool foundParsablePhraseReferenceNameTest = false;
@@ -1139,12 +1217,12 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		if(indexOfMathEqualsTestCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{	
 			//eg1 X == thecatssvalue, eg2 eg1 thedogsvalue == X eg3 thedogsvalue == thecatssvalue, eg3 thedogsvalue == thecatssvalue + themousessvalue, eg4 X == thecatssvalue + themousessvalue, eg5 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == thecatssvalue + Y [not X == Y]
-			if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) != 0)
+			if(mathText->find(NLC_USE_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) != 0)
 			{//only create one instance of = testMathObjectValue(.. per sentence; eg1 X == thecatssvalue + themousessvalue, eg2 thecatssvalue == themousessvalue
 				string targetValueText = getTargetValueText(&mathTextSubphraseContainingNLPparsablePhrase, indexOfMathEqualsTestCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST, progLang);
 				string sourceValueText = getSourceValueText(&mathTextSubphraseContainingNLPparsablePhrase, indexOfMathEqualsTestCommand, progLang);
-				#ifdef NLC_USE_MATH_OBJECTS_STRING_COMPARISONS
-				string mathTextSubphraseContainingNLPparsablePhraseUpdated = string(NLC_USE_MATH_OBJECTS_STRING_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + sourceValueText + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X == thechickensvalue"  ->  "testMathObjectValue(X, thechickensvalue)"			
+				#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_COMPARISONS
+				string mathTextSubphraseContainingNLPparsablePhraseUpdated = string(NLC_USE_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + sourceValueText + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X == thechickensvalue"  ->  "testMathObjectValue(X, thechickensvalue)"			
 				#else
 				string mathTextSubphraseContainingNLPparsablePhraseUpdated = sourceValueText + NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING + targetValueText;
 				#endif
@@ -1152,6 +1230,17 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 				cout << "mathTextUpdated = " << mathTextUpdated << endl;
 				//progLangParameterSpaceNextParam
 			}
+		}
+		else
+		{
+			int parsablePhraseReferenceNamePositionInSubphrase = mathTextSubphraseContainingNLPparsablePhrase.find(parsablePhraseReferenceName);
+			if(parsablePhraseReferenceNamePositionInSubphrase != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{
+				string parsablePhraseReferenceNameUpdated = string(NLC_USE_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangCloseParameterSpace[progLang];	//eg "thechickensvalue"  ->  "testMathObjectValue(thechickensvalue)"			
+				string mathTextSubphraseContainingNLPparsablePhraseUpdated = mathTextSubphraseContainingNLPparsablePhrase;
+				mathTextSubphraseContainingNLPparsablePhraseUpdated.replace(parsablePhraseReferenceNamePositionInSubphrase, parsablePhraseReferenceName.length(), parsablePhraseReferenceNameUpdated);	
+				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);	
+			}	
 		}
 	}
 	#endif
@@ -1183,7 +1272,7 @@ string getTargetValueText(string* mathText, int indexOfCommand, string command, 
 	{
 		targetValueText = mathText->substr(indexOfCommand + command.length());
 	}
-	#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ADDITIONS
 	targetValueText = replaceAllAdditionSymbolsWithAdditionFunction(targetValueText, progLang);
 	#endif		
 	return targetValueText;
@@ -1200,13 +1289,13 @@ string getSourceValueText(string* mathText, int indexOfCommand, int progLang)
 	{
 		sourceValueText = mathText->substr(0, indexOfCommand);
 	}
-	#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ADDITIONS
 	sourceValueText = replaceAllAdditionSymbolsWithAdditionFunction(sourceValueText, progLang);
 	#endif	
 	return sourceValueText;
 }
 
-#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ADDITIONS
 string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang)
 {	
 	//now detect all instances of "+" within text and insert addMathTextValue{} function
@@ -1239,7 +1328,7 @@ string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang)
 	}
 	for(int i=0; i<numberOfAdditionsFound; i++)
 	{
-		text = string(NLC_USE_MATH_OBJECTS_STRING_ADD_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + text;
+		text = string(NLC_USE_MATH_OBJECTS_ADVANCED_ADD_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + text;
 	}
 	if(numberOfAdditionsFound > 0)
 	{

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5k 15-August-2016
+ * Project Version: 1r5l 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,7 +61,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 	bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject, GIAentityNode** definitionEntity);
 	#endif
 	void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex);
-	#ifdef NLC_USE_MATH_OBJECTS_STRING
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 	int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, NLCsentence* currentFullSentence, NLCsentence* parsablePhrase);
 		bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex);
 			bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp, int* subphraseEndPositionTemp);
@@ -69,7 +69,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 		bool findInvertedCommasEitherSideOfCharacter(string* mathText, int indexOfCharacter);
 		string getTargetValueText(string* mathText, int indexOfCommand, string command, int progLang);
 		string getSourceValueText(string* mathText, int indexOfCommand, int progLang);
-			#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ADDITIONS
 			string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang);
 			#endif
 	#endif

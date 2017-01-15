@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5k 15-August-2016
+ * Project Version: 1r5l 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -269,8 +269,18 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionHeaderText);			
 							#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEndLine[progLang];	//double value;
+							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEndLine[progLang];	//double numericalValue;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
+							#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+							#ifdef NLC_USE_MATH_OBJECTS_STRING
+							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME) + progLangEndLine[progLang];	//double stringValue;
+							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
+							#endif
+							#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_NAME) + progLangEndLine[progLang];	//double booleanValue;
+							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
+							#endif
+							#endif
 							#endif
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 							string classDefinitionInverseConditionCode = progLangBoolType[progLang] + string(NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME) + progLangEndLine[progLang];	//bool inverseConditionTwoWay;

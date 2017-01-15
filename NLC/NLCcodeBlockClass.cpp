@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9c 14-October-2014
+ * Project Version: 1k9d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -192,7 +192,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-	currentCodeBlockInTree =  addEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), propertyEntity, sentenceIndex);
+	currentCodeBlockInTree =  createCodeBlocksAddEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), propertyEntity, sentenceIndex);
 	#else
 	currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, propertyEntity, sentenceIndex);
 	#endif
@@ -242,7 +242,7 @@ NLCcodeblock * createCodeBlockAddNewEntityToLocalList(NLCcodeblock * currentCode
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-	currentCodeBlockInTree =  addEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), entity, sentenceIndex);
+	currentCodeBlockInTree =  createCodeBlocksAddEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), entity, sentenceIndex);
 	#else
 	currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, entity, sentenceIndex);
 	#endif
@@ -359,7 +359,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 		#endif
 		#ifdef NLC_USE_ADVANCED_REFERENCING
 		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-		currentCodeBlockInTree =  addEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), conditionObject, sentenceIndex);
+		currentCodeBlockInTree =  createCodeBlocksAddEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), conditionObject, sentenceIndex);
 		#else
 		currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, conditionObject, sentenceIndex);
 		#endif
@@ -1704,7 +1704,7 @@ NLCcodeblock * createCodeBlocksDeclareContextList(NLCcodeblock * currentCodeBloc
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock * addEntityToContextLevelListNewFunction(NLCcodeblock * currentCodeBlockInTree)
+NLCcodeblock * createCodeBlocksAddEntityToContextLevelListNewFunction(NLCcodeblock * currentCodeBlockInTree)
 {
 	//required because printCodeBlocks requires at least 1 param
 	string genericObjectName = "dummyentity";
@@ -1738,7 +1738,7 @@ NLCcodeblock * createCodeBlocksClearContextListNewFunction(NLCcodeblock * curren
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock * addEntityToContextLevelListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, int contextLevel, GIAentityNode* entity, int sentenceIndex)
+NLCcodeblock * createCodeBlocksAddEntityToContextLevelListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, int contextLevel, GIAentityNode* entity, int sentenceIndex)
 {
 	string contextLevelString = convertIntToString(contextLevel);
 	NLCitem * contextLevelItem = new NLCitem(contextLevelString, NLC_ITEM_TYPE_VARIABLE);
@@ -1778,6 +1778,34 @@ NLCcodeblock * createCodeBlocksCreateContextBlock(NLCcodeblock * currentCodeBloc
 }
 #endif
 
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION	
+NLCcodeblock * createCodeBlocksCastVectorNewFunction(NLCcodeblock * currentCodeBlockInTree)
+{
+	//required because printCodeBlocks requires at least 1 param
+	string genericObjectName = "dummyentity";
+	GIAentityNode* entity = new GIAentityNode();
+	entity->entityName = genericObjectName;
+	
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CAST_VECTOR_NEW_FUNCTION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlocksCastVectorExecuteFunction(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * itemPassCastClassName)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	currentCodeBlockInTree->parameters.push_back(itemPassCastClassName);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
+	
 void clearCodeBlock(NLCcodeblock * codeBlock)
 {
 	codeBlock->codeBlockType = NLC_CODEBLOCK_TYPE_UNDEFINED;

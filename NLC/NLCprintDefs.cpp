@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9c 14-October-2014
+ * Project Version: 1k9d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,15 +59,29 @@ string generateEntityLocalListName(NLCitem * entityParam)
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		string instanceName = entityParam->instanceName;
 		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
-		string entityListName = instanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+		string entityListName = instanceName + generateEntityLocalListAppendName();
 		#else
-		string entityListName = instanceName + NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION;	
+		string entityListName = instanceName + generateEntityLocalListAppendName();	
 		#endif
 	#else
 		string className = entityParam->className;
-		string entityListName = className + NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
+		string entityListName = className + generateEntityLocalListAppendName();		
 	#endif
 	return entityListName;
+}
+
+string generateEntityLocalListAppendName()
+{
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
+		string entityLocalListAppendName = NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+		#else
+		string entityLocalListAppendName = NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION;	
+		#endif
+	#else
+		string entityLocalListAppendName =  NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
+	#endif
+	return entityLocalListAppendName;
 }
 
 string generateGenericListName(string genericObjectName, string genericListAppendName)
@@ -164,17 +178,28 @@ string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
 	return codeEntityListDefinitionText;
 }
 
-string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang)
-{
-	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(entityParam->className, progLang) + progLangReference[progLang] + generateEntityLocalListName(entityParam);
-	return codeEntityListDefinitionText;
-}
-
 string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang)
 {
 	string codeEntityListDefinitionTypeText = progLangClassListTypeStart[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	return codeEntityListDefinitionTypeText;
 }
+
+string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang)
+{
+	string codeEntityListDefinitionReferenceText = generateCodeEntityListDefinitionReferenceTypeText(entityParam->className, progLang) + generateEntityLocalListName(entityParam);
+	return codeEntityListDefinitionReferenceText;
+}
+
+string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang)
+{
+	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_PASS_LISTS_BY_REFERENCE
+	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeText(entityClassName, progLang) + progLangReference[progLang];
+	#else
+	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeText(entityClassName, progLang);	
+	#endif
+	return codeEntityListDefinitionReferenceTypeText;
+}
+
 
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang)
 {
@@ -209,6 +234,11 @@ string generateEntityDeclaration(string className, string instanceName, int prog
 {
 	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;
 	return tempVariableName;
+}
+
+string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang)
+{
+	progLangDynamicCastStart[progLang] + castClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang];	//dynamic_cast<castClassName*>(entityName)
 }
 
 

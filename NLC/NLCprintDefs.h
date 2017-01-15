@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9c 14-October-2014
+ * Project Version: 1k9d 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,6 +74,7 @@ using namespace std;
 #define NLC_ITEM_TYPE_REFERENCECONTEXTVAR_APPENDITION "referenceContext"
 #endif
 
+#define NLC_ITEM_TYPE_CLASSLISTVAR_APPENDITION NLC_ITEM_TYPE_CLASSVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"ClassList"
 #define NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION NLC_ITEM_TYPE_PROPERTYVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"PropertyList"
 #define NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"ConditionList"
 #define NLC_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION NLC_ITEM_TYPE_DEFINITIONVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"DefinitionList"
@@ -103,7 +104,7 @@ static string progLangClassConstructorParameters[NLC_NUMBER_OF_PROGRAMMING_LANGU
 static string progLangClassNameVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
 static string progLangClassNameVariableName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"name", "name", "name", "name", "name", "name", "name"};
 static string progLangClassNameVariableEquals[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" = ", " = ", " = ", " = ", " = ", " = ", " = "};
-static string progLangClassMemberFunctionType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void ", "void ", "void ", "void ", "void ", "void ", "void "};
+static string progLangClassMemberFunctionDefaultType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void ", "void ", "void ", "void ", "void ", "void ", "void "};
 static string progLangClassMemberFunctionParameters[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"()", "()", "()", "()", "()", "()", "()"};
 static string progLangClassMemberFunctionParametersOpen[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(", "(", "(", "(", "(", "(", "("};
 static string progLangClassMemberFunctionParametersClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {")", ")", ")", ")", ")", ")", ")"};
@@ -234,11 +235,13 @@ static string progLangTemplateUseClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LANGUA
 #endif
 
 static string progLangReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
+static string progLangReturn[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"return ", "return ", "return ", "return ", "return ", "return ", "return "};
 
 
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyClassName);
 string generateEntityLocalListName(NLCitem * entityParam);	//added 1i6a
+string generateEntityLocalListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
@@ -248,8 +251,9 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 		string generateStringFromContextVector(vector<string> * context, int progLang);
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
 string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
-string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang);
 	string generateCodeEntityListDefinitionTypeText(string propertyClassName, int progLang);
+string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang);
+	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
 
@@ -259,6 +263,8 @@ string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int p
 
 string generateEntityDeclaration(NLCitem * param, int progLang);
 	string generateEntityDeclaration(string className, string instanceName, int progLang);
+
+string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 
 
 #endif

@@ -49,6 +49,18 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
 	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
 		void printLine(string command, int level, string * code);
-		string generateConditionListName(string conditionClass, string conditionObjectClass);
-	
+		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS	
+		string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang);
+			string generateCodeConditionPairReferenceText(GIAentityNode * conditionEntity, GIAentityNode * conditionObjectEntity, int progLang);
+			//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
+				string generateInstanceNameWithContext(GIAentityNode * entity, int progLang);
+		string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
+		string generateCodePropertyDefinitionText(string propertyClassName, int progLang);
+		#endif
+		string generateConditionListName(string conditionClassName, string conditionObjectClassName);
+		string generateConditionPairName(string conditionClassName, string conditionObjectClassName);
+				
+string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
+string generateCodePropertyListDefinitionText(string targetClassName, int progLang);
+
 #endif

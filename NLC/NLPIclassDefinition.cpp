@@ -38,23 +38,15 @@ NLPIclassDefinition::NLPIclassDefinition(string newName)
 {
 	name = newName;	
 
-	actionOrConditionInstanceNotClass = false;
-	actionObjectClassName = "";
-	actionObjectInstanceName = "";
-	conditionObjectClassName = "";
-	conditionObjectInstanceName = "";	
-	className = "";
+	isActionOrConditionInstanceNotClass = false;
+	actionOrConditionInstance = NULL;
 }
 NLPIclassDefinition::NLPIclassDefinition(void)
 {
 	name = "";	
 
-	actionOrConditionInstanceNotClass = false;
-	actionObjectClassName = "";
-	actionObjectInstanceName = "";
-	conditionObjectClassName = "";
-	conditionObjectInstanceName = "";
-	className = "";
+	isActionOrConditionInstanceNotClass = false;
+	actionOrConditionInstance = NULL;
 }
 NLPIclassDefinition::~NLPIclassDefinition(void)
 {

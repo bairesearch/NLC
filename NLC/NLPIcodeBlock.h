@@ -128,6 +128,7 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 #define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
 #define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
 #define NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
+#define NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
 
 #define NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 
@@ -140,6 +141,10 @@ public:
 	NLPIitem(string newName, int newItemType);
 	~NLPIitem(void);
 
+	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+	GIAentityNode * actionInstance;	//only used by NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS at present (to fill in function execution arguments based on action properties and conditions)
+	#endif
+	
 	int itemType;
 	string name;		//eg dog
 	string instanceName;	//eg dog1

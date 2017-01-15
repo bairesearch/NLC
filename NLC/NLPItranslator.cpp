@@ -107,6 +107,32 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 
 					//cout << "h2" << endl;
 
+					NLPIitem * functionItem = NULL;
+					
+					if(actionHasObject || actionHasSubject)
+					{
+						functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
+						
+						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+						functionItem->actionInstance = actionEntity;
+						//detect action properties and conditions (and disable these for NLPI generate code block parse: they will become function execution arguments)
+						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+						{					
+							GIAentityNode * actionCondition = (*entityIter)->entity;
+							(*entityIter)->parsedForNLPIcodeBlocks = true;
+							actionCondition->parsedForNLPIcodeBlocks = true;
+						}
+						//for(vector<string>::iterator localListIter2 = targetClassDefinition->actionOrConditionInstance->propertyNodeList.begin(); localListIter2 != targetClassDefinition->actionOrConditionInstance->propertyNodeList.end(); localListIter2++)
+						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
+						{
+							//string actionProperty = *localListIter2;
+							GIAentityNode * actionProperty = (*entityIter)->entity;
+							(*entityIter)->parsedForNLPIcodeBlocks = true;
+							actionProperty->parsedForNLPIcodeBlocks = true;
+						}
+						#endif
+					}
+					
 					if(actionHasObject)
 					{
 						bool objectRequiredTempVar = false;	//not used
@@ -114,7 +140,6 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar);
 
 						//cout << "h3" << endl;
-						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						if(actionHasSubject)
 						{
 							bool subjectRequiredTempVar = false;
@@ -158,7 +183,6 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
 
 						//cout << "h3" << endl;
-						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						if(subjectRequiredTempVar)
 						{	
 							//cout << "subjectRequiredTempVar" << endl;						
@@ -170,7 +194,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						}
 						//cout << "h5" << endl;
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem);
-					}
+					}					
 
 					//cout << "h6" << endl;
 					/*		
@@ -395,8 +419,8 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 					#ifndef NLPI_BAD_IMPLEMENTATION
 					if((targetEntity->isAction) || (targetEntity->isCondition) && !(targetEntity->isConcept))
 					{
-						targetClassDefinition->actionOrConditionInstanceNotClass = true;
-						//cout << "classDefinition->actionOrConditionInstanceNotClass" << endl;
+						targetClassDefinition->isActionOrConditionInstanceNotClass = true;
+						//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
 					}
 					#endif					
 
@@ -420,14 +444,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->conditionList.push_back(targetClassDefinition);
-							
-							if(!(targetEntity->conditionObjectEntity->empty()))
-							{
-								GIAentityNode * conditionObject = (targetEntity->conditionObjectEntity->back())->entity;
-								targetClassDefinition->conditionObjectClassName = generateClassName(conditionObject);
-								targetClassDefinition->conditionObjectInstanceName = generateInstanceName(conditionObject);
-								targetClassDefinition->className = generateClassName(targetEntity);	//used a generic condition class is used for all conditions of name x 
-							}
+							targetClassDefinition->actionOrConditionInstance = targetEntity;
 						}						
 					}	
 					#ifndef NLPI_BAD_IMPLEMENTATION
@@ -460,14 +477,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->functionList.push_back(targetClassDefinition);
-
-							if(!(targetEntity->actionObjectEntity->empty()))
-							{
-								GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
-								targetClassDefinition->actionObjectClassName = generateClassName(actionObject);
-								targetClassDefinition->actionObjectInstanceName = generateInstanceName(actionObject);
-								targetClassDefinition->className = generateClassName(targetEntity);	//not used as a specific function is created per action instance
-							}
+							targetClassDefinition->actionOrConditionInstance = targetEntity;
 						}
 					}
 				}

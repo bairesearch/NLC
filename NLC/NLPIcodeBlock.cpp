@@ -38,7 +38,7 @@
 NLPIcodeblock::NLPIcodeblock(void)
 {
 	codeBlockType = NLPI_CODEBLOCK_TYPE_UNDEFINED;
-
+	
 	/*
 	//used by language specific code generator (eg C++, java);
 	codeBlockName = ""; 	//eg "for"
@@ -58,6 +58,9 @@ NLPIitem::NLPIitem(void)
 	instanceName = "";
 	itemType = NLPI_ITEM_INSTANCE_ID_UNDEFINED;
 	name = "";
+	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+	actionInstance = NULL;
+	#endif	
 }
 NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 {
@@ -65,12 +68,18 @@ NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 	name = generateClassName(entity);
 	instanceName = generateInstanceName(entity);
 	//entity->parsedForNLPIcodeBlocks = true;
+	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+	actionInstance = NULL;
+	#endif	
 }
 NLPIitem::NLPIitem(string newName, int newItemType)
 {
 	instanceName = "";
 	itemType = newItemType;
 	name = newName;
+	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+	actionInstance = NULL;
+	#endif	
 }
 NLPIitem::~NLPIitem(void)
 {
@@ -348,7 +357,7 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 {
 	if(includePresentObject)
 	{
-		string itemName = entity->entityName + convertLongToString(entity->idInstance);
+		string itemName = generateInstanceName(entity);
 		context->push_back(itemName);
 	}
 	bool entityHasParent = false;

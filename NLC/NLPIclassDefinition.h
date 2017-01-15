@@ -45,6 +45,9 @@
 using namespace std;
 
 #include "NLPIglobalDefs.h"
+#include "GIAglobalDefs.h"
+#include "GIAentityNodeClass.h"
+#include "GIAentityConnectionClass.h"
 
 #define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLPIglobalDefs.h
 
@@ -59,6 +62,8 @@ static string progLangClassListTypeEnd[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {
 static string progLangClassList2DTypeStart[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<", "unordered_map<"};
 static string progLangClassList2DTypeMiddle[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {", ", ", ", ", ", ", ", ", ", ", ", ", "};
 static string progLangClassList2DTypeConditionTypeVar[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string", "string", "string", "string", "string", "string", "string"};
+static string progLangClassPairTypeStart[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"pair<", "pair<", "pair<", "pair<", "pair<", "pair<", "pair<"};
+static string progLangClassPairTypeEnd[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 
 static string progLangClassNameVariableType[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
 static string progLangClassNameVariableName[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"name = ", "name = ", "name = ", "name = ", "name = ", "name = ", "name = "};
@@ -66,6 +71,7 @@ static string progLangClassMemberFunctionType[NLPI_NUMBER_OF_PROGRAMMING_LANGUAG
 static string progLangClassMemberFunctionParameters[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"()", "()", "()", "()", "()", "()", "()"};
 static string progLangClassMemberFunctionParametersOpen[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(", "(", "(", "(", "(", "(", "("};
 static string progLangClassMemberFunctionParametersClose[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {")", ")", ")", ")", ")", ")", ")"};
+static string progLangClassMemberFunctionParametersNext[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {", ", ", ", ", ", ", ", ", ", ", ", ", "};
 static string progLangClassInheritanceHeader[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"public ", "public ", "public ", "public ", "public ", "public ", "public "};
 static string progLangStringOpenClose[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\"", "\"", "\"", "\"", "\"", "\"", "\""};
 
@@ -79,18 +85,14 @@ public:
 	NLPIclassDefinition(string newName);
 	~NLPIclassDefinition(void);
 	
-	string name;	//CHECKTHIS; className (or instanceName if actionOrConditionInstanceNotClass) 
+	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
 	vector<NLPIclassDefinition *> propertyList;	//subclass
 	vector<NLPIclassDefinition *> conditionList;	//declared conditions
 	vector<NLPIclassDefinition *> definitionList;	//inherited parents
 	vector<NLPIclassDefinition *> functionList;
 
-	bool actionOrConditionInstanceNotClass;
-	string actionObjectClassName;		//only used for NLPIclassDefinitions in functionList that are actions and have action objects
-	string actionObjectInstanceName;	//only used for NLPIclassDefinitions in functionList that are actions and have action objects
-	string conditionObjectClassName;	//only used for NLPIclassDefinitions in conditionList that are conditions and have condition objects
-	string conditionObjectInstanceName;	//only used for NLPIclassDefinitions in conditionList that are conditions and have condition objects
-	string className;			//only used for NLPIclassDefinitions in functionList/conditionList that are actions/conditions
+	bool isActionOrConditionInstanceNotClass;
+	GIAentityNode * actionOrConditionInstance;
 	
 	bool isDisabledChildReplicantDeclaration;
 };

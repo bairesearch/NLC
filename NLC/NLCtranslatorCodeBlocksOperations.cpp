@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l7i 03-November-2014
+ * Project Version: 1l7j 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,6 +52,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 	#endif
 		#ifdef NLC_DEBUG
 		cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
+		cout << "sentenceIndex = " << sentenceIndex << endl;
 		#endif
 
 		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
@@ -61,10 +62,11 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		bool actionIsSingleWord = false;
 		bool actionHasObject = false;
 		GIAentityNode * objectEntity = NULL;
-		if(!(actionEntity->actionObjectEntity->empty()))
+		GIAentityConnection * actionObjectConnection = NULL;
+		if(getActionObjectEntityConnection(actionEntity, sentenceIndex, &actionObjectConnection))
 		{
 			actionHasObject = true;
-			objectEntity = (actionEntity->actionObjectEntity->back())->entity;
+			objectEntity = actionObjectConnection->entity;
 			#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 			if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
 			{
@@ -74,7 +76,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			}
 			#endif
 			#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-			if((actionEntity->actionObjectEntity->back())->sameReferenceSet)
+			if(actionObjectConnection->sameReferenceSet)
 			{
 				sameReferenceSet = true;	
 			}
@@ -82,12 +84,13 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		}
 		bool actionHasSubject = false;
 		GIAentityNode * subjectEntity = NULL;
-		if(!(actionEntity->actionSubjectEntity->empty()))
+		GIAentityConnection * actionSubjectConnection = NULL;
+		if(getActionSubjectEntityConnection(actionEntity, sentenceIndex, &actionSubjectConnection))
 		{
 			actionHasSubject = true;
-			subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
+			subjectEntity = actionSubjectConnection->entity;
 			#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-			if((actionEntity->actionSubjectEntity->back())->sameReferenceSet)
+			if(actionSubjectConnection->sameReferenceSet)
 			{
 				sameReferenceSet = true;	
 			}
@@ -141,6 +144,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				{
 					//cout << "actionHasObject: parent and its children initialised" << endl;
 				}
+				//cout << "1" << endl;
 
 				NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
 				#ifdef NLC_RECORD_ACTION_HISTORY
@@ -168,6 +172,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 					{
 						//cout << "actionHasSubject2: parent and its children initialised" << endl;
 					}
+					//cout << "2" << endl;
 
 					functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
 					#ifdef NLC_RECORD_ACTION_HISTORY
@@ -222,6 +227,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				{
 					//cout << "actionHasSubject: parent and its children initialised" << endl;
 				}
+				//cout << "3" << endl;
 
 				NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
 
@@ -2348,4 +2354,52 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode * entity, NLCcodeblock *
 	return foundParentProperty;
 }
 #endif
-			
+	
+bool getActionSubjectEntityConnection(GIAentityNode * actionEntity, int sentenceIndex, GIAentityConnection ** actionSubjectConnection)
+{
+	bool actionHasSubject = false;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+	//required because GIA advanced referencing may connect a given action to multiple subjects/objects (ie across multiple sentences)
+	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
+	{
+		GIAentityConnection * actionSubjectConnectionTemp = *iter;
+		if(actionSubjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		{
+			*actionSubjectConnection = actionSubjectConnectionTemp;
+			actionHasSubject = true;	
+		}
+	}
+	#else
+	if(!(actionEntity->actionSubjectEntity->empty()))
+	{
+		*actionSubjectConnection = (actionEntity->actionSubjectEntity->back());
+		actionHasSubject = true;
+	}	
+	#endif
+	return actionHasSubject;
+}	
+
+bool getActionObjectEntityConnection(GIAentityNode * actionEntity, int sentenceIndex, GIAentityConnection ** actionObjectConnection)
+{
+	bool actionHasObject = false;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+	//required because GIA advanced referencing may connect a given action to multiple subjects/objects across sentences (ie across multiple sentences)
+	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
+	{
+		GIAentityConnection * actionObjectConnectionTemp = *iter;
+		if(actionObjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		{
+			*actionObjectConnection = actionObjectConnectionTemp;
+			actionHasObject = true;	
+		}
+	}
+	#else
+	if(!(actionEntity->actionObjectEntity->empty()))
+	{
+		*actionObjectConnection = (actionEntity->actionObjectEntity->back());
+		actionHasObject = true;
+	}	
+	#endif
+	return actionHasObject;
+}
+	

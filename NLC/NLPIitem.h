@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d2a 09-November-2013
+ * Project Version: 1d3a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -74,6 +74,10 @@ using namespace std;
 #define NLPI_CLASS_NAME_APPEND "Class"
 #define NLPI_FUNCTION_NAME_APPEND "Function"
 
+#define NLPI_SUBSTANCE_CONCEPT_CLASS_PREPEND "With"
+#define NLPI_SUBSTANCE_CONCEPT_CLASS_CONDITION "Condition"
+#define NLPI_SUBSTANCE_CONCEPT_CLASS_PROPERTY "Property"
+
 #define NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 
 #define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME "this"
@@ -111,9 +115,6 @@ string generateClassName(GIAentityNode * entity);
 string generateFunctionName(GIAentityNode * entity);
 	string generateFunctionName(string entityName);
 string generateInstanceName(GIAentityNode * entity);
-#ifdef NLPI_BAD_IMPLEMENTATION
-string generateActionName(GIAentityNode * entity);
-#endif
 
 //string generateItemName(GIAentityNode * entity, int itemType);
 string convertLongToString(long number);

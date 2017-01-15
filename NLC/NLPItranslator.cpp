@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d2a 09-November-2013
+ * Project Version: 1d3a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -277,49 +277,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 				
 				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 				//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-				for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
-				{
-					GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
-					//if(!(definitionConnection->parsedForNLPIcodeBlocks))	//probably not required
-					//{
-					GIAentityNode* definitionEntity = definitionConnection->entity;
-					//check the definition is a substance concept
-					if(definitionEntity->isSubstanceConcept)
-					{
-						//cout << "isSubstanceConcept" << endl;
-						definitionConnection->parsedForNLPIcodeBlocks = true;
-
-						//property initialisations
-						for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = definitionEntity->propertyNodeList->begin(); propertyNodeListIterator < definitionEntity->propertyNodeList->end(); propertyNodeListIterator++)
-						{
-							GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-							GIAentityNode* propertyEntity = propertyConnection->entity;
-														
-							bool alreadyAdded = checkDuplicateProperty(propertyEntity, entity);
-							if(!alreadyAdded)
-							{
-								//cout << "sentenceIndexA = " << sentenceIndex << endl;
-								currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
-								entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
-							}
-						}
-						//state initialisations
-						for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = definitionEntity->conditionNodeList->begin(); conditionNodeListIterator < definitionEntity->conditionNodeList->end(); conditionNodeListIterator++)
-						{
-							GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-							GIAentityNode* conditionEntity = conditionConnection->entity;
-														
-							bool alreadyAdded = checkDuplicateCondition(conditionEntity, entity);
-							if(!alreadyAdded)
-							{						
-								//cout << "sentenceIndexB = " << sentenceIndex << endl;
-								currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
-								entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
-							}
-						}	
-					}
-					//}
-				}
+				generateObjectInitialisationsBasedOnSubstanceConcepts(entity, &currentCodeBlockInTree, sentenceIndex);
 				#endif				
 			}
 		}
@@ -330,7 +288,6 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 	
 }
 
-													
 NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar)
 {
 	*requiredTempVar = false;
@@ -374,6 +331,64 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	return currentCodeBlockInTree;
 }
 
+
+#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode * entity, NLPIcodeblock ** currentCodeBlockInTree, int sentenceIndex)
+{	
+	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+	{
+		GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+		//if(!(definitionConnection->parsedForNLPIcodeBlocks))	//probably not required
+		//{
+		GIAentityNode* definitionEntity = definitionConnection->entity;
+		//check the definition is a substance concept
+		if(definitionEntity->isSubstanceConcept)
+		{
+			//cout << "isSubstanceConcept" << endl;
+			definitionConnection->parsedForNLPIcodeBlocks = true;
+
+			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, definitionEntity, currentCodeBlockInTree, sentenceIndex);
+		}
+		//}
+	}
+}
+
+void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode * entity, GIAentityNode * definitionEntity, NLPIcodeblock ** currentCodeBlockInTree, int sentenceIndex)
+{
+	//property initialisations
+	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = definitionEntity->propertyNodeList->begin(); propertyNodeListIterator < definitionEntity->propertyNodeList->end(); propertyNodeListIterator++)
+	{
+		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
+		GIAentityNode* propertyEntity = propertyConnection->entity;
+
+		bool alreadyAdded = checkDuplicateProperty(propertyEntity, entity);
+		if(!alreadyAdded)
+		{
+			//cout << "sentenceIndexA = " << sentenceIndex << endl;
+			*currentCodeBlockInTree = createCodeBlockAddProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
+			entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex);		//updated 9 November 2013 - support recursion of complex substance concept definition
+		}
+	}
+	//state initialisations
+	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = definitionEntity->conditionNodeList->begin(); conditionNodeListIterator < definitionEntity->conditionNodeList->end(); conditionNodeListIterator++)
+	{
+		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
+		GIAentityNode* conditionEntity = conditionConnection->entity;
+
+		bool alreadyAdded = checkDuplicateCondition(conditionEntity, entity);
+		if(!alreadyAdded)
+		{						
+			//cout << "sentenceIndexB = " << sentenceIndex << endl;
+			*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+			entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, conditionEntity, currentCodeBlockInTree, sentenceIndex);	//updated 9 November 2013 - support recursion of complex substance concept definition
+		}
+	}
+}		
+#endif
+
+
 bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {	
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -382,6 +397,13 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 		if(!(entityNode->disabled))
 		{
 			string className = generateClassName(entityNode);
+			#ifdef NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+			if(entityNode->isSubstanceConcept)
+			{
+				className = generateSubstanceConceptClassName(entityNode);
+			}
+			#endif
+					
 			//cout << "className = " << className << endl;
 			bool foundClassDefinition = false;
 			NLPIclassDefinition * classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
@@ -406,13 +428,14 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						string targetClassName = "";
 						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
 						{
-							#ifndef NLPI_BAD_IMPLEMENTATION
 							targetName = generateInstanceName(targetEntity);
-							#else
-							targetName = generateActionName(targetEntity);
-							#endif
-							
 						}
+						#ifdef NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+						else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->isSubstanceConcept))
+						{
+							targetName = generateSubstanceConceptClassName(targetEntity);
+						}
+						#endif
 						else
 						{
 							targetName = generateClassName(targetEntity);
@@ -435,7 +458,6 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							#endif
 						}
 						
-						#ifndef NLPI_BAD_IMPLEMENTATION
 						#ifdef NLPI_DEBUG_PRINT_HIDDEN_CLASSES
 						if((targetEntity->isCondition) && !(targetEntity->isConcept))
 						#else
@@ -445,7 +467,6 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							targetClassDefinition->isActionOrConditionInstanceNotClass = true;
 							//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
 						}
-						#endif					
 
 						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 						{//declare subclass
@@ -476,19 +497,20 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 								{								
 									string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
 									classDeclarationConditionsListItem->className2 = conditionObjectClassName;				
-								}				
+								}
+								else
+								{
+									cout << "generateClassHeirarchy() error: condition has no object" << endl;
+								}												
 								targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
 							}						
 						}	
-						#ifndef NLPI_BAD_IMPLEMENTATION
 						else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) 
 						{//declare inheritance
+							#ifndef NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 							if(targetName != className)	//eg do not create a separate class for substance concept definitions
 							{
-						#else			
-						else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE))
-						{//declare inheritance					
-						#endif
+							#endif
 								//definitionList
 								bool foundLocalClassDefinition = false;
 								NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
@@ -497,7 +519,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 									//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
 									classDefinition->definitionList.push_back(targetClassDefinition);
 								}
-							#ifndef NLPI_BAD_IMPLEMENTATION
+							#ifndef NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 							}
 							#endif
 						}
@@ -544,6 +566,40 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 	#endif
 }	
 
+#ifdef NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity)
+{
+	string substanceConceptClassName = substanceConceptEntity->entityName;
+	generateSubstanceConceptClassNameRecurse(substanceConceptEntity, &substanceConceptClassName);
+	substanceConceptClassName = substanceConceptClassName + NLPI_CLASS_NAME_APPEND;
+	return substanceConceptClassName;
+}
+
+void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName)
+{
+	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->conditionNodeList->begin(); entityIter != substanceConceptEntity->conditionNodeList->end(); entityIter++)
+	{
+		GIAentityNode * substanceConceptCondition = (*entityIter)->entity;
+		if(!(substanceConceptCondition->conditionObjectEntity->empty()))
+		{								
+			GIAentityNode * substanceConceptConditionObject = (substanceConceptCondition->conditionObjectEntity->back())->entity;
+			*substanceConceptClassName = *substanceConceptClassName + NLPI_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLPI_SUBSTANCE_CONCEPT_CLASS_CONDITION;
+			generateSubstanceConceptClassName(substanceConceptConditionObject);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+		}
+		else
+		{
+			cout << "generateSubstanceConceptClassNameRecurse() error: condition has no object" << endl;
+		}					
+	}
+	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->propertyNodeList->begin(); entityIter != substanceConceptEntity->propertyNodeList->end(); entityIter++)				
+	{
+		GIAentityNode * substanceConceptProperty = (*entityIter)->entity;
+		*substanceConceptClassName = *substanceConceptClassName + NLPI_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLPI_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
+		generateSubstanceConceptClassName(substanceConceptProperty);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+	}
+}
+#endif
+			
 #ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition*> * classDefinitionSublist, int variableType)
 {

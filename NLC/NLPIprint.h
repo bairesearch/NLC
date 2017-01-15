@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d2a 09-November-2013
+ * Project Version: 1d3a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -110,6 +110,9 @@ static string progLangAddProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push
 static string progLangAddCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
 static string progLangFindProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty", "empty", "empty", "empty", "empty", "empty", "empty"};
 static string progLangFindCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty", "empty", "empty", "empty", "empty", "empty", "empty"};
+
+static string progLangMainEntryPointFunctionName[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"main", "main", "main", "main", "main", "main", "main"};
+
 /*
 #define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"
 #define NLPI_ITEM_TYPE_CONDITIONLISTADDFUNCTION "addCondition"

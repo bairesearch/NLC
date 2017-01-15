@@ -23,7 +23,7 @@
  * File Name: NLPImain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d2a 09-November-2013
+ * Project Version: 1d3a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -47,5 +47,6 @@ using namespace std;
 #include "NLPIclassDefinition.h"
 
 int main(int argc,char **argv);
+	string removeFileNameExtensions(string NLPIfunctionName);
 
 #endif

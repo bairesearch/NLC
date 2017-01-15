@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d2a 09-November-2013
+ * Project Version: 1d3a 09-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -118,6 +118,8 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 
 int main(int argc,char **argv)
 {
+	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
+	
 	#ifdef GIA_TRIAL_WORD_NET_SYNONYM_LOOKUP
 	initialiseWordNet();
 	string wordExample = "like";
@@ -607,7 +609,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1d2a 09-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1d3a 09-November-2013" << endl;
 			exit(1);
 		}
 
@@ -819,6 +821,20 @@ int main(int argc,char **argv)
 		{
 			cout << "error: NLPI requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
 		}
+		
+		#ifdef NLPI_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
+		NLPIfunctionName = progLangMainEntryPointFunctionName[progLang];
+		#else
+		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+		if(!NLPIinputFileList)
+		{
+		#endif
+			NLPIfunctionName = removeFileNameExtensions(NLPIfunctionName);
+		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+		}
+		#endif
+		#endif		
+		
 		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 		functionNameList.push_back(NLPIfunctionName);
 		#endif
@@ -856,8 +872,7 @@ int main(int argc,char **argv)
 	}
 	//cout << "q4" << endl;	
 
-	string code = "";
-	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;		
+	string code = "";		
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
 	{
 		result = false;
@@ -891,4 +906,13 @@ int main(int argc,char **argv)
 }	
 
 
-
+string removeFileNameExtensions(string NLPIfunctionName)
+{
+	string NLPIfunctionNameCleaned = NLPIfunctionName;
+	int indexOfFirstFileExtension = NLPIfunctionName.find(".");
+	if(indexOfFirstFileExtension != string::npos)
+	{
+		NLPIfunctionNameCleaned = NLPIfunctionName.substr(0, indexOfFirstFileExtension);
+	}
+	return NLPIfunctionNameCleaned;
+}

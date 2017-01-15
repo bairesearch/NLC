@@ -21,9 +21,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintClassDefinitions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f8a 16-February-2014
+ * Project Version: 1f9a 11-April-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -96,10 +96,9 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			printLine(classConstructorDeclaration, 1, code);
 			string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
 			printLine(classDestructorDeclaration, 1, code);
-			//printLine("", 1, code);
-			//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + className + progLangStringOpenClose[progLang] + progLangEndLine[progLang];
-			//printLine(classNameCode, 1, code);
-			//printLine("", 1, code);
+			string classNameRaw = className.substr(0, className.length()-strlen(NLC_CLASS_NAME_APPEND));
+			string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
+			printLine(classNameCode, 1, code);
 
 			for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 			{

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1f 14-November-2014
+ * Project Version: 1m1g 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1497,10 +1497,6 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, G
 
 bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, GIAentityNode * parentEntity, string parentConditionName, bool generateParentContextTopLevel, bool generateParentContextPassThrough)
 {
-	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-	entity->NLCcontextGeneratedTemp = true;
-	#endif
-	
 	string parentName = "";
 	if(parentEntity != NULL)
 	{
@@ -1818,25 +1814,19 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
 				GIAentityNode* conditionEntity = conditionConnection->entity;
 
-				/*
 				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 				if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
 				{
 				#endif
-				*/
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-				if(!(conditionEntity->NLClogicalConditionOperation))		//if(!(conditionConnection->NLCparsedForlogicalConditionOperations) && !(conditionEntity->NLCparsedForlogicalConditionOperations))	//this alternative test would require "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionSubject, sentenceIndex, false);" to be called before "generateObjectInitialisationsBasedOnPropertiesAndConditions()"
-				{
-				#endif
-					bool foundConditionObject = false;
-					GIAentityNode * conditionObject = NULL;
-					if(!(conditionEntity->conditionObjectEntity->empty()))
+					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+					if(!(conditionEntity->NLClogicalConditionOperation))		//if(!(conditionConnection->NLCparsedForlogicalConditionOperations) && !(conditionEntity->NLCparsedForlogicalConditionOperations))	//this alternative test would require "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionSubject, sentenceIndex, false);" to be called before "generateObjectInitialisationsBasedOnPropertiesAndConditions()"
 					{
-						conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-						if(!(conditionObject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions 
+					#endif
+						bool foundConditionObject = false;
+						GIAentityNode * conditionObject = NULL;
+						if(!(conditionEntity->conditionObjectEntity->empty()))
 						{
-						#endif
+							conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 							foundConditionObject = true;
 
 							#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
@@ -1858,9 +1848,16 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 								if(!(conditionConnection->NLCparsedForCodeBlocks))
 								{
-									#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+									#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 									GIAentityNode * entityInverse = conditionObject;
-									GIAentityNode * conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+									GIAentityNode * conditionEntityInverse = NULL;
+									if(conditionEntity->conditionTwoWay)
+									{
+										conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+										#ifdef NLC_DEBUG
+										cout << "conditionEntityInverse: conditionEntity = " << conditionEntity->entityName << endl;
+										#endif
+									}
 									#endif
 
 									#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
@@ -1875,8 +1872,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 											//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, conditionObject);	//removed 1m1f
 											*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
-											if(conditionEntity->inverseConditionTwoWay)
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+											if(conditionEntity->conditionTwoWay)
 											{
 												//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, entityInverse);	//removed 1m1f
 												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entityInverse, conditionEntityInverse);
@@ -1891,8 +1888,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											#endif
 
 											*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
-											if(conditionEntity->inverseConditionTwoWay)
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+											if(conditionEntity->conditionTwoWay)
 											{
 												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entityInverse, conditionEntityInverse);
 											}
@@ -1919,8 +1916,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											#endif
 
 											*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
-											if(conditionEntity->inverseConditionTwoWay)
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+											if(conditionEntity->conditionTwoWay)
 											{
 												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex);
 											}
@@ -1940,8 +1937,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											//create a new condition; eg "a house" in "Tom is near a house"
 											newlyDeclaredEntityInCategoryList2 = true;
 											*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, true);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
-											if(conditionEntity->inverseConditionTwoWay)
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+											if(conditionEntity->conditionTwoWay)
 											{
 												*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex, true);
 											}
@@ -1974,31 +1971,22 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 								generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 							}
-						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 						}
-						#endif
+						else
+						{
+							//no condition object
+						}
+					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 					}
-					else
-					{
-						//no condition object
-					}
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-				}
-				#endif
-				/*
+					#endif
 				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 				}
 				#endif
-				*/
 			}
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 		}
 		#endif
 	}
-	
-	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-	entity->NLCcontextGeneratedTemp = false;
-	#endif
 	
 	//cout << "performedAtLeastOneObjectInitialisation = " << performedAtLeastOneObjectInitialisation << " entity = " << entity->entityName << endl;
 	
@@ -2734,7 +2722,7 @@ bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntit
 }
 #endif
 
-#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity)
 {
 	GIAentityNode * conditionEntityInverse = new GIAentityNode();

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q11c 21-August-2015
+ * Project Version: 1q11d 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -159,14 +159,14 @@ void generateCodeAddToCategoryIfPassSingularDefiniteReferencingTestsNewFunction(
 		printLine(progLangCloseBlock[progLang], level+q, code);
 		#endif	
 
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 		string comment = "Singular definite plurality tests";
 		string codeBlockText7 = progLangOpenSingleLineComment[progLang] + comment;
 		printLine(codeBlockText7, level+q, code);
 			//NB this code could be moved to a new codeblock (NLC_CODEBLOCK_TYPE_COMMENT_SINGLE_LINE)
 		#endif
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
 		int value = 1;	//see generateContextBlocksCategories
 		string intValueString = convertIntToString(value);
 		string codeBlockText8 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + intValueString + progLangCloseParameterSpace[progLang];		//if(param1CategoryList.size() > 1){

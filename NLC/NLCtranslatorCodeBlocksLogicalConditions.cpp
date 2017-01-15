@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9a 25-January-2015
+ * Project Version: 1n9b 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -651,14 +651,21 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 						      //if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 						}
 						*/
+						//cout << "getParentAndGenerateContextBlocks:" << endl;
 						if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
 						{
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 							cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
 							#endif
-
-							*currentCodeBlockInTree = NLCcodeBlockBeforeGenerateContext;
-							clearCodeBlock(*currentCodeBlockInTree);							
+							
+							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+							*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
+							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+							(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
+							(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+							#endif
+							#endif
+							foundParsablePhrase = true;						
 						}
 						else
 						{

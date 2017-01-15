@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9a 25-January-2015
+ * Project Version: 1n9b 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -873,9 +873,6 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	#endif
 
 	/*
-	//if object near car that is a flyingCar
-	currentCodeBlockInTree = createCodeBlockIfHasDefinition(currentCodeBlockInTree, item, entity, sentenceIndex);
-
 	//if object near Tom's carparentInstanceName
 	currentCodeBlockInTree = createCodeBlockIfHasPropertyOwner(currentCodeBlockInTree, item, entity, sentenceIndex);
 	*/

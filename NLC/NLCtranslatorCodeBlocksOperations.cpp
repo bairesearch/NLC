@@ -335,7 +335,7 @@ bool isNonImmediateAction(GIAentityNode * actionEntity)
 	{
 		isNonImmediateAction = true;
 	}
-	else if(actionEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_POTENTIAL] == true)
+	else if(actionEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_POTENTIAL] == true)	//redundant, as this is already filtered by isPotentialAction()
 	{
 		isNonImmediateAction = true;
 	}
@@ -343,14 +343,7 @@ bool isNonImmediateAction(GIAentityNode * actionEntity)
 	{
 		isNonImmediateAction = true;
 	}
-	else if(actionEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_INFINITIVE] == true)	//CHECKTHIS; check GRAMMATICAL_TENSE_MODIFIER_INFINITIVE has been generated correctly (ie is being correctly distinguished from VBP/present not third person singular)
-	{
-		isNonImmediateAction = true;
-	}
-	else if(actionEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_IMPERATIVE] == true)
-	{
-		isNonImmediateAction = true;
-	}
+	//CHECKTHIS; check GRAMMATICAL_TENSE_MODIFIER_INFINITIVE is being generated correctly (ie is being correctly distinguished from VBP/present not third person singular) - otherwise isNonImmediateAction will have to check for GRAMMATICAL_TENSE_MODIFIER_INFINITIVE also
 		
 	if(actionEntity->timeConditionNode != NULL)
 	{

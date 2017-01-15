@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e7b 23-November-2013
+ * Project Version: 1e7c 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -100,7 +100,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						
 						#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-						cout << "NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE" << endl;
+						//cout << "NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE" << endl;
 						actionEntity->NLPIisSingularArgument = true;	//added 1e2c
 						//declare an "abstract" variable for the action (that will be filled with the its properties and conditions) and passed as an argument to the function; eg "fast" of "run fast"
 						currentCodeBlockInTree->parameters.push_back(functionItem);
@@ -322,9 +322,9 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 		*/
 	}
 	
-	cout << "generateContextBlocksAndInitialiseParentIfNecessary, sentenceIndex = " << sentenceIndex << endl;
-	cout << "\tpossibleContextParentFound = " << possibleContextParentFound << endl;
-	cout << "\tcurrentEntity->entityName = " << currentEntity->entityName << endl;
+	//cout << "generateContextBlocksAndInitialiseParentIfNecessary, sentenceIndex = " << sentenceIndex << endl;
+	//cout << "\tpossibleContextParentFound = " << possibleContextParentFound << endl;
+	//cout << "\tcurrentEntity->entityName = " << currentEntity->entityName << endl;
 	
 	if(possibleContextParentFound)
 	{
@@ -432,7 +432,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						//cout << "entity->entityName = " << entity->entityName << endl;
 						//for(all items in context){
 						NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
-						bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
+						//bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);		//removed 1e7c
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
 						//cout << "createCodeBlockForPropertyList: " << entity->entityName << endl;
 						loopUsed = true;		
@@ -507,7 +507,7 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						//cout << "entity->entityName = " << entity->entityName << endl; 
 						//for(all items in context){
 						NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
-						bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
+						//bool entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);		//removed 1e7c
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);	
 						loopUsed = true;	
 					}

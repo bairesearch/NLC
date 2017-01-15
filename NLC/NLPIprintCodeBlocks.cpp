@@ -23,7 +23,7 @@
  * File Name: NLPIprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e7b 23-November-2013
+ * Project Version: 1e7c 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -75,7 +75,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_ADD_NEW_PROPERTY" << endl;
 			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
-			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
+			//string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
 			
 			string codeBlockTextCreate = param2->className + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param2->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	
 			printLine(codeBlockTextCreate, level, code);
@@ -89,7 +89,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
 			NLPIitem * param3 = currentCodeBlockInLevel->parameters.at(2);	
-			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
+			//string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
 			string codeBlockTextCreate = param3->className + progLangPointer[progLang] + STRING_SPACE + param3->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param3->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
 			printLine(codeBlockTextCreate, level, code);
 			#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
@@ -108,7 +108,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_ADD_PROPERTY" << endl;
 			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
-			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
+			//string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
 			
 			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param2->className + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);
 			printLine(codeBlockText, level, code);
@@ -120,7 +120,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
 			NLPIitem * param3 = currentCodeBlockInLevel->parameters.at(2);	
-			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
+			//string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
 			#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param3->className + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + progLangStringOpenClose[progLang] + param2->className + progLangStringOpenClose[progLang] + progLangParameterSpaceNextParam[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		
 			#else

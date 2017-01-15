@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e7b 23-November-2013
+ * Project Version: 1e7c 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -75,11 +75,11 @@ NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, N
 NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
 	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
-	getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
 	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
-	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
+	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
 	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
@@ -91,11 +91,11 @@ NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockIn
 NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
 	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
-	getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
 	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
-	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
+	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
 	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_PROPERTY;
@@ -110,7 +110,7 @@ NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockI
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
-		getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);	
 		currentCodeBlockInTree->parameters.push_back(entityItem);
 
 		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_OBJECT);
@@ -118,7 +118,7 @@ NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockI
 
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
-		getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
+		//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
 		int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
@@ -137,7 +137,7 @@ NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTr
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
-		getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(entityItem);
 
 		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_OBJECT);
@@ -145,7 +145,7 @@ NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTr
 
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
-		getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
+		//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
 		int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_CONDITION;

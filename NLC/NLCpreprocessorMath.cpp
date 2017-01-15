@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k6b 14-October-2014
+ * Project Version: 1k6c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -225,6 +225,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		#endif
 		
 		bool legalWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
+		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+		if(currentWord.length() == 0)
+		{
+			bool illegalFirstWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
+			if(illegalFirstWordCharacterFound)
+			{
+				legalWordCharacterFound = false;
+			}
+		}
+		#endif
 		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
 			mandatoryCharacterFoundInCurrentWord = true;

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k6b 14-October-2014
+ * Project Version: 1k6c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1025,9 +1025,13 @@ bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vect
 		{
 			if(!(actionEntity->isActionConcept))
 			{
-				//cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
-				//cout << "actionEntity->hasAssociatedInstance = " << actionEntity->hasAssociatedInstance << endl;
-
+				/*
+				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
+				cout << "currentNLCsentenceInList->singleWordSentenceActionName = " << currentNLCsentenceInList->singleWordSentenceActionName << endl;
+				cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
+				cout << "actionEntity->hasAssociatedInstance = " << actionEntity->hasAssociatedInstance << endl;
+				*/
+				
 				if(checkSentenceIndexParsingCodeBlocks(actionEntity, sentenceIndex, true))
 				{
 					#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION

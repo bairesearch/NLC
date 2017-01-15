@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k6b 14-October-2014
+ * Project Version: 1k6c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -83,7 +83,6 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		NLCitem * functionItem = NULL;
 		if(actionHasObject || actionHasSubject || actionIsSingleWord)
 		{
-			//[q**^]
 			functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
 
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
@@ -148,7 +147,6 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		}
 		else if(actionHasSubject)
 		{
-			//[**^]
 			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 			if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 			{

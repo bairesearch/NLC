@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2a 07-January-2014
+ * Project Version: 1n2b 07-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -225,6 +225,22 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 								string classDefinitionAliasListCode = progLangAliasListVariableType[progLang] + string(NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangEndLine[progLang];	//vector<string> aliasList;
 								printLine(classDefinitionAliasListCode, 1, code);			
 								#endif
+								
+								/*
+								#ifdef NLC_USE_LIBRARY
+								string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);
+								printLine(allListDeclarationText, 1, code);
+								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);
+								printLine(allListDeclarationText, 1, code);
+								#ifdef NLC_RECORD_ACTION_HISTORY
+								allListDeclarationText = generateCodeAllActionListDefinitionText(progLang);
+								printLine(allListDeclarationText, 1, code);
+								allListDeclarationText = generateCodeAllActionIncomingListDefinitionText(progLang);
+								printLine(allListDeclarationText, 1, code);
+								#endif
+								#endif
+								*/
+							
 							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 							}
 							#endif
@@ -321,6 +337,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							}
 							#endif
 							#endif
+							
 
 							printLine(progLangCloseClass[progLang], 0, code);
 							printLine("", 0, code);
@@ -350,8 +367,8 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 								NLCclassDefinition * targetClassDefinition = *localListIter;
 								string propertyClassName = targetClassDefinition->name;
 								//NLCitem * param1 = targetClassDefinition->parameters.at(0);	//not required to be used
-								string localListDeclarationStoreText = generateCodePropertyListDefinitionStoreText(propertyClassName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationStoreText, 1, code);
+								string codeAllPropertyListAddText = generateCodeAllPropertyListAddText(propertyClassName, progLang);
+								printLine(codeAllPropertyListAddText, 1, code);
 							}
 
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
@@ -359,31 +376,23 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 								NLCclassDefinition * targetClassDefinition = *localListIter;
 								//string targetName = targetClassDefinition->name;	//condition instance name not used
 								NLCitem * param1 = targetClassDefinition->parameters.at(0);
-								string localListDeclarationStoreText = generateCodeConditionListDefinitionStoreText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationStoreText, 1, code);
+								string codeAllConditionListAddText = generateCodeAllConditionListAddText(param1->className, param1->className2, progLang);
+								printLine(codeAllConditionListAddText, 1, code);
 							}
 
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
 							{
 								NLCclassDefinition * targetClassDefinition = *localListIter;
-								GIAentityNode entityAction;
-								entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
-								NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
-								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
-								string genericListAppendName = NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
-								string localListDeclarationStoreText = generateCodeGenericListDefinitionStoreText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationStoreText, 1, code);
+								string actionClassName = targetClassDefinition->name;
+								string codeAllActionListAddText = generateCodeAllActionListAddText(actionClassName, progLang);
+								printLine(codeAllActionListAddText, 1, code);
 							}
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
 							{
 								NLCclassDefinition * targetClassDefinition = *localListIter;
-								GIAentityNode entityAction;
-								entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
-								NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
-								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
-								string genericListAppendName = NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
-								string localListDeclarationStoreText = generateCodeGenericListDefinitionStoreText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationStoreText, 1, code);
+								string actionIncomingClassName = targetClassDefinition->name;
+								string codeAllActionIncomingListAddText = generateCodeAllActionIncomingListAddText(actionIncomingClassName, progLang);
+								printLine(codeAllActionIncomingListAddText, 1, code);
 							}
 							#endif
 

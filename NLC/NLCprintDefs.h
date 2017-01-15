@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2a 07-January-2014
+ * Project Version: 1n2b 07-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -67,9 +67,8 @@ using namespace std;
 #ifdef NLC_USE_LIBRARY
 #define NLC_USE_LIBRARY_ALL_PROPERTY_LIST_NAME "propertyListAll"
 #define NLC_USE_LIBRARY_ALL_CONDITION_LIST_NAME "conditionListAll"
-#define NLC_USE_LIBRARY_ALL_CONDITIONOBJECT_LIST_NAME "conditionObjectListAll"
 #define NLC_USE_LIBRARY_ALL_ACTION_LIST_NAME "actionListAll"
-#define NLC_USE_LIBRARY_ALL_INCOMINGACTION_LIST_NAME "incomingActionListAll"
+#define NLC_USE_LIBRARY_ALL_ACTIONINCOMING_LIST_NAME "actionIncomingListAll"
 #endif
 
 
@@ -299,6 +298,9 @@ static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"
 static string progLangAddList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
 static string progLangMakePair[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair"};
 #define NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE "string"
+static string progLangReinterpretCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<"};
+static string progLangReinterpretCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
+static string progLangAddress[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
 #endif
 
 
@@ -389,5 +391,36 @@ string generateEntityStringMapListName(string genericListNameStart, string gener
 string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang);
 
 string generateNewObject(string objectName, int progLang);
+
+
+#ifdef NLC_USE_LIBRARY
+string generateCodeAllPropertyListAddText(string propertyClassName, int progLang);
+string generateCodeAllPropertyListDefinitionText(int progLang);
+string generateAllPropertyListName();
+
+string generateCodeAllVectorListAddText(string allListName, string vectorListName, string vectorListKeyName, int progLang);
+string generateCodeAllVectorListDefinitionTypeText(int progLang);
+string generateCodeEntityMapListDefinitionTypeText(string pairItem1className, string entityClassName, int progLang);
+string generateCodePairText(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang);
+string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
+
+string generateCodeAllConditionListAddText(string conditionClassName, string conditionObjectClassName, int progLang);
+string generateCodeAllConditionListDefinitionText(int progLang);
+string generateAllConditionListName();
+
+string generateCodeAllMapListAddText(string allListName, string mapListName, string mapListKeyName1, string mapListKeyName2, int progLang);
+string generateCodeAllConditionListDefinitionTypeText(int progLang);
+string generateCodeEntityPairMapListDefinitionTypeText(string pairItem1className, string pairItem2className, string entityClassName, int progLang);
+string generateCodePairTypeText(string pairItem1className, string pairItem2className, int progLang);
+string generateCodePairPairText(string pairItem1AclassName, string pairItem1BclassName, string pairItem2className, string pairItem1AinstanceName, string pairItem1BinstanceName, string pairItem2instanceName, int progLang);
+string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang);
+
+string generateCodeAllActionListAddText(string actionClassName, int progLang);
+string generateCodeAllActionListDefinitionText(int progLang);
+string generateAllActionListName();
+string generateCodeAllActionIncomingListAddText(string incomingActionClassName, int progLang);
+string generateCodeAllActionIncomingListDefinitionText(int progLang);
+string generateAllActionIncomingListName();
+#endif
 
 #endif

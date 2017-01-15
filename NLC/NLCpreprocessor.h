@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m4c 01-December-2014
+ * Project Version: 1m5a 02-December-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,6 +57,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	bool detectFunctionHeader(string * lineContents);
 	string getFunctionNameFromFunctionHeader(string * lineContents);
+	string generateNLCfunctionFileName(string functionName);
 	#endif	
 	bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * logicalConditionOperator);
 	string removePrependingWhiteSpace(string sentenceContents);

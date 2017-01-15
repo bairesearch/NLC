@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m4c 01-December-2014
+ * Project Version: 1m5a 02-December-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -72,6 +72,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		*detectedFunctions = false;
 		string functionContents = "";
 		string functionName = "";
+		string functionFileName = "";	//with functionName with extension
 		int currentLineNumber = 0;
 		
 		while(getline(parseFileObject, currentLine))
@@ -92,7 +93,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					cout << "create new function = " << functionName << endl;
 					cout << "functionContents = " << functionContents << endl;
 					#endif
-					writeStringToFile(&functionName, &functionContents);
+					writeStringToFile(&functionFileName, &functionContents);
 					currentNLCfunctionInList->functionName = functionName;
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
@@ -109,7 +110,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				}
 				sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 				functionName = getFunctionNameFromFunctionHeader(&currentLine);
-				inputTextFileNameList->push_back(functionName);
+				functionFileName = generateNLCfunctionFileName(functionName);
+				inputTextFileNameList->push_back(functionFileName);
 				functionContents = "";
 			}
 			else
@@ -386,17 +388,17 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		{
 			//create a final function based on the final text..
 			#ifdef NLC_DEBUG_PREPROCESSOR
-			cout << "create new function = " << functionName << endl;
+			cout << "create new function, functionFileName = " << functionFileName << endl;
 			cout << "functionContents = " << functionContents << endl;
 			#endif
-			writeStringToFile(&functionName, &functionContents);
+			writeStringToFile(&functionFileName, &functionContents);
 			//create new function file based on current text
 		}
 		else
 		{
 		#endif
 			#ifdef NLC_DEBUG_PREPROCESSOR
-			cout << "create preprocessed file = " << functionName << endl;
+			cout << "create preprocessed file, outputFileName = " << outputFileName << endl;
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
 			writeStringToFile(&outputFileName, &functionContents);
@@ -484,6 +486,11 @@ string getFunctionNameFromFunctionHeader(string * lineContents)
 	//cout << "getFunctionNameFromFunctionHeader(): functionName = " << functionName << endl; 
 	return functionName;
 	
+}
+string generateNLCfunctionFileName(string functionName)
+{
+	string functionFileName = functionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
+	return functionFileName;
 }
 #endif
 

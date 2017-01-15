@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s1b 03-September-2016
+ * Project Version: 1s2a 04-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,7 +68,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 				#ifdef NLC_DEBUG
 				cout << "generateClassHeirarchy: entityNode->entityName = " << entityNode->entityName << endl;
 				#endif
-
+				
 				for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 				{
 					for(vector<GIAentityConnection*>::iterator connectionIter = entityNode->entityVectorConnectionsArray[i].begin(); connectionIter != entityNode->entityVectorConnectionsArray[i].end(); connectionIter++)
@@ -390,10 +390,14 @@ bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* 
 	bool parentClassIsChildOfChildClass = false;
 	
 	GIAentityNode* parentConceptEntity = parentEntity;
+	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
 	if(!(parentEntity->isConcept))	//added 1r7a
-	{ 
+	{
+	#endif
 		parentConceptEntity = getPrimaryConceptNodeDefiningInstance(parentEntity);
+	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
 	}
+	#endif
 
 	for(vector<GIAentityConnection*>::iterator connectionIter = parentConceptEntity->associatedInstanceNodeList->begin(); connectionIter != parentConceptEntity->associatedInstanceNodeList->end(); connectionIter++)
 	{
@@ -854,12 +858,12 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
-	/*
-	if(entityNode->isConcept)	//added 1n2f, removed 1r7a
+	#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
+	if(entityNode->isConcept)	//added 1n2f
 	{
 		validClass = false;
 	}
-	*/
+	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	if(entityNode->NLCisAlias)
 	{

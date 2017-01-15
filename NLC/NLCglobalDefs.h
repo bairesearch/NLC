@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s1b 03-September-2016
+ * Project Version: 1s2a 04-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,6 +56,7 @@
 //#define NLC_DISABLE_1r_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1r_CODE_FOR_DEBUG
+	#define GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS_PARSE_CONCEPT_DEFINITIONS	//1r8a
 	#define NLC_USE_MATH_OBJECTS_ADVANCED	//1r5c	//requires NLC_USE_LIBRARY_BASE_EXTENDED
 	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 		#define NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME "assignMathObjectValue"

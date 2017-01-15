@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12b 27-July-2015
+ * Project Version: 1p12c 27-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -299,7 +299,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 								
 								//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
 								//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-								cout << "undeclared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT << currentWord << endl;	//inserting mathText variable declaration type (eg double)
+								cout << "implicitly declared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT << currentWord << endl;	//inserting mathText variable declaration type (eg double)
 								//#endif
 								currentPhrase.insert(0, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT);
 
@@ -556,10 +556,6 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 			cout << "mathText variable type detected: ignoreVariable = true" << endl;
 			#endif
-			ignoreVariable = true;
-		}
-		if(currentWord == "")
-		{
 			ignoreVariable = true;
 		}
 		

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n20a 01-February-2015
+ * Project Version: 1n20b 01-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -289,14 +289,12 @@ static string progLangTypeName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"typename
 
 static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};
 
-#ifdef NLC_USE_LIBRARY
-static string progLangAddList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
+static string progLangAddAllList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
 static string progLangMakePair[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair", "make_pair"};
 #define NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE "string"
 static string progLangReinterpretCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<", "reinterpret_cast<"};
 static string progLangReinterpretCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 static string progLangAddress[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
-#endif
 static string progLangNullPointer[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"};
 
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
@@ -402,6 +400,8 @@ string generateTempEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang);
+string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
+string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang);
 
 string generateCodeEntityStringMapListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
 string generateCodeEntityStringMapListDefinitionTypeText(string entityClassName, int progLang);
@@ -420,7 +420,6 @@ string generateCodeAllVectorListAddText(string allListName, string vectorListNam
 string generateCodeAllVectorListDefinitionTypeText(int progLang);
 string generateCodeEntityMapListDefinitionTypeText(string pairItem1className, string entityClassName, int progLang);
 string generateCodePairText(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang);
-string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
 
 string generateCodeAllConditionListAddText(string conditionClassName, string conditionObjectClassName, int progLang);
 string generateCodeAllConditionListDefinitionText(int progLang);
@@ -431,7 +430,6 @@ string generateCodeAllConditionListDefinitionTypeText(int progLang);
 string generateCodeEntityPairMapListDefinitionTypeText(string pairItem1className, string pairItem2className, string entityClassName, int progLang);
 string generateCodePairTypeText(string pairItem1className, string pairItem2className, int progLang);
 string generateCodePairPairText(string pairItem1AclassName, string pairItem1BclassName, string pairItem2className, string pairItem1AinstanceName, string pairItem1BinstanceName, string pairItem2instanceName, int progLang);
-string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang);
 
 string generateCodeAllActionListAddText(string actionClassName, int progLang);
 string generateCodeAllActionListDefinitionText(int progLang);

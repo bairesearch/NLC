@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l5c 02-November-2014
+ * Project Version: 1l5d 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -415,8 +415,6 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
 		#endif
 		
-		/*
-
 		//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
 		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
 		{
@@ -432,7 +430,6 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 				}
 			}
 		}
-		*/
 
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN

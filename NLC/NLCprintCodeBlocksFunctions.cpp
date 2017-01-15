@@ -394,7 +394,7 @@ void generateCodeCastVectorNewFunction(int progLang, string* code, int level)
 	printLine(codeBlockTextTemplateHeader, level, code);
 	printLine(codeBlockTextFunctionHeader, level, code);
 	printLine(progLangOpenBlock[progLang], level, code);
-		string codeBlockTextDeclareVectorPointerAndSet = generateCodeEntityListDefinitionTypeTextReference(templateName2, progLang) + entity2InstanceListName + progLangEquals[progLang] + generateReinterpretCastOfVectorReference(entity1InstanceListName, templateName2, progLang) + progLangEndLine[progLang];	//vector<E2*>& E2InstanceList = reinterpret_cast<vector<E2*>& >(E1List);
+		string codeBlockTextDeclareVectorPointerAndSet = generateCodeEntityListDefinitionTypeTextReference(templateName2, progLang) + entity2InstanceListName + progLangEquals[progLang] + generateReinterpretCastOfVectorReference(entity1InstanceListName, templateName2, progLang) + progLangEndLine[progLang];	//vector<E2*>& E2InstanceList = reinterpret_cast<vector<E2*>&>(E1List);
 		printLine(codeBlockTextDeclareVectorPointerAndSet, (level+1), code);
 
 		string codeBlockTextReturnNewVector = progLangReturn[progLang] + entity2InstanceListName + progLangEndLine[progLang];		//return E2InstanceList;

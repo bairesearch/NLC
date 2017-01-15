@@ -402,6 +402,7 @@ string generateCodeEntityListDefinitionText(string className, string instanceNam
 
 string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int progLang);
 	string generateCodeEntityListDefinitionTypeTextReference(string entityClassName, int progLang);
+	string generateCodeEntityListDefinitionTypeTextReferenceCompact(string entityClassName, int progLang);
 string generateCodeGenericListDefinitionText(NLCitem* entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(NLCitem* conditionParam, NLCitem* conditionObjectParam, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);

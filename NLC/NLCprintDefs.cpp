@@ -398,13 +398,20 @@ string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int p
 	string codeEntityListDefinitionReferenceText = generateCodeEntityListDefinitionTypeTextReference(entityParam->className, progLang) + generateEntityListName(entityParam);
 	return codeEntityListDefinitionReferenceText;
 }
-string generateCodeEntityListDefinitionTypeTextReference(string entityClassName, int progLang)
+
+string generateCodeEntityListDefinitionTypeTextReferenceCompact(string entityClassName, int progLang)
 {
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_PASS_LISTS_BY_REFERENCE
-	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeTextCompact(entityClassName, progLang) + progLangReference[progLang] + CHAR_SPACE;
+	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeTextCompact(entityClassName, progLang) + progLangReference[progLang];
 	#else
-	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeText(entityClassName, progLang);	
+	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeTextCompact(entityClassName, progLang);	
 	#endif
+	return codeEntityListDefinitionReferenceTypeText;
+}
+
+string generateCodeEntityListDefinitionTypeTextReference(string entityClassName, int progLang)
+{
+	string codeEntityListDefinitionReferenceTypeText = generateCodeEntityListDefinitionTypeTextReferenceCompact(entityClassName, progLang) + CHAR_SPACE;
 	return codeEntityListDefinitionReferenceTypeText;
 }
 
@@ -570,7 +577,7 @@ string generateReinterpretCastOfVector(string vectorName, string castClassName, 
 }
 string generateReinterpretCastOfVectorReference(string vectorName, string castClassName, int progLang)	
 {
-	string castText = progLangReinterpretCastStart[progLang] + generateCodeEntityListDefinitionTypeTextReference(castClassName, progLang) + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + vectorName + progLangCloseParameterSpace[progLang];	//reinterpret_cast<vector<castClassName*>& >(vectorReferenceName)	//CHECKTHIS	//creates reference
+	string castText = progLangReinterpretCastStart[progLang] + generateCodeEntityListDefinitionTypeTextReferenceCompact(castClassName, progLang) + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + vectorName + progLangCloseParameterSpace[progLang];	//reinterpret_cast<vector<castClassName*>&>(vectorReferenceName)	//CHECKTHIS	//creates reference
 	return castText;
 }
 string generateReinterpretCastOfConditionList(string vectorName, string castClassName1, string castClassName2, int progLang)

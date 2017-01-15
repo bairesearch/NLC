@@ -54,7 +54,7 @@ void addToCategoryIfPassPluralDefiniteReferencingTests(vector<E1*>& entityCatego
 template <class E1, class E2>
 vector<E2*>& castVector(vector<E1*>& E1List)
 {
-	vector<E2*>& E2List = reinterpret_cast<vector<E2*>& >(E1List);
+	vector<E2*>& E2List = reinterpret_cast<vector<E2*>&>(E1List);
 	return E2List;
 }
 
@@ -63,14 +63,14 @@ vector<E2*>& castVector(vector<E1*>& E1List)
 template <class E1, class E2, class E3, class E4>
 vector<pair<E3*, E4*>*>& castVectorPair(vector<pair<E1*, E2*>*>& E1E2List)
 {
-	vector<pair<E3*, E4*>*>& E3E4List = reinterpret_cast<vector<pair<E3*, E4*>*>& >(E1E2List);
+	vector<pair<E3*, E4*>*>& E3E4List = reinterpret_cast<vector<pair<E3*, E4*>*>&>(E1E2List);
 	return E3E4List;
 }
 #else
 template <class E1, class E2, class E3, class E4>
 unordered_map<E3*, E4*>& castUnorderedMap(unordered_map<E1*, E2*>& E1E2List)
 {
-	unordered_map<E3*, E4*>& E3E4List = reinterpret_cast<unordered_map<E3*, E4*>& >(E1E2List);
+	unordered_map<E3*, E4*>& E3E4List = reinterpret_cast<unordered_map<E3*, E4*>&>(E1E2List);
 	return E3E4List;
 }
 #endif

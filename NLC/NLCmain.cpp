@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g12c 14-July-2014
+ * Project Version: 1g12d 14-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -627,7 +627,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g12c 14-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g12d 14-July-2014" << endl;
 			exit(1);
 		}
 
@@ -878,9 +878,6 @@ int main(int argc,char **argv)
 		#ifdef NLC_DEBUG
 		cout << "removeRedundantConditionConjunctions():" << endl;
 		#endif
-		#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-		removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences);
-		#endif
 
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName);
 	}
@@ -1072,158 +1069,5 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 
 #endif
 
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(void)
-{
-	entity = NULL;
-	optimumPathIndex = 0;
-}
-NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(GIAentityNode * currentEntity)
-{
-	entity = currentEntity;
-	optimumPathIndex = 0;
-}
-NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContainer(void)
-{
-}
-
-void removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
-{
-	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
-	{
-		NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainerFirstInOptimumPath = NULL;
-		int maximumNumberOfConjunctions = 0;
-		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-		{
-			GIAentityNode * conditionEntity = (*entityIter);
-			if(conditionEntity->isCondition)
-			{
-				if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
-				{				
-					int conjunctionType = INT_DEFAULT_VALUE;
-					bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-					if(conjunctionConditionFound)
-					{	
-						NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer = new NLClogicalConditionConjunctionContainer(conditionEntity);
-						int numberOfConjunctions = addConjunctionsConnectedToConditionConjunctionObject(conditionEntity, logicalConditionConjunctionContainer, sentenceIndex);
-						if(numberOfConjunctions > maximumNumberOfConjunctions)
-						{
-							logicalConditionConjunctionContainerFirstInOptimumPath = logicalConditionConjunctionContainer;
-							maximumNumberOfConjunctions = numberOfConjunctions;
-							//cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
-						}
-					}
-				}
-			}
-		}
-		
-		#ifdef NLC_DEBUG
-		cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
-		#endif
-		if(maximumNumberOfConjunctions > 0)
-		{
-			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-			{
-				GIAentityNode * conditionEntity = (*entityIter);
-				if(conditionEntity->isCondition)
-				{
-					if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
-					{				
-						int conjunctionType = INT_DEFAULT_VALUE;
-						bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-						if(conjunctionConditionFound)
-						{	
-							if(!traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainerFirstInOptimumPath, conditionEntity))
-							{
-								GIAentityNode * logicalConditionConjunctionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
-								GIAentityNode * logicalConditionConjunctionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
-								#ifdef NLC_DEBUG
-								cout << "disabling conditionEntity: " << conditionEntity->entityName << endl;
-								cout << "logicalConditionConjunctionObjectEntity: " << logicalConditionConjunctionObjectEntity->entityName << endl;
-								cout << "logicalConditionConjunctionSubjectEntity: " << logicalConditionConjunctionSubjectEntity->entityName << endl;
-								#endif
-								
-								conditionEntity->disabled = true;
-							}	
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode * conditionEntity, NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, int sentenceIndex)
-{
-	int maximumNumberOfConjunctions = 0;
-	GIAentityNode * conditionObjectEntity = NULL;
-	bool conditionHasObject = false;
-	if(!(conditionEntity->conditionObjectEntity->empty()))
-	{
-		conditionHasObject = true;
-		conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
-	}
-	if(conditionHasObject)
-	{
-		if(checkSentenceIndexParsingCodeBlocks(conditionObjectEntity, sentenceIndex, false))
-		{
-			int conjunctionIndex = 0;
-			for(vector<GIAentityConnection*>::iterator connectionIter = conditionObjectEntity->conditionNodeList->begin(); connectionIter != conditionObjectEntity->conditionNodeList->end(); connectionIter++)
-			{
-				GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
-				if(checkSentenceIndexParsingCodeBlocks(conditionEntity2, sentenceIndex, false))
-				{				
-					int conjunctionType = INT_DEFAULT_VALUE;
-					bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-					if(conjunctionConditionFound)
-					{
-						NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer2 = new NLClogicalConditionConjunctionContainer(conditionEntity2);
-						logicalConditionConjunctionContainer->nextConditionConjunctions.push_back(logicalConditionConjunctionContainer2);
-						int numberOfConjunctions = addConjunctionsConnectedToConditionConjunctionObject(conditionEntity2, logicalConditionConjunctionContainer2, sentenceIndex);
-						if(numberOfConjunctions > maximumNumberOfConjunctions)
-						{
-							logicalConditionConjunctionContainer->optimumPathIndex = conjunctionIndex;
-							maximumNumberOfConjunctions = numberOfConjunctions;
-						}
-						conjunctionIndex++;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		cout << "addConjunctionsConnectedToConditionConjunctionObject() error: !conditionHasObject" << endl;
-	}
-	return maximumNumberOfConjunctions + 1;
-}
-
-bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, GIAentityNode * logicalConditionConjunctionToTest)
-{
-	bool foundLogicalConditionConjunctionOnOptimumPath = false;
-	if(logicalConditionConjunctionToTest == logicalConditionConjunctionContainer->entity)
-	{
-		foundLogicalConditionConjunctionOnOptimumPath = true;
-	}
-	else
-	{
-		if(!(logicalConditionConjunctionContainer->nextConditionConjunctions.empty()))
-		{
-			if(traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainer->nextConditionConjunctions[logicalConditionConjunctionContainer->optimumPathIndex], logicalConditionConjunctionToTest))
-			{
-				foundLogicalConditionConjunctionOnOptimumPath = true;
-			}
-		}
-	}
-	return foundLogicalConditionConjunctionOnOptimumPath;
-	/*
-	for(vector<NLClogicalConditionConjunctionContainer*>::iterator iter = logicalConditionConjunctionContainer->nextConditionConjunctions->begin(); iter != logicalConditionConjunctionContainer->nextConditionConjunctions->end(); iter++)
-	{
-	
-	}
-	*/
-}
-
-#endif
 
 

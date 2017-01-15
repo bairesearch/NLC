@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g12c 14-July-2014
+ * Project Version: 1g12d 14-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,19 +40,46 @@
 #include "NLCtranslator.h"
 #include "NLCtranslatorCodeBlocks.h"
 #include "NLCtranslatorClassDefinitions.h"
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#include "GIAtranslatorDefs.h"
+#endif
+
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(void)
+{
+	entity = NULL;
+	optimumPathIndex = 0;
+}
+NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(GIAentityNode * currentEntity)
+{
+	entity = currentEntity;
+	optimumPathIndex = 0;
+}
+NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContainer(void)
+{
+}
+#endif
 
 bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName)
 {
 	bool result = true;
 
+	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	//NLC translator Part prep A.
+	if(!removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences))
+	{
+		result = false;
+	}
+	#endif
+	
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
-	//NLC translator Part 0.
+	//NLC translator Part prep B.
 	if(!identifyAndTagAllLogicalConditionOperations(entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
 	}
 	#endif
-
+		
 	//NLC translator Part 1.
 	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName))
 	{
@@ -67,6 +94,146 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	return result;
 }
 
+#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+bool removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
+{
+	bool result = true;
+	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	{
+		NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainerFirstInOptimumPath = NULL;
+		int maximumNumberOfConjunctions = 0;
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+		{
+			GIAentityNode * conditionEntity = (*entityIter);
+			if(conditionEntity->isCondition)
+			{
+				if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
+				{				
+					int conjunctionType = INT_DEFAULT_VALUE;
+					bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
+					if(conjunctionConditionFound)
+					{	
+						NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer = new NLClogicalConditionConjunctionContainer(conditionEntity);
+						int numberOfConjunctions = addConjunctionsConnectedToConditionConjunctionObject(conditionEntity, logicalConditionConjunctionContainer, sentenceIndex);
+						if(numberOfConjunctions > maximumNumberOfConjunctions)
+						{
+							logicalConditionConjunctionContainerFirstInOptimumPath = logicalConditionConjunctionContainer;
+							maximumNumberOfConjunctions = numberOfConjunctions;
+							//cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
+						}
+					}
+				}
+			}
+		}
+		
+		#ifdef NLC_DEBUG
+		cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
+		#endif
+		if(maximumNumberOfConjunctions > 0)
+		{
+			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+			{
+				GIAentityNode * conditionEntity = (*entityIter);
+				if(conditionEntity->isCondition)
+				{
+					if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
+					{				
+						int conjunctionType = INT_DEFAULT_VALUE;
+						bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
+						if(conjunctionConditionFound)
+						{	
+							if(!traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainerFirstInOptimumPath, conditionEntity))
+							{
+								GIAentityNode * logicalConditionConjunctionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
+								GIAentityNode * logicalConditionConjunctionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
+								#ifdef NLC_DEBUG
+								cout << "disabling conditionEntity: " << conditionEntity->entityName << endl;
+								cout << "logicalConditionConjunctionObjectEntity: " << logicalConditionConjunctionObjectEntity->entityName << endl;
+								cout << "logicalConditionConjunctionSubjectEntity: " << logicalConditionConjunctionSubjectEntity->entityName << endl;
+								#endif
+								
+								conditionEntity->disabled = true;
+							}	
+						}
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode * conditionEntity, NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, int sentenceIndex)
+{
+	int maximumNumberOfConjunctions = 0;
+	GIAentityNode * conditionObjectEntity = NULL;
+	bool conditionHasObject = false;
+	if(!(conditionEntity->conditionObjectEntity->empty()))
+	{
+		conditionHasObject = true;
+		conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
+	}
+	if(conditionHasObject)
+	{
+		if(checkSentenceIndexParsingCodeBlocks(conditionObjectEntity, sentenceIndex, false))
+		{
+			int conjunctionIndex = 0;
+			for(vector<GIAentityConnection*>::iterator connectionIter = conditionObjectEntity->conditionNodeList->begin(); connectionIter != conditionObjectEntity->conditionNodeList->end(); connectionIter++)
+			{
+				GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
+				if(checkSentenceIndexParsingCodeBlocks(conditionEntity2, sentenceIndex, false))
+				{				
+					int conjunctionType = INT_DEFAULT_VALUE;
+					bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
+					if(conjunctionConditionFound)
+					{
+						NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer2 = new NLClogicalConditionConjunctionContainer(conditionEntity2);
+						logicalConditionConjunctionContainer->nextConditionConjunctions.push_back(logicalConditionConjunctionContainer2);
+						int numberOfConjunctions = addConjunctionsConnectedToConditionConjunctionObject(conditionEntity2, logicalConditionConjunctionContainer2, sentenceIndex);
+						if(numberOfConjunctions > maximumNumberOfConjunctions)
+						{
+							logicalConditionConjunctionContainer->optimumPathIndex = conjunctionIndex;
+							maximumNumberOfConjunctions = numberOfConjunctions;
+						}
+						conjunctionIndex++;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "addConjunctionsConnectedToConditionConjunctionObject() error: !conditionHasObject" << endl;
+	}
+	return maximumNumberOfConjunctions + 1;
+}
+
+bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, GIAentityNode * logicalConditionConjunctionToTest)
+{
+	bool foundLogicalConditionConjunctionOnOptimumPath = false;
+	if(logicalConditionConjunctionToTest == logicalConditionConjunctionContainer->entity)
+	{
+		foundLogicalConditionConjunctionOnOptimumPath = true;
+	}
+	else
+	{
+		if(!(logicalConditionConjunctionContainer->nextConditionConjunctions.empty()))
+		{
+			if(traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainer->nextConditionConjunctions[logicalConditionConjunctionContainer->optimumPathIndex], logicalConditionConjunctionToTest))
+			{
+				foundLogicalConditionConjunctionOnOptimumPath = true;
+			}
+		}
+	}
+	return foundLogicalConditionConjunctionOnOptimumPath;
+	/*
+	for(vector<NLClogicalConditionConjunctionContainer*>::iterator iter = logicalConditionConjunctionContainer->nextConditionConjunctions->begin(); iter != logicalConditionConjunctionContainer->nextConditionConjunctions->end(); iter++)
+	{
+	
+	}
+	*/
+}
+#endif
 
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
@@ -165,6 +332,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 	return true;
 }
 #endif
+
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 

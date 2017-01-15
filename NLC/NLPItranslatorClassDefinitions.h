@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPItranslator.h
+ * File Name: NLPItranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1e4a 23-November-2013
@@ -29,8 +29,8 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_TRANSLATOR
-#define HEADER_NLPI_TRANSLATOR
+#ifndef HEADER_NLPI_TRANSLATOR_CLASSDEFINITIONS
+#define HEADER_NLPI_TRANSLATOR_CLASSDEFINITIONS
 
 //#define NLPI_NOT_NECESSARY
 
@@ -50,12 +50,21 @@ using namespace std;
 #include "NLPIcodeBlock.h"
 #include "NLPIclassDefinition.h"
 
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName);
+bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+	#ifdef NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+	string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity);
+	void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName);
+	#endif		
+	#ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition*> * classDefinitionSublist, int variableType);
+		bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string variableName, int variableType);
+	#endif
+	
+#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, vector<NLPIitem*> * parameters);
+void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, vector<NLPIitem*> * parameters, bool performChildActionDuplicateCheck);
+	bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLPIitem*> * parameters);
+	bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLPIitem*> * parameters);
+#endif
 
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, string NLPIfunctionName);
-	bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * functionClassDefinition, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList);
-		bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLPIclassDefinition ** parentClass);
-int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
-#endif	
 #endif	

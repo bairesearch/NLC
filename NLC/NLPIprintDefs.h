@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIprint.h
+ * File Name: NLPIprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1e4a 23-November-2013
@@ -29,8 +29,8 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_PRINT
-#define HEADER_NLPI_PRINT
+#ifndef HEADER_NLPI_PRINT_DEFS
+#define HEADER_NLPI_PRINT_DEFS
 
 #include <iostream>
 #include <fstream>
@@ -42,9 +42,8 @@
 #include <vector>
 using namespace std;
 
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
-	
+#include "NLPIglobalDefs.h"
+
 #define NLPI_PROGRAMMING_LANGUAGE_CPP (0)
 #define NLPI_PROGRAMMING_LANGUAGE_JAVA (1)
 #define NLPI_PROGRAMMING_LANGUAGE_VISUALBASIC (2)
@@ -54,6 +53,12 @@ using namespace std;
 #define NLPI_PROGRAMMING_LANGUAGE_PYTHON (6)
 #define NLPI_PROGRAMMING_LANGUAGE_DEFAULT (NLPI_PROGRAMMING_LANGUAGE_CPP)
 #define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLPIglobalDefs.h
+
+#define NLPI_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
+#define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
+#define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
+#define NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
+#define NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
 
 //from NLPIclassDefinition.h
 static string progLangClassTitlePrepend[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -113,15 +118,9 @@ static string progLangFindCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"em
 
 static string progLangMainEntryPointFunctionName[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"main", "main", "main", "main", "main", "main", "main"};
 
-/*
-#define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"
-#define NLPI_ITEM_TYPE_CONDITIONLISTADDFUNCTION "addCondition"
-#define NLPI_ITEM_TYPE_PROPERTYLISTFINDFUNCTION "findProperty"
-#define NLPI_ITEM_TYPE_CONDITIONLISTFINDFUNCTION "findCondition"
-*/
-
-#ifndef NLPI_SUPPORT_INPUT_FILE_LISTS
-bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
-#endif	
+void printLine(string command, int level, string * code);
+string generateConditionListName(string conditionClassName, string conditionObjectClassName);
+string generateConditionPairName(string conditionClassName, string conditionObjectClassName);
+string generateCodePropertyListDefinitionText(string targetClassName, int progLang);
 
 #endif

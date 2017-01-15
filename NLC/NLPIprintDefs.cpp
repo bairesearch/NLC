@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPImain.h
+ * File Name: NLPIprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1e4a 23-November-2013
@@ -28,25 +28,37 @@
  *
  *******************************************************************************/
 
+#include "NLPIprintDefs.h"
 
-#ifndef HEADER_NLPI_MAIN
-#define HEADER_NLPI_MAIN
+void printLine(string command, int level, string * code)
+{
+	//if(command != "")
+	//{
+	string line = "";
+	for(int i=0; i<level; i++)
+	{
+		line = line + CHAR_TAB;
+	}
+	line = line + command;
+	line = line + CHAR_NEWLINE;
+	*code = *code + line;
+	//}
+}
 
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <cstring>
-#include <cstdlib>	//for random number generation
-#include <cmath>
-#include <string>
-#include <vector>
-using namespace std;
+string generateConditionListName(string conditionClassName, string conditionObjectClassName)
+{
+	string conditionListName = conditionClassName + conditionObjectClassName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;
+	return conditionListName;
+}
 
-#include "NLPIglobalDefs.h"
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
+string generateConditionPairName(string conditionClassName, string conditionObjectClassName)
+{
+	string conditionListName = conditionClassName + conditionObjectClassName + NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	return conditionListName;
+}
 
-int main(int argc,char **argv);
-	string removeFileNameExtensions(string NLPIfunctionName);
-
-#endif
+string generateCodePropertyListDefinitionText(string propertyClassName, int progLang)
+{				 
+	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + propertyClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + propertyClassName + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+	return codePropertyListDefinitionText;
+}

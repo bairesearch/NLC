@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPItranslator.h
+ * File Name: NLPIprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1e4a 23-November-2013
@@ -29,10 +29,8 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_TRANSLATOR
-#define HEADER_NLPI_TRANSLATOR
-
-//#define NLPI_NOT_NECESSARY
+#ifndef HEADER_NLPI_PRINT_CLASSDEFINITIONS
+#define HEADER_NLPI_PRINT_CLASSDEFINITIONS
 
 #include <iostream>
 #include <fstream>
@@ -44,18 +42,15 @@
 #include <vector>
 using namespace std;
 
-#include "GIAglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-#include "NLPIcodeBlock.h"
 #include "NLPIclassDefinition.h"
-
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName);
-
-#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, string NLPIfunctionName);
-	bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * functionClassDefinition, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList);
-		bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLPIclassDefinition ** parentClass);
-int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
-#endif	
-#endif	
+	
+bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);	
+	string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
+	void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+		string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang);
+		string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang);
+		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang);
+		#endif
+			
+#endif

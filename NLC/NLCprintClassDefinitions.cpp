@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4d 27-June-2015
+ * Project Version: 1p4e 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -151,10 +151,17 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 						{
 							NLCclassDefinition* targetClassDefinition = *localListIter;
-							if(!arefunctionArgumentsPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
+							#ifdef NLC_USE_LIBRARY
+							if(!(targetClassDefinition->isLibraryFunctionDefinition))
 							{
-								printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+							#endif
+								if(!arefunctionArgumentsPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
+								{
+									printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
+								}
+							#ifdef NLC_USE_LIBRARY
 							}
+							#endif
 						}
 						#endif
 

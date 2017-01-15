@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4d 27-June-2015
+ * Project Version: 1p4e 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -106,6 +106,10 @@ public:
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	NLCclassDefinitionFunctionDependency* functionDependency;	//for function classDefinitions only (not for non-function classDefinitions) - includes library function classDefinitions
 	vector<NLCclassDefinition*> functionDependencyList;		//for function classDefinitions only (not for non-function classDefinitions) - excludes library function classDefinitions
+	#endif
+	
+	#ifdef NLC_USE_LIBRARY
+	bool isLibraryFunctionDefinition;	//not used often
 	#endif
 };
 

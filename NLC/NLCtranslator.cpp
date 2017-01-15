@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4d 27-June-2015
+ * Project Version: 1p4e 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -608,7 +608,9 @@ bool getFilesFromFileList(string inputListFileName, vector<string>* inputTextFil
 	if(!parseFileObject.rdbuf( )->is_open())
 	{
 		//txt file does not exist in current directory.
+		#ifndef NLC_USE_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "Error: input list file does not exist in current directory: " << inputListFileName << endl;
+		#endif
 		result = false;
 	}
 	else
@@ -713,6 +715,10 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 		if(functionClassDefinition != NULL)
 		{
 			addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(&parameters, functionClassDefinition);
+		}
+		if(libraryFunctionDeclaration)
+		{
+			functionClassDefinition->isLibraryFunctionDefinition = true;
 		}
 		#endif
 	}

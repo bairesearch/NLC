@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4d 27-June-2015
+ * Project Version: 1p4e 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -800,8 +800,8 @@ bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int senten
 		#endif
 	}
 	
-	cout << "foundChildEntity = " << foundChildEntity << endl;
-	cout << "childEntity = " << (*childEntity)->entityName << endl;
+	//cout << "foundChildEntity = " << foundChildEntity << endl;
+	//cout << "childEntity = " << (*childEntity)->entityName << endl;
 	
 	bool contextFound = false;
 	bool generatedContextForChild = false;

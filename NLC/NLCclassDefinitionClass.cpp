@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4d 27-June-2015
+ * Project Version: 1p4e 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -72,6 +72,10 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	functionDependency = NULL;	//for function class definitions only
 	#endif
+	
+	#ifdef NLC_USE_LIBRARY
+	isLibraryFunctionDefinition = false;
+	#endif
 }
 NLCclassDefinition::NLCclassDefinition(void)
 {
@@ -88,6 +92,10 @@ NLCclassDefinition::NLCclassDefinition(void)
 	
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	functionDependency = NULL;	//for function class definitions only
+	#endif
+	
+	#ifdef NLC_USE_LIBRARY
+	isLibraryFunctionDefinition = false;
 	#endif
 }
 NLCclassDefinition::~NLCclassDefinition(void)
@@ -440,7 +448,19 @@ bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDef
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "(functionDefinitionClassDefinition->functionNameSpecial == generateFunctionName(functionName))" << endl;
 				#endif
-				if(functionDefinitionClassDefinition->functionDependency->isReferenceElseFunctionDefinition == false)
+				bool passFunctionDependencyChecks = false;
+				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+				if(functionDefinitionClassDefinition->functionDependency != NULL)
+				{
+				#endif
+					if(!(functionDefinitionClassDefinition->functionDependency->isReferenceElseFunctionDefinition))
+					{
+						passFunctionDependencyChecks = true;	//functionReference classDefinition found  
+					}
+				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES	
+				}
+				#endif
+				if(passFunctionDependencyChecks)
 				{
 					#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 					cout << "functionDefinitionClassDefinition->functionDependency->isReferenceElseFunctionDefinition = " << functionDefinitionClassDefinition->functionDependency->isReferenceElseFunctionDefinition << endl;

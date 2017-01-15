@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11h 25-August-2014
+ * Project Version: 1i11i 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1701,7 +1701,7 @@ GIAentityNode * getSameReferenceSetDefiniteContextUngeneratedParent(GIAentityNod
 					//added 1i11f
 					if(!(parentEntity->NLCcontextGenerated))
 					{
-						if(assumedToAlreadyHaveBeenDeclared(parentEntity))
+						if((parentEntity->grammaticalDefiniteTemp) || (parentEntity->grammaticalProperNounTemp))
 						{
 							parentEntityNew = getSameReferenceSetDefiniteContextUngeneratedParent(parentEntity, sentenceIndex, generateObjectInitialisationsLastParent);
 						}

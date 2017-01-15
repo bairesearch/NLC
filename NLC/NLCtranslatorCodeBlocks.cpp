@@ -829,6 +829,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 											
 											#ifdef NLC_DEBUG
 											cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
+											cout << "sentenceIndex = " << sentenceIndex << endl;
 											cout << "entity = " << entity->entityName << endl;
 											cout << "definitionEntity = " << definitionEntity->entityName << endl;
 											#endif

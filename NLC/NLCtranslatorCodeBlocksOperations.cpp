@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u15d 03-October-2016
+ * Project Version: 1v1a 11-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -221,8 +221,8 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 								{
 									if(!(definitionConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 									{
-										if(definitionEntity->entityName != entity->entityName)	//ignore these dream mode definition connections
-										{
+										if(!((definitionEntity->entityName == entity->entityName) && (definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)))	//ignore dream mode definition connections
+										{	
 											subjectEntity = entity;
 											objectEntity = definitionEntity;
 											foundSubject = true;
@@ -345,7 +345,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			eg the players have pieces.
 		case 3: if detect plural subject and quality object, then add a new object for each subject 
 	*/
-	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES || connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS | connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES || connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS || connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 	{
 		if(foundSubject && foundObject)
 		{//this should always be the case for properties and conditions
@@ -506,8 +506,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	{
 		entity->NLCcontextGeneratedTemp = false;
 	}
-
-
 	
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 	if((generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement))

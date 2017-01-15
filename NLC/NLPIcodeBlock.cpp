@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3b 27-October-2013
+ * Project Version: 1c3c 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -446,6 +446,44 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceInd
 		}
 	}
 	return result;
+}
+
+bool checkDuplicateProperty(GIAentityNode * propertyEntity, GIAentityNode * childActionEntity)
+{
+	bool alreadyAdded = false;
+	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = childActionEntity->propertyNodeList->begin(); propertyNodeListIterator < childActionEntity->propertyNodeList->end(); propertyNodeListIterator++)
+	{
+		GIAentityNode * propertyEntityLocal = (*propertyNodeListIterator)->entity;
+		if((propertyEntity->entityName == propertyEntityLocal->entityName))
+		{
+			alreadyAdded = true;
+		}
+	}
+	return alreadyAdded;
+}
+
+bool checkDuplicateCondition(GIAentityNode * conditionEntity, GIAentityNode * childActionEntity)
+{
+	bool alreadyAdded = false;
+	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = childActionEntity->conditionNodeList->begin(); conditionNodeListIterator < childActionEntity->conditionNodeList->end(); conditionNodeListIterator++)
+	{
+		GIAentityNode * conditionEntityLocal = (*conditionNodeListIterator)->entity;
+		string conditionObjectEntityLocalName = "";
+		if(!(conditionEntityLocal->conditionObjectEntity->empty()))
+		{
+			conditionObjectEntityLocalName = (conditionEntityLocal->conditionObjectEntity->back())->entity->entityName;
+		}
+		string conditionObjectEntityName = "";
+		if(!(conditionEntity->conditionObjectEntity->empty()))
+		{
+			conditionObjectEntityName = (conditionEntity->conditionObjectEntity->back())->entity->entityName;
+		}
+		if((conditionEntity->entityName == conditionEntityLocal->entityName) && (conditionObjectEntityName == conditionObjectEntityLocalName))
+		{
+			alreadyAdded = true;
+		}
+	}
+	return alreadyAdded;
 }
 
 

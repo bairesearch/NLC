@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3b 27-October-2013
+ * Project Version: 1c3c 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -167,7 +167,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 #ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang)
 {
-	functionArguments = generateFunctionPropertyConditionArguments(actionEntity, functionArguments, progLang);
+	functionArguments = generateFunctionPropertyConditionArguments(actionEntity, functionArguments, progLang, false, NULL);
 	
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 	//Part b: generate object initialisations based on action concepts (class inheritance)
@@ -178,7 +178,7 @@ string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GI
 		GIAentityNode* definitionEntity = definitionConnection->entity;
 		if(definitionEntity->isActionConcept)
 		{
-			functionArguments = generateFunctionPropertyConditionArguments(definitionEntity, functionArguments, progLang);
+			functionArguments = generateFunctionPropertyConditionArguments(definitionEntity, functionArguments, progLang, true, actionEntity);
 		}
 	}
 	#endif
@@ -186,35 +186,51 @@ string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GI
 	return functionArguments;
 }
 
-string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang)
+string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang, bool performChildActionDuplicateCheck, GIAentityNode * childActionEntity)
 {
 	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
 	{
-		//string actionConditionObject = (*localListIter2)->second;
-		//string actionConditionObject = *localListIter2;
-		if(functionArguments != "")
-		{
-			functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-		}					
 		GIAentityNode * actionCondition = (*entityIter)->entity;
-		string conditionObjectClassName = "";
-		if(!(actionCondition->conditionObjectEntity->empty()))
+		bool alreadyAdded = false;
+		if(performChildActionDuplicateCheck)
 		{
-			conditionObjectClassName = generateClassName((actionCondition->conditionObjectEntity->back())->entity);
+			alreadyAdded = checkDuplicateCondition(actionCondition, childActionEntity);
 		}
-		string conditionClassName = generateClassName(actionCondition);				
-		functionArguments = functionArguments + generateCodeConditionPairDefinitionText(conditionClassName, conditionObjectClassName, progLang);
+		if(!alreadyAdded)
+		{
+			GIAentityNode * conditionObject = NULL;
+			if(!(actionCondition->conditionObjectEntity->empty()))
+			{
+				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
+
+			}
+			if(functionArguments != "")
+			{
+				functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}					
+			string conditionObjectClassName = generateClassName(conditionObject);
+			string conditionClassName = generateClassName(actionCondition);				
+			functionArguments = functionArguments + generateCodeConditionPairDefinitionText(conditionClassName, conditionObjectClassName, progLang);
+		}
 	}
 	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
 	{
 		//string actionProperty = *localListIter2;
 		GIAentityNode * actionProperty = (*entityIter)->entity;
-		if(functionArguments != "")
+		bool alreadyAdded = false;
+		if(performChildActionDuplicateCheck)
 		{
-			functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			alreadyAdded = checkDuplicateProperty(actionProperty, childActionEntity);
 		}
-		string propertyClassName = generateClassName(actionProperty);
-		functionArguments = functionArguments + generateCodePropertyDefinitionText(propertyClassName, progLang);
+		if(!alreadyAdded)
+		{	
+			if(functionArguments != "")
+			{
+				functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			string propertyClassName = generateClassName(actionProperty);
+			functionArguments = functionArguments + generateCodePropertyDefinitionText(propertyClassName, progLang);
+		}
 	}
 	return functionArguments;
 }
@@ -261,7 +277,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			functionArguments = generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(param1->actionInstance, functionArguments, progLang);
 			#endif
 					
-			string codeBlockText = contextParam1 + param1->name + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
+			string codeBlockText = contextParam1 + param1->instanceName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
 			printLine(codeBlockText, level, code);
 			
 			//cout << "z9b" << endl;
@@ -357,7 +373,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 
 string generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang)
 {
-	functionArguments = generateFunctionExecutionPropertyConditionArguments(actionEntity, functionArguments, progLang);
+	functionArguments = generateFunctionExecutionPropertyConditionArguments(actionEntity, functionArguments, progLang, false, NULL);
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 	//Part b: generate object initialisations based on action concepts (class inheritance)
 	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
@@ -367,37 +383,53 @@ string generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInher
 		GIAentityNode* definitionEntity = definitionConnection->entity;
 		if(definitionEntity->isActionConcept)
 		{
-			functionArguments = generateFunctionExecutionPropertyConditionArguments(definitionEntity, functionArguments, progLang);
+			functionArguments = generateFunctionExecutionPropertyConditionArguments(definitionEntity, functionArguments, progLang, true, actionEntity);
 		}
 	}
 	#endif
 	return functionArguments;
 }
 
-string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang)
+string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang, bool performChildActionDuplicateCheck, GIAentityNode * childActionEntity)
 {
 	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
-	{
-		if(functionArguments != "")
-		{
-			functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-		}					
+	{					
 		GIAentityNode * actionCondition = (*entityIter)->entity;
-		GIAentityNode * conditionObject = NULL;
-		if(!(actionCondition->conditionObjectEntity->empty()))
+		bool alreadyAdded = false;
+		if(performChildActionDuplicateCheck)
 		{
-			conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
+			alreadyAdded = checkDuplicateCondition(actionCondition, childActionEntity);
 		}
-		functionArguments = functionArguments + generateCodeConditionPairReferenceText(actionCondition, conditionObject, progLang);
+		if(!alreadyAdded)
+		{
+			GIAentityNode * conditionObject = NULL;
+			if(!(actionCondition->conditionObjectEntity->empty()))
+			{
+				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
+			}		
+			if(functionArguments != "")
+			{
+				functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			functionArguments = functionArguments + generateCodeConditionPairReferenceText(actionCondition, conditionObject, progLang);
+		}
 	}
 	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
 	{
 		GIAentityNode * propertyEntity = (*entityIter)->entity;
-		if(functionArguments != "")
+		bool alreadyAdded = false;
+		if(performChildActionDuplicateCheck)
 		{
-			functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			alreadyAdded = checkDuplicateProperty(propertyEntity, childActionEntity);
 		}
-		functionArguments = functionArguments + generateInstanceName(propertyEntity); //generateCodePropertyReferenceText(propertyEntity, progLang);
+		if(!alreadyAdded)
+		{
+			if(functionArguments != "")
+			{
+				functionArguments = functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+			functionArguments = functionArguments + generateInstanceName(propertyEntity); //generateCodePropertyReferenceText(propertyEntity, progLang);
+		}
 	}
 	return functionArguments;
 }
@@ -462,7 +494,7 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang)
 {				 
-	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + propertyClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + propertyClassName + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangEndLine[progLang];
+	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + propertyClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + propertyClassName + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
 	return codePropertyListDefinitionText;
 }
 

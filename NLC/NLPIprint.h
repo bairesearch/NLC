@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3b 27-October-2013
+ * Project Version: 1c3c 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -49,13 +49,13 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
 		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 		string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang);
-			string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang);
+			string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang, bool performChildActionDuplicateCheck, GIAentityNode * childActionEntity);
 		#endif	
 	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
 		void printLine(string command, int level, string * code);
 		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 		string generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang);			
-			string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang);
+			string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang, bool performChildActionDuplicateCheck, GIAentityNode * childActionEntity);
 				string generateCodeConditionPairReferenceText(GIAentityNode * conditionEntity, GIAentityNode * conditionObjectEntity, int progLang);
 				//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
 					string generateInstanceNameWithContext(GIAentityNode * entity, int progLang);

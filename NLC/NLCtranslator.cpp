@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13d 18-October-2014
+ * Project Version: 1k13e 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -562,7 +562,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 			bool foundFunctionOwnerExactMatch2 = false;
 			bool foundFunctionObjectExactMatch2 = false;
 			NLCclassDefinition * functionDeclaration2 = NULL;
-			if(findFunctionDeclarationClassDefinitionNonExactMatch(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, &functionDeclaration2, false, &foundFunctionOwnerExactMatch2, &foundFunctionObjectExactMatch2))
+			if(findFunctionDeclarationClassDefinitionNonExactMatch(classDefinitionList, functionDependencyChild->functionName, functionDependencyChild->functionOwnerName, functionDependencyChild->functionObjectName, functionDependencyChild->hasFunctionOwnerClass, functionDependencyChild->hasFunctionObjectClass, &functionDeclaration2, false, &foundFunctionOwnerExactMatch2, &foundFunctionObjectExactMatch2))	//should find exact match as class definitions have already been created for all new function definitions (and their implicit declarations have been added to their function argument lists)
 			{
 				addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToClassDefinition(functionDeclaration, &(functionDeclaration2->parameters));
 			}

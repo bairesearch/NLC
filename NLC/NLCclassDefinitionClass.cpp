@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13d 18-October-2014
+ * Project Version: 1k13e 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,7 +46,7 @@ NLCclassDefinitionFunctionDependency::NLCclassDefinitionFunctionDependency(void)
 	hasFunctionOwnerClass = false;
 	hasFunctionObjectClass = false;
 	
-	functionNameListIndex = -1;
+	functionNameListIndex = INT_DEFAULT_VALUE;
 	reconciledFunctionDeclarationArguments = false;
 	
 	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
@@ -626,6 +626,15 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 								}
 								#endif
 								functionObjectArgument->functionArgumentCertified = true;	//not currently used
+							}
+							
+
+							if(!isReference)
+							{
+								if(findFunctionObjectExactMatch && findFunctionObjectExactMatch)	//redundant
+								{
+									
+								}
 							}
 						}
 					}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11g 25-August-2014
+ * Project Version: 1i11h 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1170,7 +1170,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				GIAentityNode * parentEntity = getSameReferenceSetDefiniteContextUngeneratedParent(propertyEntity, sentenceIndex, entity);
 				#ifdef NLC_DEBUG_PARSE_CONTEXT4
 				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions() qt propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
-				#endif					
+				#endif	
+				bool generateParentContextTests = true;				
 				//cout << "1a: propertyEntity = " << propertyEntity->entityName << endl;
 				if(parentEntity != propertyEntity)
 				{
@@ -1185,14 +1186,15 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						if(parentEntity == entity)
 						{
 							propertyConnection->NLCparsedForCodeBlocks = true;
+							generateParentContextTests = false;
 						}
 						parentEntity->NLCcontextGenerated = true;				
 					#else
 					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
 					{
 					#endif
-						cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
-						cout << "1c: parentEntity = " << parentEntity->entityName << endl;
+						//cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
+						//cout << "1c: parentEntity = " << parentEntity->entityName << endl;
 						generatedContext = true;
 						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 						propertyEntityClass->context.push_back(generateInstanceName(parentEntity));
@@ -1202,7 +1204,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						performedAtLeastOneObjectInitialisationAtThisLevel = true;
 					}
 				}
-				else 
+				
+				if(generateParentContextTests)
 				{
 					//added 1i8a->1i8c, moved 1i11d
 					if(generateParentContext)
@@ -1212,6 +1215,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables);
 					}
 				}
+				
 				#endif
 
 				if(assumedToAlreadyHaveBeenDeclared(propertyEntity))

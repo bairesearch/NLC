@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2d 12-June-2015
+ * Project Version: 1p3a 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p2d 12-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p3a 25-June-2015" << endl;
 			exit(1);
 		}
 
@@ -1006,141 +1006,15 @@ int main(int argc,char* *argv)
 		#endif
 	}
 
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-	//added 1k13g - generate class definition function declarations for all function execution references (generateClassHeirarchyFunctions has been separated from generateClassHeirarchy since non-exact function reconciliation can only occur once class definition heirachy has been established)
-	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
-	{
-		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
-		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
-		{	
-			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions.at(functionIndex);
-			
-			//NLC translator Part 2b.
-			if(!generateClassHeirarchyFunctions(&classDefinitionList, entityNodesActiveListComplete, functionDependency, &functionDependencyList))
-			{
-				result = false;
-			}
-		}
-	}
-	#endif
-	
-	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
-	{	
-		NLCclassDefinitionFunctionDependency* functionDependencyTemp = *functionDependencyIter;
-		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-		cout << "functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
-		cout << "functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
-		cout << "functionDependency->functionObject = " << functionDependencyTemp->functionObjectName << endl;
-		cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
-		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependencyTemp->functionDependencyList.begin(); functionDependencyIter2 != functionDependencyTemp->functionDependencyList.end(); functionDependencyIter2++)
-		{	
-			NLCclassDefinitionFunctionDependency* functionDependencyTemp2 = *functionDependencyIter2;
-			cout << "  2. ---------------------------------------------------" << endl;
-			cout << "  functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
-			cout << "  functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
-			cout << "  functionDependencyTemp2->functionObject = " << functionDependencyTemp2->functionObjectName << endl;
-			cout << "  functionDependencyTemp2->functionOwner = " << functionDependencyTemp2->functionOwnerName << endl;
-		}
-	}
-	#endif
-			
-		
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-	
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
-	bool stillUnreconciledFunctionDeclarationArguments = true;
-	while(stillUnreconciledFunctionDeclarationArguments)
+	if(!generateClassDefinitionFunctionDeclarationsAndReconcileArguments(&functionDependencyList, numberOfInputFilesInList, &classDefinitionList, &entityNodesActiveListCompleteFunctions, &firstCodeBlockInTreeList))
 	{
-		stillUnreconciledFunctionDeclarationArguments = false;
-		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
-		{
-			NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
-
-			if(functionDependency->functionNameListIndex != INT_DEFAULT_VALUE)
-			{
-				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-				if(!(functionDependency->isReference))	//redundant check (checking functionNameListIndex already)
-				{
-				#endif
-					if(!(functionDependency->reconciledFunctionDeclarationArguments))
-					{
-						bool reconciledChildFunctionDeclarationArguments = true;
-						for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependency->functionDependencyList.begin(); functionDependencyIter2 != functionDependency->functionDependencyList.end(); functionDependencyIter2++)
-						{
-							NLCclassDefinitionFunctionDependency* functionDependencyChild = *functionDependencyIter2;
-							if(functionDependencyChild->functionNameListIndex != INT_DEFAULT_VALUE)
-							{
-								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-								if(!(functionDependencyChild->isReference))	//redundant check (checking functionNameListIndex already)
-								{
-								#endif
-									if(!(functionDependencyChild->reconciledFunctionDeclarationArguments))
-									{
-										reconciledChildFunctionDeclarationArguments = false;
-										//cout << "reconciledChildFunctionDeclarationArguments: functionDependencyChild->functionName = " << functionDependencyChild->functionName << endl;
-									}
-								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-								}
-								#endif
-							}
-						}
-						if(reconciledChildFunctionDeclarationArguments)
-						{
-							//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
-							NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDependency->functionNameListIndex);
-
-							string functionName = functionDependency->functionName;
-							#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-							cout << "************" << endl;
-							cout << "start reconcile: functionName = " << functionDependency->functionName << endl;
-							cout << "start reconcile: functionObject = " << functionDependency->functionObjectName << endl;
-							cout << "start reconcile: functionOwner = " << functionDependency->functionOwnerName << endl;
-							#endif
-							reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDependency);
-
-							functionDependency->reconciledFunctionDeclarationArguments = true;
-						}
-						stillUnreconciledFunctionDeclarationArguments = true;
-					}
-				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-				}
-				else
-				{
-					cout << "NLCmain error: functionDependency->functionNameListIndex != INT_DEFAULT_VALUE && functionDependency->isReference" << endl;
-					exit(0);
-				}
-				#endif
-			}
-		}	
-	}
-	#else
-	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
-	{
-		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
-		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
-		{
-			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
-			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
-
-			string functionName = functionDependency->functionName;
-			#ifdef NLC_DEBUG
-			cout << "" << endl;
-			cout << "start reconcile: functionName = " << functionDependency->functionName << endl;
-			cout << "start reconcile: functionObject = " << functionDependency->functionObjectName << endl;
-			cout << "start reconcile: functionOwner = " << functionDependency->functionOwnerName << endl;
-			#endif
-			reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDependency);
-
-			//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
-		}
+		result = false;
 	}
 	#endif
-	#endif
 	
-	
-	
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	
 	string code = "";
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
@@ -1153,30 +1027,7 @@ int main(int argc,char* *argv)
 	#ifndef NLC_USE_LIBRARY
 	//create predefined NLC functions
 	NLCcodeblock* currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
-	currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree);
-	#ifdef NLC_USE_ADVANCED_REFERENCING
-	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree);
-	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-	currentCodeBlockInTree = createCodeBlocksAddEntityToContextLevelListNewFunction(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlocksClearContextListNewFunction(currentCodeBlockInTree);
-	#endif
-	#endif
-	#ifndef NLC_NONOO
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	currentCodeBlockInTree = createCodeBlocksCastVectorNewFunction(currentCodeBlockInTree);	
-	#endif
-	#endif
-	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	currentCodeBlockInTree = createCodeBlocksFindAliasAndAddToCategoryListNewFunction(currentCodeBlockInTree);
-	currentCodeBlockInTree = createCodeBlocksFindAliasNewFunction(currentCodeBlockInTree);
-	#endif
-	#ifdef NLC_SUPPORT_REDEFINITIONS
-	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);
-	#endif
-	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
-	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);	
-	#endif
+	printPredefinedNLCfunctions(currentCodeBlockInTree);
 	#endif
 	
 	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
@@ -1203,7 +1054,6 @@ int main(int argc,char* *argv)
 	sprintf(timeAndDateString, "%i:%i:%i %.2i/%.2i/%i", current->tm_hour, current->tm_min, current->tm_sec, current->tm_mday, (current->tm_mon+1), (current->tm_year + TM_STRUCT_YEAR_OFFSET));
 	cout << "NLC execution time: " << timeAndDateString << " (finish)" << endl;
 }
-
 
 string removeFileNameExtensions(string NLCfunctionName)
 {
@@ -1524,5 +1374,177 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 
 #endif
 
+
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
+bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList)
+{
+	bool result = true;
+	
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+	//added 1k13g - generate class definition function declarations for all function execution references (generateClassHeirarchyFunctions has been separated from generateClassHeirarchy since non-exact function reconciliation can only occur once class definition heirachy has been established)
+	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
+	{
+		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
+		if(findFunctionDependencyInList(functionDependencyList, functionIndex, &functionDependency))
+		{	
+			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions->at(functionIndex);
+			
+			//NLC translator Part 2b.
+			if(!generateClassHeirarchyFunctions(classDefinitionList, entityNodesActiveListComplete, functionDependency, functionDependencyList))
+			{
+				result = false;
+			}
+		}
+	}
+	#endif
+	
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
+	{	
+		NLCclassDefinitionFunctionDependency* functionDependencyTemp = *functionDependencyIter;
+		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+		cout << "functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
+		cout << "functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
+		cout << "functionDependency->functionObject = " << functionDependencyTemp->functionObjectName << endl;
+		cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
+		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependencyTemp->functionDependencyList.begin(); functionDependencyIter2 != functionDependencyTemp->functionDependencyList.end(); functionDependencyIter2++)
+		{	
+			NLCclassDefinitionFunctionDependency* functionDependencyTemp2 = *functionDependencyIter2;
+			cout << "  2. ---------------------------------------------------" << endl;
+			cout << "  functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
+			cout << "  functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
+			cout << "  functionDependencyTemp2->functionObject = " << functionDependencyTemp2->functionObjectName << endl;
+			cout << "  functionDependencyTemp2->functionOwner = " << functionDependencyTemp2->functionOwnerName << endl;
+		}
+	}
+	#endif
+			
+		
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
+	bool stillUnreconciledFunctionDeclarationArguments = true;
+	while(stillUnreconciledFunctionDeclarationArguments)
+	{
+		stillUnreconciledFunctionDeclarationArguments = false;
+		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList->begin(); functionDependencyIter != functionDependencyList->end(); functionDependencyIter++)
+		{
+			NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
+
+			if(functionDependency->functionNameListIndex != INT_DEFAULT_VALUE)
+			{
+				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+				if(!(functionDependency->isReference))	//redundant check (checking functionNameListIndex already)
+				{
+				#endif
+					if(!(functionDependency->reconciledFunctionDeclarationArguments))
+					{
+						bool reconciledChildFunctionDeclarationArguments = true;
+						for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependency->functionDependencyList.begin(); functionDependencyIter2 != functionDependency->functionDependencyList.end(); functionDependencyIter2++)
+						{
+							NLCclassDefinitionFunctionDependency* functionDependencyChild = *functionDependencyIter2;
+							if(functionDependencyChild->functionNameListIndex != INT_DEFAULT_VALUE)
+							{
+								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+								if(!(functionDependencyChild->isReference))	//redundant check (checking functionNameListIndex already)
+								{
+								#endif
+									if(!(functionDependencyChild->reconciledFunctionDeclarationArguments))
+									{
+										reconciledChildFunctionDeclarationArguments = false;
+										//cout << "reconciledChildFunctionDeclarationArguments: functionDependencyChild->functionName = " << functionDependencyChild->functionName << endl;
+									}
+								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+								}
+								#endif
+							}
+						}
+						if(reconciledChildFunctionDeclarationArguments)
+						{
+							//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
+							NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDependency->functionNameListIndex);
+
+							string functionName = functionDependency->functionName;
+							#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+							cout << "************" << endl;
+							cout << "start reconcile: functionName = " << functionDependency->functionName << endl;
+							cout << "start reconcile: functionObject = " << functionDependency->functionObjectName << endl;
+							cout << "start reconcile: functionOwner = " << functionDependency->functionOwnerName << endl;
+							#endif
+							reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, functionDependency);
+
+							functionDependency->reconciledFunctionDeclarationArguments = true;
+						}
+						stillUnreconciledFunctionDeclarationArguments = true;
+					}
+				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+				}
+				else
+				{
+					cout << "NLCmain error: functionDependency->functionNameListIndex != INT_DEFAULT_VALUE && functionDependency->isReference" << endl;
+					exit(0);
+				}
+				#endif
+			}
+		}	
+	}
+	#else
+	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
+	{
+		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
+		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
+		{
+			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
+			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
+
+			string functionName = functionDependency->functionName;
+			#ifdef NLC_DEBUG
+			cout << "" << endl;
+			cout << "start reconcile: functionName = " << functionDependency->functionName << endl;
+			cout << "start reconcile: functionObject = " << functionDependency->functionObjectName << endl;
+			cout << "start reconcile: functionOwner = " << functionDependency->functionOwnerName << endl;
+			#endif
+			reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDependency);
+
+			//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+		}
+	}
+	#endif
+	#endif
+	
+	return result;
+}
+#endif
+
+
+#ifndef NLC_USE_LIBRARY
+void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
+{
+	//create predefined NLC functions
+	currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockInTree);
+	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree);
+	#ifdef NLC_USE_ADVANCED_REFERENCING
+	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree);
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	currentCodeBlockInTree = createCodeBlocksAddEntityToContextLevelListNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = createCodeBlocksClearContextListNewFunction(currentCodeBlockInTree);
+	#endif
+	#endif
+	#ifndef NLC_NONOO
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
+	currentCodeBlockInTree = createCodeBlocksCastVectorNewFunction(currentCodeBlockInTree);	
+	#endif
+	#endif
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	currentCodeBlockInTree = createCodeBlocksFindAliasAndAddToCategoryListNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = createCodeBlocksFindAliasNewFunction(currentCodeBlockInTree);
+	#endif
+	#ifdef NLC_SUPPORT_REDEFINITIONS
+	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);
+	#endif
+	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
+	currentCodeBlockInTree = createCodeBlockCheckParentClassNameNewFunction(currentCodeBlockInTree);	
+	#endif
+}
+#endif
 
 

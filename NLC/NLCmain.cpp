@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4b 27-June-2015
+ * Project Version: 1p4c 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p4b 27-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p4c 27-June-2015" << endl;
 			exit(1);
 		}
 
@@ -1465,7 +1465,8 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 			if(classDefinition->functionDependency != NULL)
 			{
 				NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = classDefinition->functionDependency;
-				if(functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE)
+				cout << "functionDefinitionFunctionDependency->functionName = " << functionDefinitionFunctionDependency->functionName << endl;
+				if(functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE)	//redundant check (NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES: functionDependencies are now only defined for functionDefinition classDefinitions)
 				{
 					if(!(functionDefinitionFunctionDependency->isReferenceElseFunctionDefinition))	//redundant check (checking functionDefinitionListIndex already)
 					{
@@ -1476,6 +1477,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 							for(vector<NLCclassDefinition*>::iterator classDefinitionListIter2 = classDefinition->functionDependencyList.begin(); classDefinitionListIter2 != classDefinition->functionDependencyList.end(); classDefinitionListIter2++)
 							{
 								NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependencyChild = (*classDefinitionListIter2)->functionDependency;
+								cout << "functionDefinitionFunctionDependencyChild->functionName = " << functionDefinitionFunctionDependencyChild->functionName << endl;
 								if(functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE)
 								{
 									if(!(functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition))	//redundant check (checking functionDefinitionListIndex already)
@@ -1486,7 +1488,21 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 											//cout << "reconciledChildFunctionDeclarationArguments: functionDefinitionFunctionDependencyChild->functionName = " << functionDefinitionFunctionDependencyChild->functionName << endl;
 										}
 									}
+									else
+									{
+										cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition" << endl;
+										exit(0);
+									}									
 								}
+								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+								#ifndef NLC_USE_LIBRARY
+								else
+								{
+									cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
+									exit(0);
+								}
+								#endif
+								#endif
 							}
 							if(reconciledChildFunctionDeclarationArguments)
 							{
@@ -1494,14 +1510,13 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 
 								NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDefinitionFunctionDependency->functionDefinitionListIndex);
 								
-								string functionName = functionDefinitionFunctionDependency->functionName;
 								#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 								cout << "************" << endl;
 								cout << "start reconcile: functionName = " << functionDefinitionFunctionDependency->functionName << endl;
 								cout << "start reconcile: functionObject = " << functionDefinitionFunctionDependency->functionObjectName << endl;
 								cout << "start reconcile: functionOwner = " << functionDefinitionFunctionDependency->functionOwnerName << endl;
 								#endif
-								reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, functionDefinitionFunctionDependency);
+								reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, classDefinitionList, classDefinition);
 
 								functionDefinitionFunctionDependency->reconciledFunctionDeclarationArguments = true;
 							}
@@ -1514,31 +1529,56 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 						exit(0);
 					}
 				}
+				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+				#ifndef NLC_USE_LIBRARY
+				else
+				{
+					cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
+					exit(0);
+				}
+				#endif
+				#endif
 			}
 		}	
 	}
 	#else
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
-		NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = NULL;
-		if(findFunctionDefinitionFunctionDependencyInList(&functionDependencyList, functionDefinitionIndex, &functionDefinitionFunctionDependency))
+		NLCclassDefinition* functionDefinitionClassDefinition = NULL;
+		if(findFunctionDependencyClassDefinitionInList(&functionDependencyList, functionDefinitionIndex, &functionDefinitionClassDefinition))
 		{
-			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDefinitionFunctionDependency->functionDefinitionListIndex)
-			
-			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDefinitionFunctionDependency->functionDefinitionListIndex);
-									
-			string functionName = functionDefinitionFunctionDependency->functionName;
-			#ifdef NLC_DEBUG
-			cout << "" << endl;
-			cout << "start reconcile: functionName = " << functionDefinitionFunctionDependency->functionName << endl;
-			cout << "start reconcile: functionObject = " << functionDefinitionFunctionDependency->functionObjectName << endl;
-			cout << "start reconcile: functionOwner = " << functionDefinitionFunctionDependency->functionOwnerName << endl;
-			#endif
-			isLibraryFunction = false;
-			
-			reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDefinitionFunctionDependency);
+			if(functionDefinitionClassDefinition->functionDependency != NULL)
+			{
+				NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = functionDefinitionClassDefinition->functionDependency;
+				if(functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE)
+				{
+					//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDefinitionFunctionDependency->functionDefinitionListIndex)
 
-			//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+					NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDefinitionFunctionDependency->functionDefinitionListIndex);
+
+					#ifdef NLC_DEBUG
+					cout << "" << endl;
+					cout << "start reconcile: functionName = " << functionDefinitionFunctionDependency->functionName << endl;
+					cout << "start reconcile: functionObject = " << functionDefinitionFunctionDependency->functionObjectName << endl;
+					cout << "start reconcile: functionOwner = " << functionDefinitionFunctionDependency->functionOwnerName << endl;
+					#endif
+					isLibraryFunction = false;
+
+					reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, functionDefinitionClassDefinition);
+
+					//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+				}
+				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+				#ifndef NLC_USE_LIBRARY
+				else
+				{
+					cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
+					exit(0);
+				}
+				#endif
+				#endif
+
+			}
 		}
 	}
 	#endif

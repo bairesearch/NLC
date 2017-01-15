@@ -43,7 +43,7 @@
 	#define NLC_LIBRARY_USER
 #endif
 #ifndef NLC_DEBUG_DISABLE_1q_CODE
-	//#define NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a	//disable for auto testing (standardTestScenarios)
+	#define NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a	//disable for auto testing (standardTestScenarios)
 #endif
 
 #define NLC_MAX_NUMBER_SENTENCES_PER_FUNCTION (1000000)

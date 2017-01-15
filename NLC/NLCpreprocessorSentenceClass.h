@@ -123,7 +123,7 @@ class NLCpreprocessorSentenceClassClass
 	public: bool isStringValidVariableName(string phrase, const bool preprocessor);
 	public: bool isStringNumberPreprocessorMath(string phrase);
 	public: bool isStringNumberOrFractional(string phrase);
-		private: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
+		public: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
 	public: bool isStringAliasFileName(const string phrase);
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 	public: bool isStringIllegalTargetSourceCharacter(const string phrase);

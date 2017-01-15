@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8g 04-November-2014
+ * Project Version: 1l8h 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1l8g 04-November-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1l8h 04-November-2014" << endl;
 			exit(1);
 		}
 
@@ -1230,11 +1230,11 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
 				if(actionHasSubject && actionHasObject)
 				{
-					//#ifdef NLC_DEBUG
+					#ifdef NLC_DEBUG
 					cout << "transformTheActionOfPossessionEgHavingIntoAproperty():" << endl;
 					cout << "actionSubjectEntity->entityName = " << actionSubjectEntity->entityName << endl;
 					cout << "actionObjectEntity->entityName = " << actionObjectEntity->entityName << endl;
-					//#endif
+					#endif
 				
 					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 					/*
@@ -1285,11 +1285,15 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					}
 					for(int i=0; i < numberOfDuplicateConnections; i++)
 					{
-						cout << "i = " << i << endl;
+						#ifdef NLC_DEBUG
+						//cout << "i = " << i << endl;
+						#endif
 					#endif
 						
 						int sentenceIndex = (actionEntity->actionSubjectEntity->back())->sentenceIndexTemp;
-						cout << "sentenceIndex = " << sentenceIndex << endl;
+						#ifdef NLC_DEBUG
+						//cout << "sentenceIndex = " << sentenceIndex << endl;
+						#endif
 						if(sentenceIndex != (actionEntity->actionObjectEntity->back())->sentenceIndexTemp)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sentenceIndex inconsistent between action object and action subject" << endl;
@@ -1298,10 +1302,23 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
 						//added 1i8g
 						bool sameReferenceSet = (actionEntity->actionSubjectEntity->back())->sameReferenceSet;
-						cout << "sameReferenceSet = " << sameReferenceSet << endl;
+						#ifdef NLC_DEBUG
+						//cout << "sameReferenceSet = " << sameReferenceSet << endl;
+						#endif
 						if(sameReferenceSet != (actionEntity->actionObjectEntity->back())->sameReferenceSet)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sameReferenceSet inconsistent between action object and action subject" << endl;
+							exit(0);
+						}
+						#endif
+						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
+						bool isReference = (actionEntity->actionSubjectEntity->back())->isReference;
+						#ifdef NLC_DEBUG
+						//cout << "isReference = " << isReference << endl;
+						#endif
+						if(isReference != (actionEntity->actionObjectEntity->back())->isReference)
+						{
+							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: isReference inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						#endif
@@ -1439,6 +1456,11 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 							propertyConnection->sameReferenceSet = true;
 							propertyConnectionReverse->sameReferenceSet = true;
 						}
+						#endif
+						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
+						//added 1l8h - NB overwrite isReference is required these values will have been incorrectly determined by writeVectorConnection() - an alternative means of correction would be to use "int sentenceIndex = (actionEntity->actionSubjectEntity->front())->sentenceIndexTemp;", as the first connection added between 2 nodes is always deemed to be !isReference, and all additional connections are auto designated as isReference
+						propertyConnection->isReference = isReference;
+						propertyConnectionReverse->isReference = isReference;
 						#endif
 						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						if(actionEntity->negative)

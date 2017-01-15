@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8g 04-November-2014
+ * Project Version: 1l8h 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -759,7 +759,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 				cout << "createCodeBlockForConnectionType: " << targetEntity->entityName << endl;
 				cout << "\t targetConnection->NLCparsedForCodeBlocks: " << targetConnection->NLCparsedForCodeBlocks << endl;
 				cout << "\t generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC: " << generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC << endl;
-				#ifndef GIA_USE_ADVANCED_REFERENCING
+				#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 				cout << "\t targetConnection->isReference: " << targetConnection->isReference << endl;
 				#endif
 				#endif
@@ -1405,17 +1405,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	//cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions(): entity = " << entity->entityName << endl;
 	//cout << "parentName = " << parentName << endl;
 	#endif
-
-	//DEBUG:
-	cout << "1 entity = " << entity->entityName << endl;
-	cout << "1 sentenceIndex = " << entity->sentenceIndexTemp << endl;
-	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
-	{
-		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-		GIAentityNode* propertyEntity = propertyConnection->entity;
-		cout << "\t\t\tpropertyConnection->sentenceIndexTemp = " << propertyConnection->sentenceIndexTemp << endl;
-		cout << "\t\t\tpropertyConnection->NLCparsedForCodeBlocks = " << propertyConnection->NLCparsedForCodeBlocks << endl;
-	}
 				
 	#ifdef NLC_DEBUG_PARSE_CONTEXT3
 	string generateParentContextStringTemp = "false";
@@ -1440,11 +1429,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 			cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions(): a) generateContextForChildEntity(): " << entity->entityName << endl;
 			#endif
 		
-			cout << "generateParentContextTopLevel: generateContextForChildEntity: entity = " << entity->entityName << endl;
-			cout << "sentenceIndex = " << sentenceIndex << endl;
 			if(generateContextForChildEntity(NULL, entity, currentCodeBlockInTree, sentenceIndex, true))
 			{
-				cout << "generateContextForChildEntity pass: entity = " << entity->entityName << endl;
+				//cout << "generateContextForChildEntity pass: entity = " << entity->entityName << endl;
 			}
 			else
 			{
@@ -1462,17 +1449,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		#endif
 	}
-
-	cout << "2 entity = " << entity->entityName << endl;
-	cout << "2 sentenceIndex = " << entity->sentenceIndexTemp << endl;
-	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
-	{
-		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-		GIAentityNode* propertyEntity = propertyConnection->entity;
-		cout << "\t\t\tpropertyConnection->sentenceIndexTemp = " << propertyConnection->sentenceIndexTemp << endl;
-		cout << "\t\t\tpropertyConnection->NLCparsedForCodeBlocks = " << propertyConnection->NLCparsedForCodeBlocks << endl;
-	}
-	
 	
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	if(generateParentContextPassThrough)
@@ -1568,9 +1544,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		{
 			GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
 			GIAentityNode* propertyEntity = propertyConnection->entity;
-			//#ifdef NLC_DEBUG
+			#ifdef NLC_DEBUG
 			cout << "\t\tpropertyConnection->sentenceIndexTemp = " << propertyConnection->sentenceIndexTemp << endl;
-			//#endif
+			#endif
 
 			#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 			if((checkSentenceIndexParsingCodeBlocks(propertyEntity, sentenceIndex, false) || propertyEntity->NLCparsedForCodeBlocks) && (propertyConnection->sentenceIndexTemp == sentenceIndex))
@@ -1583,17 +1559,11 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				bool performedAtLeastOneObjectInitialisationAtThisLevel = false;
 				NLCcodeblock * firstCodeBlockInSection = *currentCodeBlockInTree;
 
-				cout << "\tpropertyConnection->NLCparsedForCodeBlocks = " << propertyConnection->NLCparsedForCodeBlocks << endl;
 				bool generatedContextForChild = generateContextForChildEntity(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex, false);
-				cout << "\tpropertyEntity = " << propertyEntity->entityName << endl;
-				cout << "\tgeneratedContextForChild = " << generatedContextForChild << endl;
 				bool passThrough = !generatedContextForChild;
-				cout << "\tpassThrough = " << passThrough << endl;
 				
 				if(!(propertyConnection->NLCparsedForCodeBlocks))
-				{
-					cout << "!(propertyConnection->NLCparsedForCodeBlocks)" << endl;
-					
+				{					
 					#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 					if(propertyConnection->negative || (propertyEntity->isSubstanceQuality && propertyEntity->negative))
 					{
@@ -1864,9 +1834,9 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 	if(foundParentEntityNew)
 	{
 		//eg Tom has Jack's ball
-		//#ifdef NLC_DEBUG
+		#ifdef NLC_DEBUG
 		cout << "generateContextForChildEntity(): foundParentEntityNew: childEntity = " << childEntity->entityName << endl;
-		//#endif
+		#endif
 		#ifdef NLC_DEBUG_PARSE_CONTEXT4
 		*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): (foundParentEntityNew) childEntity: ") + childEntity->entityName + string(", parentEntityNew: ") + parentEntityNew->entityName);
 		#endif
@@ -1894,9 +1864,9 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 		{
 		#endif
 			//eg Tom has the blue ball 
-			//#ifdef NLC_DEBUG
+			#ifdef NLC_DEBUG
 			cout << "generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared && !generatedContextForChild: childEntity = " << childEntity->entityName << endl;
-			//#endif
+			#endif
 			#ifdef NLC_DEBUG_PARSE_CONTEXT4
 			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): assumedToAlreadyHaveBeenDeclared(childEntity): ") + childEntity->entityName);
 			#endif
@@ -1906,7 +1876,6 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 			}
 			
 			generatedContextForChild = true;
-			//cout << "generatedContextForChild 2" << endl;
 		#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		}
 		#endif				
@@ -1918,9 +1887,9 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 		{
 			if(generateContextBasedOnDeclaredParent(childEntity, currentCodeBlockInTree, topLevel, entity))
 			{
-				//#ifdef NLC_DEBUG
+				#ifdef NLC_DEBUG
 				cout << "generateContextForChildEntity(): generateContextBasedOnDeclaredParent: childEntity = " << childEntity->entityName << endl;
-				//#endif
+				#endif
 				/*for cases in which GIA advanced referencing has referenced entities whose parent was defined in a previous sentence;
 				eg 1 Tom's boat is red. The chicken rowed the red boat.
 				eg 2 Tom's boat is red. The red boat is new

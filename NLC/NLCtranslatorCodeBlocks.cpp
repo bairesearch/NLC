@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l11a 07-November-2014
+ * Project Version: 1l11b 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1224,6 +1224,8 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 
 bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList)
 {
+	bool result = true;
+	
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * actionEntity = (*entityIter);
@@ -1253,7 +1255,22 @@ bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vect
 			}
 		}
 	}
-	return true;
+	
+	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//note NLCcategoryListCreatedTemp is only required to be cleared between sentences for !GIA_DISABLE_CROSS_SENTENCE_REFERENCING (ie GIA_USE_ADVANCED_REFERENCING)
+	//clear for next sentence 
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(entity->NLCcategoryListCreatedTemp)
+		{
+			entity->NLCcategoryListCreatedTemp = false;
+		}
+	}
+	#endif
+	#endif
+	
+	return result;
 }
 
 

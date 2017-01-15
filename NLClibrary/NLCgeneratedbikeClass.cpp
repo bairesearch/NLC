@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachybikeClass.hpp"
+#include "NLCgeneratedbikeClass.hpp"
 
 bikeClass::bikeClass(void)
 {

@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachymoveClass.hpp"
+#include "NLCgeneratedmoveClass.hpp"
 
 moveClass::moveClass(void)
 {

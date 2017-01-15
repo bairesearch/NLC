@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachyfunctionsWithNoSubjectArtificialClass.hpp"
+#include "NLCgeneratedfunctionsWithNoSubjectArtificialClass.hpp"
 
 functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(void)
 {

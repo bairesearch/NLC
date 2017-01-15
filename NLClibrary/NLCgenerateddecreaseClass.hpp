@@ -1,3 +1,6 @@
+#ifndef HEADER_NLC_GENERATED_decreaseClass
+#define HEADER_NLC_GENERATED_decreaseClass
+
 #include "NLClibraryGenericEntityClass.hpp"
 
 class energyClass;
@@ -8,3 +11,4 @@ public:
 	vector<energyClass*> energyClassActionSubjectList;
 };
 
+#endif

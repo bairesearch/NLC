@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachyenergyClass.hpp"
+#include "NLCgeneratedenergyClass.hpp"
 
 energyClass::energyClass(void)
 {

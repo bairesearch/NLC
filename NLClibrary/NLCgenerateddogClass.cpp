@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachydogClass.hpp"
+#include "NLCgenerateddogClass.hpp"
 #include "NLClibrary.hpp"
 
 dogClass::dogClass(void)
@@ -56,4 +56,3 @@ void dogClass::rideFunction(vector<dogClass*>& dogClassList, vector<rideClass*>&
 	//(new energyClass)->decreaseFunction(energy1SubjectCategoryList, decreaseClassList);
 	clearReferenceContextList(referenceContextList0);
 }
-

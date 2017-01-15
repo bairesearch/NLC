@@ -1,3 +1,6 @@
+#ifndef HEADER_NLC_GENERATED_moveClass
+#define HEADER_NLC_GENERATED_moveClass
+
 #include "NLClibraryGenericEntityClass.hpp"
 
 class NLCgenericEntityClass;
@@ -8,3 +11,4 @@ public:
 	vector<NLCgenericEntityClass*> NLCgenericEntityClassActionObjectList;
 };
 
+#endif

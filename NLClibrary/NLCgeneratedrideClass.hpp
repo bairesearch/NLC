@@ -1,3 +1,6 @@
+#ifndef HEADER_NLC_GENERATED_rideClass
+#define HEADER_NLC_GENERATED_rideClass
+
 #include "NLClibraryGenericEntityClass.hpp"
 
 class dogClass;
@@ -10,3 +13,4 @@ public:
 	vector<bikeClass*> bikeClassActionObjectList;
 };
 
+#endif

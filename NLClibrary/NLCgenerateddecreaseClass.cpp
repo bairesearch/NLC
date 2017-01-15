@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachydecreaseClass.hpp"
+#include "NLCgenerateddecreaseClass.hpp"
 
 decreaseClass::decreaseClass(void)
 {

@@ -1,8 +1,8 @@
-#include "NLCgeneratedHeirachymainClass.hpp"
+#include "NLCgeneratedblueClass.hpp"
 
-mainClass::mainClass(void)
+blueClass::blueClass(void)
 {
-	name = "main";
+	name = "blue";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

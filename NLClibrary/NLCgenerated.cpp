@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachy.hpp"
+#include "NLCgenerated.hpp"
 
 NLCgenericEntityClass* generateObjectByName(string name)
 {

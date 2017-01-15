@@ -1,3 +1,6 @@
+#ifndef HEADER_NLC_GENERATED_energyClass
+#define HEADER_NLC_GENERATED_energyClass
+
 #include "NLClibraryGenericEntityClass.hpp"
 
 class decreaseClass;
@@ -9,3 +12,4 @@ public:
 	vector<decreaseClass*> decreaseClassActionList;
 };
 
+#endif

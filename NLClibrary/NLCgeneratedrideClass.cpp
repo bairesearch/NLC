@@ -1,4 +1,4 @@
-#include "NLCgeneratedHeirachyrideClass.hpp"
+#include "NLCgeneratedrideClass.hpp"
 
 rideClass::rideClass(void)
 {

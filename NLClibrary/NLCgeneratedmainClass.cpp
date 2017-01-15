@@ -1,8 +1,8 @@
-#include "NLCgeneratedHeirachyfatClass.hpp"
+#include "NLCgeneratedmainClass.hpp"
 
-fatClass::fatClass(void)
+mainClass::mainClass(void)
 {
-	name = "fat";
+	name = "main";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

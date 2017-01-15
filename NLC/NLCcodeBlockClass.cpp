@@ -4,7 +4,9 @@
  *
  * BAIPROJECT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation.
+ * only, as published by the Free Software Foundation. The use of
+ * intermediary programs or interfaces including file i/o is considered
+ * remote network interaction.
  *
  * BAIPROJECT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +25,8 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13a 17-April-2014
- * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
+ * Project Version: 1f13b 17-April-2014
+ * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
@@ -79,11 +81,9 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	{
 	#endif
 		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(entityItem);
 
 		NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(propertyItem);
 
 		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
@@ -101,11 +101,9 @@ NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCo
 	{
 	#endif
 		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(entityItem);
 
 		NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(propertyItem);
 
 		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST;
@@ -133,11 +131,9 @@ NLCcodeblock * createCodeBlockAddPropertyToLocalList(NLCcodeblock * currentCodeB
 NLCcodeblock * createCodeBlockAddProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
 	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_PROPERTY;
@@ -160,14 +156,12 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 		#endif
 
 			NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-			//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);	
 			currentCodeBlockInTree->parameters.push_back(entityItem);
 
 			NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
 			currentCodeBlockInTree->parameters.push_back(conditionItem);
 
 			NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-			//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
 			currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
 			int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
@@ -197,7 +191,6 @@ NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree
 
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
 		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
 		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_CONDITION;
@@ -223,7 +216,6 @@ NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * current
 NLCcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	//getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
 	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE;

@@ -4,7 +4,9 @@
  *
  * BAIPROJECT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation.
+ * only, as published by the Free Software Foundation. The use of
+ * intermediary programs or interfaces including file i/o is considered
+ * remote network interaction.
  *
  * BAIPROJECT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +25,8 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13a 17-April-2014
- * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
+ * Project Version: 1f13b 17-April-2014
+ * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
@@ -403,7 +405,6 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 	}
 	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
 	{
-		//string actionProperty = *localListIter2;
 		GIAentityNode * actionProperty = (*entityIter)->entity;
 		bool alreadyAdded = false;
 		if(performChildActionDuplicateCheck)

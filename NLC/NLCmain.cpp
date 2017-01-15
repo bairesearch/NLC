@@ -4,7 +4,9 @@
  *
  * BAIPROJECT is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation.
+ * only, as published by the Free Software Foundation. The use of
+ * intermediary programs or interfaces including file i/o is considered
+ * remote network interaction.
  *
  * BAIPROJECT is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,8 +25,8 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13a 17-April-2014
- * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
+ * Project Version: 1f13b 17-April-2014
+ * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
@@ -621,7 +623,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1f13a 17-April-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f13b 17-April-2014" << endl;
 			exit(1);
 		}
 
@@ -864,10 +866,7 @@ int main(int argc,char **argv)
 		#endif
 		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName);
-	}
-	
-	//cout << "q3" << endl;	
-	
+	}	
 	
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(int i=0; i<numberOfInputFilesInList; i++)
@@ -890,18 +889,15 @@ int main(int argc,char **argv)
 		}
 		*/
 		reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLCfunctionName);
-		//cout << "end reconcile" << endl;
 		
 		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias	
 	}
-	//cout << "q4" << endl;	
 
 	string code = "";		
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
 	{
 		result = false;
 	}
-	//cout << "q5" << endl;
 	#endif
 		
 	for(int i=0; i<numberOfInputFilesInList; i++)

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p4a 27-June-2015
+ * Project Version: 1p4b 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -87,6 +87,7 @@
 	//#ifdef NLC_PREPROCESSOR_MATH
 		#define NLC_PARSE_CONDITION_PARENTS	//enforced 1p2b - this is now required by default (irrespective of NLC_NORMALISE_INVERSE_PREPOSITIONS) for at least generateCodeBlocksFromMathTextNLPparsablePhrase() part 2A and part 2B, such that the primary entity in the nlp parsable phrase can be identified
 	//#endif
+	#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES	//added 1p4b
 #endif
 	
 #ifndef NLC_DISABLE_1o_CODE_FOR_DEBUG

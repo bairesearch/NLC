@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s1a 03-September-2016
+ * Project Version: 1s1b 03-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,9 +50,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 		GIAentityNode* entityNode = *entityIter;
 
 		//valid class checks added 1g12f 14-July-2014
-		if(generateClassHeirarchyValidClassChecks(entityNode))
+		if(!(entityNode->disabled))
 		{
-			if(!(entityNode->disabled))
+			if(generateClassHeirarchyValidClassChecks(entityNode))
 			{
 				string className = generateClassName(entityNode);
 				#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
@@ -467,9 +467,9 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 		//cout << "generateClassHeirarchyFunctions{}: actionEntity = " << actionEntity->entityName << endl;
 		#endif
 		//valid class checks added 1g12f 14-July-2014
-		if(generateClassHeirarchyValidClassChecks(actionEntity))
+		if(!(actionEntity->disabled))
 		{
-			if(!(actionEntity->disabled))
+			if(generateClassHeirarchyValidClassChecks(actionEntity))
 			{
 				if(actionEntity->isAction)
 				{

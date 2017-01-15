@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e8c 24-November-2013
+ * Project Version: 1e8d 24-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -447,6 +447,7 @@ NLPIcodeblock * createCodeBlockForGivenProperty(NLPIcodeblock * currentCodeBlock
 
 NLPIcodeblock * createCodeBlockForGivenConditions(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item,  GIAentityNode * entity, int sentenceIndex)
 {
+	//cout << "createCodeBlockForGivenConditions: " << endl;
 	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
 	{
 		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
@@ -473,7 +474,7 @@ NLPIcodeblock * createCodeBlockForGivenCondition(NLPIcodeblock * currentCodeBloc
 		conditionItem->context.push_back(item->instanceName);
 		conditionObjectItem->context.push_back(item->instanceName);	//redundant
 		currentCodeBlockInTree = createCodeBlockForConditionList(currentCodeBlockInTree, conditionItem, conditionObjectItem);
-			
+		//cout << "createCodeBlockForGivenCondition: " << conditionObjectItem->instanceName << endl;
 		currentCodeBlockInTree = createCodeBlockForStatements(currentCodeBlockInTree, conditionObjectItem, conditionObject, sentenceIndex);
 	}
 	else

@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e8c 24-November-2013
+ * Project Version: 1e8d 24-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -270,16 +270,19 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							{
 								if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
 								{
-									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-									currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(currentCodeBlockInTree, parentEntity);
-									parentEntity->parsedForNLPIcodeBlocks = true;
-									parentEntity->NLPIlocalListVariableHasBeenDeclared = true;
-									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-									
-									#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-									//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-									generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, &currentCodeBlockInTree, sentenceIndex);
-									#endif
+									if(!(parentEntity->isCondition))
+									{
+										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+										currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(currentCodeBlockInTree, parentEntity);
+										parentEntity->parsedForNLPIcodeBlocks = true;
+										parentEntity->NLPIlocalListVariableHasBeenDeclared = true;
+										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+
+										#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+										//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+										generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, &currentCodeBlockInTree, sentenceIndex);
+										#endif
+									}
 								}
 							}
 						}
@@ -522,6 +525,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 					if(!(conditionConnection->parsedForNLPIcodeBlocks) && !(conditionEntity->parsedForNLPIcodeBlocks))
 					{
+						//cout << "!(conditionConnection->parsedForNLPIcodeBlocks): " << conditionObject->entityName << endl;
+						
 						#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS		
 						if(assumedToAlreadyHaveBeenDeclared(conditionObject))
 						{

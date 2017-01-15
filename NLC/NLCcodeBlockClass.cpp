@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8c 09-September-2016
+ * Project Version: 1s8d 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1030,6 +1030,10 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 		GIAentityNode* entity = *entityIter;
 		if(isDefiniteEntityInitialisation(entity))
 		{
+			#ifdef NLC_DEBUG
+			//cout << "isDefiniteEntityInitialisation, entity = " << entity->entityName << endl;
+			#endif
+			
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
 			if(!findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entityNodesActiveListComplete, entity))	//NB findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() could be reimplemented to be performed during generateCodeBlocks() sentence parsing, but then generateLocalFunctionArgumentsBasedOnImplicitDeclarations() could not be decared at start of generateCodeBlocks(), ie it would have to be moved out of createCodeBlockNewFunction()
 			{
@@ -1103,6 +1107,24 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	bool foundIndefiniteEntity = false;
 
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED
+	
+	/*
+	NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED:
+	Is designed for the following scenario;
+		A red car.
+		The green car...
+	But fails in this scenario;
+		A car is next to the house.
+		The car is red.
+		The green/red car...
+		
+	PLANNED SOLUTION (TEMPORARY WORKAROUND): disable NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED and do not support this scenario. 
+	If it must either be passed to the function as the function object, or referenced first within the function (or block), ie;
+		The green car...
+		A car is next to the house.
+		The car is red.
+	*/
+		
 	int referenceSetID = 0;
 	//see identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts()
 
@@ -1207,18 +1229,32 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode*
 {
 	bool foundIndefiniteEntity = false;
 	
-	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
-	if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
-	#else
-	if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))	
-	#endif
-	{	
-		if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
+	if(indefiniteEntity->entityName == definiteEntity->entityName)
+	{
+		if(!(indefiniteEntity->isSubstanceConcept))
 		{
-			int indentationDifferenceFound = INT_DEFAULT_VALUE;	//not used
-			if(checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(indefiniteEntity, definiteEntity, &indentationDifferenceFound))
-			{
-				foundIndefiniteEntity = true;
+			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
+			if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
+			#else
+			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))	
+			#endif
+			{	
+				if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
+				{
+					int indentationDifferenceFound = INT_DEFAULT_VALUE;	//not used
+					if(checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(indefiniteEntity, definiteEntity, &indentationDifferenceFound))
+					{
+						foundIndefiniteEntity = true;
+						#ifdef NLC_DEBUG
+						/*
+						cout << "\nisIndefiniteEntityCorrespondingToDefiniteEntityInSameContext, indefiniteEntity = " << indefiniteEntity->entityName << endl;
+						cout << "isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext, definiteEntity = " << definiteEntity->entityName << endl;
+						cout << "indefiniteEntity->sentenceIndexTemp = " << indefiniteEntity->sentenceIndexTemp << endl;
+						cout << "definiteEntity->sentenceIndexTemp = " << definiteEntity->sentenceIndexTemp << endl;
+						*/
+						#endif
+					}
+				}
 			}
 		}
 	}
@@ -1295,10 +1331,17 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity)
 	{
 		if(!(entity->isConcept))
 		{
-			if(generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
+			if(!entity->NLCisSingularArgument)
 			{
-				foundDefiniteEntity = true;
+			#endif
+				if(generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
+				{
+					foundDefiniteEntity = true;
+				}
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 			}
+			#endif
 		}
 	}
 	return foundDefiniteEntity;

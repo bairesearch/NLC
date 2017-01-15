@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e8a 24-November-2013
+ * Project Version: 1e8b 24-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -104,6 +104,23 @@ NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTre
 	return currentCodeBlockInTree;
 }
 
+NLPIcodeblock * createCodeBlockAddPropertyLocal(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+{
+	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
+	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_OBJECT);
+	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+	
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_ADD_PROPERTY_LOCAL;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+
 //add state
 NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
 {
@@ -159,13 +176,13 @@ NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTr
 	return currentCodeBlockInTree;
 }
 
-NLPIcodeblock * createCodeBlockAddNewListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
+NLPIcodeblock * createCodeBlockCreateNewListVariableLocal(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
 {
 	NLPIitem * entityItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
-	getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);	//this isnt required
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	
-	int codeBlockType = NLPI_CODEBLOCK_TYPE_CREATE_NEW_LIST_VARIABLE;
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_CREATE_AND_ADD_TO_NEW_LIST_VARIABLE_LOCAL;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
@@ -189,6 +206,21 @@ NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlock
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
+NLPIcodeblock * createCodeBlockForPropertyListLocal(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLPIcodeblock * createCodeBlockForConditionListLocal(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	currentCodeBlockInTree->parameters.push_back(objectItem);
+	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST_LOCAL;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
 
 
 
@@ -206,6 +238,7 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 	
 	GIAentityNode * functionOwner = NULL;
 	GIAentityNode * functionObject = NULL;
+	GIAentityNode * function = NULL;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = *entityIter;
@@ -214,18 +247,23 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 			if(entity->entityName == functionOwnerName)
 			{
 				entity->NLPIisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+				entity->parsedForNLPIcodeBlocks = true;
 				
 				functionOwner = entity;
 			}
 			else if(entity->entityName == functionObjectName)
 			{
 				entity->NLPIisSingularArgument = true;
-			
+				entity->parsedForNLPIcodeBlocks = true;
+				
 				functionObject = entity;
 			}
 			else if(entity->entityName == functionName)
 			{
-				entity->NLPIisSingularArgument = true;	//added 1e2c
+				entity->NLPIisSingularArgument = true;
+				entity->parsedForNLPIcodeBlocks = true;
+				
+				function = entity;
 			}
 		}
 	}	
@@ -269,16 +307,40 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	if(functionOwner != NULL)
 	{
-		//"Dog dog1 = this;"
-		NLPIitem * functionOwnerItem = new NLPIitem(functionOwner, NLPI_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
-		NLPIitem * actionSubjectInstanceReplacementItem = new NLPIitem(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLPI_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
+		currentCodeBlockInTree = createCodeBlockDeclareAndInitialiseVariableForActionSubject(currentCodeBlockInTree, functionOwner, sentenceIndex);
+		currentCodeBlockInTree = createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, functionOwner, sentenceIndex);
 	}
 	#endif
+	if(functionObject != NULL)
+	{
+		currentCodeBlockInTree = createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, functionObject, sentenceIndex);
+	}
+	if(function != NULL)
+	{
+		currentCodeBlockInTree = createCodeBlocksAddVariableToNewList(currentCodeBlockInTree, function, sentenceIndex);
+	}
 	#endif
 	
+	return currentCodeBlockInTree;
+}
+
+NLPIcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner, int sentenceIndex)
+{
+	//"Dog dog1 = this;"
+	NLPIitem * functionOwnerItem = new NLPIitem(functionOwner, NLPI_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
+	NLPIitem * actionSubjectInstanceReplacementItem = new NLPIitem(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLPI_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
+
+	return currentCodeBlockInTree;
+}
+
+NLPIcodeblock * createCodeBlocksAddVariableToNewList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
+{
+	currentCodeBlockInTree = createCodeBlockCreateNewListVariableLocal(currentCodeBlockInTree, entity, sentenceIndex);
+	currentCodeBlockInTree = createCodeBlockAddPropertyLocal(currentCodeBlockInTree, entity, entity, sentenceIndex);
+
 	return currentCodeBlockInTree;
 }
 
@@ -318,22 +380,6 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 #endif
 
 
-/*
-NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
-{
-	for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
-	{
-		if(codeBlockTypeIfStatementArrayUseVectorEntityConnection[i])
-		{
-			for(vector<GIAentityConnection*>::iterator connectionIter = entityNode->entityVectorConnectionsArray[i].begin(); connectionIter != entityNode->entityVectorConnectionsArray[i].end(); connectionIter++)
-			{
-
-			}
-		}
-	}
-}
-*/
-
 NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
 {
 	//LIMITATION: only parse 1 sub level of conditions:
@@ -344,21 +390,7 @@ NLPIcodeblock * createCodeBlockForStatements(NLPIcodeblock * currentCodeBlockInT
 
 	//if object near a car that is behind the driveway / if object has a car that is near the house 
 	//if(item > 3){		/	if(greaterthan(item, 3)){
-	currentCodeBlockInTree = createCodeBlockForGivenConditions(currentCodeBlockInTree, item, entity, sentenceIndex);
-
-	/*
-	//if object near a car that is towed by a truck / if object has a car that is towed by a truck
-	currentCodeBlockInTree = createCodeBlockIfIsActionObject(currentCodeBlockInTree, item, entity, sentenceIndex);
-
-	//if object near a car that drives /if object has a car that drives
-	currentCodeBlockInTree = createCodeBlockIfHasAction(currentCodeBlockInTree, item, entity, sentenceIndex);	
-	
-	//if object near car that is a flyingCar
-	currentCodeBlockInTree = createCodeBlockIfHasDefinition(currentCodeBlockInTree, item, entity, sentenceIndex);
-
-	//if object near Tom's car
-	currentCodeBlockInTree = createCodeBlockIfHasPropertyOwner(currentCodeBlockInTree, item, entity, sentenceIndex);
-	*/	
+	currentCodeBlockInTree = createCodeBlockForGivenConditions(currentCodeBlockInTree, item, entity, sentenceIndex);	
 }		
 
 NLPIcodeblock * createCodeBlockForGivenProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex)

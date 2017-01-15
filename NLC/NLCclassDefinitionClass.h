@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -93,7 +93,7 @@ public:
 	bool isActionOrConditionInstanceNotClass;
 	bool isConditionInstance;	//added 1m3a
 
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	GIAentityNode* actionOrConditionInstance;
 	#endif
 	vector<NLCitem*> parameters;

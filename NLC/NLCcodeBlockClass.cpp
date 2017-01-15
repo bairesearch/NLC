@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -821,7 +821,7 @@ NLCcodeblock* createCodeBlockForInteger(NLCcodeblock* currentCodeBlockInTree, st
 
 NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCsentence* firstNLCsentenceInList)
 {
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 	//gets "fight" from "dog::fight"
 	string functionName = "";
 	bool hasFunctionOwnerClass = false;
@@ -927,7 +927,7 @@ NLCcodeblock* createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcod
 	//"Dog dog1 = this;"
 	NLCitem* functionOwnerItem = new NLCitem(functionOwner, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
-	NLCitem* actionSubjectInstanceReplacementItem = new NLCitem(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLC_ITEM_TYPE_OBJECT);
+	NLCitem* actionSubjectInstanceReplacementItem = new NLCitem(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
 
@@ -952,7 +952,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 		{
 			if(!(entity->isConcept))
 			{
-				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+				#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 				if(!entity->NLCisSingularArgument)
 				{
 				#endif
@@ -1019,7 +1019,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 						#endif
 						
 					}
-				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+				#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 				}
 				#endif
 			}
@@ -1346,7 +1346,7 @@ bool checkDuplicateCondition(GIAentityNode* conditionEntity, GIAentityNode* chil
 	return alreadyAdded;
 }
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 string parseFunctionNameFromNLCfunctionName(string NLCfunctionName)
 {
 	//gets "fight" from "dog::fight"
@@ -1373,15 +1373,15 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 	*hasFunctionObjectClass = false;
 	*functionObjectName = "";
 	*functionName = NLCfunctionName;
-	int indexOfActionName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER);
-	int indexOfObjectName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER);
+	int indexOfActionName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER);
+	int indexOfObjectName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER);
 	if(indexOfActionName != string::npos)
 	{
 		if(indexOfObjectName != string::npos)
 		{
-			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
+			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
-			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
+			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 			*hasFunctionOwnerClass = true;
 			*hasFunctionObjectClass = true;
 			#ifdef NLC_DEBUG
@@ -1394,7 +1394,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 		}
 		else
 		{
-			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
+			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfActionName-NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*hasFunctionOwnerClass = true;
 			#ifdef NLC_DEBUG
@@ -1408,7 +1408,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 	else if(indexOfObjectName != string::npos)
 	{
 		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
-		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
+		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*hasFunctionObjectClass = true;
 		#ifdef NLC_DEBUG
 		cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -131,7 +131,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 									{
 										targetClassDefinition->functionNameSpecial = generateFunctionName(targetEntity);
-										#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+										#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 										targetClassDefinition->actionOrConditionInstance = targetEntity;
 										#endif
 									}
@@ -362,7 +362,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 											#endif
 											
 											#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-											//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+											//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 											generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
 											//#endif
 											#endif
@@ -565,6 +565,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 						bool foundFunctionOwnerExactMatch = false;
 						bool foundFunctionObjectExactMatch = false;
 						NLCclassDefinition* functionDeclaration = NULL;
+						//look for both exact and non-exact matches here as functionDependencies have already been created for all functions explicitly declared+defined by the user (don't yet reconcile arguments however)
 						if(findFunctionDeclarationClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 						{
 							NLCclassDefinitionFunctionDependency* functionDependenciesInParentTemp = NULL;
@@ -675,7 +676,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 								}
 								
 								classDefinitionFunction->functionNameSpecial = generateFunctionName(actionEntity);
-								#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+								#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 								classDefinitionFunction->actionOrConditionInstance = actionEntity;
 								#endif
 								classDefinitionFunction->isActionOrConditionInstanceNotClass = true;
@@ -770,7 +771,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 									#endif
 
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-									//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+									//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 									generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(classDefinitionFunction->parameters));
 									//#endif
 									#endif

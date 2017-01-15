@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -416,7 +416,7 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnect
 bool checkDuplicateProperty(GIAentityNode* propertyEntity, GIAentityNode* childActionEntity);
 bool checkDuplicateCondition(GIAentityNode* conditionEntity, GIAentityNode* childActionEntity);
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 string parseFunctionNameFromNLCfunctionName(string NLCfunctionName);
 void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass);
 void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass);

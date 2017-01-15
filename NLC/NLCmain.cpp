@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -70,7 +70,7 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 "\n\t-ionlprelq [string]: query NLP dependency relation parser .xml intermediary input/output filename (def: inputNLPrelationQuery.xml)"
 "\n\t-ionlptagq [string]: query NLP feature tag parser .xml intermediary input/output filename (def: inputNLPfeatureQuery.xml)"
 "\n\t-ixmlq [string]    : query semantic network definition .xml input filename (def: semanticNetQuery.xml)"
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 "\n\t-ilist		: all input files (itxt, ionlprel, ionlptag, ixml) will be treated as file lists (new line delimited) referencing NLC function names ([functionSubject#]functionName)[+functionObject])"
 #endif
 #ifdef NLC_USE_PREPROCESSOR
@@ -223,7 +223,7 @@ int main(int argc,char* *argv)
 #ifdef GIA_SUPPORT_INPUT_FILE_LISTS
 	bool inputFileList = false;	//not used by NLC
 #endif
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 	bool NLCinputFileList = false;
 #endif
 //#ifdef NLC_USE_PREPROCESSOR
@@ -328,7 +328,7 @@ int main(int argc,char* *argv)
 			useInputQuery = true;
 		}
 
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 		if(argumentExists(argc,argv,"-ilist"))
 		{
 			NLCinputFileList = true;
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p3a 25-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p3b 25-June-2015" << endl;
 			exit(1);
 		}
 
@@ -661,7 +661,7 @@ int main(int argc,char* *argv)
 	}
 	
 	int numberOfInputFilesInList = 1;
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 	vector<string> inputTextPlainTXTFileNameList;
 	vector<string> inputTextNLPrelationXMLFileNameList;
 	vector<string> inputTextNLPfeatureXMLFileNameList;
@@ -721,7 +721,7 @@ int main(int argc,char* *argv)
 		}
 		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(preprocessorDetectedFunctions)
 			{
 				#ifdef NLC_DEBUG_PREPROCESSOR
@@ -734,7 +734,7 @@ int main(int argc,char* *argv)
 			#endif
 				inputTextPlainTXTfileNameOrig = inputTextPlainTXTfileName;
 				inputTextPlainTXTfileName = outputPreprocessedTextForNLConlyPlainTXTFileName;	//execute NLP on preprocessed file
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			}
 			#endif
 		}
@@ -783,7 +783,7 @@ int main(int argc,char* *argv)
 		entityNodesActiveListSentencesFunctions.push_back(entityNodesActiveListSentences);
 		unordered_map<long, GIAtimeConditionNode*>* timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
 
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 		if(NLCinputFileList)
 		{
 			if(useInputTextPlainTXTFile)
@@ -974,7 +974,7 @@ int main(int argc,char* *argv)
 		NLCfunctionName = removeFileNameExtensions(NLCfunctionName);
 		#endif
 
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 		functionNameList.push_back(NLCfunctionName);
 		#endif
 
@@ -993,7 +993,7 @@ int main(int argc,char* *argv)
 		cout << "removeRedundantConditionConjunctions{}:" << endl;
 		#endif
 
-		//generate class definition function declaration for new function definition
+		//generate class definition function declaration for new function definition (creates both functionDependency object and classDefinition object [if NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS])
 		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex);
 		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor, functionDependency, &functionDependencyList);
@@ -1014,7 +1014,7 @@ int main(int argc,char* *argv)
 	}
 	#endif
 	
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	
 	string code = "";
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
@@ -1034,7 +1034,7 @@ int main(int argc,char* *argv)
 	{
 		NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
 		int level = 0;
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 		if(!printCodeBlocks(firstCodeBlockInTree, &classDefinitionList, progLang, &code, level))
 		{
 			result = false;
@@ -1380,6 +1380,13 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 {
 	bool result = true;
 	
+	#ifdef NLC_USE_LIBRARY
+	//added 1p3b - add functionDependency to functionDependencyList for every NLClibraryStandard and NLClibraryUser function (not NLClibraryBase functions; whose references are automatically generated by NLC)
+	//parse list of NLClibraryStandardFunctionList.txt and NLClibraryUserFunctionList.txt
+	
+	
+	#endif
+	
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	//added 1k13g - generate class definition function declarations for all function execution references (generateClassHeirarchyFunctions has been separated from generateClassHeirarchy since non-exact function reconciliation can only occur once class definition heirachy has been established)
 	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
@@ -1420,7 +1427,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 	#endif
 			
 		
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
 	bool stillUnreconciledFunctionDeclarationArguments = true;
 	while(stillUnreconciledFunctionDeclarationArguments)

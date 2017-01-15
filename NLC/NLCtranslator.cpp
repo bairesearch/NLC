@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -463,7 +463,7 @@ void disableInstanceAndConceptEntityNLC(GIAentityNode* entity)
 
 #endif
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency)
 {
@@ -795,7 +795,7 @@ NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaratio
 
 			functionClassDefinition->functionNameSpecial = generateFunctionName(functionName);
 			/*no longer supported;
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 			functionClassDefinition->actionOrConditionInstance = targetEntity;
 			#endif
 			*/
@@ -826,7 +826,7 @@ NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaratio
 
 			/*no longer supported;
 			#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-			//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+			//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 			generateFunctionDeclarationArgumentsWithActionConceptInheritance(targetEntity, &(functionClassDefinition->parameters));
 			//#endif
 			#endif

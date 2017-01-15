@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3a 25-June-2015
+ * Project Version: 1p3b 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -87,7 +87,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			}
 			#endif
 			
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(detectFunctionHeader(&currentLine))
 			{
 				//extract functions from file and generate separate files
@@ -417,12 +417,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				}
 				#endif
 				
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			}
 			#endif
 		}
 		
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		if(*detectedFunctions)
 		{
 			//create a final function based on the final text..
@@ -441,7 +441,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
 			writeStringToFile(&outputFileName, &functionContents);
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif
 	}
@@ -587,7 +587,7 @@ void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentat
 	*lineContents = currentLine->substr(i, (currentLine->length()-i));
 }
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 bool detectFunctionHeader(string* lineContents)
 {
 	bool functionHeaderFound = false;

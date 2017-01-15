@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e6a 23-November-2013
+ * Project Version: 1e6b 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -371,7 +371,7 @@ NLPIcodeblock * createCodeBlockForGivenProperties(NLPIcodeblock * currentCodeBlo
 			GIAentityNode* propertyEntity = propertyConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{//only write conditions that are explicated in current sentence
-				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
+				//cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
 				currentCodeBlockInTree = createCodeBlockForGivenProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
 				propertyConnection->parsedForNLPIcodeBlocks = true;
 			}

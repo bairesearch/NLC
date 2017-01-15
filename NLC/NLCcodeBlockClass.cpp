@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14f 21-October-2014
+ * Project Version: 1k15a 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -678,20 +678,28 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 							if(!entityIsAlias)
 							{
 							#endif
-								//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
-								//detected "the x" without declaring x (ie implicit declaration)
-								NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
-								parameters->push_back(thisFunctionArgumentInstanceItem);
-
-								//added 1j5d
-								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-								entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
-								#else
-								GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-								if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+								#ifdef NLC_USE_ADVANCED_REFERENCING
+								NLCitem * functionArgumentTemp = NULL;
+								if(!findFunctionArgument(parameters, entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 								{
-									entity->NLClocalListVariableHasBeenDeclared = true;
-									conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+								#endif
+									//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
+									//detected "the x" without declaring x (ie implicit declaration)
+									NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
+									parameters->push_back(thisFunctionArgumentInstanceItem);
+
+									//added 1j5d
+									#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+									entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
+									#else
+									GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+									if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+									{
+										entity->NLClocalListVariableHasBeenDeclared = true;
+										conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+									}
+									#endif
+								#ifdef NLC_USE_ADVANCED_REFERENCING
 								}
 								#endif
 							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -2120,6 +2128,32 @@ string generateCategoryListPropertyCountVariableName(GIAentityNode * entity)
 	return categoryListPropertyCountVariableName;
 }
 #endif
+
+bool findFunctionArgument(vector<NLCitem*> * parameters, GIAentityNode * entity, int itemType, NLCitem ** functionArgument)
+{
+	bool foundFunctionArgument = false;
+	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+	{
+		NLCitem * currentItem = *parametersIterator;
+		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
+		if(currentItem->itemType == itemType)
+		{
+			//cout << "(currentItem->itemType == itemType)" << endl;
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			if(currentItem->instanceName == item->instanceName)
+			#else
+			if(currentItem->name == entity->entityName)	//or if(currentItem->className == generateClassName(entity->entityName))
+			#endif
+			{
+				//cout << "(currentItem->name)" << endl;
+				*functionArgument = currentItem;
+				foundFunctionArgument = true;	
+			}
+		}
+	}
+	return foundFunctionArgument;
+}
+
 
 
 

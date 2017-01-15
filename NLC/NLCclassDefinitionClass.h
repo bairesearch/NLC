@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14f 21-October-2014
+ * Project Version: 1k15a 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -127,7 +127,9 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 #endif
 bool findParentClass(NLCclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLCclassDefinition ** parentClass);	
 #endif
+//see NLCcodeBlocks.cpp for other versions of this function;
 bool findFunctionArgument(vector<NLCitem*> * parameters, string itemName, int itemType, NLCitem ** functionArgument);
+bool findFunctionArgument(vector<NLCitem*> * parameters, NLCitem * item, int itemType, NLCitem ** functionArgument);
 bool findFunctionArgument(vector<NLCitem*> * parameters, int itemType, NLCitem ** functionArgument);
 
 

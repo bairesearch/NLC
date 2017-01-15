@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14f 21-October-2014
+ * Project Version: 1k15a 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -683,7 +683,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclarat
 		{
 			//add a new function argument to the existing function argument list
 			NLCitem * functionArgumentTemp = NULL;
-			if(!findFunctionArgument(functionDeclarationArgumentList, functionDefinitionSourceArgument->name, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			if(!findFunctionArgument(functionDeclarationArgumentList, functionDefinitionSourceArgument, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 			{
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "addImplicitlyDeclaredVariablesInCurrentfunctionDefinitionSourceToFunctionDeclaration: functionDefinitionSourceArgument->name = " << functionDefinitionSourceArgument->name << endl;
@@ -710,7 +710,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclara
 		{
 			//add a new function argument to the existing function argument list
 			NLCitem * functionArgumentTemp = NULL;
-			if(!findFunctionArgument(functionDeclarationArgumentList, functionDeclarationSourceArgument->name, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			if(!findFunctionArgument(functionDeclarationArgumentList, functionDeclarationSourceArgument, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 			{
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration: functionDeclarationSourceArgument->name = " << functionDeclarationSourceArgument->name << endl;
@@ -735,7 +735,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinit
 		{
 			//add a new function argument to the existing function argument list
 			NLCitem * functionArgumentTemp = NULL;
-			if(!findFunctionArgument(functionDefinitionArgumentList, functionDeclarationSourceArgument->name, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+			if(!findFunctionArgument(functionDefinitionArgumentList, functionDeclarationSourceArgument, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 			{
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition: functionDeclarationSourceArgument->name = " << functionDeclarationSourceArgument->name << endl;

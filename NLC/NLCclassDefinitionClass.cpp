@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14f 21-October-2014
+ * Project Version: 1k15a 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -627,6 +627,7 @@ bool findParentClass(NLCclassDefinition * classDefinition, string variableName, 
 }
 #endif
 
+//only appropriate for use with functionName/functionObjectName/functionClassName (as not compatible with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES otherwise);
 bool findFunctionArgument(vector<NLCitem*> * parameters, string itemName, int itemType, NLCitem ** functionArgument)
 {
 	bool foundFunctionArgument = false;
@@ -637,7 +638,36 @@ bool findFunctionArgument(vector<NLCitem*> * parameters, string itemName, int it
 		if(currentItem->itemType == itemType)
 		{
 			//cout << "(currentItem->itemType == itemType)" << endl;
+			#ifdef NLC_USE_ADVANCED_REFERENCING
 			if(currentItem->name == itemName)
+			#else
+			if(currentItem->name == itemName)
+			#endif
+			{
+				//cout << "(currentItem->name)" << endl;
+				*functionArgument = currentItem;
+				foundFunctionArgument = true;	
+			}
+		}
+	}
+	return foundFunctionArgument;
+}
+
+bool findFunctionArgument(vector<NLCitem*> * parameters, NLCitem * item, int itemType, NLCitem ** functionArgument)
+{
+	bool foundFunctionArgument = false;
+	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+	{
+		NLCitem * currentItem = *parametersIterator;
+		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
+		if(currentItem->itemType == itemType)
+		{
+			//cout << "(currentItem->itemType == itemType)" << endl;
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			if(currentItem->instanceName == item->instanceName)
+			#else
+			if(currentItem->name == item->name)	//or if(currentItem->className == generateClassName(item->name))
+			#endif
 			{
 				//cout << "(currentItem->name)" << endl;
 				*functionArgument = currentItem;

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5h 15-August-2016
+ * Project Version: 1r5i 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2920,32 +2920,6 @@ NLCcodeblock* createCodeBlockSetMathNumericalValue(NLCcodeblock* currentCodeBloc
 	
 	return currentCodeBlockInTree;
 }
-
-#ifdef NLC_USE_MATH_OBJECTS_STRING
-NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName)
-{
-	NLCitem* genericEntityPointerItem = new NLCitem(genericEntityPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(genericEntityPointerItem);
-		
-	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE;
-
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName, GIAentityNode* entity)
-{
-	NLCitem* genericEntityPointerItem = new NLCitem(genericEntityPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(genericEntityPointerItem);
-	
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	currentCodeBlockInTree->parameters.push_back(entityItem);
-
-	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
-	return currentCodeBlockInTree;
-}
-#else
 NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
 {
 	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
@@ -2965,6 +2939,66 @@ NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathNumericalValue(NLCcode
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_NUMERICAL_VALUE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+NLCcodeblock* createCodeBlockSetMathStringValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity)
+{
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem* valueItem = new NLCitem(valueEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(valueItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_MATH_STRING_VALUE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName)
+{
+	NLCitem* decimalPointerItem = new NLCitem(stringPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE;
+
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+NLCcodeblock* createCodeBlockSetStringPointerToEntityMathStringValue(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName, GIAentityNode* entity)
+{
+	NLCitem* decimalPointerItem = new NLCitem(stringPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
+	
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_STRING_VALUE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName)
+{
+	NLCitem* genericEntityPointerItem = new NLCitem(genericEntityPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericEntityPointerItem);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE;
+
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName, GIAentityNode* entity)
+{
+	NLCitem* genericEntityPointerItem = new NLCitem(genericEntityPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericEntityPointerItem);
+	
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;

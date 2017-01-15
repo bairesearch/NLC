@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5h 15-August-2016
+ * Project Version: 1r5i 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -238,7 +238,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		}
 		
 		#ifdef NLC_USE_MATH_OBJECTS_STRING
-		if(c == NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER)
+		if(c == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DELIMITER)
 		{
 			if(parsingQuotation)
 			{
@@ -330,7 +330,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 							
 							#ifdef NLC_USE_MATH_OBJECTS_STRING
 							int indexOfMathStringDelimiter = INT_DEFAULT_VALUE;
-							bool foundMathStringDelimiter = findCharacterAtIndexOrAfterSpace(lineContents, indexOfMathEqualsSetCommand+1, NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER, &indexOfMathStringDelimiter);	//mathText eg: "X=\".." OR "X= \".."
+							bool foundMathStringDelimiter = findCharacterAtIndexOrAfterSpace(lineContents, indexOfMathEqualsSetCommand+1, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DELIMITER, &indexOfMathStringDelimiter);	//mathText eg: "X=\".." OR "X= \".."
 							if(foundMathStringDelimiter)
 							{
 								variableTypeObjectString = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_NAME;
@@ -464,6 +464,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 
 						//split sentence and add phrase
 						(*currentNLCsentenceInList)->mathTextNLPparsablePhraseIndex = phraseIndex;
+						#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
+						(*currentNLCsentenceInList)->mathTextNLPparsablePhrasePositionApproximate = i - currentPhrase.length();	//CHECKTHIS
+						#endif
 						#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 						bool spaceAtEndOfPhrase = false;
 						if(currentPhrase[currentPhrase.length()-1] == CHAR_SPACE)
@@ -758,6 +761,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	NLCsentence* currentSentence = firstNLCsentenceInFullSentence;
 	while(currentSentence->next != NULL)
 	{
+		#ifdef NLC_DEBUG
 		/*
 		cout << "\ncurrentSentence->sentenceContents = " << currentSentence->sentenceContents << endl;
 		cout << "currentSentence->sentenceIndex = " << currentSentence->sentenceIndex << endl;
@@ -771,6 +775,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		cout << "currentSentence->sentenceOriginal = " << currentSentence->sentenceOriginal << endl;
 		cout << "currentSentence->sentenceContentsOriginal = " << currentSentence->sentenceContentsOriginal << endl;
 		*/
+		#endif
 		*functionContents = *functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
 		currentSentence = currentSentence->next;
 	}

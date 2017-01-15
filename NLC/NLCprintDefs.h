@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5h 15-August-2016
+ * Project Version: 1r5i 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -234,7 +234,7 @@ static string progLangForIndex[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"index", 
 static string progLangDecimalType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double ", "double ", "double ", "double ", "double ", "double ", "double "};
 static string progLangDecimalPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double* ", "double* ", "double* ", "double* ", "double* ", "double* ", "double* "};
 static string progLangGenericPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void* ", "void* ", "void* ", "void* ", "void* ", "void* ", "void* "};
-//static string progLangStringPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string* ", "string* ", "string* ", "string* ", "string* ", "string* ", "string* "};
+static string progLangStringPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string* ", "string* ", "string* ", "string* ", "string* ", "string* ", "string* "};
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};
@@ -267,6 +267,8 @@ static string progLangSizeOfList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"size()
 static string progLangLessThan[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" < ", " < ", " < ", " < ", " < ", " < ", " < "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN
 static string progLangLessThanOrEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" <= ", " <= ", " <= ", " <= ", " <= ", " <= ", " <= "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN_OR_EQUAL_TO
 static string progLangIsNotEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" != ", " != ", " != ", " != ", " != ", " != ", " != "};	//NO: must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_IS_NOT_EQUAL_TO
+static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};
+static string progLangStringAdd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" + ", " + ", " + ", " + ", " + ", " + ", " + "};
 
 #ifdef NLC_USE_ADVANCED_REFERENCING
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
@@ -308,8 +310,6 @@ static string progLangTestEntityPairFindPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGE
 static string progLangTestEntityPairFindPart3[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->end())", "->end())", "->end())", "->end())", "->end())", "->end())", "->end())"};
 
 static string progLangTypeName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"typename ", "typename ", "typename ", "typename ", "typename ", "typename ", "typename "};	//required for C++; "error: need typename before std::vector<Ex*> because std::vector<Ex*> is a dependent scope"
-
-static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};
 
 static string progLangAddAllList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
 static string progLangAddAllListKey1open[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"[", "[", "[", "[", "[", "[", "["};
@@ -506,18 +506,21 @@ string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
 
 #ifdef NLC_USE_MATH_OBJECTS
 string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang);
-#ifdef NLC_USE_MATH_OBJECTS_STRING
-string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang);
-#else
-string generateCodeEntityMathNumericalValueText(string entityName, int progLang);
+string generateCodeEntityMathValuePointerText(string entityName, int progLang);
 string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);
 string generateCodeSetDecimalPointerToEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang);
+string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang);
+string generateCodeSetStringPointerToEntityMathStringValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang);
+string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang);
 #endif
 string generateCodePointerValueText(NLCitem* param1, int progLang);
 string generateCodePointerValueText(string entityName, int progLang);
 string generateCodeEntityMathValueText(string entityName, int mathtextVariableType, int progLang);
 #endif
+string generateReferenceText(string entityName, int progLang);
 string generatePointerText(string entityName, int progLang);
 string generatePointerTypeText(string entityName, int progLang);
 string generateCodeListPointer(string list, int progLang);

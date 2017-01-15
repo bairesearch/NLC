@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5h 15-August-2016
+ * Project Version: 1r5i 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -65,6 +65,9 @@ NLCsentence::NLCsentence(void)
 	mathText = "";
 	mathTextNLPparsablePhraseIndex = INT_DEFAULT_VALUE;
 	mathTextNLPparsablePhraseTotal = INT_DEFAULT_VALUE;
+	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
+	mathTextNLPparsablePhrasePositionApproximate = INT_DEFAULT_VALUE;
+	#endif
 	#ifdef NLC_USE_MATH_OBJECTS
 	mathTextIdentifiesMathValue = false;
 	//mathTextNLPparsablePhraseIdentifiesMathValue = false;
@@ -101,7 +104,7 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 	string variableName = replaceAllOccurancesOfString(&(currentPhrase->sentenceContents), STRING_SPACE, "");
 	variableName = replaceAllOccurancesOfString(&variableName, STRING_FULLSTOP, "");
-	variableName = replaceAllOccurancesOfString(&variableName, STRINGE_APOSTROPHE, "");
+	variableName = replaceAllOccurancesOfString(&variableName, STRING_APOSTROPHE, "");
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY	
 	//required for NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES; i++)
@@ -115,9 +118,13 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 		}
 	}
 	#endif
-	string mathTextNLPparsablePhraseReference = variableName + convertIntToString(sentenceIndexOfFullSentence);
+	#ifdef NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
+	string mathTextNLPparsablePhraseReference = variableName + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->mathTextNLPparsablePhraseIndex);	
 	#else
-	string mathTextNLPparsablePhraseReference = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->phraseIndex) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence);	
+	string mathTextNLPparsablePhraseReference = variableName + convertIntToString(sentenceIndexOfFullSentence);
+	#endif
+	#else
+	string mathTextNLPparsablePhraseReference = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->mathTextNLPparsablePhraseIndex);	
 	#endif
 	return mathTextNLPparsablePhraseReference;
 }

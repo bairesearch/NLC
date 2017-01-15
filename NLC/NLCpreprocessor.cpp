@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5h 15-August-2016
+ * Project Version: 1r5i 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -690,7 +690,7 @@ string removePrependingWhiteSpace(string sentenceContents)
 bool detectMathObjectStringDelimiter(string* lineContents)
 {
 	bool result = false;
-	if(lineContents->find(NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	if(lineContents->find(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DELIMITER) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		result = true;
 	}

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5h 15-August-2016
+ * Project Version: 1r5i 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -269,7 +269,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionHeaderText);			
 							#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_NUMERICAL_VALUE_NAME) + progLangEndLine[progLang];	//double value;
+							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEndLine[progLang];	//double value;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
@@ -498,7 +498,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						{//top level NLClibraryEntity class found
 						#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string setValueCode = string(NLC_USE_MATH_OBJECTS_NUMERICAL_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//value = numeric_limits<double>::quiet_NaN();
+							string setValueCode = string(NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//value = numeric_limits<double>::quiet_NaN();
 							printLine(setValueCode, 1, &printedClassDefinitionSourceText);
 							#endif
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k23h 02-November-2014
+ * Project Version: 1l7a 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -581,7 +581,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 									//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 									//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 								
-									cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
+									//cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 
@@ -591,7 +591,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 									if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject, true))
 									{
 										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
-										cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS: passed logical condition" << endl;
+										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS: passed logical condition" << endl;
 									}
 								} else
 								#endif

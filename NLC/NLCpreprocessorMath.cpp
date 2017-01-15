@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k23h 02-November-2014
+ * Project Version: 1l7a 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -345,7 +345,6 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 						
 			if(NLPparsableMandatoryCharacterFoundInCurrentWord)
 			{
-
 				if(!parsingWhiteSpace)
 				{	
 					(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariableNames
@@ -497,6 +496,23 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		(*sentenceIndex) = (*sentenceIndex) + 1;
 	}
 
+	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+	//remove all numbers from mathTextVariableNames - added 1k24a
+	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end();)
+	{
+		string mathTextVariableName = *iter;
+		bool variableNameIsNumber = isStringNumber(mathTextVariableName);
+		if(variableNameIsNumber)
+		{
+			iter = firstNLCsentenceInFullSentence->mathTextVariableNames.erase(iter);
+		}
+		else
+		{
+			iter++;
+		}
+	}
+	#endif
+	
 	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 	//if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 	//{

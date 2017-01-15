@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k23h 02-November-2014
+ * Project Version: 1l7a 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -135,6 +135,7 @@ bool isStringNLPparsableWord(string phrase, bool preprocessor)
 	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;
 	for(int i=0; i<phrase.length(); i++)
 	{
+		char c = phrase[i];
 		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
 			NLPparsableMandatoryCharacterFoundInCurrentWord = true;

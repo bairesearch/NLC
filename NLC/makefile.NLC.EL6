@@ -7,7 +7,7 @@ LDFLAGS=-L/usr/local/WordNet-3.0/lib -lglut -lGL -lGLU -lWN
 SOURCES= NLCmain.cpp NLCcodeBlockClass.cpp NLCclassDefinitionClass.cpp NLCitemClass.cpp NLCtranslator.cpp NLCtranslatorCodeBlocks.cpp NLCtranslatorClassDefinitions.cpp NLCprint.cpp NLCprintCodeBlocks.cpp NLCprintClassDefinitions.cpp NLCprintDefs.cpp GIAmain.cpp GIAnlpParser.cpp GIAtranslator.cpp GIAtranslatorDefineGrammar.cpp GIAtranslatorDefineReferencing.cpp GIAtranslatorRedistributeStanfordRelations.cpp GIAtranslatorRedistributeRelexRelations.cpp GIAtranslatorDefineSubstances.cpp GIAtranslatorLinkEntities.cpp GIAtranslatorApplyAdvancedFeatures.cpp GIAtranslatorOperations.cpp GIAentityNodeClass.cpp GIAentityConnectionClass.cpp GIAconditionNodeClass.cpp GIAsentenceClass.cpp GIAdraw.cpp GIAxmlConversion.cpp GIAcxlConversion.cpp GIAquery.cpp GIAdatabase.cpp GIAnlp.cpp GIAwordnet.cpp GIAnlg.cpp GIAlrp.cpp GIAbot.cpp GIAcorpus.cpp GIAcorpusOperations.cpp GIAcorpusTranslator.cpp GIAcorpusDatabase.cpp XMLparserClass.cpp XMLrulesClass.cpp LDsvg.cpp LDopengl.cpp LDparser.cpp LDsprite.cpp LDreferenceManipulation.cpp LDreferenceClass.cpp RToperations.cpp RTparser.cpp RTpixelMaps.cpp RTppm.cpp RTraytracer.cpp RTreferenceManipulation.cpp RTscene.cpp RTviewinfo.cpp SHAREDglobalDefs.cpp SHAREDvector.cpp SHAREDvars.cpp
 
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=OpenNLC.exe
+EXECUTABLE=NLC.exe
 
 all: $(SOURCES) $(EXECUTABLE)
 	

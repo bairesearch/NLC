@@ -25,7 +25,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,7 +53,7 @@ using namespace std;
 #include "GIAentityConnectionClass.h"
 
 	//progLangEndLine
-	
+
 class NLCclassDefinition
 {
 public:
@@ -61,8 +61,8 @@ public:
 	NLCclassDefinition(void);
 	NLCclassDefinition(string newName);
 	~NLCclassDefinition(void);
-	
-	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
+
+	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass)
 	string functionNameSpecial;
 		//classdefinition sublists;
 	vector<NLCclassDefinition *> propertyList;	//subclass
@@ -75,7 +75,7 @@ public:
 	GIAentityNode * actionOrConditionInstance;
 	#endif
 	vector<NLCitem*> parameters;
-	
+
 	bool isDisabledChildReplicantDeclaration;
 };
 

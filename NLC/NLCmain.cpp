@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -132,7 +132,7 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 int main(int argc,char **argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
-	
+
 	#ifdef GIA_TRIAL_WORD_NET_SYNONYM_LOOKUP
 	initialiseWordNet();
 	string wordExample = "like";
@@ -213,13 +213,13 @@ int main(int argc,char **argv)
 	bool useOutputTextAnswerPlainTXTFile = false;
 	string outputTextAnswerPlainTXTFileName = "answer.txt";
 
-#ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
+#ifdef GIA_SUPPORT_INPUT_FILE_LISTS
 	bool inputFileList = false;	//not used by NLC
 #endif
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	
+#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	bool NLCinputFileList = false;
-#endif	
-	
+#endif
+
 	bool printOutput = false;
 	bool printOutputQuery = false;
 	bool displayInOpenGLAndOutputScreenshot = true;
@@ -317,13 +317,13 @@ int main(int argc,char **argv)
 			useInputQueryXMLFile = true;
 			useInputQuery = true;
 		}
-		
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	
+
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		if(argumentExists(argc,argv,"-ilist"))
 		{
 			NLCinputFileList = true;
 		}
-	#endif		
+	#endif
 
 		if(argumentExists(argc,argv,"-ocff"))
 		{
@@ -524,7 +524,7 @@ int main(int argc,char **argv)
 		{
 			databaseFolderName=getCharArgument(argc,argv,"-dbfolder");
 			databaseFolderName = databaseFolderName + '/';
-		}		
+		}
 	#endif
 	#ifdef GIA_USE_CORPUS_DATABASE
 		if(argumentExists(argc,argv,"-dbcorpusfolder"))
@@ -533,7 +533,7 @@ int main(int argc,char **argv)
 			corpusDatabaseFolderName = corpusDatabaseFolderName + '/';
 		}
 	#endif
-	
+
 	#ifdef GIA_USE_LRP
 		if(argumentExists(argc,argv,"-lrp"))
 		{
@@ -567,7 +567,7 @@ int main(int argc,char **argv)
 		else
 		{
 			lrpDataFolderName = currentFolder;
-		}		
+		}
 	#endif
 	#ifdef USE_WORDNET
 		if(argumentExists(argc,argv,"-syndet"))
@@ -623,7 +623,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1f13b 17-April-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f13c 17-April-2014" << endl;
 			exit(1);
 		}
 
@@ -666,11 +666,11 @@ int main(int argc,char **argv)
 
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
 	vector<NLCclassDefinition *> classDefinitionList;
-		
+
 	for(int i=0; i<numberOfInputFilesInList; i++)
-	{	
+	{
 		int maxNumberSentences;
-		
+
 		NLCcodeblock * firstCodeBlockInTree = new NLCcodeblock();
 		firstCodeBlockInTreeList.push_back(firstCodeBlockInTree);
 
@@ -680,7 +680,7 @@ int main(int argc,char **argv)
 		vector<GIAentityNode*> * entityNodesActiveListActions = new vector<GIAentityNode*>;
 		vector<GIAentityNode*> * entityNodesActiveListConditions = new vector<GIAentityNode*>;
 		unordered_map<long, GIAtimeConditionNode*> * timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
-	
+
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		if(NLCinputFileList)
 		{
@@ -702,7 +702,7 @@ int main(int argc,char **argv)
 			}
 		}
 		#endif
-					
+
 		executeGIA(
 
 			NLPfeatureParser,
@@ -768,9 +768,9 @@ int main(int argc,char **argv)
 			useOutputTextAnswerPlainTXTFile,
 			outputTextAnswerPlainTXTFileName,
 
-		#ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
+		#ifdef GIA_SUPPORT_INPUT_FILE_LISTS
 			inputFileList,
-		#endif	
+		#endif
 			printOutput,
 			printOutputQuery,
 			displayInOpenGLAndOutputScreenshot,
@@ -790,7 +790,7 @@ int main(int argc,char **argv)
 		#ifdef GIA_USE_CORPUS_DATABASE
 			corpusDatabaseFolderName,
 		#endif
-	
+
 		#ifdef GIA_USE_LRP
 			useLRP,
 			useOutputLRPTextPlainTXTFile,
@@ -809,13 +809,13 @@ int main(int argc,char **argv)
 		#endif
 
 			entityNodesActiveListComplete,
-			entityNodesActiveListConcepts, 
-			entityNodesActiveListSubstances, 
-			entityNodesActiveListActions, 
-			entityNodesActiveListConditions, 
+			entityNodesActiveListConcepts,
+			entityNodesActiveListSubstances,
+			entityNodesActiveListActions,
+			entityNodesActiveListConditions,
 			timeConditionNodesActiveList,
 
-			&maxNumberSentences	
+			&maxNumberSentences
 		);
 
 		string NLCfunctionName = "";
@@ -837,9 +837,9 @@ int main(int argc,char **argv)
 		}
 		else
 		{
-			cout << "error: NLC requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
+			cout << "error: NLC requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl;
 		}
-		
+
 		#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 		NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
 		#else
@@ -851,32 +851,32 @@ int main(int argc,char **argv)
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		}
 		#endif
-		#endif		
-		
+		#endif
+
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		functionNameList.push_back(NLCfunctionName);
 		#endif
-		
+
 		#ifdef NLC_DEBUG
-		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;	
+		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;
 		#endif
-		
+
 		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
-		
+
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName);
-	}	
-	
+	}
+
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		//updates all classDefinition functionList function arguments corresponding to a single defined function (i)
-		
+
 		NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
 
 		string NLCfunctionName = functionNameList.at(i);
-		
+
 		#ifdef NLC_DEBUG
 		cout << "start reconcile: NLCfunctionName = " << NLCfunctionName << endl;
 		#endif
@@ -889,17 +889,17 @@ int main(int argc,char **argv)
 		}
 		*/
 		reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLCfunctionName);
-		
-		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias	
+
+		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
 	}
 
-	string code = "";		
+	string code = "";
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
 	{
 		result = false;
 	}
 	#endif
-		
+
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
@@ -917,13 +917,13 @@ int main(int argc,char **argv)
 		#endif
 	}
 	cout << "code = \n" << code << endl;
-				
+
 	//print execution time (end)
 	time(&now);
 	current = localtime(&now);
 	sprintf(timeAndDateString, "%i:%i:%i %.2i/%.2i/%i", current->tm_hour, current->tm_min, current->tm_sec, current->tm_mday, (current->tm_mon+1), (current->tm_year + TM_STRUCT_YEAR_OFFSET));
-	cout << "NLC execution time: " << timeAndDateString << " (finish)" << endl;	
-}	
+	cout << "NLC execution time: " << timeAndDateString << " (finish)" << endl;
+}
 
 
 string removeFileNameExtensions(string NLCfunctionName)
@@ -942,7 +942,7 @@ string removeFileNameExtensions(string NLCfunctionName)
 void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> * entityNodesActiveListComplete)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-	{		
+	{
 		GIAentityNode * actionEntity = (*entityIter);
 		if((actionEntity->isAction) && !(actionEntity->isConcept))
 		{
@@ -1007,5 +1007,5 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 	}
 }
 #endif
-		
+
 

@@ -25,7 +25,7 @@
  * File Name: NLCprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,7 +46,7 @@ using namespace std;
 
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
-	
+
 #define NLC_PROGRAMMING_LANGUAGE_CPP (0)
 #define NLC_PROGRAMMING_LANGUAGE_JAVA (1)
 #define NLC_PROGRAMMING_LANGUAGE_VISUALBASIC (2)
@@ -67,6 +67,6 @@ using namespace std;
 
 #ifndef NLC_SUPPORT_INPUT_FILE_LISTS
 bool printCode(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code);
-#endif	
+#endif
 
 #endif

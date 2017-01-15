@@ -25,7 +25,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -66,13 +66,13 @@ string generateConditionPairName(string conditionClassName, string conditionObje
 }
 
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang)
-{				 
+{
 	string codePropertyListDefinitionText = generateCodePropertyListDefinitionTypeText(propertyClassName, progLang) + propertyClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
 	return codePropertyListDefinitionText;
 }
 
 string generateCodePropertyListDefinitionTypeText(string propertyClassName, int progLang)
-{				 
+{
 	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + propertyClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	return codePropertyListDefinitionText;
 }
@@ -82,7 +82,7 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 	string codeConditionListDefinitionText = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + conditionClassName + NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;
 	#else
-	string codeConditionListDefinitionText = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + generateConditionListName(conditionClassName, conditionObjectClassName);				
+	string codeConditionListDefinitionText = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + generateConditionListName(conditionClassName, conditionObjectClassName);
 	#endif
 	return codeConditionListDefinitionText;
 }
@@ -91,7 +91,7 @@ string generateCodeConditionListDefinitionTypeText(string conditionClassName, st
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	#else
-	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];				
+	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	#endif
 	return codeConditionListDefinitionText;
 }

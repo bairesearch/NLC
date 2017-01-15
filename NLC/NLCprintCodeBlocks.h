@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,6 +64,6 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 	string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang);
 string generateStringFromContextVector(vector<string> * context, int progLang);
 string intToString(int integer);
-			
+
 
 #endif

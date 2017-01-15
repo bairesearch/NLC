@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,14 +47,14 @@ public:
 
 	className(void);
 	~className(void);
-	
+
 	string name;
-	
+
 	vector<somevar *> somevarPropertyList;	//subclass
 	....
-	
+
 	vector<somevar *> somevarDefinitionList;	//inherited parents
-	
+
 	...
 	vector<somevar *> somevarFunctionList;
 	...
@@ -66,9 +66,9 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 	printLine("", 0, code);
 	printLine("", 0, code);
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
-	{	
+	{
 		NLCclassDefinition * classDefinition = *classDefinitionIter;
-		
+
 		if(!(classDefinition->isActionOrConditionInstanceNotClass))
 		{
 			string className = classDefinition->name;
@@ -76,7 +76,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			#ifdef NLC_DEBUG
 			cout << "printClassDefinitions: className:" << className << endl;
 			#endif
-			
+
 			bool foundDefinition = false;
 			string classTitleText = "";
 			for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
@@ -106,15 +106,15 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			string classNameRaw = className.substr(0, className.length()-strlen(NLC_CLASS_NAME_APPEND));
 			//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
 			string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
-			printLine(classDefinitionNameCode, 1, code);		
+			printLine(classDefinitionNameCode, 1, code);
 
 			for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 			{
-				NLCclassDefinition * targetClassDefinition = *localListIter;			
+				NLCclassDefinition * targetClassDefinition = *localListIter;
 				string propertyClassName = targetClassDefinition->name;
 				//NLCitem * param1 = targetClassDefinition->parameters.at(0);	//not required to be used
 				string localListDeclarationText = generateCodePropertyListDefinitionText(propertyClassName, progLang) + progLangEndLine[progLang];
-				printLine(localListDeclarationText, 1, code);	
+				printLine(localListDeclarationText, 1, code);
 			}
 
 			for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
@@ -136,11 +136,11 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 				string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 				printLine(localListDeclarationText, 1, code);
 			}
-			
+
 			printLine(progLangCloseClass[progLang], 0, code);
 			printLine("", 0, code);
 
-			string classConstructorEntryText = classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang]; 
+			string classConstructorEntryText = classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang];
 			printLine(classConstructorEntryText, 0, code);
 			printLine(progLangOpenClass[progLang], 0, code);
 			string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
@@ -150,6 +150,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 
 		}
 	}
+	return true;
 }
 
 void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*> * parameters, string * functionArguments, int progLang)
@@ -172,7 +173,7 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*
 			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION)		
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION)
 		{
 			if(*functionArguments != "")
 			{
@@ -181,7 +182,7 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*
 			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
 		}
 		#endif
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OBJECT)		
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OBJECT)
 		{
 			if(*functionArguments != "")
 			{
@@ -219,13 +220,13 @@ string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang)
 	{
 		pluralClassName = currentItem->functionArgumentPassCastClassName;
 	}
-	#endif	
-	string codePluralDefinitionText = progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang]+ STRING_SPACE + pluralClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;	
+	#endif
+	string codePluralDefinitionText = progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang]+ STRING_SPACE + pluralClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
 	return codePluralDefinitionText;
 }
 
 string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang)
-{	
+{
 	string singularClassName = currentItem->className;
 	string singularInstanceName = currentItem->instanceName;
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -233,7 +234,7 @@ string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang)
 	{
 		singularClassName = currentItem->functionArgumentPassCastClassName;
 	}
-	#endif	
+	#endif
 	string codeSingularDefinitionText = singularClassName + progLangPointer[progLang] + STRING_SPACE + singularInstanceName;
 	return codeSingularDefinitionText;
 }
@@ -246,7 +247,7 @@ string generateCodeConditionPairDefinitionText(NLCitem * currentItem, int progLa
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + STRING_SPACE + conditionClassName + NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
 	#else
-	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang]+ STRING_SPACE + generateConditionPairName(conditionClassName, conditionObjectClassName);				
+	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang]+ STRING_SPACE + generateConditionPairName(conditionClassName, conditionObjectClassName);
 	#endif
 	return codeConditionListDefinitionText;
 }

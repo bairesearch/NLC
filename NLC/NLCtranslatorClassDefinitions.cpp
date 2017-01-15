@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,7 +40,7 @@
 
 
 bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
-{	
+{
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entityNode = *entityIter;
@@ -53,7 +53,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 				className = generateSubstanceConceptClassName(entityNode);
 			}
 			#endif
-					
+
 			//cout << "className = " << className << endl;
 			bool foundClassDefinition = false;
 			NLCclassDefinition * classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
@@ -64,14 +64,14 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 				//cout << "!foundClassDefinition" << endl;
 			}
 			//cout << "generateClassHeirarchy: " << className << endl;
-			
+
 			for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 			{
 				for(vector<GIAentityConnection*>::iterator connectionIter = entityNode->entityVectorConnectionsArray[i].begin(); connectionIter != entityNode->entityVectorConnectionsArray[i].end(); connectionIter++)
 				{
 					GIAentityConnection * connection = *connectionIter;
 					GIAentityNode * targetEntity = connection->entity;
-					
+
 					#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 					if(!(connection->NLCconditionLogicalOperations) && !(targetEntity->NLCconditionLogicalOperations))
 					{
@@ -154,18 +154,18 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 
 									NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
 									if(!(targetEntity->conditionObjectEntity->empty()))
-									{								
+									{
 										string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
-										classDeclarationConditionsListItem->className2 = conditionObjectClassName;				
+										classDeclarationConditionsListItem->className2 = conditionObjectClassName;
 									}
 									else
 									{
 										cout << "generateClassHeirarchy() error: condition has no object" << endl;
-									}												
+									}
 									targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
-								}						
-							}	
-							else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) 
+								}
+							}
+							else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 							{//declare inheritance
 								#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 								if(targetName != className)	//eg do not create a separate class for substance concept definitions
@@ -196,7 +196,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									NLCitem * classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION);	//added 1e1c
 									targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
 									if(!(targetEntity->actionObjectEntity->empty()))
-									{							
+									{
 										GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
 										NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
 										targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
@@ -205,7 +205,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
 									generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
 									//#endif
-									#endif								
+									#endif
 								}
 							}
 						}
@@ -224,20 +224,21 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 			}
 		}
 	}
-	
-	
+
+
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	//disable all double declarations
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
-	{	
+	{
 		NLCclassDefinition * classDefinition = *classDefinitionIter;
 
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->functionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
-	}		
+	}
 	#endif
-}	
+	return true;
+}
 
 #ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity)
@@ -254,7 +255,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 	{
 		GIAentityNode * substanceConceptCondition = (*entityIter)->entity;
 		if(!(substanceConceptCondition->conditionObjectEntity->empty()))
-		{								
+		{
 			GIAentityNode * substanceConceptConditionObject = (substanceConceptCondition->conditionObjectEntity->back())->entity;
 			*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION;
 			generateSubstanceConceptClassName(substanceConceptConditionObject);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
@@ -262,9 +263,9 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 		else
 		{
 			cout << "generateSubstanceConceptClassNameRecurse() error: condition has no object" << endl;
-		}					
+		}
 	}
-	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->propertyNodeList->begin(); entityIter != substanceConceptEntity->propertyNodeList->end(); entityIter++)				
+	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->propertyNodeList->begin(); entityIter != substanceConceptEntity->propertyNodeList->end(); entityIter++)
 	{
 		GIAentityNode * substanceConceptProperty = (*entityIter)->entity;
 		*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
@@ -272,7 +273,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 	}
 }
 #endif
-			
+
 #ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition * classDefinition, vector<NLCclassDefinition*> * classDefinitionSublist, int variableType)
 {
@@ -288,7 +289,7 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 				NLCclassDefinition * targetClassDefinition = *parentListIter;
 				if(findVariableInParentClass(classDefinition, variableName, variableType))
 				{
-					localListIter = classDefinitionSublist->erase(localListIter);	
+					localListIter = classDefinitionSublist->erase(localListIter);
 					localListIterErased = true;
 					//cout << "classDefinition->name = " << classDefinition->name << endl;
 					//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
@@ -298,7 +299,7 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 		if(!localListIterErased)
 		{
 			localListIter++;
-		}			
+		}
 	}
 }
 
@@ -327,7 +328,7 @@ bool findVariableInParentClass(NLCclassDefinition * classDefinition, string vari
 			if(targetName == variableName)
 			{
 				foundVariable = true;
-			}	
+			}
 		}
 	}
 	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
@@ -340,11 +341,11 @@ bool findVariableInParentClass(NLCclassDefinition * classDefinition, string vari
 			if(targetName == variableName)
 			{
 				foundVariable = true;
-			}	
+			}
 		}
 	}
 	if(!foundVariable)
-	{	
+	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 		{
 			NLCclassDefinition * targetClassDefinition = *localListIter;
@@ -364,7 +365,7 @@ bool findVariableInParentClass(NLCclassDefinition * classDefinition, string vari
 void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, vector<NLCitem*> * parameters)
 {
 	generateFunctionPropertyConditionArguments(actionEntity, parameters, false);
-	
+
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 	//Part b: generate object initialisations based on action concepts (class inheritance)
 	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
@@ -396,14 +397,14 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 			if(!(actionCondition->conditionObjectEntity->empty()))
 			{
 				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
-			}					
+			}
 			NLCitem * argumentConditionItem = new NLCitem(actionCondition, NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
 			argumentConditionItem->className2 = generateClassName(conditionObject);
 			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);
-			parameters->push_back(argumentConditionItem);		
+			parameters->push_back(argumentConditionItem);
 		}
 	}
-	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
+	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)
 	{
 		GIAentityNode * actionProperty = (*entityIter)->entity;
 		bool alreadyAdded = false;
@@ -412,9 +413,9 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 			alreadyAdded = checkDuplicateProperty(actionProperty, parameters);
 		}
 		if(!alreadyAdded)
-		{	
+		{
 			NLCitem * argumentPropertyItem = new NLCitem(actionProperty, NLC_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY);
-			parameters->push_back(argumentPropertyItem);		
+			parameters->push_back(argumentPropertyItem);
 		}
 	}
 }
@@ -432,7 +433,7 @@ bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLCitem*> * p
 				alreadyAdded = true;
 			}
 		}
-		
+
 	}
 	return alreadyAdded;
 }
@@ -450,7 +451,7 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLCitem*> *
 			{
 				conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
 			}
-			
+
 			if((generateClassName(conditionEntity) == currentItem->className) && (generateClassName(conditionObjectEntity) == currentItem->className2))
 			{
 				alreadyAdded = true;

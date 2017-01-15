@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,12 +56,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 	#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 	string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity);
 	void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName);
-	#endif		
+	#endif
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition * classDefinition, vector<NLCclassDefinition*> * classDefinitionSublist, int variableType);
 		bool findVariableInParentClass(NLCclassDefinition * classDefinition, string variableName, int variableType);
 	#endif
-	
+
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, vector<NLCitem*> * parameters);
 void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, vector<NLCitem*> * parameters, bool performChildActionDuplicateCheck);
@@ -69,4 +69,4 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 	bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLCitem*> * parameters);
 #endif
 
-#endif	
+#endif

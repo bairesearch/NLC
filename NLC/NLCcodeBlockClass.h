@@ -25,7 +25,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,9 +58,9 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY (3)			//context1->param1->param2PropertyList.push_back(param2);		//OLD2: context1.param1.param2PropertyList.addProperty(context2.param2);
 #define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION (4)			//context1->param1->param2param3ConditionList.insert(param2, param3);	//OLD2: context1.param1.param3ConditionList.addCondition(context3.param3, param2);
 #define NLC_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE (5)
-#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE (6)	
+#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE (6)
 #define NLC_CODEBLOCK_TYPE_ADD_PROPERTY (7)				//context1->param1->param2PropertyList.push_back(param2);
-#define NLC_CODEBLOCK_TYPE_ADD_CONDITION (8)				//context1->param1->param2param3ConditionList.insert(param2, param3);	
+#define NLC_CODEBLOCK_TYPE_ADD_CONDITION (8)				//context1->param1->param2param3ConditionList.insert(param2, param3);
 #define NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST (9)
 //#define NLC_CODEBLOCK_TYPE_CREATE_NEW_LOCAL_LIST_VARIABLE (9)
 #define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_LOCAL_LIST (10)		//param1instancePropertyList.push_back(param2);
@@ -102,14 +102,14 @@ public:
 
 	int codeBlockType;
 	vector<NLCitem*> parameters;
-	
+
 	/*
 	//used by language specific code generator (eg C++, java);
 	string codeBlockName; 	//eg "for"
 	string openingText;	//eg "for(...){"
 	string closingText; 	//eg "}";
 	*/
-	
+
 	NLCcodeblock * lowerLevel;
 	NLCcodeblock * next;
 };

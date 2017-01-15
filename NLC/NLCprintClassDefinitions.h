@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -45,13 +45,13 @@
 using namespace std;
 
 #include "NLCclassDefinitionClass.h"
-	
-bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code);	
+
+bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code);
 	void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
 		string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang);
 		string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang);
 		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 		string generateCodeConditionPairDefinitionText(NLCitem * currentItem, int progLang);
 		#endif
-			
+
 #endif

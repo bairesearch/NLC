@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f13b 17-April-2014
+ * Project Version: 1f13c 17-April-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -89,7 +89,7 @@ public:
 	NLCitem(string newName, int newItemType);
 	NLCitem(NLCitem * newItem);
 	~NLCitem(void);
-	
+
 	int itemType;
 	string className;	//eg dogClass
 	string instanceName;	//eg dog1
@@ -101,7 +101,7 @@ public:
 	bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;
 	#endif
 	vector<string> context;	//item context
-	
+
 	string className2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only
 };

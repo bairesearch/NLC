@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e5b 23-November-2013
+ * Project Version: 1e6a 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -109,34 +109,14 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						firstCodeBlockInSentence = currentCodeBlockInTree;	
 						#endif
 						
-						#ifdef NLPI_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
 						if(actionHasSubject)
 						{
-							if(!assumedToAlreadyHaveBeenDeclared(subjectEntity))
-							{
-								cout << "createCodeBlockAddNewListVariable: " << subjectEntity->entityName << endl;
-								currentCodeBlockInTree = createCodeBlockAddNewListVariable(currentCodeBlockInTree, subjectEntity, sentenceIndex);
-								generateObjectInitialisationsBasedOnPropertiesAndConditions(subjectEntity, &currentCodeBlockInTree, sentenceIndex);	
-								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-								generateObjectInitialisationsBasedOnSubstanceConcepts(subjectEntity, &currentCodeBlockInTree, sentenceIndex);
-								#endif
-							}
+							generateContextBlocksAndInitialiseParentIfNecessary(&currentCodeBlockInTree, subjectEntity, sentenceIndex);
 						}
 						if(actionHasObject)
 						{
-							if(!assumedToAlreadyHaveBeenDeclared(objectEntity))
-							{
-								cout << "createCodeBlockAddNewListVariable: " << objectEntity->entityName << endl;
-								currentCodeBlockInTree = createCodeBlockAddNewListVariable(currentCodeBlockInTree, objectEntity, sentenceIndex);
-								generateObjectInitialisationsBasedOnPropertiesAndConditions(objectEntity, &currentCodeBlockInTree, sentenceIndex);	
-								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-								generateObjectInitialisationsBasedOnSubstanceConcepts(objectEntity, &currentCodeBlockInTree, sentenceIndex);
-								#endif
-							}
+							generateContextBlocksAndInitialiseParentIfNecessary(&currentCodeBlockInTree, objectEntity, sentenceIndex);
 						}						
-						#endif
 					}
 					
 					if(actionHasObject)
@@ -280,6 +260,73 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 	
 }
 
+//added 1e6a
+bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex)
+{
+	bool result = false;
+	bool possibleContextParentFound = false;
+	
+	if(!(currentEntity->propertyNodeReverseList->empty()))
+	{
+		GIAentityNode * parentEntity = (currentEntity->propertyNodeReverseList->back())->entity;
+		if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
+		{
+			if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex))
+			{
+				result = true;
+				NLPIitem * propertyItem = new NLPIitem(currentEntity, NLPI_ITEM_TYPE_CLASS);
+				propertyItem->context.push_back(generateInstanceName(parentEntity));
+				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+				
+				//required to prevent generateObjectInitialisationsBasedOnPropertiesAndConditions() from writing property:
+				for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = parentEntity->propertyNodeList->begin(); propertyNodeListIterator < parentEntity->propertyNodeList->end(); propertyNodeListIterator++)
+				{
+					GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
+					GIAentityNode * propertyEntity = propertyConnection->entity;
+					if(propertyEntity == currentEntity)
+					{
+						propertyConnection->parsedForNLPIcodeBlocks = true;
+					}
+				}
+				parentEntity->parsedForNLPIcodeBlocks = true;
+			}
+		}
+		else
+		{
+			possibleContextParentFound = true;
+		}
+	}
+	else
+	{
+		if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
+		{
+			possibleContextParentFound = true;
+		}
+	}
+	
+	if(possibleContextParentFound)
+	{
+		result = true;
+		#ifdef NLPI_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
+		if(!assumedToAlreadyHaveBeenDeclared(currentEntity))
+		{
+			cout << "createCodeBlockAddNewListVariable: " << currentEntity->entityName << endl;
+			*currentCodeBlockInTree = createCodeBlockAddNewListVariable(*currentCodeBlockInTree, currentEntity, sentenceIndex);
+			generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex);	
+			#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+			//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+			generateObjectInitialisationsBasedOnSubstanceConcepts(currentEntity, currentCodeBlockInTree, sentenceIndex);
+			#endif
+		}
+		#endif		
+		NLPIitem * propertyItem = new NLPIitem(currentEntity, NLPI_ITEM_TYPE_CLASS);
+		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+	}
+	
+	return result;
+}	
+			
+
 
 NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * entity, NLPIitem ** item, int sentenceIndex, bool * requiredTempVar, int itemType)
 {
@@ -294,9 +341,9 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		*requiredTempVar = true;
 		
 		//for(all items in context){
-		NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);
-		entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);
-		currentCodeBlockInTree = createCodeBlockForPropertyList(currentCodeBlockInTree, entityClass);
+		//NLPIitem * entityClass = new NLPIitem(entity, NLPI_ITEM_TYPE_CLASS);					//removed 1e6a
+		//entityHasParent = getEntityContext(entity, &(entityClass->context), false, sentenceIndex, true);	//removed 1e6a
+		//currentCodeBlockInTree = createCodeBlockForPropertyList(currentCodeBlockInTree, entityClass);		//removed 1e6a
 		*item = new NLPIitem(entity, itemType);	//OLD: NLPI_ITEM_TYPE_TEMPVAR
 		//cout << "generateConditionBlocks, entity = " << entity->entityName << endl;
 		//cout << "!parsedForNLPIcodeBlocks, entity = " << entity->entityName << endl;
@@ -305,8 +352,8 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	}
 	else
 	{
-		*item = new NLPIitem(entity, itemType);	//OLD: NLPI_ITEM_TYPE_OBJECT
-		entityHasParent = getEntityContext(entity, &((*item)->context), false, sentenceIndex, true);
+		//*item = new NLPIitem(entity, itemType);	//OLD: NLPI_ITEM_TYPE_OBJECT
+		//entityHasParent = getEntityContext(entity, &((*item)->context), false, sentenceIndex, true);	//removed 1e6a
 		//cout << "entity = " << entity->entityName << endl;
 	}
 	return currentCodeBlockInTree;

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j18a 24-September-2014
+ * Project Version: 1j18b 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -79,6 +79,7 @@ public:
 	#endif
 	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
 	string sentenceOriginal;	//set for first parsable phrase only, or if no NLP parsable phrases
+	string sentenceContentsOriginal;
 	#endif
 	NLCsentence* next;
 

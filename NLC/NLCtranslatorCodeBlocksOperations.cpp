@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m5a 02-December-2014
+ * Project Version: 1m5b 02-December-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2092,6 +2092,9 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 				NOT: Tom's boat is red. Tom's boat is new
 				*/
 				generatedContextForChild = true;
+				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
+				addIntermediaryImplicitlyDeclaredEntityToLocalList(currentCodeBlockInTree, childEntity);
+				#endif
 				childEntity->NLClocalListVariableHasBeenInitialised = true;	//added 1m4b
 			}
 		}

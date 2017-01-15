@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n11a 27-January-2015
+ * Project Version: 1n11b 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -140,7 +140,7 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 			GIAentityNode* conditionEntity = (*entityIter);
 			if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, true))	//could be set to false instead
 			{
-				//because GIA Sentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition):
+				//because GIA GIAsentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition):
 				for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
 				{
 					GIAentityNode* entity2 = (*entityIter);
@@ -151,7 +151,7 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 							#ifdef NLC_USE_PREPROCESSOR
 							if(entity2->entityIndexTemp == 1)	//NLP parsable phrase: "every chicken..."
 							#else
-							if(entity2->entityIndexTemp == 2)	//Sentence: "For every chicken..."
+							if(entity2->entityIndexTemp == 2)	//GIAsentence: "For every chicken..."
 							#endif
 							{
 								//eg "for each chicken" / "for every chicken" / "while each chicken" / "while every chicken"
@@ -344,7 +344,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*>* entityN
 						foundLogicalConditionOperation = true;
 					}
 					#else
-					//because GIA Sentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition):
+					//because GIA GIAsentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition):
 					for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
 					{
 						GIAentityNode* entity2 = (*entityIter);

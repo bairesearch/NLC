@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i1b 19-August-2014
+ * Project Version: 1h11b 20-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -86,32 +86,29 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_INT_VARIABLE (26)
 #define NLC_CODEBLOCK_TYPE_INCREMENT_INT_VARIABLE (27)
 #define NLC_CODEBLOCK_TYPE_COMMENT_SINGLE_LINE (28)
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
-	#define NLC_CODEBLOCK_TYPE_REASSIGN_ITER (29)
-#endif
 
 //containers:
-#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (30)		//forall(context1.param1PropertyList){
-#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (31)	//forall(param1instance){
-#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (32)		//forall(context1.param1param2ConditionList){
-#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (33)
-#define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (34)			//main(){
+#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (40)		//forall(context1.param1PropertyList){
+#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (41)	//forall(param1instance){
+#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (42)		//forall(context1.param1param2ConditionList){
+#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (43)
+#define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (44)			//main(){
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 #ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (35)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (36)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (37)		//while(!(context1->param1PropertyList.empty())){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (38)		//while(!(context1->param1param2ConditionList.empty())){
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (45)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (46)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (47)		//while(!(context1->param1PropertyList.empty())){
+	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (48)		//while(!(context1->param1param2ConditionList.empty())){
 #endif
 #endif
-#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (39)
-#define NLC_CODEBLOCK_TYPE_ELSE (40)
-#define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (41)
-#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (42)
+#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (49)
+#define NLC_CODEBLOCK_TYPE_ELSE (50)
+#define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (51)
+#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (52)
 #ifdef NLC_PREPROCESSOR_MATH
-	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (43)
+	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (53)
 #endif
-#define NLC_CODEBLOCK_TYPE_WHILE (44)
+#define NLC_CODEBLOCK_TYPE_WHILE (54)
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 /*
@@ -135,9 +132,6 @@ public:
 	NLClogicalConditionConjunctionVariables(void);
 	~NLClogicalConditionConjunctionVariables(void);
 
-	#ifdef NLC_PARSE_CONTEXT_CHILDREN
-	bool checkSameSentenceConnection;
-	#endif
 	int logicalOperation;
 	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	bool negative;
@@ -218,12 +212,7 @@ NLCcodeblock * createCodeBlock(NLCcodeblock * currentCodeBlockInTree, int codeBl
 NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree);
 
 bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed);
-
-/*
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection);
-#endif
-*/	
+	
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks);
 	bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks);
 
@@ -272,10 +261,6 @@ NLCcodeblock * createCodeBlockDeclareNewIntVar(NLCcodeblock * currentCodeBlockIn
 NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInTree, string intVariableName);
 
 NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockInTree, string comment);
-
-#ifdef NLC_PARSE_CONTEXT_CHILDREN
-NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-#endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);
 

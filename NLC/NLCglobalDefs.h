@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i1b 19-August-2014
+ * Project Version: 1h11b 20-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,8 +38,6 @@
 
 #include "SHAREDglobalDefs.h"
 
-
-#define NLC_PARSE_CONTEXT_CHILDREN
 
 #define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS
@@ -262,6 +260,8 @@
 	#endif
 #endif
 
+//#define NLC_DEBUG_PARSE_CONTEXT
+//#define NLC_DEBUG_PARSE_CONTEXT2
 //#define NLC_PREPROCESSOR_PRINT_OUTPUT
 //#define NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 //#define NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -269,7 +269,6 @@
 //#define NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
 //#define NLC_DEBUG_PREPROCESSOR_MATH
 //#define NLC_DEBUG_PREPROCESSOR
-//#define NLC_DEBUG_PARSE_CONTEXT
 //#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 //#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES

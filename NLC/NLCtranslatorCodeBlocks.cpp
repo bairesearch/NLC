@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k16a 24-October-2014
+ * Project Version: 1k16b 24-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -529,20 +529,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 					}
 				}
 			}
-			
-			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-			if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
-			{
-				*currentCodeBlockInTree = createCodeBlocksDeclareContextList(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->indentation+1);
-				(*currentCodeBlockInTree)->isLogicalCondition = true;
-				(*currentCodeBlockInTree)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
-				if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-				{
-					//must create a new code block to embed for statment 
-					*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);
-				}
-			}
-			#endif
+		
 			if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 			{
 				currentCodeBlockInTreeAtBaseLevel = (*currentCodeBlockInTree);
@@ -557,6 +544,11 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 			cout << "generateCodeBlocksFromMathText() error: illegal firstNLCsentenceInFullSentence->logicalConditionOperator" << endl;
 			exit(0);
 		}
+		
+		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+		(*currentCodeBlockInTree)->isLogicalCondition = true;
+		(*currentCodeBlockInTree)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+		#endif
 	}
 	else
 	{
@@ -598,6 +590,10 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 		{
 			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
 		}
+		
+		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+		*currentCodeBlockInTree = createCodeBlocksDeclareContextList(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->indentation+1);
+		#endif
 		
 		if(firstNLCsentenceInFullSentence->next != NULL)
 		{

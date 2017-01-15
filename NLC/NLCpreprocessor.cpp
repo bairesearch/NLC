@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j18b 24-September-2014
+ * Project Version: 1j18c 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -210,7 +210,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 
 						}
 						#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-						currentNLCsentenceInList->sentenceContentsOriginal = sentenceContents;
+						currentNLCsentenceInList->sentenceContentsOriginal = removePrependingWhiteSpace(sentenceContents);
 						#endif
 						//cout << "sentenceContents = " << sentenceContents << endl;
 
@@ -495,9 +495,25 @@ bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * lo
 	}
 	return logicalConditionOperatorFound;
 }
+
+string removePrependingWhiteSpace(string sentenceContents)
+{	
+	//this function is used in case the current sentence occurs after a previous sentence on the same line (ie after ". ")
+	if(sentenceContents.length() > 0)
+	{
+		if(sentenceContents[0] == CHAR_SPACE)
+		{
+			sentenceContents = sentenceContents.substr(1, sentenceContents.length()-1);
+		}
+	}
+	
+	return sentenceContents;
+}
 	
 
 #endif
+
+
 
 
 

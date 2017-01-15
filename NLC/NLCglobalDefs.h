@@ -38,7 +38,7 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
-//#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
+#define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
 #ifndef NLC_USE_LIBRARY_STANDARD
 	#define NLC_USE_LIBRARY_USER
 #endif

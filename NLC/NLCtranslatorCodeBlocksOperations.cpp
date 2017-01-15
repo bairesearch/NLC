@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l7b 03-November-2014
+ * Project Version: 1l7c 03-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -347,8 +347,9 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 		}
 
 		string parentNameIrrelevant = parentEntity->entityName;
-		if(generateContextForChildEntity(parentEntity, currentEntity, currentCodeBlockInTree, sentenceIndex, parentNameIrrelevant))
+		if(generateContextForChildEntity(NULL, currentEntity, currentCodeBlockInTree, sentenceIndex, parentNameIrrelevant))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetDefiniteUniqueParent()
 		{
+			cout << "generateContextForChildEntity pass parentEntity = " << currentEntity->entityName << endl;
 			result = true;
 		}
 	}
@@ -1155,7 +1156,6 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 
 
 
-//static int haltForDebug = false;
 
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * entity, int sentenceIndex)

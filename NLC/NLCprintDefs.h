@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2a 12-December-2016
+ * Project Version: 1w2c 12-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -562,11 +562,11 @@ string generateCodeIterName(string iterIndexString, int progLang);
 string generateCodeEntityInverseConditionText(NLCitem* param1, int progLang);
 #endif
 
-#ifdef NLC_API
+
 string generateDefinitionText(string variableType, string variableName);
 string generateCodeSetText(string variableNameToSet, string variableNameValue, int progLang);
 string generateCodeReferenceText(string variableName, string component, int progLang);
-#endif
+
 
 string generateCodeIfVarAequalsVarB(string varA, string varB, int progLang);
 

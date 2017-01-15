@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a3b 03-October-2013
+ * Project Version: 1b1c 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -132,7 +132,12 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			string targetName = targetClassDefinition->name;
-			string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParameters[progLang] + progLangEndLine[progLang];
+			string functionArguments = "";
+			if(targetClassDefinition->actionObjectClassName != "")
+			{
+				functionArguments = targetClassDefinition->actionObjectClassName + progLangPointer[progLang] + " " + targetClassDefinition->actionObjectInstanceName;
+			}
+			string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 			printLine(localListDeclarationText, 1, code);	
 		}
 						

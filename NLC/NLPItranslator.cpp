@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a3b 03-October-2013
+ * Project Version: 1b1c 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -333,9 +333,17 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							cout << "error generateClassHeirarchy(): condition does not have object" << endl;
 						}
 					}
-
-					string targetName = generateClassName(targetEntity);
-
+					
+					string targetName = "";
+					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+					{
+						targetName = generateInstanceName(targetEntity);
+					}
+					else
+					{
+						targetName = generateClassName(targetEntity);
+					}
+					
 					bool foundTargetClassDefinition = false;
 					NLPIclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
 					if(!foundTargetClassDefinition)
@@ -387,6 +395,13 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->functionList.push_back(targetClassDefinition);
+
+							if(!(targetEntity->actionObjectEntity->empty()))
+							{
+								GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
+								targetClassDefinition->actionObjectClassName = generateClassName(actionObject);
+								targetClassDefinition->actionObjectInstanceName = generateInstanceName(actionObject);
+							}
 						}
 					}
 				}

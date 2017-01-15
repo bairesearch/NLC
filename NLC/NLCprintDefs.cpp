@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9c 25-January-2015
+ * Project Version: 1n9d 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -211,6 +211,10 @@ string generateGIAconditionSubjectListName()
 	return conditionListName;
 }
 #else
+string generateConditionListName(NLCitem * conditionItem, NLCitem * conditionObjectItem)
+{
+	return generateConditionListName(conditionItem->className, conditionObjectItem->className);
+}
 string generateConditionListName(string conditionClassName, string conditionObjectClassName)
 {
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS

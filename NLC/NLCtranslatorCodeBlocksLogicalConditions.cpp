@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9c 25-January-2015
+ * Project Version: 1n9d 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -790,8 +790,6 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*> * e
 		{		
 			if((entity->isSubstance) && (!entity->isSubstanceConcept))
 			{
-				cout << "1 checkIfPhraseContainsSubstanceWithDefinitionLink: = " << entity->entityName << endl;
-
 				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
 				{
 					GIAentityConnection * definitionConnection = *iter;
@@ -812,9 +810,9 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*> * e
 										phraseContainsSubstanceWithDefinitionLink = true;
 										*logicalConditionOperationObject = entity;
 										*definitionEntity = definitionEntityTemp;
-										cout << "checkIfPhraseContainsSubstanceWithDefinitionLink: = " << entity->entityName << endl;
-										cout << "entity = " << entity->entityName << endl;
-										cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
+										//cout << "checkIfPhraseContainsSubstanceWithDefinitionLink: = " << entity->entityName << endl;
+										//cout << "entity = " << entity->entityName << endl;
+										//cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
 									}
 								}
 								else

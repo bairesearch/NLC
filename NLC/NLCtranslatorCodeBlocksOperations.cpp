@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q9a 20-August-2015
+ * Project Version: 1q9b 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -346,7 +346,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 					*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 					*lastCodeBlockInTree = *currentCodeBlockInTree;
 					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-					cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements{}: contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance << endl;
+					cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements{}: contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance->entityName << endl;
 					#endif
 				#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
 				}

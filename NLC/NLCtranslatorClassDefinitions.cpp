@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q9a 20-August-2015
+ * Project Version: 1q9b 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1064,8 +1064,6 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 			NLCclassDefinition* targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
 			string targetName = targetClassDefinition->name;
-			//cout << "1 targetName = " << targetName << endl;
-			//cout << "1 variableName = " << variableName << endl;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -1079,8 +1077,6 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 		{
 			NLCclassDefinition* targetClassDefinition = *localListIter;
 			string targetName = targetClassDefinition->name;
-			//cout << "2 targetName = " << targetName << endl;
-			//cout << "2 variableName = " << variableName << endl;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -1093,8 +1089,6 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 		{
 			NLCclassDefinition* targetClassDefinition = *localListIter;
 			string targetName = targetClassDefinition->name;
-			//cout << "3 targetName = " << targetName << endl;
-			//cout << "3 variableName = " << variableName << endl;
 			if(targetName == variableName)
 			{
 				foundVariable = true;

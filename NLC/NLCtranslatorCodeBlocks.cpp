@@ -145,7 +145,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 							if(conditionObject->isConcept)
 							{
-								cout << "generateCodeBlocks() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled.
+								cout << "generateCodeBlocks() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "conditionObject = " << conditionObject->entityName;
 							}
 							else if(conditionObject->isSubstanceConcept)
@@ -202,7 +202,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 								#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
 								if(conditionSubject->isConcept)
 								{
-									cout << "generateCodeBlocks() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled.
+									cout << "generateCodeBlocks() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 									cout << "conditionSubject = " << conditionSubject->entityName;
 								}
 								else if(conditionSubject->isSubstanceConcept)

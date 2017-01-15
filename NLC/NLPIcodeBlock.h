@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1e 15-September-2013
+ * Project Version: 1a1f 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -50,12 +50,12 @@ using namespace std;
 
 #define NLPI_CODEBLOCK_TYPE_UNDEFINED (-1)
 #define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (2)	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
-#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)		//context1.param1.param2propertyList.push_back(context2.param2);
-#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)		//context1.param1.param3stateList.push_back(context3.param3, param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)		//context1.param1.param2PropertyList.addProperty(context2.param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)		//context1.param1.param3ConditionList.addCondition(context3.param3, param2);
 #define NLPI_CODEBLOCK_TYPE_FOR (5)			//forall(context.param1){
 #define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (6)		//main(){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)	//if(context.param1->has(param2)){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)	//if(param2(context.param1, context.param3)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)	//if(context1.param1.param2PropertyList.findProperty(context2.param2)){			//OLD: if(context.param1->has(param2)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)	//if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR)
 
 #define NLPI_PROGRAMMING_LANGUAGE_CPP (0)
@@ -67,6 +67,8 @@ using namespace std;
 #define NLPI_PROGRAMMING_LANGUAGE_PYTHON (6)
 #define NLPI_PROGRAMMING_LANGUAGE_DEFAULT (NLPI_PROGRAMMING_LANGUAGE_CPP)
 #define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)
+
+#define NLPI_ITEM_INSTANCE_ID_UNDEFINED (-1)
 
 static string progLangOpenBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{", "{", "{", "{", "{", "{", "{"};
 static string progLangCloseBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"}", "}", "}", "}", "}", "}", "}"};
@@ -106,6 +108,11 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 #define NLPI_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
 #define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
 #define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
+#define NLPI_ITEM_TYPE_PROPERTYLISTFINDFUNCTION "findProperty"
+#define NLPI_ITEM_TYPE_CONDITIONLISTFINDFUNCTION "findCondition"
+#define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"
+#define NLPI_ITEM_TYPE_CONDITIONLISTADDFUNCTION "addCondition"
+#define NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 
 class NLPIitem
 {
@@ -117,7 +124,8 @@ public:
 	~NLPIitem(void);
 
 	int itemType;
-	string name;
+	string name;		//eg dog
+	string instanceName;	//eg dog1
 	vector<string> context;	//item context
 };
 
@@ -143,7 +151,7 @@ public:
 	NLPIcodeblock * next;
 };
 
-string generateItemName(GIAentityNode * entity, int itemType);
+//string generateItemName(GIAentityNode * entity, int itemType);
 string convertLongToString(long number);
 
 NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem);
@@ -160,7 +168,7 @@ NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockI
 NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType);
 NLPIcodeblock * createLowerLevel(NLPIcodeblock * currentCodeBlockInTree);
 
-bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject);
+bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed);
 string generateStringFromContextVector(vector<string> * context, int progLang);
 
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex);

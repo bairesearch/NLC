@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n6b 20-January-2015
+ * Project Version: 1n7a 21-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -859,6 +859,14 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 		result = true;
 	}
 	#endif
+	
+	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
+	//if object near a car that is an apple /if object has a car that is an apple
+	if(createCodeBlockForConnectionType(GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS, currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
+	{
+		result = true;
+	}	
+	#endif
 
 	/*
 	//if object near car that is a flyingCar
@@ -947,6 +955,16 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 						{
 							if(createCodeBlockForGivenActionIncoming(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
 							{
+								resultTemp = true;
+							}
+						}
+						#endif
+						#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
+						else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+						{
+							if(createCodeBlockForGivenDefinition(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
+							{
+								//cout << "createCodeBlockForGivenDefinition: parentInstanceName = " << parentInstanceName << ", targetEntity = " << targetEntity->entityName << endl;
 								resultTemp = true;
 							}
 						}
@@ -1196,6 +1214,27 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTre
 		#endif
 	}
 							
+	return result;
+}
+#endif
+#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
+bool createCodeBlockForGivenDefinition(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* definitionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
+{
+	bool result = true;
+	
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	definitionEntity->NLCcontextGenerated = true;
+	#endif
+	
+	*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction1(*currentCodeBlockInTree, parentInstanceName, definitionEntity->entityName);
+					
+	#ifdef NLC_DEBUG
+	//cout << "createCodeBlockForGivenDefinition(): definitionEntity = " << definitionEntity->entityName << endl;
+	//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, definitionEntity->entityName);
+	#endif
+	
+	createCodeBlockForStatements(currentCodeBlockInTree, parentInstanceName, definitionEntity, sentenceIndex, generateContextBlocksVariables);	//creates for statements (generates context) according to the properties/conditions of the substance concept (assuming it is a specific concept eg "blue" in "if the boat is a blue chicken")
+					
 	return result;
 }
 #endif

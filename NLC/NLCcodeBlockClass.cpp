@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n6b 20-January-2015
+ * Project Version: 1n7a 21-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2489,6 +2489,18 @@ NLCcodeblock * createCodeBlockSetTempVariable(NLCcodeblock * currentCodeBlockInT
 #endif
 */
 #ifdef NLC_SUPPORT_REDEFINITIONS
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock * currentCodeBlockInTree, string objectInstanceName, string classNameToFind)
+{
+	NLCitem * objectItem = new NLCitem("object", NLC_ITEM_TYPE_OBJECT);
+	objectItem->instanceName = objectInstanceName;
+	currentCodeBlockInTree->parameters.push_back(objectItem);
+	
+	NLCitem * classNameToFindItem = new NLCitem(classNameToFind, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(classNameToFindItem);
+		
+	int codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
 NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind)
 {
 	NLCitem * objectItem = new NLCitem(object, NLC_ITEM_TYPE_OBJECT);

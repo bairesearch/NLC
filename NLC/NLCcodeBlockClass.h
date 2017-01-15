@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n6b 20-January-2015
+ * Project Version: 1n7a 21-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -542,6 +542,7 @@ GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity);
 #endif
 
 #ifdef NLC_SUPPORT_REDEFINITIONS
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock * currentCodeBlockInTree, string objectInstanceName, string classNameToFind);
 NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
 NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
 NLCcodeblock * createCodeConvertParentToChildClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* parentEntity, GIAentityNode* childEntity);

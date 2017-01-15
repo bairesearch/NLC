@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q5c 19-August-2015
+ * Project Version: 1q5d 19-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1q5c 19-August-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1q5d 19-August-2015" << endl;
 			exit(1);
 		}
 
@@ -655,8 +655,8 @@ int main(int argc, char** argv)
 	//not currently used;
 	if(!parseNLCrulesXMLfile())
 	{
-		cout << "error: NLCrules.xml file not detected" << endl;
-		exit(0);
+		cout << "warning: NLCrules.xml file not detected" << endl;
+		//exit(0);
 	}
 
 	#ifndef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT

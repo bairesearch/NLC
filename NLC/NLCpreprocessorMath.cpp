@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12d 27-July-2015
+ * Project Version: 1p12e 27-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -523,13 +523,25 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		(*sentenceIndex) = (*sentenceIndex) + 1;
 	}
 
-	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+	
 	//remove all numbers from mathTextVariableNames - added 1l7a
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end();)
 	{
 		string mathTextVariableName = *iter;
-		bool variableNameIsNumber = isStringNumberPreprocessorMath(mathTextVariableName);
-		if(variableNameIsNumber)
+		bool variableNameIsIllegal = false;
+		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
+		if(isStringNumberPreprocessorMath(mathTextVariableName))
+		{
+			variableNameIsIllegal = true;
+		}
+		#endif
+		#ifdef NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_FUNCTIONS_SUPPORTED_BY_TARGET_LANGUAGE
+		if(textInTextArray(mathTextVariableName, preprocessorMathTextFunctionsSupportedByTargetLanguage, NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_FUNCTIONS_SUPPORTED_BY_TARGET_LANGUAGE_NUMBER_OF_TYPES))
+		{
+			variableNameIsIllegal = true;
+		}
+		#endif
+		if(variableNameIsIllegal)
 		{
 			iter = firstNLCsentenceInFullSentence->mathTextVariableNames.erase(iter);
 		}
@@ -538,7 +550,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			iter++;
 		}
 	}
-	#endif
+	
 	
 	#ifdef NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES
 	//if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))

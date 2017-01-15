@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12d 27-July-2015
+ * Project Version: 1p12e 27-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,6 +52,11 @@
 		#define NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES	//effectively disabled 1h4b, reactivated 1p12c
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES
 			#define NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_VARIABLES_AT_END_OF_LINE //1p12d
+		#endif
+		#define NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_FUNCTIONS_SUPPORTED_BY_TARGET_LANGUAGE	//1p12e
+		#ifdef NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_FUNCTIONS_SUPPORTED_BY_TARGET_LANGUAGE
+			#define NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_FUNCTIONS_SUPPORTED_BY_TARGET_LANGUAGE_NUMBER_OF_TYPES (7)
+			static string preprocessorMathTextFunctionsSupportedByTargetLanguage[NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_FUNCTIONS_SUPPORTED_BY_TARGET_LANGUAGE_NUMBER_OF_TYPES] = {"sin", "cos", "tan", "exp", "log"};	//these need to be made dependent on target progLang (and declared in PrintDefs)
 		#endif
 	//#endif
 	//#ifdef NLC_USE_LIBRARY	//has not been defined yet

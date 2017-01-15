@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e2d 22-November-2013
+ * Project Version: 1e2e 22-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -121,6 +121,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						currentCodeBlockInTree->parameters.push_back(functionItem);
 						currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE);	
 						generateObjectInitialisationsBasedOnPropertiesAndConditions(actionEntity, &currentCodeBlockInTree, sentenceIndex);
+						generateObjectInitialisationsBasedOnSubstanceConcepts(actionEntity, &currentCodeBlockInTree, sentenceIndex);
 						firstCodeBlockInSentence = currentCodeBlockInTree;	
 						#endif
 					}
@@ -453,7 +454,7 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode * entit
 		//{
 		GIAentityNode* definitionEntity = definitionConnection->entity;
 		//check the definition is a substance concept
-		if(definitionEntity->isSubstanceConcept)
+		if((definitionEntity->isSubstanceConcept) || (definitionEntity->isActionConcept))	//added (definitionEntity->isActionConcept)  changed 1e2e
 		{
 			//cout << "isSubstanceConcept" << endl;
 			definitionConnection->parsedForNLPIcodeBlocks = true;

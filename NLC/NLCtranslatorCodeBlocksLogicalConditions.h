@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,22 +56,22 @@ using namespace std;
 
 
 #ifdef NLC_PREPROCESSOR_MATH
-bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * firstNLCsentenceInFullSentence, string NLCfunctionName);
-	bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * currentFullSentence, NLCsentence * parsablePhrase, int phraseIndex, int caseIndex);
+bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, NLCsentence* firstNLCsentenceInFullSentence, string NLCfunctionName);
+	bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, NLCsentence* currentFullSentence, NLCsentence* parsablePhrase, int phraseIndex, int caseIndex);
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
-		bool checkIfPhraseContainsAction(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject);
+		bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject);
 		#endif
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
-		bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject);
+		bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject);
 		#endif
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-		bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject, GIAentityNode ** definitionEntity);
+		bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, GIAentityNode** logicalConditionOperationObject, GIAentityNode** definitionEntity);
 		#endif
-		void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex);
-	bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * currentFullSentence, NLCsentence * parsablePhrase, int phraseIndex, NLCcodeblock ** currentCodeBlockInTreeAtBaseLevel, NLCsentence * firstNLCsentenceInFullSentence);
+		void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex);
+	bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, NLCsentence* currentFullSentence, NLCsentence* parsablePhrase, int phraseIndex, NLCcodeblock** currentCodeBlockInTreeAtBaseLevel, NLCsentence* firstNLCsentenceInFullSentence);
 #endif
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-bool findAndSetDummyNumericalValueForReplacement(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, int dummyNumericalValue, string numericalVariableName);
+bool findAndSetDummyNumericalValueForReplacement(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, int dummyNumericalValue, string numericalVariableName);
 #endif
 /*
 #ifdef NLC_PREPROCESSOR_MATH

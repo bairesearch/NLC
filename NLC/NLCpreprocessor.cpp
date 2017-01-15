@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,7 +49,7 @@
 
 
 #ifdef NLC_USE_PREPROCESSOR
-bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName)
+bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName)
 {
 	*numberOfInputFilesInList = 1;
 	
@@ -65,8 +65,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	{
 		setCurrentDirectory(tempFolderCharStar);	//save output files to temp folder
 
-		NLCfunction * currentNLCfunctionInList = firstNLCfunctionInList;
-		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+		NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		string currentLine;
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 		*detectedFunctions = false;
@@ -98,7 +98,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
 					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-					*numberOfInputFilesInList = *numberOfInputFilesInList+1;
+					*numberOfInputFilesInList =* numberOfInputFilesInList+1;
 					//create new function file based on current text
 				}
 				else
@@ -435,7 +435,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	}
 	
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-	NLCsentence * currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
+	NLCsentence* currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentNLCsentenceInList->next != NULL)
 	{
 		for(int i=0;i<currentNLCsentenceInList->indentation; i++)
@@ -466,7 +466,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	
 
 
-void extractIndentationFromCurrentLine(string * currentLine, int * currentIndentation, string * lineContents, string * indentationContents)
+void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents)
 {
 	int i = 0; 
 	while((i < currentLine->length()) && (isWhiteSpace((*currentLine)[i]) || (*currentLine)[i] == NLC_PREPROCESSOR_INDENTATION_CHAR))	//in case NLC_PREPROCESSOR_INDENTATION_CHAR is not a form of white space
@@ -474,7 +474,7 @@ void extractIndentationFromCurrentLine(string * currentLine, int * currentIndent
 		char c = (*currentLine)[i];
 		if(c == NLC_PREPROCESSOR_INDENTATION_CHAR)
 		{
-			*currentIndentation = *currentIndentation + 1;
+			*currentIndentation =* currentIndentation + 1;
 		}
 		i++;
 	}
@@ -483,7 +483,7 @@ void extractIndentationFromCurrentLine(string * currentLine, int * currentIndent
 }
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-bool detectFunctionHeader(string * lineContents)
+bool detectFunctionHeader(string* lineContents)
 {
 	bool functionHeaderFound = false;
 	int index = lineContents->find(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING));
@@ -495,7 +495,7 @@ bool detectFunctionHeader(string * lineContents)
 	}
 	return functionHeaderFound;
 }
-string getFunctionNameFromFunctionHeader(string * lineContents)
+string getFunctionNameFromFunctionHeader(string* lineContents)
 {
 	string functionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
 	//cout << "getFunctionNameFromFunctionHeader(): functionName = " << functionName << endl; 
@@ -510,9 +510,9 @@ string generateNLCfunctionFileName(string functionName)
 #endif
 
 
-bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * logicalConditionOperator)
+bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logicalConditionOperator)
 {
-	//cout << "detectLogicalConditionOperatorAtStartOfLine() lineContents = " << *lineContents << endl;
+	//cout << "detectLogicalConditionOperatorAtStartOfLine() lineContents = " <<* lineContents << endl;
 
 	*logicalConditionOperator = INT_DEFAULT_VALUE;
 	bool logicalConditionOperatorFound = false;

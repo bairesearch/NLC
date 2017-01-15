@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,27 +50,27 @@ using namespace std;
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
 
-bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
-	bool generateClassHeirarchyCondition(NLCclassDefinition * classDefinition, NLCclassDefinition * targetClassDefinition, GIAentityNode * targetEntity);
+bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
+	bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition, GIAentityNode* targetEntity);
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
+bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
 #endif	
 	bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode);
 	bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity);
 	#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-	string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity);
-		void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEntity, string * substanceConceptClassName);
+	string generateSubstanceConceptClassName(GIAentityNode* substanceConceptEntity);
+		void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEntity, string* substanceConceptClassName);
 	#endif
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
-	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition * classDefinition, vector<NLCclassDefinition*> * classDefinitionSublist, int variableType);
-		bool findVariableInParentClass(NLCclassDefinition * classDefinition, string variableName, int variableType);
+	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition* classDefinition, vector<NLCclassDefinition*>* classDefinitionSublist, int variableType);
+		bool findVariableInParentClass(NLCclassDefinition* classDefinition, string variableName, int variableType);
 	#endif
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, vector<NLCitem*> * parameters);
-void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, vector<NLCitem*> * parameters, bool performChildActionDuplicateCheck);
-	bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLCitem*> * parameters);
-	bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLCitem*> * parameters);
+void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode* actionEntity, vector<NLCitem*>* parameters);
+void generateFunctionPropertyConditionArguments(GIAentityNode* actionEntity, vector<NLCitem*>* parameters, bool performChildActionDuplicateCheck);
+	bool checkDuplicateProperty(GIAentityNode* propertyEntity, vector<NLCitem*>* parameters);
+	bool checkDuplicateCondition(GIAentityNode* conditionEntity, vector<NLCitem*>* parameters);
 #endif
 
 #endif

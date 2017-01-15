@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,25 +55,25 @@ using namespace std;
 //#endif
 
 
-bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList);
+bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList);
 	#ifdef NLC_MARK_ACTION_SUBJECT_OBJECT_INDEFINITE_ENTITY_ACTIONS_AS_NOT_SAME_REFERENCE_SET
-	bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex);
+	bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex);
 	#endif
-	bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList);	//added 1g8a 11-July-2014
+	bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList);	//added 1g8a 11-July-2014
 		bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNode* entityNode);
-		bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * entity, NLCsentence * currentNLCsentenceInList);
-	bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList);
-	bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName);
+		bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, NLCsentence* currentNLCsentenceInList);
+	bool generateCodeBlocksPart3actions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList);
+	bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName);
 	#ifdef NLC_SUPPORT_REDEFINITIONS
-	bool generateCodeBlocksPart5redefinitions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName);
+	bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName);
 	#endif
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	bool clearContextGeneratedVariable(vector<GIAentityNode*> * entityNodesActiveListComplete);
+	bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveListComplete);
 	#endif
 
 	#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
-	bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex);
+	bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex);
 	#endif
 	
 #endif

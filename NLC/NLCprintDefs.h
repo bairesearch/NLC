@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -235,7 +235,7 @@ static string progLangArrayInitialisationClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAG
 
 static string progLangMathPlus[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" + ", " + ", " + ", " + ", " + ", " + ", " + "};
 static string progLangMathMinus[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" - ", " - ", " - ", " - ", " - ", " - ", " - "};
-static string progLangMathMultiply[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" * ", " * ", " * ", " * ", " * ", " * ", " * "};
+static string progLangMathMultiply[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"* ", "* ", "* ", "* ", "* ", "* ", "* "};
 static string progLangMathDivide[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" / ", " / ", " / ", " / ", " / ", " / ", " / "};
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
@@ -317,8 +317,8 @@ static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] =
 #endif
 
 
-void printLine(string command, int level, string * code);
-string generatePropertyListName(NLCitem * item);
+void printLine(string command, int level, string* code);
+string generatePropertyListName(NLCitem* item);
 #ifdef NLC_NONOO
 string generatePropertyListName(string propertyClassName);	//backwards compatibility wrapper only
 string generatePropertyListName();
@@ -341,8 +341,8 @@ string generateActionIncomingListName(string actionClassName);
 string generateActionSubjectListName(string actionSubjectClassName);
 string generateActionObjectListName(string actionObjectClassName);
 #endif
-string generateLocalListName(NLCitem * item);
-string generateEntityListName(NLCitem * entityParam);	//added 1i6a
+string generateLocalListName(NLCitem* item);
+string generateEntityListName(NLCitem* entityParam);	//added 1i6a
 string generateEntityListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
 #ifdef NLC_NONOO
@@ -353,17 +353,17 @@ string generateGIAconditionObjectListName();
 string generateGIAincomingConditionListName();
 string generateGIAconditionSubjectListName();
 #else
-string generateConditionListName(NLCitem * conditionItem, NLCitem * conditionObjectItem);
+string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem);
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
 string generateCodeConditionPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
-string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string> * conditionContext, int progLang);
+string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string>* conditionContext, int progLang);
 #endif
-	string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
-		string generateStringFromContextVector(vector<string> * context, int progLang);
+	string generateInstanceNameWithContext(string instanceName, vector<string>* context, int progLang);
+		string generateStringFromContextVector(vector<string>* context, int progLang);
 		
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
-string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
+string generateCodeEntityListDefinitionText(NLCitem* entityParam, int progLang);
 string generateCodeEntityListDefinitionText(string className, string instanceName, int progLang);
 	#ifdef NLC_NONOO
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//backwards compatibility wrapper only
@@ -375,9 +375,9 @@ string generateCodeEntityListDefinitionText(string className, string instanceNam
 	string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
 	#endif
 	#endif
-string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang);
+string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int progLang);
 	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
-string generateCodeGenericListDefinitionText(NLCitem * entityParam, string genericListAppendName, int progLang);
+string generateCodeGenericListDefinitionText(NLCitem* entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	#ifdef NLC_NONOO
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//backwards compatibility wrapper only
@@ -387,26 +387,26 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 	string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang);
 	#endif
 
-void generateCodeAddConditionAndObjectEntityToList(NLCitem * param1, NLCitem * param2, NLCitem * param3, int progLang, string * code, int level);
-void generateCodeAddPropertyEntityToList(NLCitem * param1, NLCitem * param2, int progLang, string * code, int level);
+void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
+void generateCodeAddPropertyEntityToList(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
 	
 
 #ifdef NLC_NONOO
 string generateGIAentityName();
-string generateCodeEntityNameTestText(NLCitem * param, int progLang);
+string generateCodeEntityNameTestText(NLCitem* param, int progLang);
 #endif
 
-string generateCodeNewTempEntity(NLCitem * param, int progLang);
+string generateCodeNewTempEntity(NLCitem* param, int progLang);
 string generateCodeNewTempEntity(string className, string instanceName, int progLang);	//not used
-	string generateTempEntityDeclaration(NLCitem * param, int progLang);
-		string generateTempEntityName(NLCitem * param);
-		string generateTempEntityClassName(NLCitem * param);
+	string generateTempEntityDeclaration(NLCitem* param, int progLang);
+		string generateTempEntityName(NLCitem* param);
+		string generateTempEntityClassName(NLCitem* param);
 		string generateTempEntityDeclaration(string className, string instanceName, int progLang);	//not used
 
 
 /*
-string generateCodeSetTempEntity(NLCitem * param, NLCitem * param2, int progLang);
-string generateTempEntityDeclarationSetToNull(NLCitem * param, NLCitem * param2, int progLang);
+string generateCodeSetTempEntity(NLCitem* param, NLCitem* param2, int progLang);
+string generateTempEntityDeclarationSetToNull(NLCitem* param, NLCitem* param2, int progLang);
 */
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);

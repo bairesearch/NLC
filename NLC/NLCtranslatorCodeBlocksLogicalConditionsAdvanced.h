@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,8 +58,8 @@ using namespace std;
 #ifdef NLC_USE_PREPROCESSOR
 void initialiseLogicalConditionLevelRecordArray(bool newUseNLCpreprocessor);
 bool getUseNLCpreprocessor();
-NLCcodeblock * getCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index);
-void setCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index, NLCcodeblock * codeBlockToSet);
+NLCcodeblock* getCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index);
+void setCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index, NLCcodeblock* codeBlockToSet);
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool getCurrentSentenceContainsLogicalCondition();
 void setCurrentSentenceContainsLogicalCondition(bool value);
@@ -68,18 +68,18 @@ int getCurrentLogicalConditionCase(int level);
 #endif
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList);
+bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList);
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentLogicalConditionObject, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray, GIAentityNode * previousLogicalConditionConjunction);
-		void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * conditionEntity, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray);
+	void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* currentLogicalConditionObject, int sentenceIndex, int logicalOperation, int* logicalConditionConjunctionIndex, NLClogicalConditionConjunction* logicalConditionConjunctionArray, GIAentityNode* previousLogicalConditionConjunction);
+		void checkConditionForLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* conditionEntity, int sentenceIndex, int logicalOperation, int* logicalConditionConjunctionIndex, NLClogicalConditionConjunction* logicalConditionConjunctionArray);
 	#endif
-	void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(GIAentityNode * entity, int sentenceIndex, bool tagOrUntag);
+	void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(GIAentityNode* entity, int sentenceIndex, bool tagOrUntag);
 #ifdef NLC_USE_PREPROCESSOR
-bool setCurrentCodeBlockInTreeToStartOfIfStatement(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock ** firstCodeBlockAtStartOfIfStatement, NLCcodeblock * firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected);
-bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock * firstCodeBlockAtStartOfIfStatement, NLCcodeblock * firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected, NLCcodeblock ** previousCodeBlockInTree);
+bool setCurrentCodeBlockInTreeToStartOfIfStatement(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** firstCodeBlockAtStartOfIfStatement, NLCcodeblock* firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected);
+bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock* firstCodeBlockAtStartOfIfStatement, NLCcodeblock* firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected, NLCcodeblock** previousCodeBlockInTree);
 #endif
 #endif
 
-bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity, bool compareSubstanceConcepts);
+bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareConcept, GIAentityNode* entity, bool compareSubstanceConcepts);
 
 #endif

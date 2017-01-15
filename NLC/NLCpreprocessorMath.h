@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,23 +52,23 @@ using namespace std;
 #ifdef NLC_USE_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH
 
-bool detectMathSymbolsInLine(string * lineContents);
-bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineContents, bool hasLogicalConditionOperator, bool isMathText);
+bool detectMathSymbolsInLine(string* lineContents);
+bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, bool hasLogicalConditionOperator, bool isMathText);
 
-bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
+bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-	bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents);
-	bool restoreExplicitVariableTypes(string * mathText);
+	bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents);
+	bool restoreExplicitVariableTypes(string* mathText);
 	#endif
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-bool replaceNumericalVariablesWithDummyNameIfNecessary(string * lineContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
+bool replaceNumericalVariablesWithDummyNameIfNecessary(string* lineContents, NLCsentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
 	bool isWhiteSpaceOrInvalidWordCharacter(char c);
-	bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);
+	bool findPredefinedNumericalVariable(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching);
 		#ifdef NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES
-		bool findPredefinedNumericalVariableInAnyFunctions(string * currentWord, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);	//allows global numerical variable definitions; not just local numerical variable definitions
+		bool findPredefinedNumericalVariableInAnyFunctions(string* currentWord, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching);	//allows global numerical variable definitions; not just local numerical variable definitions
 		#endif
-			bool findPredefinedNumericalVariableInFunction(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);
+			bool findPredefinedNumericalVariableInFunction(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching);
 #endif
 
 #endif

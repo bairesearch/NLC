@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,60 +60,60 @@ class NLClogicalConditionConjunctionContainer
 public:
 
 	NLClogicalConditionConjunctionContainer(void);
-	NLClogicalConditionConjunctionContainer(GIAentityNode * entity);
+	NLClogicalConditionConjunctionContainer(GIAentityNode* entity);
 	~NLClogicalConditionConjunctionContainer(void);
 
-	GIAentityNode * entity;
+	GIAentityNode* entity;
 	vector<NLClogicalConditionConjunctionContainer*> nextConditionConjunctions;
 	int optimumPathIndex;
 };
 #endif
 
-bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency * functionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
+bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
 	/*
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
 	#ifdef NLC_USE_PREPROCESSOR
-	bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+	bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
 	#endif
 	#endif	
 	*/
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	bool removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
-		int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode * conditionEntity, NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, int sentenceIndex);
-		bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, GIAentityNode * logicalConditionConjunctionToTest);
+	bool removeRedundantConditionConjunctions(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
+		int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode* conditionEntity, NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, int sentenceIndex);
+		bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, GIAentityNode* logicalConditionConjunctionToTest);
 	#endif
-	bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+	bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
 	#endif
 	/*
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-	bool addFunctionDependenciesWithoutOwners(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, NLCclassDefinitionFunctionDependency * parentFunctionDependencies, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
+	bool addFunctionDependenciesWithoutOwners(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences, NLCclassDefinitionFunctionDependency* parentFunctionDependencies, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
 	#endif
 	*/
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, NLCclassDefinitionFunctionDependency * functionDependency);
+void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency);
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(vector<NLCitem*> * functionDefinitionSourceArgumentList, NLCclassDefinition * functionDeclaration);
+	void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(vector<NLCitem*>* functionDefinitionSourceArgumentList, NLCclassDefinition* functionDeclaration);
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-	void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(NLCclassDefinition * functionDeclarationSource, NLCclassDefinition * functionDeclaration);
-	void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(NLCclassDefinition * functionDeclarationSource, vector<NLCitem*> * functionDefinitionArgumentList);
+	void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(NLCclassDefinition* functionDeclarationSource, NLCclassDefinition* functionDeclaration);
+	void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(NLCclassDefinition* functionDeclarationSource, vector<NLCitem*>* functionDefinitionArgumentList);
 	#endif
 	#else
-	//bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDefinition, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList);
+	//bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition* functionClassDefinition, vector<NLCitem*>* formalFunctionArgumentList, vector<NLCclassDefinition* >* classDefinitionList);
 	#endif	
 	#endif
 #endif
-bool getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList, int * numberOfInputFilesInList);
+bool getFilesFromFileList2(string inputListFileName, vector<string>* inputTextFileNameList, int* numberOfInputFilesInList);
 #endif
 #ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
-bool checkAlphaNumericEntityNames(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
+bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
 #endif
 
-NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition *> * classDefinitionList, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, int functionIndex);
-	NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, bool isReference, bool createClassDefinition);
+NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition* >* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex);
+	NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, bool isReference, bool createClassDefinition);
 
 
 #endif

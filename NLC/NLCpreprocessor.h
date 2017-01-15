@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -51,14 +51,14 @@ using namespace std;
 
 
 #ifdef NLC_USE_PREPROCESSOR
-bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName);
-	void extractIndentationFromCurrentLine(string * currentLine, int * currentIndentation, string * lineContents, string * indentationContents);
+bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName);
+	void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents);
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-	bool detectFunctionHeader(string * lineContents);
-	string getFunctionNameFromFunctionHeader(string * lineContents);
+	bool detectFunctionHeader(string* lineContents);
+	string getFunctionNameFromFunctionHeader(string* lineContents);
 	string generateNLCfunctionFileName(string functionName);
 	#endif	
-	bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * logicalConditionOperator);
+	bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logicalConditionOperator);
 	string removePrependingWhiteSpace(string sentenceContents);
 #endif
 

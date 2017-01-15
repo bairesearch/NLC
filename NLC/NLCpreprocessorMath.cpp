@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,7 +46,7 @@
 #ifdef NLC_USE_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH
 
-bool detectMathSymbolsInLine(string * lineContents)
+bool detectMathSymbolsInLine(string* lineContents)
 {
 	bool mathSymbolFound = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
@@ -60,7 +60,7 @@ bool detectMathSymbolsInLine(string * lineContents)
 	return mathSymbolFound;
 }
 
-bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineContents, bool hasLogicalConditionOperator, bool isMathText)
+bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, bool hasLogicalConditionOperator, bool isMathText)
 {
 	bool result = false;
 	
@@ -95,17 +95,17 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineCon
 	return result;
 }
 				
-bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList)
+bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList)
 {
-	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " << *sentenceIndex << endl;
+	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " <<* sentenceIndex << endl;
 	bool result = true;
 
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
 	#endif
 					
-	int sentenceIndexOfFullSentence = *sentenceIndex;
-	NLCsentence * firstNLCsentenceInFullSentence = *currentNLCsentenceInList;
+	int sentenceIndexOfFullSentence =* sentenceIndex;
+	NLCsentence* firstNLCsentenceInFullSentence =* currentNLCsentenceInList;
 	
 	int startIndex = 0;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -131,7 +131,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				lineContents->insert(logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_ELSE].length(), STRING_COMMA);
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				cout << "creating artificial comma for logical condition command to be detected" << endl;
-				cout << "lineContents = " << *lineContents << endl;
+				cout << "lineContents = " <<* lineContents << endl;
 				#endif
 			}
 		}	
@@ -179,7 +179,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					result = false;
 			}
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-			cout << "\n lineContents = " << *lineContents << endl;
+			cout << "\n lineContents = " <<* lineContents << endl;
 			cout << "logicalConditionCommandSuperphraseContents = " << logicalConditionCommandSuperphraseContents << endl;
 			#endif
 		}
@@ -197,7 +197,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;	//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
 	bool parsingWhiteSpace = false;	//added 1h5b 30-July-2014
 	
-	//cout << "lineContents = " << *lineContents << endl;
+	//cout << "lineContents = " <<* lineContents << endl;
 	//cout << "lineContents->length() = " << lineContents->length() << endl;
 	//cout << "lineContents[lineContents->length()-1] = " << (*lineContents)[lineContents->length()-1] << endl;
 	//exit(0);
@@ -396,7 +396,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 						}
 						#endif
 						(*currentNLCsentenceInList)->sentenceContents = currentPhrase + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;	//append a fullstop to the NLP parsable phrase to make it readable by NLP
-						(*currentNLCsentenceInList)->sentenceIndex = *sentenceIndex;
+						(*currentNLCsentenceInList)->sentenceIndex =* sentenceIndex;
 						//(*currentNLCsentenceInList)->indentation = currentIndentation;	//indentation not recorded for NLC parsable phrases
 						mathText = mathText + generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, (*currentNLCsentenceInList));
 						#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
@@ -498,7 +498,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	//remove all numbers from mathTextVariableNames - added 1l7a
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end();)
 	{
-		string mathTextVariableName = *iter;
+		string mathTextVariableName =* iter;
 		bool variableNameIsNumber = isStringNumber(mathTextVariableName);
 		if(variableNameIsNumber)
 		{
@@ -516,7 +516,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	//{
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end(); iter++)
 	{
-		string mathTextVariableName = *iter;
+		string mathTextVariableName =* iter;
 		
 		bool ignoreVariable = false;
 		if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
@@ -549,7 +549,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				if(!findPredefinedNumericalVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence))
 				{
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
-					//cout << "lineContents = " << *lineContents << endl;
+					//cout << "lineContents = " <<* lineContents << endl;
 					#ifndef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_MATHTEXT_VARIABLES_TO_BE_REFERENCED_BY_MATH
 					exit(0);
 					#endif
@@ -561,7 +561,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	//}	
 	#endif
 
-	//cout << "sentenceIndex at end of nlp parsable phrase extraction = " << *sentenceIndex << endl;
+	//cout << "sentenceIndex at end of nlp parsable phrase extraction = " <<* sentenceIndex << endl;
 	
 
 
@@ -618,10 +618,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	restoreExplicitVariableTypes(&(firstNLCsentenceInFullSentence->mathText));
 	#endif
 	
-	NLCsentence * currentSentence = firstNLCsentenceInFullSentence;
+	NLCsentence* currentSentence = firstNLCsentenceInFullSentence;
 	while(currentSentence->next != NULL)
 	{
-		*functionContents = *functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
+		*functionContents =* functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
 		currentSentence = currentSentence->next;
 	}
 	
@@ -629,7 +629,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents)
+bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents)
 {	
 	bool result = false;
 	//replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords() is required to prevent creation of nlp parsable phrase from 2 word variable declarations
@@ -642,7 +642,7 @@ bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * line
 	return result;
 }
 
-bool restoreExplicitVariableTypes(string * mathText)
+bool restoreExplicitVariableTypes(string* mathText)
 {	
 	bool result = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
@@ -658,11 +658,11 @@ bool restoreExplicitVariableTypes(string * mathText)
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 
-bool replaceNumericalVariablesWithDummyNameIfNecessary(string * lineContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList)
+bool replaceNumericalVariablesWithDummyNameIfNecessary(string* lineContents, NLCsentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
-	cout << "replaceNumericalVariablesWithDummyNameIfNecessary: lineContents = " << *lineContents << endl;
+	cout << "replaceNumericalVariablesWithDummyNameIfNecessary: lineContents = " <<* lineContents << endl;
 	#endif
 	
 	string currentWord = "";
@@ -736,7 +736,7 @@ bool isWhiteSpaceOrInvalidWordCharacter(char c)
 	return whiteSpaceOrInvalidWordCharacter;
 }
 
-bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching)
+bool findPredefinedNumericalVariable(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching)
 {
 	#ifdef NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES
 	return findPredefinedNumericalVariableInAnyFunctions(currentWord, firstNLCfunctionInList, sentenceToIgnoreWhileSearching);
@@ -746,13 +746,13 @@ bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * current
 }
 
 #ifdef NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES
-bool findPredefinedNumericalVariableInAnyFunctions(string * currentWord, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching)
+bool findPredefinedNumericalVariableInAnyFunctions(string* currentWord, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching)
 {
 	bool result = false;
 	currentNLCfunctionInList = firstNLCfunctionInList;
 	while(currentNLCfunctionInList->next != NULL)
 	{
-		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+		NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		if(findPredefinedNumericalVariableInFunction(currentWord, currentNLCfunctionInList, sentenceToIgnoreWhileSearching)
 		{
 			result = true;
@@ -764,18 +764,18 @@ bool findPredefinedNumericalVariableInAnyFunctions(string * currentWord, NLCfunc
 }
 #endif
 
-bool findPredefinedNumericalVariableInFunction(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching)	//pass firstNLCfunctionInList and update findPredefinedNumericalVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
+bool findPredefinedNumericalVariableInFunction(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching)	//pass firstNLCfunctionInList and update findPredefinedNumericalVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
 {
 	bool result = false;
 
-	NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+	NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentNLCsentenceInList->next != NULL)
 	{
 		if(currentNLCsentenceInList != sentenceToIgnoreWhileSearching)
 		{
 			for(vector<string>::iterator iter = currentNLCsentenceInList->mathTextVariableNames.begin(); iter != currentNLCsentenceInList->mathTextVariableNames.end(); iter++)
 			{
-				string mathTextVariableName = *iter;
+				string mathTextVariableName =* iter;
 				if(*currentWord == mathTextVariableName)
 				{
 					result = true;

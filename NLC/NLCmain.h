@@ -26,7 +26,7 @@
  * File Name: NLCmain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,10 +49,10 @@ using namespace std;
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
 
-int main(int argc,char **argv);
+int main(int argc,char* *argv);
 	string removeFileNameExtensions(string NLCfunctionName);
 //#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
-void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> * entityNodesActiveListComplete);
+void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete);
 //#endif
 
 

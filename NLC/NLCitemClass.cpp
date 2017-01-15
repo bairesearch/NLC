@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,7 +64,7 @@ NLCitem::NLCitem(void)
 	name = "";
 	genericObjectName = "";
 }
-NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
+NLCitem::NLCitem(GIAentityNode* entity, int newItemType)
 {
 	itemType = newItemType;
 	className = generateClassName(entity);
@@ -117,7 +117,7 @@ NLCitem::NLCitem(string newName, int newItemType)
 	name = newName;
 	genericObjectName = "";
 }
-NLCitem::NLCitem(NLCitem * newItem)
+NLCitem::NLCitem(NLCitem* newItem)
 {
 	itemType = newItem->itemType;
 	className = newItem->className;
@@ -145,7 +145,7 @@ NLCitem::~NLCitem(void)
 {
 }
 
-string generateClassName(GIAentityNode * entity)
+string generateClassName(GIAentityNode* entity)
 {
 	string className = generateClassName(entity->entityName);
 	return className;
@@ -155,7 +155,7 @@ string generateClassName(string entityName)
 	string className = entityName + NLC_CLASS_NAME_APPEND;
 	return className;
 }
-string generateFunctionName(GIAentityNode * entity)
+string generateFunctionName(GIAentityNode* entity)
 {
 	return generateFunctionName(entity->entityName);
 }
@@ -164,7 +164,7 @@ string generateFunctionName(string entityName)
 	string functionName = entityName + NLC_FUNCTION_NAME_APPEND;
 	return functionName;
 }
-string generateInstanceName(GIAentityNode * entity)
+string generateInstanceName(GIAentityNode* entity)
 {
 	string instanceName = entity->entityName + convertLongToString(entity->idInstance);
 	return instanceName;

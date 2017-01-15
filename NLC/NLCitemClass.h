@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,9 +97,9 @@ class NLCitem
 public:
 
 	NLCitem(void);
-	NLCitem(GIAentityNode * entity, int newItemType);
+	NLCitem(GIAentityNode* entity, int newItemType);
 	NLCitem(string newName, int newItemType);
-	NLCitem(NLCitem * newItem);
+	NLCitem(NLCitem* newItem);
 	~NLCitem(void);
 
 	int itemType;
@@ -130,15 +130,15 @@ public:
 };
 
 
-string generateClassName(GIAentityNode * entity);
+string generateClassName(GIAentityNode* entity);
 	string generateClassName(string entityName);
-string generateFunctionName(GIAentityNode * entity);
+string generateFunctionName(GIAentityNode* entity);
 	string generateFunctionName(string entityName);
-string generateInstanceName(GIAentityNode * entity);
+string generateInstanceName(GIAentityNode* entity);
 
 string generateTypeName(string entityName);
 
-//string generateItemName(GIAentityNode * entity, int itemType);
+//string generateItemName(GIAentityNode* entity, int itemType);
 
 string removeClassTextFromClassDefinitionName(string className);
 

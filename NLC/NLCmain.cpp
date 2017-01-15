@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -139,7 +139,7 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_DEPENDENCY_RELATIONS_PARSER_RELEX_DEFAULT_DEPENDENCY_RELATIONS_TYPE, GIA_NLP_DEPENDENCY_RELATIONS_PARSER_STANFORD_CORENLP_DEFAULT_DEPENDENCY_RELATIONS_TYPE, GIA_NLP_DEPENDENCY_RELATIONS_PARSER_STANFORD_PARSER_DEFAULT_DEPENDENCY_RELATIONS_TYPE};
 
 
-int main(int argc,char **argv)
+int main(int argc,char* *argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
 
@@ -155,7 +155,7 @@ int main(int argc,char **argv)
 	#endif
 
 	//print execution time
-	struct tm *current;
+	struct tm* current;
 	time_t now;
 	time(&now);
 	current = localtime(&now);
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1n10e 26-January-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1n11a 27-January-2015" << endl;
 			exit(1);
 		}
 
@@ -696,7 +696,7 @@ int main(int argc,char **argv)
 	}
 	#endif
 
-	NLCfunction * firstNLCfunctionInList = new NLCfunction();
+	NLCfunction* firstNLCfunctionInList = new NLCfunction();
 	#ifdef NLC_USE_PREPROCESSOR
 	//vector<string> inputTextPlainTXTFileNameList;
 	bool preprocessorDetectedFunctions = false;
@@ -745,7 +745,7 @@ int main(int argc,char **argv)
 	#endif
 
 
-	vector<NLCclassDefinition *> classDefinitionList;
+	vector<NLCclassDefinition* > classDefinitionList;
 	//#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	vector<NLCclassDefinitionFunctionDependency*> functionDependencyList;
 	//#endif
@@ -753,7 +753,7 @@ int main(int argc,char **argv)
 	vector<vector<GIAentityNode*>*> entityNodesActiveListCompleteList;
 		
 	//#ifdef NLC_USE_PREPROCESSOR
-	NLCfunction * currentNLCfunctionInList = firstNLCfunctionInList;
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 	//#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES
@@ -765,16 +765,16 @@ int main(int argc,char **argv)
 	{
 		int maxNumberSentences;
 
-		NLCcodeblock * firstCodeBlockInTree = new NLCcodeblock();
+		NLCcodeblock* firstCodeBlockInTree = new NLCcodeblock();
 		firstCodeBlockInTreeList.push_back(firstCodeBlockInTree);
 
-		vector<GIAentityNode*> * entityNodesActiveListComplete = new vector<GIAentityNode*>;
+		vector<GIAentityNode*>* entityNodesActiveListComplete = new vector<GIAentityNode*>;
 		entityNodesActiveListCompleteList.push_back(entityNodesActiveListComplete);
-		unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts = new unordered_map<string, GIAentityNode*>;
-		vector<GIAentityNode*> * entityNodesActiveListSubstances = new vector<GIAentityNode*>;
-		vector<GIAentityNode*> * entityNodesActiveListActions = new vector<GIAentityNode*>;
-		vector<GIAentityNode*> * entityNodesActiveListConditions = new vector<GIAentityNode*>;
-		unordered_map<long, GIAtimeConditionNode*> * timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
+		unordered_map<string, GIAentityNode*>* entityNodesActiveListConcepts = new unordered_map<string, GIAentityNode*>;
+		vector<GIAentityNode*>* entityNodesActiveListSubstances = new vector<GIAentityNode*>;
+		vector<GIAentityNode*>* entityNodesActiveListActions = new vector<GIAentityNode*>;
+		vector<GIAentityNode*>* entityNodesActiveListConditions = new vector<GIAentityNode*>;
+		unordered_map<long, GIAtimeConditionNode*>* timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
 
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		if(NLCinputFileList)
@@ -986,7 +986,7 @@ int main(int argc,char **argv)
 		#endif
 
 		//generate class definition function declaration for new function definition
-		NLCclassDefinitionFunctionDependency * functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex);
+		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex);
 		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor, functionDependency, &functionDependencyList);
 		
@@ -1002,10 +1002,10 @@ int main(int argc,char **argv)
 	//added 1k13g - generate class definition function declarations for all function execution references (generateClassHeirarchyFunctions has been separated from generateClassHeirarchy since non-exact function reconciliation can only occur once class definition heirachy has been established)
 	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
 	{
-		NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
 		{	
-			vector<GIAentityNode*> * entityNodesActiveListComplete = entityNodesActiveListCompleteList.at(functionIndex);
+			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteList.at(functionIndex);
 			
 			//NLC translator Part 2b.
 			if(!generateClassHeirarchyFunctions(&classDefinitionList, entityNodesActiveListComplete, functionDependency, &functionDependencyList))
@@ -1019,7 +1019,7 @@ int main(int argc,char **argv)
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
 	{	
-		NLCclassDefinitionFunctionDependency * functionDependencyTemp = *functionDependencyIter;
+		NLCclassDefinitionFunctionDependency* functionDependencyTemp =* functionDependencyIter;
 		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 		cout << "functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
 		cout << "functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
@@ -1027,7 +1027,7 @@ int main(int argc,char **argv)
 		cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependencyTemp->functionDependencyList.begin(); functionDependencyIter2 != functionDependencyTemp->functionDependencyList.end(); functionDependencyIter2++)
 		{	
-			NLCclassDefinitionFunctionDependency * functionDependencyTemp2 = *functionDependencyIter2;
+			NLCclassDefinitionFunctionDependency* functionDependencyTemp2 =* functionDependencyIter2;
 			cout << "  2. ---------------------------------------------------" << endl;
 			cout << "  functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
 			cout << "  functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
@@ -1048,7 +1048,7 @@ int main(int argc,char **argv)
 		stillUnreconciledFunctionDeclarationArguments = false;
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList.begin(); functionDependencyIter != functionDependencyList.end(); functionDependencyIter++)
 		{
-			NLCclassDefinitionFunctionDependency * functionDependency = *functionDependencyIter;
+			NLCclassDefinitionFunctionDependency* functionDependency =* functionDependencyIter;
 
 			if(functionDependency->functionNameListIndex != INT_DEFAULT_VALUE)
 			{
@@ -1061,7 +1061,7 @@ int main(int argc,char **argv)
 						bool reconciledChildFunctionDeclarationArguments = true;
 						for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependency->functionDependencyList.begin(); functionDependencyIter2 != functionDependency->functionDependencyList.end(); functionDependencyIter2++)
 						{
-							NLCclassDefinitionFunctionDependency * functionDependencyChild = *functionDependencyIter2;
+							NLCclassDefinitionFunctionDependency* functionDependencyChild =* functionDependencyIter2;
 							if(functionDependencyChild->functionNameListIndex != INT_DEFAULT_VALUE)
 							{
 								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
@@ -1081,7 +1081,7 @@ int main(int argc,char **argv)
 						if(reconciledChildFunctionDeclarationArguments)
 						{
 							//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
-							NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDependency->functionNameListIndex);
+							NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDependency->functionNameListIndex);
 
 							string functionName = functionDependency->functionName;
 							#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -1110,11 +1110,11 @@ int main(int argc,char **argv)
 	#else
 	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
 	{
-		NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
 		{
 			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
-			NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
+			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
 
 			string functionName = functionDependency->functionName;
 			#ifdef NLC_DEBUG
@@ -1144,7 +1144,7 @@ int main(int argc,char **argv)
 
 	#ifndef NLC_USE_LIBRARY
 	//create predefined NLC functions
-	NLCcodeblock * currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
+	NLCcodeblock* currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
 	currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockInTree);
 	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 	#ifdef NLC_USE_ADVANCED_REFERENCING
@@ -1166,7 +1166,7 @@ int main(int argc,char **argv)
 	
 	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
 	{
-		NLCcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
+		NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
 		int level = 0;
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		if(!printCodeBlocks(firstCodeBlockInTree, &classDefinitionList, progLang, &code, level))
@@ -1203,24 +1203,24 @@ string removeFileNameExtensions(string NLCfunctionName)
 
 #ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 //this is required for NLC as NLC assumes GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
-void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> * entityNodesActiveListComplete)
+void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode * actionEntity = (*entityIter);
+		GIAentityNode* actionEntity = (*entityIter);
 		if((actionEntity->isAction) && !(actionEntity->isConcept) && !(actionEntity->disabled))
 		{
 			if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_POSSESSIVE)
 			{
 				bool actionHasObject = false;
-				GIAentityNode * actionObjectEntity = NULL;
+				GIAentityNode* actionObjectEntity = NULL;
 				if(!(actionEntity->actionObjectEntity->empty()))
 				{
 					actionHasObject = true;
 					actionObjectEntity = (actionEntity->actionObjectEntity->back())->entity;
 				}
 				bool actionHasSubject = false;
-				GIAentityNode * actionSubjectEntity = NULL;
+				GIAentityNode* actionSubjectEntity = NULL;
 				if(!(actionEntity->actionSubjectEntity->empty()))
 				{
 					actionHasSubject = true;
@@ -1253,7 +1253,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					*/
 					for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->conditionNodeList->begin(); connectionIter !=  actionEntity->conditionNodeList->end(); )
 					{
-						GIAentityNode * conditionEntity = (*connectionIter)->entity;
+						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
 						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
@@ -1264,7 +1264,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					}
 					for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->incomingConditionNodeList->begin(); connectionIter !=  actionEntity->incomingConditionNodeList->end(); )
 					{
-						GIAentityNode * conditionEntity = (*connectionIter)->entity;
+						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
 						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
@@ -1326,7 +1326,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionSubjectEntity->begin(); connectionIter != actionEntity->actionSubjectEntity->end(); )
 						{
-							GIAentityConnection * connection = (*connectionIter);
+							GIAentityConnection* connection = (*connectionIter);
 							if(connection->sentenceIndexTemp == sentenceIndex)
 							{
 								if(connection->entity == actionSubjectEntity)
@@ -1356,7 +1356,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionObjectEntity->begin(); connectionIter != actionEntity->actionObjectEntity->end(); )
 						{
-							GIAentityConnection * connection = (*connectionIter);
+							GIAentityConnection* connection = (*connectionIter);
 							if(connection->sentenceIndexTemp == sentenceIndex)
 							{
 								if(connection->entity == actionObjectEntity)
@@ -1386,7 +1386,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionSubjectEntity->actionNodeList->begin(); connectionIter != actionSubjectEntity->actionNodeList->end(); )
 						{
-							GIAentityConnection * connection = (*connectionIter);
+							GIAentityConnection* connection = (*connectionIter);
 							if(connection->sentenceIndexTemp == sentenceIndex)
 							{
 								if(connection->entity == actionEntity)
@@ -1416,7 +1416,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionObjectEntity->incomingActionNodeList->begin(); connectionIter != actionObjectEntity->incomingActionNodeList->end(); )
 						{
-							GIAentityConnection * connection = (*connectionIter);
+							GIAentityConnection* connection = (*connectionIter);
 							if(connection->sentenceIndexTemp == sentenceIndex)
 							{
 								if(connection->entity == actionEntity)
@@ -1453,8 +1453,8 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						setCurrentSentenceIndex(sentenceIndex);
 						#endif
 						//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-						GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
-						GIAentityConnection * propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
+						GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
+						GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
 						#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 						if(actionEntity->negative)
 						{

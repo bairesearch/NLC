@@ -26,14 +26,14 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 #include "NLCprintDefs.h"
 
-void printLine(string command, int level, string * code)
+void printLine(string command, int level, string* code)
 {
 	//if(command != "")
 	//{
@@ -44,11 +44,11 @@ void printLine(string command, int level, string * code)
 	}
 	line = line + command;
 	line = line + CHAR_NEWLINE;
-	*code = *code + line;
+	*code =* code + line;
 	//}
 }
 
-string generatePropertyListName(NLCitem * item)
+string generatePropertyListName(NLCitem* item)
 {
 	return generatePropertyListName(item->className);
 }
@@ -137,11 +137,11 @@ string generateActionObjectListName(string actionObjectClassName)
 #endif
 #endif
 
-string generateLocalListName(NLCitem * item)
+string generateLocalListName(NLCitem* item)
 {
 	return generateEntityListName(item);
 }
-string generateEntityListName(NLCitem * entityParam)
+string generateEntityListName(NLCitem* entityParam)
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		string instanceName = entityParam->instanceName;
@@ -211,7 +211,7 @@ string generateGIAconditionSubjectListName()
 	return conditionListName;
 }
 #else
-string generateConditionListName(NLCitem * conditionItem, NLCitem * conditionObjectItem)
+string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem)
 {
 	return generateConditionListName(conditionItem->className, conditionObjectItem->className);
 }
@@ -245,7 +245,7 @@ string generateCodeConditionPairText(string conditionName, string conditionClass
 	return codeConditionPairTypeText;
 }
 
-string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string> * conditionContext, int progLang)
+string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string>* conditionContext, int progLang)
 {
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + generateInstanceNameWithContext(conditionInstanceName, conditionContext, progLang) + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(conditionObjectInstanceName, conditionContext, progLang) + progLangClassMemberFunctionParametersClose[progLang];
@@ -256,7 +256,7 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 }
 #endif
 
-string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang)
+string generateInstanceNameWithContext(string instanceName, vector<string>* context, int progLang)
 {
 	string instanceNameWithContext = "";
 	string contextString = generateStringFromContextVector(context, progLang);
@@ -264,12 +264,12 @@ string generateInstanceNameWithContext(string instanceName, vector<string> * con
 	return instanceNameWithContext;
 }
 
-string generateStringFromContextVector(vector<string> * context, int progLang)
+string generateStringFromContextVector(vector<string>* context, int progLang)
 {
 	string contextString = "";
 	for(vector<string>::iterator contextIterator = context->begin(); contextIterator < context->end(); contextIterator++)
 	{
-		string currentContext = *contextIterator;
+		string currentContext =* contextIterator;
 		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
 	}
 
@@ -290,7 +290,7 @@ string generateCodePropertyListDefinitionText(string propertyClassName, int prog
 	return codePropertyListDefinitionText;
 }
 
-string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
+string generateCodeEntityListDefinitionText(NLCitem* entityParam, int progLang)
 {
 	#ifdef NLC_NONOO
 	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(progLang) + generateEntityListName(entityParam);
@@ -328,7 +328,7 @@ string generateCodeEntityListDefinitionTypeText(string entityClassName, int prog
 }
 string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang)
 {
-	string codePropertyListDefinitionTextPointer = generateCodeEntityListDefinitionTypeText(entityClassName, progLang) + progLangPointer[progLang];		//vector<entityClassName*> *
+	string codePropertyListDefinitionTextPointer = generateCodeEntityListDefinitionTypeText(entityClassName, progLang) + progLangPointer[progLang];		//vector<entityClassName*>* 
 	return codePropertyListDefinitionTextPointer;
 }
 #ifdef NLC_GENERATE_TYPE_LISTS
@@ -340,7 +340,7 @@ string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int p
 #endif
 #endif
 
-string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang)
+string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int progLang)
 {
 	string codeEntityListDefinitionReferenceText = generateCodeEntityListDefinitionReferenceTypeText(entityParam->className, progLang) + generateEntityListName(entityParam);
 	return codeEntityListDefinitionReferenceText;
@@ -356,7 +356,7 @@ string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName,
 	return codeEntityListDefinitionReferenceTypeText;
 }
 
-string generateCodeGenericListDefinitionText(NLCitem * entityParam, string genericListAppendName, int progLang)
+string generateCodeGenericListDefinitionText(NLCitem* entityParam, string genericListAppendName, int progLang)
 {
 	string codeGenericListDefinitionText = generateCodeEntityListDefinitionTypeText(entityParam->className, progLang) + generateGenericListName(entityParam->genericObjectName, genericListAppendName);
 	return codeGenericListDefinitionText;
@@ -392,13 +392,13 @@ string generateCodeConditionListDefinitionTypeText(string conditionClassName, st
 }
 string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang)
 {
-	string codeConditionListDefinitionTypeTextPointer = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + progLangPointer[progLang];	//unordered_map<conditionClassName*, conditionObjectClassName*> *
+	string codeConditionListDefinitionTypeTextPointer = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + progLangPointer[progLang];	//unordered_map<conditionClassName*, conditionObjectClassName*>* 
 	return codeConditionListDefinitionTypeTextPointer;
 }
 #endif
 
 //NB NLC_NONOO requires !NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-void generateCodeAddConditionAndObjectEntityToList(NLCitem * param1, NLCitem * param2, NLCitem * param3, int progLang, string * code, int level)
+void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level)
 {
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	#ifdef NLC_NONOO
@@ -418,7 +418,7 @@ void generateCodeAddConditionAndObjectEntityToList(NLCitem * param1, NLCitem * p
 	#endif
 }
 
-void generateCodeAddPropertyEntityToList(NLCitem * param1, NLCitem * param2, int progLang, string * code, int level)
+void generateCodeAddPropertyEntityToList(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
 {
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	#ifdef NLC_NONOO
@@ -441,14 +441,14 @@ string generateGIAentityName()
 	return GIAentityName;
 }
 
-string generateCodeEntityNameTestText(NLCitem * param, int progLang)
+string generateCodeEntityNameTestText(NLCitem* param, int progLang)
 {
 	string entityNameTestText = progLangOpenParameterSpace[progLang] + generateTempEntityName(param) + progLangObjectReferenceDelimiter[progLang] + generateGIAentityName() + progLangStringEqualsTest[progLang] + progLangStringOpenClose[progLang] + param->name + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang];
 	return entityNameTestText;
 }
 #endif
 
-string generateCodeNewTempEntity(NLCitem * param, int progLang)
+string generateCodeNewTempEntity(NLCitem* param, int progLang)
 {
 	#ifdef NLC_NONOO
 	string newTempEntityText = generateTempEntityDeclaration(param, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + generateTempEntityClassName(param) + progLangOpenParameterSpace[progLang] + progLangStringOpenClose[progLang] + param->name + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	
@@ -468,18 +468,18 @@ string generateCodeNewTempEntity(string className, string instanceName, int prog
 	return newTempEntityText;
 }
 
-string generateTempEntityDeclaration(NLCitem * param, int progLang)
+string generateTempEntityDeclaration(NLCitem* param, int progLang)
 {
-	string tempVariableName = generateTempEntityDeclaration(generateTempEntityClassName(param), generateTempEntityName(param), progLang);	//ClassName * instanceName
+	string tempVariableName = generateTempEntityDeclaration(generateTempEntityClassName(param), generateTempEntityName(param), progLang);	//ClassName* instanceName
 	return tempVariableName;
 }
 
-string generateTempEntityName(NLCitem * param)
+string generateTempEntityName(NLCitem* param)
 {
 	return param->instanceName;
 }
 
-string generateTempEntityClassName(NLCitem * param)
+string generateTempEntityClassName(NLCitem* param)
 {
 	#ifdef NLC_NONOO
 	return NLCNONOO_GENERIC_ENTITY_NODE_NAME;
@@ -491,21 +491,21 @@ string generateTempEntityClassName(NLCitem * param)
 string generateTempEntityDeclaration(string className, string instanceName, int progLang)
 {
 	#ifdef NLC_NONOO
-	string tempVariableName = string(NLCNONOO_GENERIC_ENTITY_NODE_NAME) + progLangPointer[progLang] + STRING_SPACE + instanceName;	//GIAentityNode * instanceName
+	string tempVariableName = string(NLCNONOO_GENERIC_ENTITY_NODE_NAME) + progLangPointer[progLang] + STRING_SPACE + instanceName;	//GIAentityNode* instanceName
 	#else
-	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;	//ClassName * instanceName
+	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;	//ClassName* instanceName
 	#endif
 	return tempVariableName;
 }
 
 /*
-string generateCodeSetTempEntity(NLCitem * param, NLCitem * param2, int progLang)
+string generateCodeSetTempEntity(NLCitem* param, NLCitem* param2, int progLang)
 {
 	string tempVariableName = generateTempEntityName(param) + progLangEquals[progLang], generateTempEntityName(param2), progLang);	//param1 = param2;
 	return tempVariableName;
 	
 }
-string generateTempEntityDeclarationSetToNull(NLCitem * param, NLCitem * param2, int progLang)
+string generateTempEntityDeclarationSetToNull(NLCitem* param, NLCitem* param2, int progLang)
 {
 	string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + progLangNullPointer + progLangEndLine[progLang];	//param1Class* param1 = NULL;
 	return tempEntityDeclarationText;
@@ -563,7 +563,7 @@ string generateCodeAllPropertyListAddText(string propertyClassName, int progLang
 	string propertyListName = generatePropertyListName(propertyClassName);
 	string propertyClassNameRaw = removeClassTextFromClassDefinitionName(propertyClassName);
 	string propertyListKeyName = string(STRING_INVERTEDCOMMAS) + propertyClassNameRaw + string(STRING_INVERTEDCOMMAS);
-	string codeAllPropertyListAddText = generateCodeAllVectorListAddText(generateAllPropertyListName(), propertyListName, propertyListKeyName, progLang);	//propertyListAll.insert(pair<string, NLCgenericEntityClass*>("propertyListKeyName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&propertyListName)));
+	string codeAllPropertyListAddText = generateCodeAllVectorListAddText(generateAllPropertyListName(), propertyListName, propertyListKeyName, progLang);	//propertyListAll.insert(pair<string, NLCgenericEntityClass*>("propertyListKeyName", reinterpret_cast<vector<NLCgenericEntityClass*>* >(&propertyListName)));
 	return codeAllPropertyListAddText;
 }
 string generateCodeAllPropertyListDefinitionText(int progLang)
@@ -579,7 +579,7 @@ string generateAllPropertyListName()
 string generateCodeAllVectorListAddText(string allListName, string vectorListName, string vectorListKeyName, int progLang)
 {
 	string NLCgenericClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-	string codeAllVectorListAddText = allListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddList[progLang] + progLangOpenParameterSpace[progLang] + generateCodePairText(NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE, generateCodeEntityListDefinitionTypeTextPointer(NLCgenericClassName, progLang), vectorListKeyName, generateReinterpretCastOfVector(vectorListName, NLCgenericClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//vectorListAll.insert(pair<string, vector<NLCgenericEntityClass*>*>("vectorListKeyName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&vectorListName)));
+	string codeAllVectorListAddText = allListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddList[progLang] + progLangOpenParameterSpace[progLang] + generateCodePairText(NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE, generateCodeEntityListDefinitionTypeTextPointer(NLCgenericClassName, progLang), vectorListKeyName, generateReinterpretCastOfVector(vectorListName, NLCgenericClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//vectorListAll.insert(pair<string, vector<NLCgenericEntityClass*>*>("vectorListKeyName", reinterpret_cast<vector<NLCgenericEntityClass*>* >(&vectorListName)));
 	return codeAllVectorListAddText;
 }
 string generateCodeAllVectorListDefinitionTypeText(int progLang)
@@ -589,7 +589,7 @@ string generateCodeAllVectorListDefinitionTypeText(int progLang)
 }
 string generateCodeEntityMapListDefinitionTypeText(string pairItem1className, string entityClassName, int progLang)
 {
-	string codeEntityStringMapListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + pairItem1className + progLangClassList2DTypeMiddle[progLang] + generateCodeEntityListDefinitionTypeTextPointer(entityClassName, progLang) + progLangClassListTypeEnd[progLang];	//unordered_map<x, vector<x*> *>
+	string codeEntityStringMapListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + pairItem1className + progLangClassList2DTypeMiddle[progLang] + generateCodeEntityListDefinitionTypeTextPointer(entityClassName, progLang) + progLangClassListTypeEnd[progLang];	//unordered_map<x, vector<x*>* >
 	return codeEntityStringMapListDefinitionTypeText;
 }
 string generateCodePairText(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang)
@@ -599,7 +599,7 @@ string generateCodePairText(string pairItem1className, string pairItem2className
 }
 string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang)
 {
-	string castText = progLangReinterpretCastStart[progLang] + generateCodeEntityListDefinitionTypeTextPointer(castClassName, progLang) + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangAddress[progLang] + vectorName + progLangCloseParameterSpace[progLang];	//reinterpret_cast<vector<castClassName*> *>(&vectorName)
+	string castText = progLangReinterpretCastStart[progLang] + generateCodeEntityListDefinitionTypeTextPointer(castClassName, progLang) + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangAddress[progLang] + vectorName + progLangCloseParameterSpace[progLang];	//reinterpret_cast<vector<castClassName*>* >(&vectorName)
 	return castText;
 }
 
@@ -610,7 +610,7 @@ string generateCodeAllConditionListAddText(string conditionClassName, string con
 	string conditionObjectName = removeClassTextFromClassDefinitionName(conditionObjectClassName);
 	string conditionListKeyName1 = string(STRING_INVERTEDCOMMAS) + conditionName + string(STRING_INVERTEDCOMMAS);
 	string conditionListKeyName2 = string(STRING_INVERTEDCOMMAS) + conditionObjectName + string(STRING_INVERTEDCOMMAS);
-	string codeAllConditionListAddText = generateCodeAllMapListAddText(generateAllConditionListName(), conditionListName, conditionListKeyName1, conditionListKeyName2, progLang);	//conditionListAll.insert(pair<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> *>(<pair, pair>("conditionListKeyName1", "conditionListKeyName2"), reinterpret_cast<unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> *>(&conditionListName)));
+	string codeAllConditionListAddText = generateCodeAllMapListAddText(generateAllConditionListName(), conditionListName, conditionListKeyName1, conditionListKeyName2, progLang);	//conditionListAll.insert(pair<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>* >(<pair, pair>("conditionListKeyName1", "conditionListKeyName2"), reinterpret_cast<unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>* >(&conditionListName)));
 	return codeAllConditionListAddText;
 }
 string generateCodeAllConditionListDefinitionText(int progLang)
@@ -626,7 +626,7 @@ string generateAllConditionListName()
 string generateCodeAllMapListAddText(string allListName, string mapListName, string mapListKeyName1, string mapListKeyName2, int progLang)
 {
 	string NLCgenericClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-	string codeAllMapListAddText = allListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddList[progLang] + progLangOpenParameterSpace[progLang] + generateCodePairPairText(NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE, NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE, generateCodeConditionListDefinitionTypeTextPointer(NLCgenericClassName, NLCgenericClassName, progLang), mapListKeyName1, mapListKeyName2, generateReinterpretCastOfMap(mapListName, NLCgenericClassName, NLCgenericClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//conditionListAll.insert(pair<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> *>(<pair, pair>("mapListKeyName1", "mapListKeyName2"), reinterpret_cast<unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> *>(mapListName)));
+	string codeAllMapListAddText = allListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddList[progLang] + progLangOpenParameterSpace[progLang] + generateCodePairPairText(NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE, NLC_USE_LIBRARY_ALL_LISTS_KEY_TYPE, generateCodeConditionListDefinitionTypeTextPointer(NLCgenericClassName, NLCgenericClassName, progLang), mapListKeyName1, mapListKeyName2, generateReinterpretCastOfMap(mapListName, NLCgenericClassName, NLCgenericClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//conditionListAll.insert(pair<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>* >(<pair, pair>("mapListKeyName1", "mapListKeyName2"), reinterpret_cast<unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>* >(mapListName)));
 	return codeAllMapListAddText;
 }
 string generateCodeAllConditionListDefinitionTypeText(int progLang)
@@ -652,7 +652,7 @@ string generateCodePairPairText(string pairItem1AclassName, string pairItem1Bcla
 }
 string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang)
 {
-	string castText = progLangReinterpretCastStart[progLang] + generateCodeConditionListDefinitionTypeTextPointer(castClassName1, castClassName2, progLang) + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangAddress[progLang] + vectorName + progLangCloseParameterSpace[progLang];	//reinterpret_cast<unordered_map<castClassName1*, castClassName2*> *>(&vectorName)
+	string castText = progLangReinterpretCastStart[progLang] + generateCodeConditionListDefinitionTypeTextPointer(castClassName1, castClassName2, progLang) + progLangReinterpretCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangAddress[progLang] + vectorName + progLangCloseParameterSpace[progLang];	//reinterpret_cast<unordered_map<castClassName1*, castClassName2*>* >(&vectorName)
 	return castText;
 }
 
@@ -662,7 +662,7 @@ string generateCodeAllActionListAddText(string actionClassName, int progLang)
 	string actionListName = generateActionListName(actionClassName);
 	string actionClassNameRaw = removeClassTextFromClassDefinitionName(actionClassName);
 	string actionListKeyName = string(STRING_INVERTEDCOMMAS) + actionClassNameRaw + string(STRING_INVERTEDCOMMAS);
-	string codeAllActionListAddText = generateCodeAllVectorListAddText(generateAllActionListName(), actionListName, actionListKeyName, progLang);	//actionListAll.insert(pair<string, vector<NLCgenericEntityClass*> *>("actionName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&actionListName)));
+	string codeAllActionListAddText = generateCodeAllVectorListAddText(generateAllActionListName(), actionListName, actionListKeyName, progLang);	//actionListAll.insert(pair<string, vector<NLCgenericEntityClass*>* >("actionName", reinterpret_cast<vector<NLCgenericEntityClass*>* >(&actionListName)));
 	return codeAllActionListAddText;
 }
 string generateCodeAllActionListDefinitionText(int progLang)
@@ -680,7 +680,7 @@ string generateCodeAllActionIncomingListAddText(string actionIncomingClassName, 
 	string actionIncomingListName = generateActionIncomingListName(actionIncomingClassName);
 	string actionIncomingClassNameRaw = removeClassTextFromClassDefinitionName(actionIncomingClassName);
 	string actionIncomingListKeyName = string(STRING_INVERTEDCOMMAS) + actionIncomingClassNameRaw + string(STRING_INVERTEDCOMMAS);
-	string codeAllActionIncomingListAddText = generateCodeAllVectorListAddText(generateAllActionIncomingListName(), actionIncomingListName, actionIncomingListKeyName, progLang);	//actionIncomingListAll.insert(pair<string, vector<NLCgenericEntityClass*> *>("actionIncomingName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&actionIncomingListName)));
+	string codeAllActionIncomingListAddText = generateCodeAllVectorListAddText(generateAllActionIncomingListName(), actionIncomingListName, actionIncomingListKeyName, progLang);	//actionIncomingListAll.insert(pair<string, vector<NLCgenericEntityClass*>* >("actionIncomingName", reinterpret_cast<vector<NLCgenericEntityClass*>* >(&actionIncomingListName)));
 	return codeAllActionIncomingListAddText;
 }
 string generateCodeAllActionIncomingListDefinitionText(int progLang)
@@ -698,7 +698,7 @@ string generateCodeAllActionSubjectListAddText(string actionSubjectClassName, in
 	string actionSubjectListName = generateActionSubjectListName(actionSubjectClassName);
 	string actionSubjectClassNameRaw = removeClassTextFromClassDefinitionName(actionSubjectClassName);
 	string actionSubjectListKeyName = string(STRING_INVERTEDCOMMAS) + actionSubjectClassNameRaw + string(STRING_INVERTEDCOMMAS);
-	string codeAllActionSubjectListAddText = generateCodeAllVectorListAddText(generateAllActionSubjectListName(), actionSubjectListName, actionSubjectListKeyName, progLang);	//actionSubjectListAll.insert(pair<string, vector<NLCgenericEntityClass*> *>("actionSubjectName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&actionSubjectListName)));
+	string codeAllActionSubjectListAddText = generateCodeAllVectorListAddText(generateAllActionSubjectListName(), actionSubjectListName, actionSubjectListKeyName, progLang);	//actionSubjectListAll.insert(pair<string, vector<NLCgenericEntityClass*>* >("actionSubjectName", reinterpret_cast<vector<NLCgenericEntityClass*>* >(&actionSubjectListName)));
 	return codeAllActionSubjectListAddText;
 }
 string generateCodeAllActionSubjectListDefinitionText(int progLang)
@@ -716,7 +716,7 @@ string generateCodeAllActionObjectListAddText(string actionObjectClassName, int 
 	string actionObjectListName = generateActionObjectListName(actionObjectClassName);
 	string actionObjectClassNameRaw = removeClassTextFromClassDefinitionName(actionObjectClassName);
 	string actionObjectListKeyName = string(STRING_INVERTEDCOMMAS) + actionObjectClassNameRaw + string(STRING_INVERTEDCOMMAS);
-	string codeAllActionObjectListAddText = generateCodeAllVectorListAddText(generateAllActionObjectListName(), actionObjectListName, actionObjectListKeyName, progLang);	//actionObjectListAll.insert(pair<string, vector<NLCgenericEntityClass*> *>("actionObjectName", reinterpret_cast<vector<NLCgenericEntityClass*> *>(&actionObjectListName)));
+	string codeAllActionObjectListAddText = generateCodeAllVectorListAddText(generateAllActionObjectListName(), actionObjectListName, actionObjectListKeyName, progLang);	//actionObjectListAll.insert(pair<string, vector<NLCgenericEntityClass*>* >("actionObjectName", reinterpret_cast<vector<NLCgenericEntityClass*>* >(&actionObjectListName)));
 	return codeAllActionObjectListAddText;
 }
 string generateCodeAllActionObjectListDefinitionText(int progLang)

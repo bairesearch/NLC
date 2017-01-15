@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,7 +57,7 @@ NLCsuperphrase::~NLCsuperphrase(void)
 }
 #endif
 
-bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents, int logicalConditionOperator, bool * additionalClosingBracketRequired, bool parallelReplacement)
+bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, bool parallelReplacement)
 {
 	bool result = true;
 	
@@ -145,7 +145,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents
 	return result;
 }
 
-bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence * firstNLCsentenceInFullSentence, bool additionalClosingBracketRequired)
+bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence* firstNLCsentenceInFullSentence, bool additionalClosingBracketRequired)
 {
 	bool result = true;
 	
@@ -190,7 +190,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence * firs
 
 
 
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence * firstNLCsentenceInFullSentence, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSuperphraseContents)
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSuperphraseContents)
 {
 	bool result = true;
 	
@@ -209,8 +209,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 		
 		}
 
-		NLCsentence * firstPhraseInLogicalConditionCommandOld = firstNLCsentenceInFullSentence;
-		NLCsentence * lastPhraseBeforeLogicalConditionCommand = firstNLCsentenceInFullSentence;
+		NLCsentence* firstPhraseInLogicalConditionCommandOld = firstNLCsentenceInFullSentence;
+		NLCsentence* lastPhraseBeforeLogicalConditionCommand = firstNLCsentenceInFullSentence;
 
 		if(phraseIndexOfFirstLogicalCommand > 0)
 		{
@@ -260,7 +260,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 
 			int indentationOfLogicalCommand = firstNLCsentenceInFullSentence->indentation + 1;
 			//cout << "indentationOfLogicalCommand = " << indentationOfLogicalCommand << endl;
-			NLCsentence * firstPhraseInLogicalConditionCommand = new NLCsentence();
+			NLCsentence* firstPhraseInLogicalConditionCommand = new NLCsentence();
 			firstPhraseInLogicalConditionCommand->indentation = indentationOfLogicalCommand;
 			firstPhraseInLogicalConditionCommand->next = firstPhraseInLogicalConditionCommandOld->next;
 			firstPhraseInLogicalConditionCommand->sentenceContents = firstPhraseInLogicalConditionCommandOld->sentenceContents;
@@ -292,7 +292,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 			cout << "detectedLogicalConditionCommand; modified mathText for firstNLCsentenceInFullSentence = " << firstNLCsentenceInFullSentence->mathText << endl;
 			cout << "now generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand()... " << endl;
-			cout << "sentenceIndex = " << *sentenceIndex << endl;
+			cout << "sentenceIndex = " <<* sentenceIndex << endl;
 			#endif
 			
 			if(logicalConditionCommandContainsNLPparsablePhrase)
@@ -384,7 +384,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 	{
 		if(firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal > 1)
 		{
-			NLCsentence * currentPhrase2 = firstNLCsentenceInFullSentence;
+			NLCsentence* currentPhrase2 = firstNLCsentenceInFullSentence;
 			for(int phraseIndex = 0; phraseIndex < firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal-1; phraseIndex++)
 			{
 				currentPhrase2 = currentPhrase2->next;
@@ -464,7 +464,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 
 
 
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCsentence * firstNLCsentenceInFullSentence, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, bool additionalClosingBracketRequired)
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired)
 {	
 	bool result = true;
 
@@ -473,7 +473,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 	//for logical condition NLP parsable phrases, look for first instance of keywords has/is, and take the preceeding text as the context
 	//this enables elimination for need for referencing in conjunctions, eg "if{(}the dog has a ball and [the dog] has an apple{)}"
 	//FINISH THIS...
-	NLCsentence * currentPhrasePrimarySubject = firstNLCsentenceInFullSentence;
+	NLCsentence* currentPhrasePrimarySubject = firstNLCsentenceInFullSentence;
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	cout << "firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal = " << firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal << endl;
 	#endif
@@ -595,7 +595,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 				cout << "subjectText = " << subjectText << endl;
 				#endif
 
-				NLCsentence * currentPhraseReferenceToPrimarySubject = currentPhrasePrimarySubject->next;
+				NLCsentence* currentPhraseReferenceToPrimarySubject = currentPhrasePrimarySubject->next;
 				for(int phraseIndex2=phraseIndex+1; phraseIndex2<firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal; phraseIndex2++)					
 				{
 					//now for each secondary auxillary referencing the subject, artificially generate (copy) the subject text
@@ -684,7 +684,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lineContents, bool * detectedLogicalConditionCommand, bool * foundImplicitConjunctions, string * logicalConditionCommandSuperphraseContents)
+bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, bool* foundImplicitConjunctions, string* logicalConditionCommandSuperphraseContents)
 {
 	bool result = true;
 	
@@ -692,11 +692,11 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lin
 	*detectedLogicalConditionCommand = false;
 	
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-	cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand: lineContents = " << *lineContents << endl;
+	cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand: lineContents = " <<* lineContents << endl;
 	#endif
 	
-	NLCsuperphrase * firstNLCsuperphraseInList = new NLCsuperphrase();
-	NLCsuperphrase * currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	NLCsuperphrase* firstNLCsuperphraseInList = new NLCsuperphrase();
+	NLCsuperphrase* currentNLCsuperphraseInList = firstNLCsuperphraseInList;
 	
 	int startPosToSearchForComma = 0;
 	int commaIndex = 0;
@@ -741,7 +741,7 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lin
 		
 		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 		cout << "\ngenerateLogicalConditionImplicitConjunctionsAndIdentifyCommand(): create new NLCsuperphrase" << endl;
-		cout << "lineContents = " << *lineContents << endl;
+		cout << "lineContents = " <<* lineContents << endl;
 		cout << "startPosToSearchForComma = " << startPosToSearchForComma << endl;
 		cout << "indexOfNextComma = " << indexOfNextComma << endl;
 		cout << "superphraseContents = " << superphraseContents << endl;
@@ -787,7 +787,7 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lin
 		}
 		else if(!(currentNLCsuperphraseInList->hasConjunction))
 		{
-			NLCsuperphrase * currentNLCsuperphraseInList2 = currentNLCsuperphraseInList;
+			NLCsuperphrase* currentNLCsuperphraseInList2 = currentNLCsuperphraseInList;
 			bool foundConjunctionOfFuturePhrase = false;
 			int conjunctionTypeOfFuturePhrase = INT_DEFAULT_VALUE;
 			while(currentNLCsuperphraseInList2->next != NULL)
@@ -810,11 +810,11 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lin
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(): foundConjunctionOfFuturePhrase" << endl;
 				cout << "update the lineContents with an artifical conjunction: currentNLCsuperphraseInList->phraseContents = " << currentNLCsuperphraseInList->phraseContents << endl;
-				cout << "old lineContents = " << *lineContents << endl;
+				cout << "old lineContents = " <<* lineContents << endl;
 				#endif
 				lineContents->insert(currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase, preprocessorMathOperatorsEquivalentConjunctionsWithoutEndWhiteSpace[conjunctionTypeOfFuturePhrase]);
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-				cout << "new lineContents = " << *lineContents << endl;
+				cout << "new lineContents = " <<* lineContents << endl;
 				#endif
 			}
 		}
@@ -843,11 +843,11 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lin
 				//found first phrase in logical condition command
 				*detectedLogicalConditionCommand = true; 
 				//*indexOfLogicalConditionCommand = currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase;
-				//cout << "indexOfLogicalConditionCommand = " << *indexOfLogicalConditionCommand << endl;
+				//cout << "indexOfLogicalConditionCommand = " <<* indexOfLogicalConditionCommand << endl;
 				*logicalConditionCommandSuperphraseContents = currentNLCsuperphraseInList->phraseContents;
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(): found first phrase in logical condition command" << endl;
-				cout << "logicalConditionCommandSuperphraseContents = " << *logicalConditionCommandSuperphraseContents << endl;
+				cout << "logicalConditionCommandSuperphraseContents = " <<* logicalConditionCommandSuperphraseContents << endl;
 				#endif
 			}
 		} 
@@ -866,13 +866,13 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lin
 		commaIndex++;
 	}
 
-	//cout << "lineContents = " << *lineContents << endl;
+	//cout << "lineContents = " <<* lineContents << endl;
 	return result;
 }	
 
 
 
-bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentence ** currentNLCsentenceInList, NLCsentence * firstPhraseInCommand, string mathTextInCommand, int * sentenceIndex, int sentenceIndexOfFullSentence, int currentIndentation)
+bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentence** currentNLCsentenceInList, NLCsentence* firstPhraseInCommand, string mathTextInCommand, int* sentenceIndex, int sentenceIndexOfFullSentence, int currentIndentation)
 {	
 	int startPosToSearchForConjunction = 0;
 	int conjunctionIndex = 0;
@@ -914,12 +914,12 @@ bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentenc
 		cout << "subCommandContents = " << subCommandContents << endl;
 		#endif
 		
-		NLCsentence * fullSentenceInCommand = (*currentNLCsentenceInList);
+		NLCsentence* fullSentenceInCommand = (*currentNLCsentenceInList);
 		(*currentNLCsentenceInList)->mathText = mathTextInCommand;
 		(*currentNLCsentenceInList)->isMath = true;
 		(*currentNLCsentenceInList)->sentenceContents = "";
 		
-		NLCsentence * currentPhraseInCommand = firstPhraseInCommand;
+		NLCsentence* currentPhraseInCommand = firstPhraseInCommand;
 		int phraseIndexInSubCommand = 0;
 		while(currentPhraseInCommand->next != NULL)
 		{
@@ -943,7 +943,7 @@ bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentenc
 					cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): no mathText detected in subcommand: " << mathTextInCommand << endl;
 					#endif
 					
-					/* //this implementation is not currently possible because NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS == 2
+					/*//this implementation is not currently possible because NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS == 2
 					#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 					string sentenceContents = currentPhraseInCommand->sentenceContents;
 					if(isStringValidVariableName(sentenceContents))

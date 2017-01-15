@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,15 +69,15 @@ public:
 };
 #endif
 
-bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents, int logicalConditionOperator, bool * additionalClosingBracketRequired, bool parallelReplacement);
-bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence * firstNLCsentenceInFullSentence, bool additionalClosingBracketRequired);
+bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, bool parallelReplacement);
+bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence* firstNLCsentenceInFullSentence, bool additionalClosingBracketRequired);
 
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence * firstNLCsentenceInFullSentence, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSuperphraseContents);
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCsentence * firstNLCsentenceInFullSentence, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, bool additionalClosingBracketRequired);
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired, bool detectedLogicalConditionCommand, int phraseIndexOfFirstLogicalCommand, string logicalConditionCommandSuperphraseContents);
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired);
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lineContents, bool * detectedLogicalConditionCommand, bool * foundImplicitConjunctions, string * logicalConditionCommandSuperphraseContents);
-bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentence ** currentNLCsentenceInList, NLCsentence * firstPhraseInCommand, string mathTextInCommand, int * sentenceIndex, int sentenceIndexOfFullSentence, int currentIndentation);
+bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, bool* foundImplicitConjunctions, string* logicalConditionCommandSuperphraseContents);
+bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentence** currentNLCsentenceInList, NLCsentence* firstPhraseInCommand, string mathTextInCommand, int* sentenceIndex, int sentenceIndexOfFullSentence, int currentIndentation);
 #endif
 	
 #endif

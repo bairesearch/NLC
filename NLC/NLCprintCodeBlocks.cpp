@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,12 +41,12 @@
 #include "NLCprintDefs.h"
 #include "GIAtranslatorDefs.h"	//required for ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND/ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_OR
 
-bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code, int level)
+bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition* >* classDefinitionList, int progLang, string* code, int level)
 {
-	NLCcodeblock * currentCodeBlockInLevel = firstCodeBlockInLevel;
+	NLCcodeblock* currentCodeBlockInLevel = firstCodeBlockInLevel;
 	while(currentCodeBlockInLevel->next != NULL)
 	{
-		NLCitem * param1 = currentCodeBlockInLevel->parameters.at(0);
+		NLCitem* param1 = currentCodeBlockInLevel->parameters.at(0);
 		string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 
 		//for logical operations only (NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY/NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION/NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY/NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION);
@@ -67,7 +67,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 
 			bool hasActionSubject = false;
-			NLCitem * functionOwnerArgument = NULL;
+			NLCitem* functionOwnerArgument = NULL;
 			
 			#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string functionOwnerNameWithReferenceDelimiter = "";
@@ -82,7 +82,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			}
 			#endif
 			
-			NLCitem * functionArgument = NULL;
+			NLCitem* functionArgument = NULL;
 			string functionName = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, &functionArgument))
 			{
@@ -109,7 +109,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_NEW_FUNCTION" << endl;
 			#endif
 			
-			NLCitem * functionArgument = NULL;
+			NLCitem* functionArgument = NULL;
 			string functionName = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, &functionArgument))
 			{
@@ -144,14 +144,14 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 		#ifdef NLC_RECORD_ACTION_HISTORY
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT)
 		{
-			NLCitem * functionArgument = NULL;
+			NLCitem* functionArgument = NULL;
 			string functionName = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, &functionArgument))
 			{
 				functionName = functionArgument->functionName;
 			}
 			
-			NLCitem * functionOwnerArgument = NULL;
+			NLCitem* functionOwnerArgument = NULL;
 			string functionOwnerName = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 			{
@@ -165,14 +165,14 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT)
 		{
-			NLCitem * functionArgument = NULL;
+			NLCitem* functionArgument = NULL;
 			string functionName = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, &functionArgument))
 			{
 				functionName = functionArgument->functionName;
 			}
 			
-			NLCitem * functionObjectArgument = NULL;
+			NLCitem* functionObjectArgument = NULL;
 			string functionObjectName = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
 			{
@@ -190,7 +190,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string codeBlockTextCreate = generateCodeNewTempEntity(param2, progLang);
 			printLine(codeBlockTextCreate, level, code);
 			generateCodeAddPropertyEntityToList(param1, param2, progLang, code, level);
@@ -200,7 +200,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_NEW_ENTITY_TO_LOCAL_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string codeBlockTextCreate = generateCodeNewTempEntity(param2, progLang);
 			printLine(codeBlockTextCreate, level, code);
 			string codeBlockText = generateLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
@@ -211,8 +211,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string codeBlockTextCreate = generateCodeNewTempEntity(param3, progLang);
 			printLine(codeBlockTextCreate, level, code);
 			#ifndef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
@@ -227,8 +227,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			#ifndef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 			string codeBlockTextCreate2 = generateCodeNewTempEntity(param2, progLang);
 			printLine(codeBlockTextCreate2, level, code);
@@ -241,7 +241,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_PROPERTY" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			generateCodeAddPropertyEntityToList(param1, param2, progLang, code, level);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_LOCAL_LIST)
@@ -249,7 +249,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_LOCAL_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 
 			string codeBlockText = generateLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
 			
@@ -260,8 +260,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_CONDITION" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			#ifndef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 			string codeBlockTextCreate2 = generateCodeNewTempEntity(param2, progLang);
 			printLine(codeBlockTextCreate2, level, code);
@@ -299,7 +299,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeConditionListDefinitionTypeText(param1->className, param2->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
@@ -322,7 +322,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_CONDITION_NAME)
 		{
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string tempVarEntityNameCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityNameTestText(param1, progLang) + STRING_SPACE + progLangAnd[progLang] + STRING_SPACE + generateCodeEntityNameTestText(param2, progLang) + progLangCloseParameterSpace[progLang];	//if((tempConditionEntity->entityName == param1->name) && (tempConditionObjectEntity->entityName == param2->name)) {
 			printLine(tempVarEntityNameCheckText, (level), code);
 			printLine(progLangOpenBlock[progLang], level, code);
@@ -402,7 +402,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 
 			string codeBlockTextDeclareAndInitialiseVariable = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + param2->instanceName + progLangEndLine[progLang];
 			printLine(codeBlockTextDeclareAndInitialiseVariable, level, code);
@@ -488,7 +488,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangHasCondition[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(!(context1->param1param2ConditionList.empty())){
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
@@ -510,7 +510,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 
 			string codeBlockText = progLangWhile[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangHasCondition[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//while(!(context1->param1param2ConditionList.empty())){
 			printLine(codeBlockText, level, code);
@@ -582,7 +582,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_REMOVE_PROPERTIES" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 
 			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.clear();
 			printLine(codeBlockText, level, code);
@@ -601,8 +601,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className,  param3->className) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveConditions[progLang] + progLangEndLine[progLang];	//context1->param1->param2param3ConditionList.clear();
 			printLine(codeBlockText, level, code);
 
@@ -632,7 +632,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_INT_VARIABLE" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string codeBlockText = progLangInteger[progLang] + param1->name + progLangEquals[progLang] + param2->name + progLangEndLine[progLang];
 			printLine(codeBlockText, level, code);
 		}
@@ -667,7 +667,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 	
 			string localListDeclarationText = generateCodeGenericListDefinitionText(param1, genericListAppendName, progLang) + progLangEndLine[progLang];	//vector<param1Class*> param1CategoryList;
@@ -678,8 +678,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 
 			string codeBlockText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1CategoryList.push_back(param2);
@@ -691,7 +691,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 			
 			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(param1->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
@@ -706,7 +706,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(param1CategoryList.empty())){
@@ -727,10 +727,10 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string valueString = param3->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1CategoryList.size() > X){
@@ -745,7 +745,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_GET_BACK_GENERIC_ENTITY_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 
 			string tempVarDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangEndLine[progLang];
@@ -758,8 +758,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 			
 			string codeBlockText = "";
@@ -776,8 +776,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 			
 			#ifdef NLC_NONOO
@@ -925,7 +925,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string lastSentenceReferenced = param2->name;
 
 			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
@@ -944,8 +944,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 			
 			string codeBlockText = "";
@@ -962,8 +962,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 			
 			#ifdef NLC_NONOO
@@ -1036,7 +1036,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 	
 			string localListDeclarationText = generateCodeEntityListDefinitionTypeText2(param1->className, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangEndLine[progLang];	//vector<vector<param1Class*>> param1instanceTypeList;
@@ -1047,9 +1047,9 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST2" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
-			NLCitem * param4 = currentCodeBlockInLevel->parameters.at(3);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param4 = currentCodeBlockInLevel->parameters.at(3);
 			string genericListAppendName = param3->name;
 			string genericListAppendName2 = param4->name;
 
@@ -1062,7 +1062,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST2" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 			
 			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText2(param1->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
@@ -1079,10 +1079,10 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_GENERIC_ENTITY" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string genericListAppendName = param2->name;
 
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string valueString = param3->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1CategoryList.size() > X){
@@ -1097,7 +1097,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string valueString = param2->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param1->name + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(variable > x){
@@ -1114,7 +1114,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string valueString = param2->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + generatePropertyListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(context1->param1PropertyList.size() > x){
@@ -1128,8 +1128,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION" << endl;
 			#endif
 
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);			
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);			
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string valueString = param3->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(context1->param1param2ConditionList.size() > x){
@@ -1180,8 +1180,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_EXECUTE_FUNCTION" << endl;
 			#endif
 			
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_PRINT_LEVEL_USED_INSTEAD_OF_CONTEXT_LEVEL
 			string contextLevelString = convertIntToString(level);
 			#else
@@ -1217,7 +1217,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + contextListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + contextListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<genericEntityClass*> ::iterator iterX = contextList.begin(); iterX < contextList.end(); iterX++)
 				printLine(codeBlockText, (level+1), code);
 					printLine(progLangOpenBlock[progLang], (level+1), code);	//{
-					string tempVarDeclarationText = generateTempEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//genericEntityClass* genericEntity = *iter2;
+					string tempVarDeclarationText = generateTempEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//genericEntityClass* genericEntity =* iter2;
 					printLine(tempVarDeclarationText, (level+2), code);
 					string popLastSentenceReferencedText = tempVariableName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackRemove[progLang] + progLangEndLine[progLang];	//genericEntity->lastSentenceReferenced.pop();
 					printLine(popLastSentenceReferencedText, (level+2), code);
@@ -1257,7 +1257,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION" << endl;
 			#endif
 			
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);	//functionArgumentPassCast
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);	//functionArgumentPassCast
 
 			string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
 			//string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)	
@@ -1284,7 +1284,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(codeBlockTextTemplateHeader, level, code);
 			printLine(codeBlockTextFunctionHeader, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
-				string codeBlockTextDeclareVectorPointerAndSet = generateCodeEntityListDefinitionTypeTextPointer(templateName2, progLang) + entity2InstanceListName + progLangEquals[progLang] + generateReinterpretCastOfVector(entity1InstanceListName, templateName2, progLang) + progLangEndLine[progLang];	//vector<E2*> * E2InstanceList = reinterpret_cast<vector<E2*> *>(&E1List);
+				string codeBlockTextDeclareVectorPointerAndSet = generateCodeEntityListDefinitionTypeTextPointer(templateName2, progLang) + entity2InstanceListName + progLangEquals[progLang] + generateReinterpretCastOfVector(entity1InstanceListName, templateName2, progLang) + progLangEndLine[progLang];	//vector<E2*>* E2InstanceList = reinterpret_cast<vector<E2*>* >(&E1List);
 				printLine(codeBlockTextDeclareVectorPointerAndSet, (level+1), code);
 				/*
 				string codeBlockTextDeclareNewVector = generateCodeEntityListDefinitionTypeText(templateName2, progLang) + entity2InstanceListName + progLangEndLine[progLang];	//vector<E2*> E2InstanceList;
@@ -1292,7 +1292,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + progLangTypeName[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(typename vector<E1*> ::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
 				printLine(codeBlockTextForLoop, (level+1), code);
 				printLine(progLangOpenBlock[progLang], (level+1), code);	//{
-					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity = *iter1;
+					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity =* iter1;
 					printLine(tempVarDeclarationText, (level+2), code);;
 					string addCastedEntityToVectorText = entity2InstanceListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(tempVariableName, templateName2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//E2InstanceList.push_back(dynamic_cast<E2*>(genericEntity));
 					printLine(addCastedEntityToVectorText, (level+2), code);
@@ -1310,7 +1310,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string aliasName = param2->name;
 
 			string codeBlockTextAddAliasToEntityAliasList = param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + progLangStringOpenClose[progLang] + aliasName + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//entity->aliasList.push_back("aliasName");			
@@ -1362,7 +1362,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				printLine(codeBlockTextForLoop, level+q, code);
 				printLine(progLangOpenBlock[progLang], level+q, code);	//{
 					q++;
-					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity = *iter1;
+					string tempVarDeclarationText = generateTempEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity =* iter1;
 					printLine(tempVarDeclarationText, (level+q), code);
 					//NB this code could be generated using existing codeblock (NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST)
 
@@ -1412,8 +1412,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION" << endl;
 			#endif
 			
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 
 			#ifdef NLC_NONOO
@@ -1440,7 +1440,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string tempEntitySetText = generateTempEntityDeclarationSetToNull(param1, param2, progLang);	//param1 = param2;
 			printLine(tempEntitySetText, level, code);
 		}
@@ -1459,7 +1459,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string listIndexString = param2->name;
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + listIndexString + progLangLessThanOrEqualTo[progLang] + contextParam1 + generatePropertyListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangCloseParameterSpace[progLang];		//if(X <= param1PropertyList.size()){
 			printLine(codeBlockText, level, code);
@@ -1473,7 +1473,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IN_LOCAL_LIST" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string listIndexString = param2->name;
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + listIndexString + progLangLessThanOrEqualTo[progLang] + generateLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangCloseParameterSpace[progLang];		//if(X <= param1LocalList.size()){
 			printLine(codeBlockText, level, code);
@@ -1489,7 +1489,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			
 			string objectName = param1->instanceName;
 			string classNameToFind = param2->name;
@@ -1504,7 +1504,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			
 			string objectClassName = param1->className; 
 			string classNameToFind = param2->name;
@@ -1519,9 +1519,9 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS" << endl;
 			#endif
-			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			
-			string codeBlockConvertParentToChildClassText = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + generateDynamicCastOfEntity(param1->instanceName, param2->className, progLang) + progLangEndLine[progLang];	//param2class * param2instance = dynamic_cast<param2class*>(param1instance);
+			string codeBlockConvertParentToChildClassText = generateTempEntityDeclaration(param2, progLang) + progLangEquals[progLang] + generateDynamicCastOfEntity(param1->instanceName, param2->className, progLang) + progLangEndLine[progLang];	//param2class* param2instance = dynamic_cast<param2class*>(param1instance);
 			printLine(codeBlockConvertParentToChildClassText, level, code);
 			string codeBlockRenameChildClassObjectToChildClassText = generateTempEntityName(param2) + progLangObjectReferenceDelimiter[progLang] + progLangClassNameVariableName[progLang] + progLangEquals[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//param2instance->name = "param2";	//added 1n6b
 			printLine(codeBlockRenameChildClassObjectToChildClassText, level, code);
@@ -1567,15 +1567,15 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 
 
-void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * codeBlockParameters, string * functionArguments, int progLang, string * functionDeclarationOwnerName, string * functionDeclarationObjectName)
+void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition* >* classDefinitionList, vector<NLCitem*>* codeBlockParameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName)
 {
-	vector<NLCitem*> * parameters;
+	vector<NLCitem*>* parameters;
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	parameters = codeBlockParameters;
 
 	string functionName = "";
-	NLCitem * functionArgument = NULL;
+	NLCitem* functionArgument = NULL;
 	if(findFunctionArgument(codeBlockParameters, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, &functionArgument))
 	{
 		functionName = functionArgument->name;
@@ -1587,7 +1587,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	
 	string functionOwnerName = "";
-	NLCitem * functionOwnerArgument = NULL;
+	NLCitem* functionOwnerArgument = NULL;
 	bool hasFunctionOwnerClass = false;
 	if(findFunctionArgument(codeBlockParameters, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 	{
@@ -1596,7 +1596,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	
 	string functionObjectName = "";
-	NLCitem * functionObjectArgument = NULL;
+	NLCitem* functionObjectArgument = NULL;
 	bool hasFunctionObjectClass = false;
 	if(findFunctionArgument(codeBlockParameters, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
 	{
@@ -1612,7 +1612,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	cout << "functionOwnerName = " << functionOwnerName << endl;
 	cout << "functionObjectName = " << functionObjectName << endl;
 	#endif
-	NLCclassDefinition * functionDeclaration = NULL;	//NB "functionDeclaration" should be "functionDeclaration"
+	NLCclassDefinition* functionDeclaration = NULL;	//NB "functionDeclaration" should be "functionDeclaration"
 	if(findFunctionDeclarationClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -1625,7 +1625,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 			cout << "(hasFunctionOwnerClass && !foundFunctionOwnerExactMatch)" << endl;
 			#endif
-			NLCitem * functionOwnerArgumentDeclaration = NULL;
+			NLCitem* functionOwnerArgumentDeclaration = NULL;
 			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgumentDeclaration))
 			{
 				functionOwnerArgument->functionArgumentPassCastRequired = true;
@@ -1645,7 +1645,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 			cout << "(hasFunctionObjectClass && !foundFunctionObjectExactMatch)" << endl;
 			#endif
-			NLCitem * functionObjectArgumentDeclaration = NULL;
+			NLCitem* functionObjectArgumentDeclaration = NULL;
 			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgumentDeclaration))
 			{
 				functionObjectArgument->functionArgumentPassCastRequired = true;
@@ -1663,11 +1663,11 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 		for(vector<NLCitem*>::iterator parametersIterator = functionDeclaration->parameters.begin(); parametersIterator < functionDeclaration->parameters.end(); parametersIterator++)
 		{
-			NLCitem * currentItem = *parametersIterator;
+			NLCitem* currentItem =* parametersIterator;
 			//cout << "1 currentItem->itemType = " << currentItem->itemType << endl;
 			if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 			{
-				NLCitem * newFunctionArgument = new NLCitem(currentItem);
+				NLCitem* newFunctionArgument = new NLCitem(currentItem);
 				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
 				parameters->push_back(newFunctionArgument);
 			}
@@ -1681,7 +1681,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem * currentItem = *parametersIterator;
+		NLCitem* currentItem =* parametersIterator;
 
 		//cout << "2 currentItem->itemType = " << currentItem->itemType << endl;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
@@ -1689,12 +1689,12 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			//cout << "3 currentItem->name = " << currentItem->name << endl;
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
 			bool categoryList = false;
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
-			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
+			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			//*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
@@ -1702,7 +1702,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
@@ -1710,9 +1710,9 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 			
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -1727,20 +1727,20 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 			bool categoryList = false;
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
@@ -1748,9 +1748,9 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
+			*functionArguments =* functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList);
 			#else
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 			
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -1767,17 +1767,17 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeConditionPairReferenceText(currentItem, progLang);
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_PROPERTY)
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 		}
 		#endif
 		*/
@@ -1785,7 +1785,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 }
 
 
-string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang, bool categoryList)
+string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLang, bool categoryList)
 {
 	string codePropertyTypeText = "";
 	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_AS_FUNCTION_EXECUTION_ARGUMENTS
@@ -1816,7 +1816,7 @@ string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progL
 	return codePropertyTypeText;
 }
 
-string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int progLang)
+string generateCodeSingularReferenceText(NLCitem* functionArgumentItem, int progLang)
 {
 	string codePropertyTypeText = functionArgumentItem->instanceName;
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
@@ -1834,7 +1834,7 @@ string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int pro
 }
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang, bool categoryList)
+string printCodeBlockCastVectorExecuteFunction(NLCitem* functionArgumentItem, int progLang, bool categoryList)
 {
 	//see NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION
 	
@@ -1860,7 +1860,7 @@ string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, i
 #endif
 		
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-string generateCodeConditionPairReferenceText(NLCitem * functionArgumentConditionItem, int progLang)
+string generateCodeConditionPairReferenceText(NLCitem* functionArgumentConditionItem, int progLang)
 {
 	//do: add dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
 	string codeConditionPairTypeText = generateCodeConditionPairTextWithContext(functionArgumentConditionItem->name, functionArgumentConditionItem->className, functionArgumentConditionItem->instanceName, functionArgumentConditionItem->className2, functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang);
@@ -1870,29 +1870,29 @@ string generateCodeConditionPairReferenceText(NLCitem * functionArgumentConditio
 
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*> * parameters, string * functionArguments, int progLang)
+void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*>* parameters, string* functionArguments, int progLang)
 {
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem * currentItem = *parametersIterator;
+		NLCitem* currentItem =* parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 		}
 	}
 }
 #endif
 
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> * parameters, string * functionArguments, int progLang, string * functionDeclarationOwnerName, string * functionDeclarationObjectName)
+void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>* parameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName)
 {
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem * currentItem = *parametersIterator;
+		NLCitem* currentItem =* parametersIterator;
 		#ifdef NLC_DEBUG
 		//cout << "generateFunctionArgumentsBasedOnActionAndActionObjectVars():" << endl;
 		//cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
@@ -1906,12 +1906,12 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#endif
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
+			*functionArguments =* functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			*functionDeclarationOwnerName = currentItem->name;
@@ -1926,12 +1926,12 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#endif
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
+			*functionArguments =* functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
@@ -1941,12 +1941,12 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#endif
 			if(*functionArguments != "")
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				*functionArguments =* functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+			*functionArguments =* functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments = *functionArguments + generateTempEntityDeclaration(currentItem, progLang);
+			*functionArguments =* functionArguments + generateTempEntityDeclaration(currentItem, progLang);
 			#endif	
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			*functionDeclarationObjectName = currentItem->name;
@@ -1961,14 +1961,14 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 
 
 
-string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang)
+string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang)
 {
 	bool foundFunctionOwner = false;
 	string functionOwnerContext = "";
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem * currentItem = *parametersIterator;
+		NLCitem* currentItem =* parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
 			functionOwnerContext = progLangClassMemberFunctionDefaultType[progLang] + currentItem->className + progLangFunctionOwnerClassDelimiter[progLang];
@@ -1984,12 +1984,12 @@ string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang)
 }
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-string generateLogicalConjunctionOfBoolsText(vector<NLCitem*> * parameters, int progLang)
+string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int progLang)
 {
 	string logicalConjunctionOfBoolsText = "";
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
-		NLCitem * currentItem = *parametersIterator;
+		NLCitem* currentItem =* parametersIterator;
 		if(currentItem->conjunctionType == ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND)
 		{
 			logicalConjunctionOfBoolsText = logicalConjunctionOfBoolsText + STRING_SPACE + progLangAnd[progLang] + STRING_SPACE;

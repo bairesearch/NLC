@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10e 26-January-2015
+ * Project Version: 1n11a 27-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,25 +48,25 @@ using namespace std;
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
 
-bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code, int level);	//classDefinitionList is required by NLC_SUPPORT_INPUT_FILE_LISTS only
-	void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * codeBlockParameters, string * functionArguments, int progLang, string * functionDeclarationOwnerName, string * functionDeclarationObjectName);
-		string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang, bool categoryList);
-		string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int progLang);
+bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition* >* classDefinitionList, int progLang, string* code, int level);	//classDefinitionList is required by NLC_SUPPORT_INPUT_FILE_LISTS only
+	void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition* >* classDefinitionList, vector<NLCitem*>* codeBlockParameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
+		string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLang, bool categoryList);
+		string generateCodeSingularReferenceText(NLCitem* functionArgumentItem, int progLang);
 			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-			string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang, bool categoryList);
+			string printCodeBlockCastVectorExecuteFunction(NLCitem* functionArgumentItem, int progLang, bool categoryList);
 			#endif
 		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateCodeConditionPairReferenceText(NLCitem * functionArgumentConditionItem, int progLang);
+		string generateCodeConditionPairReferenceText(NLCitem* functionArgumentConditionItem, int progLang);
 		#endif
 	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-	void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
+	void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLCitem*>* parameters, string* functionArguments, int progLang);
 	#endif
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-	void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> * parameters, string * functionArguments, int progLang, string * functionDeclarationOwnerName, string * functionDeclarationObjectName);
+	void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>* parameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
 	#endif
-	string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang);
+	string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang);
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-string generateLogicalConjunctionOfBoolsText(vector<NLCitem*> * parameters, int progLang);
+string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int progLang);
 #endif
 
 #endif

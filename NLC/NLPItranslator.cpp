@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3c 27-October-2013
+ * Project Version: 1c3d 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -420,8 +420,8 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						classDefinitionList->push_back(targetClassDefinition);
 					}
 					#ifndef NLPI_BAD_IMPLEMENTATION
-					//if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))	//TEMPORARILY REMOVED FOR DEBUGGING
-					if((targetEntity->isCondition) && !(targetEntity->isConcept))
+					if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))	//CAN BE TEMPORARILY MODIFED FOR DEBUGGING
+					//if((targetEntity->isCondition) && !(targetEntity->isConcept))
 					{
 						targetClassDefinition->isActionOrConditionInstanceNotClass = true;
 						//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
@@ -446,7 +446,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
 						if(!foundLocalClassDefinition)
 						{
-							cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
+							//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->conditionList.push_back(targetClassDefinition);
 							targetClassDefinition->actionOrConditionInstance = targetEntity;
 						}						

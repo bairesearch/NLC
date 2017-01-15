@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7b 14-October-2014
+ * Project Version: 1k7c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -240,13 +240,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				#endif
 				//add final word in sentence to phrase if it is legal
 				currentWord = currentWord + c;
-				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
 				bool illegalFirstWordCharacterFound = charInCharArray(currentWord[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);
 				if(!illegalFirstWordCharacterFound)
 				{
 				#endif
 					finalWordInSentenceFoundAndIsLegal = true;
-				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
 				}
 				#endif
 			}
@@ -259,7 +259,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 			//cout << "!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal): " << c << endl;
 			
-			#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
+			#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
 			if(mandatoryCharacterFoundInCurrentWord)
 			{
 				bool illegalFirstWordCharacterFound = charInCharArray(currentWord[0], preprocessorMathNLPparsableCharactersIllegalAsFirst, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES);

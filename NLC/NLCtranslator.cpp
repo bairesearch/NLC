@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7b 14-October-2014
+ * Project Version: 1k7c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,6 +97,29 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	}
 	#endif
 
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	//NLC translator Part prep B.
+	if(!removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences))
+	{
+		result = false;
+	}
+	#endif
+
+	//NLC translator Part prep C.
+	if(!identifyAndTagAllLogicalConditionOperations(entityNodesActiveListComplete, maxNumberSentences))
+	{
+		result = false;
+	}
+	#endif
+	
+	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
+	if(!checkAlphaNumericEntityNames(entityNodesActiveListComplete, maxNumberSentences))
+	{
+		result = false;
+	}	
+	#endif
+	
 	//NLC translator Part 1.
 	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList))
 	{
@@ -638,6 +661,25 @@ bool getFilesFromFileList2(string inputListFileName, vector<string> * inputTextF
 }
 
 #endif
+
+#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
+bool checkAlphaNumericEntityNames(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
+{
+	bool result = true;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(!isStringNLPparsableWord(entity->entityName))
+		{
+			result = false;
+			cout << "checkAlphaNumericEntityNames(): user input error - entity names cannot start with numbers: " << entity->entityName << endl;
+			exit(0);
+		}
+	}
+	return result;
+}
+#endif
+	
 
 
 

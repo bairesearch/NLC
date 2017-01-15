@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k7b 14-October-2014
+ * Project Version: 1k7c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -102,12 +102,10 @@ public:
 
 #ifdef NLC_PREPROCESSOR_MATH
 string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence * currentPhrase);
-
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 int generateDummyNumericalValue(int predefinedVariableIndex);
 #endif
-
 #endif
-
+bool isStringNLPparsableWord(string phrase);
 
 #endif

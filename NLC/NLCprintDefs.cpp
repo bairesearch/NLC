@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2a 05-September-2014
+ * Project Version: 1j2b 06-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,12 +54,18 @@ string generatePropertyListName(string propertyInstanceName)
 	return propertyListName;
 }
 
-string generatePropertyLocalListName(string propertyInstanceName)
+string generatePropertyLocalListName(NLCitem * param)
 {
-	#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
-	string propertyListName = propertyInstanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		string instanceName = param->instanceName;
+		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
+		string propertyListName = instanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+		#else
+		string propertyListName = instanceName + NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION + NLC_ITEM_TYPE_LISTVAR_APPENDITION;	
+		#endif
 	#else
-	string propertyListName = propertyInstanceName + NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION;	
+		string className = param->className;
+		string propertyListName = className + NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
 	#endif
 	return propertyListName;
 }

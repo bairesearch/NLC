@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l11b 07-November-2014
+ * Project Version: 1l11c 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,7 +60,6 @@
 			#define NLC_USE_ADVANCED_REFERENCING	//added 1j3a+ (replaces GIA_USE_ADVANCED_REFERENCING)
 			#ifdef NLC_USE_ADVANCED_REFERENCING
 				#define NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME "lastSentenceReferenced"
-				#define NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES	//1j8a
 				#define NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassSingularDefiniteReferencingTests"
 				#define NLC_USE_ADVANCED_REFERENCING_COMMENT
 				#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
@@ -91,6 +90,7 @@
 			#endif
 		#endif
 		#define NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassPluralDefiniteReferencingTests"
+		#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES	//1j8a
 		#ifndef NLC_DISABLE_1l_CODE_FOR_DEBUG
 			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1l1a
 			#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1l1b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//this currently fails with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES

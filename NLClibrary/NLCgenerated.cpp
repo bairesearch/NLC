@@ -83,6 +83,11 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		garageClass* newgarageClass = new garageClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgarageClass);
 	}
+	if(name == "happy")
+	{
+		happyClass* newhappyClass = new happyClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newhappyClass);
+	}
 	return newGenericObject;
 }
 
@@ -168,6 +173,11 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 	{
 		garageClass* newgarageClass = new garageClass(*(static_cast<garageClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newgarageClass);
+	}
+	if(name == "happy")
+	{
+		happyClass* newhappyClass = new happyClass(*(static_cast<happyClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newhappyClass);
 	}
 	return newGenericObject;
 }

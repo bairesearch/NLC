@@ -13,6 +13,7 @@ void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtific
 	vector<castleClass*> castleClassList;
 	vector<knightClass*> knightClassList;
 	vector<warClass*> warClassList;
+	vector<countryClass*> countryClassList;
 	//Africa is a country.
 	vector<africaClass*> africa1SubjectCategoryList;
 	vector<africaClass*> africa1CategoryList;
@@ -35,7 +36,6 @@ void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtific
 		{
 			countryClass* country1 = static_cast<countryClass*>(africa1);
 			country1->name = "country";
-			addEntityToLocalList<countryClass>(&(countryClassList), country1);
 		}
 	}
 	//Africa has a castle with knights.
@@ -143,7 +143,7 @@ void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtific
 		warClass* war1 = *iter1;
 		addActionObject<declareClass, warClass>(declare1, war1, &(war1->declareClassActionIncomingList), &(declare1->warClassActionObjectList));
 	}
-	(new castleClass)->declareFunction(castle2SubjectCategoryList, declareClassList, war1ObjectCategoryList);
+	//(new castleClass)->declareFunction(castle2SubjectCategoryList, declareClassList, war1ObjectCategoryList);
 	//Tom rides the blue bike that is near the garage.
 	vector<rideClass*> rideClassList;
 	vector<rideClass*> ride1CategoryList;
@@ -212,7 +212,38 @@ void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtific
 		bikeClass* bike1 = *iter1;
 		addActionObject<rideClass, bikeClass>(ride1, bike1, &(bike1->rideClassActionIncomingList), &(ride1->bikeClassActionObjectList));
 	}
-	(new tomClass)->rideFunction(tom1SubjectCategoryList, rideClassList, bike1ObjectCategoryList);
+	//(new tomClass)->rideFunction(tom1SubjectCategoryList, rideClassList, bike1ObjectCategoryList);
+	//A country is happy.
+	vector<countryClass*> country2SubjectCategoryList;
+	vector<countryClass*> country2CategoryList;
+	countryClass* country2 = addNewEntityToLocalList<countryClass>(&(countryClassList));
+	country2CategoryList.push_back(country2);
+	addEntityToReferenceContextList(referenceContextList0, country2, 5);
+	for(vector<countryClass*>::iterator iter1 = country2CategoryList.begin(); iter1 < country2CategoryList.end(); iter1++) 
+	{
+		countryClass* country2 = *iter1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<countryClass, countryClass> (country2SubjectCategoryList, country2);
+	}
+	vector<happyClass*> happy1ObjectCategoryList;
+	vector<happyClass*> happyClassList;
+	vector<happyClass*> happy1CategoryList;
+	happyClass* happy1 = addNewEntityToLocalList<happyClass>(&(happyClassList));
+	happy1CategoryList.push_back(happy1);
+	addEntityToReferenceContextList(referenceContextList0, happy1, 5);
+	for(vector<happyClass*>::iterator iter1 = happy1CategoryList.begin(); iter1 < happy1CategoryList.end(); iter1++) 
+	{
+		happyClass* happy1 = *iter1;
+		addToCategoryIfPassPluralDefiniteReferencingTests<happyClass, happyClass> (happy1ObjectCategoryList, happy1);
+	}
+	for(vector<countryClass*>::iterator iter1 = country2SubjectCategoryList.begin(); iter1 < country2SubjectCategoryList.end(); iter1++) 
+	{
+		countryClass* country2 = *iter1;
+		for(vector<happyClass*>::iterator iter2 = happy1ObjectCategoryList.begin(); iter2 < happy1ObjectCategoryList.end(); iter2++) 
+		{
+			happyClass* happy1 = *iter2;
+			addProperty<countryClass, happyClass>(country2, &(country2->happyClassPropertyList), happy1);
+		}
+	}
 	clearReferenceContextList(referenceContextList0);
 }
 

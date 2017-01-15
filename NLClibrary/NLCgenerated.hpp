@@ -18,6 +18,7 @@
 #include "NLCgeneratedblueClass.hpp"
 #include "NLCgeneratednearClass.hpp"
 #include "NLCgeneratedgarageClass.hpp"
+#include "NLCgeneratedhappyClass.hpp"
 
 NLCgenericEntityClass* generateObjectByName(string name);
 NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* entityToCopy);

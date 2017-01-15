@@ -3,10 +3,12 @@
 
 #include "NLClibraryGenericEntityClass.hpp"
 
+class happyClass;
 class countryClass : public NLCgenericEntityClass
 {
 public:
 	countryClass(void);
+	vector<happyClass*> happyClassPropertyList;
 };
 
 #endif

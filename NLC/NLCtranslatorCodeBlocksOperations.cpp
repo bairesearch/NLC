@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -291,7 +291,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 	return result;
 }
 
-bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* entity, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityConnection* connection, bool foundSubject, bool foundObject, int connectionType, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
+bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* entity, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, const GIAentityConnection* connection, const bool foundSubject, bool foundObject, const int connectionType, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
 {
 	bool result = true;
 
@@ -572,7 +572,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 	
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
+bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, const int sentenceIndex)
 {
 	bool result = true;
 	actionEntity->NLCisSingularArgument = true;	//added 1e2c
@@ -582,7 +582,7 @@ bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree
 #endif
 
 #ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
-void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement, bool checkParent)
+void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, const string genericListAppendName, const NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement, const bool checkParent)
 {	
 	bool testDefiniteEntityExistence = true;
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
@@ -629,7 +629,7 @@ void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, 
 
 
 
-bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName)
+bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, const bool generatedParentContext, const string genericListAppendName)
 {	
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	return generateContextBlocksCategories(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, generatedParentContext, genericListAppendName);	
@@ -639,7 +639,7 @@ bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode*
 }
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName)
+bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, const bool generatedParentContext, const string genericListAppendName)
 {			
 	bool contextFound = false;
 	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -847,7 +847,7 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 }
 #endif
 
-bool generateContextBlocksSimple(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName)
+bool generateContextBlocksSimple(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, const bool generatedParentContext, const string genericListAppendName)
 {
 	bool contextFound = false;
 	
@@ -917,7 +917,7 @@ bool generateContextBlocksSimple(NLCcodeblock** currentCodeBlockInTree, GIAentit
 
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** lastCodeBlockInTree, GIAentityNode* parentInstance, GIAentityNode* parentConcept, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generateContext, string genericListAppendName)
+bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** lastCodeBlockInTree, GIAentityNode* parentInstance, GIAentityNode* parentConcept, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, const bool generateContext, const string genericListAppendName)
 {
 	bool contextFound = false;
 	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
@@ -1024,7 +1024,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 	return contextFound;
 }
 
-bool addEntityToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, int sentenceIndex, bool castToCategoryType)
+bool addEntityToCategoryList(NLCcodeblock** currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity, const string genericListAppendName, const NLCgenerateContextBlocksVariables* generateContextBlocksVariables, const int sentenceIndex, const bool castToCategoryType)
 {
 	bool result = true;
 	
@@ -1152,7 +1152,7 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 	return foundNearestSubClassParentEntity;
 }
 
-bool entityHasPropertyParent(GIAentityNode* entity, string propertyParentName)
+bool entityHasPropertyParent(GIAentityNode* entity, const string propertyParentName)
 {
 	bool result = false;
 	#ifdef NLC_DEBUG
@@ -1169,7 +1169,7 @@ bool entityHasPropertyParent(GIAentityNode* entity, string propertyParentName)
 	return result;
 }
 
-bool createCodeBlockForStatementsForNearestSubClassParentReference(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** lastCodeBlockInTree, GIAentityNode* subclassEntity, GIAentityNode* nearestSubclassParentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generateContext, string genericListAppendName)
+bool createCodeBlockForStatementsForNearestSubClassParentReference(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** lastCodeBlockInTree, GIAentityNode* subclassEntity, GIAentityNode* nearestSubclassParentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, const bool generateContext, const string genericListAppendName)
 {
 	bool contextFound = false;
 	//this code is from createCodeBlockForStatementsForDefinitionChildren{}:
@@ -1267,7 +1267,7 @@ bool createCodeBlockForStatements(NLCcodeblock** currentCodeBlockInTree, string 
 }
 
 
-bool sameReferenceSetReferencingConnectionCheck(GIAentityConnection* targetConnection, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
+bool sameReferenceSetReferencingConnectionCheck(const GIAentityConnection* targetConnection, const NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
 {
 	bool sameReferenceSetReferencing = false;
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
@@ -1281,7 +1281,7 @@ bool sameReferenceSetReferencingConnectionCheck(GIAentityConnection* targetConne
 	return sameReferenceSetReferencing;
 }
 		
-bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* entity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
+bool createCodeBlockForConnectionType(const int connectionType, NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* entity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
 {				
 	bool result = false;
 	
@@ -1527,14 +1527,14 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 }
 
 #ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
-string generateCandidateObjectName(GIAentityNode* objectEntity)
+string generateCandidateObjectName(const GIAentityNode* objectEntity)
 {
 	string candidateObjectName = objectEntity->entityName + NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES_CANDIDATE_OBJECT_NAME_PREPEND;
 	return candidateObjectName;
 }
 #endif
 	
-bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* propertyEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
+bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* propertyEntity, const int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, constEffective GIAentityNode** objectEntity, bool* generateContextForObject)
 {
 	bool result = true;
 	*generateContextForObject = true;
@@ -1605,7 +1605,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, stri
 	return result;
 }
 
-bool createCodeBlockForGivenCondition(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* conditionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
+bool createCodeBlockForGivenCondition(NLCcodeblock** currentCodeBlockInTree, const string parentInstanceName, GIAentityNode* conditionEntity, const int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
 {
 	bool result = false;
 
@@ -1693,7 +1693,7 @@ bool createCodeBlockForGivenCondition(NLCcodeblock** currentCodeBlockInTree, str
 }
 
 #ifdef NLC_RECORD_ACTION_HISTORY
-bool createCodeBlockForGivenAction(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* actionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
+bool createCodeBlockForGivenAction(NLCcodeblock** currentCodeBlockInTree, const string parentInstanceName, GIAentityNode* actionEntity, const int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
 {
 	bool result = false;
 
@@ -1754,7 +1754,7 @@ bool createCodeBlockForGivenAction(NLCcodeblock** currentCodeBlockInTree, string
 	return result;
 }
 
-bool createCodeBlockForGivenActionIncoming(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* actionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
+bool createCodeBlockForGivenActionIncoming(NLCcodeblock** currentCodeBlockInTree, const string parentInstanceName, GIAentityNode* actionEntity, const int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
 {
 	bool result = false;
 	
@@ -1816,7 +1816,7 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock** currentCodeBlockInTree
 }
 #endif
 #ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
-bool createCodeBlockForGivenDefinition(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* definitionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
+bool createCodeBlockForGivenDefinition(NLCcodeblock** currentCodeBlockInTree, const string parentInstanceName, GIAentityNode* definitionEntity, const int sentenceIndex, const NLCgenerateContextBlocksVariables* generateContextBlocksVariables, constEffective GIAentityNode** objectEntity, bool* generateContextForObject)
 {
 	bool result = true;
 	*generateContextForObject = true;
@@ -1840,7 +1840,7 @@ bool createCodeBlockForGivenDefinition(NLCcodeblock** currentCodeBlockInTree, st
 	return result;
 }
 #ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES	
-bool createCodeBlockForGivenAlias(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* definitionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject)
+bool createCodeBlockForGivenAlias(NLCcodeblock** currentCodeBlockInTree, const GIAentityNode* entity, GIAentityNode* definitionEntity, const int sentenceIndex, const NLCgenerateContextBlocksVariables* generateContextBlocksVariables, constEffective GIAentityNode** objectEntity, bool* generateContextForObject)
 {
 	bool result = true;	
 	*generateContextForObject = false;	//do not parse context past alias definition links
@@ -1869,7 +1869,7 @@ bool createCodeBlockForGivenAlias(NLCcodeblock** currentCodeBlockInTree, GIAenti
 #endif
 
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-bool hasConjunctionConditionConnection(GIAentityNode* conditionEntity, GIAentityNode* primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
+bool hasConjunctionConditionConnection(GIAentityNode* conditionEntity, const GIAentityNode* primaryEntityInLogicalConditionConjunctionSubset, const int logicalConditionConjunctionIndex, constEffective GIAentityNode** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 {
 	bool conjunctionConditionConnectionFound = false;
 
@@ -2117,7 +2117,7 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 
 }
 
-bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, bool parseLogicalConditions, bool testOnly)
+bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, const bool parseLogicalConditions, const bool testOnly)
 {
 	bool result = false;
 	
@@ -2267,7 +2267,7 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 	return result;
 }
 	
-bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityNode* entity, int sentenceIndex)
+bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBlockInTree, const int connectionType, GIAentityNode* entity, int sentenceIndex)
 {
 	bool result = false;
 	#ifdef NLC_DEBUG
@@ -2441,7 +2441,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 	return result;
 }
 
-bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, GIAentityNode* subjectParentEntity, bool primary)
+bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, const int connectionType, const GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, const bool foundSubject, const bool foundObject, int sentenceIndex, const GIAentityNode* subjectParentEntity, const bool primary)
 {
 	bool result = false;
 
@@ -2792,7 +2792,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 #ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 //assume is logicalConditionStatement
-bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, int connectionType, GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, bool foundSubject, bool foundObject, int sentenceIndex, bool effectiveEach, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
+bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, const int connectionType, const GIAentityConnection* connection, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityNode* actionOrConditionEntity, const bool foundSubject, const bool foundObject, const int sentenceIndex, const bool effectiveEach, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
 {
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocksVerifyConnection entry" << endl;
@@ -3150,7 +3150,7 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 #endif
 
 #ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
-bool isNonImmediateAction(GIAentityNode* actionEntity)
+bool isNonImmediateAction(const GIAentityNode* actionEntity)
 {
 	//updated 1m2a
 	bool isNonImmediateAction = false;
@@ -3174,7 +3174,7 @@ bool isNonImmediateAction(GIAentityNode* actionEntity)
 		
 	if(actionEntity->timeConditionNode != NULL)
 	{
-		GIAtimeConditionNode* timeCondition = actionEntity->timeConditionNode;
+		const GIAtimeConditionNode* timeCondition = actionEntity->timeConditionNode;
 		if(timeCondition->tense == GRAMMATICAL_TENSE_PAST)
 		{
 			isNonImmediateAction = true;
@@ -3183,7 +3183,7 @@ bool isNonImmediateAction(GIAentityNode* actionEntity)
 	return isNonImmediateAction;
 }
 
-bool isPotentialAction(GIAentityNode* actionEntity)
+bool isPotentialAction(const GIAentityNode* actionEntity)
 {
 	//updated 1m2a
 	bool isPotentialAction = false;
@@ -3389,7 +3389,7 @@ bool getConditionObjectEntityConnection(GIAentityNode* conditionEntity, int sent
 }
 */
 
-bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, int sentenceIndex, bool sameReferenceSet, int connectionType)
+bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityNode** entityToFind, GIAentityConnection** connection, const int sentenceIndex, const bool sameReferenceSet, int connectionType)
 {
 	bool found = false;
 	if(getEntityConnection(entity, sentenceIndex, connection, connectionType))
@@ -3413,7 +3413,7 @@ bool getEntityCheckSameReferenceSetAndSentence(GIAentityNode* entity, GIAentityN
 	return found;
 }
 
-bool connectionTypeIsCondition(int connectionType)
+bool connectionTypeIsCondition(const int connectionType)
 {
 	bool result = false;
 	if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION_SUBJECT) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION_OBJECT))
@@ -3426,7 +3426,7 @@ bool connectionTypeIsCondition(int connectionType)
 	}
 }
 
-bool getEntityConnection(GIAentityNode* entity, int sentenceIndex, GIAentityConnection** entityConnection, int connectionType)
+bool getEntityConnection(GIAentityNode* entity, const int sentenceIndex, GIAentityConnection** entityConnection, int connectionType)
 {
 	bool entityHasConnection = false;
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
@@ -3566,7 +3566,7 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GI
 
 
 
-bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* childEntity, int sentenceIndex, bool topLevel, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
+bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* childEntity, int sentenceIndex, const bool topLevel, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
 {	
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
 	NLCgenerateContextBlocksVariables generateContextBlocksVariables = *generateContextBlocksVariablesLogicalConditionStatement;
@@ -3695,7 +3695,7 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 	return generatedContextForChild;
 }
 
-bool generateContextBlocksForParentEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* childEntity, GIAentityNode* parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
+bool generateContextBlocksForParentEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* childEntity, GIAentityNode* parentEntity, const int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
 {
 	bool result = false;
 	
@@ -3842,7 +3842,7 @@ GIAentityNode* getSameReferenceSetUniqueParent(GIAentityNode* currentEntity, int
 
 
 #ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS
-void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, bool newlyDeclaredEntityInCategoryList)
+void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, const bool newlyDeclaredEntityInCategoryList)
 {
 	#ifdef NLC_DEBUG
 	//cout << "generateObjectInitialisationsBasedOnConcepts{}: targetEntity = " << targetEntity->entityName << ", entity = " << entity->entityName << endl;
@@ -3930,7 +3930,7 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 	}
 }
 
-void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEntity, GIAentityNode* definitionEntity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* parentEntity, string parentConditionName, bool newlyDeclaredEntityInCategoryList)
+void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEntity, GIAentityNode* definitionEntity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, const GIAentityNode* parentEntity, const string parentConditionName, const bool newlyDeclaredEntityInCategoryList)
 {
 	#ifdef NLC_DEBUG
 	//cout << "\tgenerateObjectInitialisationsBasedOnConceptsRecurse{}: targetEntity = " << targetEntity->entityName << ", definitionEntity = " << definitionEntity->entityName << endl;
@@ -4107,7 +4107,7 @@ void fillFunctionAliasClassList(vector<GIAentityNode*>* entityNodesActiveListCom
 
 #endif
 
-bool checkSpecialCaseEntity(GIAentityNode* entity, bool detectActions)
+bool checkSpecialCaseEntity(const GIAentityNode* entity, const bool detectActions)
 {
 	bool specialCaseEntity = false;
 	if((entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) || (entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT) || (entity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION))
@@ -4121,7 +4121,7 @@ bool checkSpecialCaseEntity(GIAentityNode* entity, bool detectActions)
 	return specialCaseEntity;
 }	
 
-bool checkNetworkIndexTypeEntity(GIAentityNode* entity)
+bool checkNetworkIndexTypeEntity(const GIAentityNode* entity)
 {
 	bool networkIndexTypeEntity = false;
 	if((entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) || (entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
@@ -4133,7 +4133,7 @@ bool checkNetworkIndexTypeEntity(GIAentityNode* entity)
 		
 
 #ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, bool topLevel, GIAentityNode* generateObjectInitialisationsLastParent, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
+bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, const bool topLevel, const GIAentityNode* generateObjectInitialisationsLastParent, int sentenceIndex, const NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
 {
 	bool foundParentProperty = false;
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeReverseList->begin(); propertyNodeListIterator < entity->propertyNodeReverseList->end(); propertyNodeListIterator++)
@@ -4186,7 +4186,7 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** 
 #endif
 
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
-void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* childEntity, int sentenceIndex)
+void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCodeBlockInTree, const GIAentityNode* childEntity, const int sentenceIndex)
 {
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
@@ -4201,7 +4201,7 @@ void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCo
 #endif
 			
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-bool checkConditionLogicalConditionAdvancedTests(GIAentityNode* conditionEntity)
+bool checkConditionLogicalConditionAdvancedTests(const GIAentityNode* conditionEntity)
 {
 	bool logicalConditionTests = true;
 	//prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed - this enables generateCodeBlocksPart2logicalConditions{}:getParentAndGenerateContextBlocks() to parseConditionParents
@@ -4227,7 +4227,7 @@ bool checkConditionLogicalConditionAdvancedTests(GIAentityNode* conditionEntity)
 }
 #endif
 
-bool checkNumerosity(GIAentityNode* entity)
+bool checkNumerosity(const GIAentityNode* entity)
 {
 	bool hasNumerosity = false;
 	if((entity->hasQuantity) && (entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
@@ -4237,7 +4237,7 @@ bool checkNumerosity(GIAentityNode* entity)
 	return hasNumerosity;
 }
 					
-bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
+bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, const int sentenceIndex)
 {
 	bool result = true;
 	
@@ -4250,7 +4250,7 @@ bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, 
 	return result;
 }
 
-bool checkParentExists(GIAentityNode* object, string parentName)
+bool checkParentExists(GIAentityNode* object, const string parentName)
 {
 	bool result = false;
 	if(object->entityName == parentName)
@@ -4291,7 +4291,7 @@ void setFirstNLCsentenceInList(NLCsentence* firstNLCsentenceInListNew)
 {
 	firstNLCsentenceInListLocal = firstNLCsentenceInListNew;
 }
-bool checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode* indefiniteEntity, GIAentityNode* definiteEntity, int* indentationDifferenceFound)
+bool checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentityNode* indefiniteEntity, const GIAentityNode* definiteEntity, int* indentationDifferenceFound)
 {
 	bool foundIndefiniteEntity = false;
 

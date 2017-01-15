@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintCodeBlocks.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,7 +37,7 @@
 #include "NLCprintDefs.h"
 #include "GIAtranslatorDefs.h"	//required for ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND/ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_OR
 
-bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, int level)
+bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, const int level)
 {
 	bool result = true;
 
@@ -1700,7 +1700,7 @@ void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(v
 }
 
 
-string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLang, bool categoryList, string categoryVarAppendName)
+string generateCodePluralReferenceText(const NLCitem* functionArgumentItem, const int progLang, const bool categoryList, const string categoryVarAppendName)
 {
 	string codeFunctionArgumentName = "";
 	string codeFunctionArgumentNameWithCast = "";
@@ -1734,7 +1734,7 @@ string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLa
 	return codeFunctionArgumentNameWithCast;
 }
 
-string generateCodeSingularReferenceText(NLCitem* functionArgumentItem, int progLang)
+string generateCodeSingularReferenceText(const NLCitem* functionArgumentItem, const int progLang)
 {
 	string codePropertyTypeText = functionArgumentItem->instanceName;
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
@@ -1752,7 +1752,7 @@ string generateCodeSingularReferenceText(NLCitem* functionArgumentItem, int prog
 }
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-string printCodeBlockCastVectorExecuteFunction(NLCitem* functionArgumentItem, int progLang, string codeFunctionArgumentName)
+string printCodeBlockCastVectorExecuteFunction(const NLCitem* functionArgumentItem, const int progLang, const string codeFunctionArgumentName)
 {
 	//see NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION
 
@@ -1764,7 +1764,7 @@ string printCodeBlockCastVectorExecuteFunction(NLCitem* functionArgumentItem, in
 #endif
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-string generateCodeConditionPairReferenceText(NLCitem* functionArgumentConditionItem, int progLang)
+string generateCodeConditionPairReferenceText(NLCitem* functionArgumentConditionItem, const int progLang)
 {
 	//do: add dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
 	string codeConditionPairTypeText = generateCodeConditionPairTextWithContext(functionArgumentConditionItem->name, functionArgumentConditionItem->className, functionArgumentConditionItem->instanceName, functionArgumentConditionItem->className2, functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang);
@@ -1872,7 +1872,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 
 
 
-string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang, string* functionOwnerName)
+string generateFunctionOwnerContext(vector<NLCitem*>* parameters, const int progLang, string* functionOwnerName)
 {
 	bool foundFunctionOwner = false;
 	string functionOwnerContext = "";
@@ -1900,7 +1900,7 @@ string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang, 
 }
 
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int progLang)
+string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, const int progLang)
 {
 	string logicalConjunctionOfBoolsText = "";
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
@@ -1928,7 +1928,7 @@ string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int p
 
 
 #ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
-string generateMainFunctionText(vector<NLCitem*>* parameters, int progLang)
+string generateMainFunctionText(vector<NLCitem*>* parameters, const int progLang)
 {
 	string printedCodeBlocksSourceMainFunctionText = "";
 

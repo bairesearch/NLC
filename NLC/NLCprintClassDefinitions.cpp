@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintClassDefinitions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ public:
 	...
 };
 */
-bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, bool generatingAPIclassList, NLCfunction* firstNLCfunctionInList)
+bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, const bool generatingAPIclassList, NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 	#ifdef NLC_LIBRARY
@@ -834,7 +834,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 
 #ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES
 
-string generateCodeHeaderCheckOpen(string headerCheckOpenDefinition)
+string generateCodeHeaderCheckOpen(const string headerCheckOpenDefinition)
 {
 	string headerCheckOpen = string("") + "#ifndef " + headerCheckOpenDefinition + CHAR_NEWLINE + "#define " + headerCheckOpenDefinition + CHAR_NEWLINE + CHAR_NEWLINE;
 	return headerCheckOpen;
@@ -846,44 +846,44 @@ string generateCodeHeaderCheckClose()
 	return headerCheckClose;
 }
 
-string generateCodeHashIncludeReferenceGenerated(string className, int progLang)
+string generateCodeHashIncludeReferenceGenerated(const string className, const int progLang)
 {
 	string includeFileName = string(NLC_LIBRARY_GENERATED_FOLDER) + generateCodeClassDefinitionHeaderFileName(className);
 	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
 	return hashIncludeReference;
 }
 
-string generateCodeClassDefinitionHeaderFileName(string className)
+string generateCodeClassDefinitionHeaderFileName(const string className)
 {
 	string printedClassDefinitionHeaderFileName = string(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + className + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
 	return printedClassDefinitionHeaderFileName;
 }
 
-string generateCodeClassDefinitionSourceFileName(string className)
+string generateCodeClassDefinitionSourceFileName(const string className)
 {
 	string printedClassDefinitionHeaderFileName = string(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + className + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;
 	return printedClassDefinitionHeaderFileName;
 }
 
-string generateCodeHashIncludeReferenceLibrary(string libraryFileNameWithoutFolderOrExtension, int progLang)
+string generateCodeHashIncludeReferenceLibrary(const string libraryFileNameWithoutFolderOrExtension, const int progLang)
 {
 	string includeFileName = string(NLC_LIBRARY_LIBRARY_FOLDER) + libraryFileNameWithoutFolderOrExtension + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
 	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
 	return hashIncludeReference;
 }
-string generateCodeHashIncludeReference(string referenceFolder, string includeFileNameWithoutFolder, int progLang)
+string generateCodeHashIncludeReference(const string referenceFolder, const string includeFileNameWithoutFolder, const int progLang)
 {
 	string includeFileName = referenceFolder + includeFileNameWithoutFolder;
 	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
 	return hashIncludeReference;
 }
-string generateCodeHashIncludeReference(string includeFileName, int progLang)
+string generateCodeHashIncludeReference(const string includeFileName, const int progLang)
 {
 	string hashIncludeReference = progLangIncludeStart[progLang] + includeFileName + progLangIncludeEnd[progLang] + CHAR_NEWLINE;
 	return hashIncludeReference;
 }
 
-string generateForwardDeclaration(string className, int progLang)
+string generateForwardDeclaration(const string className, const int progLang)
 {
 	string forwardDeclaration = progLangClassTitlePrepend[progLang] + className + progLangEndLine[progLang] + CHAR_NEWLINE;
 	return forwardDeclaration;
@@ -898,7 +898,7 @@ void addToForwardDeclarationList(vector<string>* printedClassDefinitionTextHeade
 }
 #endif
 
-bool printClassHeirarchyValidDefinitionClassChecks(NLCclassDefinition* classDefinition)
+bool printClassHeirarchyValidDefinitionClassChecks(const NLCclassDefinition* classDefinition)
 {
 	bool validClass = true;
 	if(classDefinition->isActionOrConditionInstanceNotClass)
@@ -1026,7 +1026,7 @@ void generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString
 	}
 }
 
-string generateCodePluralDefinitionText(NLCitem* currentItem, int progLang)
+string generateCodePluralDefinitionText(NLCitem* currentItem, const int progLang)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -1050,7 +1050,7 @@ string generateCodePluralDefinitionText(NLCitem* currentItem, int progLang)
 	return codePluralDefinitionText;
 }
 
-string generateCodeSingularDefinitionText(NLCitem* currentItem, int progLang)
+string generateCodeSingularDefinitionText(NLCitem* currentItem, const int progLang)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -1071,7 +1071,7 @@ string generateCodeSingularDefinitionText(NLCitem* currentItem, int progLang)
 }
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-string generateCodeConditionPairDefinitionText(NLCitem* currentItem, int progLang)
+string generateCodeConditionPairDefinitionText(const NLCitem* currentItem, const int progLang)
 {
 	string conditionClassName = currentItem->className;
 	string conditionObjectClassName = currentItem->className2;
@@ -1212,7 +1212,7 @@ bool isConditionObjectPrinted(vector<NLCclassDefinition*>* classDefinitionList, 
 	return functionArgumentsPrinted;
 }
 
-void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, int level)
+void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* classDefinitionList, const int progLang, string* code, int level)
 {
 	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	NLCitem* itemName = new NLCitem(progLangClassNameVariableType[progLang], NLC_ITEM_TYPE_OBJECT);
@@ -1259,7 +1259,7 @@ void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* cl
 	printLine("", level, code);
 }
 
-string generateCodeGenerateObjectByNameDeclareFunction(int progLang)
+string generateCodeGenerateObjectByNameDeclareFunction(const int progLang)
 {
 	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	NLCitem* itemName = new NLCitem(progLangClassNameVariableType[progLang], NLC_ITEM_TYPE_OBJECT);
@@ -1268,7 +1268,7 @@ string generateCodeGenerateObjectByNameDeclareFunction(int progLang)
 	return codeBlockTextFunctionHeader;
 }
 
-void generateCodeCopyObjectByNameNewFunction(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, int level)
+void generateCodeCopyObjectByNameNewFunction(vector<NLCclassDefinition*>* classDefinitionList, const int progLang, string* code, int level)
 {
 	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	NLCitem* itemName = new NLCitem(progLangClassNameVariableType[progLang], NLC_ITEM_TYPE_OBJECT);
@@ -1309,7 +1309,7 @@ void generateCodeCopyObjectByNameNewFunction(vector<NLCclassDefinition*>* classD
 	printLine("", level, code);
 }
 
-string generateCodeCopyObjectByNameDeclareFunction(int progLang)
+string generateCodeCopyObjectByNameDeclareFunction(const int progLang)
 {
 	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	NLCitem* itemName = new NLCitem(progLangClassNameVariableType[progLang], NLC_ITEM_TYPE_OBJECT);

@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorCodeBlocks.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 #include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance()
 
-bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
+bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
 {
 	bool result = true;
 
@@ -394,7 +394,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	return result;
 }
 
-bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
+bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCsentence* currentNLCsentenceInList)
 {
 	bool result = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -438,7 +438,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBl
 	return result;
 }
 
-bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, NLCsentence* currentNLCsentenceInList)
+bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCsentence* currentNLCsentenceInList)
 {
 	bool result = true;
 
@@ -572,7 +572,7 @@ bool generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(NLCcodeb
 #endif
 
 
-NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCfunction* currentNLCfunctionInList)
+NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, string NLCfunctionName, vector<GIAentityNode*>* entityNodesActiveListComplete, constEffective NLCfunction* currentNLCfunctionInList)
 {
 	#ifdef NLC_INPUT_FUNCTION_LISTS
 	//gets "fight" from "dog::fight"
@@ -720,7 +720,7 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*>* entityNodesActiveListComplete, vector<NLCitem*>* parameters, NLCfunction* currentNLCfunctionInList)
+void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*>* entityNodesActiveListComplete, vector<NLCitem*>* parameters, constEffective NLCfunction* currentNLCfunctionInList)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -804,7 +804,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 }
 
 
-bool isDefiniteEntityInitialisation(GIAentityNode* entity, NLCfunction* currentNLCfunctionInList)
+bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList)
 {
 	bool foundDefiniteEntity = false;
 	
@@ -894,7 +894,7 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, NLCfunction* currentN
 	return foundDefiniteEntity;
 }
 
-bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(GIAentityNode* entityNode)
+bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(const GIAentityNode* entityNode)
 {
 	bool validClass = true;
 
@@ -914,10 +914,10 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(G
 	return validClass;
 }
 
-bool getSentenceInFunction(GIAentityNode* entity, NLCfunction* currentNLCfunctionInList, NLCsentence** sentenceFound)
+bool getSentenceInFunction(const GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList, constEffective NLCsentence** sentenceFound)
 {
 	bool result = false;
-	NLCsentence* currentNLCsentence = currentNLCfunctionInList->firstNLCsentenceInFunction;
+	constEffective NLCsentence* currentNLCsentence = currentNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentNLCsentence->next != NULL)
 	{
 		if(currentNLCsentence->sentenceIndex == entity->sentenceIndexTemp)	//NB entity->sentenceIndexTemp can be tested here as entities within logical conditions are not advanced referenced (even if GIA advance referencing is enabled)
@@ -935,7 +935,7 @@ bool getSentenceInFunction(GIAentityNode* entity, NLCfunction* currentNLCfunctio
 
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, GIAentityNode* definiteEntity)
+bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity)
 {
 	bool foundIndefiniteEntity = false;
 
@@ -968,7 +968,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	return foundIndefiniteEntity;
 }
 
-bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode* indefiniteEntity, GIAentityNode* definiteEntity)
+bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentityNode* indefiniteEntity, const GIAentityNode* definiteEntity)
 {
 	bool foundIndefiniteEntity = false;
 
@@ -1005,7 +1005,7 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode*
 #endif
 
 #ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
-bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, GIAentityNode* definiteEntity)
+bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity)
 {
 	//find a propernoun of the same name with a definition link within the context (function)
 	//requirements: this function assumes that it will also be tested that the propernoun is not an alias

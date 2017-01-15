@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCclassDefinitionClass.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -135,7 +135,7 @@ bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode* entity, int sentence
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 
-NLCclassDefinition* findClassDefinitionFunction(vector<NLCclassDefinition*>* functionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool* foundClassDefinition)
+NLCclassDefinition* findClassDefinitionFunction(vector<NLCclassDefinition*>* functionList, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass, bool* foundClassDefinition)
 {
 	NLCclassDefinition* classDefinitionFound = NULL;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = functionList->begin(); classDefinitionIter != functionList->end(); classDefinitionIter++)
@@ -183,7 +183,7 @@ NLCclassDefinition* findClassDefinitionFunction(vector<NLCclassDefinition*>* fun
 	return classDefinitionFound;
 }
 
-bool findItemInList(vector<NLCitem*>* parameters, int itemType, string itemName)
+bool findItemInList(vector<NLCitem*>* parameters, const int itemType, const string itemName)
 {
 	bool foundItem = false;
 	for(vector<NLCitem*>::iterator parametersIter = parameters->begin(); parametersIter != parameters->end(); parametersIter++)
@@ -202,7 +202,7 @@ bool findItemInList(vector<NLCitem*>* parameters, int itemType, string itemName)
 
 #endif
 
-NLCclassDefinition* findClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string name, bool* foundClassDefinition)
+NLCclassDefinition* findClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, const string name, bool* foundClassDefinition)
 {
 	NLCclassDefinition* classDefinitionFound = NULL;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
@@ -257,7 +257,7 @@ NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition*>* cl
 	return classDefinitionFound;
 }
 
-bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>* classDefinitionList, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
 {
 	bool foundFunctionDefinitionFunctionDependency = false;
 	NLCclassDefinition* functionDependencyClassDefinitionFound = NULL;
@@ -272,7 +272,7 @@ bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>*
 	return foundFunctionDefinitionFunctionDependency;
 }
 
-bool findFunctionDependencyClassDefinitionInList(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** classDefinitionFound)
+bool findFunctionDependencyClassDefinitionInList(vector<NLCclassDefinition*>* classDefinitionList, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass, constEffective NLCclassDefinition** classDefinitionFound)
 {
 	bool foundFunctionDependencyClassDefinition = false;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)
@@ -294,7 +294,7 @@ bool findFunctionDependencyClassDefinitionInList(vector<NLCclassDefinition*>* cl
 	return foundFunctionDependencyClassDefinition;
 }
 
-bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDependency, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass)
+bool compareFunctionDependency(const NLCclassDefinitionFunctionDependency* functionDependency, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass)
 {
 	bool result = false;
 	if(functionDependency->functionName == functionName)
@@ -343,7 +343,7 @@ bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDep
 	return result;
 }
 
-bool findFunctionDefinitionFunctionDependencyInListByIndex(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDefinitionFunctionDependencyInListByIndex(vector<NLCclassDefinition*>* classDefinitionList, const int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound)
 {
 	bool foundFunctionDefinitionFunctionDependency = false;
 	NLCclassDefinition* functionDefinitionClassDefinitionFound = NULL;
@@ -358,7 +358,7 @@ bool findFunctionDefinitionFunctionDependencyInListByIndex(vector<NLCclassDefini
 	return foundFunctionDefinitionFunctionDependency;
 }
 
-bool findFunctionDependencyClassDefinitionInListByIndex(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinition** functionDefinitionFound)
+bool findFunctionDependencyClassDefinitionInListByIndex(vector<NLCclassDefinition*>* classDefinitionList, const int functionIndex, constEffective NLCclassDefinition** functionDefinitionFound)
 {
 	bool foundFunctionDefinitionClassDefinition = false;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)
@@ -383,7 +383,7 @@ bool findFunctionDependencyClassDefinitionInListByIndex(vector<NLCclassDefinitio
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 
-bool findFunctionDependencyInParent(NLCclassDefinition* parentFunctionDependencyClassDefinition, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDependencyInParent(NLCclassDefinition* parentFunctionDependencyClassDefinition, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
 {
 	bool foundFunctionDependency = false;
 	for(vector<NLCclassDefinition*>::iterator functionDependencyListIter = parentFunctionDependencyClassDefinition->functionDependencyList.begin(); functionDependencyListIter != parentFunctionDependencyClassDefinition->functionDependencyList.end(); functionDependencyListIter++)
@@ -436,7 +436,7 @@ bool findFunctionDependencyInClassDefinitionList(vector<NLCclassDefinition*>* cl
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** functionDefinitionClassDefinitionFound, bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch)
+bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition*>* classDefinitionList, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass, constEffective NLCclassDefinition** functionDefinitionClassDefinitionFound, const bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch{}: " << endl;
@@ -522,7 +522,7 @@ bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDe
 }
 
 //NB if rearrangeClassList, will return functionDefinitionClassDefinitionFound corresponding to the functionDefinition classDefinition child of the function subject/object searched for (but this won't have isReferenceElseFunctionDefinition set)
-bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionDefinitionClassDefinitionFound, bool rearrangeClassList)
+bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, const string functionName, const string functionOwnerName, const string functionObjectName, const bool hasFunctionOwnerClass, const bool hasFunctionObjectClass, const bool findFunctionOwnerExactMatch, const bool findFunctionObjectExactMatch, constEffective NLCclassDefinition** functionDefinitionClassDefinitionFound, const bool rearrangeClassList)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "findFunctionDefinitionClassDefinition{}:" << endl;
@@ -781,7 +781,7 @@ bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDef
 }
 #endif
 
-bool eraseFunctionDependencyFromFunctionDependencyList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, NLCclassDefinitionFunctionDependency* functionDependencyToErase)
+bool eraseFunctionDependencyFromFunctionDependencyList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, const NLCclassDefinitionFunctionDependency* functionDependencyToErase)
 {
 	bool result = false;
 	for(vector<NLCclassDefinitionFunctionDependency*>::iterator iter = functionDependencyList->begin(); iter != functionDependencyList->end(); )
@@ -800,7 +800,7 @@ bool eraseFunctionDependencyFromFunctionDependencyList(vector<NLCclassDefinition
 	return result;
 }
 
-bool findParentClass(NLCclassDefinition* classDefinition, string variableName, int inheritanceLevel, int* maxInheritanceLevel, NLCclassDefinition** parentClass)
+bool findParentClass(NLCclassDefinition* classDefinition, const string variableName, int inheritanceLevel, int* maxInheritanceLevel, constEffective NLCclassDefinition** parentClass)
 {
 	#ifdef NLC_DEBUG
 	//cout << "findParentClass: variableName = " << variableName << endl;
@@ -828,7 +828,7 @@ bool findParentClass(NLCclassDefinition* classDefinition, string variableName, i
 #endif
 
 //only appropriate for use with functionName/functionObjectName/functionClassName (as not compatible with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES otherwise);
-bool findFunctionArgument(vector<NLCitem*>* parameters, string itemName, int itemType, NLCitem** functionArgument)
+bool findFunctionArgument(vector<NLCitem*>* parameters, const string itemName, const int itemType, constEffective NLCitem** functionArgument)
 {
 	bool foundFunctionArgument = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
@@ -859,7 +859,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, string itemName, int ite
 	return foundFunctionArgument;
 }
 
-bool findFunctionArgument(vector<NLCitem*>* parameters, NLCitem* item, int itemType, NLCitem** functionArgument)
+bool findFunctionArgument(vector<NLCitem*>* parameters, const NLCitem* item, const int itemType, constEffective NLCitem** functionArgument)
 {
 	bool foundFunctionArgument = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
@@ -890,7 +890,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, NLCitem* item, int itemT
 	return foundFunctionArgument;
 }
 
-bool findFunctionArgument(vector<NLCitem*>* parameters, int itemType, NLCitem** functionArgument)
+bool findFunctionArgument(vector<NLCitem*>* parameters, const int itemType, constEffective NLCitem** functionArgument)
 {
 	bool foundFunctionArgument = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)

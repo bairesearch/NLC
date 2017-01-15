@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCmain.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -141,7 +141,7 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_DEPENDENCY_RELATIONS_PARSER_RELEX_DEFAULT_DEPENDENCY_RELATIONS_TYPE, GIA_NLP_DEPENDENCY_RELATIONS_PARSER_STANFORD_CORENLP_DEFAULT_DEPENDENCY_RELATIONS_TYPE, GIA_NLP_DEPENDENCY_RELATIONS_PARSER_STANFORD_PARSER_DEFAULT_DEPENDENCY_RELATIONS_TYPE};
 
 
-int main(int argc, char** argv)
+int main(const int argc, const char** argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
 	setProgLang(progLang);
@@ -659,7 +659,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1w2c 12-December-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1w3a 14-January-2017" << endl;
 			exit(1);
 		}
 
@@ -1628,7 +1628,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList)
+bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList)
 {
 	bool result = true;
 

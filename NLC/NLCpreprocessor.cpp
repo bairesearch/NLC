@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessor.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,7 +44,7 @@
 
 #ifdef NLC_PREPROCESSOR
 
-bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName)
+bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName)
 {
 	*numberOfInputFilesInList = 0;
 
@@ -539,7 +539,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	return result;
 }
 
-void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList)
+void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	#ifdef NLC_PREPROCESSOR_MATH
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -586,7 +586,7 @@ void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence*
 }
 
 #ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
-bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
+bool reduceQuotesToSingleWords(const string lineText, string* updatedLineText)
 {
 	bool result = false;
 	*updatedLineText = "";
@@ -677,7 +677,7 @@ void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentat
 }
 
 #ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
-bool detectFunctionHeader(string* lineContents)
+bool detectFunctionHeader(const string* lineContents)
 {
 	bool functionHeaderFound = false;
 	int index = lineContents->find(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING));
@@ -690,7 +690,7 @@ bool detectFunctionHeader(string* lineContents)
 	}
 	return functionHeaderFound;
 }
-string getFunctionNameFromFunctionHeader(string* lineContents)
+string getFunctionNameFromFunctionHeader(const string* lineContents)
 {
 	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length() + string(NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR).length());
 	#ifdef NLC_DEBUG
@@ -699,14 +699,14 @@ string getFunctionNameFromFunctionHeader(string* lineContents)
 	return NLCfunctionName;
 
 }
-string generateNLCfunctionFileName(string NLCfunctionName)
+string generateNLCfunctionFileName(const string NLCfunctionName)
 {
 	string functionFileName = NLCfunctionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
 	return functionFileName;
 }
 #endif
 
-bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logicalConditionOperator)
+bool detectLogicalConditionOperatorAtStartOfLine(const string* lineContents, int* logicalConditionOperator)
 {
 	#ifdef NLC_DEBUG
 	//cout << "detectLogicalConditionOperatorAtStartOfLine() lineContents = " <<* lineContents << endl;

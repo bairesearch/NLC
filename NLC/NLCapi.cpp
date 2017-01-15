@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCapi.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 #include "NLCprintCodeBlocksFunctions.h"
 
 #ifdef NLC_API
-bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vector<NLCclassDefinition*>* classDefinitionList, int progLang)
+bool parseDoxygenClassXMLfile(const string APIclassName, const string APIsourceFolder, vector<NLCclassDefinition*>* classDefinitionList, int progLang)
 {
 	bool result = true;
 
@@ -198,7 +198,7 @@ bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vecto
 	return result;
 }
 
-void generatePropertyClassLists(XMLparserTag* currentTagUpdated, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, string APIclassName, string* APIwrapperSourceWrapObjectFunctionText, string* APIwrapperSourceUnwrapObjectFunctionText, int progLang)
+void generatePropertyClassLists(XMLparserTag* currentTagUpdated, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, const string APIclassName, string* APIwrapperSourceWrapObjectFunctionText, string* APIwrapperSourceUnwrapObjectFunctionText, const int progLang)
 {
 	XMLparserTag* currentTagUpdatedL2 = currentTagUpdated->firstLowerLevelTag;
 	while(currentTagUpdatedL2->nextTag != NULL)
@@ -251,7 +251,7 @@ void generatePropertyClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 	}
 }
 
-void generateFunctionClassLists(XMLparserTag* currentTagUpdated, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, string APIclassName, string* APIwrapperSourceWrapFunctionFunctionsText, string* APIwrapperHeaderWrapFunctionFunctionsText, int progLang)
+void generateFunctionClassLists(XMLparserTag* currentTagUpdated, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, const string APIclassName, string* APIwrapperSourceWrapFunctionFunctionsText, string* APIwrapperHeaderWrapFunctionFunctionsText, int progLang)
 {
 	XMLparserTag* currentTagUpdatedL2 = currentTagUpdated->firstLowerLevelTag;
 	while(currentTagUpdatedL2->nextTag != NULL)
@@ -380,14 +380,14 @@ void generateFunctionClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 	}
 }
 
-string getType(XMLparserTag* typeTag)
+string getType(const XMLparserTag* typeTag)
 {
 	string typeString = "";
 	bool foundRefTag = false;
 	string refValue = "";
 	if(typeTag->firstLowerLevelTag != NULL)
 	{
-		XMLparserTag* typeTagL2 = typeTag->firstLowerLevelTag;
+		const XMLparserTag* typeTagL2 = typeTag->firstLowerLevelTag;
 		while(typeTagL2->nextTag != NULL)
 		{
 			if(typeTagL2->name == NET_XML_TAG_ref)	//eg <type><ref refid="classClassDef" kindref="compound">parameterType</ref> *</type> / <type>bool</type>
@@ -409,7 +409,7 @@ string getType(XMLparserTag* typeTag)
 	return typeString;
 }
 
-void detectVariableTypeDetails(vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, string variableName, string variableType, string* variableType1, string* variableType1ClassName, string* variableType2, bool* variableTypeList, bool* variableTypeStandard, int* mathtextVariableType)
+void detectVariableTypeDetails(vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* classDefinition, string variableName, string variableType, string* variableType1, string* variableType1ClassName, string* variableType2, const bool* variableTypeList, bool* variableTypeStandard, int* mathtextVariableType)
 {
 	string targetClassName = "";
 	string variableTypeFinal = "";
@@ -464,7 +464,7 @@ void detectVariableTypeDetails(vector<NLCclassDefinition*>* classDefinitionList,
 	}
 }
 
-void generateCodeWrapObject(string variableName, string variableType1ClassName, string APIclassName, bool variableTypeList, bool variableTypeStandard, int mathtextVariableType, int level, string* APIwrapperSourceWrapObjectFunctionText, int progLang)
+void generateCodeWrapObject(const string variableName, const string variableType1ClassName, const string APIclassName, const bool variableTypeList, const bool variableTypeStandard, const int mathtextVariableType, const int level, string* APIwrapperSourceWrapObjectFunctionText, const int progLang)
 {
 	string APIclassInstanceName = generateInstanceNameArbitrary(APIclassName);
 
@@ -516,7 +516,7 @@ void generateCodeWrapObject(string variableName, string variableType1ClassName, 
 	}
 }
 
-void generateCodeUnwrapObject(string variableName, string variableType1ClassName, string variableType1, bool variableTypeList, bool variableTypeStandard, int mathtextVariableType, int level, string* APIwrapperSourceUnwrapObjectFunctionText, int progLang, bool useLocalList)
+void generateCodeUnwrapObject(const string variableName, const string variableType1ClassName, const string variableType1, const bool variableTypeList, const bool variableTypeStandard, const int mathtextVariableType, const int level, string* APIwrapperSourceUnwrapObjectFunctionText, const int progLang, const bool useLocalList)
 {
 	string variableType1InstanceName = generateInstanceNameArbitrary(variableType1);
 
@@ -590,13 +590,13 @@ void generateCodeUnwrapObject(string variableName, string variableType1ClassName
 	}
 }
 
-string generateInstanceNameArbitrary(string classNameRaw)
+string generateInstanceNameArbitrary(const string classNameRaw)
 {
 	string instanceNameArbitrary = generateInstanceName(classNameRaw, 0);	//see GIAentityNode::GIAentityNode(void) for idInstance initialisation
 	return instanceNameArbitrary;
 }
 
-bool variableTypeIsStandard(string variableType, int* type)
+bool variableTypeIsStandard(const string variableType, int* type)
 {
 	bool variableTypeStandard = false;
 	for(int i=0; i<NLC_API_VARIABLE_TYPE_LIST_NUMBER_OF_TYPES; i++)
@@ -628,19 +628,19 @@ bool variableTypeIsList(string variableType, string* variableTypeEmbedded)
 }
 
 
-string generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(string functionNamePrepend, string classNameRaw, int progLang)
+string generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(string functionNamePrepend, const string classNameRaw, const int progLang)
 {
 	string APIwrapperSourceWrapObjectFunctionHeaderText = generateFunctionHeader(generateAPIwrapperSourceWrapperFunctionName(functionNamePrepend, classNameRaw), generateAPIwrapperSourceWrapperFunctionArgumentDefinitionText(classNameRaw, progLang), progLang);
 	return APIwrapperSourceWrapObjectFunctionHeaderText;
 }
 
-string generateAPIwrapperSourceWrapFunctionFunctionHeaderText(string functionNamePrepend, string classNameRaw, string argumentsDefinitionText, int progLang)
+string generateAPIwrapperSourceWrapFunctionFunctionHeaderText(string functionNamePrepend, const string classNameRaw, const string argumentsDefinitionText, const int progLang)
 {
 	string APIwrapperSourceWrapFunctionFunctionHeaderText = generateFunctionHeader(generateAPIwrapperSourceWrapperFunctionName(functionNamePrepend, classNameRaw), argumentsDefinitionText, progLang);
 	return APIwrapperSourceWrapFunctionFunctionHeaderText;
 }
 
-string generateAPIwrapperSourceWrapperFunctionName(string functionNamePrepend, string classNameRaw)
+string generateAPIwrapperSourceWrapperFunctionName(string functionNamePrepend, const string classNameRaw)
 {
 	#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 	string APIwrapperSourceWrapperFunctionName = functionNamePrepend + classNameRaw;	//eg wrapThirdPartyAPIobjectAPIclassName
@@ -650,13 +650,13 @@ string generateAPIwrapperSourceWrapperFunctionName(string functionNamePrepend, s
 	return APIwrapperSourceWrapperFunctionName;
 }
 
-string generateAPIwrapperSourceWrapperFunctionArgumentDefinitionText(string classNameRaw, int progLang)
+string generateAPIwrapperSourceWrapperFunctionArgumentDefinitionText(const string classNameRaw, const int progLang)
 {
 	string APIwrapperSourceWrapperFunctionArgumentDefinitionText = generateDefinitionText(generatePointerTypeText(classNameRaw, progLang), NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME);	//eg APIclassName* thirdpartyAPIobject
 	return APIwrapperSourceWrapperFunctionArgumentDefinitionText;
 }
 
-string generateFunctionHeader(string functionName, string argumentText, int progLang)
+string generateFunctionHeader(const string functionName, const string argumentText, const int progLang)
 {
 	string functionHeaderText = functionName + progLangClassMemberFunctionParametersOpen[progLang] + argumentText + progLangClassMemberFunctionParametersClose[progLang];
 	return functionHeaderText;

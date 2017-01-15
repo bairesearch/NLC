@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorMath.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,33 +41,33 @@
 #ifdef NLC_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH
 
-bool detectMathSymbolsInLine(string* lineContents);
-bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, bool hasLogicalConditionOperator, bool isMathText);
+bool detectMathSymbolsInLine(const string* lineContents);
+bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, const bool hasLogicalConditionOperator, const bool isMathText);
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(string* lineContents, int currentIndentation, NLCsentence* firstNLCsentenceInFullSentence, NLCsentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand);
+bool splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(string* lineContents, int currentIndentation, const NLCsentence* firstNLCsentenceInFullSentence, NLCsentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand);
 #endif
 
-bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
-	bool findCharacterAtIndexOrAfterSpace(string* lineContents, int i, char characterToFind, int* indexOfCharacterFound);
+bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
+	bool findCharacterAtIndexOrAfterSpace(const string* lineContents, int i, char characterToFind, int* indexOfCharacterFound);
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents);
 	bool restoreExplicitVariableTypes(string* mathText);
-	string replaceSubstringAtStartOfString(string* textOrig, string stringToFind, string replacementString);
+	string replaceSubstringAtStartOfString(const string* textOrig, string stringToFind, string replacementString);
 	#endif
-	void addNewMathTextVariable(NLCsentence* sentence, string variableName, int variableTypeObject);
+	void addNewMathTextVariable(NLCsentence* sentence, const string variableName, const int variableTypeObject);
 	void removeLastMathTextVariable(NLCsentence* sentence);
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-bool replaceNumericalVariablesWithDummyNumberIfNecessary(string* lineContents, NLCsentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
-	bool isWhiteSpaceOrInvalidWordCharacter(char c);
+bool replaceNumericalVariablesWithDummyNumberIfNecessary(string* lineContents, NLCsentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
+	bool isWhiteSpaceOrInvalidWordCharacter(const char c);
 #endif
 
-bool findPredefinedMathtextVariable(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);
+bool findPredefinedMathtextVariable(const string* currentWord, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList, const NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);
 	#ifdef NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES
-	bool findPredefinedMathtextVariableInAnyFunctions(string* currentWord, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);	//allows global numerical variable definitions; not just local numerical variable definitions
+	bool findPredefinedMathtextVariableInAnyFunctions(const string* currentWord, const NLCfunction* firstNLCfunctionInList, const NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);	//allows global numerical variable definitions; not just local numerical variable definitions
 	#endif
-		bool findPredefinedMathtextVariableInFunction(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);
+		bool findPredefinedMathtextVariableInFunction(const string* currentWord, NLCfunction* currentNLCfunctionInList, const NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);
 
 #ifdef NLC_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
 bool findMathTextVariableWithinMathText(string mathTextVariableName, string mathText);

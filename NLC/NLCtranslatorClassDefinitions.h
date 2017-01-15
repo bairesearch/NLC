@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorClassDefinitions.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,22 +40,22 @@
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
 
-bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCfunction* currentNLCfunctionInList);
-	bool addClassDefinitionToList(vector<NLCclassDefinition*>* classDefinitionList, string className, NLCclassDefinition** classDefinition);
+bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, const NLCfunction* currentNLCfunctionInList);
+	bool addClassDefinitionToList(vector<NLCclassDefinition*>* classDefinitionList, const string className, NLCclassDefinition** classDefinition);
 	void addDefinitionToClassDefinition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition);
 	void addPropertyListToClassDefinition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition);
 	#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
-	bool isSubstanceEntityDefinitionAChildOfTheSubstanceEntity(GIAentityNode* substanceEntity, GIAentityNode* parentEntity, GIAentityConnection* connection);
+	bool isSubstanceEntityDefinitionAChildOfTheSubstanceEntity(const GIAentityNode* substanceEntity, GIAentityNode* parentEntity, const GIAentityConnection* connection);
 	#endif
 	#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_LOGICAL_CONDITION_CONCEPTS
-	bool entityIsConceptAndInLogicalCondition(GIAentityNode* entity, NLCfunction* currentNLCfunctionInList);
+	bool entityIsConceptAndInLogicalCondition(const GIAentityNode* entity, const NLCfunction* currentNLCfunctionInList);
 	#endif
 	bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition, GIAentityNode* targetEntity);
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinition* parentFunctionDependencyClassDefinition);
 #endif
 	#ifdef NLC_RECORD_ACTION_HISTORY
-	void fillActionLists(vector<NLCclassDefinition*>* classDefinitionList, bool hasActionSubject, bool hasActionObject, string actionName, string actionObjectName, string actionSubjectName);
+	void fillActionLists(vector<NLCclassDefinition*>* classDefinitionList, const bool hasActionSubject, const bool hasActionObject, const string actionName, const string actionObjectName, const string actionSubjectName);
 	#endif
 	bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode);
 	bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity);
@@ -65,14 +65,14 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 	#endif
 #ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 void preventDoubleDeclarationsOfClassDefinitionVariablesInHeirachy(vector<NLCclassDefinition*>* classDefinitionList);
-	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition* classDefinition, vector<NLCclassDefinition*>* classDefinitionSublist, int variableType);
-		bool findVariableInParentClass(NLCclassDefinition* classDefinition, string variableName, int variableType);
+	void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLCclassDefinition* classDefinition, vector<NLCclassDefinition*>* classDefinitionSublist, const int variableType);
+		bool findVariableInParentClass(NLCclassDefinition* classDefinition, const string variableName, const int variableType);
 #endif
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 void generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(GIAentityNode* actionEntity, vector<NLCitem*>* parameters);
-void generateFunctionPropertyConditionArguments(GIAentityNode* actionEntity, vector<NLCitem*>* parameters, bool performChildActionDuplicateCheck);
-	bool checkDuplicateProperty(GIAentityNode* propertyEntity, vector<NLCitem*>* parameters);
+void generateFunctionPropertyConditionArguments(GIAentityNode* actionEntity, vector<NLCitem*>* parameters, const bool performChildActionDuplicateCheck);
+	bool checkDuplicateProperty(const GIAentityNode* propertyEntity, vector<NLCitem*>* parameters);
 	bool checkDuplicateCondition(GIAentityNode* conditionEntity, vector<NLCitem*>* parameters);
 #endif
 

@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,7 +52,7 @@ NLCsubphrase::~NLCsubphrase(void)
 }
 #endif
 
-bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, bool parallelReplacement)
+bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement)
 {
 	bool result = true;
 
@@ -200,7 +200,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 	return result;
 }
 
-bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence* firstNLCsentenceInFullSentence, bool additionalClosingBracketRequired)
+bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence* firstNLCsentenceInFullSentence, const bool additionalClosingBracketRequired)
 {
 	bool result = true;
 
@@ -246,7 +246,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCsentence* first
 
 
 
-bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCsentence* firstNLCsentenceInFullSentence, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, bool additionalClosingBracketRequired)
+bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCsentence* firstNLCsentenceInFullSentence, constEffective NLCsentence** currentNLCsentenceInList, const int* sentenceIndex, const bool additionalClosingBracketRequired)
 {
 	bool result = true;
 

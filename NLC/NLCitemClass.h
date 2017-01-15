@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCitemClass.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -79,11 +79,11 @@ class NLCitem
 public:
 
 	NLCitem(void);
-	NLCitem(GIAentityNode* entity, int newItemType);
-	NLCitem(GIAentityNode* entity, int newItemType, int sentenceIndex);	//for categoryList/subjectCategoryList/objectCategoryList genericObjects only (it will execute generateCategoryListGenericObjectName to generate genericObjectName)
-	NLCitem(GIAentityNode* entity, int newItemType, string newGenericObjectName);
-	NLCitem(string newName, int newItemType);
-	NLCitem(NLCitem* newItem);
+	NLCitem(const GIAentityNode* entity, const int newItemType);
+	NLCitem(const GIAentityNode* entity, const int newItemType, const int sentenceIndex);	//for categoryList/subjectCategoryList/objectCategoryList genericObjects only (it will execute generateCategoryListGenericObjectName to generate genericObjectName)
+	NLCitem(const GIAentityNode* entity, const int newItemType, const string newGenericObjectName);
+	NLCitem(const string newName, const int newItemType);
+	NLCitem(const NLCitem* newItem);
 	~NLCitem(void);
 
 	int itemType;
@@ -113,20 +113,20 @@ public:
 	string genericObjectName;	//added 1i7a	//NB name could be co-opted for this purpose (ie instead of using genericObjectName)
 };
 
-string generateCategoryListGenericObjectName(GIAentityNode* entity, int sentenceIndex);
+string generateCategoryListGenericObjectName(const GIAentityNode* entity, const int sentenceIndex);
 
-string generateClassName(GIAentityNode* entity);
-	string generateClassName(string entityName);
-string generateFunctionName(GIAentityNode* entity);
-	string generateFunctionName(string entityName);
-string generateInstanceName(GIAentityNode* entity);
-	string generateInstanceName(string entityName, long idInstance);
+string generateClassName(const GIAentityNode* entity);
+	string generateClassName(const string entityName);
+string generateFunctionName(const GIAentityNode* entity);
+	string generateFunctionName(const string entityName);
+string generateInstanceName(const GIAentityNode* entity);
+	string generateInstanceName(const string entityName, const long idInstance);
 
 string generateTypeName(string entityName);
 
 //string generateItemName(GIAentityNode* entity, int itemType);
 
-string removeClassTextFromClassDefinitionName(string className);
+string removeClassTextFromClassDefinitionName(const string className);
 
 #ifdef NLC_INPUT_FUNCTION_LISTS
 string parseFunctionNameFromNLCfunctionName(string NLCfunctionName);
@@ -136,11 +136,11 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
 #endif
 void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
-string generateNLCfunctionHeader(string functionName, string functionOwnerName, bool hasFunctionOwnerClass, string functionObjectName, bool hasFunctionObjectClass);
+string generateNLCfunctionHeader(const string functionName, const string functionOwnerName, const bool hasFunctionOwnerClass, const string functionObjectName, const bool hasFunctionObjectClass);
 #endif
 
 //see NLCclassDefinitionClass.cpp for other versions of this function;
-bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, int itemType, NLCitem** functionArgument);
+bool findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* entity, const int itemType, constEffective NLCitem** functionArgument);
 
 bool detectPredeterminer(GIAentityNode* entity, int sentenceIndex);
 

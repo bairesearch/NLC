@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCcodeBlockClass.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,7 +42,7 @@ int getCurrentLogicalConditionLevel()
 {
 	return currentLogicalConditionLevel;
 }
-void setCurrentLogicalConditionLevel(int value)
+void setCurrentLogicalConditionLevel(const int value)
 {
 	currentLogicalConditionLevel = value;
 }
@@ -142,7 +142,7 @@ NLClogicalConditionConjunction::~NLClogicalConditionConjunction(void)
 
 
 //Resultant code: functionItem[context].functionItem[name](objectItem[context].objectItem[name]);	//NB functionItem[context] = action subject
-NLCcodeblock* createCodeBlockExecuteSubjectObject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, int sentenceIndex)
+NLCcodeblock* createCodeBlockExecuteSubjectObject(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* subjectEntity, const GIAentityNode* objectEntity, const int sentenceIndex)
 {
 	NLCitem* functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, sentenceIndex);
 	NLCitem* functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, sentenceIndex);
@@ -155,7 +155,7 @@ NLCcodeblock* createCodeBlockExecuteSubjectObject(NLCcodeblock* currentCodeBlock
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
-NLCcodeblock* createCodeBlockExecuteSubject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* subjectEntity, int sentenceIndex)
+NLCcodeblock* createCodeBlockExecuteSubject(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* subjectEntity, const int sentenceIndex)
 {
 	NLCitem* functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, sentenceIndex);
 	NLCitem* functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, sentenceIndex);
@@ -166,7 +166,7 @@ NLCcodeblock* createCodeBlockExecuteSubject(NLCcodeblock* currentCodeBlockInTree
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
-NLCcodeblock* createCodeBlockExecuteObject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* objectEntity, int sentenceIndex)
+NLCcodeblock* createCodeBlockExecuteObject(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* objectEntity, const int sentenceIndex)
 {
 	NLCitem* functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, sentenceIndex);
 	NLCitem* functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT, sentenceIndex);
@@ -177,7 +177,7 @@ NLCcodeblock* createCodeBlockExecuteObject(NLCcodeblock* currentCodeBlockInTree,
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
 
-NLCcodeblock* createCodeBlockExecute(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
+NLCcodeblock* createCodeBlockExecute(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const int sentenceIndex)
 {
 	NLCitem* functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION, sentenceIndex);
 
@@ -187,7 +187,7 @@ NLCcodeblock* createCodeBlockExecute(NLCcodeblock* currentCodeBlockInTree, GIAen
 }
 
 #ifdef NLC_RECORD_ACTION_HISTORY
-NLCcodeblock* createCodeBlockRecordHistoryActionSubject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* subjectEntity)
+NLCcodeblock* createCodeBlockRecordHistoryActionSubject(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* subjectEntity)
 {
 	NLCitem* functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
 	NLCitem* functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
@@ -198,7 +198,7 @@ NLCcodeblock* createCodeBlockRecordHistoryActionSubject(NLCcodeblock* currentCod
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT);
 }
 
-NLCcodeblock* createCodeBlockRecordHistoryActionObject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* objectEntity)
+NLCcodeblock* createCodeBlockRecordHistoryActionObject(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* objectEntity)
 {
 	NLCitem* functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
 	NLCitem* functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
@@ -222,7 +222,7 @@ NLCcodeblock* createCodeBlockCreateNewProperty(NLCcodeblock* currentCodeBlockInT
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddNewProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList)
+NLCcodeblock* createCodeBlockAddNewProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, const bool copyNewItemsToLocalList)
 {
 	#ifdef NLC_QUANTITIES
 	NLCcodeblock* origCurrentCodeBlockInTree = currentCodeBlockInTree;
@@ -305,7 +305,7 @@ NLCcodeblock* createCodeBlockAddNewProperty(NLCcodeblock* currentCodeBlockInTree
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, bool addReferencingContext)
+NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, const bool addReferencingContext)
 {
 	#ifdef NLC_QUANTITIES
 	NLCcodeblock* origCurrentCodeBlockInTree = currentCodeBlockInTree;
@@ -366,7 +366,7 @@ NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBl
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddEntityToLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* localListEntity, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockAddEntityToLocalList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* localListEntity, const GIAentityNode* entity)
 {
 	NLCitem* entityItem = new NLCitem(localListEntity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -380,7 +380,7 @@ NLCcodeblock* createCodeBlockAddEntityToLocalList(NLCcodeblock* currentCodeBlock
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+NLCcodeblock* createCodeBlockAddProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity, const int sentenceIndex)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -410,7 +410,7 @@ NLCcodeblock* createCodeBlockCreateNewCondition(NLCcodeblock* currentCodeBlockIn
 }
 
 
-NLCcodeblock* createCodeBlockAddNewCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList)
+NLCcodeblock* createCodeBlockAddNewCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, const bool copyNewItemsToLocalList)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
@@ -491,7 +491,7 @@ NLCcodeblock* createCodeBlockAddNewCondition(NLCcodeblock* currentCodeBlockInTre
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddNewConditionSimple(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+NLCcodeblock* createCodeBlockAddNewConditionSimple(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* conditionEntity, const GIAentityNode* conditionObject)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -508,7 +508,7 @@ NLCcodeblock* createCodeBlockAddNewConditionSimple(NLCcodeblock* currentCodeBloc
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
+NLCcodeblock* createCodeBlockAddCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, const int sentenceIndex)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
@@ -536,7 +536,7 @@ NLCcodeblock* createCodeBlockAddCondition(NLCcodeblock* currentCodeBlockInTree, 
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddConditionSimple(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+NLCcodeblock* createCodeBlockAddConditionSimple(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* conditionEntity, const GIAentityNode* conditionObject)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
@@ -638,7 +638,7 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodebloc
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool createTypeList)
+NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, const bool createTypeList)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -713,18 +713,18 @@ NLCcodeblock* createCodeBlockForOrInPropertyList(NLCcodeblock* currentCodeBlockI
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* parent)	//this function should probably be used more often
+NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* parent)	//this function should probably be used more often
 {
 	string context = generateInstanceName(parent);
 	return createCodeBlockForPropertyList(currentCodeBlockInTree, entity, context);
 }
-NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
+NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
 	return createCodeBlockForPropertyList(currentCodeBlockInTree, item);
 }
-NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	return createCodeBlockForPropertyList(currentCodeBlockInTree, item);
@@ -741,7 +741,7 @@ NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTre
 }
 
 #ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int index)
+NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const int index)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(item);
@@ -753,7 +753,7 @@ NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree
 	int codeBlockType = NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context, int index)
+NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const int index)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(item);
@@ -786,7 +786,7 @@ NLCcodeblock* createCodeBlockForOrInLocalList(NLCcodeblock* currentCodeBlockInTr
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockForLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockForLocalList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(item);
@@ -795,7 +795,7 @@ NLCcodeblock* createCodeBlockForLocalList(NLCcodeblock* currentCodeBlockInTree, 
 }
 
 #ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-NLCcodeblock* createCodeBlockInLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int index)
+NLCcodeblock* createCodeBlockInLocalList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const int index)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(item);
@@ -810,12 +810,12 @@ NLCcodeblock* createCodeBlockInLocalList(NLCcodeblock* currentCodeBlockInTree, G
 #endif
 
 
-NLCcodeblock* createCodeBlockForConditionList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* condition, GIAentityNode* conditionObject, GIAentityNode* conditionSubject)	//this function should probably be used more often
+NLCcodeblock* createCodeBlockForConditionList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionObject, const GIAentityNode* conditionSubject)	//this function should probably be used more often
 {
 	string context = generateInstanceName(conditionSubject);
 	return createCodeBlockForConditionList(currentCodeBlockInTree, condition, conditionObject, conditionSubject);
 }
-NLCcodeblock* createCodeBlockForConditionList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* condition, GIAentityNode* conditionObject, string context)
+NLCcodeblock* createCodeBlockForConditionList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionObject, const string context)
 {
 	NLCitem* conditionItem = new NLCitem(condition, NLC_ITEM_TYPE_OBJECT);
 	NLCitem* conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
@@ -862,11 +862,11 @@ NLCcodeblock* createCodeBlockIfActionName(NLCcodeblock* currentCodeBlockInTree, 
 
 #ifdef NLC_RECORD_ACTION_HISTORY
 
-NLCcodeblock* createCodeBlockForActionList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* actionSubject)
+NLCcodeblock* createCodeBlockForActionList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* actionSubject)
 {
 	return createCodeBlockForActionList(currentCodeBlockInTree, actionEntity, generateInstanceName(actionSubject));
 }
-NLCcodeblock* createCodeBlockForActionList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
+NLCcodeblock* createCodeBlockForActionList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
@@ -879,11 +879,11 @@ NLCcodeblock* createCodeBlockForActionList(NLCcodeblock* currentCodeBlockInTree,
 	#endif
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionEntity, GIAentityNode* actionObject)
+NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionEntity, const GIAentityNode* actionObject)
 {
 	return createCodeBlockForActionIncomingList(currentCodeBlockInTree, actionEntity, generateInstanceName(actionObject));
 }
-NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
+NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
@@ -896,11 +896,11 @@ NLCcodeblock* createCodeBlockForActionIncomingList(NLCcodeblock* currentCodeBloc
 	#endif
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionObject, GIAentityNode* actionEntity)
+NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionObject, const GIAentityNode* actionEntity)
 {
 	return createCodeBlockForActionObjectList(currentCodeBlockInTree, actionObject, generateInstanceName(actionEntity));
 }
-NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
+NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
@@ -909,11 +909,11 @@ NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockI
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_ACTION_OBJECT_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionSubject, GIAentityNode* actionEntity)
+NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* actionSubject, const GIAentityNode* actionEntity)
 {
 	return createCodeBlockForActionSubjectList(currentCodeBlockInTree, actionSubject, generateInstanceName(actionEntity));
 }
-NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)
+NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context)
 {
 	NLCitem* item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
@@ -925,7 +925,7 @@ NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlock
 #endif
 
 #ifdef NLC_QUANTITIES
-NLCcodeblock* createCodeBlockForInteger(NLCcodeblock* currentCodeBlockInTree, string numberIterationsOrVariable)
+NLCcodeblock* createCodeBlockForInteger(NLCcodeblock* currentCodeBlockInTree, const string numberIterationsOrVariable)
 {
 	NLCitem* integerItem = new NLCitem(numberIterationsOrVariable, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(integerItem);
@@ -939,7 +939,7 @@ NLCcodeblock* createCodeBlockForInteger(NLCcodeblock* currentCodeBlockInTree, st
 
 
 
-NLCcodeblock* createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* functionOwner)
+NLCcodeblock* createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* functionOwner)
 {
 	//"Dog dog1 = this;"
 	NLCitem* functionOwnerItem = new NLCitem(functionOwner, NLC_ITEM_TYPE_OBJECT);
@@ -961,7 +961,7 @@ NLCcodeblock* createCodeBlocksAddVariableToNewList(NLCcodeblock* currentCodeBloc
 
 
 
-bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
+bool assumedToAlreadyHaveBeenDeclared(const GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;
 	if(assumedToAlreadyHaveBeenDeclaredInitialisation(entity) || entity->NLClocalListVariableHasBeenInitialised)
@@ -978,7 +978,7 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 	return isAssumedToAlreadyHaveBeenDeclared;
 }
 
-bool isDefiniteEntity(GIAentityNode* entity)
+bool isDefiniteEntity(const GIAentityNode* entity)
 {
 	bool isDefiniteEntity = false;
 	#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
@@ -992,7 +992,7 @@ bool isDefiniteEntity(GIAentityNode* entity)
 	return isDefiniteEntity;
 }
 
-bool isDefiniteEntityStrict(GIAentityNode* entity)
+bool isDefiniteEntityStrict(const GIAentityNode* entity)
 {
 	bool isDefiniteEntity = false;
 	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
@@ -1002,7 +1002,7 @@ bool isDefiniteEntityStrict(GIAentityNode* entity)
 	return isDefiniteEntity;
 }
 
-bool assumedToAlreadyHaveBeenDeclaredInitialisation(GIAentityNode* entity)
+bool assumedToAlreadyHaveBeenDeclaredInitialisation(const GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;
 	if(isDefiniteEntity(entity) || entity->NLCisSingularArgument)
@@ -1045,7 +1045,7 @@ NLCcodeblock* createLowerLevel(NLCcodeblock* currentCodeBlockInTree)
 
 
 
-bool getEntityContext(GIAentityNode* entity, vector<string>* context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed)
+bool getEntityContext(GIAentityNode* entity, vector<string>* context, const bool includePresentObject, const int sentenceIndex, const bool markSameSentenceParentsAsParsed)
 {
 	if(includePresentObject)
 	{
@@ -1093,7 +1093,7 @@ bool getEntityContext(GIAentityNode* entity, vector<string>* context, bool inclu
 
 
 
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnection* connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
+bool checkSentenceIndexParsingCodeBlocks(const GIAentityNode* entity, const GIAentityConnection* connection, const int sentenceIndex, const bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
 	#ifdef NLC_DEBUG
@@ -1113,7 +1113,7 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnect
 	return result;
 }
 
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
+bool checkSentenceIndexParsingCodeBlocks(const GIAentityNode* entity, const int sentenceIndex, const bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
 	if(!checkIfEntityHasBeenParsedForNLCcodeBlocks || !(entity->NLCparsedForCodeBlocks))
@@ -1134,7 +1134,7 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, int sentenceInde
 }
 
 
-bool checkDuplicateProperty(GIAentityNode* propertyEntity, GIAentityNode* childActionEntity)
+bool checkDuplicateProperty(const GIAentityNode* propertyEntity, GIAentityNode* childActionEntity)
 {
 	bool alreadyAdded = false;
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = childActionEntity->propertyNodeList->begin(); propertyNodeListIterator < childActionEntity->propertyNodeList->end(); propertyNodeListIterator++)
@@ -1176,7 +1176,7 @@ bool checkDuplicateCondition(GIAentityNode* conditionEntity, GIAentityNode* chil
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 
-NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction* logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel, int logicalConditionCase, bool elseIfDetected)
+NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* currentCodeBlockInTree, const int logicalOperation, const NLClogicalConditionConjunction* logicalConditionConjunctionArray, const int logicalConditionConjunctionIndexMax, const int logicalConditionLevel, const int logicalConditionCase, const bool elseIfDetected)
 {
 	#ifdef NLC_DEBUG
 	//cout << "logicalConditionConjunctionIndexMax = " << logicalConditionConjunctionIndexMax << endl;
@@ -1217,7 +1217,7 @@ NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* cu
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalOperation)
+string generateLogicalConditionConjunctionBooleanName(const int logicalConditionLevel, const int logicalConditionCase, const int logicalOperation)
 {
 	string logicalConditionConjunctionBooleanName = "";
 	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
@@ -1237,7 +1237,7 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 }
 
 
-string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalConditionConjunctionIndex, int logicalOperation)
+string generateLogicalConditionConjunctionBooleanName(const int logicalConditionLevel, const int logicalConditionCase, const int logicalConditionConjunctionIndex, const int logicalOperation)
 {
 	string logicalConditionConjunctionBooleanName = "";
 	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
@@ -1255,7 +1255,7 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 	return logicalConditionConjunctionBooleanName;
 }
 
-NLCcodeblock* createCodeBlockDeclareNewBoolArray(NLCcodeblock* currentCodeBlockInTree, string boolArrayName, bool value)
+NLCcodeblock* createCodeBlockDeclareNewBoolArray(NLCcodeblock* currentCodeBlockInTree, const string boolArrayName, const bool value)
 {
 	NLCitem* itemDeclareNewBoolVariable = new NLCitem(boolArrayName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
@@ -1272,7 +1272,7 @@ NLCcodeblock* createCodeBlockDeclareNewBoolArray(NLCcodeblock* currentCodeBlockI
 }
 #else
 
-NLCcodeblock* createCodeBlockIfHasProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context, bool negative)
+NLCcodeblock* createCodeBlockIfHasProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const bool negative)
 {
 	NLCitem* item = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
@@ -1286,7 +1286,7 @@ NLCcodeblock* createCodeBlockIfHasProperty(NLCcodeblock* currentCodeBlockInTree,
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockIfHasCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* condition, GIAentityNode* conditionObject, string context, bool negative)
+NLCcodeblock* createCodeBlockIfHasCondition(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionObject, const string context, const bool negative)
 {
 	NLCitem* conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
 	NLCitem* conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
@@ -1303,7 +1303,7 @@ NLCcodeblock* createCodeBlockIfHasCondition(NLCcodeblock* currentCodeBlockInTree
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockWhileHasProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context, bool negative)
+NLCcodeblock* createCodeBlockWhileHasProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const bool negative)
 {
 	NLCitem* item = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 	item->context.push_back(context);
@@ -1317,7 +1317,7 @@ NLCcodeblock* createCodeBlockWhileHasProperty(NLCcodeblock* currentCodeBlockInTr
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockWhileHasCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* condition, GIAentityNode* conditionObject, string context, bool negative)
+NLCcodeblock* createCodeBlockWhileHasCondition(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionObject, const string context, const bool negative)
 {
 	NLCitem* conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
 	NLCitem* conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
@@ -1344,7 +1344,7 @@ NLCcodeblock* createCodeBlockElse(NLCcodeblock* currentCodeBlockInTree)
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockWhileHasBool(NLCcodeblock* currentCodeBlockInTree, string whileLogicalConditionConjunctionBooleanName)
+NLCcodeblock* createCodeBlockWhileHasBool(NLCcodeblock* currentCodeBlockInTree, const string whileLogicalConditionConjunctionBooleanName)
 {
 	NLCitem* conditionItem = new NLCitem(whileLogicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(conditionItem);
@@ -1353,13 +1353,13 @@ NLCcodeblock* createCodeBlockWhileHasBool(NLCcodeblock* currentCodeBlockInTree, 
 }
 
 //logicalConditionLevel is defined based on user tab indenting of text file, as parsed by NLC preprocessor
-string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel)
+string generateWhileLogicalConditionConjunctionBooleanName(const int logicalConditionLevel)
 {
 	string whileLogicalConditionConjunctionBooleanName = string(NLC_WHILE_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel);
 	return whileLogicalConditionConjunctionBooleanName;
 }
 
-NLCcodeblock* createCodeBlockDeclareNewBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value)
+NLCcodeblock* createCodeBlockDeclareNewBoolVar(NLCcodeblock* currentCodeBlockInTree, const string boolVariableName, const bool value)
 {
 	NLCitem* itemDeclareNewBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
@@ -1375,7 +1375,7 @@ NLCcodeblock* createCodeBlockDeclareNewBoolVar(NLCcodeblock* currentCodeBlockInT
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockSetBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value)
+NLCcodeblock* createCodeBlockSetBoolVar(NLCcodeblock* currentCodeBlockInTree, const string boolVariableName, const bool value)
 {
 	NLCitem* itemSetBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(itemSetBoolVariable);
@@ -1391,7 +1391,7 @@ NLCcodeblock* createCodeBlockSetBoolVar(NLCcodeblock* currentCodeBlockInTree, st
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockCheckBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value)
+NLCcodeblock* createCodeBlockCheckBoolVar(NLCcodeblock* currentCodeBlockInTree, const string boolVariableName, const bool value)
 {
 	NLCitem* itemCheckBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(itemCheckBoolVariable);
@@ -1410,7 +1410,7 @@ NLCcodeblock* createCodeBlockCheckBoolVar(NLCcodeblock* currentCodeBlockInTree, 
 
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-NLCcodeblock* createCodeBlockRemoveProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock* createCodeBlockRemoveProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1423,7 +1423,7 @@ NLCcodeblock* createCodeBlockRemoveProperty(NLCcodeblock* currentCodeBlockInTree
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockRemoveProperties(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock* createCodeBlockRemoveProperties(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1438,7 +1438,7 @@ NLCcodeblock* createCodeBlockRemoveProperties(NLCcodeblock* currentCodeBlockInTr
 }
 
 //not currently used;
-NLCcodeblock* createCodeBlockRemoveEntitiesFromLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockRemoveEntitiesFromLocalList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1477,7 +1477,7 @@ NLCcodeblock* createCodeBlockRemoveCondition(NLCcodeblock* currentCodeBlockInTre
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockRemoveConditionSimple(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+NLCcodeblock* createCodeBlockRemoveConditionSimple(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* conditionEntity, const GIAentityNode* conditionObject)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
@@ -1523,7 +1523,7 @@ NLCcodeblock* createCodeBlockRemoveConditions(NLCcodeblock* currentCodeBlockInTr
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockRemoveConditionsSimple(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+NLCcodeblock* createCodeBlockRemoveConditionsSimple(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* conditionEntity, const GIAentityNode* conditionObject)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
@@ -1544,7 +1544,7 @@ NLCcodeblock* createCodeBlockRemoveConditionsSimple(NLCcodeblock* currentCodeBlo
 #endif
 
 #ifdef NLC_PREPROCESSOR_MATH
-NLCcodeblock* createCodeBlockMathTextLine(NLCcodeblock* currentCodeBlockInTree, string mathText)
+NLCcodeblock* createCodeBlockMathTextLine(NLCcodeblock* currentCodeBlockInTree, const string mathText)
 {
 	NLCitem* mathTextItem = new NLCitem(mathText, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(mathTextItem);
@@ -1555,7 +1555,7 @@ NLCcodeblock* createCodeBlockMathTextLine(NLCcodeblock* currentCodeBlockInTree, 
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockMathTextWithLogicalOperator(NLCcodeblock* currentCodeBlockInTree, string mathText)
+NLCcodeblock* createCodeBlockMathTextWithLogicalOperator(NLCcodeblock* currentCodeBlockInTree, const string mathText)
 {
 	if(!(currentCodeBlockInTree->parameters.empty()))
 	{
@@ -1571,7 +1571,7 @@ NLCcodeblock* createCodeBlockMathTextWithLogicalOperator(NLCcodeblock* currentCo
 }
 #endif
 
-NLCcodeblock* createCodeBlockDeclareNewIntVar(NLCcodeblock* currentCodeBlockInTree, string intVariableName, int value)
+NLCcodeblock* createCodeBlockDeclareNewIntVar(NLCcodeblock* currentCodeBlockInTree, const string intVariableName, const int value)
 {
 	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intNameItem);
@@ -1591,7 +1591,7 @@ NLCcodeblock* createCodeBlockDeclareNewIntVar(NLCcodeblock* currentCodeBlockInTr
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockIncrementIntVar(NLCcodeblock* currentCodeBlockInTree, string intVariableName)
+NLCcodeblock* createCodeBlockIncrementIntVar(NLCcodeblock* currentCodeBlockInTree, const string intVariableName)
 {
 	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intNameItem);
@@ -1601,7 +1601,7 @@ NLCcodeblock* createCodeBlockIncrementIntVar(NLCcodeblock* currentCodeBlockInTre
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockCommentSingleLine(NLCcodeblock* currentCodeBlockInTree, string comment)
+NLCcodeblock* createCodeBlockCommentSingleLine(NLCcodeblock* currentCodeBlockInTree, const string comment)
 {
 	NLCitem* item = new NLCitem(comment, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(item);
@@ -1616,7 +1616,7 @@ NLCcodeblock* createCodeBlockCommentSingleLine(NLCcodeblock* currentCodeBlockInT
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 
-NLCcodeblock* createCodeBlockReassignIter(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockReassignIter(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 
@@ -1627,43 +1627,43 @@ NLCcodeblock* createCodeBlockReassignIter(NLCcodeblock* currentCodeBlockInTree, 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericListAppendName, const int sentenceIndex)
 {
 	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName);
 }
 
-NLCcodeblock* createCodeBlockAddEntityToCategoryList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlockAddEntityToCategoryList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity, const string genericListAppendName, const int sentenceIndex)
 {
 	return createCodeBlockAddEntityToGenericList(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, propertyEntity);
 }
 
-NLCcodeblock* createCodeBlockForCategoryList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlockForCategoryList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericListAppendName, const int sentenceIndex)
 {
 	return createCodeBlockForGenericList(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName);
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
-NLCcodeblock* createCodeBlockGetBackCategoryEntityList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlockGetBackCategoryEntityList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericListAppendName, const int sentenceIndex)
 {
 	return createCodeBlockGetBackGenericEntityList(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName);
 }
-NLCcodeblock* createCodeBlockIfHasGreaterThanNumCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value, int sentenceIndex)
+NLCcodeblock* createCodeBlockIfHasGreaterThanNumCategoryItem(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericListAppendName, const int value, const int sentenceIndex)
 {
 	return createCodeBlockIfHasGreaterThanNumGenericEntity(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, value);
 }
 #endif
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value, int sentenceIndex)
+NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericListAppendName, const int value, const int sentenceIndex)
 {
 	return createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, value);
 }
 #endif
-NLCcodeblock* createCodeBlockIfHasCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlockIfHasCategoryItem(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const bool negative, const string genericListAppendName, const int sentenceIndex)
 {
 	return createCodeBlockIfHasGenericEntity(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, negative);
 }
 #ifdef NLC_ADVANCED_REFERENCING
-NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType)
+NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity, const string genericListAppendName, const int sentenceIndex, const bool castToCategoryType)
 {
 	return createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, propertyEntity, castToCategoryType);
 }
@@ -1673,7 +1673,7 @@ NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedS
 }
 #endif
 #ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
-NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType)
+NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity, const string genericListAppendName, const int sentenceIndex, const bool castToCategoryType)
 {
 	return createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, propertyEntity, castToCategoryType);
 }
@@ -1684,7 +1684,7 @@ NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedP
 #endif
 
 
-NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1698,7 +1698,7 @@ NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock* curren
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddEntityToGenericList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity)
+NLCcodeblock* createCodeBlockAddEntityToGenericList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const GIAentityNode* propertyEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1715,7 +1715,7 @@ NLCcodeblock* createCodeBlockAddEntityToGenericList(NLCcodeblock* currentCodeBlo
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockForGenericList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+NLCcodeblock* createCodeBlockForGenericList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1728,7 +1728,7 @@ NLCcodeblock* createCodeBlockForGenericList(NLCcodeblock* currentCodeBlockInTree
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
-NLCcodeblock* createCodeBlockGetBackGenericEntityList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+NLCcodeblock* createCodeBlockGetBackGenericEntityList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1739,7 +1739,7 @@ NLCcodeblock* createCodeBlockGetBackGenericEntityList(NLCcodeblock* currentCodeB
 	int codeBlockType = NLC_CODEBLOCK_TYPE_GET_BACK_GENERIC_ENTITY_LIST;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock* createCodeBlockIfHasGreaterThanNumGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value)
+NLCcodeblock* createCodeBlockIfHasGreaterThanNumGenericEntity(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const int value)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1758,7 +1758,7 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanNumGenericEntity(NLCcodeblock* curr
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockPrintWarning(NLCcodeblock* currentCodeBlockInTree, string warning)
+NLCcodeblock* createCodeBlockPrintWarning(NLCcodeblock* currentCodeBlockInTree, const string warning)
 {
 	NLCitem* printWarningItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(printWarningItem);
@@ -1770,7 +1770,7 @@ NLCcodeblock* createCodeBlockPrintWarning(NLCcodeblock* currentCodeBlockInTree, 
 }
 #endif
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value)
+NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const int value)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1790,7 +1790,7 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodebl
 }
 #endif
 
-NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative)
+NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const bool negative)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1806,7 +1806,7 @@ NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockIn
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 #ifdef NLC_ADVANCED_REFERENCING
-NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType)
+NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const GIAentityNode* propertyEntity, const bool castToCategoryType)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1842,7 +1842,7 @@ NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSi
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
+NLCcodeblock* createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const int sentenceIndex)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1858,7 +1858,7 @@ NLCcodeblock* createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock* currentC
 #endif
 
 #ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
-NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType)
+NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const GIAentityNode* propertyEntity, const bool castToCategoryType)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1897,7 +1897,7 @@ NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPl
 
 
 #ifdef NLC_GENERATE_TYPE_LISTS
-NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1911,7 +1911,7 @@ NLCcodeblock* createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock* curre
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockAddEntityToGenericList2(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2)
+NLCcodeblock* createCodeBlockAddEntityToGenericList2(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName, const GIAentityNode* propertyEntity, const string genericListAppendName2)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1931,7 +1931,7 @@ NLCcodeblock* createCodeBlockAddEntityToGenericList2(NLCcodeblock* currentCodeBl
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockForGenericList2(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+NLCcodeblock* createCodeBlockForGenericList2(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericObjectName, const string genericListAppendName)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -1943,22 +1943,22 @@ NLCcodeblock* createCodeBlockForGenericList2(NLCcodeblock* currentCodeBlockInTre
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlocksDeclareNewTypeListVariable(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlocksDeclareNewTypeListVariable(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	return createCodeBlocksDeclareNewGenericListVariable2(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPE_VAR_APPENDITION2);
 }
-NLCcodeblock* createCodeBlockAddInstanceListToTypeList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock* createCodeBlockAddInstanceListToTypeList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* propertyEntity)
 {
 	return createCodeBlockAddEntityToGenericList2(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPE_VAR_APPENDITION2, propertyEntity, NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION2);
 }
-NLCcodeblock* createCodeBlockForPropertyTypeClass(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockForPropertyTypeClass(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	return createCodeBlockForGenericList2(currentCodeBlockInTree, entity, entity->entityName, NLC_ITEM_TYPE_TYPE_VAR_APPENDITION2);
 }
 #endif
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-NLCcodeblock* createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock* currentCodeBlockInTree, string intVariableName, int value)
+NLCcodeblock* createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock* currentCodeBlockInTree, const string intVariableName, const int value)
 {
 	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intNameItem);
@@ -1970,7 +1970,7 @@ NLCcodeblock* createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock* 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock* createCodeBlockIfIntVariableEqualsListSize(NLCcodeblock* currentCodeBlockInTree, string intVariableName, GIAentityNode* entityList, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlockIfIntVariableEqualsListSize(NLCcodeblock* currentCodeBlockInTree, const string intVariableName, const GIAentityNode* entityList, const string genericListAppendName, const int sentenceIndex)
 {
 	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intNameItem);
@@ -2030,7 +2030,7 @@ NLCcodeblock* createCodeBlockIfHasMoreThanNumCondition(NLCcodeblock* currentCode
 #endif
 
 #ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
-NLCcodeblock* createCodeBlocksDeclareContextList(NLCcodeblock* currentCodeBlockInTree, int contextLevel)
+NLCcodeblock* createCodeBlocksDeclareContextList(NLCcodeblock* currentCodeBlockInTree, const int contextLevel)
 {
 	string contextLevelString = convertIntToString(contextLevel);
 	NLCitem* contextLevelItem = new NLCitem(contextLevelString, NLC_ITEM_TYPE_VARIABLE);
@@ -2066,7 +2066,7 @@ NLCcodeblock* createCodeBlocksClearContextListNewFunction(NLCcodeblock* currentC
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlocksAddEntityToContextLevelListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, int contextLevel, GIAentityNode* entity, int sentenceIndex)
+NLCcodeblock* createCodeBlocksAddEntityToContextLevelListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const int contextLevel, const GIAentityNode* entity, const int sentenceIndex)
 {
 	string contextLevelString = convertIntToString(contextLevel);
 	NLCitem* contextLevelItem = new NLCitem(contextLevelString, NLC_ITEM_TYPE_VARIABLE);
@@ -2086,7 +2086,7 @@ NLCcodeblock* createCodeBlocksAddEntityToContextLevelListExecuteFunction(NLCcode
 }
 
 //NB createCodeBlocksClearContextListVariableExecuteFunction is embedded in printCodeBlocks()
-NLCcodeblock* createCodeBlocksClearContextListVariableExecuteFunction(NLCcodeblock* currentCodeBlockInTree, int contextLevel)
+NLCcodeblock* createCodeBlocksClearContextListVariableExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const int contextLevel)
 {
 	string contextLevelString = convertIntToString(contextLevel);
 	NLCitem* contextLevelItem = new NLCitem(contextLevelString, NLC_ITEM_TYPE_VARIABLE);
@@ -2136,7 +2136,7 @@ NLCcodeblock* createCodeBlocksCastVectorExecuteFunction(NLCcodeblock* currentCod
 #endif
 
 #ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
-NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string aliasName)
+NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string aliasName)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	cout << "createCodeBlocksAddAliasToEntityAliasList{}:" << endl;
@@ -2178,7 +2178,7 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodebl
 	return currentCodeBlockInTree;
 }
 //NB genericListAppendName is "CategoryList"
-NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const string aliasName, const GIAentityNode* entity, const string genericListAppendName, const int sentenceIndex)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	cout << "createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction{}:" << endl;
@@ -2223,7 +2223,7 @@ NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBloc
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const string aliasName, const GIAentityNode* entity)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	cout << "createCodeBlocksFindAliasExecuteFunction{}:" << endl;
@@ -2277,7 +2277,7 @@ void initialiseFunctionAliasClassList()
 	#endif
 }
 
-bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
+bool findEntityNameInFunctionAliasList(const string aliasName, string* aliasClassName)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	cout << "start findEntityNameInFunctionAliasList{}:" << endl;
@@ -2297,7 +2297,7 @@ bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 #endif
 #endif
 
-NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string warning)
+NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, const string warning)
 {
 	NLCitem* debugItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(debugItem);
@@ -2309,7 +2309,7 @@ NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string 
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-string generateCategoryListPropertyCountVariableName(GIAentityNode* entity)
+string generateCategoryListPropertyCountVariableName(const GIAentityNode* entity)
 {
 	string categoryListPropertyCountVariableName = generateInstanceName(entity) + NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION + NLC_ITEM_TYPE_LIST_VAR_APPENDITION + NLC_ITEM_TYPE_PROPERTYCOUNT_VAR_APPENDITION;
 
@@ -2354,7 +2354,7 @@ NLCcodeblock* getLastSetCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree)
 
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity)
+GIAentityNode* generateInverseConditionEntity(const GIAentityNode* conditionEntity)
 {
 	GIAentityNode* conditionEntityInverse = new GIAentityNode();
 	conditionEntityInverse->entityType = GIA_ENTITY_TYPE_TYPE_CONDITION;
@@ -2368,7 +2368,7 @@ GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity)
 
 
 #ifdef NLC_REDEFINITIONS
-NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, string objectInstanceName, string classNameToFind)
+NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, const string objectInstanceName, const string classNameToFind)
 {
 	NLCitem* objectItem = new NLCitem("object", NLC_ITEM_TYPE_OBJECT);
 	objectItem->instanceName = objectInstanceName;
@@ -2382,7 +2382,7 @@ NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* 
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* object, string classNameToFind)
+NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* object, const string classNameToFind)
 {
 	NLCitem* objectItem = new NLCitem(object, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
@@ -2395,7 +2395,7 @@ NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* 
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* object, string classNameToFind)
+NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* object, const string classNameToFind)
 {
 	NLCitem* objectItem = new NLCitem(object, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
@@ -2420,7 +2420,7 @@ NLCcodeblock* createCodeBlockCheckParentClassNameNewFunction(NLCcodeblock* curre
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeConvertParentToChildClass(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* parentEntity, GIAentityNode* childEntity)
+NLCcodeblock* createCodeConvertParentToChildClass(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* parentEntity, const GIAentityNode* childEntity)
 {
 	NLCitem* parentItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(parentItem);
@@ -2435,7 +2435,7 @@ NLCcodeblock* createCodeConvertParentToChildClass(NLCcodeblock* currentCodeBlock
 }
 #endif
 
-NLCcodeblock* createCodeBlockDeclareTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName)
+NLCcodeblock* createCodeBlockDeclareTempVariable(NLCcodeblock* currentCodeBlockInTree, const string tempVariableClassName, const string tempVariableInstanceName)
 {
 	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
 	tempVariableItem->className = tempVariableClassName;
@@ -2448,7 +2448,7 @@ NLCcodeblock* createCodeBlockDeclareTempVariable(NLCcodeblock* currentCodeBlockI
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockSetTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableInstanceName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetTempVariable(NLCcodeblock* currentCodeBlockInTree, const string tempVariableInstanceName, const GIAentityNode* entity)
 {
 	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
 	tempVariableItem->instanceName = tempVariableInstanceName;
@@ -2463,7 +2463,7 @@ NLCcodeblock* createCodeBlockSetTempVariable(NLCcodeblock* currentCodeBlockInTre
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockDeclareTempVariableAndSetToEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockDeclareTempVariableAndSetToEntity(NLCcodeblock* currentCodeBlockInTree, const string tempVariableClassName, const string tempVariableInstanceName, const GIAentityNode* entity)
 {
 	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
 	tempVariableItem->className = tempVariableClassName;
@@ -2479,7 +2479,7 @@ NLCcodeblock* createCodeBlockDeclareTempVariableAndSetToEntity(NLCcodeblock* cur
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity1, GIAentityNode* entity2)
+NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity1, const GIAentityNode* entity2)
 {
 	NLCitem* entityItem1 = new NLCitem(entity1, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem1);
@@ -2493,7 +2493,7 @@ NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCod
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, const string tempVariableClassName, const string tempVariableInstanceName, const GIAentityNode* entity)
 {
 	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
 	tempVariableItem->className = tempVariableClassName;
@@ -2550,7 +2550,7 @@ NLCcodeblock* createCodeBlockAddConditionInverseNewFunction(NLCcodeblock* curren
 
 
 #ifdef NLC_MATH_OBJECTS
-NLCcodeblock* createCodeBlockTestMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity)
+NLCcodeblock* createCodeBlockTestMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* valueEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2564,7 +2564,7 @@ NLCcodeblock* createCodeBlockTestMathObjectNumericalValue(NLCcodeblock* currentC
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeBlockSetMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity)
+NLCcodeblock* createCodeBlockSetMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* valueEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2577,7 +2577,7 @@ NLCcodeblock* createCodeBlockSetMathObjectNumericalValue(NLCcodeblock* currentCo
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
+NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, const string decimalPointerVariableName)
 {
 	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
@@ -2587,7 +2587,7 @@ NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCo
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, const string decimalPointerVariableName, const GIAentityNode* entity)
 {
 	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
@@ -2600,7 +2600,7 @@ NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathObjectNumericalValue(N
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockSetMathObjectTypeAsNumerical(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetMathObjectTypeAsNumerical(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2612,7 +2612,7 @@ NLCcodeblock* createCodeBlockSetMathObjectTypeAsNumerical(NLCcodeblock* currentC
 }
 
 #ifdef NLC_MATH_OBJECTS_ADVANCED
-NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName)
+NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, const string genericEntityPointerVariableName)
 {
 	NLCitem* genericEntityPointerItem = new NLCitem(genericEntityPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(genericEntityPointerItem);
@@ -2622,7 +2622,7 @@ NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* cur
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, const string genericEntityPointerVariableName, const GIAentityNode* entity)
 {
 	NLCitem* genericEntityPointerItem = new NLCitem(genericEntityPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(genericEntityPointerItem);
@@ -2636,7 +2636,7 @@ NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* curre
 	return currentCodeBlockInTree;
 }
 #ifdef NLC_MATH_OBJECTS_STRING
-NLCcodeblock* createCodeBlockSetMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity)
+NLCcodeblock* createCodeBlockSetMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* valueEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2649,7 +2649,7 @@ NLCcodeblock* createCodeBlockSetMathObjectStringValue(NLCcodeblock* currentCodeB
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName)
+NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCodeBlockInTree, const string stringPointerVariableName)
 {
 	NLCitem* decimalPointerItem = new NLCitem(stringPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
@@ -2658,7 +2658,7 @@ NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCod
 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock* createCodeBlockSetStringPointerToEntityMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetStringPointerToEntityMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, const string stringPointerVariableName, const GIAentityNode* entity)
 {
 	NLCitem* stringPointerItem = new NLCitem(stringPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(stringPointerItem);
@@ -2671,7 +2671,7 @@ NLCcodeblock* createCodeBlockSetStringPointerToEntityMathObjectStringValue(NLCco
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockSetMathObjectTypeAsString(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetMathObjectTypeAsString(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2683,7 +2683,7 @@ NLCcodeblock* createCodeBlockSetMathObjectTypeAsString(NLCcodeblock* currentCode
 }
 #endif
 #ifdef NLC_MATH_OBJECTS_BOOLEAN
-NLCcodeblock* createCodeBlockSetMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity)
+NLCcodeblock* createCodeBlockSetMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const GIAentityNode* valueEntity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2696,7 +2696,7 @@ NLCcodeblock* createCodeBlockSetMathObjectBooleanValue(NLCcodeblock* currentCode
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockDeclareNewBooleanPointerVar(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName)
+NLCcodeblock* createCodeBlockDeclareNewBooleanPointerVar(NLCcodeblock* currentCodeBlockInTree, const string booleanPointerVariableName)
 {
 	NLCitem* booleanPointerItem = new NLCitem(booleanPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(booleanPointerItem);
@@ -2705,7 +2705,7 @@ NLCcodeblock* createCodeBlockDeclareNewBooleanPointerVar(NLCcodeblock* currentCo
 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock* createCodeBlockSetBooleanPointerToEntityMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetBooleanPointerToEntityMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, const string booleanPointerVariableName, const GIAentityNode* entity)
 {
 	NLCitem* booleanPointerItem = new NLCitem(booleanPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(booleanPointerItem);
@@ -2718,7 +2718,7 @@ NLCcodeblock* createCodeBlockSetBooleanPointerToEntityMathObjectBooleanValue(NLC
 
 	return currentCodeBlockInTree;
 }
-NLCcodeblock* createCodeBlockSetMathObjectTypeAsBoolean(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock* createCodeBlockSetMathObjectTypeAsBoolean(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
@@ -2733,7 +2733,7 @@ NLCcodeblock* createCodeBlockSetMathObjectTypeAsBoolean(NLCcodeblock* currentCod
 
 //check that pointer is not NULL
 #ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
-NLCcodeblock* createCodeBlockTestDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
+NLCcodeblock* createCodeBlockTestDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, const string decimalPointerVariableName)
 {
 	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
@@ -2744,7 +2744,7 @@ NLCcodeblock* createCodeBlockTestDecimalPointerValue(NLCcodeblock* currentCodeBl
 	return currentCodeBlockInTree;
 }
 #else
-NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName)
+NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeBlockInTree, const string decimalPointerVariableName)
 {
 	NLCitem* decimalPointerItem = new NLCitem(decimalPointerVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(decimalPointerItem);
@@ -2758,7 +2758,7 @@ NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeB
 
 #endif
 
-NLCcodeblock* createCodeBlockIfTempVariableNameEqualsClassName(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string className)
+NLCcodeblock* createCodeBlockIfTempVariableNameEqualsClassName(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string className)
 {
 	NLCitem* tempVariableItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
@@ -2774,7 +2774,7 @@ NLCcodeblock* createCodeBlockIfTempVariableNameEqualsClassName(NLCcodeblock* cur
 
 
 #ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-bool checkNumericalReferenceToEntity(GIAentityNode* entity)
+bool checkNumericalReferenceToEntity(const GIAentityNode* entity)
 {
 	bool numericalReference = false;
 	if((entity->hasQuantity) && (entity->grammaticalNumber != GRAMMATICAL_NUMBER_PLURAL))
@@ -2798,7 +2798,7 @@ NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceNewFunction(NLCcodeblock
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int sentenceIndex)
+NLCcodeblock* createCodeVerifyDefiniteReferenceExistenceExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string genericListAppendName, const int sentenceIndex)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, sentenceIndex);
 	currentCodeBlockInTree->parameters.push_back(entityItem);

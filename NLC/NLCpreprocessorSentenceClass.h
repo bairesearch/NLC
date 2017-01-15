@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorSentenceClass.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -110,20 +110,20 @@ public:
 
 
 #ifdef NLC_PREPROCESSOR_MATH
-string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence* currentPhrase);
+string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCsentence* currentPhrase);
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-int generateDummyNumber(int predefinedVariableIndex);
+int generateDummyNumber(const int predefinedVariableIndex);
 #endif
 #endif
-bool isStringNLPparsableWord(string phrase, bool preprocessorMath);
-bool isStringValidVariableName(string phrase, bool preprocessor);
+bool isStringNLPparsableWord(string phrase, const bool preprocessorMath);
+bool isStringValidVariableName(string phrase, const bool preprocessor);
 bool isStringNumberPreprocessorMath(string phrase);
 bool isStringNumberOrFractional(string phrase);
 	bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
-bool isStringAliasFileName(string phrase);
+bool isStringAliasFileName(const string phrase);
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
-bool isStringIllegalTargetSourceCharacter(string phrase);
+bool isStringIllegalTargetSourceCharacter(const string phrase);
 #endif
-bool sentencePertainsToLogicalCondition(NLCsentence* currentNLCsentenceInList);
+bool sentencePertainsToLogicalCondition(const NLCsentence* currentNLCsentenceInList);
 
 #endif

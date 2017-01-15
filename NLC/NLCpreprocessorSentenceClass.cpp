@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorSentenceClass.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -99,7 +99,7 @@ NLCfunction::~NLCfunction(void)
 
 
 #ifdef NLC_PREPROCESSOR_MATH
-string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence* currentPhrase)
+string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCsentence* currentPhrase)
 {
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 	string variableName = replaceAllOccurancesOfString(&(currentPhrase->sentenceContents), STRING_SPACE, "");
@@ -130,7 +130,7 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-int generateDummyNumber(int predefinedVariableIndex)
+int generateDummyNumber(const int predefinedVariableIndex)
 {
 	int dummyNumber = predefinedVariableIndex + NLC_PREPROCESSOR_MATH_DUMMY_NUMBER_VALUE_BASE;
 	return dummyNumber;
@@ -140,7 +140,7 @@ int generateDummyNumber(int predefinedVariableIndex)
 #endif
 
 //isStringNLPparsableWord: either variable name or all numbers
-bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
+bool isStringNLPparsableWord(string phrase, const bool preprocessorMath)
 {
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
@@ -181,7 +181,7 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 }
 
 //isStringValidVariableName: alphanumeric string but can't start with number
-bool isStringValidVariableName(string phrase, bool preprocessor)
+bool isStringValidVariableName(string phrase, const bool preprocessor)
 {
 	if(phrase.length() == 0)
 	{
@@ -310,7 +310,7 @@ bool isDecimalPlace(int indexOfCurrentToken, string* lineContents)
 }
 
 //simple algorithm just detects full stops
-bool isStringAliasFileName(string phrase)
+bool isStringAliasFileName(const string phrase)
 {
 	bool stringIsAliasFileName = false;
 	for(int i=0; i<phrase.length(); i++)
@@ -326,7 +326,7 @@ bool isStringAliasFileName(string phrase)
 }
 
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
-bool isStringIllegalTargetSourceCharacter(string phrase)
+bool isStringIllegalTargetSourceCharacter(const string phrase)
 {
 	bool stringContainsIllegalTargetSourceCharacter = false;
 	for(int i=0; i<phrase.length(); i++)
@@ -341,7 +341,7 @@ bool isStringIllegalTargetSourceCharacter(string phrase)
 }
 #endif
 
-bool sentencePertainsToLogicalCondition(NLCsentence* currentNLCsentenceInList)
+bool sentencePertainsToLogicalCondition(const NLCsentence* currentNLCsentenceInList)
 {
 	bool result = false;
 	if(currentNLCsentenceInList->hasLogicalConditionOperator || currentNLCsentenceInList->mathTextNLPparsablePhraseIndex > NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX)

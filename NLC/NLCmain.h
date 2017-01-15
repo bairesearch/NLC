@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCmain.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
 
-int main(int argc, char** argv);
+int main(const int argc, const char** argv);
 	string removeFileNameExtensions(string NLCfunctionName);
 	#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
 	string removeNLCfileNameExtension(string NLCfunctionName);
@@ -48,7 +48,7 @@ int main(int argc, char** argv);
 	void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete);
 	#endif
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList);
+	bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList);
 	#endif
 	#ifndef NLC_LIBRARY
 	void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);

@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintDefs.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -121,7 +121,7 @@
 
 
 int getProgLang();
-void setProgLang(int progLang);
+void setProgLang(const int progLang);
 
 //from NLCclassDefinitionClass.h
 static string progLangClassTitlePrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -352,20 +352,20 @@ static string progLangSpace[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" ", " ", " 
 
 
 
-void printLine(string command, int level, string* code);
-string generatePropertyListName(NLCitem* item);
+void printLine(const string command, const int level, string* code);
+string generatePropertyListName(const NLCitem* item);
 
-string generatePropertyListName(string propertyClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generatePropertyListName(const string propertyClassName);	//NLC_NONOO: backwards compatibility wrapper only
 #ifdef NLC_NONOO
 string generatePropertyListName();
 string generatePropertyReverseListName();
 #endif
 
 #ifdef NLC_RECORD_ACTION_HISTORY
-string generateActionListName(string actionClassName);	//NLC_NONOO: backwards compatibility wrapper only
-string generateActionIncomingListName(string actionClassName);	//NLC_NONOO: backwards compatibility wrapper only
-string generateActionSubjectListName(string actionSubjectClassName);	//NLC_NONOO: backwards compatibility wrapper only
-string generateActionObjectListName(string actionObjectClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionListName(const string actionClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionIncomingListName(const string actionClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionSubjectListName(const string actionSubjectClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionObjectListName(const string actionObjectClassName);	//NLC_NONOO: backwards compatibility wrapper only
 #ifdef NLC_NONOO
 string generateActionListName();
 string generateActionIncomingListName();
@@ -373,13 +373,13 @@ string generateActionSubjectListName();
 string generateActionObjectListName();
 #endif
 #endif
-string generateLocalListName(string className, string instanceName);
-string generateLocalListName(NLCitem* item);
-string generateEntityListName(NLCitem* entityParam);	//added 1i6a
+string generateLocalListName(const string className, const string instanceName);
+string generateLocalListName(const NLCitem* item);
+string generateEntityListName(const NLCitem* entityParam);	//added 1i6a
 string generateEntityListAppendName();
-string generateCategoryListName(NLCitem* param, string genericListAppendName);
-string generateGenericListName(string genericObjectName, string genericListAppendName);
-string generateConditionListName(string conditionClassName, string conditionObjectClassName);
+string generateCategoryListName(const NLCitem* param, const string genericListAppendName);
+string generateGenericListName(const string genericObjectName, const string genericListAppendName);
+string generateConditionListName(const string conditionClassName, const string conditionObjectClassName);
 #ifdef NLC_NONOO
 string generateConditionListName();
 string generateGIAconditionListName();
@@ -387,187 +387,187 @@ string generateGIAconditionObjectListName();
 string generateGIAincomingConditionListName();
 string generateGIAconditionSubjectListName();
 #else
-string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem);
-string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
+string generateConditionListName(const NLCitem* conditionItem, const NLCitem* conditionObjectItem);
+string generateConditionPairDefinitionName(const string conditionClassName, const string conditionObjectClassName);
 #ifdef NLC_CONDITION_LISTS_VECTOR
-string generateCodeConditionNewPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
+string generateCodeConditionNewPairText(const string conditionName, const string conditionClassName, const string conditionInstanceName, const string conditionObjectClassName, const string conditionObjectInstanceName, const int progLang);
 #endif
-string generateCodeConditionPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
-string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string>* conditionContext, int progLang);
+string generateCodeConditionPairText(const string conditionName, const string conditionClassName, const string conditionInstanceName, const string conditionObjectClassName, const string conditionObjectInstanceName, const int progLang);
+string generateCodeConditionPairTextWithContext(const string conditionName, const string conditionClassName, const string conditionInstanceName, const string conditionObjectClassName, const string conditionObjectInstanceName, vector<string>* conditionContext, const int progLang);
 #endif
-	string generateInstanceNameWithContext(string instanceName, vector<string>* context, int progLang);
-		string generateStringFromContextVector(vector<string>* context, int progLang);
+	string generateInstanceNameWithContext(const string instanceName, vector<string>* context, const int progLang);
+		string generateStringFromContextVector(vector<string>* context, const int progLang);
 
-string generateCodePropertyListDefinitionText(NLCitem* entityParam, int progLang);
-string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
-string generateCodeEntityListDefinitionText(NLCitem* entityParam, int progLang);
-string generateCodeEntityListDefinitionText(string className, string instanceName, int progLang);
-	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
-		string generateCodeEntityListDefinitionTypeTextCompact(string entityClassName, int progLang);
+string generateCodePropertyListDefinitionText(const NLCitem* entityParam, const int progLang);
+string generateCodePropertyListDefinitionText(const string propertyClassName, const int progLang);
+string generateCodeEntityListDefinitionText(const NLCitem* entityParam, const int progLang);
+string generateCodeEntityListDefinitionText(const string className, const string instanceName, const int progLang);
+	string generateCodeEntityListDefinitionTypeText(const string entityClassName, const int progLang);	//NLC_NONOO: backwards compatibility wrapper only
+		string generateCodeEntityListDefinitionTypeTextCompact(const string entityClassName, const int progLang);
 			#ifdef NLC_NONOO
-			string generateCodeEntityListDefinitionTypeTextNonOO(int progLang);
+			string generateCodeEntityListDefinitionTypeTextNonOO(const int progLang);
 			#else
-			string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang);
+			string generateCodeEntityListDefinitionTypeTextPointer(const string entityClassName, const int progLang);
 			#ifdef NLC_GENERATE_TYPE_LISTS
-			string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
+			string generateCodeEntityListDefinitionTypeText2(const string propertyClassName, const int progLang);
 			#endif
 			#endif
-			string generateCodeVectorListDefinitionTypeText(string entityClassName, int progLang);
-			string generateCodeVectorListDefinitionTypeTextPointer(string entityClassName, int progLang);
-			string generateCodeVectorListDefinitionTypeText2(string vectorClassName, int progLang);
+			string generateCodeVectorListDefinitionTypeText(const string entityClassName, const int progLang);
+			string generateCodeVectorListDefinitionTypeTextPointer(const string entityClassName, const int progLang);
+			string generateCodeVectorListDefinitionTypeText2(const string vectorClassName, const int progLang);
 
-string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int progLang);
-	string generateCodeEntityListDefinitionTypeTextReference(string entityClassName, int progLang);
-	string generateCodeEntityListDefinitionTypeTextReferenceCompact(string entityClassName, int progLang);
-string generateCodeGenericListDefinitionText(NLCitem* entityParam, string genericListAppendName, int progLang);
-string generateCodeConditionListDefinitionText(NLCitem* conditionParam, NLCitem* conditionObjectParam, int progLang);
-string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
-		string generateCodeConditionListDefinitionTypeTextCompact(string conditionClassName, string conditionObjectClassName, int progLang);
+string generateCodeEntityListDefinitionReferenceText(const NLCitem* entityParam, const int progLang);
+	string generateCodeEntityListDefinitionTypeTextReference(const string entityClassName, const int progLang);
+	string generateCodeEntityListDefinitionTypeTextReferenceCompact(const string entityClassName, const int progLang);
+string generateCodeGenericListDefinitionText(const NLCitem* entityParam, const string genericListAppendName, const int progLang);
+string generateCodeConditionListDefinitionText(const NLCitem* conditionParam, const NLCitem* conditionObjectParam, const int progLang);
+string generateCodeConditionListDefinitionText(const string conditionClassName, const string conditionObjectClassName, const int progLang);
+	string generateCodeConditionListDefinitionTypeText(const string conditionClassName, const string conditionObjectClassName, const int progLang);	//NLC_NONOO: backwards compatibility wrapper only
+		string generateCodeConditionListDefinitionTypeTextCompact(const string conditionClassName, const string conditionObjectClassName, const int progLang);
 			#ifdef NLC_CONDITION_LISTS_VECTOR
-			string generateCodeVectorPairListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
+			string generateCodeVectorPairListDefinitionTypeText(const string conditionClassName, const string conditionObjectClassName, const int progLang);
 			#else
-			string generateCodeMapsListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
+			string generateCodeMapsListDefinitionTypeText(const string conditionClassName, const string conditionObjectClassName, const int progLang);
 			#endif
 	#ifdef NLC_NONOO
-	string generateCodeConditionListDefinitionTypeTextNonOO(int progLang);
+	string generateCodeConditionListDefinitionTypeTextNonOO(const int progLang);
 	#else
-	string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang);
+	string generateCodeConditionListDefinitionTypeTextPointer(const string conditionClassName, const string conditionObjectClassName, const int progLang);
 	#endif
 
 #ifdef NLC_NONOO
 string generateGIAentityName();
-string generateCodeEntityNameTestText(NLCitem* param, int progLang);
+string generateCodeEntityNameTestText(const NLCitem* param, const int progLang);
 #endif
-string generateCodeClassNameTestText(string objectName, string className, int progLang);
+string generateCodeClassNameTestText(const string objectName, const string className, const int progLang);
 
-string generateCodeNewEntity(NLCitem* param, int progLang);
-string generateCodeNewEntity(string className, string instanceName, int progLang);
-	string generateCodeEntityDefinitionText(NLCitem* param, int progLang);
-	string generateCodeEntityDefinitionText(string className, string instanceName, int progLang);
-		string generateEntityName(NLCitem* param);
-		string generateEntityClassName(NLCitem* param);
+string generateCodeNewEntity(const NLCitem* param, const int progLang);
+string generateCodeNewEntity(const string className, const string instanceName, const int progLang);
+	string generateCodeEntityDefinitionText(const NLCitem* param, const int progLang);
+	string generateCodeEntityDefinitionText(const string className, const string instanceName, const int progLang);
+		string generateEntityName(const NLCitem* param);
+		string generateEntityClassName(const NLCitem* param);
 
-string generateCodeEntityDeclarationSetToNull(NLCitem* param1, int progLang);
-string generateCodeSetEntity(NLCitem* param1, NLCitem* param2, int progLang);
-string generateCodeEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeEntityDeclarationSetToNull(const NLCitem* param1, const int progLang);
+string generateCodeSetEntity(const NLCitem* param1, const NLCitem* param2, const int progLang);
+string generateCodeEntityDeclarationSetToEntity(const NLCitem* param1, const NLCitem* param2, const int progLang);
 
-string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
-string generateStaticCastOfEntity(string entityName, string castClassName, int progLang);
-string generateStaticCastOfNewEntity(string entityClassName, string castClassName, int progLang);
-string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
-string generateReinterpretCastOfVectorReference(string vectorName, string castClassName, int progLang);	//CHECKTHIS
-string generateReinterpretCastOfConditionList(string vectorName, string castClassName1, string castClassName2, int progLang);
+string generateDynamicCastOfEntity(const string entityName, const string castClassName, const int progLang);
+string generateStaticCastOfEntity(const string entityName, const string castClassName, const int progLang);
+string generateStaticCastOfNewEntity(const string entityClassName, const string castClassName, const int progLang);
+string generateReinterpretCastOfVector(const string vectorName, const string castClassName, const int progLang);
+string generateReinterpretCastOfVectorReference(const string vectorName, const string castClassName, const int progLang);	//CHECKTHIS
+string generateReinterpretCastOfConditionList(const string vectorName, const string castClassName1, const string castClassName2, const int progLang);
 
 //this code is not currently used;
-string generateCodeGenericStringMapListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
-string generateGenericStringMapListName(string genericListNameStart, string genericListAppendName);	//OLD: generateEntityStringMapListName
+string generateCodeGenericStringMapListDefinitionText(const string entityClassName, const string genericListNameStart, const string genericListAppendName, const int progLang);
+string generateGenericStringMapListName(const string genericListNameStart, const string genericListAppendName);	//OLD: generateEntityStringMapListName
 
-string generateExternalFunctionContext(string objectName, int progLang);
-string generateNewObject(string objectName, int progLang);
+string generateExternalFunctionContext(const string objectName, const int progLang);
+string generateNewObject(const string objectName, const int progLang);
 
 
 #ifdef NLC_LIBRARY
-string generateCodeAllPropertyListAddText(string propertyClassName, int progLang);
-string generateCodeAllPropertyListDefinitionText(int progLang);
+string generateCodeAllPropertyListAddText(const string propertyClassName, const int progLang);
+string generateCodeAllPropertyListDefinitionText(const int progLang);
 string generateAllPropertyListName();
 
-string generateCodeAllVectorListAddText(string allListName, string vectorListName, string vectorListKeyName, int progLang);
-string generateCodeAllVectorListDefinitionTypeText(int progLang);
-string generateCodeEntityMapListDefinitionTypeText(string pairItem1className, string entityClassName, int progLang);
-string generateCodePairText(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang);
-	string generateCodePairTextNew(string pairItem1className, string pairItem2className, string pairItem1instanceName, string pairItem2instanceName, int progLang);
+string generateCodeAllVectorListAddText(const string allListName, const string vectorListName, const string vectorListKeyName, const int progLang);
+string generateCodeAllVectorListDefinitionTypeText(const int progLang);
+string generateCodeEntityMapListDefinitionTypeText(const string pairItem1className, const string entityClassName, const int progLang);
+string generateCodePairText(const string pairItem1className, const string pairItem2className, const string pairItem1instanceName, const string pairItem2instanceName, const int progLang);
+	string generateCodePairTextNew(const string pairItem1className, const string pairItem2className, const string pairItem1instanceName, const string pairItem2instanceName, const int progLang);
 
-string generateCodeAllPropertyIncomingListDefinitionText(int progLang);
-string generateCodeAllPropertyIncomingListDefinitionTypeText(int progLang);
+string generateCodeAllPropertyIncomingListDefinitionText(const int progLang);
+string generateCodeAllPropertyIncomingListDefinitionTypeText(const int progLang);
 string generateAllPropertyIncomingListName();
 
-string generateCodeAllConditionListAddText(string conditionClassName, string conditionObjectClassName, int progLang);
-string generateCodeAllConditionListDefinitionText(int progLang);
+string generateCodeAllConditionListAddText(const string conditionClassName, const string conditionObjectClassName, const int progLang);
+string generateCodeAllConditionListDefinitionText(const int progLang);
 string generateAllConditionListName();
 
-string generateCodeAllMapListAddText(string allListName, string mapListName, string mapListKeyName1, string mapListKeyName2, int progLang);
-string generateCodeAllConditionListDefinitionTypeText(int progLang);
-string generateCodeEntityPairMapListDefinitionTypeText(string pairItem1className, string pairItem2className, string entityClassName, int progLang);
-string generateCodePairTypeText(string pairItem1className, string pairItem2className, int progLang);
-	string generateCodePairTypeTextPointer(string pairItem1className, string pairItem2className, int progLang);
-string generateCodePairPairText(string pairItem1AclassName, string pairItem1BclassName, string pairItem2className, string pairItem1AinstanceName, string pairItem1BinstanceName, string pairItem2instanceName, int progLang);
+string generateCodeAllMapListAddText(const string allListName, const string mapListName, const string mapListKeyName1, const string mapListKeyName2, const int progLang);
+string generateCodeAllConditionListDefinitionTypeText(const int progLang);
+string generateCodeEntityPairMapListDefinitionTypeText(const string pairItem1className, const string pairItem2className, const string entityClassName, const int progLang);
+string generateCodePairTypeText(const string pairItem1className, const string pairItem2className, const int progLang);
+	string generateCodePairTypeTextPointer(const string pairItem1className, const string pairItem2className, const int progLang);
+string generateCodePairPairText(const string pairItem1AclassName, const string pairItem1BclassName, const string pairItem2className, const string pairItem1AinstanceName, const string pairItem1BinstanceName, const string pairItem2instanceName, const int progLang);
 
-string generateCodeAllConditionIncomingListDefinitionText(int progLang);
-string generateCodeAllConditionIncomingListDefinitionTypeText(int progLang);
+string generateCodeAllConditionIncomingListDefinitionText(const int progLang);
+string generateCodeAllConditionIncomingListDefinitionTypeText(const int progLang);
 string generateAllConditionIncomingListName();
 
-string generateCodeEntityStringMapListDefinitionText(string entityClassName, string mapListName, int progLang);
-string generateCodeEntityStringMapListDefinitionTypeText(string entityClassName, int progLang);
-string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang);
+string generateCodeEntityStringMapListDefinitionText(const string entityClassName, const string mapListName, const int progLang);
+string generateCodeEntityStringMapListDefinitionTypeText(const string entityClassName, const int progLang);
+string generateEntityStringPairText(const string entity1Name, const string entity2ClassName, const string entity2Name, const int progLang);
 
-string generateCodeAllActionListAddText(string actionClassName, int progLang);
-string generateCodeAllActionListDefinitionText(int progLang);
+string generateCodeAllActionListAddText(const string actionClassName, const int progLang);
+string generateCodeAllActionListDefinitionText(const int progLang);
 string generateAllActionListName();
-string generateCodeAllActionIncomingListAddText(string actionIncomingClassName, int progLang);
-string generateCodeAllActionIncomingListDefinitionText(int progLang);
+string generateCodeAllActionIncomingListAddText(const string actionIncomingClassName, const int progLang);
+string generateCodeAllActionIncomingListDefinitionText(const int progLang);
 string generateAllActionIncomingListName();
-string generateCodeAllActionSubjectListAddText(string actionSubjectClassName, int progLang);
-string generateCodeAllActionSubjectListDefinitionText(int progLang);
+string generateCodeAllActionSubjectListAddText(const string actionSubjectClassName, const int progLang);
+string generateCodeAllActionSubjectListDefinitionText(const int progLang);
 string generateAllActionSubjectListName();
-string generateCodeAllActionObjectListAddText(string actionObjectClassName, int progLang);
-string generateCodeAllActionObjectListDefinitionText(int progLang);
+string generateCodeAllActionObjectListAddText(const string actionObjectClassName, const int progLang);
+string generateCodeAllActionObjectListDefinitionText(const int progLang);
 string generateAllActionObjectListName();
 
 #endif
 
-string generateCodeDeclareBoolTextAndSetFalse(string variableName, int progLang);
-string generateCodeSetBoolTextTrue(string variableName, int progLang);
-string generateCodeReturnText(string variableName, int progLang);
+string generateCodeDeclareBoolTextAndSetFalse(const string variableName, const int progLang);
+string generateCodeSetBoolTextTrue(const string variableName, const int progLang);
+string generateCodeReturnText(const string variableName, const int progLang);
 
-string generateCodeClassNameVariableDefinitionText(NLCitem* param1, int progLang);
-string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
+string generateCodeClassNameVariableDefinitionText(const NLCitem* param1, const int progLang);
+string generateCodeNameVariableDefinitionText(const NLCitem* param1, const int progLang);
 
 #ifdef NLC_MATH_OBJECTS
-string generateCodeTestEntityMathObjectNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
-string generateCodeEntityMathObjectNumericalValueText(NLCitem* param1, int progLang);
-string generateCodeEntityMathValuePointerText(string entityName, int progLang);
-string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetDecimalPointerToEntityMathObjectNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeTestEntityMathObjectNumericalValueText(const NLCitem* param1, const NLCitem* param2, const int progLang);
+string generateCodeEntityMathObjectNumericalValueText(const NLCitem* param1, const int progLang);
+string generateCodeEntityMathValuePointerText(const string entityName, const int progLang);
+string generateCodeDeclareNewDecimalPointerVariableText(const NLCitem* param1, const int progLang);
+string generateCodeSetDecimalPointerToEntityMathObjectNumericalValueText(const NLCitem* param1, const NLCitem* param2, const int progLang);
 #ifdef NLC_MATH_OBJECTS_ADVANCED
-string generateCodeDeclareNewGenericEntityPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetGenericEntityPointerToEntityText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeDeclareNewGenericEntityPointerVariableText(const NLCitem* param1, const int progLang);
+string generateCodeSetGenericEntityPointerToEntityText(const NLCitem* param1, const NLCitem* param2, const int progLang);
 #ifdef NLC_MATH_OBJECTS_STRING
-string generateCodeEntityMathObjectStringValueText(NLCitem* param1, int progLang);
-string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetStringPointerToEntityMathObjectStringValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeEntityMathObjectStringValueText(const NLCitem* param1, const int progLang);
+string generateCodeDeclareNewStringPointerVariableText(const NLCitem* param1, const int progLang);
+string generateCodeSetStringPointerToEntityMathObjectStringValueText(const NLCitem* param1, const NLCitem* param2, const int progLang);
 #endif
 #ifdef NLC_MATH_OBJECTS_BOOLEAN
-string generateCodeEntityMathObjectBooleanValueText(NLCitem* param1, int progLang);
-string generateCodeDeclareNewBooleanPointerVariableText(NLCitem* param1, int progLang);
-string generateCodeSetBooleanPointerToEntityMathObjectBooleanValueText(NLCitem* param1, NLCitem* param2, int progLang);
+string generateCodeEntityMathObjectBooleanValueText(const NLCitem* param1, const int progLang);
+string generateCodeDeclareNewBooleanPointerVariableText(const NLCitem* param1, const int progLang);
+string generateCodeSetBooleanPointerToEntityMathObjectBooleanValueText(const NLCitem* param1, const NLCitem* param2, const int progLang);
 #endif
 #endif
-string generateCodePointerValueText(NLCitem* param1, int progLang);
-string generateCodePointerValueText(string entityName, int progLang);
-string generateCodeEntityMathObjectValueText(string entityName, int mathtextVariableType, int progLang);
-string generateCodeEntityMathObjectTypeText(NLCitem* param1, int progLang);
+string generateCodePointerValueText(const NLCitem* param1, const int progLang);
+string generateCodePointerValueText(const string entityName, const int progLang);
+string generateCodeEntityMathObjectValueText(const string entityName, const int mathtextVariableType, const int progLang);
+string generateCodeEntityMathObjectTypeText(const NLCitem* param1, const int progLang);
 #endif
-string generateReferenceText(string entityName, int progLang);
-string generatePointerText(string entityName, int progLang);
-string generatePointerTypeText(string entityName, int progLang);
-string generateReferenceTypeText(string entityName, int progLang);
-string generateCodeListPointer(string list, int progLang);
+string generateReferenceText(const string entityName, const int progLang);
+string generatePointerText(const string entityName, const int progLang);
+string generatePointerTypeText(const string entityName, const int progLang);
+string generateReferenceTypeText(const string entityName, const int progLang);
+string generateCodeListPointer(const string list, const int progLang);
 
-string generateCodeIterReference(string iterIndexString, int progLang);
-string generateCodeIterReferenceConditionObject(string iterIndexString, int progLang);
-string generateCodeIterName(string iterIndexString, int progLang);
+string generateCodeIterReference(const string iterIndexString, const int progLang);
+string generateCodeIterReferenceConditionObject(const string iterIndexString, const int progLang);
+string generateCodeIterName(const string iterIndexString, const int progLang);
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
-string generateCodeEntityInverseConditionText(NLCitem* param1, int progLang);
+string generateCodeEntityInverseConditionText(const NLCitem* param1, const int progLang);
 #endif
 
 
-string generateDefinitionText(string variableType, string variableName);
-string generateCodeSetText(string variableNameToSet, string variableNameValue, int progLang);
-string generateCodeReferenceText(string variableName, string component, int progLang);
+string generateDefinitionText(const string variableType, const string variableName);
+string generateCodeSetText(const string variableNameToSet, const string variableNameValue, const int progLang);
+string generateCodeReferenceText(const string variableName, const string component, const int progLang);
 
 
-string generateCodeIfVarAequalsVarB(string varA, string varB, int progLang);
+string generateCodeIfVarAequalsVarB(const string varA, const string varB, const int progLang);
 
 #endif

@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCitemClass.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w2c 12-December-2016
+ * Project Version: 1w3a 14-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,7 +61,7 @@ NLCitem::NLCitem(void)
 	name = "";
 	genericObjectName = "";
 }
-NLCitem::NLCitem(GIAentityNode* entity, int newItemType)
+NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType)
 {
 	itemType = newItemType;
 	className = generateClassName(entity);
@@ -85,7 +85,7 @@ NLCitem::NLCitem(GIAentityNode* entity, int newItemType)
 	name = entity->entityName;
 	genericObjectName = "";
 }
-NLCitem::NLCitem(GIAentityNode* entity, int newItemType, int sentenceIndex)
+NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const int sentenceIndex)
 {
 	itemType = newItemType;
 	className = generateClassName(entity);
@@ -109,7 +109,7 @@ NLCitem::NLCitem(GIAentityNode* entity, int newItemType, int sentenceIndex)
 	name = entity->entityName;
 	genericObjectName = generateCategoryListGenericObjectName(entity, sentenceIndex);
 }
-NLCitem::NLCitem(GIAentityNode* entity, int newItemType, string newGenericObjectName)
+NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const string newGenericObjectName)
 {
 	itemType = newItemType;
 	className = generateClassName(entity);
@@ -133,7 +133,7 @@ NLCitem::NLCitem(GIAentityNode* entity, int newItemType, string newGenericObject
 	name = entity->entityName;
 	genericObjectName = newGenericObjectName;
 }
-NLCitem::NLCitem(string newName, int newItemType)
+NLCitem::NLCitem(const string newName, const int newItemType)
 {
 	itemType = newItemType;
 	className = generateClassName(newName);	//changed 9 November 2013
@@ -162,7 +162,7 @@ NLCitem::NLCitem(string newName, int newItemType)
 	name = newName;
 	genericObjectName = "";
 }
-NLCitem::NLCitem(NLCitem* newItem)
+NLCitem::NLCitem(const NLCitem* newItem)
 {
 	itemType = newItem->itemType;
 	className = newItem->className;
@@ -190,7 +190,7 @@ NLCitem::~NLCitem(void)
 {
 }
 
-string generateCategoryListGenericObjectName(GIAentityNode* entity, int sentenceIndex)
+string generateCategoryListGenericObjectName(const GIAentityNode* entity, const int sentenceIndex)
 {
 	#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
 	string categoryListInstanceName = entity->entityName + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME) + convertLongToString(entity->idInstance) + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME) + convertIntToString(sentenceIndex);
@@ -200,30 +200,30 @@ string generateCategoryListGenericObjectName(GIAentityNode* entity, int sentence
 	return categoryListInstanceName;
 }
 
-string generateClassName(GIAentityNode* entity)
+string generateClassName(const GIAentityNode* entity)
 {
 	string className = generateClassName(entity->entityName);
 	return className;
 }
-string generateClassName(string entityName)
+string generateClassName(const string entityName)
 {
 	string className = entityName + NLC_CLASS_NAME_APPEND;
 	return className;
 }
-string generateFunctionName(GIAentityNode* entity)
+string generateFunctionName(const GIAentityNode* entity)
 {
 	return generateFunctionName(entity->entityName);
 }
-string generateFunctionName(string entityName)
+string generateFunctionName(const string entityName)
 {
 	string functionName = entityName + NLC_FUNCTION_NAME_APPEND;
 	return functionName;
 }
-string generateInstanceName(GIAentityNode* entity)
+string generateInstanceName(const GIAentityNode* entity)
 {
 	return generateInstanceName(entity->entityName, entity->idInstance);
 }
-string generateInstanceName(string entityName, long idInstance)
+string generateInstanceName(const string entityName, const long idInstance)
 {
 	string idInstanceString = convertLongToString(idInstance);
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
@@ -242,7 +242,7 @@ string generateTypeName(string entityName)
 	return typeName;
 }
 
-string removeClassTextFromClassDefinitionName(string className)
+string removeClassTextFromClassDefinitionName(const string className)
 {
 	string classNameRaw = "";
 	int classTextIndex = className.find(NLC_CLASS_NAME_APPEND);
@@ -385,7 +385,7 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 	#endif
 }
 
-string generateNLCfunctionHeader(string functionName, string functionOwnerName, bool hasFunctionOwnerClass, string functionObjectName, bool hasFunctionObjectClass)
+string generateNLCfunctionHeader(const string functionName, const string functionOwnerName, const bool hasFunctionOwnerClass, const string functionObjectName, const bool hasFunctionObjectClass)
 {
 	string NLCfunctionHeader = string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING) + NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR;
 	if(hasFunctionOwnerClass)
@@ -403,7 +403,7 @@ string generateNLCfunctionHeader(string functionName, string functionOwnerName, 
 
 #endif
 
-bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, int itemType, NLCitem** functionArgument)
+bool findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* entity, const int itemType, constEffective NLCitem** functionArgument)
 {
 	bool foundFunctionArgument = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)

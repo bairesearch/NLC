@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j21a 02-October-2014
+ * Project Version: 1j21b 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -134,7 +134,7 @@ using namespace std;
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC (65)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-		#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_ONE_PROPERTY_GENERIC (66)
+		#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY_GENERIC (66)
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 		#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY_GENERIC (67)
@@ -143,6 +143,11 @@ using namespace std;
 #ifdef NLC_GENERATE_TYPE_LISTS
 	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC2 (68)
 #endif
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY (69)
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION (70)
+#endif
+
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 /*
@@ -320,7 +325,7 @@ NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCo
 NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
 NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
-NLCcodeblock * createCodeBlockIfHasMoreThanOneCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlockIfHasMoreThanNumCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value);
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName);
@@ -334,7 +339,7 @@ NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenc
 	NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
 	NLCcodeblock * createCodeBlockGetBackPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
-	NLCcodeblock * createCodeBlockIfHasMoreThanOnePropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockIfHasMoreThanNumPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
 	NLCcodeblock * createCodeBlockPrintWarning(NLCcodeblock * currentCodeBlockInTree, string warning);
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
@@ -354,6 +359,11 @@ NLCcodeblock * createCodeBlockForPropertyTypeClass(NLCcodeblock * currentCodeBlo
 	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	NLCcodeblock * createCodeBlockAddPropertyToGenericList2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2);
 	NLCcodeblock * createCodeBlockForPropertyListGeneric2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+#endif
+
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+NLCcodeblock * createCodeBlockIfHasMoreThanNumProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* propertyEntity, int value, string parentInstanceName);
+NLCcodeblock * createCodeBlockIfHasMoreThanNumCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* conditionEntity, GIAentityNode* conditionObject, int value, string parentInstanceName);
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);

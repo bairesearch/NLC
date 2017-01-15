@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l10c 06-November-2014
+ * Project Version: 1l10d 06-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1578,8 +1578,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang, bool categoryList)
 {
 	string codePropertyTypeText = "";
-	#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_AS_FUNCTION_EXECUTION_ARGUMENTS
 	if(categoryList)
 	{
 		codePropertyTypeText = generateGenericListName(functionArgumentItem->instanceName, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
@@ -1587,12 +1586,9 @@ string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progL
 	else
 	{
 	#endif
-	#endif
 		codePropertyTypeText = generateEntityListName(functionArgumentItem);
-	#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_AS_FUNCTION_EXECUTION_ARGUMENTS
 	}
-	#endif
 	#endif
 	
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
@@ -1634,8 +1630,7 @@ string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, i
 	
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + functionArgumentItem->functionArgumentPassCastClassName + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
-	#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_AS_FUNCTION_EXECUTION_ARGUMENTS
 	if(categoryList)
 	{
 		codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateGenericListName(functionArgumentItem->instanceName, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1CategoryList)				
@@ -1643,14 +1638,11 @@ string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, i
 	else
 	{
 	#endif
-	#endif
 		codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
 		//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
 		//string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
-	#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	
+	#ifdef NLC_ACTION_CATEGORY_LISTS_USE_AS_FUNCTION_EXECUTION_ARGUMENTS	
 	}
-	#endif
 	#endif
 	
 	return codeBlockExecuteFunctionText;

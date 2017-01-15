@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12c 30-September-2016
+ * Project Version: 1u12d 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1953,18 +1953,27 @@ NLCcodeblock* createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock* 
 {
 	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intNameItem);
-	#ifdef NLC_DEBUG
-	//cout << "intVariableName = " << intVariableName << endl;
-	#endif
-
+	
 	string intValueString = convertIntToString(value);
 	NLCitem* intValueItem = new NLCitem(intValueString, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intValueItem);
-	#ifdef NLC_DEBUG
-	//cout << "intValueString = " << intValueString << endl;
-	#endif
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+NLCcodeblock* createCodeBlockIfIntVariableEqualsListSize(NLCcodeblock* currentCodeBlockInTree, string intVariableName, GIAentityNode* entityList, string genericListAppendName, int sentenceIndex)
+{
+	NLCitem* intNameItem = new NLCitem(intVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(intNameItem);
+	
+	string genericObjectName = generateCategoryListGenericObjectName(entityList, sentenceIndex);
+	NLCitem* entityItem = new NLCitem(entityList, NLC_ITEM_TYPE_OBJECT, genericObjectName);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem* genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_EQUALS_LIST_SIZE;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 /*

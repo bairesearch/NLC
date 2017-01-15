@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12c 30-September-2016
+ * Project Version: 1u12d 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -903,6 +903,22 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string valueString = param2->name;
 
 			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param1->name + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(variable > x){
+
+			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
+			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_EQUALS_LIST_SIZE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_EQUALS_LIST_SIZE" << endl;
+			#endif
+
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+
+			NLCitem* param3 = currentCodeBlockInLevel->parameters.at(2);
+			string genericListAppendName = param3->name;
+
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param1->name + progLangEqualsTest[progLang] + generateGenericListName(param2->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangCloseParameterSpace[progLang];		//if(variable == param1CategoryList.size()){
 
 			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);

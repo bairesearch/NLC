@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14b 8-June-2014
+ * Project Version: 1f14c 08-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -238,6 +238,34 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->functionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
 	}
 	#endif
+
+	#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
+	//create a high level "genericEntity" class definition (for generic NLC library functions - that cannot rely on specific class names)
+	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+	{
+		NLCclassDefinition * classDefinition = *classDefinitionIter;
+		//cout << "0classDefinition = " << classDefinition->name << endl;
+
+		if(classDefinition->definitionList.empty() && (classDefinition->name != generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE)))
+		{
+			string targetName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
+			//cout << "targetName = " << targetName << endl;
+			bool foundTargetClassDefinition = false;
+			NLCclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
+
+			if(!foundTargetClassDefinition)
+			{
+				//cout << "new NLCclassDefinition(" << targetName << endl;
+				targetClassDefinition = new NLCclassDefinition(targetName);
+				//classDefinitionList->push_back(targetClassDefinition);	//breaks iteration
+				classDefinitionIter = classDefinitionList->insert(classDefinitionIter, targetClassDefinition);
+			}
+
+			classDefinition->definitionList.push_back(targetClassDefinition);
+		}
+	}	
+	#endif
+
 	return true;
 }
 

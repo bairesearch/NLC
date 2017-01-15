@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14b 8-June-2014
+ * Project Version: 1f14c 08-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -107,7 +107,7 @@ bool identifyAndTagAllConditionLogicalOperations(vector<GIAentityNode*> * entity
 						if(foundConditionSubject && foundConditionObject)
 						{
 							conditionEntity->NLCconditionLogicalOperations = true;
-							cout << "tagged: conditionEntity->entityName = " << conditionEntity->entityName << endl;
+							//cout << "tagged: conditionEntity->entityName = " << conditionEntity->entityName << endl;
 
 							if(conditionObject->isConcept)
 							{

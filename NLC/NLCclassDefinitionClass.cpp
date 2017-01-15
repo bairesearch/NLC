@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14b 8-June-2014
+ * Project Version: 1f14c 08-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -85,7 +85,7 @@ NLCclassDefinition * findClassDefinition(vector<NLCclassDefinition *> * classDef
 		NLCclassDefinition *  currentClassDef = *classDefinitionIter;
 		if(currentClassDef->name == name)
 		{
-			//cout << "foundClassDefinition: className = " << className << endl;
+			//cout << "foundClassDefinition: className = " << currentClassDef->name << endl;
 			classDefinitionFound = currentClassDef;
 			*foundClassDefinition = true;
 		}

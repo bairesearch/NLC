@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j13c 12-September-2014
+ * Project Version: 1j13d 12-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -313,7 +313,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 
 	addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity);
 
-	if(contextFound)
+	if(!(generatedParentContext && !contextFound))
 	{
 		*currentCodeBlockInTree = lastCodeBlockInTree->next;
 	}
@@ -396,14 +396,14 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 		{
 			*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
 			#ifdef NLC_DEBUG_PARSE_CONTEXT3
-			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextBlocksSimple(): 1createCodeBlockForPropertyListLocal: ") + parentEntity->entityName);
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 1createCodeBlockForPropertyListLocal: ") + parentEntity->entityName);
 			#endif
 		}
 		else
 		{
 			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
 			#ifdef NLC_DEBUG_PARSE_CONTEXT3
-			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextBlocksSimple(): 2createCodeBlockForPropertyList: ") + parentEntity->entityName);
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 2createCodeBlockForPropertyList: ") + parentEntity->entityName);
 			#endif
 		}
 	}
@@ -1244,6 +1244,12 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						{
 							generatedContext = true;
 						}
+						#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+						else
+						{
+							//generatedContext = true;
+						}
+						#endif
 					#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 					}
 					#endif						
@@ -1529,6 +1535,12 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									{
 										generatedContext = true;
 									}
+									#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+									else
+									{
+										//generatedContext = true;
+									}
+									#endif
 								#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 								}
 								#endif	

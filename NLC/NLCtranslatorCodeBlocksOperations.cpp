@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v5a 20-October-2016
+ * Project Version: 1v6a 20-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2203,6 +2203,12 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 	*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entity);
 	#endif
 	
+	#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	entity->NLCfirstInstanceOfProperNounInContext = false;	//so that the entity will no longer be interpreted as a new declaration by isDefiniteEntity
+	#endif
+	#endif
+
 	bool addObject = false;
 	//a ball that has a car...
 	if(generateObjectInitialisationsForConnectionType(currentCodeBlockInTree, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, entity, sentenceIndex))

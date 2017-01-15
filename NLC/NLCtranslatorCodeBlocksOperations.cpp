@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2d 31-October-2014
+ * Project Version: 1l3a 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,6 +40,7 @@
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "GIAtranslatorDefs.h"
 #include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
 void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * actionEntity, int sentenceIndex, string NLCfunctionName)
 {
@@ -54,6 +55,10 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		#endif
 		//cout << "sentenceIndexC = " << sentenceIndex << endl;
 
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		bool sameReferenceSet = false;
+		#endif
+		
 		bool actionIsSingleWord = false;
 		bool actionHasObject = false;
 		GIAentityNode * objectEntity = NULL;
@@ -69,6 +74,12 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				objectEntity->disabled = true;	//prevent parsing of dummyActionObject by generateCodeBlocksPart4objectInitialisations()
 			}
 			#endif
+			#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			if((actionEntity->actionObjectEntity->back())->sameReferenceSet)
+			{
+				sameReferenceSet = true;	
+			}
+			#endif
 		}
 		bool actionHasSubject = false;
 		GIAentityNode * subjectEntity = NULL;
@@ -76,187 +87,200 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		{
 			actionHasSubject = true;
 			subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
-		}
-
-		NLCcodeblock * functionExecuteCodeBlockInTree = NULL;
-
-		NLCitem * functionItem = NULL;
-		if(actionHasObject || actionHasSubject || actionIsSingleWord)
-		{
-			functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
-
-			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-			initialiseFunctionArguments(currentCodeBlockInTree, actionEntity, sentenceIndex);
-			//firstCodeBlockInSentence = *currentCodeBlockInTree;		//removed 1f1b... [CHECKTHIS]
-			#endif
-
-			#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-			//this is where original getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks code went (for both subjectEntity and objectEntity)
-			if(actionHasSubject)
+			#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			if((actionEntity->actionSubjectEntity->back())->sameReferenceSet)
 			{
-				getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, subjectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				sameReferenceSet = true;	
 			}
+			#endif
+		}
+		
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		if(!sameReferenceSet)
+		{
+		#endif
+			NLCcodeblock * functionExecuteCodeBlockInTree = NULL;
+
+			NLCitem * functionItem = NULL;
+			if(actionHasObject || actionHasSubject || actionIsSingleWord)
+			{
+				functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
+
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+				initialiseFunctionArguments(currentCodeBlockInTree, actionEntity, sentenceIndex);
+				//firstCodeBlockInSentence = *currentCodeBlockInTree;		//removed 1f1b... [CHECKTHIS]
+				#endif
+
+				#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+				//this is where original getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks code went (for both subjectEntity and objectEntity)
+				if(actionHasSubject)
+				{
+					getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, subjectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				}
+				if(actionHasObject)
+				{
+					getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, objectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				}
+				#endif
+
+			}
+
+			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+			generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
+
 			if(actionHasObject)
 			{
-				getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, objectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
-			}
-			#endif
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS_ENTER_GENERATED_CATEGORY_LIST
+				generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
+				NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+				#else
+				generateContextBlocksVariables.enterGeneratedCategoryList = false;
+				#endif
+				#endif
+				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				{
+					//cout << "actionHasObject: parent and its children initialised" << endl;
+				}
 
-		}
+				NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
+				#ifdef NLC_RECORD_ACTION_HISTORY
+				*currentCodeBlockInTree = createCodeBlockRecordHistoryActionObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
+				#endif
 
-		NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-		generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
-		
-		if(actionHasObject)
-		{
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS_ENTER_GENERATED_CATEGORY_LIST
-			generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
-			NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
-			#else
-			generateContextBlocksVariables.enterGeneratedCategoryList = false;
-			#endif
-			#endif
-			if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
-			{
-				//cout << "actionHasObject: parent and its children initialised" << endl;
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS_ENTER_GENERATED_CATEGORY_LIST
+				*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
+				#endif
+				#endif
+
+				NLCitem *functionSubjectItem = NULL;
+				if(actionHasSubject)
+				{
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
+					generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
+					codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
+					//cout << "subjectEntity = " << subjectEntity->entityName << endl;
+					#else
+					generateContextBlocksVariables.enterGeneratedCategoryList = false;	
+					#endif
+					#endif
+					if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+					{
+						//cout << "actionHasSubject2: parent and its children initialised" << endl;
+					}
+
+					functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+					#ifdef NLC_RECORD_ACTION_HISTORY
+					*currentCodeBlockInTree = createCodeBlockRecordHistoryActionSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+					#endif
+
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
+					*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
+					//cout << "passcontext2: subjectEntity = " << subjectEntity->entityName << endl;
+					#endif
+					#endif
+
+					functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+					*currentCodeBlockInTree = createCodeBlockExecuteSubjectObject(*currentCodeBlockInTree, functionItem, functionSubjectItem, functionObjectItem);
+				}
+				else
+				{
+					functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+					*currentCodeBlockInTree = createCodeBlockExecuteObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
+				}
+
+
+
+				actionEntity->NLCparsedForCodeBlocks = true;
+				//actionEntity->parsedForNLCcodeBlocksActionRound = true;
+				//objectEntity->parsedForNLCcodeBlocksActionRound = true;
 			}
-						
-			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
-			#ifdef NLC_RECORD_ACTION_HISTORY
-			*currentCodeBlockInTree = createCodeBlockRecordHistoryActionObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
-			#endif
-			
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS_ENTER_GENERATED_CATEGORY_LIST
-			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
-			#endif
-			#endif
-			
-			NLCitem *functionSubjectItem = NULL;
-			if(actionHasSubject)
+			else if(actionHasSubject)
 			{
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
 				generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
-				codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
-				//cout << "subjectEntity = " << subjectEntity->entityName << endl;
+				NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 				#else
 				generateContextBlocksVariables.enterGeneratedCategoryList = false;	
 				#endif
 				#endif
 				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 				{
-					//cout << "actionHasSubject2: parent and its children initialised" << endl;
+					//cout << "actionHasSubject: parent and its children initialised" << endl;
 				}
-					
-				functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+
+				//cout << "subjectRequiredTempVar" << endl;
+				NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+
 				#ifdef NLC_RECORD_ACTION_HISTORY
 				*currentCodeBlockInTree = createCodeBlockRecordHistoryActionSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
 				#endif
-			
+
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
-				*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
-				//cout << "passcontext2: subjectEntity = " << subjectEntity->entityName << endl;
+				*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
 				#endif
 				#endif
-							
+
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-				*currentCodeBlockInTree = createCodeBlockExecuteSubjectObject(*currentCodeBlockInTree, functionItem, functionSubjectItem, functionObjectItem);
+				*currentCodeBlockInTree = createCodeBlockExecuteSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+
+				actionEntity->NLCparsedForCodeBlocks = true;
+				//actionEntity->parsedForNLCcodeBlocksActionRound = true;
+				//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
 			}
-			else
+			#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+			else if(actionIsSingleWord)
 			{
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-				*currentCodeBlockInTree = createCodeBlockExecuteObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
+				*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem);
+
+				actionEntity->NLCparsedForCodeBlocks = true;	
 			}
-			
-
-
-			actionEntity->NLCparsedForCodeBlocks = true;
-			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
-			//objectEntity->parsedForNLCcodeBlocksActionRound = true;
-		}
-		else if(actionHasSubject)
-		{
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
-			generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
-			NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
-			#else
-			generateContextBlocksVariables.enterGeneratedCategoryList = false;	
 			#endif
-			#endif
-			if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+
+			#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+			if(actionHasObject || actionHasSubject || actionIsSingleWord)
 			{
-				//cout << "actionHasSubject: parent and its children initialised" << endl;
+				#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
+				generateFunctionDeclarationArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
+				#endif
+
+				//detect action properties and conditions (and disable these for NLC generate code block parse: they will become function execution arguments)
+				for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+				{
+					GIAentityNode * actionCondition = (*entityIter)->entity;
+					(*entityIter)->NLCparsedForCodeBlocks = true;
+					actionCondition->NLCparsedForCodeBlocks = true;
+				}
+				for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)
+				{
+					GIAentityNode * actionProperty = (*entityIter)->entity;
+					(*entityIter)->NLCparsedForCodeBlocks = true;
+					actionProperty->NLCparsedForCodeBlocks = true;
+				}
 			}
-
-			//cout << "subjectRequiredTempVar" << endl;
-			NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
-				
-			#ifdef NLC_RECORD_ACTION_HISTORY
-			*currentCodeBlockInTree = createCodeBlockRecordHistoryActionSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
-			#endif
-				
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
-			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
-			#endif
 			#endif
 
-			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-			*currentCodeBlockInTree = createCodeBlockExecuteSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+			/*
+			findContextOfObject(objectEntity)
 
-			actionEntity->NLCparsedForCodeBlocks = true;
-			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
-			//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
-		}
-		#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-		else if(actionIsSingleWord)
-		{
-			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem);
-
-			actionEntity->NLCparsedForCodeBlocks = true;	
-		}
-		#endif
-
-		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		if(actionHasObject || actionHasSubject || actionIsSingleWord)
-		{
-			#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
-			generateFunctionDeclarationArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
-			#endif
-
-			//detect action properties and conditions (and disable these for NLC generate code block parse: they will become function execution arguments)
-			for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+			#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
+			if(!(currentEntity->disabled))
 			{
-				GIAentityNode * actionCondition = (*entityIter)->entity;
-				(*entityIter)->NLCparsedForCodeBlocks = true;
-				actionCondition->NLCparsedForCodeBlocks = true;
+			#endif
+
+			#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
 			}
-			for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)
-			{
-				GIAentityNode * actionProperty = (*entityIter)->entity;
-				(*entityIter)->NLCparsedForCodeBlocks = true;
-				actionProperty->NLCparsedForCodeBlocks = true;
-			}
+			#endif
+			*/
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		}
 		#endif
-
-		/*
-		findContextOfObject(objectEntity)
-
-		#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
-		if(!(currentEntity->disabled))
-		{
-		#endif
-
-		#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
-		}
-		#endif
-		*/
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	}
 	#endif
@@ -826,6 +850,17 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 						targetEntity->NLClogicalConditionConjunctionIndex = generateContextBlocksVariables->logicalConditionConjunctionIndex;
 						#endif
+						/*
+						#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+						if(generateContextBlocksVariables->identifyIndefiniteEntityInContext)
+						{
+							if(targetEntity == generateContextBlocksVariables->identifyIndefiniteEntityInContextEntity)
+							{
+								generateContextBlocksVariables->identifyIndefiniteEntityInContextResult = true;
+							}
+						}
+						#endif
+						*/
 					}					
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 				}

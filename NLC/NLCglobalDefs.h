@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2d 31-October-2014
+ * Project Version: 1l3a 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,8 +57,6 @@
 	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//1i1a/19-August-2014/1i3 - categories
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES	//1i4a
-		#define NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION "Category"
-		#define NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION "LogicalCondition"	//1j15b
 		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 			#define NLC_USE_ADVANCED_REFERENCING	//added 1j3a+ (replaces GIA_USE_ADVANCED_REFERENCING)
 			#ifdef NLC_USE_ADVANCED_REFERENCING
@@ -70,7 +68,6 @@
 				#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 					#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES	//1k14a - requires GIA_DISABLE_ALIAS_ENTITY_MERGING
 					#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-						#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME "aliasList"
 						#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_NAME "aliasName"
 						#define NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME "findAliasAndAddToCategoryList"
 						//#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES	//not yet implemented

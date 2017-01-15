@@ -94,7 +94,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		
 		while(parseFileObject.get(currentToken))
 		{
+			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			cout << currentToken;
+			#endif
 			bool whiteSpaceDetected = isWhiteSpace(currentToken);
 
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -104,8 +106,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				if(currentToken == CHAR_NEWLINE)
 				{
 					#ifdef NLC_DEBUG_PREPROCESSOR
-					#endif
 					cout << "start function: functionName = " << functionName << endl;
+					#endif
 					inputTextFileNameList->push_back(functionName);
 					functionContents = "";
 					sentenceContents = "";
@@ -131,8 +133,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						//add dummy text ", do this." to the end of the logical condition, such that NLP can parse the logical condition header, and NLC can parse the multi-sentence logical condition based on its indentation.
 						#ifdef NLC_DEBUG_PREPROCESSOR
 						cout << "create new sentence" << endl;
-						#endif
 						cout << "sentenceContents = " << sentenceContents + string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT) << endl;
+						#endif
 						currentNLCsentenceInList->sentenceContents = sentenceContents + string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT);	//append dummy action ", do this."
 						functionContents = functionContents + string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT);	//append dummy action ", do this."
 						currentNLCsentenceInList->sentenceIndex = sentenceIndex;
@@ -167,8 +169,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						parsingIndentation = false;
 						#ifdef NLC_DEBUG_PREPROCESSOR
 						cout << "create new sentence" << endl;
-						#endif
 						cout << "sentenceContents = " << sentenceContents + currentToken << endl;
+						#endif
 						currentNLCsentenceInList->sentenceContents = sentenceContents + currentToken;	//append the fullstop
 						currentNLCsentenceInList->sentenceIndex = sentenceIndex;
 						currentNLCsentenceInList->indentation = currentIndentation;
@@ -210,8 +212,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "end function: functionName = " << functionName << endl;
 							cout << "create new function = " << functionName << endl;
-							#endif
 							cout << "functionContents = " << functionContents << endl;
+							#endif
 							writeStringToFile(functionName, functionContents);
 							currentNLCfunctionInList->functionName = functionName;
 							currentNLCfunctionInList->next = new NLCfunction();
@@ -265,8 +267,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 			//create a final function based on the final text..
 			#ifdef NLC_DEBUG_PREPROCESSOR
 			cout << "create new function = " << functionName << endl;
-			#endif
 			cout << "functionContents = " << functionContents << endl;
+			#endif
 			writeStringToFile(functionName, functionContents);
 			//create new function file based on current text
 		}
@@ -275,8 +277,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		#endif
 		#ifdef NLC_DEBUG_PREPROCESSOR
 		cout << "create preprocessed file = " << functionName << endl;
-		#endif
 		cout  << "functionContents = \n" << functionContents << endl;
+		#endif
 		writeStringToFile(outputFileName, functionContents);
 		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		}

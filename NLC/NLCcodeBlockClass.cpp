@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17b 18-July-2014
+ * Project Version: 1g17c 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -780,12 +780,12 @@ NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction * logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax)
+NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction * logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel)
 {
 	//cout << "logicalConditionConjunctionIndexMax = " << logicalConditionConjunctionIndexMax << endl;
 	for(int i=0; i<logicalConditionConjunctionIndexMax; i++)
 	{
-		string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(i);
+		string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(logicalConditionLevel, i);
 		NLCitem * conditionItem = new NLCitem(logicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
 		conditionItem->conjunctionType = logicalConditionConjunctionArray[i].conjunctionType;
 		conditionItem->negative = logicalConditionConjunctionArray[i].negative;
@@ -810,9 +810,17 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 	
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-string generateLogicalConditionConjunctionBooleanName(int logicalConditionConjunctionIndex)
+
+string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel)
 {
-	string logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + progLangArrayOpen[0] + intToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
+	string logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel);
+	return logicalConditionConjunctionBooleanName;
+}
+
+
+string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionConjunctionIndex)
+{
+	string logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel) + progLangArrayOpen[0] + intToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
 	return logicalConditionConjunctionBooleanName;
 }
 

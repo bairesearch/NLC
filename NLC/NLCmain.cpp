@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g16b 18-July-2014
+ * Project Version: 1g17a 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -335,9 +335,10 @@ int main(int argc,char **argv)
 		}
 	#endif
 	#ifdef NLC_USE_PREPROCESSOR
-		if(argumentExists(argc,argv,"-ipreprocessor"))
+		if(argumentExists(argc,argv,"-ipreprocess"))
 		{
 			NLCpreprocessor = true;
+			cout << "ipreprocess" << endl;
 		}
 	#endif
 
@@ -640,7 +641,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g16b 18-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g17a 18-July-2014" << endl;
 			exit(1);
 		}
 
@@ -692,13 +693,14 @@ int main(int argc,char **argv)
 		}
 	}
 	#endif
+	NLCfunction * firstNLCfunctionInList = new NLCfunction();
 	#ifdef NLC_USE_PREPROCESSOR
 	//vector<string> inputTextPlainTXTFileNameList;
-	NLCfunction * firstNLCfunctionInList = new NLCfunction();
 	bool preprocessorDetectedFunctions = false;
 	if(NLCpreprocessor)
 	{
-		if(!useInputTextNLPrelationXMLFile)
+		cout << "NLCpreprocessor" << endl;
+		if(!useInputTextPlainTXTFile)
 		{
 			cout << "NLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
 		}
@@ -711,6 +713,7 @@ int main(int argc,char **argv)
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			if(preprocessorDetectedFunctions)
 			{
+				cout << "preprocessorDetectedFunctions" << endl;
 				NLCinputFileList = true;
 			}
 			#endif
@@ -944,7 +947,7 @@ int main(int argc,char **argv)
 		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		#endif
 		
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName);
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName, firstNLCfunctionInList);
 		
 		#ifdef NLC_USE_PREPROCESSOR
 		currentNLCfunctionInList = currentNLCfunctionInList->next;

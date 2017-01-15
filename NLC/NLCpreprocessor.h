@@ -46,18 +46,7 @@
 #include <vector>
 using namespace std;
 
-#include "GIAglobalDefs.h"
-
-class NLCfunction
-{
-public:
-
-	NLCfunction(void);
-	~NLCfunction(void);
-
-	NLCsentence* firstNLCSentenceInFunction;
-	NLCfunction* next;
-};
+#include "NLCglobalDefs.h"
 
 class NLCsentence
 {
@@ -72,4 +61,20 @@ public:
 	NLCsentence* next;
 };
 
-bool preprocessTextForNLC(string inputFileName);
+class NLCfunction
+{
+public:
+
+	NLCfunction(void);
+	~NLCfunction(void);
+
+	string functionName;
+	NLCsentence* firstNLCsentenceInFunction;
+	NLCfunction* next;
+};
+
+
+bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList);
+void writeStringToFile(string fileName, string s);
+
+#endif

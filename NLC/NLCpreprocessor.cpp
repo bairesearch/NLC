@@ -38,15 +38,7 @@
 #include <cmath>
 
 #include "NLCpreprocessor.h"
-
-NLCfunction::NLCfunction(void)
-{
-	firstNLCsentenceInFunction = new NLCsentence();
-	next = NULL;
-}
-NLCfunction::~NLCfunction(void)
-{
-}
+#include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX
 
 NLCsentence::NLCsentence(void)
 {
@@ -59,7 +51,18 @@ NLCsentence::~NLCsentence(void)
 {
 }
 
-bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextPlainTXTFileNameList)
+NLCfunction::NLCfunction(void)
+{
+	functionName = "";
+	firstNLCsentenceInFunction = new NLCsentence();
+	next = NULL;
+}
+NLCfunction::~NLCfunction(void)
+{
+}
+
+
+bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList)
 {
 	*numberOfInputFilesInList = 1;
 	
@@ -77,7 +80,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		char currentToken;
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
-		int currentIndentation = 0
+		int currentIndentation = 0;
 		bool parsingIndentation = true;
 		int lineWordIndex = 0;
 		bool parsingFunctionName = false;
@@ -88,17 +91,16 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		
 		while(parseFileObject.get(currentToken))
 		{
+			cout << currentToken;
+			
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			//extract functions from file and generate separate files
 			if(parsingFunctionName)
 			{
 				if(currentToken == CHAR_NEWLINE)
 				{
-					cout << "new functionName = " << functionName << endl;
-					currentNLCfunctionInList->functionName = functionName;
-					currentNLCfunctionInList->next = new NLCfunction();
-					currentNLCfunctionInList = currentNLCfunctionInList->next;
-					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+					cout << "start function: functionName = " << functionName << endl;
+					inputTextFileNameList->push_back(functionName);
 					functionContents = "";
 					sentenceContents = "";
 					currentIndentation = 0;
@@ -107,7 +109,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				}
 				else
 				{
-					functionName = functionName + string(currentToken);
+					functionName = functionName + currentToken;
 				}
 			}
 			else
@@ -124,12 +126,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				{
 					parsingIndentation = false;
 					cout << "create new sentence" << endl;
-					cout << "sentenceContents = " << sentenceContents << endl;
-					currentNLCSentenceInList->sentenceContents = sentenceContents + string(currentToken);	//append the fullstop
-					currentNLCSentenceInList->sentenceIndex = sentenceIndex;
-					currentNLCSentenceInList->indentation = currentIndentation;
-					currentNLCSentenceInList->next = new currentNLCSentenceInList();
-					currentNLCSentenceInList = currentNLCSentenceInList->next;
+					cout << "sentenceContents = " << sentenceContents + currentToken << endl;
+					currentNLCsentenceInList->sentenceContents = sentenceContents + currentToken;	//append the fullstop
+					currentNLCsentenceInList->sentenceIndex = sentenceIndex;
+					currentNLCsentenceInList->indentation = currentIndentation;
+					currentNLCsentenceInList->next = new NLCsentence();
+					currentNLCsentenceInList = currentNLCsentenceInList->next;
 					sentenceContents = "";
 					sentenceIndex++;
 					lineWordIndex++;
@@ -143,38 +145,42 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					else
 					{
 						cout << "preprocessTextForNLC() warning: NLC_INDENTATION_CHAR detected and !parsingIndentation" << endl;
-						sentenceContents = sentenceContents + string(currentToken);
+						sentenceContents = sentenceContents + currentToken;
 					}
 					lineWordIndex++;
 				}
-				else if(currentToken == NLC_PREPROCESSOR_FUNCTION_HEADER_MID_STRING)
+				else if(currentToken == NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR)
 				{
 					parsingIndentation = false;
 					#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-					if(lineWordIndex == 0)
+					if(sentenceContents == NLC_PREPROCESSOR_FUNCTION_HEADER_STRING)
 					{
-						if(sentenceContents == NLC_PREPROCESSOR_FUNCTION_HEADER_STRING)
+						if(*detectedFunctions)
 						{
+							functionContents = functionContents.substr(0, functionContents.length() - sentenceContents.length());
+							cout << "create new function = " << functionName << endl;
+							cout << "functionContents = " << functionContents << endl;
+							writeStringToFile(functionName, functionContents);
+							cout << "end function: functionName = " << functionName << endl;
+							currentNLCfunctionInList->functionName = functionName;
+							currentNLCfunctionInList->next = new NLCfunction();
+							currentNLCfunctionInList = currentNLCfunctionInList->next;
+							currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+							functionName = "";
 							*numberOfInputFilesInList = *numberOfInputFilesInList+1;
-							if(*detectedFunctions)
-							{
-								functionContents = functionContents - sentenceContents.length();
-								cout << "create new function = " << functionName << endl;
-								cout << "functionContents = " << functionContents << endl;
-								writeStringToFile(functionName, functionContents);
-								//create new function file based on current text
-							}
-							else
-							{
-								*detectedFunctions = true;
-							}
-							parsingFunctionName = true;
+							//create new function file based on current text
 						}
+						else
+						{
+							cout << "detectedFunctions" << endl;
+							*detectedFunctions = true;
+						}
+						parsingFunctionName = true;
 					}
 					else
 					{
 					#endif
-						sentenceContents = sentenceContents + string(currentToken);
+						sentenceContents = sentenceContents + currentToken;
 					#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 					}
 					#endif
@@ -183,10 +189,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				else
 				{
 					parsingIndentation = false;
-					sentenceContents = sentenceContents + string(currentToken);
+					sentenceContents = sentenceContents + currentToken;
 					lineWordIndex++;
 				}
-				functionContents = functionContents + string(currentToken);
+				functionContents = functionContents + currentToken;
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			}
 			#endif	
@@ -210,14 +216,14 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 
 void writeStringToFile(string fileName, string s)
 {
-	ofstream parseFileObject(fileName);
+	ofstream writeFileObject(fileName);
 
 	for(int i=0; i < s.size(); i++)
 	{
-		writeFileObject->put(s[i]);
+		writeFileObject.put(s[i]);
 	}
 
-	parseFileObject.close();
+	writeFileObject.close();
 }
 
 

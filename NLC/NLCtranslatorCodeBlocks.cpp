@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g16b 18-July-2014
+ * Project Version: 1g17a 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,14 +41,11 @@
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "GIAquery.h"
 #include "GIAtranslatorOperations.h"	//required for textInTextArray()
-#ifdef NLC_USE_PREPROCESSOR
-#include "NLCpreprocessor.h"	//required for NLCsentence
-#endif
 
 #ifdef NLC_USE_PREPROCESSOR
-bool currentSentenceContainsLogicalCondition;
-int currentLogicalConditionLevel;
-NLCcodeblock codeBlockAtPreviousLogicalConditionBaseLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
+static bool currentSentenceContainsLogicalCondition;
+static int currentLogicalConditionLevel;
+static NLCcodeblock * codeBlockAtPreviousLogicalConditionBaseLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
 
 void initialiseLogicalConditionLevelRecordArray()
 {
@@ -61,7 +58,7 @@ void initialiseLogicalConditionLevelRecordArray()
 }
 #endif
 
-bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName)
+bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * firstNLCfunctionInList)
 {
 	bool result = true;
 
@@ -78,7 +75,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	//for each action (command) in sentence;
 
 	#ifdef NLC_USE_PREPROCESSOR
-	NLCsentence * currentNLCsentenceInList = firstNLCsentenceInFunction;
+	NLCsentence * currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	#endif
 	
 	//cout << "maxNumberSentences = " << maxNumberSentences << endl;
@@ -101,7 +98,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		#ifdef NLC_DEBUG
 		cout << "generateCodeBlocksPart2logicalConditions:" << endl;
 		#endif
-		if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+		if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
 		{
 			result = false;
 		}
@@ -131,7 +128,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		
 		
 		#ifdef NLC_USE_PREPROCESSOR
-		if(currentNLCsentenceInList = currentNLCsentenceInList->next != NULL)
+		if(currentNLCsentenceInList->next != NULL)
 		{
 			if(currentNLCsentenceInList->next->indentation == (currentNLCsentenceInList->indentation + 1))
 			{	
@@ -141,7 +138,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				}
 				else
 				{
-					cout << "generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+					cout << "NLC_USE_PREPROCESSOR generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 					cout << "!currentSentenceContainsLogicalCondition && currentNLCsentenceInList->next->indentation == currentNLCsentenceInList->indentation + 1" << endl;
 					cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 					cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;	
@@ -162,19 +159,19 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			{
 				if(currentLogicalConditionLevel == 0)
 				{
-					cout << "generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+					cout << "NLC_USE_PREPROCESSOR generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 					cout << "(currentLogicalConditionLevel == 0) && currentNLCsentenceInList->next->indentation < currentNLCsentenceInList->indentation" << endl;
 					cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 					cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
 				}
 				else
 				{
-					*currentCodeBlockInTree = codeBlockAtPreviousLogicalConditionBaseLevelArray[currentNLCsentenceInList->next->indentation];
+					currentCodeBlockInTree = codeBlockAtPreviousLogicalConditionBaseLevelArray[currentNLCsentenceInList->next->indentation];
 				}
 			}
 			else
 			{
-				cout << "generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+				cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 				cout << "currentNLCsentenceInList->next->indentation > currentNLCsentenceInList->indentation + 1" << endl;
 				cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 				cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
@@ -183,7 +180,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		}
 		else
 		{
-			cout << "generateCodeBlocks() error: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
+			cout << "NLC_USE_PREPROCESSOR generateCodeBlocks() error: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
 		}
 		currentSentenceContainsLogicalCondition = false;
 		#endif
@@ -246,7 +243,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 }
 
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
-bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -540,7 +537,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								}
 								else
 								{
-									cout << "generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+									cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 									cout << "currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation + 1" << endl;
 									cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 									cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;

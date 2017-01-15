@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3c 25-June-2015
+ * Project Version: 1p3d 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1367,6 +1367,19 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 
 void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass)
 {
+	vector<NLCitem*> additionalArgumentsTempNotUsed;
+	parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, &additionalArgumentsTempNotUsed);
+}
+
+#ifdef NLC_USE_LIBRARY
+void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
+{
+	parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, additionalArguments);
+}
+#endif
+
+void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
+{
 	//gets "fight" from "dog::fight"
 	*hasFunctionOwnerClass = false;
 	*functionOwnerName = "";
@@ -1375,13 +1388,21 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 	*functionName = NLCfunctionName;
 	int indexOfActionName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER);
 	int indexOfObjectName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER);
+	int indexOfFirstArgumentName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER);
+	int indexOfFirstArgumentOrEnd = NLCfunctionName.length();
+	#ifdef NLC_USE_LIBRARY
+	if(indexOfFirstArgumentName != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	{
+		indexOfFirstArgumentOrEnd = indexOfFirstArgumentName;
+	}
+	#endif
 	if(indexOfActionName != string::npos)
 	{
 		if(indexOfObjectName != string::npos)
 		{
 			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
-			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
+			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 			*hasFunctionOwnerClass = true;
 			*hasFunctionObjectClass = true;
 			#ifdef NLC_DEBUG
@@ -1394,7 +1415,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 		}
 		else
 		{
-			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfActionName-NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
+			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfActionName-NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*hasFunctionOwnerClass = true;
 			#ifdef NLC_DEBUG
@@ -1408,7 +1429,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 	else if(indexOfObjectName != string::npos)
 	{
 		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
-		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
+		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*hasFunctionObjectClass = true;
 		#ifdef NLC_DEBUG
 		cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
@@ -1419,8 +1440,34 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 	}
 	else
 	{
-		*functionName = NLCfunctionName;
+		*functionName = NLCfunctionName.substr(0, indexOfFirstArgumentOrEnd);
 	}
+
+	#ifdef NLC_USE_LIBRARY
+	if(indexOfFirstArgumentName != string::npos)
+	{
+		int indexOfArgument = indexOfFirstArgumentName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER_LENGTH;
+		bool stillFindingArguments = true;
+		while(stillFindingArguments)
+		{
+			string argumentName = "";
+			int indexOfArgumentNew = NLCfunctionName.find(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER, indexOfArgument);
+			if(indexOfArgumentNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{	
+				argumentName = NLCfunctionName.substr(indexOfArgument, indexOfArgumentNew-indexOfArgument);
+			}
+			else
+			{
+				argumentName = NLCfunctionName.substr(indexOfArgument, NLCfunctionName.length()-indexOfArgument);
+				stillFindingArguments = false;
+			}
+			cout << "argumentName = " << argumentName << endl;
+			NLCitem* functionArgumentItem = new NLCitem(argumentName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
+			additionalArguments->push_back(functionArgumentItem);
+			indexOfArgument = indexOfArgumentNew+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER_LENGTH;
+		}
+	}	
+	#endif
 }
 #endif
 

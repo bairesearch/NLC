@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3c 25-June-2015
+ * Project Version: 1p3d 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -662,7 +662,7 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListC
 #endif
 
 
-NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition*>* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex)
+NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition*>* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex, bool libraryFunctionDeclaration)
 {
 	NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 	 
@@ -671,8 +671,20 @@ NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefi
 	string functionObjectName = "";
 	bool hasFunctionOwnerClass = false;
 	bool hasFunctionObjectClass = false;
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog::fight"
-		
+	#ifdef NLC_USE_LIBRARY
+	vector<NLCitem*> parameters;
+	if(libraryFunctionDeclaration)
+	{
+		parseFunctionNameFromNLClibFunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass, &parameters);	//gets "fight" from "dog#fight+box!argument1!argument2"	
+	}
+	else
+	{
+	#endif
+		parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog#fight+box"
+	#ifdef NLC_USE_LIBRARY
+	}
+	#endif
+	
 	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 	bool createClassDefinition = true;
 	#else
@@ -779,6 +791,7 @@ NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaratio
 				classDefinitionList->push_back(functionOwnerClassDefinition);
 				//cout << "!foundClassDefinition" << endl;
 			}
+			
 			//cout << "functionClassDefinitionName: " << functionClassDefinitionName << endl;
 
 			bool foundTargetClassDefinition = false;

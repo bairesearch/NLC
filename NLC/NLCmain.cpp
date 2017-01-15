@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3c 25-June-2015
+ * Project Version: 1p3d 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p3c 25-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p3d 25-June-2015" << endl;
 			exit(1);
 		}
 
@@ -786,7 +786,7 @@ int main(int argc,char* *argv)
 		if(detectFunctionHeader(&nlcLibraryFunctionName))
 		{
 			string NLCfunctionName = getFunctionNameFromFunctionHeader(&nlcLibraryFunctionName);
-			createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, FUNCTION_INDEX_LIBRARY_FUNCTION);
+			createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, FUNCTION_INDEX_LIBRARY_FUNCTION, true);
 			//cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			//FUTURE NLC - update createFunctionDependencyForNewFunctionDefinition/parseFunctionNameFromNLCfunctionName to extract ! delimited tags also to identify auxilliary function arguments
 		}
@@ -1026,7 +1026,7 @@ int main(int argc,char* *argv)
 		#endif
 
 		//generate class definition function declaration for new function definition (creates both functionDependency object and classDefinition object [if NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS])
-		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex);
+		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex, false);
 		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
 		

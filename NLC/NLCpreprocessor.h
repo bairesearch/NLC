@@ -23,17 +23,18 @@
 
 /*******************************************************************************
  *
- * File Name: NLCprintClassDefinitions.h
+ * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g16a 17-July-2014
+ * Project Version: 1g17a 17-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
-#ifndef HEADER_NLC_PRINT_CLASSDEFINITIONS
-#define HEADER_NLC_PRINT_CLASSDEFINITIONS
+#ifndef HEADER_NLC_PREPROCESSOR
+#define HEADER_NLC_PREPROCESSOR
+
 
 #include <iostream>
 #include <fstream>
@@ -45,16 +46,30 @@
 #include <vector>
 using namespace std;
 
-#include "NLCclassDefinitionClass.h"
+#include "GIAglobalDefs.h"
 
-bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code);
-	void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
-		string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang);
-		string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang);
-		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateCodeConditionPairDefinitionText(NLCitem * currentItem, int progLang);
-		#endif
-	bool arefunctionArgumentsPrinted(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * parameters);
-	bool isConditionObjectPrinted(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * parameters);
+class NLCfunction
+{
+public:
 
-#endif
+	NLCfunction(void);
+	~NLCfunction(void);
+
+	NLCsentence* firstNLCSentenceInFunction;
+	NLCfunction* next;
+};
+
+class NLCsentence
+{
+public:
+
+	NLCsentence(void);
+	~NLCsentence(void);
+
+	string sentenceContents;
+	int sentenceIndex;
+	int indentation;
+	NLCsentence* next;
+};
+
+bool preprocessTextForNLC(string inputFileName);

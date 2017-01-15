@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g15c 16-July-2014
+ * Project Version: 1g16a 17-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -136,6 +136,11 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 		{//added 1g8a 11-July-2014
 			currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, propertyEntity, propertyEntity);
 			propertyEntity->NLClocalListVariableHasBeenInitialised = true;
+			
+			//DEBUG:
+			//string debugString = string("10createCodeBlockAddNewProperty") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + propertyEntity->entityName + string(" ") + convertIntToString(propertyEntity->NLClocalListVariableHasBeenInitialised);
+			//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
+			//cout << debugString << endl;
 		}
 	}
 	#endif
@@ -217,6 +222,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
+
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
 
 		#ifdef NLC_SUPPORT_QUANTITIES
@@ -248,6 +254,11 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 			{//added 1g8a 11-July-2014
 				currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, conditionObject, conditionObject);
 				conditionObject->NLClocalListVariableHasBeenInitialised = true;
+				
+				//DEBUG:
+				//string debugString = string("11createCodeBlockAddNewCondition") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + conditionObject->entityName + string(" ") + convertIntToString(conditionObject->NLClocalListVariableHasBeenInitialised);
+				//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
+				//cout << debugString << endl;
 			}
 		}
 		#endif
@@ -612,7 +623,8 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
-	#ifdef GIA_STORE_CONNECTION_SENTENCE_INDEX
+	//cout << "connection->sentenceIndexTemp = " << connection->sentenceIndexTemp << endl;
+	#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 	if(connection->sentenceIndexTemp == sentenceIndex)
 	{
 	#endif
@@ -620,7 +632,7 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnec
 		{
 			result = true;
 		}
-	#ifdef GIA_STORE_CONNECTION_SENTENCE_INDEX
+	#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 	}
 	#endif
 	return result;
@@ -925,6 +937,57 @@ string intToString(int integer)
 }
 
 
+#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+NLCcodeblock * createCodeBlockRemoveProperties(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
 
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_PROPERTIES;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockRemovePropertiesFromLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_PROPERTIES_FROM_LOCAL_LIST;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockRemoveConditions(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity)
+{
+	if(!(conditionEntity->conditionObjectEntity->empty()))
+	{
+		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(entityItem);
+
+		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+		int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS;
+		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	}
+	else
+	{
+		cout << "error: condition does not have object" << endl;
+	}
+
+	return currentCodeBlockInTree;
+}
+#endif
 
 

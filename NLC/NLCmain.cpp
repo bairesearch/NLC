@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g15c 16-July-2014
+ * Project Version: 1g16a 17-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -71,7 +71,10 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 "\n\t-ionlptagq [string]: query NLP feature tag parser .xml intermediary input/output filename (def: inputNLPfeatureQuery.xml)"
 "\n\t-ixmlq [string]    : query semantic network definition .xml input filename (def: semanticNetQuery.xml)"
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-"\n\t-ilist		: all input files will be treated as file lists (new line delimited)"
+"\n\t-ilist		: all input files (itxt, ionlprel, ionlptag, ixml) will be treated as file lists (new line delimited) referencing NLC function names ([functionSubject#]functionName)[+functionObject])"
+#endif
+#ifdef NLC_USE_PREPROCESSOR
+"\n\t-ipreprocess	: itxt input file will be preprocessed, supporting condition block indentation (eg if the ball is red\\n\\tthe stars are bright\\n\\tthe cat is happy) and multiple functions (delimited by function:[functionSubject#]functionName)[+functionObject]"
 #endif
 "\n\t-oxml [string]     : semantic network definition .xml output filename (def: semanticNet.xml)"
 "\n\t-ocxl [string]     : semantic network display .cxl vector graphics output filename (def: semanticNet.cxl)"
@@ -136,7 +139,7 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 int main(int argc,char **argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
-
+	
 	#ifdef GIA_TRIAL_WORD_NET_SYNONYM_LOOKUP
 	initialiseWordNet();
 	string wordExample = "like";
@@ -222,6 +225,9 @@ int main(int argc,char **argv)
 #endif
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	bool NLCinputFileList = false;
+#endif
+#ifdef NLC_USE_PREPROCESSOR
+	bool NLCpreprocessor = false;
 #endif
 
 	bool printOutput = false;
@@ -328,6 +334,13 @@ int main(int argc,char **argv)
 			NLCinputFileList = true;
 		}
 	#endif
+	#ifdef NLC_USE_PREPROCESSOR
+		if(argumentExists(argc,argv,"-ipreprocessor"))
+		{
+			NLCpreprocessor = true;
+		}
+	#endif
+
 
 		if(argumentExists(argc,argv,"-ocff"))
 		{
@@ -627,7 +640,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g15c 16-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g16a 17-July-2014" << endl;
 			exit(1);
 		}
 
@@ -651,26 +664,74 @@ int main(int argc,char **argv)
 	{
 		if(useInputTextPlainTXTFile)
 		{
-			numberOfInputFilesInList = getFilesFromFileList2(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList);
+			if(!getFilesFromFileList2(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
+			{
+				cout << "main() error: !getFilesFromFileList2()" << endl;
+			}
 		}
 		if(useInputTextNLPrelationXMLFile)
 		{
-			numberOfInputFilesInList = getFilesFromFileList2(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList);
+			if(!getFilesFromFileList2(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
+			{
+				cout << "main() error: !getFilesFromFileList2()" << endl;
+			}
 		}
 		if(useInputTextNLPfeatureXMLFile)
 		{
-			numberOfInputFilesInList = getFilesFromFileList2(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList);
+			if(!getFilesFromFileList2(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
+			{
+				cout << "main() error: !getFilesFromFileList2()" << endl;
+			}
 		}
 		if(useInputTextXMLFile)
 		{
-			numberOfInputFilesInList = getFilesFromFileList2(inputTextXMLFileName, &inputTextXMLFileNameList);
+			if(!getFilesFromFileList2(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
+			{
+				cout << "main() error: !getFilesFromFileList2()" << endl;
+			}
 		}
 	}
 	#endif
+	#ifdef NLC_USE_PREPROCESSOR
+	//vector<string> inputTextPlainTXTFileNameList;
+	NLCfunction * firstNLCfunctionInList = new NLCfunction();
+	bool preprocessorDetectedFunctions = false;
+	if(NLCpreprocessor)
+	{
+		if(!useInputTextNLPrelationXMLFile)
+		{
+			cout << "NLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
+		}
+		if(useInputTextNLPrelationXMLFile || useInputTextNLPfeatureXMLFile || useInputTextXMLFile)
+		{
+			cout << "NLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
+		}
+		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList))
+		{
+			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			if(preprocessorDetectedFunctions)
+			{
+				NLCinputFileList = true;
+			}
+			#endif
+		}
+		else
+		{
+			cout << "main() error: !preprocessTextForNLC()" << endl;
+			exit(0);
+		}
+
+	
+	}
+	#endif	
 
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
 	vector<NLCclassDefinition *> classDefinitionList;
 
+	#ifdef NLC_USE_PREPROCESSOR
+	NLCfunction * currentNLCfunctionInList = firstNLCfunctionInList;
+	#endif
+	
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		int maxNumberSentences;
@@ -879,9 +940,17 @@ int main(int argc,char **argv)
 		cout << "removeRedundantConditionConjunctions():" << endl;
 		#endif
 
+		#ifdef NLC_USE_PREPROCESSOR
+		NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+		#endif
+		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, maxNumberSentences, NLCfunctionName);
+		
+		#ifdef NLC_USE_PREPROCESSOR
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
+		#endif
 	}
-
+	
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
@@ -1057,16 +1126,25 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 						}
 					}
 				}
-				#ifdef GIA_STORE_CONNECTION_SENTENCE_INDEX
+				#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 				int sentenceIndex = actionEntity->sentenceIndexTemp;
 				setCurrentSentenceIndex(sentenceIndex); 
 				#endif
-				
-				addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
+				//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
+				GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
+				GIAentityConnection * propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
+				#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 				if(actionEntity->negative)
 				{
-					actionObjectEntity->negative = true;
+					//cout << "actionEntity->negative" << endl;
+					propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
+					propertyConnectionReverse->negative = true;	//not used
 				}
+				#endif
+				if(actionEntity->negative)
+				{
+					actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
+				}				
 			}
 		}
 	}

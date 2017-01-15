@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g15c 16-July-2014
+ * Project Version: 1g16a 17-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,6 +41,25 @@
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "GIAquery.h"
 #include "GIAtranslatorOperations.h"	//required for textInTextArray()
+#ifdef NLC_USE_PREPROCESSOR
+#include "NLCpreprocessor.h"	//required for NLCsentence
+#endif
+
+#ifdef NLC_USE_PREPROCESSOR
+bool currentSentenceContainsLogicalCondition;
+int currentLogicalConditionLevel;
+NLCcodeblock codeBlockAtPreviousLogicalConditionBaseLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
+
+void initialiseLogicalConditionLevelRecordArray()
+{
+	currentSentenceContainsLogicalCondition = false;
+	currentLogicalConditionLevel = 0;
+	for(int i=0; i<NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS; i++)
+	{
+		codeBlockAtPreviousLogicalConditionBaseLevelArray[i] = NULL;
+	}
+}
+#endif
 
 bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName)
 {
@@ -58,9 +77,13 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	//NLCcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
 	//for each action (command) in sentence;
 
+	#ifdef NLC_USE_PREPROCESSOR
+	NLCsentence * currentNLCsentenceInList = firstNLCsentenceInFunction;
+	#endif
+	
 	//cout << "maxNumberSentences = " << maxNumberSentences << endl;
-	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
-	{
+	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	{							
 		#ifdef NLC_DEBUG
 		cout << "*** sentenceIndex = " << sentenceIndex << endl;
 		#endif
@@ -105,6 +128,66 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		clearContextGeneratedVariable(entityNodesActiveListComplete);
 		#endif
+		
+		
+		#ifdef NLC_USE_PREPROCESSOR
+		if(currentNLCsentenceInList = currentNLCsentenceInList->next != NULL)
+		{
+			if(currentNLCsentenceInList->next->indentation == (currentNLCsentenceInList->indentation + 1))
+			{	
+				if(currentSentenceContainsLogicalCondition)
+				{
+					//indentation already correctly processed in generateCodeBlocksPart2logicalConditions()
+				}
+				else
+				{
+					cout << "generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+					cout << "!currentSentenceContainsLogicalCondition && currentNLCsentenceInList->next->indentation == currentNLCsentenceInList->indentation + 1" << endl;
+					cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
+					cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;	
+				}
+			}
+			else if(currentNLCsentenceInList->next->indentation == currentNLCsentenceInList->indentation)
+			{
+				if(currentSentenceContainsLogicalCondition)
+				{
+					//indentation already correctly processed in generateCodeBlocksPart2logicalConditions()
+				}
+				else
+				{
+					//no changes
+				}
+			}
+			else if(currentNLCsentenceInList->next->indentation < currentNLCsentenceInList->indentation)
+			{
+				if(currentLogicalConditionLevel == 0)
+				{
+					cout << "generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+					cout << "(currentLogicalConditionLevel == 0) && currentNLCsentenceInList->next->indentation < currentNLCsentenceInList->indentation" << endl;
+					cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
+					cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
+				}
+				else
+				{
+					*currentCodeBlockInTree = codeBlockAtPreviousLogicalConditionBaseLevelArray[currentNLCsentenceInList->next->indentation];
+				}
+			}
+			else
+			{
+				cout << "generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+				cout << "currentNLCsentenceInList->next->indentation > currentNLCsentenceInList->indentation + 1" << endl;
+				cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
+				cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
+			}
+			currentNLCsentenceInList = currentNLCsentenceInList->next;
+		}
+		else
+		{
+			cout << "generateCodeBlocks() error: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
+		}
+		currentSentenceContainsLogicalCondition = false;
+		#endif
+		
 	}
 	return result;
 }
@@ -442,7 +525,29 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								}
 								#endif
 				
+								#ifdef NLC_USE_PREPROCESSOR
+								currentSentenceContainsLogicalCondition = true;
+								if(currentNLCsentenceInList->next->indentation == (currentNLCsentenceInList->indentation + 1))
+								{	
+									//do not, just record the in the tree
+									codeBlockAtPreviousLogicalConditionBaseLevelArray[currentLogicalConditionLevel] = currentCodeBlockInTreeAtBaseLevel->next;
+									currentLogicalConditionLevel++;
+								}
+								else if(currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation)
+								{
+									*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
+									//NB if(currentNLCsentenceInList->next->indentation < currentNLCsentenceInList->indentation) will be processed later by generateCodeBlocks()
+								}
+								else
+								{
+									cout << "generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+									cout << "currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation + 1" << endl;
+									cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
+									cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
+								}
+								#else
 								*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
+								#endif
 							}
 							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 							cout << "conj: 5" << endl;
@@ -525,7 +630,7 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 	{
 		if(!(conditionEntity->NLCconjunctionCondition))
 		{
-			cout << "conditionEntity = " << conditionEntity->entityName << endl;
+			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
 			conditionEntity->NLCconjunctionCondition = true;
 			GIAentityConnection * logicalConditionConjunctionObjectConnection = conditionEntity->conditionObjectEntity->back();
 			GIAentityConnection * logicalConditionConjunctionSubjectConnection = conditionEntity->conditionSubjectEntity->back();
@@ -791,13 +896,18 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		if(actionHasObject)
 		{
 			NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;	//not used
-			getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
-			
+			if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			{
+				//cout << "actionHasObject: parent and its children initialised" << endl;
+			}
 			if(actionHasSubject)
 			{
 				NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;	//not used
-				getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
-				
+				//cout  << "subjectEntity = " << subjectEntity->entityName << endl;
+				if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				{
+					//cout << "actionHasSubject2: parent and its children initialised" << endl;
+				}
 				functionItem->context.push_back(generateInstanceName(subjectEntity));
 
 				#ifdef NLC_NOT_NECESSARY
@@ -828,8 +938,10 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		{
 			//[**^]
 			NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;
-			getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
-				
+			if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			{
+				//cout << "actionHasSubject: parent and its children initialised" << endl;
+			}
 			//cout << "subjectRequiredTempVar" << endl;
 			functionItem->context.push_back(generateInstanceName(subjectEntity));
 

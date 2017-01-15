@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g15c 16-July-2014
+ * Project Version: 1g16a 17-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,6 +42,9 @@
 #include "NLCtranslatorClassDefinitions.h"
 #ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 #include "GIAtranslatorDefs.h"
+#endif
+#ifdef NLC_USE_PREPROCESSOR
+#include "NLCpreprocessor.h"	//required for NLCsentence
 #endif
 
 #ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
@@ -64,6 +67,10 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 {
 	bool result = true;
 
+	#ifdef NLC_USE_PREPROCESSOR
+	initialiseLogicalConditionLevelRecordArray();
+	#endif
+	
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	//NLC translator Part prep A.
 	if(!removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences))
@@ -98,7 +105,7 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 bool removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {
 	bool result = true;
-	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
 	{
 		NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainerFirstInOptimumPath = NULL;
 		int maximumNumberOfConjunctions = 0;
@@ -241,7 +248,7 @@ bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsO
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {
-	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
 	{
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
@@ -527,12 +534,12 @@ bool findParentClass(NLCclassDefinition * classDefinition, string variableName, 
 	return foundVariable;
 }
 
-int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList)
+bool getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList, int * numberOfInputFilesInList)
 {
 	bool result = true;
-	int numberOfInputFilesInList = 0;
+	*numberOfInputFilesInList = 0;
 	ifstream parseFileObject(inputListFileName.c_str());
-	if(!parseFileObject.rdbuf( )->is_open( ))
+	if(!parseFileObject.rdbuf( )->is_open())
 	{
 		//txt file does not exist in current directory.
 		cout << "Error: input list file does not exist in current directory: " << inputListFileName << endl;
@@ -561,12 +568,12 @@ int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFi
 			}
 			charCount++;
 		}
-		numberOfInputFilesInList = fileNameIndex;
+		*numberOfInputFilesInList = fileNameIndex;
 	}
 	#ifdef GIA_MAIN_DEBUG
-	//cout << "numberOfInputFilesInList = " << numberOfInputFilesInList << endl;
+	//cout << "*numberOfInputFilesInList = " << *numberOfInputFilesInList << endl;
 	#endif
-	return numberOfInputFilesInList;
+	return result;
 }
 
 #endif

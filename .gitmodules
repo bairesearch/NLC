@@ -1,0 +1,6 @@
+[submodule "RT"]
+	path = RT
+	url = https://github.com/baxterai/openRT.git
+[submodule "GIA"]
+	path = GIA
+	url = https://github.com/baxterai/openGIA.git

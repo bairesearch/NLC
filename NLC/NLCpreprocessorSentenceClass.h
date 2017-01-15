@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5g 15-August-2016
+ * Project Version: 1r5h 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -70,7 +70,7 @@ public:
 	#endif
 	#ifdef NLC_PREPROCESSOR_MATH
 	bool isMath;		//set true for first parsable phrase only, or if no NLP parsable phrases
-	string mathText;	//set true for first parsable phrase only, or if no NLP parsable phrases
+	string mathText;	//set for first parsable phrase only, or if no NLP parsable phrases
 	int mathTextNLPparsablePhraseIndex;
 	int mathTextNLPparsablePhraseTotal;	//set true for first parsable phrase only, or if no NLP parsable phrases
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP

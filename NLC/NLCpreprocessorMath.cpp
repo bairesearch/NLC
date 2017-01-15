@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5g 15-August-2016
+ * Project Version: 1r5h 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,7 +68,7 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 			*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i], &foundAtLeastOneInstance);	//NB this is type sensitive; could be changed in the future
 			if(foundAtLeastOneInstance)
 			{
-				result = true;
+				result = true;	//added 1r5d
 			}
 		}			
 
@@ -606,9 +606,14 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	{
 		//add dummy phrase for NLP to parse (will not be used by NLC; create NLP/GIA sentence as a filler for math text replacement only)
 		#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+		#ifdef NLC_DEBUG
+		cout << "firstNLCsentenceInFullSentence->mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
+		cout << "(*sentenceIndex) = " << (*sentenceIndex) << endl;
+		#endif
 		cout << "add dummy phrase for NLP to parse: " << string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY) << endl;
 		#endif
 		(*currentNLCsentenceInList)->sentenceContents = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY);
+		(*currentNLCsentenceInList)->sentenceIndex = (*sentenceIndex);	//added 1r5h
 		(*currentNLCsentenceInList)->next = new NLCsentence();
 		(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
 		(*sentenceIndex) = (*sentenceIndex) + 1;
@@ -692,7 +697,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	#endif
 
 	#ifdef NLC_DEBUG
-	//cout << "sentenceIndex at end of nlp parsable phrase extraction = " <<* sentenceIndex << endl;
+	//cout << "sentenceIndex at end of nlp parsable phrase extraction = " << *sentenceIndex << endl;
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -717,8 +722,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		}
 	//#ifndef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 	}
-	//#endif		
-
+	//#endif
+	
 	//currently disabled (untested): theoretically allows multiple commands to be defined on a single line separated by conjunctions, eg "X = 3+5 and eat the blue apple" 
 	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_ON_ONE_LINE
@@ -769,7 +774,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		*functionContents = *functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
 		currentSentence = currentSentence->next;
 	}
-	
+
 	return result;
 }
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5g 15-August-2016
+ * Project Version: 1r5h 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -93,6 +93,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		int sentenceIndex = sentenceIter->first;
 		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
 		
+		#ifdef NLC_DEBUG
 		/*
 		cout << "\ncurrentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
 		cout << "currentNLCsentenceInList->sentenceIndex = " << currentNLCsentenceInList->sentenceIndex << endl;
@@ -106,6 +107,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		cout << "currentNLCsentenceInList->sentenceOriginal = " << currentNLCsentenceInList->sentenceOriginal << endl;
 		cout << "currentNLCsentenceInList->sentenceContentsOriginal = " << currentNLCsentenceInList->sentenceContentsOriginal << endl;
 		*/
+		#endif
 		
 		#ifdef NLC_DEBUG
 		cout << "generateCodeBlocks{}: sentenceIndex = " << sentenceIndex << endl;
@@ -348,7 +350,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 				{
 					for(int i=0; i<(maxNumberSentences-sentenceIndex)+1; i++)
 					{
-						sentenceIter++; 
+						sentenceIter++;	//go to last sentence in list (finish parsing full sentences)
 					}
 					//sentenceIndex = maxNumberSentences+1;
 				}
@@ -359,7 +361,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			}
 			else
 			{
-				sentenceIter++;
+				sentenceIter++;	//standard iteration - go to last sentence in list (finish parsing full sentences)?
 				#ifdef NLC_DEBUG
 				//cout << "NLC_USE_PREPROCESSOR generateCodeBlocks{}: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
 				#endif
@@ -370,10 +372,10 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		}
 		else
 		{
-			sentenceIter++;
+			sentenceIter++;	//standard iteration
 		}
 		#else
-		sentenceIter++;
+		sentenceIter++;	//standard iteration
 		#endif
 	}
 	

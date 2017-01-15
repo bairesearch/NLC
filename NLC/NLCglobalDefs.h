@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2c 12-October-2014
+ * Project Version: 1k3a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -393,7 +393,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 
 #define NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 //#define NLC_BAD_IMPLEMENTATION
-//#define NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+//#define NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS	//certified 1k3a
 
 //#define NLC_PRINT_EXPLICIT_LOCAL_CONTEXT
 #ifdef NLC_PRINT_EXPLICIT_LOCAL_CONTEXT

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2c 12-October-2014
+ * Project Version: 1k3a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -199,7 +199,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							NLCclassDefinition * targetClassDefinition = *localListIter;
 							//string targetName = targetClassDefinition->name;	//condition instance name not used
 							NLCitem * param1 = targetClassDefinition->parameters.at(0);
-							string localListDeclarationText = generateCodeConditionListDefinitionText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
+							string localListDeclarationText = generateCodeConditionListDefinitionText(param1->className2, param1->className, progLang) + progLangEndLine[progLang];
 							printLine(localListDeclarationText, 1, code);
 						}
 

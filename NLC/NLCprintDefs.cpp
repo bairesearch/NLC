@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2c 12-October-2014
+ * Project Version: 1k3a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -82,15 +82,75 @@ string generateGenericListName(string genericObjectName, string genericListAppen
 
 string generateConditionListName(string conditionClassName, string conditionObjectClassName)
 {
+	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;	
+	#else
 	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;
+	#endif
 	return conditionListName;
 }
 
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName)
 {
+	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	#else
 	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	#endif
 	return conditionListName;
 }
+
+string generateCodeConditionPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang)
+{
+	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	//OLD: string codeConditionPairTypeText = progLangStringOpenClose[progLang] + conditionName + progLangStringOpenClose[progLang] + progLangParameterSpaceNextParam[progLang] + conditionObjectInstanceName + progLangCloseParameterSpace[progLang]
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + conditionName + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + conditionObjectInstanceName + progLangClassMemberFunctionParametersClose[progLang];
+	//TEMP: string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + conditionInstanceName + progLangClassMemberFunctionParametersNext[progLang] + conditionObjectInstanceName + progLangClassMemberFunctionParametersClose[progLang];
+	#else
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + conditionInstanceName + progLangClassMemberFunctionParametersNext[progLang] + conditionObjectInstanceName + progLangClassMemberFunctionParametersClose[progLang];	
+	#endif
+	return codeConditionPairTypeText;
+}
+
+string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string> * conditionContext, int progLang)
+{
+	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	//OLD: string codeConditionPairTypeText = progLangStringOpenClose[progLang] + conditionName + progLangStringOpenClose[progLang] + progLangParameterSpaceNextParam[progLang] + conditionObjectInstanceName + progLangCloseParameterSpace[progLang]
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + generateInstanceNameWithContext(conditionInstanceName, conditionContext, progLang) + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(conditionObjectInstanceName, conditionContext, progLang) + progLangClassMemberFunctionParametersClose[progLang];
+	//TEMP: string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + generateInstanceNameWithContext(conditionInstanceName, conditionContext, progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(conditionObjectInstanceName, conditionContext, progLang) + progLangClassMemberFunctionParametersClose[progLang];
+	#else
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + generateInstanceNameWithContext(conditionInstanceName, conditionContext, progLang) + progLangClassMemberFunctionParametersNext[progLang] + generateInstanceNameWithContext(conditionObjectInstanceName, conditionContext, progLang) + progLangClassMemberFunctionParametersClose[progLang];	
+	#endif
+	return codeConditionPairTypeText;
+}
+
+string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang)
+{
+	string instanceNameWithContext = "";
+	string contextString = generateStringFromContextVector(context, progLang);
+	instanceNameWithContext = contextString + instanceName;
+	return instanceNameWithContext;
+}
+
+string generateStringFromContextVector(vector<string> * context, int progLang)
+{
+	string contextString = "";
+	for(vector<string>::iterator contextIterator = context->begin(); contextIterator < context->end(); contextIterator++)
+	{
+		string currentContext = *contextIterator;
+		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
+	}
+
+	#ifdef NLC_PRINT_EXPLICIT_LOCAL_CONTEXT
+	if(contextString == "")
+	{
+		contextString = string(NLC_LOCAL_CONTEXT_NAME) + progLangObjectReferenceDelimiter[progLang];
+	}
+	#endif
+
+	return contextString;
+}
+
 
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang)
 {
@@ -106,17 +166,13 @@ string generateCodePropertyListDefinitionTypeText(string propertyClassName, int 
 
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang)
 {
-	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionText = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + conditionClassName + NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;
-	#else
 	string codeConditionListDefinitionText = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + generateConditionListName(conditionClassName, conditionObjectClassName);
-	#endif
 	return codeConditionListDefinitionText;
 }
 string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang)
 {
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
+	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	#else
 	string codeConditionListDefinitionText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	#endif
@@ -142,4 +198,5 @@ string generateTempVariableDeclaration(string className, string instanceName, in
 	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;
 	return tempVariableName;
 }
+
 

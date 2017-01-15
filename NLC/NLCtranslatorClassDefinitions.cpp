@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2c 12-October-2014
+ * Project Version: 1k3a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -116,6 +116,22 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 							//cout << "targetEntity->isConcept = " << targetEntity->isConcept << endl;
 							if(!(targetEntity->disabled))
 							{
+								#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+								GIAentityNode * conditionEntity = NULL;
+								if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+								{
+									conditionEntity = targetEntity;
+									if(!(targetEntity->conditionObjectEntity->empty()))
+									{
+										targetEntity = (targetEntity->conditionObjectEntity->back())->entity;	//index by conditionObject not by condition
+									}
+									else
+									{
+										cout << "generateClassHeirarchy() error: condition has no object" << endl;
+									}
+								}
+								#endif
+								
 								string targetName = "";
 								string targetClassName = "";
 								if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
@@ -185,10 +201,15 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
 									if(!foundLocalClassDefinition)
 									{
-										//cout << "conditionList.push_back: " << targetClassDefinition->className << endl;
+										//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
 										classDefinition->conditionList.push_back(targetClassDefinition);
+										//cout << "targetEntity->entityName: " << targetEntity->entityName << endl;
 
 										NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
+										#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+										string conditionClassName = generateClassName(conditionEntity);
+										classDeclarationConditionsListItem->className2 = conditionClassName;
+										#else
 										if(!(targetEntity->conditionObjectEntity->empty()))
 										{
 											string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
@@ -198,6 +219,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										{
 											cout << "generateClassHeirarchy() error: condition has no object" << endl;
 										}
+										#endif
 										targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
 									}
 								}

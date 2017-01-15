@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2c 12-October-2014
+ * Project Version: 1k3a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,10 +49,8 @@ using namespace std;
 #include "NLCclassDefinitionClass.h"
 
 bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code, int level);	//classDefinitionList is required by NLC_SUPPORT_INPUT_FILE_LISTS only
-	string generateCodeConditionPairText(string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
 	void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector<NLCclassDefinition *> * classDefinitionList, vector<NLCitem*> * codeBlockParameters, string * functionArguments, int progLang);
 		string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int progLang);
-			string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
 		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 		string generateCodeConditionPairReferenceText(NLCitem * functionArgumentConditionItem, int progLang);
 		#endif
@@ -63,7 +61,6 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 	void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> * parameters, string * functionArguments, int progLang);
 	#endif
 	string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang);
-string generateStringFromContextVector(vector<string> * context, int progLang);
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 string generateLogicalConjunctionOfBoolsText(vector<NLCitem*> * parameters, int progLang);
 #endif

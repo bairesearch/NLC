@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4e 12-October-2016
+ * Project Version: 1v5a 20-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -587,17 +587,31 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 		{
 			if(entity->entityName == functionOwnerName)
 			{
-				entity->NLCisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
-				entity->NLCparsedForCodeBlocks = true;
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+				if(entity->idInstance == GIA_ENTITY_ID_INSTANCE_FIRST_INSTANCE_ENTITY)
+				{
+				#endif
+					entity->NLCisSingularArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+					entity->NLCparsedForCodeBlocks = true;
 
-				functionOwner = entity;
+					functionOwner = entity;		
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+				}
+				#endif
 			}
 			else if(entity->entityName == functionObjectName)
 			{
-				entity->NLCisSingularArgument = true;
-				entity->NLCparsedForCodeBlocks = true;
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+				if(entity->idInstance == GIA_ENTITY_ID_INSTANCE_FIRST_INSTANCE_ENTITY)
+				{
+				#endif
+					entity->NLCisSingularArgument = true;
+					entity->NLCparsedForCodeBlocks = true;
 
-				functionObject = entity;
+					functionObject = entity;
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+				}
+				#endif
 			}
 			else if(entity->entityName == functionName)
 			{
@@ -615,8 +629,27 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	if(hasFunctionOwnerClass)
 	{
-		NLCitem* functionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
-		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
+		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+		//updated 1v5a;
+		if(functionOwner != NULL)
+		{//functionOwner is used by the function definition: use functionOwner instance name
+			#ifdef NLC_DEBUG
+			cout << "functionOwner is used by the function definition: functionOwnerName = " << functionOwnerName << endl;
+			#endif
+			NLCitem* functionOwnerItem = new NLCitem(functionOwner, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
+			currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
+		}
+		else
+		{//functionOwner is not used by the function definition
+		#endif
+			#ifdef NLC_DEBUG
+			cout << "functionOwner is not used by the function definition: functionOwnerName = " << functionOwnerName << endl;
+			#endif
+			NLCitem* functionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
+			currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
+		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+		}
+		#endif
 	}
 	#endif
 
@@ -626,19 +659,26 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 	if(hasFunctionObjectClass)	//added 21 November 2013
 	{
+		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
 		if(functionObject != NULL)
 		{//functionObject is used by the function definition: use functionObject instance name
 			#ifdef NLC_DEBUG
-			//cout << "functionObjectName2 = " << functionObjectName << endl;
+			cout << "functionObject is used by the function definition: functionObjectName = " << functionObjectName << endl;
 			#endif
 			NLCitem* functionObjectItem = new NLCitem(functionObject, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);
 			currentCodeBlockInTree->parameters.push_back(functionObjectItem);
 		}
 		else
 		{//functionObject is not used by the function definition
+		#endif
+			#ifdef NLC_DEBUG
+			cout << "functionObject is not used by the function definition: functionObjectName = " << functionObjectName << endl;
+			#endif
 			NLCitem* functionObjectItem = new NLCitem(functionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);
 			currentCodeBlockInTree->parameters.push_back(functionObjectItem);
+		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
 		}
+		#endif
 	}
 	#endif
 
@@ -828,8 +868,13 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, NLCfunction* currentN
 		if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
+			if((!entity->NLCisSingularArgument) || (entity->idInstance != GIA_ENTITY_ID_INSTANCE_FIRST_INSTANCE_ENTITY))
+			{
+			#else
 			if(!entity->NLCisSingularArgument)
 			{
+			#endif	
 			#endif
 				if(generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(entity))
 				{

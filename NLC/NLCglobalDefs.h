@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4e 12-October-2016
+ * Project Version: 1v5a 20-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,6 +61,9 @@
 //#define NLC_DISABLE_1u_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1v_CODE_FOR_DEBUG
 #ifndef NLC_DISABLE_1v_CODE_FOR_DEBUG
+	#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
+		#define NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE	//1v5a
+	#endif
 	#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN	//1v1a
 	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME " then"

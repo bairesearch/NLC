@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4e 12-October-2016
+ * Project Version: 1v5a 20-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1530,6 +1530,7 @@ void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(v
 				#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 				*functionDeclarationOwnerName = functionOwnerArgumentDeclaration->name;
 				#endif
+				//functionOwnerArgument already added to parameters
 			}
 			else
 			{
@@ -1550,6 +1551,7 @@ void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(v
 				#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 				*functionDeclarationObjectName = functionObjectArgumentDeclaration->name;
 				#endif
+				//functionObjectArgument already added to parameters
 			}
 			else
 			{
@@ -1585,23 +1587,9 @@ void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(v
 		#ifdef NLC_DEBUG
 		//cout << "2 currentItem->itemType = " << currentItem->itemType << endl;
 		#endif
-		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
-		{
-			#ifdef NLC_DEBUG
-			//cout << "3 currentItem->name = " << currentItem->name << endl;
-			#endif
-			if(*functionArguments != "")
-			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
-			}
-
-			bool categoryList = false;
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
-			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
-		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER)
+		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER)
 		{
 			if(*functionArguments != "")
 			{
@@ -1694,6 +1682,20 @@ void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(v
 		}
 		#endif
 		*/
+		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+		{
+			#ifdef NLC_DEBUG
+			//cout << "3 currentItem->name = " << currentItem->name << endl;
+			#endif
+			if(*functionArguments != "")
+			{
+				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			}
+
+			bool categoryList = false;
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
+			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
+		}
 	}
 }
 

@@ -13,15 +13,10 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		moveClass* newmoveClass = new moveClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmoveClass);
 	}
-	if(name == "NLCgenericEntity")
+	if(name == "NLCimplicitlyDeclaredFunctionArtificial")
 	{
-		NLCgenericEntityClass* newNLCgenericEntityClass = new NLCgenericEntityClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCgenericEntityClass);
-	}
-	if(name == "NLCimplicitlyDeclared")
-	{
-		NLCimplicitlyDeclaredClass* newNLCimplicitlyDeclaredClass = new NLCimplicitlyDeclaredClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredClass);
+		NLCimplicitlyDeclaredFunctionArtificialClass* newNLCimplicitlyDeclaredFunctionArtificialClass = new NLCimplicitlyDeclaredFunctionArtificialClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredFunctionArtificialClass);
 	}
 	if(name == "yellow")
 	{
@@ -74,15 +69,10 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 		moveClass* newmoveClass = new moveClass(*(static_cast<moveClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newmoveClass);
 	}
-	if(name == "NLCgenericEntity")
+	if(name == "NLCimplicitlyDeclaredFunctionArtificial")
 	{
-		NLCgenericEntityClass* newNLCgenericEntityClass = new NLCgenericEntityClass(*(static_cast<NLCgenericEntityClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCgenericEntityClass);
-	}
-	if(name == "NLCimplicitlyDeclared")
-	{
-		NLCimplicitlyDeclaredClass* newNLCimplicitlyDeclaredClass = new NLCimplicitlyDeclaredClass(*(static_cast<NLCimplicitlyDeclaredClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredClass);
+		NLCimplicitlyDeclaredFunctionArtificialClass* newNLCimplicitlyDeclaredFunctionArtificialClass = new NLCimplicitlyDeclaredFunctionArtificialClass(*(static_cast<NLCimplicitlyDeclaredFunctionArtificialClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredFunctionArtificialClass);
 	}
 	if(name == "yellow")
 	{

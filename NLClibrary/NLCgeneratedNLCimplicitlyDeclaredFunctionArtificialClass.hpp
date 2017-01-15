@@ -1,0 +1,12 @@
+#ifndef HEADER_NLC_GENERATED_NLCimplicitlyDeclaredFunctionArtificialClass
+#define HEADER_NLC_GENERATED_NLCimplicitlyDeclaredFunctionArtificialClass
+
+#include "NLClibraryGenericEntityClass.hpp"
+
+class NLCimplicitlyDeclaredFunctionArtificialClass : public NLCgenericEntityClass
+{
+public:
+	NLCimplicitlyDeclaredFunctionArtificialClass(void);
+};
+
+#endif

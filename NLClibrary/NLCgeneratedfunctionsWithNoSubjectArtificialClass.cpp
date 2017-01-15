@@ -7,7 +7,7 @@ functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(voi
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 
-void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunction(vector<bananaClass*>& bananaClassList, vector<treeClass*>& treeClassList)
+void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtificialFunction(vector<NLCimplicitlyDeclaredFunctionArtificialClass*>& NLCimplicitlyDeclaredFunctionArtificialClassList, vector<bananaClass*>& bananaClassList, vector<treeClass*>& treeClassList)
 {
 	vector<NLCgenericEntityClass*> referenceContextList0;
 	vector<appleClass*> appleClassList;

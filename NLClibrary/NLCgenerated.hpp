@@ -4,7 +4,7 @@
 #include "NLClibraryGenericEntityClass.hpp"
 #include "NLCgeneratedfunctionsWithNoSubjectArtificialClass.hpp"
 #include "NLCgeneratedmoveClass.hpp"
-#include "NLCgeneratedNLCimplicitlyDeclaredClass.hpp"
+#include "NLCgeneratedNLCimplicitlyDeclaredFunctionArtificialClass.hpp"
 #include "NLCgeneratedyellowClass.hpp"
 #include "NLCgeneratedbananaClass.hpp"
 #include "NLCgeneratedfruitClass.hpp"

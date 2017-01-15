@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i3e 21-August-2014
+ * Project Version: 1i3f 21-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -983,21 +983,24 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 
 GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool parseConditionParents)
 {
+	GIAentityNode * parentEntityNew = currentEntity;
+	
 	bool foundParentProperty = false;
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = currentEntity->propertyNodeReverseList->begin(); propertyNodeListIterator < currentEntity->propertyNodeReverseList->end(); propertyNodeListIterator++)
 	{
 		GIAentityConnection * parentConnection = *propertyNodeListIterator;
 		GIAentityNode * parentEntity = parentConnection->entity;
-
+		
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		if(checkSentenceIndexParsingCodeBlocks(parentEntity, parentConnection, sentenceIndex, false))	//NB will parse references to entities in previous sentence
 		#else
 		if(checkSentenceIndexParsingCodeBlocks(parentEntity, parentConnection, sentenceIndex, false) || parentEntity->NLCparsedForCodeBlocks)
 		#endif
 		{
-			currentEntity = getParent(parentEntity, sentenceIndex, parseConditionParents);
+			parentEntityNew = getParent(parentEntity, sentenceIndex, parseConditionParents);
 		}
 		foundParentProperty = true;
+
 	}
 	if(!foundParentProperty && parseConditionParents)
 	{//added 1e9a
@@ -1011,6 +1014,7 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 			if(!(conditionEntity->conditionSubjectEntity->empty()))
 			{
 				conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
+
 				foundConditionSubject = true;
 
 				#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
@@ -1019,13 +1023,13 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 				if(checkSentenceIndexParsingCodeBlocks(conditionSubject, conditionConnection, sentenceIndex, false) || conditionSubject->NLCparsedForCodeBlocks)
 				#endif
 				{
-					currentEntity = getParent(conditionSubject, sentenceIndex, parseConditionParents);
+					parentEntityNew = getParent(conditionSubject, sentenceIndex, parseConditionParents);
 				}
 			}
 		}
 	}
 
-	return currentEntity;
+	return parentEntityNew;
 }
 
 

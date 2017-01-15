@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k16b 24-October-2014
+ * Project Version: 1k16c 24-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1037,6 +1037,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string contextLevelString = convertIntToString(level);
 			#else
 			string contextLevelString = param1->name;
+			//cout << "contextLevelString = " << contextLevelString << endl;
 			#endif
 
 			string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
@@ -1242,7 +1243,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				string contextLevelString = convertIntToString(currentCodeBlockInLevel->contextLevel);
 				#endif
 				string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
-			
+				//cout << "contextLevelString = " << contextLevelString << endl;
+
 				string codeBlockExecuteFunctionText = "";
 				codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME +  progLangOpenParameterSpace[progLang] + contextListName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//clearContextLevelList(contextListX);
 				printLine(codeBlockExecuteFunctionText, level+1, code);

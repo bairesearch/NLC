@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k16b 24-October-2014
+ * Project Version: 1k16c 24-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -421,6 +421,12 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 			#endif
 			#endif
 
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
+			{
+				generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+			}
+			#endif
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
 			*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false, genericListAppendName);	//added 1j5a
 			*currentCodeBlockInTree = createCodeBlockGetBackCategoryEntityList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
@@ -445,6 +451,12 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 			}
 			#endif
 
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
+			{
+				generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+			}
+			#endif
 			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY
 		}
@@ -473,6 +485,15 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 	//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextBlocksSimple(): ") + parentEntity->entityName);
 	//#endif
 
+	#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel)
+	{
+		generateContextBlocksVariables->currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
+	}
+	#endif
+	#endif
+			
 	if(!generatedParentContext)
 	{
 		NLCitem * propertyItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_OBJECT);

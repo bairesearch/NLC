@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k16b 24-October-2014
+ * Project Version: 1k16c 24-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -190,48 +190,6 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 
 //shared with GIAtranslatorDefineReferencing.cpp
 
-class NLCgenerateContextBlocksVariables
-{
-public:
-
-	NLCgenerateContextBlocksVariables(void);
-	~NLCgenerateContextBlocksVariables(void);
-
-	int logicalOperation;
-	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	bool negative;
-	//#endif
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	int logicalConditionConjunctionIndex;
-	GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset;
-	GIAentityNode * foundLogicalConditionConjunction;
-	#endif
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	bool onlyGenerateContextBlocksIfConnectionsParsedForNLC;
-	bool generateContextBlocksIfSameReferenceSet;	//added 1i3d
-	#endif
-	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	bool negativeDetectedInContextBlocks;
-	#endif
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-	bool testNumerosity;
-	int childQuantity;
-	#endif
-};
-
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-class NLClogicalConditionConjunction
-{
-public:
-
-	NLClogicalConditionConjunction(void);
-	~NLClogicalConditionConjunction(void);
-
-	int conjunctionType;
-	bool negative;
-};
-#endif
-
 class NLCcodeblock
 {
 public:
@@ -257,6 +215,52 @@ public:
 	int contextLevel;
 	#endif
 };
+
+
+class NLCgenerateContextBlocksVariables
+{
+public:
+
+	NLCgenerateContextBlocksVariables(void);
+	~NLCgenerateContextBlocksVariables(void);
+
+	int logicalOperation;
+	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	bool negative;
+	//#endif
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	int logicalConditionConjunctionIndex;
+	GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset;
+	GIAentityNode * foundLogicalConditionConjunction;
+	#endif
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	bool onlyGenerateContextBlocksIfConnectionsParsedForNLC;
+	bool generateContextBlocksIfSameReferenceSet;	//added 1i3d
+	#endif
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	bool negativeDetectedInContextBlocks;
+	bool setCodeBlockInTreeAtBaseLevel;	//added 1k16c - for loop support
+	NLCcodeblock * currentCodeBlockInTreeAtBaseLevel;	//added 1k16c - for loop support
+	#endif
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+	bool testNumerosity;
+	int childQuantity;
+	#endif
+};
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+class NLClogicalConditionConjunction
+{
+public:
+
+	NLClogicalConditionConjunction(void);
+	~NLClogicalConditionConjunction(void);
+
+	int conjunctionType;
+	bool negative;
+};
+#endif
+
 
 int getCurrentLogicalConditionLevel();
 void setCurrentLogicalConditionLevel(int value);

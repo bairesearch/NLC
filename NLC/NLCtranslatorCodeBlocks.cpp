@@ -120,7 +120,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 					if(!(entity->NLClocalListVariableHasBeenDeclared))
 					{
 						//cout << "pass3: " << entity->entityName << endl;
-						/*
+						/*OLD declareLocalPropertyListsForAllNonSpecificIndefiniteEntities() code;
 						bool foundPropertyInSameSentence = false;
 						bool foundConditionInSameSentence = false;
 						for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
@@ -142,11 +142,11 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 						if(!foundPropertyInSameSentence && !foundConditionInSameSentence)
 						{
 						*/
-							*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
-							#ifdef NLC_DEBUG
-							cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
-							#endif
-							entity->NLClocalListVariableHasBeenDeclared = true;
+						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
+						#ifdef NLC_DEBUG
+						cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
+						#endif
+						entity->NLClocalListVariableHasBeenDeclared = true;
 						/*	
 						}
 						*/

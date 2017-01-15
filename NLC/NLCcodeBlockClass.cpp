@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j5d 09-September-2014
+ * Project Version: 1j6a 10-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -173,40 +173,43 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	return currentCodeBlockInTree;
 }
 
-NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
+NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
 {
 	#ifdef NLC_SUPPORT_QUANTITIES
 	NLCcodeblock * origCurrentCodeBlockInTree = currentCodeBlockInTree;
-	if(propertyEntity->quantityNumber > 1)
+	if(entity->quantityNumber > 1)
 	{
-		string numberIterationsOrVariable = convertIntToString(propertyEntity->quantityNumber);
+		string numberIterationsOrVariable = convertIntToString(entity->quantityNumber);
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-		if(propertyEntity->NLCoriginalNumericalVariableName != "")
+		if(entity->NLCoriginalNumericalVariableName != "")
 		{
-			numberIterationsOrVariable = propertyEntity->NLCoriginalNumericalVariableName;
+			numberIterationsOrVariable = entity->NLCoriginalNumericalVariableName;
 		}
 		#endif
 		currentCodeBlockInTree = createCodeBlockForInteger(currentCodeBlockInTree, numberIterationsOrVariable);
 	}
-	//for(int i=0; i<propertyEntity->quantityNumber; i++)
+	//for(int i=0; i<entity->quantityNumber; i++)
 	//{
 	#endif
 
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 
-	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+	NLCitem * propertyItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, entity, entity);	//add new object to category list
+	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, entity, sentenceIndex);
 	#endif
-		
+
 	#ifdef NLC_SUPPORT_QUANTITIES
-	if(propertyEntity->quantityNumber > 1)
+	if(entity->quantityNumber > 1)
 	{
 		currentCodeBlockInTree = origCurrentCodeBlockInTree->next;
 	}
@@ -347,8 +350,10 @@ NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
 {	
 	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
-	currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(currentCodeBlockInTree, entity, entity, sentenceIndex);
-	
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, entity);	//create new category list
+	#endif
+	currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(currentCodeBlockInTree, entity, sentenceIndex);
 	return currentCodeBlockInTree;
 }
 
@@ -577,6 +582,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 					NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
 					parameters->push_back(thisFunctionArgumentInstanceItem);
 					
+					//added 1j5d
 					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 					entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
 					#else

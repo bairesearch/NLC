@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12a 22-August-2015
+ * Project Version: 1q12b 22-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,7 +52,7 @@
 //#define NLC_DISABLE_1q_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
-	#define NLC_CONDITION_LISTS_VECTOR	//tested 1q12a (but disabled since)	//use vector<pair<E1*,E2*>> instead of unordered_map<E1*,E2*> for conditionLists: not currently supported by NLC standard library
+	//#define NLC_CONDITION_LISTS_VECTOR	//tested 1q12a (but disabled since)	//use vector<pair<E1*,E2*>> instead of unordered_map<E1*,E2*> for conditionLists: not currently supported by NLC standard library
 	#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
 		//#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//has not yet been defined
 			#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_ADD_ENTITY_TO_NEW_CONTEXT_LIST	//1q11c

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12a 22-August-2015
+ * Project Version: 1q12b 22-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1107,7 +1107,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			
-			string codeBlockConvertParentToChildClassText = generateCodeEntityDefinitionText(param2, progLang) + progLangEquals[progLang] + generateDynamicCastOfEntity(param1->instanceName, param2->className, progLang) + progLangEndLine[progLang];	//param2class* param2instance = dynamic_cast<param2class*>(param1instance);
+			string codeBlockConvertParentToChildClassText = generateCodeEntityDefinitionText(param2, progLang) + progLangEquals[progLang] + generateStaticCastOfEntity(param1->instanceName, param2->className, progLang) + progLangEndLine[progLang];	//param2class* param2instance = static_cast<param2class*>(param1instance);
 			printLine(codeBlockConvertParentToChildClassText, level, &printedCodeBlocksSourceText);
 			string codeBlockRenameChildClassObjectToChildClassText = generateEntityName(param2) + progLangObjectReferenceDelimiter[progLang] + progLangClassNameVariableName[progLang] + progLangEquals[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//param2instance->name = "param2";	//added 1n6b
 			printLine(codeBlockRenameChildClassObjectToChildClassText, level, &printedCodeBlocksSourceText);

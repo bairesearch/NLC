@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2c 31-October-2014
+ * Project Version: 1l2d 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -804,6 +804,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 							resultTemp = true;
 						}
 					}
+					#ifdef NLC_RECORD_ACTION_HISTORY
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 					{
 						if(createCodeBlockForGivenAction(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
@@ -818,6 +819,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 							resultTemp = true;
 						}
 					}
+					#endif
 					if(resultTemp)
 					{
 						result = true;
@@ -975,75 +977,89 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 #ifdef NLC_RECORD_ACTION_HISTORY
 bool createCodeBlockForGivenAction(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* actionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
-	bool result = true;
+	bool result = false;
 
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	actionEntity->NLCcontextGenerated = true;
-	#endif
-		
-	NLCitem * actionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_OBJECT);
-	//cout << "createCodeBlockForGivenAction: " << actionObjectItem->instanceName << endl;
-	actionItem->context.push_back(parentInstanceName);
-	*currentCodeBlockInTree = createCodeBlockForActionList(*currentCodeBlockInTree, actionItem);	
-
-	bool hasActionObject = false;
-	if(!(actionEntity->actionObjectEntity->empty()))
+	if(!(actionEntity->NLCcontextGeneratedTemp))
 	{
-		GIAentityNode * actionObject = (actionEntity->actionObjectEntity->back())->entity;
-					
-		NLCitem * actionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_OBJECT);
-		hasActionObject = true;
-		actionObjectItem->context.push_back(actionObjectItem->instanceName);
-		*currentCodeBlockInTree = createCodeBlockForActionObjectList(*currentCodeBlockInTree, actionObjectItem);
-		
-		createCodeBlockForStatements(currentCodeBlockInTree, actionObjectItem->instanceName, actionObject, sentenceIndex, generateContextBlocksVariables);
-	}
+		result = true;
 
-	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	if(actionEntity->negative)
-	{
-		//cout << "actionEntity->negative: actionEntity->entityName = " << actionEntity->entityName << endl;
-		generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		actionEntity->NLCcontextGenerated = true;
+		#endif
+
+		NLCitem * actionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_OBJECT);
+		//cout << "createCodeBlockForGivenAction: " << actionObjectItem->instanceName << endl;
+		actionItem->context.push_back(parentInstanceName);
+		*currentCodeBlockInTree = createCodeBlockForActionList(*currentCodeBlockInTree, actionItem);	
+
+		bool hasActionObject = false;
+		if(!(actionEntity->actionObjectEntity->empty()))
+		{
+			GIAentityNode * actionObject = (actionEntity->actionObjectEntity->back())->entity;
+
+			NLCitem * actionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_OBJECT);
+			hasActionObject = true;
+			actionObjectItem->context.push_back(actionObjectItem->instanceName);
+			*currentCodeBlockInTree = createCodeBlockForActionObjectList(*currentCodeBlockInTree, actionObjectItem);
+
+			actionEntity->NLCcontextGeneratedTemp = true;
+			createCodeBlockForStatements(currentCodeBlockInTree, actionObjectItem->instanceName, actionObject, sentenceIndex, generateContextBlocksVariables);
+			actionEntity->NLCcontextGeneratedTemp = false;
+		}
+
+		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		if(actionEntity->negative)
+		{
+			//cout << "actionEntity->negative: actionEntity->entityName = " << actionEntity->entityName << endl;
+			generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+		}
+		#endif
 	}
-	#endif
 
 	return result;
 }
 
 bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* actionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
-	bool result = true;
+	bool result = false;
 
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	//actionConnection->NLCcontextGenerated = true;
-	actionEntity->NLCcontextGenerated = true;
-	#endif
-
-	NLCitem * actionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_OBJECT);
-	//cout << "createCodeBlockForGivenAction: " << actionObjectItem->instanceName << endl;
-	actionItem->context.push_back(parentInstanceName);
-	*currentCodeBlockInTree = createCodeBlockForActionIncomingList(*currentCodeBlockInTree, actionItem);	
-
-	bool hasActionSubject = false;
-	if(!(actionEntity->actionSubjectEntity->empty()))
+	if(!(actionEntity->NLCcontextGeneratedTemp))
 	{
-		GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
-				
-		NLCitem * actionSubjectItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_OBJECT);
-		hasActionSubject = true;
-		actionSubjectItem->context.push_back(actionSubjectItem->instanceName);
-		*currentCodeBlockInTree = createCodeBlockForActionSubjectList(*currentCodeBlockInTree, actionSubjectItem);
+		result = true;
 		
-		createCodeBlockForStatements(currentCodeBlockInTree, actionSubjectItem->instanceName, actionSubject, sentenceIndex, generateContextBlocksVariables);
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		//actionConnection->NLCcontextGenerated = true;
+		actionEntity->NLCcontextGenerated = true;
+		#endif
+
+		NLCitem * actionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_OBJECT);
+		//cout << "createCodeBlockForGivenAction: " << actionObjectItem->instanceName << endl;
+		actionItem->context.push_back(parentInstanceName);
+		*currentCodeBlockInTree = createCodeBlockForActionIncomingList(*currentCodeBlockInTree, actionItem);	
+
+		bool hasActionSubject = false;
+		if(!(actionEntity->actionSubjectEntity->empty()))
+		{
+			GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
+
+			NLCitem * actionSubjectItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_OBJECT);
+			hasActionSubject = true;
+			actionSubjectItem->context.push_back(actionSubjectItem->instanceName);
+			*currentCodeBlockInTree = createCodeBlockForActionSubjectList(*currentCodeBlockInTree, actionSubjectItem);
+
+			actionEntity->NLCcontextGeneratedTemp = true;
+			createCodeBlockForStatements(currentCodeBlockInTree, actionSubjectItem->instanceName, actionSubject, sentenceIndex, generateContextBlocksVariables);
+			actionEntity->NLCcontextGeneratedTemp = false;
+		}
+
+		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		if(actionEntity->negative)
+		{
+			//cout << "actionEntity->negative: actionEntity->entityName = " << actionEntity->entityName << endl;
+			generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+		}
+		#endif
 	}
-	
-	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	if(actionEntity->negative)
-	{
-		//cout << "actionEntity->negative: actionEntity->entityName = " << actionEntity->entityName << endl;
-		generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
-	}
-	#endif
 							
 	return result;
 }

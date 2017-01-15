@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l4c 02-November-2014
+ * Project Version: 1l4d 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -341,15 +341,6 @@ bool hasTimeConditionNodePast(GIAentityNode * actionEntity)
 }
 #endif
 
-
-
-
-
-
-
-
-
-
 bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool parseConditionParents, bool parseLogicalConditions)
 {
 	GIAentityNode * parentEntity = getParent(currentEntity, sentenceIndex, parseConditionParents);
@@ -357,39 +348,21 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 	bool result = false;
 	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
 	{//is this required?
-		result = initialiseParentIfNecessaryOrGenerateCodeBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, parseConditionParents, parseLogicalConditions);
-	}
-
-	return result;
-
-}
-//added 1e6a
-bool initialiseParentIfNecessaryOrGenerateCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool parseConditionParents, bool parseLogicalConditions)
-{
-	bool result = false;
-
-	#ifdef NLC_DEBUG
-	cout << "\tgenerateContextBlocksAndInitialiseParentIfNecessary parent: " << parentEntity->entityName << endl;
-	#endif
-
-	if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, parseLogicalConditions))
-	{
-		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
-		#else
-		generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
-		#endif
-		result = true;
-	}
-	else
-	{
-		if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+	
+		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, parseLogicalConditions))
 		{
-			result = true;	//added 1k18b but not used
+			result = true;
+		}
+
+		string parentNameIrrelevant = parentEntity->entityName;
+		if(generateContextForChildEntity(parentEntity, currentEntity, currentCodeBlockInTree, sentenceIndex, parentNameIrrelevant))
+		{
+			result = true;
 		}
 	}
 
 	return result;
+
 }
 
 
@@ -1341,9 +1314,7 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 	*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity, sentenceIndex);
 
 	parentEntity->NLCparsedForCodeBlocks = true;
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 	parentEntity->NLClocalListVariableHasBeenInitialised = true;
-	#endif
 	//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
@@ -1471,7 +1442,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		else
 		{
-			cout << "generateParentContext && !assumedToAlreadyHaveBeenDeclared" << endl;
+			cout << "error: generateParentContext && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << endl;
 			exit(0);
 		}
 	}
@@ -1508,7 +1479,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				NLCcodeblock * firstCodeBlockInSection = *currentCodeBlockInTree;
 
 				//Tom has Jack's ball.
-				bool generatedContextForChild = initialiseOrGenerateContextForChildEntity(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex, parentName);
+				bool generatedContextForChild = generateContextForChildEntity(entity, propertyEntity, currentCodeBlockInTree, sentenceIndex, parentName);
 
 				if(!(propertyConnection->NLCparsedForCodeBlocks))
 				{
@@ -1678,7 +1649,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 							NLCitem * conditionObjectClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 
-							bool generatedContextForChild = initialiseOrGenerateContextForChildEntity(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, parentName);
+							bool generatedContextForChild = generateContextForChildEntity(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, parentName);
 
 							if(!(conditionConnection->NLCparsedForCodeBlocks))
 							{
@@ -1801,7 +1772,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	return performedAtLeastOneObjectInitialisation;
 }
 
-bool initialiseOrGenerateContextForChildEntity(GIAentityNode * entity, GIAentityNode * childEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName)
+bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * childEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName)
 {	
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
 	NLCgenerateContextBlocksVariables generateContextBlocksVariables;
@@ -1853,11 +1824,11 @@ bool initialiseOrGenerateContextForChildEntity(GIAentityNode * entity, GIAentity
 		}				
 	}
 	#endif
-	/*//is this code still required? - removed 1k21c
+	#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	//is this code still required? - removed 1k21c
 	else
 	{
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-		//if(!onlyGenerateContextBlocksIfContextNotGeneratedForNLC || !(entity->NLCcontextGenerated))
 		if(!(entity->NLCcontextGenerated))
 		{//context block already created by generateContextBlocks()	//added 1g14b 15-July-2014
 		#endif
@@ -1885,7 +1856,7 @@ bool initialiseOrGenerateContextForChildEntity(GIAentityNode * entity, GIAentity
 		}
 		#endif
 	}
-	*/
+	#endif
 				
 	return generatedContextForChild;
 }

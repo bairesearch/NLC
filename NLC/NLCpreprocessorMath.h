@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j19a 02-October-2014
+ * Project Version: 1j20a 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,11 +53,13 @@ using namespace std;
 #ifdef NLC_PREPROCESSOR_MATH
 
 bool detectMathSymbolsInLine(string * lineContents);
-bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents);
 bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineContents, bool hasLogicalConditionOperator, bool isMathText);
 
 bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
-#endif
+	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+	bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents);
+	bool restoreExplicitVariableTypes(string * mathText);
+	#endif
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 bool replaceNumericalVariablesWithDummyNameIfNecessary(string * lineContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
@@ -67,6 +69,8 @@ bool replaceNumericalVariablesWithDummyNameIfNecessary(string * lineContents, NL
 		bool findPredefinedNumericalVariableInAnyFunctions(string * currentWord, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);	//allows global numerical variable definitions; not just local numerical variable definitions
 		#endif
 			bool findPredefinedNumericalVariableInFunction(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);
+#endif
+
 #endif
 #endif
 

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j19a 02-October-2014
+ * Project Version: 1j20a 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,21 +59,6 @@ bool detectMathSymbolsInLine(string * lineContents)
 	}
 	return mathSymbolFound;
 }
-
-#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents)
-{	
-	bool result = false;
-	//replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords() is required to prevent creation of nlp parsable phrase from 2 word variable declarations
-	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
-	{
-		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathNaturalLanguageVariables[i], preprocessorMathMathTextVariables[i]);	//NB this is type sensitive; could be changed in the future
-		result = true;
-	}
-
-	return result;
-}
-#endif
 
 bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineContents, bool hasLogicalConditionOperator, bool isMathText)
 {
@@ -114,6 +99,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 {
 	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " << *sentenceIndex << endl;
 
+	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
+	#endif
+					
 	int sentenceIndexOfFullSentence = *sentenceIndex;
 	NLCsentence * firstNLCsentenceInFullSentence = *currentNLCsentenceInList;
 	
@@ -584,6 +573,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 	#endif
 	
+	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+	restoreExplicitVariableTypes(&(firstNLCsentenceInFullSentence->mathText));
+	#endif
+	
 	NLCsentence * currentSentence = firstNLCsentenceInFullSentence;
 	while(currentSentence->next != NULL)
 	{
@@ -593,6 +586,34 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	
 	return result;
 }
+
+#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents)
+{	
+	bool result = false;
+	//replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords() is required to prevent creation of nlp parsable phrase from 2 word variable declarations
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
+	{
+		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathNaturalLanguageVariables[i], preprocessorMathMathTextVariables[i]);	//NB this is type sensitive; could be changed in the future
+		result = true;
+	}
+
+	return result;
+}
+
+bool restoreExplicitVariableTypes(string * mathText)
+{	
+	bool result = false;
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
+	{
+		*mathText = replaceAllOccurancesOfString(mathText, preprocessorMathMathTextVariables[i] , preprocessorMathNaturalLanguageVariables[i]);
+		result = true;
+	}
+
+	return result;
+}
+#endif
+
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6g 09-July-2014
+ * Project Version: 1g6h 09-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -681,7 +681,10 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 			bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 			if(conjunctionConditionFound)
 			{
-				conjunctionConditionConnectionFound = true;
+				if(conditionEntity2->NLCconjunctionCondition)
+				{//condition added 1g6h; do not parse nodes with conjunction condition connections if the conjunction condition has already been parsed by checkConditionForLogicalCondition()
+					conjunctionConditionConnectionFound = true;	
+				}
 				*foundLogicalConditionConjunction = conditionEntity2;
 			}
 		}

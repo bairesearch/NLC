@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1d 24-July-2014
+ * Project Version: 1h1e 25-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -109,7 +109,7 @@ public:
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only
 
 	bool negative;
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	int conjunctionType;
 	#endif
 	

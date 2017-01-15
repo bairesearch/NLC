@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1d 24-July-2014
+ * Project Version: 1h1e 25-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,8 +58,11 @@ public:
 	string sentenceContents;
 	int sentenceIndex;
 	int indentation;
+	bool hasLogicalConditionOperator;
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	int logicalConditionOperator;
+	#endif
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	bool isLogicalConditionOperator;
 	bool ifDetected;
 	bool elseIfDetected;
 	bool elseDetected;
@@ -91,18 +94,27 @@ public:
 
 #ifdef NLC_USE_PREPROCESSOR
 bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName);
-void writeStringToFile(string fileName, string s);
-#ifdef NLC_PREPROCESSOR_MATH
-bool detectMathSymbolsInSentence(string * sentenceContents);
-bool splitMathDetectedSentenceIntoNLPparsablePhrases(string * sentenceContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation);
-string generateMathTextNLPparsablePhraseReference(int phraseIndex);
-#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-bool replaceWordsWithDummyNameIfNecessary(string * functionContents, string * sentenceContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
-	bool isWhiteSpaceOrInvalidWordCharacter(char c);
-	bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);	//pass firstNLCfunctionInList and update findPredefinedNumericalVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
-	int generateDummyNumericalValue(int predefinedVariableIndex);
-#endif
-#endif
-#endif
-
+	void writeStringToFile(string * fileName, string * s);
+	void extractIndentationFromCurrentLine(string * currentLine, int * currentIndentation, string * lineContents, string * indentationContents);
+	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	bool detectFunctionHeader(string * lineContents);
+	string getFunctionNameFromFunctionHeader(string * lineContents);
+	#endif	
+	bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * logicalConditionOperator);
+	#ifdef NLC_PREPROCESSOR_MATH
+	bool detectMathSymbolsInLine(string * lineContents);
+	bool detectAndReplaceIsEqualToInformalTextWithSymbol(string * lineContents);
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents, bool isLogicalConditionOperator, int logicalConditionOperator);
+	#endif
+	bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation);
+	string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, int phraseIndex);
+	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+	bool replaceNumericalVariablesWithDummyNameIfNecessary(string * lineContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
+		bool isWhiteSpaceOrInvalidWordCharacter(char c);
+		bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);	//pass firstNLCfunctionInList and update findPredefinedNumericalVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
+		int generateDummyNumericalValue(int predefinedVariableIndex);
+	#endif
+	#endif
+	#endif
 #endif

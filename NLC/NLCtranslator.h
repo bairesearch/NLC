@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1d 24-July-2014
+ * Project Version: 1h1e 25-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,7 +57,7 @@ using namespace std;
 #include "NLCpreprocessor.h"	//required for NLCfunction
 //#endif
 
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 class NLClogicalConditionConjunctionContainer
 {
 public:
@@ -73,12 +73,12 @@ public:
 #endif
 
 bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor);
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	bool removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
 		int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode * conditionEntity, NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, int sentenceIndex);
 		bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer, GIAentityNode * logicalConditionConjunctionToTest);
 	#endif
-	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
 	#endif
 

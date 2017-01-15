@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1d 24-July-2014
+ * Project Version: 1h1e 25-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,7 +54,7 @@ NLCitem::NLCitem(void)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = "";
@@ -74,7 +74,7 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = "";
@@ -98,7 +98,7 @@ NLCitem::NLCitem(string newName, int newItemType)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	//if(newItemType == NLC_ITEM_TYPE_VARIABLE)
@@ -119,7 +119,7 @@ NLCitem::NLCitem(NLCitem * newItem)
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = newItem->name;

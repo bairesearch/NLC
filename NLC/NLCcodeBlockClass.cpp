@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1d 24-July-2014
+ * Project Version: 1h1e 25-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,11 +42,11 @@
 
 NLClogicalConditionConjunctionVariables::NLClogicalConditionConjunctionVariables(void)
 {
-	logicalOperation = NLC_CONDITION_LOGICAL_OPERATIONS_FOR;
-	//#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	logicalOperation = NLC_LOGICAL_CONDITION_OPERATIONS_FOR;
+	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	negative = BOOL_IRRELEVANT;
 	//#endif
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	logicalConditionConjunctionIndex = INT_DEFAULT_VALUE;
 	primaryEntityInLogicalConditionConjunctionSubset = NULL;
 	foundLogicalConditionConjunction = NULL;
@@ -59,7 +59,7 @@ NLClogicalConditionConjunctionVariables::~NLClogicalConditionConjunctionVariable
 {
 }
 
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 NLClogicalConditionConjunction::NLClogicalConditionConjunction(void)
 {
 	conjunctionType = INT_DEFAULT_VALUE;
@@ -792,14 +792,8 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 }
 #endif
 
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree, string whileLogicalConditionConjunctionBooleanName)
-{
-	NLCitem * conditionItem = new NLCitem(whileLogicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(conditionItem);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 
 NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree)
 {
@@ -824,7 +818,7 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 	}
 
 	int codeBlockType;
-	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
+	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 	{
 		if(elseIfDetected)
 		{
@@ -835,7 +829,7 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 			codeBlockType = NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
 		}
 	}
-	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 	{//not currently used
 		codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
 	}
@@ -850,11 +844,11 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalOperation)
 {
 	string logicalConditionConjunctionBooleanName = "";
-	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
+	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 	{
 		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE) + convertIntToString(logicalConditionCase);
 	}
-	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 	{
 		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel);
 	}
@@ -870,11 +864,11 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalConditionConjunctionIndex, int logicalOperation)
 {
 	string logicalConditionConjunctionBooleanName = "";
-	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
+	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 	{
 		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE) + convertIntToString(logicalConditionCase) + progLangArrayOpen[0] + convertIntToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
 	}
-	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 	{
 		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + convertIntToString(logicalConditionLevel) + progLangArrayOpen[0] + convertIntToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];	
 	}
@@ -883,13 +877,6 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 		cout << "generateLogicalConditionConjunctionBooleanName() error: invalid logicalOperation: " << logicalOperation << endl;
 	}
 	return logicalConditionConjunctionBooleanName;
-}
-
-//logicalConditionLevel is defined based on user tab indenting of text file, as parsed by NLC preprocessor
-string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel)
-{
-	string whileLogicalConditionConjunctionBooleanName = string(NLC_WHILE_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel);
-	return whileLogicalConditionConjunctionBooleanName;
 }
 
 NLCcodeblock * createCodeBlockDeclareNewBoolArray(NLCcodeblock * currentCodeBlockInTree, string boolArrayName, bool value)
@@ -907,38 +894,8 @@ NLCcodeblock * createCodeBlockDeclareNewBoolArray(NLCcodeblock * currentCodeBloc
 	}
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock * createCodeBlockDeclareNewBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value)
-{
-	NLCitem * itemDeclareNewBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
-	int codeBlockType;
-	if(value)
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_VARIABLE_INITIALISE_TRUE;
-	}
-	else
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_VARIABLE_INITIALISE_FALSE;
-	}
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value)
-{
-	NLCitem * itemSetBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(itemSetBoolVariable);
-	int codeBlockType;
-	if(value)
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_SET_BOOL_VARIABLE_TRUE;
-	}
-	else
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_SET_BOOL_VARIABLE_FALSE;
-	}
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
 #else
+
 NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative)
 {
 	currentCodeBlockInTree->parameters.push_back(itemProperty);
@@ -985,6 +942,54 @@ NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockI
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 #endif
+#endif
+
+NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree, string whileLogicalConditionConjunctionBooleanName)
+{
+	NLCitem * conditionItem = new NLCitem(whileLogicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(conditionItem);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+//logicalConditionLevel is defined based on user tab indenting of text file, as parsed by NLC preprocessor
+string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel)
+{
+	string whileLogicalConditionConjunctionBooleanName = string(NLC_WHILE_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + convertIntToString(logicalConditionLevel);
+	return whileLogicalConditionConjunctionBooleanName;
+}
+
+NLCcodeblock * createCodeBlockDeclareNewBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value)
+{
+	NLCitem * itemDeclareNewBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
+	int codeBlockType;
+	if(value)
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_VARIABLE_INITIALISE_TRUE;
+	}
+	else
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_VARIABLE_INITIALISE_FALSE;
+	}
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value)
+{
+	NLCitem * itemSetBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(itemSetBoolVariable);
+	int codeBlockType;
+	if(value)
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_SET_BOOL_VARIABLE_TRUE;
+	}
+	else
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_SET_BOOL_VARIABLE_FALSE;
+	}
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
 
 NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning)
 {
@@ -1053,7 +1058,7 @@ NLCcodeblock * createCodeBlockRemoveConditions(NLCcodeblock * currentCodeBlockIn
 #ifdef NLC_PREPROCESSOR_MATH
 NLCcodeblock * createCodeBlockMathTextLine(NLCcodeblock * currentCodeBlockInTree, string mathText)
 {
-	NLCitem * mathTextItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
+	NLCitem * mathTextItem = new NLCitem(mathText, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(mathTextItem);
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_MATHTEXT_LINE;
@@ -1064,7 +1069,7 @@ NLCcodeblock * createCodeBlockMathTextLine(NLCcodeblock * currentCodeBlockInTree
 
 NLCcodeblock * createCodeBlockMathTextWithLogicalOperator(NLCcodeblock * currentCodeBlockInTree, string mathText)
 {
-	NLCitem * mathTextItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
+	NLCitem * mathTextItem = new NLCitem(mathText, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(mathTextItem);
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR;
@@ -1099,6 +1104,12 @@ NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInT
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-
+void clearCodeBlock(NLCcodeblock * codeBlock)
+{
+	codeBlock->codeBlockType = NLC_CODEBLOCK_TYPE_UNDEFINED;
+	codeBlock->next = NULL;
+	codeBlock->lowerLevel = NULL;
+	codeBlock->parameters.clear();
+}
 
 

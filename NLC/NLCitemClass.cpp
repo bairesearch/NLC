@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n3a 15-January-2015
+ * Project Version: 1n3b 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -62,6 +62,7 @@ NLCitem::NLCitem(void)
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
 	name = "";
+	genericObjectName = "";
 }
 NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 {

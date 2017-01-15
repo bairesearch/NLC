@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n3a 15-January-2015
+ * Project Version: 1n3b 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,6 +48,10 @@ void printLine(string command, int level, string * code)
 	//}
 }
 
+string generatePropertyListName(NLCitem * item)
+{
+	return generatePropertyListName(item->className);
+}
 #ifdef NLC_NONOO
 string generatePropertyListName(string propertyClassName)
 {
@@ -133,6 +137,10 @@ string generateActionObjectListName(string actionObjectClassName)
 #endif
 #endif
 
+string generateLocalListName(NLCitem * item)
+{
+	return generateEntityListName(item);
+}
 string generateEntityListName(NLCitem * entityParam)
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
@@ -438,7 +446,7 @@ string generateCodeNewTempEntity(NLCitem * param, int progLang)
 
 string generateTempEntityDeclaration(NLCitem * param, int progLang)
 {
-	string tempVariableName = generateTempEntityDeclaration(generateTempEntityClassName(param), generateTempEntityName(param), progLang);
+	string tempVariableName = generateTempEntityDeclaration(generateTempEntityClassName(param), generateTempEntityName(param), progLang);	//ClassName * instanceName
 	return tempVariableName;
 }
 
@@ -459,9 +467,9 @@ string generateTempEntityClassName(NLCitem * param)
 string generateTempEntityDeclaration(string className, string instanceName, int progLang)
 {
 	#ifdef NLC_NONOO
-	string tempVariableName = string(NLCNONOO_GENERIC_ENTITY_NODE_NAME) + progLangPointer[progLang] + STRING_SPACE + instanceName;
+	string tempVariableName = string(NLCNONOO_GENERIC_ENTITY_NODE_NAME) + progLangPointer[progLang] + STRING_SPACE + instanceName;	//GIAentityNode * instanceName
 	#else
-	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;	
+	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;	//ClassName * instanceName
 	#endif
 	return tempVariableName;
 }

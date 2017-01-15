@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n3a 15-January-2015
+ * Project Version: 1n3b 15-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -141,6 +141,7 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (55)			//param1 = param2;
 */
 
+
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (100)		//forall(context1.param1PropertyList){
 #define NLC_CODEBLOCK_TYPE_FOR_LOCAL_LIST (101)	//forall(param1instance){
@@ -199,7 +200,10 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_IF_ACTION_NAME (130)
 	#endif
 #endif
-
+#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+	#define NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST (131)
+	#define NLC_CODEBLOCK_TYPE_IN_LOCAL_LIST (132)
+#endif
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 /*
@@ -294,14 +298,15 @@ public:
 int getCurrentLogicalConditionLevel();
 void setCurrentLogicalConditionLevel(int value);
 
-NLCcodeblock * createCodeBlockExecuteSubjectObject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * subjectItem, NLCitem * objectItem);
-NLCcodeblock * createCodeBlockExecuteSubject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * subjectItem);
-NLCcodeblock * createCodeBlockExecuteObject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * objectItem);
-NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem);
+NLCcodeblock * createCodeBlockExecuteSubjectObject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * actionEntity, GIAentityNode * subjectEntity, GIAentityNode * objectEntity);
+NLCcodeblock * createCodeBlockExecuteSubject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * actionEntity, GIAentityNode * subjectEntity);
+NLCcodeblock * createCodeBlockExecuteObject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * actionEntity, GIAentityNode * objectEntity);
+NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * actionEntity);
 #ifdef NLC_RECORD_ACTION_HISTORY
-NLCcodeblock * createCodeBlockRecordHistoryActionSubject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * subjectItem);
-NLCcodeblock * createCodeBlockRecordHistoryActionObject(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem * objectItem);
+NLCcodeblock * createCodeBlockRecordHistoryActionSubject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * actionEntity, GIAentityNode * subjectEntity);
+NLCcodeblock * createCodeBlockRecordHistoryActionObject(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * actionEntity, GIAentityNode * objectEntity);
 #endif
+
 NLCcodeblock * createCodeBlockCreateNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList);
 	NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList);
 		NLCcodeblock * createCodeBlockAddEntityToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
@@ -320,9 +325,19 @@ NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * current
 	NLCcodeblock * createCodeBlockAddNewEntityToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, bool addReferencingContext);
 
 
-NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
-NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
-NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
+NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context);
+	NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity);
+		NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
+#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+NLCcodeblock * createCodeBlockInPropertyList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, int index);
+#endif
+NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity);
+#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+NLCcodeblock * createCodeBlockInLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, int index);
+#endif
+NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * condition, GIAentityNode * conditionObject, string context);
+	NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
+
 #ifdef NLC_NONOO
 NLCcodeblock * createCodeBlockIfPropertyName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockIfConditionName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
@@ -331,10 +346,10 @@ NLCcodeblock * createCodeBlockIfActionName(NLCcodeblock * currentCodeBlockInTree
 #endif
 #endif
 #ifdef NLC_RECORD_ACTION_HISTORY
-NLCcodeblock * createCodeBlockForActionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
-NLCcodeblock * createCodeBlockForActionIncomingList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
-NLCcodeblock * createCodeBlockForActionObjectList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
-NLCcodeblock * createCodeBlockForActionSubjectList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
+NLCcodeblock * createCodeBlockForActionList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context);
+NLCcodeblock * createCodeBlockForActionIncomingList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context);
+NLCcodeblock * createCodeBlockForActionObjectList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context);
+NLCcodeblock * createCodeBlockForActionSubjectList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context);
 #endif
 #ifdef NLC_SUPPORT_QUANTITIES
 NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, string numberIterationsOrVariable);
@@ -381,10 +396,10 @@ string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel,
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalConditionConjunctionIndex, int logicalOperation);
 NLCcodeblock * createCodeBlockDeclareNewBoolArray(NLCcodeblock * currentCodeBlockInTree, string boolArrayName, bool value);
 #else
-NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
-NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
-NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemProperty, bool negative);
-NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockInTree, NLCitem * itemCondition, NLCitem * itemConditionObject, bool negative);
+NLCcodeblock * createCodeBlockIfHasProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context, bool negative);
+NLCcodeblock * createCodeBlockIfHasCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * condition, GIAentityNode * conditionObject, string context, bool negative);
+NLCcodeblock * createCodeBlockWhileHasProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context, bool negative);
+NLCcodeblock * createCodeBlockWhileHasCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * condition, GIAentityNode * conditionObject, string context, bool negative);
 #endif
 #endif
 NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree);

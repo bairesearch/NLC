@@ -73,8 +73,9 @@ public:
 	NLCfunction* next;
 };
 
-
+#ifdef NLC_USE_PREPROCESSOR
 bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName);
 void writeStringToFile(string fileName, string s);
+#endif
 
 #endif

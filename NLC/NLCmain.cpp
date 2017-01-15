@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17c 18-July-2014
+ * Project Version: 1g17d 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,6 +60,9 @@
 #ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 #include "GIAtranslatorDefs.h"
 #endif
+//#ifdef NLC_USE_PREPROCESSOR
+#include "NLCpreprocessor.h"
+//#endif
 
 static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
 "\n\t-itxt [string]     : plain text .txt input filename to be parsed by the NLP parser (def: inputText.txt)"
@@ -640,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g17c 18-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g17d 18-July-2014" << endl;
 			exit(1);
 		}
 
@@ -698,7 +701,9 @@ int main(int argc,char **argv)
 	bool preprocessorDetectedFunctions = false;
 	if(NLCpreprocessor)
 	{
+		#ifdef NLC_DEBUG_PREPROCESSOR
 		cout << "NLCpreprocessor" << endl;
+		#endif
 		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + "afterPreprocessedforNLConly.txt";
 		if(!useInputTextPlainTXTFile)
 		{
@@ -713,7 +718,9 @@ int main(int argc,char **argv)
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			if(preprocessorDetectedFunctions)
 			{
+				#ifdef NLC_USE_PREPROCESSOR
 				cout << "preprocessorDetectedFunctions" << endl;
+				#endif
 				NLCinputFileList = true;
 			}
 			else

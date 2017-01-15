@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17c 18-July-2014
+ * Project Version: 1g17d 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,7 @@
 
 #include "SHAREDglobalDefs.h"
 
-#define NLC_USE_PREPROCESSOR	//1g17a 17-July-2014
+#define NLC_USE_PREPROCESSOR	//1g17a 18-July-2014
 #ifdef NLC_USE_PREPROCESSOR
 	//#define NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES

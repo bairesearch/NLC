@@ -62,7 +62,7 @@ NLCfunction::~NLCfunction(void)
 {
 }
 
-
+#ifdef NLC_USE_PREPROCESSOR
 bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName)
 {
 	*numberOfInputFilesInList = 1;
@@ -94,7 +94,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		
 		while(parseFileObject.get(currentToken))
 		{
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_DEBUG_PREPROCESSOR
 			cout << currentToken;
 			#endif
 			bool whiteSpaceDetected = isWhiteSpace(currentToken);
@@ -288,7 +288,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 
 	return result;
 }
-
+#endif
 
 void writeStringToFile(string fileName, string s)
 {

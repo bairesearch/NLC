@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17c 18-July-2014
+ * Project Version: 1g17d 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,9 +52,9 @@ using namespace std;
 #include "GIAentityConnectionClass.h"
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
-#ifdef NLC_USE_PREPROCESSOR
+//#ifdef NLC_USE_PREPROCESSOR
 #include "NLCpreprocessor.h"	//required for NLCsentence
-#endif
+//#endif
 
 #ifdef NLC_USE_PREPROCESSOR
 void initialiseLogicalConditionLevelRecordArray();

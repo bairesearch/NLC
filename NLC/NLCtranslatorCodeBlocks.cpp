@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17c 18-July-2014
+ * Project Version: 1g17d 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,9 +74,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	//NLCcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
 	//for each action (command) in sentence;
 
-	#ifdef NLC_USE_PREPROCESSOR
+	//#ifdef NLC_USE_PREPROCESSOR
 	NLCsentence * currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
-	#endif
+	//#endif
 	
 	//cout << "maxNumberSentences = " << maxNumberSentences << endl;
 	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
@@ -398,7 +398,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								}
 							}
 							*/	
-
+							#ifndef NLC_USE_PREPROCESSOR
+							int currentLogicalConditionLevel = 0;	//multiple levels not supported
+							#endif
 							string whileLogicalConditionConjunctionBooleanName = generateWhileLogicalConditionConjunctionBooleanName(currentLogicalConditionLevel);	//MUST CHANGE THIS TO logicalConditionLevel once indentation is being parsed by NLC preprocessor					
 							if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 							{
@@ -601,6 +603,9 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 		
 		if(logicalOperation != NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
 		{
+			#ifndef NLC_USE_PREPROCESSOR
+			int currentLogicalConditionLevel = 0;	//multiple levels not supported
+			#endif
 			string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(*logicalConditionConjunctionIndex, currentLogicalConditionLevel);
 			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, logicalConditionConjunctionBooleanName, true);
 			currentCodeBlockInTreeAtCurrentLevel1 = currentCodeBlockInTreeAtCurrentLevel1->next;

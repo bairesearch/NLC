@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5c 06-July-2014
+ * Project Version: 1g5d 06-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,7 +59,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity);
 		#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 		void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentLogicalConditionObject, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray);
-			void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * conditionEntity, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray, bool direction);
+			void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * conditionEntity, int sentenceIndex, int logicalOperation, int * logicalConditionConjunctionIndex, NLClogicalConditionConjunction * logicalConditionConjunctionArray);
 		#endif
 			void tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(GIAentityNode * entity, int sentenceIndex, bool tagOrUntag);
 	#endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1d 12-September-2016
+ * Project Version: 1t1e 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1162,10 +1162,10 @@ bool createCodeBlockForGivenDefinition(NLCcodeblock** currentCodeBlockInTree, st
 	
 	*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction1(*currentCodeBlockInTree, parentInstanceName, definitionEntity->entityName);
 					
-	//#ifdef NLC_DEBUG
+	#ifdef NLC_DEBUG
 	cout << "createCodeBlockForGivenDefinition{}: definitionEntity = " << definitionEntity->entityName << endl;
 	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, definitionEntity->entityName);
-	//#endif
+	#endif
 	
 	/*
 	createCodeBlockForStatements(currentCodeBlockInTree, parentInstanceName, definitionEntity, sentenceIndex, generateContextBlocksVariables);	//creates for statements (generates context) according to the properties/conditions of the concept (assuming it is a specific networkIndex eg "blue" in "if the boat is a blue chicken")

@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintClassDefinitions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -213,6 +213,20 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							}
 							#endif
 						}
+						
+						string classNameRaw = removeClassTextFromClassDefinitionName(className);
+						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//eg string name = "dog";
+
+						/*
+						#ifdef NLC_API
+						#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+						if(classDefinition->APIclass)
+						{
+							printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReference(*(classDefinition->APIsourceFileFullPath), progLang);	//eg #include "APIsourceFileFullPath"
+						}
+						#endif
+						#endif
+						*/
 
 						printedClassDefinitionThisRound = true;
 						classDefinition->printed = true;
@@ -228,9 +242,16 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
 						printLine(classDestructorDeclaration, 1, &printedClassDefinitionHeaderText);
 						#endif
-						string classNameRaw = removeClassTextFromClassDefinitionName(className);
-						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
-
+						
+						#ifdef NLC_API
+						#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+						if(classDefinition->APIclass)
+						{
+							printedClassDefinitionHeaderText = printedClassDefinitionHeaderText + *(classDefinition->APIwrapperHeaderText);
+						}
+						#endif
+						#endif
+						
 						#ifndef NLC_USE_LIBRARY
 						#ifndef NLC_NONOO
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
@@ -248,7 +269,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionHeaderText);			
 							#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEndLine[progLang];	//double value;
+							string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_NUMERICAL_VALUE_NAME) + progLangEndLine[progLang];	//double value;
 							printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
@@ -281,6 +302,11 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							string parentClassListClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 							string parentClassListDeclarationText = generateCodeEntityListDefinitionText(parentClassListClassName, parentClassListName, progLang) + progLangEndLine[progLang];  	//vector<NLCgenericEntityClass*> parentClassList;
 							printLine(parentClassListDeclarationText, 1, &printedClassDefinitionHeaderText);
+							#endif
+							
+							#ifdef NLC_API
+							string thirdpartyAPIobjectDeclarationText = progLangGenericPointerType[progLang] + string(NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME) + progLangEndLine[progLang];	//void* thirdpartyAPIobject;
+							printLine(thirdpartyAPIobjectDeclarationText, 1, &printedClassDefinitionHeaderText);
 							#endif
 
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
@@ -472,13 +498,19 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						{//top level NLClibraryEntity class found
 						#endif
 							#ifdef NLC_USE_MATH_OBJECTS
-							string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//value = numeric_limits<double>::quiet_NaN();
+							string setValueCode = string(NLC_USE_MATH_OBJECTS_NUMERICAL_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang] + progLangEndLine[progLang];	//value = numeric_limits<double>::quiet_NaN();
 							printLine(setValueCode, 1, &printedClassDefinitionSourceText);
-							#endif	
+							#endif
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 							string classDefinitionInverseConditionCode = string(NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME) + progLangEquals[progLang] + progLangFalse[progLang] + progLangEndLine[progLang];	//inverseConditionTwoWay = false;
 							printLine(classDefinitionInverseConditionCode, 1, &printedClassDefinitionHeaderText);							
-							#endif						
+							#endif	
+							
+							#ifdef NLC_API
+							string thirdpartyAPIobjectInitialisationText = string(NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//thirdpartyAPIobject = NULL;
+							printLine(thirdpartyAPIobjectInitialisationText, 1, &printedClassDefinitionHeaderText);
+							#endif
+												
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						}
 						#endif
@@ -563,9 +595,18 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						}
 						#endif
 						
+						#ifdef NLC_API
+						#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+						if(classDefinition->APIclass)
+						{
+							printedClassDefinitionSourceText = printedClassDefinitionSourceText + *(classDefinition->APIwrapperSourceText);
+						}
+						#endif
+						#endif
+						
 						#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-						string printedClassDefinitionHeaderFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP; 	//eg NLCgeneratedmoveClass.hpp
-						string printedClassDefinitionSourceFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
+						string printedClassDefinitionHeaderFileName = generateCodeClassDefinitionHeaderFileName(classDefinition->name);		//eg NLCgeneratedmoveClass.hpp
+						string printedClassDefinitionSourceFileName = generateCodeClassDefinitionSourceFileName(classDefinition->name);		//eg NLCgeneratedmoveClass.cpp
 
 						string printedClassDefinitionTextCPPheader = "";
 						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);		//eg #include "NLCgeneratedmoveClass.hpp"
@@ -622,7 +663,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
 		if(classDefinition->printed)
 		{
-			string NLCgeneratedCodeHPPIncludedClassDefinitionHeaderfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+			string printedClassDefinitionHeaderFileName = generateCodeClassDefinitionHeaderFileName(classDefinition->name);
 			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);	//eg #include "NLCgeneratedmoveClass.hpp"
 		}
 	}	
@@ -640,8 +681,8 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
 		if(classDefinition->printed)
 		{
-			string NLCgeneratedCodeHeaderIncludedClassDefinitionSourceFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;			
-			NLCgeneratedCodeSourceFileNameList = NLCgeneratedCodeSourceFileNameList + NLCgeneratedCodeHeaderIncludedClassDefinitionSourceFileName + CHAR_SPACE; 
+			string printedClassDefinitionSourceFileName = generateCodeClassDefinitionSourceFileName(classDefinition->name);			
+			NLCgeneratedCodeSourceFileNameList = NLCgeneratedCodeSourceFileNameList + printedClassDefinitionSourceFileName + CHAR_SPACE; 
 		}
 	}	
 	string NLCgeneratedCodeSourceFileNameListFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME);
@@ -674,13 +715,32 @@ string generateCodeHeaderCheckClose()
 
 string generateCodeHashIncludeReferenceGenerated(string className, int progLang)
 {
-	string includeFileName = string(NLC_USE_LIBRARY_GENERATED_FOLDER) + string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	string includeFileName = string(NLC_USE_LIBRARY_GENERATED_FOLDER) + generateCodeClassDefinitionHeaderFileName(className);
 	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
 	return hashIncludeReference;
 }
-string generateCodeHashIncludeReferenceLibrary(string libraryFileNameWithoutExtension, int progLang)
+
+string generateCodeClassDefinitionHeaderFileName(string className)
 {
-	string includeFileName = string(NLC_USE_LIBRARY_LIBRARY_FOLDER) + libraryFileNameWithoutExtension + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	string printedClassDefinitionHeaderFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	return printedClassDefinitionHeaderFileName;
+}
+
+string generateCodeClassDefinitionSourceFileName(string className)
+{
+	string printedClassDefinitionHeaderFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;
+	return printedClassDefinitionHeaderFileName;
+}
+
+string generateCodeHashIncludeReferenceLibrary(string libraryFileNameWithoutFolderOrExtension, int progLang)
+{
+	string includeFileName = string(NLC_USE_LIBRARY_LIBRARY_FOLDER) + libraryFileNameWithoutFolderOrExtension + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
+	return hashIncludeReference;
+}
+string generateCodeHashIncludeReference(string referenceFolder, string includeFileNameWithoutFolder, int progLang)
+{
+	string includeFileName = referenceFolder + includeFileNameWithoutFolder;
 	string hashIncludeReference = generateCodeHashIncludeReference(includeFileName, progLang);
 	return hashIncludeReference;
 }

@@ -50,10 +50,10 @@ void setFunction(vector<NLCgenericEntityClass*>& setClassList, vector<NLCgeneric
 					NLCgenericEntityClass* toConditionObject = iter3->second;
 					
 					#ifdef NLC_USE_MATH_OBJECTS				
-					//eg "Set the value to 5."
+					//eg "Set the numericalValue to 5."
 					if(isStringNumberOrFractional(toConditionObject->name))
 					{
-						setObject->value = atof(toConditionObject->name.c_str());
+						setObject->numericalValue = atof(toConditionObject->name.c_str());
 					}
 					else
 					{

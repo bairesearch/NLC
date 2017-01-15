@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorSentenceClass.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,6 +36,18 @@
 #define HEADER_NLC_PREPROCESSOR_SENTENCE_CLASS
 
 #include "NLCglobalDefs.h"
+
+class NLCvariable
+{
+public:
+
+	NLCvariable(void);
+	~NLCvariable(void);
+
+	string name;
+	int type;
+	string typeString;
+};
 
 class NLCsentence
 {
@@ -62,7 +74,7 @@ public:
 	int mathTextNLPparsablePhraseIndex;
 	int mathTextNLPparsablePhraseTotal;	//set true for first parsable phrase only, or if no NLP parsable phrases
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-	vector<string> mathTextVariableNames;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
+	vector<NLCvariable*> mathTextVariables;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
 	vector<string> variableNamesDetected;	//record of original variable name that has been replaced by dummy number for NLP/GIA to parse
 	#endif
 	#ifdef NLC_USE_MATH_OBJECTS
@@ -93,10 +105,11 @@ public:
 	NLCfunction* next;
 };
 
+
 #ifdef NLC_PREPROCESSOR_MATH
 string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence* currentPhrase);
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-int generateDummyNumericalValue(int predefinedVariableIndex);
+int generateDummyNumber(int predefinedVariableIndex);
 #endif
 #endif
 bool isStringNLPparsableWord(string phrase, bool preprocessorMath);

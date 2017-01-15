@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorSentenceClass.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -34,6 +34,17 @@
 
 #include "NLCpreprocessorSentenceClass.h"
 #include "SHAREDvars.h"
+
+
+NLCvariable::NLCvariable(void)
+{
+	name = "";
+	type = INT_DEFAULT_VALUE;
+	typeString = "";
+}
+NLCvariable::~NLCvariable(void)
+{
+}
 
 NLCsentence::NLCsentence(void)
 {
@@ -82,6 +93,8 @@ NLCfunction::~NLCfunction(void)
 {
 }
 
+
+
 #ifdef NLC_PREPROCESSOR_MATH
 string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence* currentPhrase)
 {
@@ -110,10 +123,10 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-int generateDummyNumericalValue(int predefinedVariableIndex)
+int generateDummyNumber(int predefinedVariableIndex)
 {
-	int dummyNumericalValue = predefinedVariableIndex + NLC_PREPROCESSOR_MATH_DUMMY_NUMERICAL_VALUE_BASE;
-	return dummyNumericalValue;
+	int dummyNumber = predefinedVariableIndex + NLC_PREPROCESSOR_MATH_DUMMY_NUMBER_VALUE_BASE;
+	return dummyNumber;
 }
 #endif
 
@@ -151,27 +164,6 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 		{
 			stringIsNLPparsableWord = true;
 		}	
-	}
-	#endif	
-	
-		
-	#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
-	//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
-	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;
-	for(int i=0; i<phrase.length(); i++)
-	{
-		char c = phrase[i];
-		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
-		{
-			NLPparsableMandatoryCharacterFoundInCurrentWord = true;
-		}
-	}
-	if(!NLPparsableMandatoryCharacterFoundInCurrentWord)
-	{
-		#ifdef NLC_DEBUG
-		//cout << "!NLPparsableMandatoryCharacterFoundInCurrentWord" << endl;
-		#endif
-		stringIsNLPparsableWord = false;
 	}
 	#endif
 	

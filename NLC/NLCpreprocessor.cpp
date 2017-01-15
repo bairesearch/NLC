@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessor.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,9 +40,7 @@
 //#include "NLCprintDefs.h" //required for progLangOpenParameterSpace
 #include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
-#include "GIAlrp.h"	//requied for nlpQuotationMarkCharacterArray/GIA_ASSUME_QUOTES_HAVE_BEEN_REDUCED_TO_SINGLE_WORDS_FILLER
-#endif
+#include "GIAlrp.h"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_ASSUME_QUOTES_HAVE_BEEN_REDUCED_TO_SINGLE_WORDS_FILLER
 
 #ifdef NLC_USE_PREPROCESSOR
 
@@ -79,12 +77,14 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << currentLineNumber << ": " << currentLine << endl;
 			#endif
 			
+			#ifndef NLC_USE_MATH_OBJECTS_STRING
 			#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 			string updatedLineTextWithQuotationsReducedToSingleWords = "";
 			if(reduceQuotesToSingleWords(currentLine, &updatedLineTextWithQuotationsReducedToSingleWords))
 			{
 				currentLine = updatedLineTextWithQuotationsReducedToSingleWords;
 			}
+			#endif
 			#endif
 			
 			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
@@ -172,6 +172,13 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				else
 				{				
 				#endif
+					#ifdef NLC_USE_MATH_OBJECTS_STRING
+					if(detectMathObjectStringDelimiter(&lineContents))
+					{
+						cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
+					}
+					#endif
+					
 					functionContents = functionContents + indentationContents;
 				
 					//now for each sentence on line:
@@ -260,7 +267,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						
 						#ifdef NLC_PREPROCESSOR_MATH
 						#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-						replaceNumericalVariablesWithDummyNameIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
+						replaceNumericalVariablesWithDummyNumberIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
 						#endif
 						#endif
 						#ifdef NLC_DEBUG
@@ -678,7 +685,18 @@ string removePrependingWhiteSpace(string sentenceContents)
 	
 	return sentenceContents;
 }
-	
+
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+bool detectMathObjectStringDelimiter(string* lineContents)
+{
+	bool result = false;
+	if(lineContents->find(NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	{
+		result = true;
+	}
+	return result;
+}
+#endif
 
 #endif
 

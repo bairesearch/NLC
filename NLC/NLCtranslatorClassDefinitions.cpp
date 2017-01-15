@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorClassDefinitions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -62,14 +62,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 				}
 				#endif
 
-				bool foundClassDefinition = false;
-				NLCclassDefinition* classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
-				if(!foundClassDefinition)
-				{
-					classDefinition = new NLCclassDefinition(className);
-					classDefinitionList->push_back(classDefinition);
-				}
-				
+				NLCclassDefinition* classDefinition = NULL;
+				addClassDefinitionToList(classDefinitionList, className, &classDefinition);
+
 				#ifdef NLC_DEBUG
 				cout << "generateClassHeirarchy: entityNode->entityName = " << entityNode->entityName << endl;
 				#endif
@@ -158,20 +153,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 									{//declare subclass
-										//propertyList
-										bool foundLocalClassDefinition = false;
-										NLCclassDefinition* localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-										if(!foundLocalClassDefinition)
-										{
-											#ifdef NLC_DEBUG
-											//cout << "generateClassHeirarchy{}: classDefinition->propertyList.push_back: " << targetClassDefinition->name << endl;
-											#endif
-											
-											classDefinition->propertyList.push_back(targetClassDefinition);
-
-											NLCitem* classDeclarationPropertiesListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);
-											targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
-										}
+										
+										addPropertyListToClassDefinition(classDefinition, targetClassDefinition);
+			
 									}
 									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 									{//declare conditions
@@ -249,17 +233,8 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 											if(targetName != className)	//eg do not create a separate class for substance concept definitions
 											{
 											#endif
-												//definitionList
-												bool foundLocalClassDefinition = false;
-												NLCclassDefinition* localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-												if(!foundLocalClassDefinition)
-												{
-													#ifdef NLC_DEBUG
-													//cout << "generateClassHeirarchy{}: classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
-													#endif
-
-													classDefinition->definitionList.push_back(targetClassDefinition);
-												}
+												addDefinitionToClassDefinition(classDefinition, targetClassDefinition);
+												
 											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 											}
 											#endif
@@ -361,6 +336,53 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 
 	return result;
 }
+
+bool addClassDefinitionToList(vector<NLCclassDefinition*>* classDefinitionList, string className, NLCclassDefinition** classDefinition)
+{
+	bool foundClassDefinition = false;
+	*classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
+	if(!foundClassDefinition)
+	{
+		*classDefinition = new NLCclassDefinition(className);
+		classDefinitionList->push_back(*classDefinition);
+		foundClassDefinition = true;
+	}
+	return foundClassDefinition;
+}
+
+void addDefinitionToClassDefinition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition)
+{
+	//definitionList
+	bool foundLocalClassDefinition = false;
+	NLCclassDefinition* localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetClassDefinition->name, &foundLocalClassDefinition);	//see if class definition already exists
+	if(!foundLocalClassDefinition)
+	{
+		#ifdef NLC_DEBUG
+		//cout << "generateClassHeirarchy{}: classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
+		#endif
+
+		classDefinition->definitionList.push_back(targetClassDefinition);
+	}
+}	
+
+void addPropertyListToClassDefinition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition)
+{
+	//propertyList
+	bool foundLocalClassDefinition = false;
+	NLCclassDefinition* localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetClassDefinition->name, &foundLocalClassDefinition);	//see if class definition already exists
+	if(!foundLocalClassDefinition)
+	{
+		#ifdef NLC_DEBUG
+		//cout << "generateClassHeirarchy{}: classDefinition->propertyList.push_back: " << targetClassDefinition->name << endl;
+		#endif
+		classDefinition->propertyList.push_back(targetClassDefinition);
+	
+		NLCitem* classDeclarationPropertiesListItem = new NLCitem(targetClassDefinition->name, NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);	//CHECKTHIS
+		targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
+	}
+}	
+
+
 
 #ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* parentEntity)

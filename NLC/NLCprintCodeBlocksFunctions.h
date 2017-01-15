@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintCodeBlocksFunctions.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -71,7 +71,8 @@ void generateCodeCheckParentClassNameExecuteFunction2(NLCitem* param1, NLCitem* 
 #endif
 
 void generateCodeAddProperty(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
-void generateCodeAddPropertyEntityToList(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
+	void generateCodeAddPropertyEntityToList(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
+		void generateCodeAddEntityToList(string entityName, string listName, int progLang, string* code, int level);
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 void generateCodeAddPropertyExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
 void generateCodeAddPropertyNewFunction(int progLang, string* code, int level);
@@ -115,5 +116,12 @@ void generateCodeAddEntityToLocalList(NLCitem* param1, NLCitem* param2, int prog
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 void generateCodeAddEntityToLocalListExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level);
 #endif
+
+void generateCodeForPropertyList(NLCitem* param1, string contextParam1, int progLang, string* code, int level);
+void generateCodeForLocalList(NLCitem* param1, int progLang, string* code, int level);
+	void generateCodeForEntityList(string entityClassName, string entityListName, string entityInstanceName, int progLang, string* code, int level);
+void generateCodeForConditionList(NLCitem* param1, NLCitem* param2, string contextParam1, int progLang, string* code, int level);
+	void generateCodeForConditionList(string entityClassName1, string entityClassName2, string entityListName, string entityInstanceName1, string entityInstanceName2, int progLang, string* code, int level);
+
 
 #endif

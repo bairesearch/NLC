@@ -165,7 +165,7 @@ XMLparserTag* createVectorListTagWithLowerLevel(XMLparserTag* currentTagInList, 
 	currentTagInList->name = tagName;
 	#ifdef NLC_USE_LIBRARY_FILEIO_XML_WRITE_LIST_TAGS
 	currentTagInList->firstAttribute->name = NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_LISTNAME;
-	currentTagInList->firstAttribute->value = (vectorClassList->back())->name;
+	currentTagInList->firstAttribute->numericalValue = (vectorClassList->back())->name;
 	currentTagInList->firstAttribute->nextAttribute = new XMLParserAttribute();
 	#endif
 	currentTagInList->nextTag = new XMLparserTag();
@@ -198,7 +198,7 @@ void writeXMLfileMapList(XMLparserTag* firstTagInList, unordered_map<NLCgenericE
 				#endif
 
 				currentTagInList->firstAttribute->name = NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_CONDITION;
-				currentTagInList->firstAttribute->value = (iter1)->first->name;		//write condition name
+				currentTagInList->firstAttribute->numericalValue = (iter1)->first->name;		//write condition name
 				currentTagInList->firstAttribute->nextAttribute = new XMLParserAttribute(); 
 				currentTagInList = writeXMLfileObject(currentTagInList, writeObject);
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
@@ -215,11 +215,11 @@ XMLparserTag* createMapListTagWithLowerLevel(XMLparserTag* currentTagInList, str
 	string mapListName1 = writeObjectClassMapList->begin()->first->name;
 	string mapListName2 = writeObjectClassMapList->begin()->second->name;
 	currentAttribute->name = NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_MAPLISTNAME1;
-	currentAttribute->value = mapListName1;
+	currentAttribute->numericalValue = mapListName1;
 	currentAttribute->nextAttribute = new XMLParserAttribute();
 	currentAttribute = currentAttribute->nextAttribute;
 	currentAttribute->name = NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_MAPLISTNAME2;
-	currentAttribute->value = mapListName2;
+	currentAttribute->numericalValue = mapListName2;
 	currentAttribute->nextAttribute = new XMLParserAttribute();
 	#endif
 	currentTagInList->nextTag = new XMLparserTag();
@@ -548,7 +548,7 @@ string getTopLevelPropertyListNameFromXMLreadFileContents(XMLparserTag* firstTag
 	{
 		if(firstTagInXMLFile->firstAttribute->name == NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_LISTNAME)
 		{
-			topLevelPropertyListName = firstTagInXMLFile->firstAttribute->value;
+			topLevelPropertyListName = firstTagInXMLFile->firstAttribute->numericalValue;
 		}
 		else
 		{
@@ -660,7 +660,7 @@ bool readXMLfileMapList(XMLparserTag* firstTagInList, unordered_map<NLCgenericEn
 			{
 				if(currentTagInVectorList->firstAttribute->name == NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_CONDITION)
 				{
-					NLCgenericEntityClass* readObjectCondition = generateObjectByName(currentTagInVectorList->firstAttribute->value);
+					NLCgenericEntityClass* readObjectCondition = generateObjectByName(currentTagInVectorList->firstAttribute->numericalValue);
 					readObjectClassMapList->insert(pair<NLCgenericEntityClass*, NLCgenericEntityClass*>(readObjectCondition, readObject));	//CHECKTHIS: check can insert as NLCgenericEntityClass and not their specificObjectClassName
 				}
 				else
@@ -766,7 +766,7 @@ bool readFileObjectVectorListAll(XMLparserTag* currentTagInList, NLCgenericEntit
 				string vectorListName = "";
 				if(currentTagInVectorListAll->firstAttribute->name == NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_LISTNAME)
 				{
-					vectorListName = currentTagInVectorListAll->firstAttribute->value;
+					vectorListName = currentTagInVectorListAll->firstAttribute->numericalValue;
 				}
 				else
 				{
@@ -847,7 +847,7 @@ bool readFileObjectMapListAll(XMLparserTag* currentTagInList, NLCgenericEntityCl
 				string mapListName1 = "";
 				if(currentTagInMapListAll->firstAttribute->name == NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_MAPLISTNAME1)
 				{
-					mapListName1 = currentTagInMapListAll->firstAttribute->value;
+					mapListName1 = currentTagInMapListAll->firstAttribute->numericalValue;
 				}
 				else
 				{
@@ -859,7 +859,7 @@ bool readFileObjectMapListAll(XMLparserTag* currentTagInList, NLCgenericEntityCl
 				{
 					if(currentTagInMapListAll->firstAttribute->nextAttribute->name == NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_MAPLISTNAME2)
 					{
-						mapListName2 = currentTagInMapListAll->firstAttribute->nextAttribute->value;
+						mapListName2 = currentTagInMapListAll->firstAttribute->nextAttribute->numericalValue;
 					}
 					else
 					{
@@ -883,7 +883,7 @@ bool readFileObjectMapListAll(XMLparserTag* currentTagInList, NLCgenericEntityCl
 			mapListName2 = currentTagInMapListAll->firstLowerLevelTag->name;	//extract the name of the vectorList from the first object in the list
 			if(currentTagInMapListAll->firstLowerLevelTag->firstAttribute->name == NLC_USE_LIBRARY_FILEIO_XML_ATTRIBUTENAME_CONDITION)
 			{
-				mapListName1 = currentTagInMapListAll->firstLowerLevelTag->firstAttribute->value;	//extract the name of the vectorList from the first object in the list (its attribute)
+				mapListName1 = currentTagInMapListAll->firstLowerLevelTag->firstAttribute->numericalValue;	//extract the name of the vectorList from the first object in the list (its attribute)
 			}
 			else
 			{
@@ -979,18 +979,18 @@ bool writeNLCflatFilePropertyLists(string fileName, vector<NLCgenericEntityClass
 				NLCgenericEntityClass* childObject = childObjectList->back();	//limitation; 3D lists not currently supported (ie childObjects cannot be plural lists)
 				if(!(childObject->aliasList.empty()))
 				{
-					string value = childObject->aliasList.back();
-					fileLine = fileLine + value;
+					string numericalValue = childObject->aliasList.back();
+					fileLine = fileLine + numericalValue;
 				}
-				else if(!std::isnan(childObject->value))
+				else if(!std::isnan(childObject->numericalValue))
 				{
-					string value = to_string(childObject->value);
-					fileLine = fileLine + value;
+					string numericalValue = to_string(childObject->numericalValue);
+					fileLine = fileLine + numericalValue;
 				}
 				else
 				{
-					string value = NLC_USE_LIBRARY_FILEIO_FLAT_PRESENT_PROPERTY_VALUE;
-					fileLine = fileLine + value;
+					string numericalValue = NLC_USE_LIBRARY_FILEIO_FLAT_PRESENT_PROPERTY_VALUE;
+					fileLine = fileLine + numericalValue;
 				}
 			}
 			else
@@ -1137,8 +1137,17 @@ bool readNLCflatfilePropertyLists(string fileName, vector<NLCgenericEntityClass*
 								bool saveVariable = true;
 								if(stringContainsNumbers(variableValue) && !stringContainsAlphabetic(variableValue))
 								{
-									readObject->value = convertStringToDouble(variableValue);
+									readObject->numericalValue = convertStringToDouble(variableValue);
 								}
+								#ifdef NLC_USE_MATH_OBJECTS_STRING
+								else if((variableValue.length() >= 3) && (variableValue[0] == NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER) && (variableValue[variableValue.length()-1] == NLC_USE_MATH_OBJECTS_STRING_VALUE_DELIMITER))
+								{
+									readObject->stringValue = variableValue.substr(1, variableValue.length()-2);
+									#ifdef NLC_DEBUG_LIBRARY
+									cout << "readNLCflatfilePropertyLists(): readObject->stringValue = " << readObject->stringValue << endl;
+									#endif
+								}
+								#endif
 								else if(variableValue == NLC_USE_LIBRARY_FILEIO_FLAT_PRESENT_PROPERTY_VALUE)
 								{
 									//no additional information is added to the variable

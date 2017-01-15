@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -423,29 +423,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 					#ifdef NLC_DEBUG
 					//cout << "finalParsablePhraseIsLogicalConditionCommand" << endl;
 					#endif
-				}
-				/*OLD:
-				bool finalParsablePhraseIsLogicalConditionCommand = true;
-				//NB conjunctions in mathText will already have been replaced with code (so dont check entityCoordinatingConjunctionArray)
-				for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
-				{
-					int index = firstNLCsentenceInFullSentence->mathText.find(progLangCoordinatingConjunctions[i], finalParsablePhraseReferencePos - progLangCoordinatingConjunctions[i].length() - 1);	//-1 to take into account intermediary white space CHAR_SPACE
-					if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
-					{
-						//"&&"/"||" is the final text in the mathText
-						finalParsablePhraseIsLogicalConditionCommand = false;
-					}					
-				}
-				for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
-				{
-					int index = firstNLCsentenceInFullSentence->mathText.find(preprocessorMathOperators[i], finalParsablePhraseReferencePos - preprocessorMathOperators[i].length() - 1);	//-1 to take into account intermediary white space CHAR_SPACE
-					if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
-					{
-						//">"/"<"/"="/"+" is the final text in the mathText
-						finalParsablePhraseIsLogicalConditionCommand = false;
-					}					
-				}
-				*/							
+				}						
 
 				if(finalParsablePhraseIsLogicalConditionCommand)
 				{

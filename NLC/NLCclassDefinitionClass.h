@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCclassDefinitionClass.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -79,7 +79,7 @@ public:
 	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass)
 	string functionNameSpecial;
 	
-		//classdefinition sublists;
+	//classdefinition sublists;
 	vector<NLCclassDefinition*> propertyList;      //subclass
 	vector<NLCclassDefinition*> conditionList;     //declared conditions
 	vector<NLCclassDefinition*> definitionList;    //inherited parents
@@ -110,6 +110,15 @@ public:
 	
 	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	bool isLibraryFunctionDefinition;	//not used often
+	#endif
+	
+	#ifdef NLC_API
+	#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+	bool APIclass;
+	string APIsourceFileFullPath;
+	string* APIwrapperSourceText;
+	string* APIwrapperHeaderText;
+	#endif
 	#endif
 };
 

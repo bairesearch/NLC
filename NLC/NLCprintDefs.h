@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintDefs.h
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -230,6 +230,8 @@ static string progLangInteger[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "i
 static string progLangForIndex[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"index", "index", "index", "index", "index", "index", "index"};
 static string progLangDecimalType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double ", "double ", "double ", "double ", "double ", "double ", "double "};
 static string progLangDecimalPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double* ", "double* ", "double* ", "double* ", "double* ", "double* ", "double* "};
+static string progLangGenericPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void* ", "void* ", "void* ", "void* ", "void* ", "void* ", "void* "};
+static string progLangStringPointerType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string* ", "string* ", "string* ", "string* ", "string* ", "string* ", "string* "};
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};
@@ -351,6 +353,7 @@ string generateActionSubjectListName();
 string generateActionObjectListName();
 #endif
 #endif
+string generateLocalListName(string className, string instanceName);
 string generateLocalListName(NLCitem* item);
 string generateEntityListName(NLCitem* entityParam);	//added 1i6a
 string generateEntityListAppendName();
@@ -499,11 +502,17 @@ string generateCodeClassNameVariableDefinitionText(NLCitem* param1, int progLang
 string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
 
 #ifdef NLC_USE_MATH_OBJECTS
-string generateCodeEntityMathValueText(NLCitem* param1, int progLang);
-string generateCodeEntityMathValueText(string entityName, int progLang);
+string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang);
+string generateCodeEntityMathNumericalValueText(string entityName, int progLang);
 string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);
+#ifdef NLC_USE_MATH_OBJECTS
+string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang);
+string generateCodeEntityMathStringValueText(string entityName, int progLang);
+string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang);
+#endif
 string generateCodePointerValueText(NLCitem* param1, int progLang);
 string generateCodePointerValueText(string entityName, int progLang);
+string generateCodeEntityMathValueText(string entityName, int mathtextVariableType, int progLang);
 #endif
 string generatePointerText(string entityName, int progLang);
 string generatePointerTypeText(string entityName, int progLang);
@@ -515,6 +524,12 @@ string generateCodeIterName(string iterIndexString, int progLang);
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 string generateCodeEntityInverseConditionText(NLCitem* param1, int progLang);
+#endif
+
+#ifdef NLC_API
+string generateDefinitionText(string variableType, string variableName);
+string generateCodeSetText(string variableNameToSet, string variableNameValue, int progLang);
+string generateCodeReferenceText(string variableName, string component, int progLang);
 #endif
 
 #endif

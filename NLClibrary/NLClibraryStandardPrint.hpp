@@ -36,6 +36,9 @@
 void printFunction(vector<NLCgenericEntityClass*>& printClassList, vector<NLCgenericEntityClass*>& printObjectClassList);
 	void printEntity(NLCgenericEntityClass* printObject, int level);
 		string createIndentationBasedOnLevel(int level);
-void print(double value);
+void print(double numericalValue);
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+void print(string stringValue);
+#endif
 
 #endif

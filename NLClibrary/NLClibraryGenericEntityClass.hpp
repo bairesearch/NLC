@@ -50,7 +50,10 @@ public:
 	vector<string> aliasList;
 	#endif
 	#ifdef NLC_USE_MATH_OBJECTS
-	double value;	//numerical value (0, 1, 2, 3, 4.56 etc)
+	double numericalValue;	//numerical numericalValue (0, 1, 2, 3, 4.56 etc)
+	#ifdef NLC_USE_MATH_OBJECTS_STRING
+	double stringValue;
+	#endif
 	#endif
 	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 	bool inverseConditionTwoWay;
@@ -94,6 +97,10 @@ public:
 	unordered_map<pair<string, string>*, vector<NLCgenericEntityClass*>*> enumActionLists;
 	unordered_map<pair<string, string>*, vector<NLCgenericEntityClass*>*> enumActionIncomingLists;
 	#endif
+	#endif
+	
+	#ifdef NLC_API
+	void* thirdpartyAPIobject;
 	#endif
 };
 

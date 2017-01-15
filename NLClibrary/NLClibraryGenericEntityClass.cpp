@@ -37,7 +37,10 @@ NLCgenericEntityClass::NLCgenericEntityClass(void)
 {
 	name = "NLCgenericEntity";
 	#ifdef NLC_USE_MATH_OBJECTS
-	value = numeric_limits<double>::quiet_NaN();
+	numericalValue = numeric_limits<double>::quiet_NaN();
+	#ifdef NLC_USE_MATH_OBJECTS_STRING
+	textValue = "";
+	#endif
 	#endif
 	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 	inverseConditionTwoWay = false;
@@ -45,6 +48,10 @@ NLCgenericEntityClass::NLCgenericEntityClass(void)
 		
 	#ifdef NLC_USE_ENUM_LISTS 
 	enumType = NLC_ENUM_LIST_TYPE_DEFAULT_NON_ENUM;
+	#endif
+	
+	#ifdef NLC_API
+	thirdpartyAPIobject = NULL;
 	#endif
 };
 

@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorCodeBlocks.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -170,16 +170,16 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			{	
 				if(!(currentNLCsentenceInList->isMath))
 				{//only replace variables names (and reconcile temporary variable name replacement) for non math text
-					int dummyNumericalValue = generateDummyNumericalValue(i+1);
+					int dummyNumber = generateDummyNumber(i+1);
 					string numericalVariableName = currentNLCsentenceInList->variableNamesDetected[i];
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
 					cout << "currentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl; 
-					cout << "dummyNumericalValue = " << dummyNumericalValue << endl;
+					cout << "dummyNumber = " << dummyNumber << endl;
 					cout << "numericalVariableName = " << numericalVariableName << endl;
 					#endif
-					if(!findAndSetDummyNumericalValueForReplacement(entityNodesActiveListSentence, sentenceIndex, dummyNumericalValue, numericalVariableName))
+					if(!findDummyNumberAndReplaceWithOriginalNumericalVariableName(entityNodesActiveListSentence, sentenceIndex, dummyNumber, numericalVariableName))
 					{
-						cout << "generateCodeBlocks{} error: !findAndSetDummyNumericalValueForReplacement, dummyNumericalValueToRestore = " << dummyNumericalValue << ", numericalVariableName = " << numericalVariableName << endl;
+						cout << "generateCodeBlocks{} error: !findDummyNumberAndReplaceWithOriginalNumericalVariableName, dummyNumericalValueToRestore = " << dummyNumber << ", numericalVariableName = " << numericalVariableName << endl;
 					}
 				}
 				else

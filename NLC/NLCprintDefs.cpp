@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintDefs.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -138,6 +138,13 @@ string generateActionObjectListName()
 #endif
 #endif
 
+string generateLocalListName(string className, string instanceName)
+{
+	NLCitem item;
+	item.className = className;
+	item.instanceName = instanceName;
+	return generateEntityListName(&item);
+}
 string generateLocalListName(NLCitem* item)
 {
 	return generateEntityListName(item);
@@ -858,12 +865,11 @@ string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang)
 
 
 #ifdef NLC_USE_MATH_OBJECTS
-string generateCodeEntityMathValueText(NLCitem* param1, int progLang)
+string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang)
 {
-	string entityMathValueText = generateEntityName(param1) + progLangObjectReferenceDelimiter[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME);		//param1->value
-	return entityMathValueText;
+	return generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, progLang);
 }
-string generateCodeEntityMathValueText(string entityName, int progLang)
+string generateCodeEntityMathNumericalValueText(string entityName, int progLang)
 {
 	string entityMathValueText = generateCodePointerValueText(entityName, progLang);		//*entityName
 	return entityMathValueText;
@@ -873,6 +879,22 @@ string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int pro
 	string declareNewDecimalPointerVariableText = progLangDecimalPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //double* param1 = NULL;
 	return declareNewDecimalPointerVariableText;
 }
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+string generateCodeEntityMathStringValueText(NLCitem* param1, int progLang)
+{
+	return generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING, progLang);
+}
+string generateCodeEntityMathStringValueText(string entityName, int progLang)
+{
+	string entityMathValueText = generateCodePointerValueText(entityName, progLang);		//*entityName
+	return entityMathValueText;
+}
+string generateCodeDeclareNewStringPointerVariableText(NLCitem* param1, int progLang)
+{
+	string declareNewDecimalPointerVariableText = progLangStringPointerType[progLang] + param1->name + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];			 //string* param1 = NULL;
+	return declareNewDecimalPointerVariableText;
+}
+#endif
 string generateCodePointerValueText(NLCitem* param1, int progLang)
 {
 	string pointerValueText = progLangPointer[progLang] + param1->name;	//*param1
@@ -882,6 +904,11 @@ string generateCodePointerValueText(string entityName, int progLang)
 {
 	string pointerValueText = progLangPointer[progLang] + entityName;	//*entityName
 	return pointerValueText;
+}
+string generateCodeEntityMathValueText(string entityName, int mathtextVariableType, int progLang)
+{
+	string entityMathValueText = entityName + progLangObjectReferenceDelimiter[progLang] + preprocessorMathObjectVariables[mathtextVariableType];		//eg entity->numericalValue
+	return entityMathValueText;
 }
 #endif
 
@@ -931,5 +958,23 @@ string generateCodeEntityInverseConditionText(NLCitem* param1, int progLang)
 	return entityInverseConditionText;
 }
 #endif
+
+string generateDefinitionText(string variableType, string variableName)
+{
+	string definitionText = variableType + CHAR_SPACE + variableName;
+	return definitionText;
+}
+
+string generateCodeSetText(string variableNameToSet, string variableNameValue, int progLang)
+{
+	string setText = variableNameToSet + progLangEquals[progLang] + variableNameValue + progLangEndLine[progLang];	//variableNameToSet = variableNameValue;
+	return setText;	
+}
+
+string generateCodeReferenceText(string variableName, string component, int progLang)
+{
+	string referenceText = variableName + progLangObjectReferenceDelimiter[progLang] + component;	//variableName->component
+	return referenceText;	
+}
 
 

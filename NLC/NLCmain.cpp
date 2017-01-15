@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCmain.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,10 +39,16 @@
 #include "NLCprint.h"
 #include "NLCprintClassDefinitions.h"
 #include "NLCprintCodeBlocks.h"
-
+//#ifdef NLC_USE_PREPROCESSOR
+#include "NLCpreprocessor.h"
+//#endif
+#include "NLCtranslatorClassDefinitions.h"
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#ifdef NLC_API
+#include "NLCapi.h"
+#endif
 #include "GIAmain.h"
 #include "GIAdatabase.h"
-#include "SHAREDvars.h"
 #ifdef USE_WORDNET
 #include "GIAwordnet.h"
 #endif
@@ -53,12 +59,8 @@
 #ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 #include "GIAtranslatorDefs.h"
 #endif
-//#ifdef NLC_USE_PREPROCESSOR
-#include "NLCpreprocessor.h"
-//#endif
-#include "NLCtranslatorClassDefinitions.h"
-#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 #include "XMLrulesClass.h"
+#include "SHAREDvars.h"
 
 
 static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are any of the following\n"
@@ -75,6 +77,11 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 #endif
 #ifdef NLC_USE_PREPROCESSOR
 "\n\t-ipreprocess	: itxt input file will be preprocessed, supporting condition block indentation (eg if the ball is red\\n\\tthe stars are bright\\n\\tthe cat is happy) and multiple functions (delimited by 'function [functionSubject#]functionName)[+functionObject]'"
+#endif
+#ifdef NLC_API
+"\n\t-api                       : expose third party API (wrap with NLC code) using doxygen xml output"
+"\n\t-apisourcefolder [string]  : location of third party API source code (def: /home/systemusername/source/doxygen)"
+"\n\t-apiclasslist [string]   	: third party API class list (def: apiClassList.txt)"
 #endif
 "\n\t-oxml [string]     : semantic network definition .xml output filename (def: semanticNet.xml)"
 "\n\t-ocxl [string]     : semantic network display .cxl vector graphics output filename (def: semanticNet.cxl)"
@@ -117,9 +124,6 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 #endif
 #ifdef USE_WORDNET
 "\n\t-syndet                            : wordnet synonymn detection (0 - off, 1 - during queries only, 2 - during referencing and queries [def])"
-#endif
-#ifdef GIA_USE_
-
 #endif
 "\n"
 "\n\t-workingfolder [string]            : working directory name for input files (def: same as exe)"
@@ -218,7 +222,11 @@ int main(int argc, char** argv)
 //#ifdef NLC_USE_PREPROCESSOR
 	bool useNLCpreprocessor = false;
 //#endif
-
+#ifdef NLC_API
+	bool NLCapi = false;
+	string APIsourceFolder = NLC_API_DEFAULT_SOURCE_FOLDER_NAME;	
+	string APIclassListFileName = NLC_API_DEFAULT_CLASS_LIST_FILE_NAME;
+#endif
 	bool printOutput = false;
 	bool printOutputQuery = false;
 	bool displayInOpenGLAndOutputScreenshot = true;
@@ -261,207 +269,224 @@ int main(int argc, char** argv)
 	//basic execution flow outline; if no dataset or xml inputText file is specified, just form network - do not train network
 
 	#ifdef USE_CE
-	if(argumentExists(argc,argv,"-icodeextensions"))
+	if(argumentExists(argc, argv, "-icodeextensions"))
 	#else
-	if(argumentExists(argc,argv,"-itxt") || argumentExists(argc,argv,"-ionlprel") || argumentExists(argc,argv,"-ixml"))
+	if(argumentExists(argc, argv, "-itxt") || argumentExists(argc, argv, "-ionlprel") || argumentExists(argc, argv, "-ixml"))
 	#endif
 	{
-		if(argumentExists(argc,argv,"-itxt"))
+		if(argumentExists(argc, argv, "-itxt"))
 		{
-			inputTextPlainTXTfileName=getStringArgument(argc,argv,"-itxt");
+			inputTextPlainTXTfileName = getStringArgument(argc, argv, "-itxt");
 			useInputTextPlainTXTFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-ionlprel"))
+		if(argumentExists(argc, argv, "-ionlprel"))
 		{
-			inputTextNLPrelationXMLfileName=getStringArgument(argc,argv,"-ionlprel");
+			inputTextNLPrelationXMLfileName = getStringArgument(argc, argv, "-ionlprel");
 			useInputTextNLPrelationXMLFile = true;
 		}
-		if(argumentExists(argc,argv,"-ionlptag"))
+		if(argumentExists(argc, argv, "-ionlptag"))
 		{
-			inputTextNLPfeatureXMLfileName=getStringArgument(argc,argv,"-ionlptag");
+			inputTextNLPfeatureXMLfileName = getStringArgument(argc, argv, "-ionlptag");
 			useInputTextNLPfeatureXMLFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-ixml"))
+		if(argumentExists(argc, argv, "-ixml"))
 		{
-			inputTextXMLFileName=getStringArgument(argc,argv,"-ixml");
+			inputTextXMLFileName = getStringArgument(argc, argv, "-ixml");
 			//train = true;
 			useInputTextXMLFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-itxtq"))
+		if(argumentExists(argc, argv, "-itxtq"))
 		{
-			inputQueryPlainTXTFileName=getStringArgument(argc,argv,"-itxtq");
+			inputQueryPlainTXTFileName = getStringArgument(argc, argv, "-itxtq");
 			useInputQueryPlainTXTFile = true;
 			useInputQuery = true;
 		}
 
-		if(argumentExists(argc,argv,"-ionlprelq"))
+		if(argumentExists(argc, argv, "-ionlprelq"))
 		{
-			inputQueryNLPrelationXMLFileName=getStringArgument(argc,argv,"-ionlprelq");
+			inputQueryNLPrelationXMLFileName = getStringArgument(argc, argv, "-ionlprelq");
 			useInputQueryNLPrelationXMLFile = true;
 			useInputQuery = true;
 		}
-		if(argumentExists(argc,argv,"-ionlptagq"))
+		if(argumentExists(argc, argv, "-ionlptagq"))
 		{
-			inputQueryNLPfeatureXMLFileName=getStringArgument(argc,argv,"-ionlptagq");
+			inputQueryNLPfeatureXMLFileName = getStringArgument(argc, argv, "-ionlptagq");
 			useInputQueryNLPfeatureXMLFile = true;
 			useInputQuery = true;
 		}
 
-		if(argumentExists(argc,argv,"-ixmlq"))
+		if(argumentExists(argc, argv, "-ixmlq"))
 		{
-			inputQueryXMLFileName=getStringArgument(argc,argv,"-ixmlq");
+			inputQueryXMLFileName = getStringArgument(argc, argv, "-ixmlq");
 			useInputQueryXMLFile = true;
 			useInputQuery = true;
 		}
 
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-		if(argumentExists(argc,argv,"-ilist"))
+		if(argumentExists(argc, argv, "-ilist"))
 		{
 			NLCinputFileList = true;
 		}
 	#endif
 	#ifdef NLC_USE_PREPROCESSOR
-		if(argumentExists(argc,argv,"-ipreprocess"))
+		if(argumentExists(argc, argv, "-ipreprocess"))
 		{
 			useNLCpreprocessor = true;
 		}
 	#endif
-
-
-		if(argumentExists(argc,argv,"-ocff"))
+	#ifdef NLC_API
+		if(argumentExists(argc, argv, "-api"))
 		{
-			outputTextCFFFileName=getStringArgument(argc,argv,"-ocff");
+			NLCapi = true;
+		}
+		if(argumentExists(argc, argv, "-apisourcefolder"))
+		{
+			APIsourceFolder = getStringArgument(argc, argv, "-apisourcefolder");
+		}
+		if(argumentExists(argc, argv, "-apiclasslist"))
+		{
+			APIclassListFileName = getStringArgument(argc, argv, "-apiclasslist");
+		}
+	#endif
+
+		if(argumentExists(argc, argv, "-ocff"))
+		{
+			outputTextCFFFileName = getStringArgument(argc, argv, "-ocff");
 			useOutputTextCFFFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-oxml"))
+		if(argumentExists(argc, argv, "-oxml"))
 		{
-			outputTextXMLFileName=getStringArgument(argc,argv,"-oxml");
+			outputTextXMLFileName = getStringArgument(argc, argv, "-oxml");
 			useOutputTextXMLFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-ocxl"))
+		if(argumentExists(argc, argv, "-ocxl"))
 		{
-			outputTextCXLFileName=getStringArgument(argc,argv,"-ocxl");
+			outputTextCXLFileName = getStringArgument(argc, argv, "-ocxl");
 			useOutputTextCXLFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-oldr"))
+		if(argumentExists(argc, argv, "-oldr"))
 		{
-			outputTextLDRFileName=getStringArgument(argc,argv,"-oldr");
+			outputTextLDRFileName = getStringArgument(argc, argv, "-oldr");
 			useOutputTextLDRFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc,argv,"-oppm"))
+		if(argumentExists(argc, argv, "-oppm"))
 		{
-			outputTextPPMFileName=getStringArgument(argc,argv,"-oppm");
+			outputTextPPMFileName = getStringArgument(argc, argv, "-oppm");
 			useOutputTextPPMFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc,argv,"-osvg"))
+		if(argumentExists(argc, argv, "-osvg"))
 		{
-			outputTextSVGFileName=getStringArgument(argc,argv,"-osvg");
+			outputTextSVGFileName = getStringArgument(argc, argv, "-osvg");
 			useOutputTextSVGFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc,argv,"-ocffq"))
+		if(argumentExists(argc, argv, "-ocffq"))
 		{
-			outputQueryCFFFileName=getStringArgument(argc,argv,"-ocffq");
+			outputQueryCFFFileName = getStringArgument(argc, argv, "-ocffq");
 			useOutputQueryCFFFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-oxmlq"))
+		if(argumentExists(argc, argv, "-oxmlq"))
 		{
-			outputQueryXMLFileName=getStringArgument(argc,argv,"-oxmlq");
+			outputQueryXMLFileName = getStringArgument(argc, argv, "-oxmlq");
 			useOutputQueryXMLFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-ocxlq"))
+		if(argumentExists(argc, argv, "-ocxlq"))
 		{
-			outputQueryCXLFileName=getStringArgument(argc,argv,"-ocxlq");
+			outputQueryCXLFileName = getStringArgument(argc, argv, "-ocxlq");
 			useOutputQueryCXLFile = true;
 		}
 
-		if(argumentExists(argc,argv,"-oldrq"))
+		if(argumentExists(argc, argv, "-oldrq"))
 		{
-			outputQueryLDRFileName=getStringArgument(argc,argv,"-oldrq");
+			outputQueryLDRFileName = getStringArgument(argc, argv, "-oldrq");
 			useOutputQueryLDRFile = true;
 			printOutputQuery = true;
 		}
 
-		if(argumentExists(argc,argv,"-oppmq"))
+		if(argumentExists(argc, argv, "-oppmq"))
 		{
-			outputQueryPPMFileName=getStringArgument(argc,argv,"-oppmq");
+			outputQueryPPMFileName = getStringArgument(argc, argv, "-oppmq");
 			useOutputQueryPPMFile = true;
 			printOutputQuery = true;
 		}
 
-		if(argumentExists(argc,argv,"-osvgq"))
+		if(argumentExists(argc, argv, "-osvgq"))
 		{
-			outputQuerySVGFileName=getStringArgument(argc,argv,"-osvgq");
+			outputQuerySVGFileName = getStringArgument(argc, argv, "-osvgq");
 			useOutputQuerySVGFile = true;
 			printOutputQuery = true;
 		}
 
-		if(argumentExists(argc,argv,"-oall"))
+		if(argumentExists(argc, argv, "-oall"))
 		{
-			outputTextAllFileName=getStringArgument(argc,argv,"-oall");
+			outputTextAllFileName = getStringArgument(argc, argv, "-oall");
 			useOutputTextAllFile = true;
 			printOutput = true;
 		}
 
-		if(argumentExists(argc,argv,"-oanswer"))
+		if(argumentExists(argc, argv, "-oanswer"))
 		{
-			outputTextAnswerPlainTXTFileName=getStringArgument(argc,argv,"-oanswer");
+			outputTextAnswerPlainTXTFileName = getStringArgument(argc, argv, "-oanswer");
 			useOutputTextAnswerPlainTXTFile = true;
 		}
 
 		/*
-		if(argumentExists(argc,argv,"-train"))
+		if(argumentExists(argc, argv, "-train"))
 		{
 			int trainInt
-			trainInt=getFloatArgument(argc,argv,"-train");
+			trainInt = getFloatArgument(argc, argv, "-train");
 			train = (bool)trainInt;
 		}
 		*/
 
-		if (argumentExists(argc,argv,"-notshow"))
+		if(argumentExists(argc, argv, "-notshow"))
 		{
 			displayInOpenGLAndOutputScreenshot = false;
 		}
 
-		if (argumentExists(argc,argv,"-width"))
-		rasterImageWidth=getFloatArgument(argc,argv,"-width");
-
-		if (argumentExists(argc,argv,"-height"))
-		rasterImageHeight=getFloatArgument(argc,argv,"-height");
-
+		if(argumentExists(argc, argv, "-width"))
+		{
+			rasterImageWidth = getFloatArgument(argc, argv, "-width");
+		}
+		
+		if(argumentExists(argc, argv, "-height"))
+		{
+			rasterImageHeight = getFloatArgument(argc, argv, "-height");
+		}
+		
 		string currentFolder = getCurrentDirectory();
 
-		if(argumentExists(argc,argv,"-nlprelation"))
+		if(argumentExists(argc, argv, "-nlprelation"))
 		{
-			NLPdependencyRelationsParser = int(getFloatArgument(argc,argv,"-nlprelation"));
+			NLPdependencyRelationsParser = int(getFloatArgument(argc, argv, "-nlprelation"));
 		}
 
-		if(argumentExists(argc,argv,"-nlpfeature"))
+		if(argumentExists(argc, argv, "-nlpfeature"))
 		{
-			NLPfeatureParser = int(getFloatArgument(argc,argv,"-nlpfeature"));
+			NLPfeatureParser = int(getFloatArgument(argc, argv, "-nlpfeature"));
 		}
 		else
 		{
 			NLPfeatureParser = NLPdependencyRelationsParser;
 		}
-		if(argumentExists(argc,argv,"-nlpcompmode"))
+		if(argumentExists(argc, argv, "-nlpcompmode"))
 		{
 			if(queryNLPdependencyRelationsParser == GIA_NLP_PARSER_RELEX)
 			{
-				int nlpcompmode = int(getFloatArgument(argc,argv,"-nlpcompmode"));
+				int nlpcompmode = int(getFloatArgument(argc, argv, "-nlpcompmode"));
 				if(nlpcompmode == 1)
 				{
 					NLPrelexCompatibilityMode = true;
@@ -479,24 +504,24 @@ int main(int argc, char** argv)
 			}
 		}
 
-		if(argumentExists(argc,argv,"-nlprelationq"))
+		if(argumentExists(argc, argv, "-nlprelationq"))
 		{
-			queryNLPdependencyRelationsParser = int(getFloatArgument(argc,argv,"-nlprelationq"));
+			queryNLPdependencyRelationsParser = int(getFloatArgument(argc, argv, "-nlprelationq"));
 		}
 
-		if(argumentExists(argc,argv,"-nlpfeatureq"))
+		if(argumentExists(argc, argv, "-nlpfeatureq"))
 		{
-			queryNLPfeatureParser = int(getFloatArgument(argc,argv,"-nlpfeatureq"));
+			queryNLPfeatureParser = int(getFloatArgument(argc, argv, "-nlpfeatureq"));
 		}
 		else
 		{
 			queryNLPfeatureParser = queryNLPdependencyRelationsParser;
 		}
-		if(argumentExists(argc,argv,"-nlpcompmodeq"))
+		if(argumentExists(argc, argv, "-nlpcompmodeq"))
 		{
 			if(queryNLPdependencyRelationsParser == GIA_NLP_PARSER_RELEX)
 			{
-				int nlpcompmodeq = int(getFloatArgument(argc,argv,"-nlpcompmodeq"));
+				int nlpcompmodeq = int(getFloatArgument(argc, argv, "-nlpcompmodeq"));
 				if(nlpcompmodeq == 1)
 				{
 					queryNLPrelexCompatibilityMode = true;
@@ -515,58 +540,58 @@ int main(int argc, char** argv)
 		}
 
 	#ifdef GIA_USE_DATABASE
-		if(argumentExists(argc,argv,"-dbread"))
+		if(argumentExists(argc, argv, "-dbread"))
 		{
 			readFromDatabase = true;
 			useDatabase = true;
 		}
-		if(argumentExists(argc,argv,"-dbwrite"))
+		if(argumentExists(argc, argv, "-dbwrite"))
 		{
 			writeToDatabase = true;
 			useDatabase = true;
 		}
-		if(argumentExists(argc,argv,"-dbfolder"))
+		if(argumentExists(argc, argv, "-dbfolder"))
 		{
-			databaseFolderName=getStringArgument(argc,argv,"-dbfolder");
+			databaseFolderName = getStringArgument(argc, argv, "-dbfolder");
 			databaseFolderName = databaseFolderName + '/';
 		}
 	#endif
 	#ifdef GIA_SAVE_SEMANTIC_RELATIONS_FOR_GIA2_SEMANTIC_PARSER
-		if(argumentExists(argc,argv,"-dbsemanticparserfolder"))
+		if(argumentExists(argc, argv, "-dbsemanticparserfolder"))
 		{
-			semanticParserDatabaseFolderName=getStringArgument(argc,argv,"-dbsemanticparserfolder");
+			semanticParserDatabaseFolderName = getStringArgument(argc, argv, "-dbsemanticparserfolder");
 			semanticParserDatabaseFolderName = semanticParserDatabaseFolderName + '/';
 		}
 	#endif
 
 	#ifdef GIA_USE_LRP
-		if(argumentExists(argc,argv,"-lrp"))
+		if(argumentExists(argc, argv, "-lrp"))
 		{
 			useLRP = true;
 		}
-		if(argumentExists(argc,argv,"-olrptxt"))
+		if(argumentExists(argc, argv, "-olrptxt"))
 		{
-			outputLRPTextPlainTXTFileName=getStringArgument(argc,argv,"-olrptxt");
+			outputLRPTextPlainTXTFileName = getStringArgument(argc, argv, "-olrptxt");
 			useOutputLRPTextPlainTXTFile = true;
 		}
-		if(argumentExists(argc,argv,"-olrptxtnlp"))
+		if(argumentExists(argc, argv, "-olrptxtnlp"))
 		{
-			outputLRPTextForNLPonlyPlainTXTFileName=getStringArgument(argc,argv,"-olrptxtnlp");
+			outputLRPTextForNLPonlyPlainTXTFileName = getStringArgument(argc, argv, "-olrptxtnlp");
 			useOutputLRPTextForNLPonlyPlainTXTFile = true;
 		}
-		if(argumentExists(argc,argv,"-olrptxtq"))
+		if(argumentExists(argc, argv, "-olrptxtq"))
 		{
-			outputQueryLRPTextPlainTXTFileName=getStringArgument(argc,argv,"-olrptxtq");
+			outputQueryLRPTextPlainTXTFileName = getStringArgument(argc, argv, "-olrptxtq");
 			useOutputQueryLRPTextPlainTXTFile = true;
 		}
-		if(argumentExists(argc,argv,"-olrptxtnlpq"))
+		if(argumentExists(argc, argv, "-olrptxtnlpq"))
 		{
-			outputQueryLRPTextForNLPonlyPlainTXTFileName=getStringArgument(argc,argv,"-olrptxtnlpq");
+			outputQueryLRPTextForNLPonlyPlainTXTFileName = getStringArgument(argc, argv, "-olrptxtnlpq");
 			useOutputQueryLRPTextForNLPonlyPlainTXTFile = true;
 		}
-		if(argumentExists(argc,argv,"-lrpfolder"))
+		if(argumentExists(argc, argv, "-lrpfolder"))
 		{
-			lrpDataFolderName=getStringArgument(argc,argv,"-lrpfolder");
+			lrpDataFolderName = getStringArgument(argc, argv, "-lrpfolder");
 			lrpDataFolderName = lrpDataFolderName + '/';
 		}
 		else
@@ -575,49 +600,49 @@ int main(int argc, char** argv)
 		}
 	#endif
 	#ifdef USE_WORDNET
-		if(argumentExists(argc,argv,"-syndet"))
+		if(argumentExists(argc, argv, "-syndet"))
 		{
-			synonymnDetectionStatus = int(getFloatArgument(argc,argv,"-syndet"));
+			synonymnDetectionStatus = int(getFloatArgument(argc, argv, "-syndet"));
 		}
 	#endif
 
-		if (argumentExists(argc,argv,"-workingfolder"))
+		if(argumentExists(argc, argv, "-workingfolder"))
 		{
-			workingFolder =getStringArgument(argc,argv,"-workingfolder");
+			workingFolder =getStringArgument(argc, argv, "-workingfolder");
 		}
 		else
 		{
 			workingFolder = currentFolder;
 		}
 
-		if (argumentExists(argc,argv,"-nlprelexfolder"))
+		if(argumentExists(argc, argv, "-nlprelexfolder"))
 		{
-			NLPexeFolderArray[GIA_NLP_PARSER_RELEX] =getStringArgument(argc,argv,"-nlprelexfolder");
+			NLPexeFolderArray[GIA_NLP_PARSER_RELEX] =getStringArgument(argc, argv, "-nlprelexfolder");
 		}
 		else
 		{
 			NLPexeFolderArray[GIA_NLP_PARSER_RELEX] = currentFolder;
 		}
-		if (argumentExists(argc,argv,"-nlpstanfordcorenlpfolder"))
+		if(argumentExists(argc, argv, "-nlpstanfordcorenlpfolder"))
 		{
-			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_CORENLP] =getStringArgument(argc,argv,"-nlpstanfordcorenlpfolder");
+			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_CORENLP] =getStringArgument(argc, argv, "-nlpstanfordcorenlpfolder");
 		}
 		else
 		{
 			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_CORENLP] = currentFolder;
 		}
-		if (argumentExists(argc,argv,"-nlpstanfordparserfolder"))
+		if(argumentExists(argc, argv, "-nlpstanfordparserfolder"))
 		{
-			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] =getStringArgument(argc,argv,"-nlpstanfordparserfolder");
+			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] =getStringArgument(argc, argv, "-nlpstanfordparserfolder");
 		}
 		else
 		{
 			NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] = currentFolder;
 		}
 
-		if (argumentExists(argc,argv,"-tempfolder"))
+		if(argumentExists(argc, argv, "-tempfolder"))
 		{
-			tempFolder=getStringArgument(argc,argv,"-tempfolder");
+			tempFolder = getStringArgument(argc, argv, "-tempfolder");
 		}
 		else
 		{
@@ -626,9 +651,9 @@ int main(int argc, char** argv)
 
 		setCurrentDirectory(workingFolder);
 
-		if (argumentExists(argc,argv,"-version"))
+		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1r5a 15-August-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1r5b 15-August-2016" << endl;
 			exit(1);
 		}
 
@@ -794,7 +819,7 @@ int main(int argc, char** argv)
 	#endif
 
 
-	vector<NLCclassDefinition* > classDefinitionList;
+	vector<NLCclassDefinition*> classDefinitionList;
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
 	vector<vector<GIAentityNode*>*> entityNodesActiveListCompleteFunctions;
 	vector<map<int, vector<GIAentityNode*>*>*> entityNodesActiveListSentencesFunctions;
@@ -1128,9 +1153,53 @@ int main(int argc, char** argv)
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	preventDoubleDeclarationsOfClassDefinitionVariablesInHeirachy(&classDefinitionList);	//moved 1q9a
 	#endif
+	
+	string code = "";
+	
+	#ifdef NLC_API
+	vector<string> APIclassList;
+	int numberOfFilesInAPIclassList = 0;
+	if(NLCapi)
+	{
+		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+		vector<NLCclassDefinition*>* classDefinitionListAPI = &classDefinitionList;
+		#else
+		vector<NLCclassDefinition*>* classDefinitionListAPI = new vector<NLCclassDefinition*>;
+		#endif
+		if(!getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
+		{
+			cout << "main{} error: !getFilesFromFileList: " << APIclassListFileName << endl;
+		}	
+		for(vector<string>::iterator iter = APIclassList.begin(); iter != APIclassList.end(); iter++)
+		{
+			string APIclassName = *iter;
+			if(!parseDoxygenClassXMLfile(APIclassName, APIsourceFolder, classDefinitionListAPI, progLang))
+			{
+				cout << "main{} error: !parseDoxygenClassXMLfile(: " << APIsourceFolder+APIclassName << endl;
+			}
+		}
+		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS	
+		#else
+		if(printClassDefinitions(classDefinitionListAPI, progLang, &code))
+		{
+		
+		}
+		for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionListAPI->begin(); classDefinitionIter != classDefinitionListAPI->end(); classDefinitionIter++)
+		{
+			NLCclassDefinition* classDefinition = *classDefinitionIter;
+			if(classDefinition->printed)
+			{
+				string printedClassDefinitionSourceFileName = generateCodeClassDefinitionSourceFileName(classDefinition->name);
+				string printedClassDefinitionHeaderFileName = generateCodeClassDefinitionHeaderFileName(classDefinition->name);
+				appendStringToFile(printedClassDefinitionSourceFileName, classDefinition->APIwrapperSourceText);
+				appendStringToFile(printedClassDefinitionHeaderFileName, classDefinition->APIwrapperHeaderText);
+			}
+		}
+		#endif
+	}
+	#endif
 		
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	
-	string code = "";
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
 	{

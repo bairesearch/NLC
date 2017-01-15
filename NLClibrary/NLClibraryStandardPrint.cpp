@@ -41,12 +41,21 @@ void printEntity(NLCgenericEntityClass* printObject, int level)
 {
 	cout << createIndentationBasedOnLevel(level);
 	cout << printObject->name << endl;	//print the entity name
-	if(!std::isnan(printObject->value))
+	#ifdef NLC_USE_MATH_OBJECTS
+	if(!std::isnan(printObject->numericalValue))
 	{
 		cout << createIndentationBasedOnLevel(level);
-		cout << printObject->value << endl;	//print the entity value
+		print(printObject->numericalValue);
 	}
-		
+	#ifdef NLC_USE_MATH_OBJECTS_STRING
+	if(printObject->stringValue != "")
+	{
+		cout << createIndentationBasedOnLevel(level);
+		print(printObject->stringValue);
+	}
+	#endif
+	#endif		
+			
 	for(unordered_map<string, vector<NLCgenericEntityClass*>*>::iterator iter1 = printObject->propertyLists.begin(); iter1 != printObject->propertyLists.end(); iter1++) 
 	{
 		vector<NLCgenericEntityClass*>* propertyList = iter1->second;
@@ -91,9 +100,15 @@ string createIndentationBasedOnLevel(int level)
 }
 
 //mathText function (macro)
-void print(double value)
+void print(double numericalValue)
 {
-	cout << value << endl;	//print the mathText value
+	cout << numericalValue << endl;	//print the mathText numericalValue
 }
 
+#ifdef NLC_USE_MATH_OBJECTS_STRING
+void print(string stringValue)
+{
+	cout << numericalValue << endl;	//print the mathText stringValue
+}
+#endif
 

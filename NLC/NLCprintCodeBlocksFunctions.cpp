@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCprintCodeBlocksFunctions.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,17 +639,20 @@ void generateCodeAddPropertyEntityToList(NLCitem* param1, NLCitem* param2, int p
 {
 	string contextParam1 = generateStringFromContextVector(&(param1->context), progLang);
 	#ifdef NLC_NONOO
-	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName() + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);
-	printLine(codeBlockText, level, code);
-	codeBlockText = param2->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyReverseListName() + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param2->param2IncomingPropertyList.push_back(context1->param1);
-	printLine(codeBlockText, level, code);
+	generateCodeAddEntityToList(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(), param2->instanceName, progLang, code, level);
+	generateCodeAddEntityToList(param2->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyReverseListName(), contextParam1 + param1->instanceName, progLang, code, level);
 	#else
-	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);	
-	printLine(codeBlockText, level, code);
-	codeBlockText = param2->instanceName + progLangObjectReferenceDelimiter[progLang] + generateAllPropertyIncomingListName() + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param2->propertyIncomingList.push_back(context1->param1);	//added 1p1b	
-	printLine(codeBlockText, level, code);
+	generateCodeAddEntityToList(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2->className), param2->instanceName, progLang, code, level);
+	generateCodeAddEntityToList(param2->instanceName + progLangObjectReferenceDelimiter[progLang] + generateAllPropertyIncomingListName(), contextParam1 + param1->instanceName, progLang, code, level);
 	#endif
 }
+
+void generateCodeAddEntityToList(string entityName, string listName, int progLang, string* code, int level)
+{
+	string codeBlockText = listName + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//eg listName.push_back(entityName);
+	printLine(codeBlockText, level, code);
+}
+
 
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 void generateCodeAddPropertyExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
@@ -977,5 +980,58 @@ void generateCodeAddEntityToLocalListExecuteFunction(NLCitem* param1, NLCitem* p
 	printLine(codeBlockExecuteFunctionText, level, code);
 }
 #endif
+
+void generateCodeForPropertyList(NLCitem* param1, string contextParam1, int progLang, string* code, int level)
+{		
+	string entityClassName = param1->className;
+	string entityListName = contextParam1 + generatePropertyListName(param1);
+	string entityInstanceName = generateEntityName(param1);
+	generateCodeForEntityList(entityClassName, entityListName, entityInstanceName, progLang, code, level);
+}
+
+void generateCodeForLocalList(NLCitem* param1, int progLang, string* code, int level)
+{
+	string entityClassName = param1->className;
+	string entityListName = generateLocalListName(param1);
+	string entityInstanceName = generateEntityName(param1);
+	generateCodeForEntityList(entityClassName, entityListName, entityInstanceName, progLang, code, level);
+}
+
+void generateCodeForEntityList(string entityClassName, string entityListName, string entityInstanceName, int progLang, string* code, int level)
+{
+	string iterIndexString = convertIntToString(level);
+	string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeTextCompact(entityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entityListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entityListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for()		
+	printLine(codeBlockText, level, code);
+	printLine(progLangOpenBlock[progLang], level, code);
+	string tempVarDeclarationText = generateCodeEntityDefinitionText(entityClassName, entityInstanceName, progLang) + progLangEquals[progLang] + generateCodeIterReference(iterIndexString, progLang) + progLangEndLine[progLang];
+	printLine(tempVarDeclarationText, (level+1), code);
+}
+
+void generateCodeForConditionList(NLCitem* param1, NLCitem* param2, string contextParam1, int progLang, string* code, int level)
+{
+	string entityListName = contextParam1 + generateConditionListName(param1->className, param2->className);
+	string entityInstanceName1 = generateEntityName(param1);
+	string entityInstanceName2 = generateEntityName(param2);
+	generateCodeForConditionList(param1->className, param2->className, entityListName, entityInstanceName1, entityInstanceName2, progLang, code, level);
+}
+
+void generateCodeForConditionList(string entityClassName1, string entityClassName2, string entityListName, string entityInstanceName1, string entityInstanceName2, int progLang, string* code, int level)
+{
+	string iterIndexString = convertIntToString(level);
+	string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeConditionListDefinitionTypeTextCompact(entityClassName1, entityClassName2, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entityListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + entityListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for()
+	printLine(codeBlockText, level, code);
+	printLine(progLangOpenBlock[progLang], level, code);
+	#ifdef NLC_NONOO
+	string tempVarDeclarationText = generateCodeEntityDefinitionText(entityClassName1, entityInstanceName1, progLang) + progLangEquals[progLang] +  generateCodeIterReference(iterIndexString, progLang) + progLangEndLine[progLang];
+	printLine(tempVarDeclarationText, (level+1), code);
+	string tempVarDeclarationText2 = generateCodeEntityDefinitionText(entityClassName2, entityInstanceName2, progLang) + progLangEquals[progLang] + progLangOpenParameterSpace[progLang] + generateCodeIterReference(iterIndexString, progLang) + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + generateGIAconditionObjectListName() + progLangEndLine[progLang];
+	printLine(tempVarDeclarationText2, (level+1), code);
+	#else
+	string tempVarDeclarationText = generateCodeEntityDefinitionText(entityClassName2, entityInstanceName2, progLang) + progLangEquals[progLang] + generateCodeIterReferenceConditionObject(iterIndexString, progLang) + progLangEndLine[progLang];
+	printLine(tempVarDeclarationText, (level+1), code);
+	#endif
+}	
+			
+			
 
 

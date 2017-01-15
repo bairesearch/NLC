@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCclassDefinitionClass.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -76,6 +76,15 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
+	
+	#ifdef NLC_API
+	#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+	APIclass = false;
+	APIsourceFileFullPath = "";
+	APIwrapperSourceText = NULL;
+	APIwrapperHeaderText = NULL;
+	#endif
+	#endif
 }
 NLCclassDefinition::NLCclassDefinition(void)
 {
@@ -96,6 +105,15 @@ NLCclassDefinition::NLCclassDefinition(void)
 	
 	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
+	#endif
+	
+	#ifdef NLC_API
+	#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
+	APIclass = false;
+	APIsourceFileFullPath = "";
+	APIwrapperSourceText = NULL;
+	APIwrapperHeaderText = NULL;
+	#endif
 	#endif
 }
 NLCclassDefinition::~NLCclassDefinition(void)

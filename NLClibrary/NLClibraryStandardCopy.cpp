@@ -177,7 +177,8 @@ NLCgenericEntityClass* copyObjectByNameWithoutChildren(string name, NLCgenericEn
 	copyOfEntity->aliasList = entityToCopy->aliasList;
 	#endif
 	#ifdef NLC_USE_MATH_OBJECTS
-	copyOfEntity->value = entityToCopy->value;
+	copyOfEntity->numericalValue = entityToCopy->numericalValue;
+	copyOfEntity->stringValue = entityToCopy->stringValue;
 	#endif
 	
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC

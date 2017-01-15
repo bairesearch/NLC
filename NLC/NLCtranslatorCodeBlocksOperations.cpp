@@ -24,9 +24,9 @@
 /*******************************************************************************
  *
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5a 15-August-2016
+ * Project Version: 1r5b 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1669,7 +1669,7 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 				#ifdef NLC_DEBUG
 				//cout << "NLC_USE_MATH_OBJECTS: generateCodeBlocksAddConnection{} found value = " << definitionEntity->entityName << endl;
 				#endif
-				*currentCodeBlockInTree = createCodeBlockSetMathValue(*currentCodeBlockInTree, subjectEntity, definitionEntity);
+				*currentCodeBlockInTree = createCodeBlockSetMathNumericalValue(*currentCodeBlockInTree, subjectEntity, definitionEntity);
 			}
 			else
 			{

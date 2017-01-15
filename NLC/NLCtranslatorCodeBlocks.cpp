@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5e 14-October-2014
+ * Project Version: 1k6a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -197,7 +197,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart3actions:" << endl;
 			#endif
-			if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
 			{
 				result = false;
 			}
@@ -999,6 +999,12 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 	}
 	#endif
 	#endif
+	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+	if(entityNode->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+	{
+		validClassContents = false;	
+	}
+	#endif
 	
 	return validClassContents;
 }
@@ -1010,7 +1016,7 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 
 
 
-bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -1024,6 +1030,13 @@ bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vect
 
 				if(checkSentenceIndexParsingCodeBlocks(actionEntity, sentenceIndex, true))
 				{
+					#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
+					if(actionEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION)
+					{
+						actionEntity->entityName = currentNLCsentenceInList->singleWordSentenceActionName;
+					}
+					#endif
+
 					generateActionCodeBlocks(currentCodeBlockInTree, actionEntity, sentenceIndex, NLCfunctionName);
 				}
 			}
@@ -1095,8 +1108,7 @@ bool findAndSetDummyNumericalValueForReplacement(vector<GIAentityNode*> * entity
 				entity->NLCoriginalNumericalVariableName = numericalVariableName;
 				result = true;
 			}
-		}
-		
+		}	
 	}
 	return result;
 }

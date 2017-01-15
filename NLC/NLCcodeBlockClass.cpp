@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5e 14-October-2014
+ * Project Version: 1k6a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1167,17 +1167,6 @@ NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning)
-{
-	NLCitem * debugItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(debugItem);
-
-	int codeBlockType = NLC_CODEBLOCK_TYPE_DEBUG;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-
-	return currentCodeBlockInTree;
-}
-
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 NLCcodeblock * createCodeBlockRemoveProperties(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
 {
@@ -1799,6 +1788,17 @@ void clearCodeBlock(NLCcodeblock * codeBlock)
 	{
 		cout << "error: !(codeBlock->parameters.empty())" << endl;
 	}	
+}
+
+NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning)
+{
+	NLCitem * debugItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(debugItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DEBUG;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN

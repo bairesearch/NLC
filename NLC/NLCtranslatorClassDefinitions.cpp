@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5e 14-October-2014
+ * Project Version: 1k6a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -81,37 +81,8 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						GIAentityNode * targetEntity = connection->entity;
 
 						//valid class contents checks added 1g12f 14-July-2014
-						bool validClassContents = true;
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-						if(targetEntity->NLClogicalConditionOperation)
+						if(generateClassHeirarchyTargetValidClassChecks(targetEntity))
 						{
-							validClassContents = false;
-						}
-						/*OLD:
-						if(!(connection->NLCparsedForlogicalConditionOperations) && !(targetEntity->NLCparsedForlogicalConditionOperations))
-						{
-
-						}
-						*/
-						#ifdef NLC_USE_PREPROCESSOR
-						if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
-						{
-							validClassContents = false;
-						}
-						#endif
-						#endif
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-						bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-						if(conjunctionConditionFound)
-						{
-							validClassContents = false;
-						}
-						#endif
-
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-						if(validClassContents)
-						{
-						#endif
 							//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
 							//cout << "targetEntity->isConcept = " << targetEntity->isConcept << endl;
 							if(!(targetEntity->disabled))
@@ -267,7 +238,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									}
 								}
 							}
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						}
 						/*
 						else
@@ -277,7 +247,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 							cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
 						}
 						*/
-						#endif
 					}
 				}
 			}
@@ -359,9 +328,74 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
-	
+	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+	if(entityNode->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+	{
+		//cout << "entityNode->entityName = " << entityNode->entityName << endl;
+		validClass = false;	
+	}
+	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
+	if(entityNode->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION)
+	{
+		validClass = false;	
+	}
+	#endif
+	#endif
+		
 	return validClass;
 }
+
+bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
+{
+	bool validClassContents = true;
+
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	if(targetEntity->NLClogicalConditionOperation)
+	{
+		validClassContents = false;
+	}
+	/*OLD:
+	if(!(connection->NLCparsedForlogicalConditionOperations) && !(targetEntity->NLCparsedForlogicalConditionOperations))
+	{
+
+	}
+	*/
+	#ifdef NLC_USE_PREPROCESSOR
+	if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
+	{
+		validClassContents = false;
+	}
+	#endif
+	#endif
+	
+	//#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED	//this criteria was used [perhaps unintentionally] before 1k6a
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
+	if(conjunctionConditionFound)
+	{
+		validClassContents = false;
+	}
+	#endif
+	//#endif	
+	
+	//these checks are not required as single word sentences utilise both replacement action and replacement object			
+	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+	if(targetEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+	{
+		//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
+		validClassContents = false;	
+	}
+	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
+	if(targetEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION)
+	{
+		validClassContents = false;	
+	}
+	#endif
+	#endif
+	
+	return validClassContents;
+}
+
 
 #ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 string generateSubstanceConceptClassName(GIAentityNode * substanceConceptEntity)

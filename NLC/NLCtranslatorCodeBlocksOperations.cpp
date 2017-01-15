@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k5e 14-October-2014
+ * Project Version: 1k6a 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,14 +54,22 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		#endif
 		//cout << "sentenceIndexC = " << sentenceIndex << endl;
 
+		bool actionIsSingleWord = false;
 		bool actionHasObject = false;
 		GIAentityNode * objectEntity = NULL;
 		if(!(actionEntity->actionObjectEntity->empty()))
 		{
 			actionHasObject = true;
 			objectEntity = (actionEntity->actionObjectEntity->back())->entity;
+			#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+			if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+			{
+				actionIsSingleWord = true;
+				actionHasObject = false;
+				objectEntity->disabled = true;	//prevent parsing of dummyActionObject by generateCodeBlocksPart4objectInitialisations()
+			}
+			#endif
 		}
-
 		bool actionHasSubject = false;
 		GIAentityNode * subjectEntity = NULL;
 		if(!(actionEntity->actionSubjectEntity->empty()))
@@ -73,7 +81,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		NLCcodeblock * functionExecuteCodeBlockInTree = NULL;
 
 		NLCitem * functionItem = NULL;
-		if(actionHasObject || actionHasSubject)
+		if(actionHasObject || actionHasSubject || actionIsSingleWord)
 		{
 			//[q**^]
 			functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
@@ -85,12 +93,17 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 
 			#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 			//this is where original getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks code went (for both subjectEntity and objectEntity)
-			getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, subjectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
-			getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, objectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			if(actionHasSubject)
+			{
+				getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, subjectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			}
+			if(actionHasObject)
+			{
+				getParentAndGenerateParentInitialisationCodeBlock(currentCodeBlockInTree, objectEntity, sentenceIndex, true, false);	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+			}
 			#endif
 
 		}
-
 
 		if(actionHasObject)
 		{
@@ -151,9 +164,18 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
 			//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
 		}
+		#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+		else if(actionIsSingleWord)
+		{
+			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem);
+
+			actionEntity->NLCparsedForCodeBlocks = true;	
+		}
+		#endif
 
 		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		if(actionHasObject || actionHasSubject)
+		if(actionHasObject || actionHasSubject || actionIsSingleWord)
 		{
 			#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
 			generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead

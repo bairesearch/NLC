@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b1c 03-October-2013
+ * Project Version: 1b2a 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -84,7 +84,17 @@ static string progLangObjectCheckHasPropertyFunction[NLPI_NUMBER_OF_PROGRAMMING_
 static string progLangParameterSpaceNextParam[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {",", ",", ",", ",", ",", ",", ","};
 static string progLangPointer[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*", "*", "*", "*", "*", "*", "*"};
 
-
+static string progLangNewObject[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ", "new ", "new ", "new ", "new ", "new ", "new "};
+static string progLangAddProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
+static string progLangAddCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
+static string progLangFindProperty[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"findProperty", "findProperty", "findProperty", "findProperty", "findProperty", "findProperty", "findProperty"};
+static string progLangFindCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"findCondition", "findCondition", "findCondition", "findCondition", "findCondition", "findCondition", "findCondition"};
+/*
+#define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"
+#define NLPI_ITEM_TYPE_CONDITIONLISTADDFUNCTION "addCondition"
+#define NLPI_ITEM_TYPE_PROPERTYLISTFINDFUNCTION "findProperty"
+#define NLPI_ITEM_TYPE_CONDITIONLISTFINDFUNCTION "findCondition"
+*/
 
 
 /*
@@ -110,10 +120,7 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 #define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
 #define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
 #define NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
-#define NLPI_ITEM_TYPE_PROPERTYLISTFINDFUNCTION "findProperty"
-#define NLPI_ITEM_TYPE_CONDITIONLISTFINDFUNCTION "findCondition"
-#define NLPI_ITEM_TYPE_PROPERTYLISTADDFUNCTION "addProperty"
-#define NLPI_ITEM_TYPE_CONDITIONLISTADDFUNCTION "addCondition"
+
 #define NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 
 class NLPIitem

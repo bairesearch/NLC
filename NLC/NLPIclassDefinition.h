@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b1c 03-October-2013
+ * Project Version: 1b2a 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -62,6 +62,7 @@ static string progLangClassMemberFunctionParametersOpen[NLPI_NUMBER_OF_PROGRAMMI
 static string progLangClassMemberFunctionParametersClose[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {")", ")", ")", ")", ")", ")", ")"};
 static string progLangClassInheritanceHeader[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"public ", "public ", "public ", "public ", "public ", "public ", "public "};
 static string progLangStringOpenClose[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\"", "\"", "\"", "\"", "\"", "\"", "\""};
+static string progLangEquals[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" = ", " = ", " = ", " = ", " = ", " = ", " = "};
 
 	//progLangEndLine
 	

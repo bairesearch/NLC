@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j16a 24-September-2014
+ * Project Version: 1j16b 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -270,13 +270,6 @@
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_STRING "function"
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR (CHAR_SPACE)
 	#define NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS (100)
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND ", do this."	//appending to "If" statments without a command (in which it is assumed the following indented lines constitute the command)
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION "do"
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT "this"
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSE "If this is done,"	//replaces "Else"
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSEIF "If"		//replaces "Else if"
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND_ELSE " do this."	//appending to "Else" statments without a command (in which it is assumed the following indented lines constitute the command)
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 #endif
 
 #define NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS	//1g16a/16-July-2014
@@ -325,6 +318,16 @@
 			//GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS hasnt been coded therefore NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS cannot be used
 			//static bool isIncomingOutgoingConditionArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES] = {false, false, true, true, false, false, false, false, false, false, false, false, false, false};
 		#endif
+	#endif
+	
+	#ifdef NLC_USE_PREPROCESSOR
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND ", do this."	//appending to "If" statments without a command (in which it is assumed the following indented lines constitute the command)
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION "do"
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT "this"
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSE "If this is done,"	//replaces "Else"
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSEIF "If"		//replaces "Else if"
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND_ELSE " do this."	//appending to "Else" statments without a command (in which it is assumed the following indented lines constitute the command)
+		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 	#endif
 #endif
 #define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)

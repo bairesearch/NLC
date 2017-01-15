@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j16a 24-September-2014
+ * Project Version: 1j16b 24-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -844,15 +844,8 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 		GIAentityNode * entity = (*entityIter);
 		if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceQuality) && !(entity->isSubstanceConcept) && !(entity->isCondition) && !(entity->isActionConcept))
 		{
-			#ifdef NLC_USE_PREPROCESSOR
-			bool validClassContents = true;
-			if((entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
+			if(declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(entity))
 			{
-				validClassContents = false;
-			}
-			if(validClassContents)
-			{
-			#endif
 				//cout << "pass1: " << entity->entityName << endl;
 				if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 				{
@@ -911,15 +904,27 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 						#endif
 					}
 				}
-			#ifdef NLC_USE_PREPROCESSOR
 			}
-			#endif
 		}
 	}
 	return result;
 }
 
+bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNode* entityNode)
+{
+	bool validClassContents = true;
 
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	#ifdef NLC_USE_PREPROCESSOR
+	if((entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
+	{
+		validClassContents = false;
+	}
+	#endif
+	#endif
+	
+	return validClassContents;
+}
 
 
 

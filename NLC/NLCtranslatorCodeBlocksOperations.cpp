@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l9e 05-November-2014
+ * Project Version: 1l9f 05-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -336,10 +336,11 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
 	{//is this required?
 	
-		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-		//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) the actionSubject[/object]'s category list must be created here such that it can be accessed by a) createCodeBlockForCategoryList/createCodeBlockForLocalList and b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
-		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//create new category list
-		currentEntity->NLCcategoryListCreatedTemp = true;
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+		//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) a new actionSubject[/object]'s "action" category list must be created here such that it can be accessed by [a) createCodeBlockForCategoryList/createCodeBlockForLocalList? and] b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
+		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//create new action category list
+		#endif
 		#endif
 		
 		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, parseLogicalConditions))
@@ -369,8 +370,10 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 			}
 		}
 		
-		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-		currentEntity->NLCcategoryListCreatedTemp = false;
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+		*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, currentEntity, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
+		#endif
 		#endif
 	}
 

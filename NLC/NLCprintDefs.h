@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l9e 05-November-2014
+ * Project Version: 1l9f 05-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -72,6 +72,11 @@ using namespace std;
 #define NLC_ITEM_TYPE_PROPERTYCOUNT_VAR_APPENDITION "PropertyCount"
 //#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 #define NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION "Category"
+#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
+#define NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION "ActionCategory"
+#endif
+#endif
 //#endif
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 #define NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION "LogicalCondition"	//1j15b

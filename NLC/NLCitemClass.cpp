@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9b 14-October-2014
+ * Project Version: 1k9c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,11 +48,14 @@ NLCitem::NLCitem(void)
 	functionName = "";
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
-	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	functionArgumentExecutionEntityName = "";
+	#endif
+	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -68,11 +71,14 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	functionName = generateFunctionName(entity);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
-	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	functionArgumentExecutionEntityName = "";
+	#endif
+	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -93,11 +99,14 @@ NLCitem::NLCitem(string newName, int newItemType)
 	functionName = generateFunctionName(newName);	//added 9 November 2013
 	className2 = "";
 	instanceName2 = "";
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	functionArgumentCertified = false;
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
-	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	functionArgumentExecutionEntityName = "";
+	#endif
+	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -115,11 +124,14 @@ NLCitem::NLCitem(NLCitem * newItem)
 	functionName = newItem->functionName;
 	className2 = newItem->className2;
 	instanceName2 = newItem->instanceName2;
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-	functionArgumentCertified = false;
-	functionArgumentPassCastRequired = false;
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	functionArgumentCertified = newItem->functionArgumentCertified;	//updated 1k9c
+	functionArgumentPassCastRequired = newItem->functionArgumentPassCastRequired;		//updated 1k9c
 	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
-	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	functionArgumentExecutionEntityName = newItem->functionArgumentExecutionEntityName;
+	#endif
+	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;
 	#endif
 	negative = false;
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS

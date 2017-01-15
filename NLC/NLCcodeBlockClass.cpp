@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9b 14-October-2014
+ * Project Version: 1k9c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -509,11 +509,11 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	//gets "fight" from "dog::fight"
 	string functionName = "";
-	bool foundFunctionOwnerClass = false;
+	bool hasFunctionOwnerClass = false;
 	string functionOwnerName = "";
-	bool foundFunctionObjectClass = false;
+	bool hasFunctionObjectClass = false;
 	string functionObjectName = "";
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 
 	GIAentityNode * functionOwner = NULL;
 	GIAentityNode * functionObject = NULL;
@@ -553,13 +553,13 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 	NLCitem * functionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-	if(foundFunctionOwnerClass)
+	if(hasFunctionOwnerClass)
 	{
 		NLCitem * functionOwnerItem = new NLCitem(functionOwnerName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
 		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
 	}
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-	if(foundFunctionObjectClass)	//added 21 November 2013
+	if(hasFunctionObjectClass)	//added 21 November 2013
 	{
 		if(functionObject != NULL)
 		{//functionObject is used by the function definition: use functionObject instance name
@@ -899,26 +899,26 @@ string parseFunctionNameFromNLCfunctionName(string NLCfunctionName)
 {
 	//gets "fight" from "dog::fight"
 	string functionName = "";
-	bool foundFunctionOwnerClass = false;
+	bool hasFunctionOwnerClass = false;
 	string functionOwnerName = "";
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass);
 	return functionName;
 }
 
-void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
+void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * hasFunctionOwnerClass)
 {
 	//gets "fight" from "dog::fight"
-	bool foundFunctionObjectClass = false;
+	bool hasFunctionObjectClass = false;
 	string functionObjectName = "";
-	parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 }
 
-void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass, string * functionObjectName, bool * foundFunctionObjectClass)
+void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * functionName, string * functionOwnerName, bool * hasFunctionOwnerClass, string * functionObjectName, bool * hasFunctionObjectClass)
 {
 	//gets "fight" from "dog::fight"
-	*foundFunctionOwnerClass = false;
+	*hasFunctionOwnerClass = false;
 	*functionOwnerName = "";
-	*foundFunctionObjectClass = false;
+	*hasFunctionObjectClass = false;
 	*functionObjectName = "";
 	*functionName = NLCfunctionName;
 	int indexOfActionName = NLCfunctionName.find(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER);
@@ -930,8 +930,8 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
-			*foundFunctionOwnerClass = true;
-			*foundFunctionObjectClass = true;
+			*hasFunctionOwnerClass = true;
+			*hasFunctionObjectClass = true;
 			/*
 			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
@@ -944,7 +944,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 		{
 			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
-			*foundFunctionOwnerClass = true;
+			*hasFunctionOwnerClass = true;
 			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " << *functionName << endl;
@@ -955,7 +955,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 	{
 		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
 		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
-		*foundFunctionObjectClass = true;
+		*hasFunctionObjectClass = true;
 		cout << "parseFunctionNameFromNLCfunctionName():" << endl;
 		cout << "NLCfunctionName = " << NLCfunctionName << endl;
 		cout << "functionName = " << *functionName << endl;

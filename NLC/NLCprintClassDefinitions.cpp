@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9b 14-October-2014
+ * Project Version: 1k9c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -326,33 +326,45 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLCitem*
 
 string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang)
 {
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	string backupClassName = currentItem->className;
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	if(currentItem->functionArgumentPassCastRequired)
 	{
 		currentItem->className = currentItem->functionArgumentPassCastClassName;
 	}
+	#endif
 	#endif
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_PASS_LISTS_BY_REFERENCE
 	string codePluralDefinitionText = generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 	#else
 	string codePluralDefinitionText = generateCodeEntityListDefinitionText(currentItem, progLang);	//OLD: generateCodePropertyListDefinitionText / progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + pluralClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION; 
 	#endif
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	currentItem->className = backupClassName;
+	#endif
+	#endif
 	return codePluralDefinitionText;
 }
 
 string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang)
 {
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	string backupClassName = currentItem->className;
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 	if(currentItem->functionArgumentPassCastRequired)
 	{
 		currentItem->className = currentItem->functionArgumentPassCastClassName;
 	}
 	#endif
+	#endif
 	string codeSingularDefinitionText = generateEntityDeclaration(currentItem, progLang);
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	currentItem->className = backupClassName;
+	#endif
+	#endif
 	return codeSingularDefinitionText;
 }
 

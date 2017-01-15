@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5g 08-July-2014
+ * Project Version: 1g6a 08-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -108,6 +108,20 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 
 //shared with GIAtranslatorDefineReferencing.cpp
 
+class NLClogicalConditionConjunctionVariables
+{
+public:
+
+	NLClogicalConditionConjunctionVariables(void);
+	~NLClogicalConditionConjunctionVariables(void);
+
+	int logicalOperation;
+	bool negative;
+	int logicalConditionConjunctionIndex;
+	GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset;
+	GIAentityNode * foundLogicalConditionConjunction;
+};
+
 class NLClogicalConditionConjunction
 {
 public:
@@ -160,12 +174,17 @@ NLCcodeblock * createCodeBlockNewFunction(NLCcodeblock * currentCodeBlockInTree,
 	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLCitem*> * parameters);
 		bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);
 	#endif
-bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, NLCitem * item, GIAentityNode* entity, int sentenceIndex, int logicalOperation, bool negative, int logicalConditionConjunctionIndex);
-	bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, NLCitem * item, GIAentityNode * entity, int sentenceIndex, int logicalOperation, bool negative, int logicalConditionConjunctionIndex);
-		bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, NLCitem * item, GIAentityNode* propertyEntity, int sentenceIndex, int logicalOperation, bool negative, int logicalConditionConjunctionIndex);
-	bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, NLCitem * item,  GIAentityNode * entity, int sentenceIndex, int logicalOperation, bool negative, int logicalConditionConjunctionIndex);
-		bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, NLCitem * item, GIAentityNode* conditionEntity, int sentenceIndex, int logicalOperation, bool negative, int logicalConditionConjunctionIndex);
-
+bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
+	bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode * entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
+		bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* propertyEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
+	bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName,  GIAentityNode * entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
+		bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* conditionEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables);
+			#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+			#ifdef NLC_UNTESTED_UPDATE_TO_generateContextBlocksAndInitialiseParentIfNecessary_INITIALISE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
+			bool hasConjunctionConditionConnection(GIAentityNode * currentEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction);
+			#endif
+			#endif
+			
 NLCcodeblock * createCodeBlock(NLCcodeblock * currentCodeBlockInTree, int codeBlockType);
 NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree);
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v9c 23-October-2016
+ * Project Version: 1v10a 23-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -650,25 +650,35 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentC
 	#ifdef NLC_GENERATE_TYPE_LISTS
 	if(createTypeList)
 	{
-		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-		if(!(getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared))	//ie typeList has not been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
-		{
-		#endif
-			//declare a generic type list (typeList) of local instance lists (instanceLists)
-			currentCodeBlockInTree = createCodeBlocksDeclareNewTypeListVariable(currentCodeBlockInTree, entity);
-
-		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-			getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;	//ie typeList has been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
-		}
-		#endif
-
-		//add local instance list to generic type list
-		currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);
+		currentCodeBlockInTree = createIfNecessaryAndAddToTypeList(currentCodeBlockInTree, entity);
 	}
 	#endif
 
 	return currentCodeBlockInTree;
 }
+
+#ifdef NLC_GENERATE_TYPE_LISTS
+NLCcodeblock* createIfNecessaryAndAddToTypeList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity)
+{
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	if(!(getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared))	//ie typeList has not been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
+	{
+	#endif
+		//declare a generic type list (typeList) of local instance lists (instanceLists)
+		currentCodeBlockInTree = createCodeBlocksDeclareNewTypeListVariable(currentCodeBlockInTree, entity);
+
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;	//ie typeList has been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
+	}
+	#endif
+
+	//add local instance list to generic type list
+	currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);	
+	
+	return currentCodeBlockInTree;
+}
+#endif
+
 
 
 NLCcodeblock* createCodeBlockForOrInPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context)

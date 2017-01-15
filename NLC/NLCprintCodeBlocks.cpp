@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10a 14-October-2014
+ * Project Version: 1k10b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -66,10 +66,17 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION" << endl;
 			#endif
 
+			NLCitem * functionOwnerArgument = NULL;
+			string functionOwnerName = "";
+			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
+			{
+				functionOwnerName = functionOwnerArgument->instanceName + progLangObjectReferenceDelimiter[progLang];
+			}
+			
 			string functionArguments = "";
 			generateFunctionExecutionArgumentsWithActionConceptInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
-
-			string codeBlockText = contextParam1 + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
+			
+			string codeBlockText = functionOwnerName + param1->functionName + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 
 			printLine(codeBlockText, level, code);
 		}
@@ -1145,23 +1152,87 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 {
 	vector<NLCitem*> * parameters;
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	parameters = codeBlockParameters;
 	NLCitem * param1 = codeBlockParameters->at(0);
-	//get function arguments from class definition list (in case they have been dynamically updated based on implicit declarations within the function definition)
-	bool foundLocalClassDefinition = false;
-	NLCclassDefinition * localClassDefinition = findClassDefinition(classDefinitionList, param1->instanceName, &foundLocalClassDefinition);	//see if class definition already exists
-	if(foundLocalClassDefinition)
+	NLCclassDefinition * functionClassDeclaration = NULL;	//NB "functionClassDeclaration" should be "functionDeclaration"
+	string functionName = param1->name;	//not param1->functionName
+	string functionOwnerName = "";
+	NLCitem * functionOwnerArgument = NULL;
+	bool hasFunctionOwnerClass = false;
+	if(findFunctionArgument(codeBlockParameters, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 	{
-		//cout << "foundLocalClassDefinition: " << param1->instanceName << endl;
-		parameters = &(localClassDefinition->parameters);
+		hasFunctionOwnerClass = true;
+		functionOwnerName = functionOwnerArgument->name;
+	}
+	string functionObjectName = "";
+	NLCitem * functionObjectArgument = NULL;
+	bool hasFunctionObjectClass = false;
+	if(findFunctionArgument(codeBlockParameters, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
+	{
+		hasFunctionObjectClass = true;
+		functionObjectName = functionObjectArgument->name;		
+	}
+	bool foundFunctionOwnerExactMatch = false;
+	bool foundFunctionObjectExactMatch = false;
+	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+	cout << "\n\n\n\n generateFunctionExecutionArgumentsWithActionConceptInheritanceString():" << endl;
+	cout << "functionName = " << functionName << endl;
+	cout << "functionOwnerName = " << functionOwnerName << endl;
+	cout << "functionObjectName = " << functionObjectName << endl;
+	#endif
+	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionClassDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
+	{
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+		cout << "findFunctionDeclarationClassDefinition" << endl;
+		#endif
+		if(hasFunctionObjectClass && !foundFunctionObjectExactMatch)
+		{
+			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
+			cout << "(hasFunctionObjectClass && !foundFunctionObjectExactMatch)" << endl;
+			#endif
+			NLCitem * functionObjectArgumentDeclaration = NULL;
+			if(findFunctionArgument(&(functionClassDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgumentDeclaration))
+			{
+				functionObjectArgument->functionArgumentPassCastRequired = true;
+				functionObjectArgument->functionArgumentPassCastClassName = functionObjectArgumentDeclaration->name;
+			}
+			else
+			{
+				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString() error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
+			}
+		}
+		
+		for(vector<NLCitem*>::iterator parametersIterator = functionClassDeclaration->parameters.begin(); parametersIterator < functionClassDeclaration->parameters.end(); parametersIterator++)
+		{
+			NLCitem * currentItem = *parametersIterator;
+			//cout << "1 currentItem->itemType = " << currentItem->itemType << endl;
+			if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+			{
+				NLCitem * newFunctionArgument = new NLCitem(currentItem);
+				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
+				parameters->push_back(newFunctionArgument);
+			}
+		}
+	}
+	#else
+	//get function arguments from class definition list (in case they have been dynamically updated based on implicit declarations within the function definition)
+	bool foundFunctionDeclaration = false;
+	NLCclassDefinition * functionClassDeclaration = findClassDefinition(classDefinitionList, param1->instanceName, &foundFunctionDeclaration);	//see if class definition already exists
+	if(foundFunctionDeclaration)
+	{
+		//cout << "foundFunctionDeclaration: " << param1->instanceName << endl;
+		parameters = &(functionClassDeclaration->parameters);
 	}
 	else
 	{
 		#ifdef NLC_DEBUG5
-		cout << "warning: !foundLocalClassDefinition: param1->instanceName = " << param1->instanceName << endl;
+		cout << "warning: !foundFunctionDeclaration: param1->instanceName = " << param1->instanceName << endl;
 		cout << "(action probably has no subject)." << endl;
 		#endif
 		parameters = codeBlockParameters;
 	}
+	#endif
 	#else
 	parameters = codeBlockParameters;
 	#endif
@@ -1171,14 +1242,14 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	{
 		NLCitem * currentItem = *parametersIterator;
 
-		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+		//cout << "2 currentItem->itemType = " << currentItem->itemType << endl;
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_NON_ADVANCED
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		#else
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		#endif
 		{
-			//cout << "currentItem->name = " << currentItem->name << endl;
+			//cout << "3 currentItem->name = " << currentItem->name << endl;
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
@@ -1188,7 +1259,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_NON_ADVANCED
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION)
 		#else
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
@@ -1204,7 +1275,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 		}
-		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
+		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_NON_ADVANCED
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT)
 		#else
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
@@ -1215,6 +1286,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
 			
+			/*
 			NLCitem * executionItem = currentItem;
 			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 			if(currentItem->functionArgumentPassCastRequired)
@@ -1228,11 +1300,12 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 				//cout << "executionItem->className = " << executionItem->className << endl;
 			}
 			#endif
+			*/
 			
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodePluralReferenceText(executionItem, progLang);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang);
 			#else
-			*functionArguments = *functionArguments + generateCodeSingularReferenceText(executionItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 		}
 		#endif

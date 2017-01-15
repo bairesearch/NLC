@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10a 14-October-2014
+ * Project Version: 1k10b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -168,7 +168,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
 						printLine(classDestructorDeclaration, 1, code);
 						#endif
-						string classNameRaw = className.substr(0, className.length()-strlen(NLC_CLASS_NAME_APPEND));
+						string classNameRaw = removeClassTextFromClassDefinitionName(className);
 						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
 
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS

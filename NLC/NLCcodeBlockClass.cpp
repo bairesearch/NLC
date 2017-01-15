@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10a 14-October-2014
+ * Project Version: 1k10b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -117,10 +117,19 @@ NLCcodeblock::~NLCcodeblock(void)
 
 
 //Resultant code: functionItem[context].functionItem[name](objectItem[context].objectItem[name]);	//NB functionItem[context] = action subject
-NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectItem)
+NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectItem, NLCitem* subjectItem)
 {
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
+	currentCodeBlockInTree->parameters.push_back(subjectItem);
+
+	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
+}
+
+NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectOrSubjectItem)
+{
+	currentCodeBlockInTree->parameters.push_back(functionItem);
+	currentCodeBlockInTree->parameters.push_back(objectOrSubjectItem);
 
 	return createCodeBlock(currentCodeBlockInTree, NLC_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
 }
@@ -1920,6 +1929,8 @@ string generateCategoryListPropertyCountVariableName(GIAentityNode * entity)
 	return categoryListPropertyCountVariableName;
 }
 #endif
+
+
 
 
 

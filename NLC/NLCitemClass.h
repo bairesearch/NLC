@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10a 14-October-2014
+ * Project Version: 1k10b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,7 +60,7 @@ using namespace std;
 #define NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST (7)
 #define NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST (8)
 #define NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION (9)
-//#define NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER (10)	//not used
+#define NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER (10)
 #define NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT (11)
 #define NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST (12)	//not used
 #define NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION (13)
@@ -141,6 +141,7 @@ string generateInstanceName(GIAentityNode * entity);
 string generateTypeName(string entityName);
 
 //string generateItemName(GIAentityNode * entity, int itemType);
-string convertLongToString(long number);
+
+string removeClassTextFromClassDefinitionName(string className);
 
 #endif

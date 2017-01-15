@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10a 14-October-2014
+ * Project Version: 1k10b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -111,6 +111,8 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			{
 				//cout << "actionHasObject: parent and its children initialised" << endl;
 			}
+			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
+			NLCitem *functionSubjectItem = NULL;
 			if(actionHasSubject)
 			{
 				NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//not used
@@ -119,27 +121,30 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				{
 					//cout << "actionHasSubject2: parent and its children initialised" << endl;
 				}
-				functionItem->context.push_back(generateInstanceName(subjectEntity));
-
+				functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+			
 				#ifdef NLC_NOT_NECESSARY
 				//required just for implictlyDeclaredFunctionList...;
 				NLCitem * functionItemFullContextForRecordOnly = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
 				getEntityContext(subjectEntity, &(functionItemFullContextForRecordOnly->context), true, sentenceIndex, true);
 				implictlyDeclaredFunctionList.push_back(functionItemFullContextForRecordOnly);
 				#endif
-
 				//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
+				
+				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+				*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionObjectItem, functionSubjectItem);
 			}
-			#ifdef NLC_NOT_NECESSARY
 			else
 			{
+				#ifdef NLC_NOT_NECESSARY
 				implictlyDeclaredFunctionListTopLevel.push_back(functionItem);
+				#endif
+				
+				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+				*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionObjectItem);
 			}
-			#endif
+			
 
-			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
-			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionObjectItem);
 
 			actionEntity->NLCparsedForCodeBlocks = true;
 			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
@@ -153,10 +158,10 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				//cout << "actionHasSubject: parent and its children initialised" << endl;
 			}
 			//cout << "subjectRequiredTempVar" << endl;
-			functionItem->context.push_back(generateInstanceName(subjectEntity));
-
+			NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+				
 			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem);
+			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, functionSubjectItem);
 
 			actionEntity->NLCparsedForCodeBlocks = true;
 			//actionEntity->parsedForNLCcodeBlocksActionRound = true;

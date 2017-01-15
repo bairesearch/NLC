@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k1a 12-October-2014
+ * Project Version: 1k2a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,17 +59,28 @@ using namespace std;
 #define NLC_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLCglobalDefs.h
 
 #define NLC_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
-#define NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
-#define NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
-#define NLC_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
-#define NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
-#define NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION "InstanceList"
+#define NLC_ITEM_TYPE_LISTVAR_APPENDITION "List"
 //#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"	//moved to NLCglobalDefs.h
 #define NLC_ITEM_TYPE_TYPEVAR_APPENDITION "Type"
 #define NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION "Instance"
-#define NLC_ITEM_TYPE_CLASSLISTVAR_APPENDITION "Class"
-#define NLC_ITEM_TYPE_LISTVAR_APPENDITION "List"
 #define NLC_ITEM_TYPE_PROPERTYCOUNTVAR_APPENDITION "PropertyCount"
+
+#define NLC_ITEM_TYPE_CLASSVAR_APPENDITION "Class"
+#define NLC_ITEM_TYPE_PROPERTYVAR_APPENDITION "Property"
+#define NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION "Condition"
+#define NLC_ITEM_TYPE_DEFINITIONVAR_APPENDITION "Definition"
+#define NLC_ITEM_TYPE_PAIRVAR_APPENDITION "Pair"
+#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+#define NLC_ITEM_TYPE_CONTEXTVAR_APPENDITION "context"
+#endif
+
+#define NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION NLC_ITEM_TYPE_PROPERTYVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"PropertyList"
+#define NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"ConditionList"
+#define NLC_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION NLC_ITEM_TYPE_DEFINITIONVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"DefinitionList"
+#define NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION NLC_ITEM_TYPE_PAIRVAR_APPENDITION	//"ConditionPair"
+#define NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"InstanceList"
+#define NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION NLC_ITEM_TYPE_CONTEXTVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"contextList"
+
 
 //from NLCclassDefinitionClass.h
 static string progLangClassTitlePrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -151,6 +162,7 @@ static string progLangForIndexPart5[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"++)
 
 
 static string progLangNewObject[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ", "new ", "new ", "new ", "new ", "new ", "new "};
+static string progLangAddEntityToList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddProperty[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
 static string progLangFindProperty[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
@@ -198,8 +210,9 @@ static string progLangSizeOfList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"size()
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 static string progLangClassLastSentenceReferencedVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"stack<int> ", "stack<int> ", "stack<int> ", "stack<int> ", "stack<int> ", "stack<int> ", "stack<int> "};
 static string progLangStackAdd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push", "push", "push", "push", "push", "push", "push"};
-static string progLangStackRemove[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"pop", "pop", "pop", "pop", "pop", "pop", "pop"};
+static string progLangStackRemove[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"pop()", "pop()", "pop()", "pop()", "pop()", "pop()", "pop()"};
 static string progLangStackGetLast[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"top()", "top()", "top()", "top()", "top()", "top()", "top()"};
+static string progLangClassLastSentenceIndexVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
 #else
 static string progLangClassLastSentenceReferencedVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
 #endif
@@ -222,7 +235,7 @@ static string progLangTemplateUseClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LANGUA
 
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyInstanceName);
-string generatePropertyLocalListName(NLCitem * param);	//added 1i6a
+string generateEntityLocalListName(NLCitem * param);	//added 1i6a
 string generateGenericListName(string genericObjectName, string genericListAppendName);
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
@@ -235,7 +248,8 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 string generateCodePropertyListDefinitionTypeText2(string propertyClassName, int progLang);
 #endif
 
-string generateTempVariableName(NLCitem * param, int progLang);
+string generateTempVariableDeclaration(NLCitem * param, int progLang);
+	string generateTempVariableDeclaration(string className, string instanceName, int progLang);
 
 
 #endif

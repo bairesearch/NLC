@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k1a 12-October-2014
+ * Project Version: 1k2a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,7 +97,19 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			}		
 		}
 		#endif
-			
+
+		#ifdef NLC_USE_PREPROCESSOR
+		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+		if(getUseNLCpreprocessor())
+		{	
+			//cout << "setCurrentLogicalConditionLevel: currentNLCsentenceInList->indentation) = " << currentNLCsentenceInList->indentation) << endl;
+			setCurrentLogicalConditionLevel(currentNLCsentenceInList->indentation);
+		}
+		#endif
+		#endif
+		#endif
+		
 		#ifndef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		//Part Prep A - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
@@ -336,7 +348,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 			*currentCodeBlockInTree = createCodeBlockWhileHasBool(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName);
 			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, false);
 		}
-							
+						
 		//CHECKTHIS; is NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE required for non-logical condition mathText?
 		if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
 		{
@@ -471,6 +483,20 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 					}
 				}
 			}
+			
+			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+			if((firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE) || (firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
+			{
+				*currentCodeBlockInTree = createCodeBlocksDeclareContextList(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->indentation+1);
+				(*currentCodeBlockInTree)->isLogicalCondition = true;
+				(*currentCodeBlockInTree)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+				if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+				{
+					//must create a new code block to embed for statment 
+					*currentCodeBlockInTree = createCodeBlocksCreateContextBlock(*currentCodeBlockInTree);
+				}
+			}
+			#endif
 			if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
 			{
 				currentCodeBlockInTreeAtBaseLevel = (*currentCodeBlockInTree);
@@ -513,7 +539,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 		{
 			firstNLCsentenceInFullSentence->mathText.replace(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_WHILE_STRING).length(), string(NLC_LOGICAL_CONDITION_OPERATIONS_IF_STRING));	//replace "while" with "if" for the purposes of generating final code (while loop has already been defined)
 		}
-
+			
 		if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 		{
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -917,12 +943,6 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 						#endif
 
 						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(*currentCodeBlockInTree, entity);
-
-						/*
-						#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-						*currentCodeBlockInTree = createCodeBlocksAddVariableToContextList(*currentCodeBlockInTree, entity, currentNLCsentenceInList->indentation);
-						#endif
-						*/
 						
 						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						#ifdef NLC_USE_PREPROCESSOR

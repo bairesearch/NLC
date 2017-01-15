@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k1a 12-October-2014
+ * Project Version: 1k2a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,8 +61,6 @@ bool getUseNLCpreprocessor();
 NLCcodeblock * getCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index);
 void setCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index, NLCcodeblock * codeBlockToSet);
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-int getCurrentLogicalConditionLevel();
-void setCurrentLogicalConditionLevel(int value);
 bool getCurrentSentenceContainsLogicalCondition();
 void setCurrentSentenceContainsLogicalCondition(bool value);
 int getCurrentLogicalConditionCase(int level);

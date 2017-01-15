@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k1a 12-October-2014
+ * Project Version: 1k2a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1k1a 12-October-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1k2a 12-October-2014" << endl;
 			exit(1);
 		}
 
@@ -1026,8 +1026,12 @@ int main(int argc,char **argv)
 	{
 		currentCodeBlockInTree = currentCodeBlockInTree->next;
 	}
-	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
-	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	currentCodeBlockInTree = addEntityToContextLevelListNewFunction(currentCodeBlockInTree);
+	currentCodeBlockInTree = createCodeBlocksClearContextListNewFunction(currentCodeBlockInTree);
+	#endif
 	#endif
 	
 	for(int i=0; i<numberOfInputFilesInList; i++)

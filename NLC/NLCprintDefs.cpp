@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k1a 12-October-2014
+ * Project Version: 1k2a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,20 +54,20 @@ string generatePropertyListName(string propertyInstanceName)
 	return propertyListName;
 }
 
-string generatePropertyLocalListName(NLCitem * param)
+string generateEntityLocalListName(NLCitem * param)
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		string instanceName = param->instanceName;
 		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
-		string propertyListName = instanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+		string entityListName = instanceName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
 		#else
-		string propertyListName = instanceName + NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION + NLC_ITEM_TYPE_LISTVAR_APPENDITION;	
+		string entityListName = instanceName + NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION + NLC_ITEM_TYPE_LISTVAR_APPENDITION;	
 		#endif
 	#else
 		string className = param->className;
-		string propertyListName = className + NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
+		string entityListName = className + NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
 	#endif
-	return propertyListName;
+	return entityListName;
 }
 
 string generateGenericListName(string genericObjectName, string genericListAppendName)
@@ -131,8 +131,15 @@ string generateCodePropertyListDefinitionTypeText2(string propertyClassName, int
 }
 #endif
 
-string generateTempVariableName(NLCitem * param, int progLang)
+string generateTempVariableDeclaration(NLCitem * param, int progLang)
 {
-	string tempVariableName = param->className + progLangPointer[progLang] + STRING_SPACE + param->instanceName;
+	string tempVariableName = generateTempVariableDeclaration(param->className, param->instanceName, progLang);
 	return tempVariableName;
 }
+
+string generateTempVariableDeclaration(string className, string instanceName, int progLang)
+{
+	string tempVariableName = className + progLangPointer[progLang] + STRING_SPACE + instanceName;
+	return tempVariableName;
+}
+

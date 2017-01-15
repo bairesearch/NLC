@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k1a 12-October-2014
+ * Project Version: 1k2a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -62,9 +62,9 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE (6)
 #define NLC_CODEBLOCK_TYPE_ADD_PROPERTY (7)				//context1->param1->param2PropertyList.push_back(param2);
 #define NLC_CODEBLOCK_TYPE_ADD_CONDITION (8)				//context1->param1->param2param3ConditionList.insert(param2, param3);
-#define NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY_TO_LOCAL_LIST (9)
+#define NLC_CODEBLOCK_TYPE_ADD_NEW_ENTITY_TO_LOCAL_LIST (9)
 //#define NLC_CODEBLOCK_TYPE_CREATE_NEW_LOCAL_LIST_VARIABLE (9)
-#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_LOCAL_LIST (10)		//param1instancePropertyList.push_back(param2);
+#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_LOCAL_LIST (10)		//param1instancePropertyList.push_back(param2);
 #define NLC_CODEBLOCK_TYPE_ADD_PROPERTY (11)
 #define NLC_CODEBLOCK_TYPE_ADD_CONDITION (13)
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE (14)
@@ -77,7 +77,7 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_DEBUG (21)
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 	#define NLC_CODEBLOCK_TYPE_REMOVE_PROPERTIES (22)
-	#define NLC_CODEBLOCK_TYPE_REMOVE_PROPERTIES_FROM_LOCAL_LIST (23)
+	#define NLC_CODEBLOCK_TYPE_REMOVE_ENTITIES_FROM_LOCAL_LIST (23)
 	#define NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS (24)
 #endif
 #ifdef NLC_PREPROCESSOR_MATH
@@ -91,27 +91,34 @@ using namespace std;
 #endif
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE (30)
-	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST (31)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST (31)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
 		#define NLC_CODEBLOCK_TYPE_PRINT_WARNING (32)
-		#define NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC (33)
+		#define NLC_CODEBLOCK_TYPE_GET_BACK_GENERIC_ENTITY_LIST (33)
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION (34)
-		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION (35)		
-		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION (36)
-		#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION (37)	
+		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION (34)
+		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION (35)		
+		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION (36)
+		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION (37)	
 		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (38)	//execute for all new/undeclared/indefinite entities and accessed category items
 	#endif
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (39)
-	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2 (40)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST2 (40)
+#endif
+#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	#define NLC_CODEBLOCK_TYPE_DECLARE_CONTEXT_LIST (41)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_NEW_FUNCTION (42)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_EXECUTE_FUNCTION (43)
+	#define NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_NEW_FUNCTION (44)
+	#define NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION (45)
 #endif
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (50)		//forall(context1.param1PropertyList){
-#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (51)	//forall(param1instance){
+#define NLC_CODEBLOCK_TYPE_FOR_LOCAL_LIST (51)	//forall(param1instance){
 #define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (52)		//forall(context1.param1param2ConditionList){
 #define NLC_CODEBLOCK_TYPE_FOR_INTEGER (53)
 #define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (54)			//main(){
@@ -132,24 +139,27 @@ using namespace std;
 #endif
 #define NLC_CODEBLOCK_TYPE_WHILE (64)
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC (65)
+	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST (65)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-		#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_PROPERTY_GENERIC (66)
+		#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY (66)
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-		#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY_GENERIC (67)
+		#define NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY (67)
 	#endif
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
-	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC2 (68)
+	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST2 (68)
 #endif
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_PROPERTY_GENERIC (69)
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_GENERIC_ENTITY (69)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 		#define NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM (70)
 		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY (71)
 		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION (72)
 	#endif
+#endif
+#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	#define NLC_CODEBLOCK_TYPE_CONTEXT_BLOCK (73)
 #endif
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
@@ -229,13 +239,21 @@ public:
 
 	NLCcodeblock * lowerLevel;
 	NLCcodeblock * next;
+	
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	bool isLogicalCondition;
+	int contextLevel;
+	#endif
 };
+
+int getCurrentLogicalConditionLevel();
+void setCurrentLogicalConditionLevel(int value);
 
 NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem, NLCitem* objectItem);
 NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLCitem * functionItem);
 NLCcodeblock * createCodeBlockCreateNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList);
 	NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList);
-		NLCcodeblock * createCodeBlockAddPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
+		NLCcodeblock * createCodeBlockAddEntityToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 		NLCcodeblock * createCodeBlockAddProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
 
 NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList);
@@ -245,10 +263,10 @@ NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlock
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 	NLCcodeblock * createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 		NLCcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-	NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
+	NLCcodeblock * createCodeBlockAddNewEntityToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 
 NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
-NLCcodeblock * createCodeBlockForPropertyListLocal(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
+NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
 #ifdef NLC_SUPPORT_QUANTITIES
 NLCcodeblock * createCodeBlockForInteger(NLCcodeblock * currentCodeBlockInTree, string numberIterationsOrVariable);
@@ -309,7 +327,7 @@ NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, strin
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 NLCcodeblock * createCodeBlockRemoveProperties(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockRemovePropertiesFromLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlockRemoveEntitiesFromLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLCcodeblock * createCodeBlockRemoveConditions(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity);
 #endif
 
@@ -326,10 +344,10 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
-NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddEntityToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlockForCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
-NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlockGetBackCategoryEntityList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 NLCcodeblock * createCodeBlockIfHasGreaterThanNumCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value);
 #endif
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
@@ -337,28 +355,28 @@ NLCcodeblock * createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodebl
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
 #endif
 	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
-	NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockAddEntityToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockForGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-	NLCcodeblock * createCodeBlockGetBackPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
-	NLCcodeblock * createCodeBlockIfHasGreaterThanNumPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
+	NLCcodeblock * createCodeBlockGetBackGenericEntityList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockIfHasGreaterThanNumGenericEntity(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
 	NLCcodeblock * createCodeBlockPrintWarning(NLCcodeblock * currentCodeBlockInTree, string warning);
 	#endif
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-	NLCcodeblock * createCodeBlockIfHasGreaterThanOrEqualToNumPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
+	NLCcodeblock * createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-	NLCcodeblock * createCodeBlockIfHasPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+	NLCcodeblock * createCodeBlockIfHasGenericEntity(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
+	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
+	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
 	NLCcodeblock * createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 	#endif
 #endif
@@ -368,8 +386,8 @@ NLCcodeblock * createCodeBlocksDeclareNewTypeListVariable(NLCcodeblock * current
 NLCcodeblock * createCodeBlockAddInstanceListToTypeList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockForPropertyTypeClass(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
-	NLCcodeblock * createCodeBlockAddPropertyToGenericList2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2);
-	NLCcodeblock * createCodeBlockForPropertyListGeneric2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	NLCcodeblock * createCodeBlockAddEntityToGenericList2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, string genericListAppendName2);
+	NLCcodeblock * createCodeBlockForGenericList2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 #endif
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
@@ -378,6 +396,15 @@ NLCcodeblock * createCodeBlockIfIntVariableGreaterThanOrEqualToNum(NLCcodeblock 
 NLCcodeblock * createCodeBlockIfHasMoreThanNumProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* propertyEntity, int value, string parentInstanceName);
 NLCcodeblock * createCodeBlockIfHasMoreThanNumCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* conditionEntity, GIAentityNode* conditionObject, int value, string parentInstanceName);
 */
+#endif
+
+#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+NLCcodeblock * createCodeBlocksDeclareContextList(NLCcodeblock * currentCodeBlockInTree, int contextLevel);
+NLCcodeblock * addEntityToContextLevelListNewFunction(NLCcodeblock * currentCodeBlockInTree);
+NLCcodeblock * createCodeBlocksClearContextListNewFunction(NLCcodeblock * currentCodeBlockInTree);
+NLCcodeblock * addEntityToContextLevelListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, int contextLevel, GIAentityNode* entity, int sentenceIndex);
+NLCcodeblock * createCodeBlocksClearContextListVariableExecuteFunction(NLCcodeblock * currentCodeBlockInTree, int contextLevel);
+NLCcodeblock * createCodeBlocksCreateContextBlock(NLCcodeblock * currentCodeBlockInTree);
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);

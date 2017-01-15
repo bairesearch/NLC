@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q5e 19-August-2015
+ * Project Version: 1q6a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,7 +49,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinition* parentFunctionDependencyClassDefinition);
 #endif	
 	#ifdef NLC_RECORD_ACTION_HISTORY
-	void fillActionLists(vector<NLCclassDefinition*>* classDefinitionList, bool hasActionSubject, bool hasActionObject, string actionName, string actionObjectName, NLCclassDefinition* classDefinitionFunctionOwner);
+	void fillActionLists(vector<NLCclassDefinition*>* classDefinitionList, bool hasActionSubject, bool hasActionObject, string actionName, string actionObjectName, string actionSubjectName);
 	#endif
 	bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode);
 	bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity);

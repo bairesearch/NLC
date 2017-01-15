@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q5e 19-August-2015
+ * Project Version: 1q6a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -318,7 +318,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						{
 							NLCclassDefinition* targetClassDefinition = *localListIter;
 							#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
-							if(!(targetClassDefinition->isLibraryFunctionDefinition))
+							if(!(targetClassDefinition->isLibraryFunctionDefinition))	//isLibraryFunctionDefinition function declarations are not added to classDefinition (ie class function are not defined) - this is required to ensure generated code references the library function rather than the class function 
 							{
 							#endif
 								string targetName = targetClassDefinition->functionNameSpecial;
@@ -702,6 +702,17 @@ bool printClassHeirarchyValidDefinitionClassChecks(NLCclassDefinition* classDefi
 		validClass = false;
 	}	
 	#endif
+	/*//OLD: 1q6aTEMP1
+	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+	if(classDefinition->isLibraryFunctionDefinition)
+	{	
+		validClass = false;
+	}
+	#endif
+	cout << "classDefinition->name " << classDefinition->name << endl;
+	cout << "\tclassDefinition->isActionOrConditionInstanceNotClass " << classDefinition->isActionOrConditionInstanceNotClass << endl;
+	cout << "\tclassDefinition->isLibraryFunctionDefinition " << classDefinition->isLibraryFunctionDefinition << endl;
+	*/
 	
 	return validClass;
 }

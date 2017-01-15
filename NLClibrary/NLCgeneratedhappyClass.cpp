@@ -1,9 +1,9 @@
-#include "NLCgeneratedgreenClass.hpp"
+#include "NLCgeneratedhappyClass.hpp"
 #include "NLClibrary.hpp"
 
-greenClass::greenClass(void)
+happyClass::happyClass(void)
 {
-	name = "green";
+	name = "happy";
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 

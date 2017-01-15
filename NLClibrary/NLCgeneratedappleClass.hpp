@@ -1,15 +1,19 @@
 #ifndef HEADER_NLC_GENERATED_appleClass
 #define HEADER_NLC_GENERATED_appleClass
 
-#include "NLCgeneratedfruitClass.hpp"
+#include "NLClibraryGenericEntityClass.hpp"
 
-class onClass;
-class treeClass;
-class appleClass : public fruitClass
+class happyClass;
+class nearClass;
+class pieClass;
+class printClass;
+class appleClass : public NLCgenericEntityClass
 {
 public:
 	appleClass(void);
-	unordered_map<onClass*, treeClass*> onClasstreeClassConditionList;
+	vector<happyClass*> happyClassPropertyList;
+	unordered_map<nearClass*, pieClass*> nearClasspieClassConditionList;
+	vector<printClass*> printClassActionIncomingList;
 };
 
 #endif

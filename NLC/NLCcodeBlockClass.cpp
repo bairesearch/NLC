@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g12f 14-July-2014
+ * Project Version: 1g13a 15-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -602,6 +602,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, str
 	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_CLASS);
 
 	//cout << "createCodeBlockForGivenProperty: propertyEntity = " << propertyEntity->entityName << endl;
+	/*
 	if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
 	{
 		#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
@@ -623,24 +624,27 @@ bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, str
 	}
 	else
 	{
-		propertyItem->context.push_back(parentInstanceName);
-		#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-		if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
-		{
-		#endif
-			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
-		#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-		}
-		else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
-		{
-			*currentCodeBlockInTree = createCodeBlockIfHasProperty(*currentCodeBlockInTree, propertyItem, logicalConditionConjunctionVariables->negative);
-		}
-		else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
-		{
-			*currentCodeBlockInTree = createCodeBlockWhileHasProperty(*currentCodeBlockInTree, propertyItem, logicalConditionConjunctionVariables->negative);
-		}	
-		#endif
+	*/
+	propertyItem->context.push_back(parentInstanceName);
+	#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
+	{
+	#endif
+		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+	#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	}
+	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF)
+	{
+		*currentCodeBlockInTree = createCodeBlockIfHasProperty(*currentCodeBlockInTree, propertyItem, logicalConditionConjunctionVariables->negative);
+	}
+	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+	{
+		*currentCodeBlockInTree = createCodeBlockWhileHasProperty(*currentCodeBlockInTree, propertyItem, logicalConditionConjunctionVariables->negative);
+	}	
+	#endif
+	/*
+	}
+	*/
 	createCodeBlockForStatements(currentCodeBlockInTree, propertyItem->instanceName, propertyEntity, sentenceIndex, logicalConditionConjunctionVariables);
 	
 	return result;

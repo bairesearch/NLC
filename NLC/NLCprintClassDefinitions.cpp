@@ -23,7 +23,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f9a 11-April-2014
+ * Project Version: 1f10a 16-April-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -60,6 +60,9 @@ public:
 */
 bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, int progLang, string * code)
 {
+	printLine(progLangDependenciesStandardLibaries[progLang], 0, code);
+	printLine("", 0, code);
+	printLine("", 0, code);
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{	
 		NLCclassDefinition * classDefinition = *classDefinitionIter;
@@ -67,28 +70,30 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 		if(!(classDefinition->isActionOrConditionInstanceNotClass))
 		{
 			string className = classDefinition->name;
-			string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className;
 
 			#ifdef NLC_DEBUG
 			cout << "printClassDefinitions: className:" << className << endl;
 			#endif
 			
 			bool foundDefinition = false;
+			string classTitleText = "";
 			for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 			{
 				if(!foundDefinition)
 				{
 					foundDefinition = true;
-					classDefinitionEntryText = classDefinitionEntryText + " : ";
+					classTitleText = classTitleText + " : ";
 				}
 				else
 				{
-					classDefinitionEntryText = classDefinitionEntryText + ", ";
+					classTitleText = classTitleText + ", ";
 				}
 				NLCclassDefinition * targetClassDefinition = *localListIter;
 				string targetName = targetClassDefinition->name;
-				classDefinitionEntryText = classDefinitionEntryText + progLangClassInheritanceHeader[progLang] + targetName;
+				classTitleText = classTitleText + progLangClassInheritanceHeader[progLang] + targetName;
 			}
+			string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className + classTitleText;
+
 			printLine(classDefinitionEntryText, 0, code);
 			printLine(progLangOpenClass[progLang], 0, code);
 			printLine(progLangClassIntro[progLang], 0, code);
@@ -97,8 +102,9 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
 			printLine(classDestructorDeclaration, 1, code);
 			string classNameRaw = className.substr(0, className.length()-strlen(NLC_CLASS_NAME_APPEND));
-			string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
-			printLine(classNameCode, 1, code);
+			//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
+			string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
+			printLine(classDefinitionNameCode, 1, code);		
 
 			for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 			{
@@ -131,6 +137,15 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 			
 			printLine(progLangCloseClass[progLang], 0, code);
 			printLine("", 0, code);
+
+			string classConstructorEntryText = classDefinition->name + classTitleText + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang]; 
+			printLine(classConstructorEntryText, 0, code);
+			printLine(progLangOpenClass[progLang], 0, code);
+			string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
+			printLine(classConstructorNameCode, 1, code);
+			printLine(progLangCloseClass[progLang], 0, code);
+			printLine("", 0, code);
+
 		}
 	}
 }

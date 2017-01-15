@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m5b 02-December-2014
+ * Project Version: 1n1a 04-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -185,6 +185,13 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_FOR_ACTION_OBJECT_LIST (126)
 	#define NLC_CODEBLOCK_TYPE_FOR_ACTION_SUBJECT_LIST (127)
 #endif
+#ifdef USE_NLCNONOO
+	#define NLC_CODEBLOCK_TYPE_IF_PROPERTY_NAME (128)
+	#define NLC_CODEBLOCK_TYPE_IF_CONDITION_NAME (129)
+	#ifdef NLC_RECORD_ACTION_HISTORY
+	#define NLC_CODEBLOCK_TYPE_IF_ACTION_NAME (130)
+	#endif
+#endif
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
@@ -308,6 +315,13 @@ NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * current
 NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
+#ifdef USE_NLCNONOO
+NLCcodeblock * createCodeBlockIfPropertyName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
+NLCcodeblock * createCodeBlockIfConditionName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem);
+#ifdef NLC_RECORD_ACTION_HISTORY
+NLCcodeblock * createCodeBlockIfActionName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
+#endif
+#endif
 #ifdef NLC_RECORD_ACTION_HISTORY
 NLCcodeblock * createCodeBlockForActionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForActionIncomingList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);

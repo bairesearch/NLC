@@ -1,4 +1,4 @@
-NLC execution time: 14:5:30 02/12/2014 (start)
+NLC execution time: 23:47:5 02/12/2014 (start)
 parse error; lower level sectionTagName expected = coreference. section tag name found currentTag->name = 
 code = 
 #include <string>
@@ -26,21 +26,33 @@ NLCgenericEntityClass::NLCgenericEntityClass(void)
 	name = "NLCgenericEntity";
 };
 
-class animalClass : public NLCgenericEntityClass
+class redClass : public NLCgenericEntityClass
 {
 public:
-	animalClass(void);
+	redClass(void);
 };
 
-animalClass::animalClass(void)
+redClass::redClass(void)
 {
-	name = "animal";
+	name = "red";
+};
+
+class blueClass : public NLCgenericEntityClass
+{
+public:
+	blueClass(void);
+};
+
+blueClass::blueClass(void)
+{
+	name = "blue";
 };
 
 class objectClass : public NLCgenericEntityClass
 {
 public:
 	objectClass(void);
+	vector<eatClass*> eatClassActionIncomingList;
 };
 
 objectClass::objectClass(void)
@@ -52,8 +64,8 @@ class eatClass : public NLCgenericEntityClass
 {
 public:
 	eatClass(void);
-	vector<dogClass*> dogClassActionSubjectList;
-	vector<ballClass*> ballClassActionObjectList;
+	vector<animalClass*> animalClassActionSubjectList;
+	vector<objectClass*> objectClassActionObjectList;
 };
 
 eatClass::eatClass(void)
@@ -72,12 +84,25 @@ happyClass::happyClass(void)
 	name = "happy";
 };
 
+class animalClass : public NLCgenericEntityClass
+{
+public:
+	animalClass(void);
+	void eatFunction(vector<eatClass*> &eatClassList, vector<eatClass*> &eatClassList, vector<objectClass*> &objectClassList);
+	vector<eatClass*> eatClassActionList;
+};
+
+animalClass::animalClass(void)
+{
+	name = "animal";
+};
+
 class ballClass : public objectClass
 {
 public:
 	ballClass(void);
+	vector<blueClass*> blueClassPropertyList;
 	vector<happyClass*> happyClassPropertyList;
-	vector<eatClass*> eatClassActionIncomingList;
 };
 
 ballClass::ballClass(void)
@@ -85,25 +110,11 @@ ballClass::ballClass(void)
 	name = "ball";
 };
 
-class dogClass : public animalClass
-{
-public:
-	dogClass(void);
-	void rideFunction(vector<dogClass*> &dogClassList, vector<rideClass*> &rideClassList, vector<bikeClass*> &bikeClassList, vector<ballClass*> &ballClassList);
-	void eatFunction(vector<eatClass*> &eatClassList, vector<eatClass*> &eatClassList, vector<ballClass*> &ballClassList);
-	vector<eatClass*> eatClassActionList;
-};
-
-dogClass::dogClass(void)
-{
-	name = "dog";
-};
-
 class functionsWithNoSubjectArtificialClass : public NLCgenericEntityClass
 {
 public:
 	functionsWithNoSubjectArtificialClass(void);
-	void mainFunction(vector<mainClass*> &mainClassList, vector<dogClass*> &dogClassList, vector<ballClass*> &ballClassList);
+	void mainFunction(vector<mainClass*> &mainClassList, vector<redClass*> &redClassList, vector<blueClass*> &blueClassList, vector<animalClass*> &animalClassList, vector<objectClass*> &objectClassList);
 };
 
 functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(void)
@@ -111,7 +122,20 @@ functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(voi
 	name = "functionsWithNoSubjectArtificial";
 };
 
-void mainFunction(vector<mainClass*> &mainClassList, vector<dogClass*> &dogClassList, vector<ballClass*> &ballClassList)
+class dogClass : public animalClass
+{
+public:
+	dogClass(void);
+	vector<redClass*> redClassPropertyList;
+	void rideFunction(vector<dogClass*> &dogClassList, vector<rideClass*> &rideClassList, vector<bikeClass*> &bikeClassList, vector<ballClass*> &ballClassList);
+};
+
+dogClass::dogClass(void)
+{
+	name = "dog";
+};
+
+void mainFunction(vector<mainClass*> &mainClassList, vector<redClass*> &redClassList, vector<blueClass*> &blueClassList, vector<animalClass*> &animalClassList, vector<objectClass*> &objectClassList)
 {
 	vector<eatClass*> eatClassList;
 	vector<eatClass*> eat1CategoryList;
@@ -119,39 +143,39 @@ void mainFunction(vector<mainClass*> &mainClassList, vector<dogClass*> &dogClass
 	eatClassList.push_back(eat1);
 	eat1CategoryList.push_back(eat1);
 	addEntityToReferenceContextList(referenceContextList0, eat1, 3);
-	vector<ballClass*> ball2ActionCategoryList;
-	vector<ballClass*> ball2CategoryList;
-	for(vector<ballClass*> ::iterator iter1 = ballClassList.begin(); iter1 < ballClassList.end(); iter1++) 
+	vector<objectClass*> object2ActionCategoryList;
+	vector<objectClass*> object2CategoryList;
+	for(vector<objectClass*> ::iterator iter1 = objectClassList.begin(); iter1 < objectClassList.end(); iter1++) 
 	{
-		ballClass* ball2 = *iter1;
+		objectClass* object2 = *iter1;
 		//Singular definite referencing tests
-		addToCategoryIfPassSingularDefiniteReferencingTests<ballClass, ballClass> (ball2CategoryList, ball2);
+		addToCategoryIfPassSingularDefiniteReferencingTests<objectClass, objectClass> (object2CategoryList, object2);
 	}
-	if(!(ball2CategoryList.empty()))
+	if(!(object2CategoryList.empty()))
 	{
-		ballClass* ball2 = ball2CategoryList.back();
-		ball2->lastSentenceReferenced.top() = 3;
-		addToCategoryIfPassPluralDefiniteReferencingTests<ballClass, ballClass> (ball2ActionCategoryList, ball2);
-		ball2->eatClassActionIncomingList.push_back(eat1);
-		eat1->ballClassActionObjectList.push_back(ball2);
+		objectClass* object2 = object2CategoryList.back();
+		object2->lastSentenceReferenced.top() = 3;
+		addToCategoryIfPassPluralDefiniteReferencingTests<objectClass, objectClass> (object2ActionCategoryList, object2);
+		object2->eatClassActionIncomingList.push_back(eat1);
+		eat1->objectClassActionObjectList.push_back(object2);
 	}
-	vector<dogClass*> dog2ActionCategoryList;
-	vector<dogClass*> dog2CategoryList;
-	for(vector<dogClass*> ::iterator iter1 = dogClassList.begin(); iter1 < dogClassList.end(); iter1++) 
+	vector<animalClass*> animal2ActionCategoryList;
+	vector<animalClass*> animal2CategoryList;
+	for(vector<animalClass*> ::iterator iter1 = animalClassList.begin(); iter1 < animalClassList.end(); iter1++) 
 	{
-		dogClass* dog2 = *iter1;
+		animalClass* animal2 = *iter1;
 		//Singular definite referencing tests
-		addToCategoryIfPassSingularDefiniteReferencingTests<dogClass, dogClass> (dog2CategoryList, dog2);
+		addToCategoryIfPassSingularDefiniteReferencingTests<animalClass, animalClass> (animal2CategoryList, animal2);
 	}
-	if(!(dog2CategoryList.empty()))
+	if(!(animal2CategoryList.empty()))
 	{
-		dogClass* dog2 = dog2CategoryList.back();
-		dog2->lastSentenceReferenced.top() = 3;
-		addToCategoryIfPassPluralDefiniteReferencingTests<dogClass, dogClass> (dog2ActionCategoryList, dog2);
-		dog2->eatClassActionList.push_back(eat1);
-		eat1->dogClassActionSubjectList.push_back(dog2);
+		animalClass* animal2 = animal2CategoryList.back();
+		animal2->lastSentenceReferenced.top() = 3;
+		addToCategoryIfPassPluralDefiniteReferencingTests<animalClass, animalClass> (animal2ActionCategoryList, animal2);
+		animal2->eatClassActionList.push_back(eat1);
+		eat1->animalClassActionSubjectList.push_back(animal2);
 	}
-	(new dogClass)->eatFunction(dog2ActionCategoryList, eatClassList, ball2ActionCategoryList);
+	(new animalClass)->eatFunction(animal2ActionCategoryList, eatClassList, object2ActionCategoryList);
 }
 void dogClass::rideFunction(vector<dogClass*> &dogClassList, vector<rideClass*> &rideClassList, vector<bikeClass*> &bikeClassList, vector<ballClass*> &ballClassList)
 {
@@ -259,4 +283,4 @@ void findAliasAndAddToCategoryList(vector<E1*> &E1List, string aliasName, vector
 	}
 }
 
-NLC execution time: 14:8:14 02/12/2014 (finish)
+NLC execution time: 23:50:2 02/12/2014 (finish)

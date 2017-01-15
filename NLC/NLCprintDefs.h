@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m5b 02-December-2014
+ * Project Version: 1n1a 04-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,6 +47,22 @@ using namespace std;
 
 #include "NLCglobalDefs.h"
 #include "NLCitemClass.h"
+
+#ifdef USE_NLCNONOO
+//based on GIAentityNode.h;
+#define NLCNONOO_GENERIC_ENTITY_NODE_NAME "GIAentityNode"
+#define GIA_ENTITYNODECLASS_ENTITYNAME_NAME "entityName"
+#define GIA_ENTITYNODECLASS_PROPERTYNODELIST_NAME "propertyNodeList"
+#define GIA_ENTITYNODECLASS_PROPERTYNODEREVERSELIST_NAME "propertyNodeReverseList"
+#define GIA_ENTITYNODECLASS_CONDITIONNODELIST_NAME "conditionNodeList"
+#define GIA_ENTITYNODECLASS_INCOMINGCONDITIONNODELIST_NAME "incomingConditionNodeList"
+#define GIA_ENTITYNODECLASS_CONDITIONSUBJECTLIST_NAME "conditionSubjectEntity"
+#define GIA_ENTITYNODECLASS_CONDITIONOBJECTLIST_NAME "conditionObjectEntity"
+#define GIA_ENTITYNODECLASS_ACTIONNODELIST_NAME "actionNodeList"
+#define GIA_ENTITYNODECLASS_INCOMINGACTIONNODELIST_NAME "incomingActionNodeList"
+#define GIA_ENTITYNODECLASS_ACTIONSUBJECTLIST_NAME "actionSubjectEntity"
+#define GIA_ENTITYNODECLASS_ACTIONOBJECTLIST_NAME "actionObjectEntity"
+#endif
 
 #define NLC_PROGRAMMING_LANGUAGE_CPP (0)
 #define NLC_PROGRAMMING_LANGUAGE_JAVA (1)
@@ -265,11 +281,27 @@ static string progLangTestEntityPairFindPart3[NLC_NUMBER_OF_PROGRAMMING_LANGUAGE
 
 static string progLangTypeName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"typename ", "typename ", "typename ", "typename ", "typename ", "typename ", "typename "};	//required for C++; "error: need typename before std::vector<Ex*> because std::vector<Ex*> is a dependent scope"
 
+static string progLangStringEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};
 
 
 void printLine(string command, int level, string * code);
+#ifdef USE_NLCNONOO
+string generatePropertyListName(string propertyClassName);	//backwards compatibility wrapper only
+string generatePropertyListName();
+#else
 string generatePropertyListName(string propertyClassName);
+#endif
 #ifdef NLC_RECORD_ACTION_HISTORY
+#ifdef USE_NLCNONOO
+string generateActionListName(string actionClassName);	//backwards compatibility wrapper only
+string generateActionIncomingListName(string actionClassName);	//backwards compatibility wrapper only
+string generateActionSubjectListName(string actionSubjectClassName);	//backwards compatibility wrapper only
+string generateActionObjectListName(string actionObjectClassName);	//backwards compatibility wrapper only
+string generateActionListName();
+string generateActionIncomingListName();
+string generateActionSubjectListName();
+string generateActionObjectListName();
+#endif
 string generateActionListName(string actionClassName);
 string generateActionIncomingListName(string actionClassName);
 string generateActionSubjectListName(string actionSubjectClassName);
@@ -278,27 +310,59 @@ string generateActionObjectListName(string actionObjectClassName);
 string generateEntityListName(NLCitem * entityParam);	//added 1i6a
 string generateEntityListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
+#ifdef USE_NLCNONOO
+string generateConditionListName(string conditionClassName, string conditionObjectClassName);
+string generateConditionListName();
+string generateGIAconditionListName();
+string generateGIAconditionObjectListName();
+string generateGIAincomingConditionListName();
+string generateGIAconditionSubjectListName();
+#else
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
 string generateCodeConditionPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
 string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string> * conditionContext, int progLang);
+#endif
 	string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
 		string generateStringFromContextVector(vector<string> * context, int progLang);
+		
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
 string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
+	#ifdef USE_NLCNONOO
+	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//backwards compatibility wrapper only
+	string generateCodeEntityListDefinitionTypeText(int progLang);
+	#else
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);
+	#ifdef NLC_GENERATE_TYPE_LISTS
+	string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
+	#endif
+	#endif
 string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang);
 	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
 string generateCodeGenericListDefinitionText(NLCitem * entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
+	#ifdef USE_NLCNONOO
+	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//backwards compatibility wrapper only
+	string generateCodeConditionListDefinitionTypeText(int progLang);
+	#else
+	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	
+	#endif
 
-#ifdef NLC_GENERATE_TYPE_LISTS
-string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
+void generateCodeAddConditionAndObjectEntityToList(NLCitem * param1, NLCitem * param2, NLCitem * param3, int progLang, string * code, int level);
+void generateCodeAddPropertyEntityToList(NLCitem * param1, NLCitem * param2, int progLang, string * code, int level);
+	
+
+
+#ifdef USE_NLCNONOO
+string generateGIAentityName();
+string generateCodeEntityNameTestText(NLCitem * param, int progLang);
 #endif
 
-string generateEntityDeclaration(NLCitem * param, int progLang);
-	string generateEntityDeclaration(string className, string instanceName, int progLang);
+string generateCodeNewTempEntity(NLCitem * param, int progLang);
+	string generateTempEntityDeclaration(NLCitem * param, int progLang);
+		string generateTempEntityName(NLCitem * param);
+		string generateTempEntityClassName(NLCitem * param);
+		string generateTempEntityDeclaration(string className, string instanceName, int progLang);
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 

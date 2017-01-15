@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m5b 02-December-2014
+ * Project Version: 1n1a 04-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -556,7 +556,11 @@ NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInT
 {
 	currentCodeBlockInTree->parameters.push_back(item);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	#ifdef USE_NLCNONOO
+	currentCodeBlockInTree = createCodeBlockIfPropertyName(currentCodeBlockInTree, item);	
+	#endif
+	return currentCodeBlockInTree;
 }
 
 NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
@@ -571,20 +575,58 @@ NLCcodeblock * createCodeBlockForConditionList(NLCcodeblock * currentCodeBlockIn
 	currentCodeBlockInTree->parameters.push_back(item);
 	currentCodeBlockInTree->parameters.push_back(objectItem);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	#ifdef USE_NLCNONOO
+	currentCodeBlockInTree = createCodeBlockIfConditionName(currentCodeBlockInTree, item, objectItem);		
+	#endif
+	return currentCodeBlockInTree;
+}
+
+
+#ifdef USE_NLCNONOO
+NLCcodeblock * createCodeBlockIfPropertyName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_PROPERTY_NAME;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+NLCcodeblock * createCodeBlockIfConditionName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * objectItem)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	currentCodeBlockInTree->parameters.push_back(objectItem);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_CONDITION_NAME;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#ifdef NLC_RECORD_ACTION_HISTORY
+NLCcodeblock * createCodeBlockIfActionName(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_ACTION_NAME;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
+#endif
+
 #ifdef NLC_RECORD_ACTION_HISTORY
 NLCcodeblock * createCodeBlockForActionList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_ACTION_LIST;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	#ifdef USE_NLCNONOO
+	currentCodeBlockInTree = createCodeBlockIfActionName(currentCodeBlockInTree, item);			
+	#endif
+	return currentCodeBlockInTree;
 }
 NLCcodeblock * createCodeBlockForActionIncomingList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
 {
 	currentCodeBlockInTree->parameters.push_back(item);
 	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_ACTION_INCOMING_LIST;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	#ifdef USE_NLCNONOO
+	currentCodeBlockInTree = createCodeBlockIfActionName(currentCodeBlockInTree, item);			
+	#endif
+	return currentCodeBlockInTree;
 }
 NLCcodeblock * createCodeBlockForActionObjectList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item)
 {

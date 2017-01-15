@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m5b 02-December-2014
+ * Project Version: 1n1a 04-January-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -195,6 +195,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						string classNameRaw = removeClassTextFromClassDefinitionName(className);
 						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
 
+						#ifndef USE_NLCNONOO
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						if(classDefinition->definitionList.empty())
 						{//top level NLClibraryEntity class found
@@ -212,7 +213,9 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						}
 						#endif
+						#endif
 
+						#ifndef USE_NLCNONOO
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 						{
 							NLCclassDefinition * targetClassDefinition = *localListIter;
@@ -230,6 +233,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							string localListDeclarationText = generateCodeConditionListDefinitionText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
 							printLine(localListDeclarationText, 1, code);
 						}
+						#endif
 
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 						{
@@ -253,6 +257,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							#endif
 						}
 						
+						#ifndef USE_NLCNONOO
 						#ifdef NLC_RECORD_ACTION_HISTORY
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
 						{
@@ -299,6 +304,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							printLine(localListDeclarationText, 1, code);
 						}
 						#endif
+						#endif
 
 						printLine(progLangCloseClass[progLang], 0, code);
 						printLine("", 0, code);
@@ -306,6 +312,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						string classConstructorEntryText = classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang];
 						printLine(classConstructorEntryText, 0, code);
 						printLine(progLangOpenClass[progLang], 0, code);
+						#ifndef USE_NLCNONOO
 						string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
 						printLine(classConstructorNameCode, 1, code);
 						#ifdef NLC_USE_ADVANCED_REFERENCING
@@ -317,6 +324,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						string classConstructorLastSentenceReferencedCode = "";
 						classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangClassNameVariableEquals[progLang] + "0" + progLangEndLine[progLang];	//lastSentenceReferenced = 0;
 						printLine(classConstructorLastSentenceReferencedCode, 1, code);	
+						#endif
 						#endif
 						#endif
 						printLine(progLangCloseClass[progLang], 0, code);
@@ -462,7 +470,7 @@ string generateCodeSingularDefinitionText(NLCitem * currentItem, int progLang)
 	}
 	#endif
 	#endif
-	string codeSingularDefinitionText = generateEntityDeclaration(currentItem, progLang);
+	string codeSingularDefinitionText = generateTempEntityDeclaration(currentItem, progLang);
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	currentItem->className = backupClassName;

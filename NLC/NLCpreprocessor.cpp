@@ -178,7 +178,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						int startOfSentenceIndexTemp = 0;
 						while((startOfSentenceIndexTemp = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndexTemp)) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
-							cout << "startOfSentenceIndexTemp2 = " << startOfSentenceIndexTemp << endl;
+							//cout << "startOfSentenceIndexTemp2 = " << startOfSentenceIndexTemp << endl;
 							bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
 							if(startOfSentenceIndexTemp < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"
 							{	
@@ -379,10 +379,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 							}
 							#endif
 							
-							//#ifdef NLC_DEBUG_PREPROCESSOR
+							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "create new sentence" << endl;
 							cout << sentenceIndex << ": sentenceContents = " << sentenceContents << endl;
-							//#endif
+							#endif
 							currentNLCsentenceInList->sentenceContents = sentenceContents;	//full stop should already be appended
 							currentNLCsentenceInList->sentenceIndex = sentenceIndex;
 							currentNLCsentenceInList->indentation = currentIndentation;

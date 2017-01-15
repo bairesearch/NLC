@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5j 15-August-2016
+ * Project Version: 1r5k 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -820,7 +820,9 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		if(currentFullSentence->hasLogicalConditionOperator)
 		{
 			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
 			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;	
+			#endif
 		}
 		else
 		{
@@ -848,7 +850,9 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeNumericalOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
 			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL" << endl;
+			#endif
 		}
 	}	
 	
@@ -859,7 +863,9 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeStringOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
 			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING" << endl;
+			#endif
 		}
 	}	
 	//#endif
@@ -900,8 +906,10 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 	}
 	if(foundLogicalConditionStartText)
 	{
+		#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
 		cout << " mathText = " << mathText << endl;
 		cout << " mathTextLogicalConditionContents = " << mathTextLogicalConditionContents << endl;
+		#endif
 		//algorithm: extract "&& (thehouse == " -> " (thehouse " -> "thehouse" 
 		
 		//find numerical expressions
@@ -944,17 +952,13 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 			{
 				int subphraseStartPositionTemp = CPP_STRING_FIND_RESULT_FAIL_VALUE;
 				int subphraseEndPositionTemp = CPP_STRING_FIND_RESULT_FAIL_VALUE;
+				#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
 				cout << "subphraseTemp = " << subphraseTemp << endl;
+				#endif
 				if(findMatchingBrackets(subphraseTemp, &subphraseStartPositionTemp, &subphraseEndPositionTemp))
 				{
-					//cout << "subphraseStartPosition = " << subphraseStartPosition << endl;
-					//cout << "subphraseEndPosition = " << subphraseEndPosition << endl;
-					//cout << "subphraseStartPositionTemp = " << subphraseStartPositionTemp << endl;
-					//cout << "subphraseEndPositionTemp = " << subphraseEndPositionTemp << endl;
 					subphraseStartPosition = subphraseStartPosition + subphraseStartPositionTemp;
 					subphraseEndPosition = subphraseStartPosition + (subphraseEndPositionTemp - subphraseStartPositionTemp);
-					//cout << "subphraseStartPosition = " << subphraseStartPosition << endl;
-					//cout << "subphraseEndPosition = " << subphraseEndPosition << endl;
 				}
 				foundConjunction = true;
 			}
@@ -965,7 +969,9 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 
 			*mathTextSubphraseContainingNLPparsablePhrase = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
 			*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_STRING
 			cout << "*mathTextSubphraseContainingNLPparsablePhrase = " << *mathTextSubphraseContainingNLPparsablePhrase << endl;
+			#endif
 		}
 		else
 		{

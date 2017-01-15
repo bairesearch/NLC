@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k4a 12-October-2014
+ * Project Version: 1k4b 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,7 +61,7 @@
 				#define NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassPluralDefiniteReferencingTests"
 				#define NLC_USE_ADVANCED_REFERENCING_COMMENT
 				#define NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES	//1k1a
-				#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//1k2a
+				#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//1k2a	//requires NLC_USE_PREPROCESSOR
 				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 					#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_ADD_ENTITY_TO_CONTEXT_LIST_FUNCTION_NAME "addEntityToReferenceContextList"
 					#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME "clearReferenceContextList"

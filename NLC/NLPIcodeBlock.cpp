@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a3a 03-October-2013
+ * Project Version: 1a3b 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -62,8 +62,8 @@ NLPIitem::NLPIitem(void)
 NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 {
 	itemType = newItemType;
-	name = entity->entityName;
-	instanceName = name + convertLongToString(entity->idInstance);
+	name = entity->entityName + convertLongToString(entity->idInstance) + "Class";
+	instanceName = entity->entityName + convertLongToString(entity->idInstance);
 	//entity->parsedForNLPIcodeBlocks = true;
 }
 NLPIitem::NLPIitem(string newName, int newItemType)
@@ -74,6 +74,25 @@ NLPIitem::NLPIitem(string newName, int newItemType)
 }
 NLPIitem::~NLPIitem(void)
 {
+}
+
+string generateClassName(GIAentityNode * entity)
+{
+	string className = "";
+	if(entity->isConcept)
+	{
+		className = entity->entityName + "Class";
+	}
+	else
+	{
+		className = entity->entityName + convertLongToString(entity->idInstance) + "Class";
+	} 
+	return className;
+}
+string generateInstanceName(GIAentityNode * entity)
+{
+	string instanceName = entity->entityName + convertLongToString(entity->idInstance);
+	return instanceName;
 }
 
 string convertLongToString(long number)

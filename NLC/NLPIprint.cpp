@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a3a 03-October-2013
+ * Project Version: 1a3b 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -96,7 +96,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			}
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			string targetName = targetClassDefinition->name;
-			classDefinitionEntryText = classDefinitionEntryText + "public " + targetName;
+			classDefinitionEntryText = classDefinitionEntryText + progLangClassInheritanceHeader[progLang] + targetName;
 		}
 		printLine(classDefinitionEntryText, 0, code);
 		printLine(progLangOpenClass[progLang], 0, code);
@@ -106,7 +106,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 		string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
 		printLine(classDestructorDeclaration, 1, code);
 		printLine(STRING_NEW_LINE, 1, code);
-		string classNameCode = progLangClassNameType[progLang] + "name = " + className + progLangEndLine[progLang];
+		string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + className + progLangStringOpenClose[progLang] + progLangEndLine[progLang];
 		printLine(classNameCode, 1, code);
 		printLine(STRING_NEW_LINE, 1, code);
 		

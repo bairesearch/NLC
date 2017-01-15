@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a3a 03-October-2013
+ * Project Version: 1a3b 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -302,7 +302,8 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 		GIAentityNode * entityNode = *entityIter;
 		if(!(entityNode->disabled))
 		{
-			string className = entityNode->entityName;
+			string className = generateClassName(entityNode);
+			//cout << "className = " << className << endl;
 			bool foundClassDefinition = false;
 			NLPIclassDefinition * classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
 			if(!foundClassDefinition)
@@ -333,7 +334,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						}
 					}
 
-					string targetName = targetEntity->entityName;
+					string targetName = generateClassName(targetEntity);
 
 					bool foundTargetClassDefinition = false;
 					NLPIclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
@@ -356,7 +357,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						}
 					}
 					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
-					{//declare inheritance
+					{//declare conditions
 						//conditionList
 						bool foundLocalClassDefinition = false;
 						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
@@ -366,7 +367,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							classDefinition->conditionList.push_back(targetClassDefinition);
 						}						
 					}				
-					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+					else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE))
 					{//declare inheritance
 						//definitionList
 						bool foundLocalClassDefinition = false;

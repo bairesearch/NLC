@@ -378,7 +378,7 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 	*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;	
 	if(logicalConditionConjunctionVariables.foundLogicalConditionConjunction != NULL)
 	{		
-		cout << "ast1" << endl;
+		cout << "logicalConditionConjunctionVariables.foundLogicalConditionConjunction defined" << endl;
 		checkConditionForLogicalCondition(currentCodeBlockInTree, logicalConditionConjunctionVariables.foundLogicalConditionConjunction, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
 	}
 #else	
@@ -481,6 +481,7 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 	{
 		if(!(conditionEntity->NLCconjunctionCondition))
 		{
+			cout << "conditionEntity = " << conditionEntity->entityName << endl;
 			conditionEntity->NLCconjunctionCondition = true;
 			GIAentityNode * logicalConditionConjunctionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
 			GIAentityNode * logicalConditionConjunctionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
@@ -497,6 +498,7 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 			}
 			else
 			{
+				cout << "logicalConditionConjunctionSubjectEntity = " << logicalConditionConjunctionSubjectEntity->entityName << endl;
 				cout << "error: logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex == INT_DEFAULT_VALUE" << endl;
 			}
 						

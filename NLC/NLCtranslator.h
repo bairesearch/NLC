@@ -25,8 +25,8 @@
  *
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,7 +59,7 @@ public:
 };
 #endif
 
-bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
+bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);
 	/*
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
 	#ifdef NLC_USE_PREPROCESSOR
@@ -85,7 +85,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition* >* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency);
+void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinitionFunctionDependency* functionDependency);
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(vector<NLCitem*>* functionDefinitionSourceArgumentList, NLCclassDefinition* functionDeclaration);
@@ -94,7 +94,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 	void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(NLCclassDefinition* functionDeclarationSource, vector<NLCitem*>* functionDefinitionArgumentList);
 	#endif
 	#else
-	//bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition* functionClassDefinition, vector<NLCitem*>* formalFunctionArgumentList, vector<NLCclassDefinition* >* classDefinitionList);
+	//bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition* functionClassDefinition, vector<NLCitem*>* formalFunctionArgumentList, vector<NLCclassDefinition*>* classDefinitionList);
 	#endif	
 	#endif
 #endif
@@ -104,8 +104,8 @@ bool getFilesFromFileList2(string inputListFileName, vector<string>* inputTextFi
 bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences);
 #endif
 
-NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition* >* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex);
-	NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, bool isReference, bool createClassDefinition);
+NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition*>* classDefinitionList, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex);
+	NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, bool isReference, bool createClassDefinition);
 
 
 #endif

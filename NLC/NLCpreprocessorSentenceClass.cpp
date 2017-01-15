@@ -25,8 +25,8 @@
  *
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,6 +54,10 @@ NLCsentence::NLCsentence(void)
 	mathText = "";
 	mathTextNLPparsablePhraseIndex = INT_DEFAULT_VALUE;
 	mathTextNLPparsablePhraseTotal = INT_DEFAULT_VALUE;
+	#ifdef NLC_USE_MATH_OBJECTS
+	mathTextIdentifiesMathValue = false;
+	//mathTextNLPparsablePhraseIdentifiesMathValue = false;
+	#endif
 	#endif
 	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
 	sentenceOriginal = "";
@@ -114,18 +118,39 @@ int generateDummyNumericalValue(int predefinedVariableIndex)
 #endif
 
 //isStringNLPparsableWord: either variable name or all numbers
-bool isStringNLPparsableWord(string phrase, bool preprocessor)
+bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 {
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringNLPparsableWord() error: phrase.length() == 0" << endl;
+		//cout << "isStringNLPparsableWord{} error: phrase.length() == 0" << endl;
 	}
-	if(isStringValidVariableName(phrase, preprocessor) || isStringNumber(phrase))
+	
+	if(isStringValidVariableName(phrase, preprocessorMath))
 	{
 		stringIsNLPparsableWord = true;
 	}
+	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_SUPPORT_FRACTIONAL_VALUES
+	if(preprocessorMath)
+	{
+	#endif
+		//eg "If 3 baskets have a pie, eat the apple." <- don't interpret "3" as math, interpret as an NLP parsable phrase entity
+		if(isStringNumberPreprocessorMath(phrase))
+		{
+			stringIsNLPparsableWord = true;
+		}
+	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_SUPPORT_FRACTIONAL_VALUES
+	}
+	else
+	{
+		if(isStringNumberOrFractional(phrase))
+		{
+			stringIsNLPparsableWord = true;
+		}	
+	}
+	#endif	
 	
+		
 	#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
 	//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
 	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;
@@ -153,7 +178,7 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 {
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringValidVariableName() error: phrase.length() == 0" << endl;
+		//cout << "isStringValidVariableName{} error: phrase.length() == 0" << endl;
 	}
 	
 	bool stringIsNLPparsableWord = true;
@@ -200,12 +225,12 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 }
 
 //all numbers
-bool isStringNumber(string phrase)
+bool isStringNumberPreprocessorMath(string phrase)
 {
 	bool stringIsNumber = true;
 	if(phrase.length() == 0)
 	{
-		//cout << "isStringNumber() error: phrase.length() == 0" << endl;
+		//cout << "isStringNumberPreprocessorMath{} error: phrase.length() == 0" << endl;
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
@@ -216,9 +241,49 @@ bool isStringNumber(string phrase)
 			stringIsNumber = false;
 		}
 	}
-	//cout << "isStringNumber: " << phrase << " = " << stringIsNumber << endl;
+	//cout << "isStringNumberPreprocessorMath: " << phrase << " = " << stringIsNumber << endl;
 	return stringIsNumber;
 }
 
+bool isStringNumberOrFractional(string phrase)
+{
+	bool stringIsNumberOrFractional = true;
+	if(phrase.length() == 0)
+	{
+		//cout << "isStringNumberOrFractional{} error: phrase.length() == 0" << endl;
+	}
+	for(int i=0; i<phrase.length(); i++)
+	{
+		char c = phrase[i];	
+		bool numberFound = charInCharArray(c, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
+		bool decimalPlaceFound = isDecimalPlace(i, &phrase);
+		if(!(numberFound || decimalPlaceFound))
+		{
+			stringIsNumberOrFractional = false;
+		}
+	}
+	//cout << "isStringNumberOrFractional: " << phrase << " = " << stringIsNumberOrFractional << endl;
+	return stringIsNumberOrFractional;
+}
+
+//based on isIntrawordPunctuationMark{}
+bool isDecimalPlace(int indexOfCurrentToken, string* lineContents)
+{
+	bool decimalPlace = false;
+	char currentToken = (*lineContents)[indexOfCurrentToken];
+	if(currentToken == CHAR_FULLSTOP) 
+	{
+		if(indexOfCurrentToken < lineContents->length()-1)	//ensure fullstop is not immediately succeded by an numeric character, which indicates a decimal place, eg "5.5"
+		{	
+			char characterImmediatelySucceedingPunctuationMark = (*lineContents)[indexOfCurrentToken+1];
+			bool isPunctuationMarkImmediatelySucceededByNumericCharacter = charInCharArray(characterImmediatelySucceedingPunctuationMark, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
+			if(isPunctuationMarkImmediatelySucceededByNumericCharacter)
+			{
+				decimalPlace = true;
+			}		
+		}
+	}
+	return decimalPlace;
+}
 
 

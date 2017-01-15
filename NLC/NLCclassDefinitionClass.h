@@ -25,8 +25,8 @@
  *
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -108,8 +108,8 @@ public:
 };
 
 
-NLCclassDefinition* findClassDefinition(vector<NLCclassDefinition* >* classDefinitionList, string name, bool* foundClassDefinition);
-NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition* >* classDefinitionList, GIAentityNode* targetEntity, bool* foundClassDefinition);
+NLCclassDefinition* findClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string name, bool* foundClassDefinition);
+NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition*>* classDefinitionList, GIAentityNode* targetEntity, bool* foundClassDefinition);
 bool findFunctionDependencyInList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound);
 bool findFunctionDependencyInList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound);	
 	bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDependency, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass);
@@ -119,8 +119,8 @@ bool findFunctionDependencyInParent(NLCclassDefinitionFunctionDependency* parent
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch);
-	bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool isReference);
+bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch);
+	bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool isReference);
 		bool eraseFunctionDependencyFromFunctionDependencyList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, NLCclassDefinitionFunctionDependency* functionDependencyToErase);
 #endif
 bool findParentClass(NLCclassDefinition* classDefinition, string variableName, int inheritanceLevel, int* maxInheritanceLevel, NLCclassDefinition** parentClass);	

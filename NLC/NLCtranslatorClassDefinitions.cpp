@@ -25,8 +25,8 @@
  *
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p2c 12-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
 #endif
 
-bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
 {
 	bool result = true;
 	
@@ -225,7 +225,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 										bool indefiniteChild = false;
 										if(!isDefiniteEntity(entityNode))
 										{
-											bool parseConditionParents = true;	//default value
+											bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 											bool foundDefiniteParentEntity = false;
 											bool checkIsDefinite = true;
 											GIAentityNode* parentTemp = getSameReferenceSetUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents, checkIsDefinite);
@@ -476,7 +476,7 @@ bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCcla
 		}
 		else
 		{
-			cout << "generateClassHeirarchy() error: condition has no object" << endl;
+			cout << "generateClassHeirarchy{} error: condition has no object" << endl;
 		}
 
 		targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
@@ -486,7 +486,7 @@ bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCcla
 }
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "generateClassHeirarchyFunctions:" << endl;
@@ -856,7 +856,12 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 		validClass = false;
 	}
 	#endif
-	
+
+	if(isStringNumberOrFractional(entityNode->entityName))
+	{
+		validClass = false;
+	}
+		
 	/*
 	cout << "\nentityNode->entityName = " << entityNode->entityName << endl;
 	cout << "entityNode->isSubstance = " << entityNode->isSubstance << endl;
@@ -929,6 +934,11 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	{
 		validClass = false;
 	}
+
+	if(isStringNumberOrFractional(targetEntity->entityName))
+	{
+		validClass = false;
+	}
 	
 	/*
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -972,7 +982,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 			}
 			else
 			{
-				cout << "generateSubstanceConceptClassNameRecurse() error: condition has no object" << endl;
+				cout << "generateSubstanceConceptClassNameRecurse{} error: condition has no object" << endl;
 			}
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 		}

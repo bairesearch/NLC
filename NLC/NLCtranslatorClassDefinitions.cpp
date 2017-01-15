@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1a 07-February-2015
+ * Project Version: 1o1b 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -850,6 +850,12 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	{
 		validClass = false;
 	}
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	if(entityNode->NLCisAlias)
+	{
+		validClass = false;
+	}
+	#endif
 	
 	/*
 	cout << "\nentityNode->entityName = " << entityNode->entityName << endl;

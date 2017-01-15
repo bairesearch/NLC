@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1a 07-February-2015
+ * Project Version: 1o1b 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1586,7 +1586,7 @@ bool generateCodeBlocksAddObject(NLCcodeblock** currentCodeBlockInTree, int conn
 					GIAentityNode* parentEntity = NULL;
 
 					*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, subjectEntity, aliasName);
-
+					
 					//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
 					GIAentityNode* aliasConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
 					for(vector<GIAentityConnection*>::iterator iter2 = aliasConceptEntity->associatedInstanceNodeList->begin(); iter2 < aliasConceptEntity->associatedInstanceNodeList->end(); iter2++)
@@ -1600,9 +1600,10 @@ bool generateCodeBlocksAddObject(NLCcodeblock** currentCodeBlockInTree, int conn
 								entity2->entityName = aliasClassName;	
 							}
 						}
-					}	
+					}
+					
+					definitionEntity->NLCisAlias = true; //added 1o1b (prevents addition of alias to class heirachy)	
 				}
-
 			}
 			else
 			{
@@ -2344,7 +2345,7 @@ void fillFunctionAliasClassList(NLCcodeblock** currentCodeBlockInTree, vector<GI
 				string aliasName = aliasEntity->entityName;
 				string aliasClassName = aliasClassEntity->entityName;
 					
-				unordered_map<string, string>*  functionAliasClassList = getFunctionAliasClassList();
+				unordered_map<string, string>* functionAliasClassList = getFunctionAliasClassList();
 				functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
 			}
 		}

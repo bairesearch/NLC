@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j6b 10-September-2014
+ * Project Version: 1j7a 10-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,16 +69,28 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	initialiseLogicalConditionLevelRecordArray(useNLCpreprocessor);
 	#endif
 
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	/*//this is done by GIA
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
+	#ifdef NLC_USE_PREPROCESSOR
 	//NLC translator Part prep A.
+	if(!identifyImplicitPluralLogicalConditionOperationsObjects(entityNodesActiveListComplete, maxNumberSentences))
+	{
+		result = false;
+	}
+	#endif
+	#endif	
+	*/
+	
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	//NLC translator Part prep B.
 	if(!removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
 	}
 	#endif
 
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	//NLC translator Part prep B.
+	//NLC translator Part prep C.
 	if(!identifyAndTagAllLogicalConditionOperations(entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
@@ -99,6 +111,55 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	return result;
 }
 
+/*
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
+#ifdef NLC_USE_PREPROCESSOR
+bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
+{
+	bool result = true;
+	
+	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	{
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+		{
+			GIAentityNode * conditionEntity = (*entityIter);
+			if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, true))	//could be set to false instead
+			{
+				//because GIA Sentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition):
+				for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
+				{
+					GIAentityNode * entity2 = (*entityIter);
+					if(entity2->sentenceIndexTemp == sentenceIndex)
+					{
+						if(entity2->entityIndexTemp = conditionEntity->entityIndexTemp+1)
+						{	
+							#ifdef NLC_USE_PREPROCESSOR
+							if(entity2->entityIndexTemp == 1)	//NLP parsable phrase: "every chicken..."
+							#else
+							if(entity2->entityIndexTemp == 2)	//Sentence: "For every chicken..."
+							#endif
+							{
+								//eg "for each chicken" / "for every chicken" / "while each chicken" / "while every chicken"
+								bool wordImmediatelySucceedingForFound = textInTextArray(entity2->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);
+								if(wordImmediatelySucceedingForFound)
+								{
+									cout << "identifyImplicitPluralLogicalConditionOperationsObjects(): wordImmediatelySucceedingForFound" << endl;
+									entity2->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+#endif
+#endif
+*/
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 bool removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {
@@ -243,9 +304,10 @@ bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsO
 }
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {
+	bool result = true;
+	
 	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
 	{
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -338,7 +400,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 			}
 		}
 	}
-	return true;
+	return result;
 }
 #endif
 

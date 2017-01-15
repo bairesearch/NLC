@@ -117,8 +117,19 @@ bool removeObjectFromConditionList(unordered_map<E1*, E2*>* unorderedMap, E2 *ob
 
 #ifdef NLC_USE_MATH_OBJECTS_STRING
 void assignMathTextValue(NLCgenericEntityClass* targetObject, NLCgenericEntityClass* sourceObject);
-void assignMathTextValue(NLCgenericEntityClass* targetObject, string sourceObjectString);
 void assignMathTextValue(NLCgenericEntityClass* targetObject, double sourceObjectNumerical);
+void assignMathTextValue(NLCgenericEntityClass* targetObject, string sourceObjectString);
+double getMathTextValue(NLCgenericEntityClass* targetObject);
+string getMathTextValue(NLCgenericEntityClass* targetObject);
+#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+NLCgenericEntityClass* addMathTextValue(NLCgenericEntityClass* objectA, NLCgenericEntityClass* objectB);
+NLCgenericEntityClass* addMathTextValue(double objectA, NLCgenericEntityClass* objectB);
+NLCgenericEntityClass* addMathTextValue(NLCgenericEntityClass* objectA, double objectB);
+NLCgenericEntityClass* addMathTextValue(double objectA, double objectB);
+NLCgenericEntityClass* addMathTextValue(string objectA, NLCgenericEntityClass* objectB);
+NLCgenericEntityClass* addMathTextValue(NLCgenericEntityClass* objectA, string objectB);
+NLCgenericEntityClass* addMathTextValue(string objectA, string objectB);
+#endif
 #endif
 
 #endif

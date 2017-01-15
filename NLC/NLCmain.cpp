@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5d 15-August-2016
+ * Project Version: 1r5e 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,7 +43,7 @@
 #include "NLCpreprocessor.h"
 //#endif
 #include "NLCtranslatorClassDefinitions.h"
-#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, setProgLang
 #ifdef NLC_API
 #include "NLCapi.h"
 #endif
@@ -143,6 +143,7 @@ static int dependencyRelationsTypes[GIA_NLP_PARSER_NUMBER_OF_TYPES] = {GIA_NLP_D
 int main(int argc, char** argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
+	setProgLang(progLang);
 
 	//print execution time
 	struct tm* current;
@@ -653,7 +654,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1r5d 15-August-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1r5e 15-August-2016" << endl;
 			exit(1);
 		}
 

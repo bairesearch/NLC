@@ -633,14 +633,89 @@ void assignMathTextValue(NLCgenericEntityClass* targetObject, NLCgenericEntityCl
 		cout << "assignMathtextValue{} error: assigning mathText value but no numerical or text value found for source object; sourceObject->name = " << sourceObject->name << endl; 
 	}
 }
-void assignMathTextValue(NLCgenericEntityClass* targetObject, string sourceObjectString)
-{	
-	targetObject->stringValue = sourceObjectString;
-}
 void assignMathTextValue(NLCgenericEntityClass* targetObject, double sourceObjectNumerical)
 {	
 	targetObject->numericalValue = sourceObjectNumerical;
 }
+void assignMathTextValue(NLCgenericEntityClass* targetObject, string sourceObjectString)
+{	
+	targetObject->stringValue = sourceObjectString;
+}
+
+double getMathTextValue(NLCgenericEntityClass* targetObject)
+{
+	return targetObject->numericalValue;
+}
+string getMathTextValue(NLCgenericEntityClass* targetObject)
+{
+	return targetObject->stringValue;	
+}
+
+#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+NLCgenericEntityClass* addMathTextValue(NLCgenericEntityClass* objectA, NLCgenericEntityClass* objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	if(objectA->numericalValue != numeric_limits<double>::quiet_NaN())
+	{
+		newEntity->numericalValue = objectA->numericalValue + objectB->numericalValue;
+	}
+	else if(objectA->stringValue != "")
+	{
+		newEntity->stringValue = objectA->stringValue + objectB->stringValue;
+	}
+	else if(objectB->numericalValue != numeric_limits<double>::quiet_NaN())
+	{
+		newEntity->numericalValue = objectA->numericalValue + objectB->numericalValue;
+	}
+	else if(objectB->stringValue != "")
+	{
+		newEntity->stringValue = objectA->stringValue + objectB->stringValue;
+	}
+	else
+	{
+		cout << "addMathTextValue{} error: adding mathText value but no numerical or text value found for either object; objectA->name = " << objectA->name << ", objectB->name = " << objectB->name << endl; 
+	}
+	return newEntity;
+	
+}
+NLCgenericEntityClass* addMathTextValue(double objectA, NLCgenericEntityClass* objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	newEntity->numericalValue = objectA + objectB->numericalValue;
+	return newEntity;
+}
+NLCgenericEntityClass* addMathTextValue(NLCgenericEntityClass* objectA, double objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	newEntity->numericalValue = objectA->numericalValue + objectB;
+	return newEntity;
+}
+NLCgenericEntityClass* addMathTextValue(double objectA, double objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	newEntity->numericalValue = objectA + objectB;
+	return newEntity;
+}
+NLCgenericEntityClass* addMathTextValue(string objectA, NLCgenericEntityClass* objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	newEntity->numericalValue = objectA + objectB->stringValue;
+	return newEntity;
+}
+NLCgenericEntityClass* addMathTextValue(NLCgenericEntityClass* objectA, string objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	newEntity->numericalValue = objectA->stringValue + objectB;
+	return newEntity;
+}
+NLCgenericEntityClass* addMathTextValue(string objectA, string objectB)
+{
+	NLCgenericEntityClass* newEntity = new NLCgenericEntityClass();
+	newEntity->numericalValue = objectA + objectB;
+	return newEntity;
+}
+#endif
+
 #endif
 
 

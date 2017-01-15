@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5d 15-August-2016
+ * Project Version: 1r5e 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -746,10 +746,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 							#else
 							currentFullSentence->mathText = replaceAllOccurancesOfString(&(currentFullSentence->mathText), parsablePhraseReferenceName, parsablePhraseReferenceMathValue, &foundParsablePhraseInMathText);	//replace "thedogsvalue" with "thedogsvalue->value"
 							#endif
-							if(!foundParsablePhraseInMathText)
-							{
-								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !foundParsablePhraseInMathText" << endl;
-							}
 
 							*currentCodeBlockInTree = getLastCodeBlockInLevel(currentCodeBlockAtStartOfparsablePhrase);
 						}
@@ -1055,7 +1051,8 @@ void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entity
 #ifdef NLC_USE_MATH_OBJECTS_STRING
 string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, string parsablePhraseReferenceName)
 {
-	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;	//CHECKTHIS - if this assumption is not valid, must update NLCtranslatorCodeBlocksLogicalConditions.cpp generateCodeBlocksFromMathText{} to not execute generateCodeBlocksFromMathText (ie print updated mathText), but instead execute a new codeBlocks subroutine createCodeBlockAssignMathTextValueExecute(targetText, sourceText)
+	bool foundParsablePhraseReferenceNameAssignment = false;
+	int progLang = getProgLang();	//CHECKTHIS - note this is an unusual implementation, in future could update NLCtranslatorCodeBlocksLogicalConditions.cpp generateCodeBlocksFromMathText{} to not execute generateCodeBlocksFromMathText (ie print updated mathText), but instead execute a new codeBlocks subroutine createCodeBlockAssignMathTextValueExecute(targetText, sourceText)
 	string mathTextUpdated = *mathText;
 	#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 	int parsablePhraseReferenceNameIndex = mathText->find(parsablePhraseReferenceName);
@@ -1065,34 +1062,92 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		bool foundMathEqualsSetCommand = findCharacterAtIndexOrAfterSpace(mathText, parsablePhraseReferenceNameIndex+parsablePhraseReferenceName.length(), NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR, &indexOfMathEqualsSetCommand);	//mathText eg: "thedogsvalue =" OR "thedogsvalue="	
 		if(foundMathEqualsSetCommand)
 		{
-			string targetValueText = "";
-			if((*mathText)[indexOfMathEqualsSetCommand+1] == CHAR_SPACE)
-			{
-				targetValueText = mathText->substr(indexOfMathEqualsSetCommand+2);
-			}
-			else
-			{
-				targetValueText = mathText->substr(indexOfMathEqualsSetCommand+1);
-			}
-			mathTextUpdated = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg1 assignMathTextValue(thedogsvalue, 5 + theNumberOfApplesNearTheFarm);, eg2 assignMathTextValue(thedogsvalue, "the dog's name is " + maxsName)
+			foundParsablePhraseReferenceNameAssignment = true;
+			string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);	//eg thedogsvalue
+			mathTextUpdated = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(thedogsvalue, thechickensvalue)", eg1 "assignMathTextValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
 		}
 	}
+	if(!foundParsablePhraseReferenceNameAssignment)
+	{		
+		//create assignment wrapper
+		int indexOfMathEqualsSetCommand = mathText->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR);
+		if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			//mathText eg: "X =" OR "X="
+			string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);
+			targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_GET_MATHTEXT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
+			mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
+		}
+	}
+	
 	#else
 	cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: requires NLC_USE_LIBRARY_BASE_EXTENDED" << endl;
 	#endif
 	return mathTextUpdated;
 }
-/*
-void generateCodeAssignMathTextValueExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
+
+string getTargetValueText(string* mathText, int indexOfMathEqualsSetCommand, int progLang)
 {
-	#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
-	string codeBlockExecuteFunctionText = NLC_USE_MATH_OBJECTS_STRING_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + param1->name + progLangClassMemberFunctionParametersNext[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//assignMathTextValue(param1, param2);
-	printLine(codeBlockExecuteFunctionText, level, code);
-	#else
-	cout << "generateCodeAssignMathTextValueExecuteFunction{} error: requires NLC_USE_LIBRARY_BASE_EXTENDED" << endl;
+	string targetValueText = "";
+	if((*mathText)[indexOfMathEqualsSetCommand+1] == CHAR_SPACE)
+	{
+		targetValueText = mathText->substr(indexOfMathEqualsSetCommand+2);
+	}
+	else
+	{
+		targetValueText = mathText->substr(indexOfMathEqualsSetCommand+1);
+	}
+	
+	#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+	//now detect all instances of "+" within targetValueText and insert addMathTextValue{} function
+	//eg thedogsvalue + 5 -> addMathTextValue(thedogsvalue, 5)
+	//algorithm eg: "a + b + c"  ->  "a , b + c"  ->  "a , b) + c"  ->  "addMathTextValue(addMathTextValue((a, b), c)"
+	int pos = 0;
+	string stringToFind = NLC_USE_MATH_OBJECTS_STRING_ADDITIONS_DELIMITER;
+	int numberOfAdditionsFound = 0;
+	while((pos = targetValueText.find(stringToFind, pos)) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	{
+		int stringToFindLength = stringToFind.length();
+		if(targetValueText[pos-1] == CHAR_SPACE)
+		{
+			pos = pos-1;	//remove blank space
+			stringToFindLength = stringToFindLength + 1;
+		}
+		
+		string replacementString = "";
+		if(numberOfAdditionsFound > 1)
+		{
+			replacementString = progLangCloseParameterSpace[progLang] + progLangParameterSpaceNextParam[progLang];
+		}
+		else
+		{
+			replacementString = progLangParameterSpaceNextParam[progLang];
+		}
+		targetValueText.replace(pos, stringToFindLength, replacementString);
+		pos = pos + replacementString.length();
+		numberOfAdditionsFound++;
+	}
+	for(int i=0; i<numberOfAdditionsFound; i++)
+	{
+		targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_ADD_MATHTEXT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText;
+	}
+	if(numberOfAdditionsFound > 0)
+	{
+		targetValueText = targetValueText + progLangCloseParameterSpace[progLang];
+	}
 	#endif
+			
+	return targetValueText;
 }
-*/	
+/*
+#ifdef NLC_USE_MATH_OBJECTS_STRING_ADDITIONS
+string generateAddMathTextValueExecuteFunctionMathText(string mathTextObjectA, string mathTextObjectB, progLang)
+{
+	string addMathTextCommand = NLC_USE_MATH_OBJECTS_STRING_ADD_MATHTEXT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + mathTextObjectA + progLangClassMemberFunctionParametersNext[progLang] + mathTextObjectB + progLangCloseParameterSpace[progLang];	//eg thedogsvalue + 5 + theNumberOfApplesNearTheFarm  ->  addMathTextValue(thedogsvalue, addMathTextValue(5, theNumberOfApplesNearTheFarm))
+	return addMathTextCommand;
+}	
+#endif
+*/
 #endif
 
 bool readParsablePhraseEntryEntityChecks(GIAentityNode* entity)

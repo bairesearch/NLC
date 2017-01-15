@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3a 27-October-2013
+ * Project Version: 1c3b 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -287,23 +287,56 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = definitionEntity->propertyNodeList->begin(); propertyNodeListIterator < definitionEntity->propertyNodeList->end(); propertyNodeListIterator++)
 						{
 							GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-
 							GIAentityNode* propertyEntity = propertyConnection->entity;
-
-							//cout << "sentenceIndexA = " << sentenceIndex << endl;
-							currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
-							entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+														
+							bool alreadyAdded = false;
+							for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
+							{
+								GIAentityNode * propertyEntityLocal = (*propertyNodeListIterator)->entity;
+								if((propertyEntity->entityName == propertyEntityLocal->entityName))
+								{
+									alreadyAdded = true;
+								}
+							}
+							if(!alreadyAdded)
+							{
+								//cout << "sentenceIndexA = " << sentenceIndex << endl;
+								currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
+								entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+							}
 						}
 						//state initialisations
 						for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = definitionEntity->conditionNodeList->begin(); conditionNodeListIterator < definitionEntity->conditionNodeList->end(); conditionNodeListIterator++)
 						{
 							GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-							
 							GIAentityNode* conditionEntity = conditionConnection->entity;
+														
+							bool alreadyAdded = false;
+							for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
+							{
+								GIAentityNode * conditionEntityLocal = (*conditionNodeListIterator)->entity;
+								string conditionObjectEntityLocalName = "";
+								if(!(conditionEntityLocal->conditionObjectEntity->empty()))
+								{
+									conditionObjectEntityLocalName = (conditionEntityLocal->conditionNodeList->back())->entity->entityName;
+								}
+								string conditionObjectEntityName = "";
+								if(!(conditionEntity->conditionObjectEntity->empty()))
+								{
+									conditionObjectEntityName = (conditionEntity->conditionNodeList->back())->entity->entityName;
+								}
+								if((conditionEntity->entityName == conditionObjectEntityLocalName) && (conditionEntity->entityName == conditionObjectEntityName))
+								{
+									alreadyAdded = true;
+								}
+							}
+							if(!alreadyAdded)
+							{						
 
-							//cout << "sentenceIndexB = " << sentenceIndex << endl;
-							currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
-							entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+								//cout << "sentenceIndexB = " << sentenceIndex << endl;
+								currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+								entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
+							}
 						}	
 					}
 					//}

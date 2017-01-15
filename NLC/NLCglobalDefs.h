@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15a 16-September-2014
+ * Project Version: 1j15b 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,7 +50,8 @@
 	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//1i1a/19-August-2014/1i3 - categories
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES	//1i4a
-		#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2 "Category"
+		#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"
+		#define NLC_ITEM_TYPE_LOGICALCONDITIONVAR_APPENDITION "LogicalCondition"	//1j15b
 		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 			#define NLC_USE_ADVANCED_REFERENCING	//added 1j3a+ (replaces GIA_USE_ADVANCED_REFERENCING)
 			#ifdef NLC_USE_ADVANCED_REFERENCING

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15a 16-September-2014
+ * Project Version: 1j15b 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,7 +64,7 @@ using namespace std;
 #define NLC_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
 #define NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
 #define NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION "InstanceList"
-#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"
+//#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"	//moved to NLCglobalDefs.h
 #define NLC_ITEM_TYPE_TYPEVAR_APPENDITION "Type"
 #define NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION "Instance"
 #define NLC_ITEM_TYPE_CLASSLISTVAR_APPENDITION "Class"

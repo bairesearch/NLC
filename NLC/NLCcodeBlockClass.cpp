@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15a 16-September-2014
+ * Project Version: 1j15b 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -118,7 +118,7 @@ NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLC
 NLCcodeblock * createCodeBlockCreateNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex, bool copyNewItemsToLocalList)
 {	
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, propertyEntity);	//create new category list
+	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, propertyEntity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);	//create new category list
 	#endif
 	currentCodeBlockInTree = createCodeBlockAddNewProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, copyNewItemsToLocalList);
 	return currentCodeBlockInTree;
@@ -169,7 +169,7 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 	#endif
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, propertyEntity, propertyEntity);	//add new object to category list
+	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, propertyEntity, propertyEntity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);	//add new object to category list
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, propertyEntity, sentenceIndex);
@@ -215,7 +215,7 @@ NLCcodeblock * createCodeBlockAddNewPropertyToLocalList(NLCcodeblock * currentCo
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, entity, entity);	//add new object to category list
+	currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, entity, entity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);	//add new object to category list
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 	currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, entity, sentenceIndex);
@@ -268,7 +268,7 @@ NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlock
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, conditionObject);	//create new category list
+		currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, conditionObject, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);	//create new category list
 	}
 	#endif
 	currentCodeBlockInTree = createCodeBlockAddNewCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, copyNewItemsToLocalList);
@@ -328,7 +328,7 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 		#endif
 
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-		currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, conditionObject, conditionObject);	//add new object to category list
+		currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(currentCodeBlockInTree, conditionObject, conditionObject, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);	//add new object to category list
 		#endif
 		#ifdef NLC_USE_ADVANCED_REFERENCING
 		currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, conditionObject, sentenceIndex);
@@ -380,7 +380,7 @@ NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * current
 {	
 	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, entity);	//create new category list
+	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);	//create new category list
 	#endif
 	currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(currentCodeBlockInTree, entity, sentenceIndex);
 	return currentCodeBlockInTree;
@@ -1260,51 +1260,51 @@ NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName)
 {
-	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
 }
 
-NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName)
 {
-	return createCodeBlockAddPropertyToGenericList(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, propertyEntity);
+	return createCodeBlockAddPropertyToGenericList(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, propertyEntity);
 }
 
-NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName)
 {
-	return createCodeBlockForPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	return createCodeBlockForPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
-NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName)
 {
-	return createCodeBlockGetBackPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	return createCodeBlockGetBackPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
 }
-NLCcodeblock * createCodeBlockIfHasMoreThanOneCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+NLCcodeblock * createCodeBlockIfHasMoreThanOneCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName)
 {
-	return createCodeBlockIfHasMoreThanOnePropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	return createCodeBlockIfHasMoreThanOnePropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
 }
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
-NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative)
+NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName)
 {
-	return createCodeBlockIfHasPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, negative);
+	return createCodeBlockIfHasPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, negative);
 }
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName)
 {
-	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedSingularExecuteFunction(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, propertyEntity);
+	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedSingularExecuteFunction(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, propertyEntity);
 }
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree)
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName)
 {
-	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, genericListAppendName);
 }
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName)
 {
-	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedPluralExecuteFunction(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, propertyEntity);
+	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedPluralExecuteFunction(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, propertyEntity);
 }
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree)
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName)
 {
-	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	return createCodeBlockAddPropertyToGenericListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, genericListAppendName);
 }
 #endif
 

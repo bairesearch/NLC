@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15a 16-September-2014
+ * Project Version: 1j15b 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -621,7 +621,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 						//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 						#else
 						//1j implementation
-						//entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
+						//entity->grammaticalDefiniteTemp = true;		//removed 1j15a
 						#endif					
 					//}
 					#endif
@@ -698,11 +698,34 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 									//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 									#else
 									//1j implementation
-									//entity->grammaticalDefiniteTemp = true;		//set NLClocalListVariableHasBeenInitialised instead?
+									//entity->grammaticalDefiniteTemp = true;		//removed 1j15a
 									#endif
 								}
 								#endif
-								if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+								
+								bool contextFound = false;
+								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+								if(getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+								{
+									contextFound = true;
+								}
+								#else
+								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
+								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
+								GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+								logicalConditionConjunctionVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
+								if(generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))
+								{
+									contextFound = true;
+								}
+								logicalConditionConjunctionVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = false;
+								if(generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables, true, NLC_ITEM_TYPE_LOGICALCONDITIONVAR_APPENDITION))
+								{
+									contextFound = true;
+								}	
+								#endif
+	
+								if(!contextFound)
 								{
 									#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;

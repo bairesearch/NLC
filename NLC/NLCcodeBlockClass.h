@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j15a 16-September-2014
+ * Project Version: 1j15b 16-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -310,20 +310,20 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
-NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-NLCcodeblock * createCodeBlockIfHasMoreThanOneCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
+NLCcodeblock * createCodeBlockIfHasMoreThanOneCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName);
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING
-NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
-NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree);
+NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
+NLCcodeblock * createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
 #endif
 	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);

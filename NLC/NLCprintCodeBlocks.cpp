@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9a 14-October-2014
+ * Project Version: 1k9b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1099,6 +1099,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	NLCclassDefinition * localClassDefinition = findClassDefinition(classDefinitionList, param1->instanceName, &foundLocalClassDefinition);	//see if class definition already exists
 	if(foundLocalClassDefinition)
 	{
+		//cout << "foundLocalClassDefinition: " << param1->instanceName << endl;
 		parameters = &(localClassDefinition->parameters);
 	}
 	else

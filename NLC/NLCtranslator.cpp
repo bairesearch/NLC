@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9a 14-October-2014
+ * Project Version: 1k9b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -465,6 +465,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 
 bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDeclaration, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
 {
+	bool result = true;
 	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDeclaration->parameters);
 
 	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
@@ -475,7 +476,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 		NLCitem * existingFunctionArgument = NULL;
 		bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
 		int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLC_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;
-		if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+		if((formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION) || (formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT))	//OLD before 1k9b - if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			#ifdef NLC_DEBUG
 			cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
@@ -539,58 +540,60 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 					existingFunctionArgument->functionArgumentPassCastRequired = true;
 				}
 			}
-			else
+		}
+		else if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+		{
+			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+			bool foundFunctionArgumentInActionSubjectContents = false;
+			GIAentityNode * actionEntity = functionClassDeclaration->actionOrConditionInstance;
+			if(!(actionEntity->actionSubjectEntity->empty()))
 			{
-				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-				bool foundFunctionArgumentInActionSubjectContents = false;
-				GIAentityNode * actionEntity = functionClassDeclaration->actionOrConditionInstance;
-				if(!(actionEntity->actionSubjectEntity->empty()))
+				GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
+				//cout << "actionSubject = " << actionSubject->entityName << endl;
+				//cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
+				if(formalFunctionArgument->className == generateClassName(actionSubject))
 				{
-					GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
-					//cout << "actionSubject = " << actionSubject->entityName << endl;
-					//cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
-					if(formalFunctionArgument->className == generateClassName(actionSubject))
-					{
+					foundFunctionArgumentInActionSubjectContents = true;
+					#ifdef NLC_DEBUG
+					cout << "foundFunctionArgumentInActionSubjectContents: " << formalFunctionArgument->className << endl;
+					#endif
+					//formalFunctionArgument->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;	//not done; this is now handled by generateContextBlocks()
+				}
+				/*//ignore conditions of actionSubject; they will need to be explicitly referenced by the function
+				for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->conditionNodeList->begin(); entityIter != actionSubject->conditionNodeList->end(); entityIter++)
+				{
+					GIAentityNode * actionCondition = (*entityIter)->entity;
+				}
+				*/
+				for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->propertyNodeList->begin(); entityIter != actionSubject->propertyNodeList->end(); entityIter++)
+				{
+					GIAentityNode * actionProperty = (*entityIter)->entity;
+					if(formalFunctionArgument->className == generateClassName(actionProperty))
+					{//NB these implicitly declared parameters in the function definition will be referenced as plural (lists) not singular entities
+							//NO: check this is the case; eg the dog eats the pie; 'the dog' should be extracted from dogList if it was not passed as a parameter
+							//1dXy: all parameters should be passed as lists (temporary lists should be created if specific variables require passing)
 						foundFunctionArgumentInActionSubjectContents = true;
-						#ifdef NLC_DEBUG
-						cout << "foundFunctionArgumentInActionSubjectContents: " << formalFunctionArgument->className << endl;
-						#endif
-						//formalFunctionArgument->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;	//not done; this is now handled by generateContextBlocks()
-					}
-					/*//ignore conditions of actionSubject; they will need to be explicitly referenced by the function
-					for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->conditionNodeList->begin(); entityIter != actionSubject->conditionNodeList->end(); entityIter++)
-					{
-						GIAentityNode * actionCondition = (*entityIter)->entity;
-					}
-					*/
-					for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->propertyNodeList->begin(); entityIter != actionSubject->propertyNodeList->end(); entityIter++)
-					{
-						GIAentityNode * actionProperty = (*entityIter)->entity;
-						if(formalFunctionArgument->className == generateClassName(actionProperty))
-						{//NB these implicitly declared parameters in the function definition will be referenced as plural (lists) not singular entities
-								//NO: check this is the case; eg the dog eats the pie; 'the dog' should be extracted from dogList if it was not passed as a parameter
-								//1dXy: all parameters should be passed as lists (temporary lists should be created if specific variables require passing)
-							foundFunctionArgumentInActionSubjectContents = true;
-						}
 					}
 				}
-
-				if(!foundFunctionArgumentInActionSubjectContents)
-				{
-					cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map): " << formalFunctionArgument->className << endl;
-				#else
-					cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map): " << formalFunctionArgument->className << endl;
-				#endif
-					//add a new function argument to the existing function argument list
-					NLCitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
-					existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);
-				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-				}
-				#endif
 			}
+
+			if(!foundFunctionArgumentInActionSubjectContents)
+			{
+				//this warning was created for a previous NLC rev;
+				//cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map): " << formalFunctionArgument->className << endl;
+			#else
+				//this warning was created for a previous NLC rev;
+				//cout << "NLC compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map): " << formalFunctionArgument->className << endl;
+			#endif
+				//add a new function argument to the existing function argument list
+				NLCitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
+				existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);
+			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+			}
+			#endif
 		}
 	}
-	return true;
+	return result;
 }
 
 bool findParentClass(NLCclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLCclassDefinition ** parentClass)

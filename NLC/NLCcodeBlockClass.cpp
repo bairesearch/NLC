@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6i 09-July-2014
+ * Project Version: 1g6j 09-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -672,22 +672,29 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 {
 	bool conjunctionConditionConnectionFound = false;
-	if(conditionEntity != primaryEntityInLogicalConditionConjunctionSubset)
-	{//ignore primaryEntityInLogicalConditionConjunctionSubset
-		for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = conditionEntity->conditionNodeList->begin(); conditionNodeListIterator < conditionEntity->conditionNodeList->end(); conditionNodeListIterator++)
+
+	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = conditionEntity->conditionNodeList->begin(); conditionNodeListIterator < conditionEntity->conditionNodeList->end(); conditionNodeListIterator++)
+	{
+		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
+		GIAentityNode* conditionEntity2 = conditionConnection->entity;
+		bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
+		if(conjunctionConditionFound)
 		{
-			GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-			GIAentityNode* conditionEntity2 = conditionConnection->entity;
-			bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-			if(conjunctionConditionFound)
-			{
+			if(conditionEntity != primaryEntityInLogicalConditionConjunctionSubset)
+			{//ignore primaryEntityInLogicalConditionConjunctionSubset
 				if(conditionEntity2->NLCconjunctionCondition)
 				{//condition added 1g6h; do not parse nodes with conjunction condition connections if the conjunction condition has already been parsed by checkConditionForLogicalCondition()
 					conjunctionConditionConnectionFound = true;	
 				}
+			}
+			if(*foundLogicalConditionConjunction == NULL)
+			{//do not overwrite foundLogicalConditionConjunction; always take the first conjunction in subset as the one to parse next
 				*foundLogicalConditionConjunction = conditionEntity2;
 			}
 		}
+	}
+	if(conditionEntity != primaryEntityInLogicalConditionConjunctionSubset)
+	{
 		for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = conditionEntity->incomingConditionNodeList->begin(); conditionNodeListIterator < conditionEntity->incomingConditionNodeList->end(); conditionNodeListIterator++)
 		{
 			GIAentityConnection * conditionConnection = (*conditionNodeListIterator);

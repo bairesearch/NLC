@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2b 12-October-2014
+ * Project Version: 1k2c 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -62,6 +62,17 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 	//#endif
 
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	#ifdef NLC_USE_PREPROCESSOR
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(getUseNLCpreprocessor())
+	{
+		currentCodeBlockInTree = createCodeBlocksDeclareContextList(currentCodeBlockInTree, 0);
+	}
+	#endif
+	#endif
+	#endif
+	
 	#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 	#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 	//Part Prep A - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
@@ -71,7 +82,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, 0, NLCfunctionName, currentNLCsentenceInList);
 	#endif
 	#endif
-		
+	
 	#ifdef NLC_DEBUG
 	cout << "maxNumberSentences = " << maxNumberSentences << endl;
 	#endif
@@ -98,9 +109,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		}
 		#endif
 
+		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 		#ifdef NLC_USE_PREPROCESSOR
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 		if(getUseNLCpreprocessor())
 		{	
 			//cout << "setCurrentLogicalConditionLevel: currentNLCsentenceInList->indentation) = " << currentNLCsentenceInList->indentation) << endl;
@@ -323,6 +334,17 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		#endif
 
 	}
+	
+	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	#ifdef NLC_USE_PREPROCESSOR
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(getUseNLCpreprocessor())
+	{
+		currentCodeBlockInTree = createCodeBlocksClearContextListVariableExecuteFunction(currentCodeBlockInTree, 0);
+	}
+	#endif
+	#endif
+	#endif
 
 	return result;
 }

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2b 12-October-2014
+ * Project Version: 1k2c 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -762,11 +762,13 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(codeBlockTextFunctionHeader, level+q, code);
 			printLine(progLangOpenBlock[progLang], level+q, code);
 				
+				/*
 				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 				q++;
 				printLine(codeBlockText6, level+q, code);
 				printLine(progLangOpenBlock[progLang], level+q, code);
 				#endif
+				*/
 				
 					q++;		
 					#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
@@ -784,12 +786,14 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 						param1instanceCategoryList.push_back(param2);
 					}
 					*/
-					
+				
+				/*
 				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 				q--;							
 				printLine(progLangCloseBlock[progLang], level+q, code);	
 				#endif
-			
+				*/
+				
 			q--;
 			printLine(progLangCloseBlock[progLang], level+q, code);	
 		}		
@@ -1004,6 +1008,24 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				string clearContextListText = contextListName + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//contextList.clear();
 				printLine(clearContextListText, (level+1), code);
 			printLine(progLangCloseBlock[progLang], level, code);	
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION" << endl;
+			#endif
+			
+			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_PRINT_LEVEL_USED_INSTEAD_OF_CONTEXT_LEVEL
+			string contextLevelString = convertIntToString(level);
+			#else
+			string contextLevelString = param1->name;
+			#endif
+
+			string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
+
+			string codeBlockExecuteFunctionText = "";
+			codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME +  progLangOpenParameterSpace[progLang] + contextListName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//clearContextLevelList(contextListX);
+			printLine(codeBlockExecuteFunctionText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CONTEXT_BLOCK)
 		{

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8f 24-August-2014
+ * Project Version: 1i8g 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1i8f 24-August-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1i8g 24-August-2014" << endl;
 			exit(1);
 		}
 
@@ -1089,6 +1089,17 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
 				if(actionHasSubject && actionHasObject)
 				{
+					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+					//added 1i8g
+					bool sameReferenceSet = false;
+					GIAentityConnection * actionSubjectConnection = actionEntity->actionSubjectEntity->back();
+					GIAentityConnection * actionObjectConnection = actionEntity->actionObjectEntity->back();
+					if(actionSubjectConnection->sameReferenceSet && actionObjectConnection->sameReferenceSet)
+					{
+						sameReferenceSet = true;
+					}
+					#endif
+				
 					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 					/*
 					eg case A:
@@ -1162,28 +1173,37 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 							connectionIter++;
 						}
 					}
+					
+					#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+					int sentenceIndex = actionEntity->sentenceIndexTemp;
+					setCurrentSentenceIndex(sentenceIndex);
+					#endif
+					//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
+					GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
+					GIAentityConnection * propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
+					#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+					if(actionEntity->negative)
+					{
+						//cout << "actionEntity->negative" << endl;
+						propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
+						propertyConnectionReverse->negative = true;	//not used
+					}
+					#endif
+					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+					//added 1i8g
+					if(sameReferenceSet)
+					{
+						propertyConnection->sameReferenceSet = true;
+						propertyConnectionReverse->sameReferenceSet = true;
+					}
+					#endif
+					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+					if(actionEntity->negative)
+					{
+						actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
+					}
+					#endif
 				}
-				#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-				int sentenceIndex = actionEntity->sentenceIndexTemp;
-				setCurrentSentenceIndex(sentenceIndex);
-				#endif
-				//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-				GIAentityConnection * propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
-				GIAentityConnection * propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
-				#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-				if(actionEntity->negative)
-				{
-					//cout << "actionEntity->negative" << endl;
-					propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
-					propertyConnectionReverse->negative = true;	//not used
-				}
-				#endif
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-				if(actionEntity->negative)
-				{
-					actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
-				}
-				#endif
 			}
 		}
 	}

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14d 02-September-2015
+ * Project Version: 1q14e 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -104,5 +104,9 @@ bool isStringValidVariableName(string phrase, bool preprocessor);
 bool isStringNumberPreprocessorMath(string phrase);
 bool isStringNumberOrFractional(string phrase);
 	bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
+bool isStringAliasFileName(string phrase);
+#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
+bool isStringIllegalTargetSourceCharacter(string phrase);
+#endif
 
 #endif

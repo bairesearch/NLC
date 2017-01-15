@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14d 02-September-2015
+ * Project Version: 1q14e 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,6 +52,11 @@
 //#define NLC_DISABLE_1q_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+	#define NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS	//1q14e
+	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
+		#define NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS_NUMBER_OF_TYPES (63)
+		static char legalTargetSourceCharacters[NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS_NUMBER_OF_TYPES] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
+	#endif
 	//#define NLC_CONDITION_LISTS_VECTOR	//tested 1q12a (but disabled since)	//use vector<pair<E1*,E2*>> instead of unordered_map<E1*,E2*> for conditionLists: not currently supported by NLC standard library
 	#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES: has not yet been defined
 		//#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//has not yet been defined

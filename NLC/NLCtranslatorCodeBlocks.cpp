@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14d 02-September-2015
+ * Project Version: 1q14e 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -488,6 +488,24 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 		//entityNode->disabled = true;	//this could be used instead (more general implementation)
 	}
 	
+	//added 1q14e 
+	if(isStringAliasFileName(entityNode->entityName))
+	{
+		validClassContents = false;
+	}
+
+	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
+	//added 1q14e - CHECKTHIS: is this required?
+	if(isStringIllegalTargetSourceCharacter(entityNode->entityName))
+	{
+		if(validClassContents)
+		{
+			cout << "declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks{} error: isStringIllegalTargetSourceCharacter; entityNode->entityName = " << entityNode->entityName << endl;
+		}
+		validClassContents = false;
+	}
+	#endif
+		
 	return validClassContents;
 }
 

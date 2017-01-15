@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14d 02-September-2015
+ * Project Version: 1q14e 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -286,4 +286,35 @@ bool isDecimalPlace(int indexOfCurrentToken, string* lineContents)
 	return decimalPlace;
 }
 
+//simple algorithm just detects full stops
+bool isStringAliasFileName(string phrase)
+{
+	bool stringIsAliasFileName = false;
+	for(int i=0; i<phrase.length(); i++)
+	{
+		char c = phrase[i];
+		if(c == CHAR_FULLSTOP)
+		//if(!charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
+		{
+			stringIsAliasFileName = true;
+		}
+	}
+	return stringIsAliasFileName;
+}
 
+#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
+bool isStringIllegalTargetSourceCharacter(string phrase)
+{
+	bool stringContainsIllegalTargetSourceCharacter = false;
+	for(int i=0; i<phrase.length(); i++)
+	{
+		char c = phrase[i];
+		if(!charInCharArray(c, legalTargetSourceCharacters, NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS_NUMBER_OF_TYPES))
+		{
+			stringContainsIllegalTargetSourceCharacter = true;
+		}
+	}
+	return stringContainsIllegalTargetSourceCharacter;
+}
+#endif
+	

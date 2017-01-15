@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1d 11-August-2015
+ * Project Version: 1q1e 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -317,42 +317,48 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 							{
 								NLCclassDefinition* targetClassDefinition = *localListIter;
-
-								string targetName = targetClassDefinition->functionNameSpecial;
-								string functionArguments = "";
-
-								//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
-								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
-								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
-								
-								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
+								#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+								if(!(targetClassDefinition->isLibraryFunctionDefinition))
 								{
-									NLCitem* currentItem = *parametersIterator;
-									if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+								#endif
+									string targetName = targetClassDefinition->functionNameSpecial;
+									string functionArguments = "";
+
+									//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
+									generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
+									string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
+									printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
+
+									#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+									for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
 									{
-										#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-										addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
+										NLCitem* currentItem = *parametersIterator;
+										if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+										{
+											#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+											addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
+											#endif
+										}
+										#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+										if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
+										{
+											#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+											addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
+											#endif
+										}
+										else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
+										{
+											#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+											addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
+											#endif
+										}
 										#endif
-									}
-									#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-									if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
-									{
-										#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-										addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
-										#endif
-									}
-									else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
-									{
-										#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-										addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
+										#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+										cout << "printClassDefinitions error{}: NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS has been depreciated" << endl;
 										#endif
 									}
 									#endif
-									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-									cout << "printClassDefinitions error{}: NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS has been depreciated" << endl;
-									#endif
+								#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 								}
 								#endif					
 							}

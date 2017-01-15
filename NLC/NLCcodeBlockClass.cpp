@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4b 12-October-2016
+ * Project Version: 1v4c 12-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -657,13 +657,13 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentC
 			//declare a generic type list (typeList) of local instance lists (instanceLists)
 			currentCodeBlockInTree = createCodeBlocksDeclareNewTypeListVariable(currentCodeBlockInTree, entity);
 
-			//add local instance list to generic type list
-			currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);
-
 		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 			getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;	//ie typeList has been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
 		}
 		#endif
+
+		//add local instance list to generic type list
+		currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);
 	}
 	#endif
 

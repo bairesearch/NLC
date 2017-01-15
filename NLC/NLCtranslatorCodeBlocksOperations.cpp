@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1c 07-February-2015
+ * Project Version: 1o1d 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -496,7 +496,6 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 						*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForConnectionType(): ") + entity->entityName + string(" ") + targetEntity->entityName);
 						#endif
 
-						targetConnection->NLCparsedForCodeBlocks = true;
 						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 						bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(targetEntity, generateContextBlocksVariables->primaryEntityInLogicalConditionConjunctionSubset, generateContextBlocksVariables->logicalConditionConjunctionIndex, &(generateContextBlocksVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 						if(!conjunctionConditionConnectionFound)
@@ -569,6 +568,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 							if(resultTemp)
 							{
 								result = true;
+								targetConnection->NLCparsedForCodeBlocks = true;
 
 								if(generateContextForObject)
 								{

@@ -23,7 +23,7 @@
  * File Name: NLPImain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c5a 02-November-2013
+ * Project Version: 1d1b 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -47,7 +47,7 @@ using namespace std;
 int main(int argc,char **argv);
 #ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 bool findFormalFunctionArgumentCorrelateInExistingList(vector<NLPIitem*> * existingFunctionArgumentList, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList);
-	bool findParentClass(NLPIclassDefinition * classDefinition, string variableName);
+	bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel);
 int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
 void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass);
 	string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName);

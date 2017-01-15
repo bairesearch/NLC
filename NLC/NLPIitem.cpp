@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c5a 02-November-2013
+ * Project Version: 1d1b 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -44,6 +44,7 @@ NLPIitem::NLPIitem(void)
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	functionArgumentCertified = false;
 	functionArgumentPassCastClassName = "";
 	#endif
 }
@@ -67,7 +68,20 @@ NLPIitem::NLPIitem(string newName, int newItemType)
 	className2 = "";
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	functionArgumentCertified = false;
 	functionArgumentPassCastClassName = "";
+	#endif
+}
+NLPIitem::NLPIitem(NLPIitem * newItem)
+{
+	itemType = newItem->itemType;
+	className = newItem->className;
+	instanceName = newItem->instanceName;
+	className2 = newItem->className2;
+	instanceName2 = newItem->instanceName2;
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	functionArgumentCertified = false;
+	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
 	#endif
 }
 NLPIitem::~NLPIitem(void)

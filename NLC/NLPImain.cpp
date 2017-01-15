@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c5a 02-November-2013
+ * Project Version: 1d1b 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -607,7 +607,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1c5a 02-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1d1b 02-November-2013" << endl;
 			exit(1);
 		}
 
@@ -853,7 +853,7 @@ int main(int argc,char **argv)
 						//cout << "foundClassDefinition: className = " << className << endl;
 						//contrast and compare function class arguments vs 
 
-						findFormalFunctionArgumentCorrelateInExistingList(&(functionClassDefinition->parameters), &(firstCodeBlockInTree->parameters), &classDefinitionList); 
+						findFormalFunctionArgumentCorrelateInExistingList(functionClassDefinition, &(firstCodeBlockInTree->parameters), &classDefinitionList); 
 					}	
 				}
 			}
@@ -880,14 +880,17 @@ int main(int argc,char **argv)
 
 #ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 
-bool findFormalFunctionArgumentCorrelateInExistingList(vector<NLPIitem*> * existingFunctionArgumentList, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList)
-{		
+bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * functionClassDefinition, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList)
+{
+	vector<NLPIitem*> * existingFunctionArgumentList = &(functionClassDefinition->parameters);
+	
 	for(vector<NLPIitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
 	{
 		NLPIitem * formalFunctionArgument = *parametersIterator;
 
 		NLPIclassDefinition * classDefinitionCorrespondingToExistingFunctionArgument = NULL;	
 		bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
+		int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLPI_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;
 		for(vector<NLPIitem*>::iterator parametersIterator = existingFunctionArgumentList->begin(); parametersIterator < existingFunctionArgumentList->end(); parametersIterator++)
 		{
 			NLPIitem * existingFunctionArgument = *parametersIterator;
@@ -905,19 +908,18 @@ bool findFormalFunctionArgumentCorrelateInExistingList(vector<NLPIitem*> * exist
 
 			if(foundClassDefinitionCorrespondingToExistingFunctionArgument)
 			{
-
-				if(formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
-				{
-					if(findParentClass(classDefinitionCorrespondingToExistingFunctionArgument, formalFunctionArgument->className))
+				if((formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL) || (formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE))
+				{//CHECKTHIS; do not currently distinguish between plural and singular variables - this will need to be updated in future
+					int inheritanceLevel = 0;
+					NLPIclassDefinition * tempClassDef = NULL;
+					if(findParentClass(tempClassDef, formalFunctionArgument->className, 0, &inheritanceLevel))
 					{
-						foundFormalFunctionArgumentCorrelateForExistingArgument = true;
-					}
-				}
-				else if(formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE)
-				{
-					if(findParentClass(classDefinitionCorrespondingToExistingFunctionArgument, formalFunctionArgument->className))
-					{
-						foundFormalFunctionArgumentCorrelateForExistingArgument = true;
+						if(inheritanceLevel < foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel)
+						{
+							foundFormalFunctionArgumentCorrelateForExistingArgument = true;
+							foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = inheritanceLevel;
+							classDefinitionCorrespondingToExistingFunctionArgument = tempClassDef;
+						}
 					}
 				}
 				else
@@ -941,31 +943,61 @@ bool findFormalFunctionArgumentCorrelateInExistingList(vector<NLPIitem*> * exist
 		}
 		else
 		{
-			cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map)" << endl;
-			//add a new function argument to the existing function argument list
-			
-			classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentCertified = true;
-			NLPIitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLPIitem(actionCondition, NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
-			argumentConditionItem->className2 = generateClassName(conditionObject);
-			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);
-			
+			#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+			bool foundFunctionArgumentInActionSubjectContents = false;
+			GIAentityNode * actionEntity = functionClassDefinition->actionOrConditionInstance;
+			if(!(actionEntity->actionSubjectEntity->empty()))
+			{							
+				GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
+				if(formalFunctionArgument->className == generateClassName(actionSubject))
+				{
+					foundFunctionArgumentInActionSubjectContents = true;
+				}
+				/*//ignore conditions of actionSubject; they will need to be explicitly referenced by the function
+				for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->conditionNodeList->begin(); entityIter != actionSubject->conditionNodeList->end(); entityIter++)
+				{
+					GIAentityNode * actionCondition = (*entityIter)->entity;
+				}
+				*/
+				for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->propertyNodeList->begin(); entityIter != actionSubject->propertyNodeList->end(); entityIter++)				
+				{
+					GIAentityNode * actionProperty = (*entityIter)->entity;
+					if(formalFunctionArgument->className == generateClassName(actionProperty))
+					{
+						foundFunctionArgumentInActionSubjectContents = true;
+					}
+				}
+			}					
+			if(!foundFunctionArgumentInActionSubjectContents)
+			{
+				cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map)" << endl;
+			#else
+				cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map)" << endl;
+			#endif
+				//add a new function argument to the existing function argument list
+				NLPIitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLPIitem(formalFunctionArgument);
+				existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);		
+			#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+			}
+			#endif
 		}
 	}
 }
 
-bool findParentClass(NLPIclassDefinition * classDefinition, string variableName)
+bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel)
 {
 	bool foundVariable = false;
 	if(classDefinition->name == variableName)
 	{
 		foundVariable = true;
+		*maxInheritanceLevel = inheritanceLevel;
 	}
 	else 
 	{	
 		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			if(findParentClass(targetClassDefinition, variableName))
+			if(findParentClass(targetClassDefinition, variableName, (inheritanceLevel+1), maxInheritanceLevel))
 			{
 				foundVariable = true;
 			}

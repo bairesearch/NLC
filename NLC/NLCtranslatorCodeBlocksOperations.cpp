@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u3c 27-September-2016
+ * Project Version: 1u4a 27-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -367,7 +367,8 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			}
 		}
 	}
-		
+	
+	bool newInitialisationSubject = false;	
 	if(foundSubject)
 	{
 		#ifdef NLC_DEBUG
@@ -379,7 +380,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		
 		NLCcodeblock* codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, subjectEntity, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);	//create new subject category list
-		bool newInitialisationSubject = false;
 		if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, false, &subjectParentEntity, &newInitialisationSubject))
 		{
 			//if(!addNewObjectForEachSubject)	//optional (removes redundancy but lowers consistency)
@@ -393,6 +393,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
 		}
 	}
+	bool newInitialisationObject = false;
 	if(foundObject)
 	{
 		#ifdef NLC_DEBUG
@@ -404,7 +405,6 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		NLCcodeblock* codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, objectEntity, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION, sentenceIndex);	//create new object category list
 		GIAentityNode* objectParentEntity = NULL;
-		bool newInitialisationObject = false;
 		if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, false, &objectParentEntity, &newInitialisationObject))
 		{
 			//if(!addNewObjectForEachSubject)	//optional (removes redundancy but lowers consistency)
@@ -447,7 +447,14 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		}
 		else
 		{
-			*currentCodeBlockInTree = clearCodeBlock(firstCodeBlockInSentence);
+			if(!newInitialisationSubject && !newInitialisationObject)
+			{
+				*currentCodeBlockInTree = clearCodeBlock(firstCodeBlockInSentence);
+			}
+			else
+			{
+				*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
+			}
 		}
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 	}
@@ -1860,6 +1867,8 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 		{
 			#ifdef NLC_DEBUG
 			cout << "generateParentInitialisationCodeBlockWithChecks passed" << endl;
+			cout << "currentEntity = " << currentEntity->entityName << endl;
+			cout << "*parentEntity = " << (*parentEntity)->entityName << endl;
 			#endif
 			
 			result = true;
@@ -1867,7 +1876,7 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 			//eg "barrel" in "A chicken's barrel eats the bike."
 			
 			if(*parentEntity == currentEntity)
-			{
+			{				
 				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, sentenceIndex);
 				#else

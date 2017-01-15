@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u3c 27-September-2016
+ * Project Version: 1u4a 27-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -339,7 +339,7 @@ NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBl
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(entityItem);
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-
+	
 	if(addReferencingContext)
 	{
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
@@ -347,7 +347,7 @@ NLCcodeblock* createCodeBlockAddNewEntityToLocalList(NLCcodeblock* currentCodeBl
 		#endif
 		#ifdef NLC_USE_ADVANCED_REFERENCING
 		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-		currentCodeBlockInTree =  createCodeBlocksAddEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), entity, sentenceIndex);
+		currentCodeBlockInTree = createCodeBlocksAddEntityToContextLevelListExecuteFunction(currentCodeBlockInTree, getCurrentLogicalConditionLevel(), entity, sentenceIndex);
 		#else
 		currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(currentCodeBlockInTree, entity, sentenceIndex);
 		#endif
@@ -623,7 +623,6 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodebloc
 		GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
 		if(!(networkIndexEntity->NLClocalListVariableHasBeenDeclared))
 		{
-
 			networkIndexEntity->NLClocalListVariableHasBeenDeclared = true;
 		#endif
 
@@ -1094,30 +1093,37 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 				if(!entityIsAlias)
 				{
 				#endif
-					#ifdef NLC_USE_ADVANCED_REFERENCING
-					NLCitem* functionArgumentTemp = NULL;
-					if(!findFunctionArgument(parameters, entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
+					#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
+					if(!findPropernounDefinitionLink(entityNodesActiveListComplete, entity))
 					{
 					#endif
-						#ifdef NLC_DEBUG
-						//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
-						#endif
-						//detected "the x" without declaring x (ie implicit declaration)
-						NLCitem* thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
-						parameters->push_back(thisFunctionArgumentInstanceItem);
-
-						//added 1j5d
-						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-						entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
-						#else
-						GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
-						if(!(networkIndexEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+						#ifdef NLC_USE_ADVANCED_REFERENCING
+						NLCitem* functionArgumentTemp = NULL;
+						if(!findFunctionArgument(parameters, entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST, &functionArgumentTemp))
 						{
-							entity->NLClocalListVariableHasBeenDeclared = true;
-							networkIndexEntity->NLClocalListVariableHasBeenDeclared = true;
+						#endif
+							#ifdef NLC_DEBUG
+							//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
+							#endif
+							//detected "the x" without declaring x (ie implicit declaration)
+							NLCitem* thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
+							parameters->push_back(thisFunctionArgumentInstanceItem);
+
+							//added 1j5d
+							#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+							entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
+							#else
+							GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
+							if(!(networkIndexEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+							{
+								entity->NLClocalListVariableHasBeenDeclared = true;
+								networkIndexEntity->NLClocalListVariableHasBeenDeclared = true;
+							}
+							#endif
+						#ifdef NLC_USE_ADVANCED_REFERENCING
 						}
 						#endif
-					#ifdef NLC_USE_ADVANCED_REFERENCING
+					#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
 					}
 					#endif
 				#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -1130,6 +1136,57 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 	}
 }
 
+
+
+#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
+bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, GIAentityNode* definiteEntity)
+{
+	//find a propernoun of the same name with a definition link within the context (function)
+	//requirements: this function assumes that it will also be tested that the propernoun is not an alias
+	bool foundPropernounDefinitionLink = false;
+	if(definiteEntity->grammaticalProperNounTemp)
+	{
+		GIAentityNode* firstReferenceToPropernounInContext = NULL;
+		int firstReferenceToPropernounInContextSentenceIndex = NLC_MAX_NUMBER_SENTENCES_PER_FUNCTION;
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+		{
+			GIAentityNode* entity = *entityIter;
+			if(entity->entityName == definiteEntity->entityName)
+			{
+				if(entity->grammaticalProperNounTemp)
+				{
+					if(entity->sentenceIndexTemp < firstReferenceToPropernounInContextSentenceIndex)
+					{
+						//NB this method doesn't support multiple declarations of a given propernoun in a given context (function)
+						firstReferenceToPropernounInContextSentenceIndex = entity->sentenceIndexTemp;
+						firstReferenceToPropernounInContext = entity;
+					}
+					for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+					{
+						GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
+						GIAentityNode* definitionEntity = definitionConnection->entity;
+						if(definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+						{
+							if(definitionEntity->entityName != entity->entityName)	//ignore dream mode definitions connections
+							{
+								//if NLC ref, verify sentence index TODO
+								//eg Africa is a country. Africa has a castle with knights.
+								foundPropernounDefinitionLink = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		if(foundPropernounDefinitionLink)
+		{
+			//cout << "foundPropernounDefinitionLink" << endl;
+			firstReferenceToPropernounInContext->NLCfirstInstanceOfProperNounInContext = true;	//so that the entity will be interpreted as a new declaration by isDefiniteEntity
+		}
+	}
+	return foundPropernounDefinitionLink;
+}
+#endif
 
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
@@ -1337,7 +1394,11 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 bool isDefiniteEntity(GIAentityNode* entity)
 {
 	bool isDefiniteEntity = false;
-	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
+	#ifdef NLC_TRANSLATOR_INTERPRET_PROPERNOUNS_WITH_DEFINITION_LINK_AS_NEWLY_DECLARED
+	if((entity->grammaticalDefiniteTemp) || ((entity->grammaticalProperNounTemp) && !(entity->NLCfirstInstanceOfProperNounInContext)))	
+	#else
+	if((entity->grammaticalDefiniteTemp) || ((entity->grammaticalProperNounTemp))
+	#endif
 	{
 		isDefiniteEntity = true;
 	}

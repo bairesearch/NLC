@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2c 28-November-2014
+ * Project Version: 1m3a 30-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -72,7 +72,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 				}
 				
 				#ifdef NLC_DEBUG
-				//cout << "generateClassHeirarchy: entityNode->entityName = " << entityNode->entityName << endl;
+				cout << "generateClassHeirarchy: entityNode->entityName = " << entityNode->entityName << endl;
 				#endif
 
 				for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
@@ -92,25 +92,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 								if(!(targetEntity->disabled))
 								{
 									#ifdef NLC_DEBUG
-									//cout << "generateClassHeirarchy(): targetEntity->entityName = " << targetEntity->entityName << endl;
+									cout << "generateClassHeirarchy(): targetEntity->entityName = " << targetEntity->entityName << endl;
 									#endif
-
-									#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-									GIAentityNode * conditionEntity = NULL;
-									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
-									{
-										conditionEntity = targetEntity;
-										if(!(targetEntity->conditionObjectEntity->empty()))
-										{
-											targetEntity = (targetEntity->conditionObjectEntity->back())->entity;	//index by conditionObject not by condition
-										}
-										else
-										{
-											cout << "generateClassHeirarchy() error: condition has no object" << endl;
-										}
-									}
-									#endif
-
+									
 									string targetName = "";
 									string targetClassName = "";
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
@@ -129,11 +113,21 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									}
 
 									bool foundTargetClassDefinition = false;
-									NLCclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
+									NLCclassDefinition * targetClassDefinition = NULL;
+									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+									{	
+										targetClassDefinition = findClassDefinitionCondition(classDefinitionList, targetEntity, &foundTargetClassDefinition);	//see if class definition already exists
+									}
+									else
+									{
+										targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
+									}
+									
 									if(!foundTargetClassDefinition)
 									{
 										targetClassDefinition = new NLCclassDefinition(targetName);
 										classDefinitionList->push_back(targetClassDefinition);
+										
 									}
 
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
@@ -143,12 +137,16 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										targetClassDefinition->actionOrConditionInstance = targetEntity;
 										#endif
 									}
+									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+									{
+										targetClassDefinition->isConditionInstance = true;
+									}
 
 									#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
 									if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isConcept)) 16 April 2014
 									#else
 									#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isConcept) ||) 16 April 2014
+									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isConcept) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
 									#else
 									if((targetEntity->isAction) || (targetEntity->isActionConcept) && !(targetEntity->isConcept))	//removed; || (targetEntity->isCondition) 16 April 2014
 									#endif
@@ -179,7 +177,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									{//declare conditions
 										//conditionList
 										bool foundLocalClassDefinition = false;
-										NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+										NLCclassDefinition * localClassDefinition = findClassDefinitionCondition(&(classDefinition->conditionList), targetEntity, &foundLocalClassDefinition);	//see if class definition already exists
 										if(!foundLocalClassDefinition)
 										{
 											#ifdef NLC_DEBUG
@@ -189,15 +187,18 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 											classDefinition->conditionList.push_back(targetClassDefinition);
 
 											NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
+
 											if(!(targetEntity->conditionObjectEntity->empty()))
 											{
 												string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
 												classDeclarationConditionsListItem->className2 = conditionObjectClassName;
+												//cout << "\tgenerateClassHeirarchy(): conditionObjectClassName = " << conditionObjectClassName << endl;
 											}
 											else
 											{
 												cout << "generateClassHeirarchy() error: condition has no object" << endl;
 											}
+
 											targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
 										}
 									}

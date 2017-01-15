@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2c 28-November-2014
+ * Project Version: 1m3a 30-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -65,6 +65,8 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	functionNameSpecial = "";
 	
 	isActionOrConditionInstanceNotClass = false;
+	isConditionInstance = false;
+
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
@@ -81,6 +83,7 @@ NLCclassDefinition::NLCclassDefinition(void)
 	functionNameSpecial = "";
 
 	isActionOrConditionInstanceNotClass = false;
+	isConditionInstance = false;
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
@@ -114,12 +117,47 @@ NLCclassDefinition * findClassDefinition(vector<NLCclassDefinition *> * classDef
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition *  currentClassDef = *classDefinitionIter;
-		if(currentClassDef->name == name)
+		if(!(currentClassDef->isConditionInstance))
 		{
-			//cout << "foundClassDefinition: className = " << currentClassDef->name << endl;
-			classDefinitionFound = currentClassDef;
-			*foundClassDefinition = true;
+			if(currentClassDef->name == name)
+			{
+				//cout << "foundClassDefinition: className = " << currentClassDef->name << endl;
+				classDefinitionFound = currentClassDef;
+				*foundClassDefinition = true;
+			}
 		}
+	}
+	return classDefinitionFound;
+}
+
+NLCclassDefinition * findClassDefinitionCondition(vector<NLCclassDefinition *> * classDefinitionList, GIAentityNode * targetEntity, bool * foundClassDefinition)
+{
+	NLCclassDefinition * classDefinitionFound = NULL;
+	if(!(targetEntity->conditionObjectEntity->empty()))
+	{
+		string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+			
+		for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+		{
+			NLCclassDefinition *  currentClassDef = *classDefinitionIter;
+			if(currentClassDef->name == generateClassName(targetEntity))
+			{
+				if(!(currentClassDef->parameters.empty()))
+				{
+					NLCitem * classDeclarationConditionsListItem = currentClassDef->parameters.back(); 
+					if(classDeclarationConditionsListItem->className2 == conditionObjectClassName)
+					{
+						cout << "findClassDefinitionCondition: className = " << currentClassDef->name << endl;
+						classDefinitionFound = currentClassDef;
+						*foundClassDefinition = true;
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "findClassDefinitionCondition() error: condition has no object" << endl;
 	}
 	return classDefinitionFound;
 }

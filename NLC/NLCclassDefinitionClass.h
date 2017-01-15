@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2c 28-November-2014
+ * Project Version: 1m3a 30-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -103,6 +103,8 @@ public:
 	#endif
 
 	bool isActionOrConditionInstanceNotClass;
+	bool isConditionInstance;	//added 1m3a
+
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	GIAentityNode * actionOrConditionInstance;
 	#endif
@@ -119,6 +121,7 @@ public:
 
 
 NLCclassDefinition * findClassDefinition(vector<NLCclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition);
+NLCclassDefinition * findClassDefinitionCondition(vector<NLCclassDefinition *> * classDefinitionList, GIAentityNode * targetEntity, bool * foundClassDefinition);
 bool findFunctionDependencyInList(vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency ** functionDependencyFound);
 bool findFunctionDependencyInList(vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, int functionIndex, NLCclassDefinitionFunctionDependency ** functionDependencyFound);	
 	bool compareFunctionDependency(NLCclassDefinitionFunctionDependency * functionDependency, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass);

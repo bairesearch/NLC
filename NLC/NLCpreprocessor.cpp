@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2d 27-July-2014
+ * Project Version: 1h2e 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -157,6 +157,10 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				if(detectMathSymbolsInLine(&lineContents))
 				{
 					currentNLCsentenceInList->isMath = true;
+					
+					#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+					replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(&lineContents);
+					#endif
 				}
 				
 				int lineLogicalConditionOperator;
@@ -506,7 +510,7 @@ bool detectMathSymbolsInLine(string * lineContents)
 	bool mathSymbolFound = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
-		int symbolFoundIndex = lineContents->find(preprocessorMathOperatorsNumberOfTypes[i]);
+		int symbolFoundIndex = lineContents->find(preprocessorMathOperators[i]);
 		if(symbolFoundIndex != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			mathSymbolFound = true;
@@ -514,6 +518,23 @@ bool detectMathSymbolsInLine(string * lineContents)
 	}
 	return mathSymbolFound;
 }
+
+#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents)
+{	
+	bool result = false;
+	if(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS <= 2)
+	{
+		//replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords() is required to prevent creation of nlp parsable phrase from 2 word variable declarations
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
+		{
+			*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathNaturalLanguageVariables[i], preprocessorMathMathTextVariables[i]);	//NB this is type sensitive; could be changed in the future
+			result = true;
+		}
+	}	
+	return result;
+}
+#endif
 
 bool detectAndReplaceIsEqualToInformalTextWithSymbol(string * lineContents)
 {
@@ -545,7 +566,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents
 
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
-		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsNumberOfTypes[i]);	//NB this is type sensitive; could be changed in the future
+		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i]);	//NB this is type sensitive; could be changed in the future
 	}
 	
 	//replace the logical condition operator with a lower case version if necessary
@@ -677,11 +698,12 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 						{	
 							//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-							cout << "undeclared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_DEFAULT_MATHTEXT_VARIABLE_TYPE << currentWord << endl;	//inserting mathText variable declaration type (eg double)
+							cout << "undeclared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT << currentWord << endl;	//inserting mathText variable declaration type (eg double)
 							//cout << "old currentPhrase = " << currentPhrase << endl;
 							#endif
-							currentPhrase.insert(0, NLC_PREPROCESSOR_MATH_DEFAULT_MATHTEXT_VARIABLE_TYPE);
+							currentPhrase.insert(0, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT);
 							newlyDeclaredVariable = currentWord;
+							mandatoryCharacterFoundInCurrentWord = false;
 							//cout << "new currentPhrase = " << currentPhrase << endl;
 						}
 					}
@@ -689,7 +711,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				#endif
 				
 				wordIndex++;
-				if(!wordDelimiterCharacterFound || finalWordInSentenceFoundAndIsLegal)
+				if(!wordDelimiterCharacterFound || finalWordInSentenceFoundAndIsLegal && mandatoryCharacterFoundInCurrentWord)	//&& mandatoryCharacterFoundInCurrentWord is required for NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 				{
 					mandatoryCharacterFoundInCurrentWord = false;
 
@@ -892,7 +914,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					}
 					for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 					{
-						int index = firstNLCsentenceInFullSentence->mathText.find(preprocessorMathOperatorsNumberOfTypes[i], finalParsablePhraseReferencePos - preprocessorMathOperatorsNumberOfTypes[i].length() - 1);	//-1 to take into account intermediary white space CHAR_SPACE
+						int index = firstNLCsentenceInFullSentence->mathText.find(preprocessorMathOperators[i], finalParsablePhraseReferencePos - preprocessorMathOperators[i].length() - 1);	//-1 to take into account intermediary white space CHAR_SPACE
 						if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
 						{
 							//">"/"<"/"="/"+" is the final text in the mathText

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2d 27-July-2014
+ * Project Version: 1h2e 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -79,7 +79,7 @@
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_IS_EQUAL_TO "="
 		#define NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES (5)
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_CHAR (CHAR_EQUALS)
-		static string preprocessorMathOperatorsNumberOfTypes[NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES] = {NLC_PREPROCESSOR_MATH_OPERATOR_GREATER_THAN, NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS, NLC_PREPROCESSOR_MATH_OPERATOR_PLUS, NLC_PREPROCESSOR_MATH_OPERATOR_IS_EQUAL_TO};
+		static string preprocessorMathOperators[NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES] = {NLC_PREPROCESSOR_MATH_OPERATOR_GREATER_THAN, NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS, NLC_PREPROCESSOR_MATH_OPERATOR_PLUS, NLC_PREPROCESSOR_MATH_OPERATOR_IS_EQUAL_TO};
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES (63)
 		static char preprocessorMathNLPparsableCharacters[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES (53)
@@ -98,10 +98,19 @@
 			#define NLC_PREPROCESSOR_MATH_DUMMY_NUMERICAL_VALUE_BASE (9900)
 			//#define NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES 	//global defs are disabled by default
 		#endif
+		
+		#define NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+		#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES (7)
+			static string preprocessorMathNaturalLanguageVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"bool", "char", "short", "int", "integer", "float", "double"};
+			//static string preprocessorMathMathTextVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"$0", "$1", "$2", "$4", "$4", "#4", "#8"};
+			static string preprocessorMathMathTextVariables[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES] = {"bool$", "char$", "short$", "int$", "integer$", "float$", "double$"};
+		#endif
 		#define NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-			#define NLC_PREPROCESSOR_MATH_DEFAULT_MATHTEXT_VARIABLE_TYPE "double "
+			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT "double$ "
 		#endif
+		
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL " is "
 		#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	//replaces NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED implementation
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE

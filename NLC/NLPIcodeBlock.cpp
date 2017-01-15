@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e9b 25-November-2013
+ * Project Version: 1e9c 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -435,8 +435,17 @@ NLPIcodeblock * createCodeBlockForGivenProperties(NLPIcodeblock * currentCodeBlo
 NLPIcodeblock * createCodeBlockForGivenProperty(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* propertyEntity, int sentenceIndex)
 {
 	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_CLASS);
-	propertyItem->context.push_back(item->instanceName);
-	currentCodeBlockInTree = createCodeBlockForPropertyList(currentCodeBlockInTree, propertyItem);
+	
+	if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
+	{
+		currentCodeBlockInTree = createCodeBlockForPropertyListLocal(currentCodeBlockInTree, propertyItem);
+	}
+	else
+	{
+		//cout << "createCodeBlockForGivenProperty: propertyEntity = " << propertyEntity->entityName << endl;
+		propertyItem->context.push_back(item->instanceName);
+		currentCodeBlockInTree = createCodeBlockForPropertyList(currentCodeBlockInTree, propertyItem);
+	}
 	
 	currentCodeBlockInTree = createCodeBlockForStatements(currentCodeBlockInTree, propertyItem, propertyEntity, sentenceIndex);
 	return currentCodeBlockInTree;
@@ -468,9 +477,11 @@ NLPIcodeblock * createCodeBlockForGivenCondition(NLPIcodeblock * currentCodeBloc
 
 		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_CLASS);
 		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_CLASS);
+		
 		conditionItem->context.push_back(item->instanceName);
 		conditionObjectItem->context.push_back(item->instanceName);	//redundant
 		currentCodeBlockInTree = createCodeBlockForConditionList(currentCodeBlockInTree, conditionItem, conditionObjectItem);
+
 		//cout << "createCodeBlockForGivenCondition: " << conditionObjectItem->instanceName << endl;
 		currentCodeBlockInTree = createCodeBlockForStatements(currentCodeBlockInTree, conditionObjectItem, conditionObject, sentenceIndex);
 	}

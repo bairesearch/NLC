@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e9b 25-November-2013
+ * Project Version: 1e9c 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -67,9 +67,9 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 
 				if(checkSentenceIndexParsingCodeBlocks(actionEntity, sentenceIndex, true))
 				{
-					//#ifdef NLPI_DEBUG
+					#ifdef NLPI_DEBUG
 					cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
-					//#endif
+					#endif
 					//cout << "sentenceIndexC = " << sentenceIndex << endl;
 					//cout << "h1" << endl;
 					
@@ -371,7 +371,14 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 			}
 			#endif		
 			NLPIitem * propertyItem = new NLPIitem(currentEntity, NLPI_ITEM_TYPE_CLASS);
-			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+			if(currentEntity->NLPIlocalListVariableHasBeenDeclared)
+			{
+				*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
+			}
+			else
+			{
+				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+			}
 		}
 	}
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15a 23-October-2014
+ * Project Version: 1k15b 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2140,7 +2140,7 @@ bool findFunctionArgument(vector<NLCitem*> * parameters, GIAentityNode * entity,
 		{
 			//cout << "(currentItem->itemType == itemType)" << endl;
 			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-			if(currentItem->instanceName == item->instanceName)
+			if(currentItem->instanceName == generateInstanceName(entity))
 			#else
 			if(currentItem->name == entity->entityName)	//or if(currentItem->className == generateClassName(entity->entityName))
 			#endif

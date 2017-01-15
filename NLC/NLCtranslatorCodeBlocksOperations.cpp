@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l15b 07-November-2014
+ * Project Version: 1l15c 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1504,9 +1504,16 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 			#ifndef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION2
 			else
 			{
-				cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContextTopLevel && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << ", sentenceIndex = " << sentenceIndex << endl;
-				cout << "sentenceIndex = " << sentenceIndex << endl; 
-				exit(0);
+				#ifdef NLC_RECORD_ACTION_HISTORY
+				if(!(entity->NLCcontextGenerated))	//e.g. must perform this check because "a pie" in "The chicken that ate a pie rows the boat." will not be initialised by generateParentInitialisationCodeBlockWithChecks() [and will remain undeclared] because its context will be parsed by generateActionCodeBlocks() when it is translating "the chicken... rows the boat" [a product of "that ate a pie" being in the same reference set as row action subject "chicken"] 
+				{	
+				#endif
+					cout << "\t\t generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContextTopLevel && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << ", sentenceIndex = " << sentenceIndex << endl;
+					cout << "\t\t sentenceIndex = " << sentenceIndex << endl; 
+					exit(0);
+				#ifdef NLC_RECORD_ACTION_HISTORY
+				}
+				#endif
 			}
 			#endif
 		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//ie #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING

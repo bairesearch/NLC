@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n16b 29-January-2015
+ * Project Version: 1n16c 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -454,7 +454,26 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	cout << "Premature quit for debug" << endl;	
 	exit(0);
 	#endif
-
+	
+	/*
+	NLCsentence* currentSentence = firstNLCfunctionInList->firstNLCsentenceInFunction;
+	while(currentSentence->next != NULL)
+	{
+		cout << "\ncurrentSentence->sentenceContents = " << currentSentence->sentenceContents << endl;
+		cout << "currentSentence->sentenceIndex = " << currentSentence->sentenceIndex << endl;
+		cout << "currentSentence->indentation = " << currentSentence->indentation << endl;
+		cout << "currentSentence->hasLogicalConditionOperator = " << currentSentence->hasLogicalConditionOperator << endl;
+		cout << "currentSentence->logicalConditionOperator = " << currentSentence->logicalConditionOperator << endl;
+		cout << "currentSentence->mathText = " << currentSentence->mathText << endl;
+		cout << "currentSentence->isMath = " << currentSentence->isMath << endl;
+		cout << "currentSentence->mathTextNLPparsablePhraseIndex = " << currentSentence->mathTextNLPparsablePhraseIndex << endl;
+		cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
+		cout << "currentSentence->sentenceOriginal = " << currentSentence->sentenceOriginal << endl;
+		cout << "currentSentence->sentenceContentsOriginal = " << currentSentence->sentenceContentsOriginal << endl;
+		currentSentence = currentSentence->next;
+	}
+	*/
+	
 	return result;
 }
 

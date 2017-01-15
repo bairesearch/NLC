@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n16b 29-January-2015
+ * Project Version: 1n16c 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -96,7 +96,21 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	{
 		int sentenceIndex = sentenceIter->first;
 		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
-				
+		
+		/*
+		cout << "\ncurrentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
+		cout << "currentNLCsentenceInList->sentenceIndex = " << currentNLCsentenceInList->sentenceIndex << endl;
+		cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
+		cout << "currentNLCsentenceInList->hasLogicalConditionOperator = " << currentNLCsentenceInList->hasLogicalConditionOperator << endl;
+		cout << "currentNLCsentenceInList->logicalConditionOperator = " << currentNLCsentenceInList->logicalConditionOperator << endl;
+		cout << "currentNLCsentenceInList->mathText = " << currentNLCsentenceInList->mathText << endl;
+		cout << "currentNLCsentenceInList->isMath = " << currentNLCsentenceInList->isMath << endl;
+		cout << "currentNLCsentenceInList->mathTextNLPparsablePhraseIndex = " << currentNLCsentenceInList->mathTextNLPparsablePhraseIndex << endl;
+		cout << "currentNLCsentenceInList->mathTextNLPparsablePhraseTotal = " << currentNLCsentenceInList->mathTextNLPparsablePhraseTotal << endl;
+		cout << "currentNLCsentenceInList->sentenceOriginal = " << currentNLCsentenceInList->sentenceOriginal << endl;
+		cout << "currentNLCsentenceInList->sentenceContentsOriginal = " << currentNLCsentenceInList->sentenceContentsOriginal << endl;
+		*/
+		
 		#ifdef NLC_DEBUG
 		cout << "generateCodeBlocks(): sentenceIndex = " << sentenceIndex << endl;
 		#endif

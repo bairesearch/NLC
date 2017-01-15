@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n16b 29-January-2015
+ * Project Version: 1n16c 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1023,7 +1023,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 								
 								if(verifyObject)
 								{
-									//cout << "verifyObject = " << verifyObject << endl;
+									cout << "verifyObject = " << verifyObject << endl;
 									//save objectEntity as tempVariable objectEntityCandidate
 									string candidateObjectClassName = generateClassName(objectEntity);
 									string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);
@@ -1243,8 +1243,6 @@ bool createCodeBlockForGivenAction(NLCcodeblock** currentCodeBlockInTree, string
 
 	if(!(actionEntity->NLCcontextGeneratedTemp))
 	{
-		result = true;
-
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		actionEntity->NLCcontextGenerated = true;
 		#endif
@@ -1265,6 +1263,8 @@ bool createCodeBlockForGivenAction(NLCcodeblock** currentCodeBlockInTree, string
 		bool hasActionObject = false;
 		if(!(actionEntity->actionObjectEntity->empty()))
 		{
+			result = true;
+			
 			GIAentityNode* actionObject = (actionEntity->actionObjectEntity->back())->entity;
 			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 			actionObject->NLCcontextGenerated = true;
@@ -1294,8 +1294,6 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock** currentCodeBlockInTree
 
 	if(!(actionEntity->NLCcontextGeneratedTemp))
 	{
-		result = true;
-		
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		actionEntity->NLCcontextGenerated = true;
 		#endif
@@ -1316,6 +1314,8 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock** currentCodeBlockInTree
 		bool hasActionSubject = false;
 		if(!(actionEntity->actionSubjectEntity->empty()))
 		{
+			result = true;
+			
 			GIAentityNode* actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
 			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 			actionSubject->NLCcontextGenerated = true;

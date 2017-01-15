@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o4a 13-February-2015
+ * Project Version: 1o4b 13-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -761,7 +761,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	bool addNewObjectForEachSubject = false;
 	/*
 	implement all/each;
-		FUTURE NLC: if detect "each" predeterminer of then for quantity entities add a new object for each subject
+		if detect "each"/"every"/"all" predeterminer and object is singular [REDUNDANT: or quantity entity] then add a new object for each subject
 			eg Each player has a colour.
 		if detect plural subject and indefinite plural object, then add a new object for each subject 
 			eg Each player has 16 pieces.
@@ -778,7 +778,23 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			generateContextBlocksVariables.lastParent = subjectEntity;	//is this required? (designed for dual/two-way condition connections only)
 			GIAentityNode* objectParentEntity = NULL;
 			getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, false, &objectParentEntity, &newInitialisationObject, true);
-
+			
+			bool subjectEntityPredeterminerDetected = false;
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES			
+			unordered_map<int,int>::iterator iterTemp = subjectEntity->grammaticalPredeterminerTempSentenceArray.find(sentenceIndex);
+			if(iterTemp !=  subjectEntity->grammaticalPredeterminerTempSentenceArray.end())
+			//if(subjectEntity->grammaticalPredeterminerTempSentenceArray.at(sentenceIndex) != -1)
+			{
+				//subjectEntityPredeterminerDetected = intInIntArray(grammaticalPredeterminerTempSentenceArray.at(sentenceIndex)->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+				subjectEntityPredeterminerDetected = intInIntArray(iterTemp->second, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+			}
+			#else
+			subjectEntityPredeterminerDetected = intInIntArray(subjectEntity->grammaticalPredeterminerTemp, entityPredeterminerSmallArray, GRAMMATICAL_PREDETERMINER_SMALL_ARRAY_NUMBER_OF_TYPES);
+			#endif
+			if(subjectEntityPredeterminerDetected && (objectEntity->grammaticalNumber != GRAMMATICAL_NUMBER_PLURAL))
+			{
+				addNewObjectForEachSubject = true;
+			}
 			if((subjectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && (objectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL) && newInitialisationObject)
 			{
 				addNewObjectForEachSubject = true;

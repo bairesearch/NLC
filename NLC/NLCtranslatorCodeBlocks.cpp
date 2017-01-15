@@ -23,7 +23,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f1c 09-December-2013
+ * Project Version: 1f2a 10-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -132,11 +132,13 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 					}
 					if(foundConditionSubject && foundConditionObject)
 					{
+						//cout << "foundConditionSubject && foundConditionObject" << endl;
 						//1. disable all classStructure formation based on condition object subset
 
 						bool passedConditionObject = false;
 						if(conditionObject->isConcept || conditionObject->isSubstanceConcept)
 						{//eg If red dogs are pies, eat the cabbage
+							//cout << "conditionObject->isSubstanceConcept = " << conditionObject->isSubstanceConcept << endl;
 							#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
 							//isSubstanceConcept case not yet coded
 							//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"] 
@@ -148,6 +150,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							}
 							else if(conditionObject->isSubstanceConcept)
 							{
+								cout << "conditionObject->isSubstanceConcept" << endl;
 								GIAentityNode * substanceConceptEntityCompare = conditionObject;	//if statement comparison... 
 								GIAentityNode * substanceConceptEntityCompareConcept = (substanceConceptEntityCompare->entityNodeDefiningThisInstance->back())->entity;
 
@@ -162,6 +165,9 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 						}
 						else if(conditionObject->isAction || conditionObject->isActionConcept)
 						{
+							//eg The sun fights. If the sun fights, the dog is happy. / If the sun fights, eat the cabbage.
+							
+							//cout << "conditionObject->isAction" << endl;
 							#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 							//verify the truth of the if statement now
 							//NO: get class and see if it has the relevant action (function) defined with the relevant action object
@@ -174,15 +180,16 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, conditionObject))
 							{
 								passedConditionObject = true;
+								//cout << "passedConditionObject" << endl;
 							}
 							conditionSubject->disabled = false;
 							#endif		
 						}
 						else
-						{//eg if the red dog is the/a pie, eat the cabbage
+						{//eg If the sun is bright, the dog is happy. / If the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
 							//cout << "q3a" << endl;
 							//code copied from [*^]
-							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, conditionObject, sentenceIndex);	//CHECKTHIS; AndInitialiseParentIfNecessary component
+							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, conditionObject, sentenceIndex);	//NB this will set parsedForNLCcodeBlocks to true, so NLCconditionLogicalOperations can be set to false without causing any problems (ie generateCodeBlocksPart1/generateCodeBlocksPart2 will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component	
 							tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 							passedConditionObject = true;
 							//cout << "q3aEND" << endl;
@@ -206,17 +213,18 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							}
 							else if(conditionSubject->isAction)
 							{
-								generateActionCodeBlocks(currentCodeBlockInTree, conditionSubject, sentenceIndex, NLCfunctionName);
-								
+								//eg If the sun is bright, eat the cabbage.
 								tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+
+								generateActionCodeBlocks(currentCodeBlockInTree, conditionSubject, sentenceIndex, NLCfunctionName);
 							}
 							else
 							{
+								//eg If the sun is bright, the dog is happy.
 								//cout << "q3b" << endl;
-								
-								generateInitialisationCodeBlock(currentCodeBlockInTree, conditionSubject, sentenceIndex, NLCfunctionName);
-								
 								tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+
+								generateInitialisationCodeBlock(currentCodeBlockInTree, conditionSubject, sentenceIndex, NLCfunctionName);
 							}
 						}
 					} 
@@ -368,170 +376,177 @@ bool generateCodeBlocksPart1(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 
 void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * actionEntity, int sentenceIndex, string NLCfunctionName)
 {
-	#ifdef NLC_DEBUG
-	cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
-	#endif
-	//cout << "sentenceIndexC = " << sentenceIndex << endl;
-	//cout << "h1" << endl;
-
-	bool actionHasObject = false;
-	GIAentityNode * objectEntity = NULL;
-	if(!(actionEntity->actionObjectEntity->empty()))
+	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	if(!(actionEntity->NLCconditionLogicalOperations))
 	{
-		actionHasObject = true;
-		objectEntity = (actionEntity->actionObjectEntity->back())->entity;
-	}
-	//cout << "h1b" << endl;
-	bool actionHasSubject = false;
-	GIAentityNode * subjectEntity = NULL;
-	if(!(actionEntity->actionSubjectEntity->empty()))
-	{
-		actionHasSubject = true;
-		subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
-	}
-
-	//cout << "h2" << endl;
-
-
-	NLCcodeblock * functionExecuteCodeBlockInTree = NULL;
-
-	NLCitem * functionItem = NULL;
-	if(actionHasObject || actionHasSubject)
-	{
-		//[q**^]
-		functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION);
-
-		#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-		initialiseFunctionArguments(currentCodeBlockInTree, actionEntity, sentenceIndex);
-		//firstCodeBlockInSentence = *currentCodeBlockInTree;		//removed 1f1b... [CHECKTHIS]
+	#endif				
+		#ifdef NLC_DEBUG
+		cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
 		#endif
+		//cout << "sentenceIndexC = " << sentenceIndex << endl;
+		//cout << "h1" << endl;
 
-		if(actionHasSubject)
+		bool actionHasObject = false;
+		GIAentityNode * objectEntity = NULL;
+		if(!(actionEntity->actionObjectEntity->empty()))
 		{
-			//[*^]
-			cout << "executing generateContextBlocksAndInitialiseParentIfNecessary subjectEntity" << endl;
-			generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, subjectEntity, sentenceIndex);
+			actionHasObject = true;
+			objectEntity = (actionEntity->actionObjectEntity->back())->entity;
 		}
+		//cout << "h1b" << endl;
+		bool actionHasSubject = false;
+		GIAentityNode * subjectEntity = NULL;
+		if(!(actionEntity->actionSubjectEntity->empty()))
+		{
+			actionHasSubject = true;
+			subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
+		}
+
+		//cout << "h2" << endl;
+
+
+		NLCcodeblock * functionExecuteCodeBlockInTree = NULL;
+
+		NLCitem * functionItem = NULL;
+		if(actionHasObject || actionHasSubject)
+		{
+			//[q**^]
+			functionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION);
+
+			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+			initialiseFunctionArguments(currentCodeBlockInTree, actionEntity, sentenceIndex);
+			//firstCodeBlockInSentence = *currentCodeBlockInTree;		//removed 1f1b... [CHECKTHIS]
+			#endif
+
+			if(actionHasSubject)
+			{
+				//[*^]
+				//cout << "executing generateContextBlocksAndInitialiseParentIfNecessary subjectEntity" << endl;
+				generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, subjectEntity, sentenceIndex);
+			}
+			if(actionHasObject)
+			{
+				generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, objectEntity, sentenceIndex);
+			}					
+		}
+
+
 		if(actionHasObject)
 		{
-			generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, objectEntity, sentenceIndex);
-		}					
-	}
+			bool objectRequiredTempVar = false;	//not used
+			NLCitem * objectItem = NULL;
+			*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar, NLC_ITEM_TYPE_FUNCTION_OBJECT);
 
+			//cout << "h3" << endl;
+			if(actionHasSubject)
+			{
+				bool subjectRequiredTempVar = false;
+				NLCitem * subjectItem = NULL;
+				*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, NLC_ITEM_TYPE_FUNCTION_OWNER);
+				//cout << "h4" << endl;
+				if(subjectRequiredTempVar)
+				{	
+					//cout << "subjectRequiredTempVar" << endl;						
+					functionItem->context.push_back(subjectItem->instanceName);
 
-	if(actionHasObject)
-	{
-		bool objectRequiredTempVar = false;	//not used
-		NLCitem * objectItem = NULL;
-		*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar, NLC_ITEM_TYPE_FUNCTION_OBJECT);
+					#ifdef NLC_NOT_NECESSARY
+					//required just for implictlyDeclaredFunctionList...;
+					NLCitem * functionItemFullContextForRecordOnly = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION); 
+					getEntityContext(subjectEntity, &(functionItemFullContextForRecordOnly->context), true, sentenceIndex, true);
+					implictlyDeclaredFunctionList.push_back(functionItemFullContextForRecordOnly);
+					#endif
+				}
+				else
+				{
+					getEntityContext(subjectEntity, &(functionItem->context), true, sentenceIndex, true);
+					#ifdef NLC_NOT_NECESSARY
+					implictlyDeclaredFunctionList.push_back(functionItem);
+					#endif
+				}
 
-		//cout << "h3" << endl;
-		if(actionHasSubject)
+				//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
+			}
+			#ifdef NLC_NOT_NECESSARY
+			else
+			{
+				implictlyDeclaredFunctionListTopLevel.push_back(functionItem);					
+			}
+			#endif
+			//cout << "h5" << endl;
+			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, objectItem);
+
+			actionEntity->parsedForNLCcodeBlocks = true;
+			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
+			//objectEntity->parsedForNLCcodeBlocksActionRound = true;
+		}
+		else if(actionHasSubject)
 		{
-			bool subjectRequiredTempVar = false;
+			//[**^]
+			bool subjectRequiredTempVar = false;	//not used
 			NLCitem * subjectItem = NULL;
 			*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, NLC_ITEM_TYPE_FUNCTION_OWNER);
-			//cout << "h4" << endl;
+
+			//cout << "h3" << endl;
 			if(subjectRequiredTempVar)
 			{	
 				//cout << "subjectRequiredTempVar" << endl;						
 				functionItem->context.push_back(subjectItem->instanceName);
-
-				#ifdef NLC_NOT_NECESSARY
-				//required just for implictlyDeclaredFunctionList...;
-				NLCitem * functionItemFullContextForRecordOnly = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION); 
-				getEntityContext(subjectEntity, &(functionItemFullContextForRecordOnly->context), true, sentenceIndex, true);
-				implictlyDeclaredFunctionList.push_back(functionItemFullContextForRecordOnly);
-				#endif
 			}
 			else
 			{
 				getEntityContext(subjectEntity, &(functionItem->context), true, sentenceIndex, true);
-				#ifdef NLC_NOT_NECESSARY
-				implictlyDeclaredFunctionList.push_back(functionItem);
-				#endif
 			}
+			//cout << "h5" << endl;
+			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem);
 
+			actionEntity->parsedForNLCcodeBlocks = true;
+			//actionEntity->parsedForNLCcodeBlocksActionRound = true;
 			//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
-		}
-		#ifdef NLC_NOT_NECESSARY
-		else
-		{
-			implictlyDeclaredFunctionListTopLevel.push_back(functionItem);					
+		}	
+
+		#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+		if(actionHasObject || actionHasSubject)
+		{											
+			#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
+			generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
+			#endif
+
+			//detect action properties and conditions (and disable these for NLC generate code block parse: they will become function execution arguments)
+			for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+			{					
+				GIAentityNode * actionCondition = (*entityIter)->entity;
+				(*entityIter)->parsedForNLCcodeBlocks = true;
+				actionCondition->parsedForNLCcodeBlocks = true;
+			}
+			for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
+			{
+				//string actionProperty = *localListIter2;
+				GIAentityNode * actionProperty = (*entityIter)->entity;
+				(*entityIter)->parsedForNLCcodeBlocks = true;
+				actionProperty->parsedForNLCcodeBlocks = true;
+			}
 		}
 		#endif
-		//cout << "h5" << endl;
-		functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem, objectItem);
 
-		actionEntity->parsedForNLCcodeBlocks = true;
-		//actionEntity->parsedForNLCcodeBlocksActionRound = true;
-		//objectEntity->parsedForNLCcodeBlocksActionRound = true;
-	}
-	else if(actionHasSubject)
-	{
-		//[**^]
-		bool subjectRequiredTempVar = false;	//not used
-		NLCitem * subjectItem = NULL;
-		*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, NLC_ITEM_TYPE_FUNCTION_OWNER);
 
-		//cout << "h3" << endl;
-		if(subjectRequiredTempVar)
-		{	
-			//cout << "subjectRequiredTempVar" << endl;						
-			functionItem->context.push_back(subjectItem->instanceName);
-		}
-		else
+		//cout << "h6" << endl;
+		/*		
+		findContextOfObject(objectEntity)
+
+		#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
+		if(!(currentEntity->disabled))
 		{
-			getEntityContext(subjectEntity, &(functionItem->context), true, sentenceIndex, true);
-		}
-		//cout << "h5" << endl;
-		functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockExecute(*currentCodeBlockInTree, functionItem);
-
-		actionEntity->parsedForNLCcodeBlocks = true;
-		//actionEntity->parsedForNLCcodeBlocksActionRound = true;
-		//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
-	}	
-
-	#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-	if(actionHasObject || actionHasSubject)
-	{											
-		#ifndef NLC_SUPPORT_INPUT_FILE_LISTS
-		generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
 		#endif
 
-		//detect action properties and conditions (and disable these for NLC generate code block parse: they will become function execution arguments)
-		for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
-		{					
-			GIAentityNode * actionCondition = (*entityIter)->entity;
-			(*entityIter)->parsedForNLCcodeBlocks = true;
-			actionCondition->parsedForNLCcodeBlocks = true;
+		#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
 		}
-		for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
-		{
-			//string actionProperty = *localListIter2;
-			GIAentityNode * actionProperty = (*entityIter)->entity;
-			(*entityIter)->parsedForNLCcodeBlocks = true;
-			actionProperty->parsedForNLCcodeBlocks = true;
-		}
+		#endif
+		*/
+	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	}
 	#endif
-
-
-	//cout << "h6" << endl;
-	/*		
-	findContextOfObject(objectEntity)
-
-	#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
-	if(!(currentEntity->disabled))
-	{
-	#endif
-
-	#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
-	}
-	#endif
-	*/
 }
 					
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
@@ -688,44 +703,52 @@ bool generateCodeBlocksPart2(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 
 void generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * entity , int sentenceIndex, string NLCfunctionName)
 {
-	GIAentityNode * parentEntity = getParent(entity, sentenceIndex);
-
-	#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
-	//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
-	//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
-	if(!(parentEntity->isConcept))
+	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	if(!(entity->NLCconditionLogicalOperations))
 	{
-		if(!(parentEntity->parsedForNLCcodeBlocks))	// && !(entity->parsedForNLCcodeBlocksActionRound)
-		{
-			if(!assumedToAlreadyHaveBeenDeclared(parentEntity))	
-			{
-				if(!(parentEntity->isAction))	//added 1e6d
-				{
-					if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
-					{
-						if(!(parentEntity->isCondition))
-						{
-							if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
-							{
-								//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-								*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
-								parentEntity->parsedForNLCcodeBlocks = true;
-								parentEntity->NLClocalListVariableHasBeenDeclared = true;
-								//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+	#endif	
+	
+		GIAentityNode * parentEntity = getParent(entity, sentenceIndex);
 
-								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-								generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
-								#endif
+		#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
+		//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
+		//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
+		if(!(parentEntity->isConcept))
+		{
+			if(!(parentEntity->parsedForNLCcodeBlocks))	// && !(entity->parsedForNLCcodeBlocksActionRound)
+			{
+				if(!assumedToAlreadyHaveBeenDeclared(parentEntity))	
+				{
+					if(!(parentEntity->isAction))	//added 1e6d
+					{
+						if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
+						{
+							if(!(parentEntity->isCondition))
+							{
+								if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
+								{
+									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+									*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
+									parentEntity->parsedForNLCcodeBlocks = true;
+									parentEntity->NLClocalListVariableHasBeenDeclared = true;
+									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+
+									#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+									//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+									generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
+									#endif
+								}
 							}
 						}
 					}
 				}
 			}
 		}
+		#endif
+		generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
+	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	}
-	#endif
-	generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
+	#endif			
 }
 
 GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex)

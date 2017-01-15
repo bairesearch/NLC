@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l10a 06-November-2014
+ * Project Version: 1l10b 06-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,6 +69,10 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 			if(!(actionObjectConnection->sameReferenceSet))
 			{
+				//cout << "sentenceIndex " << sentenceIndex << endl;
+				//cout << "actionEntity->entityName: " << actionEntity->entityName << endl;
+				//cout << "objectEntity->entity: " << actionObjectConnection->entity->entityName << endl;
+				//cout << "actionObjectConnection->sameReferenceSet: " << actionObjectConnection->sameReferenceSet << endl;
 			#endif
 				actionHasObject = true;
 				objectEntity = actionObjectConnection->entity;
@@ -93,6 +97,10 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 			if(!(actionSubjectConnection->sameReferenceSet))
 			{
+				//cout << "sentenceIndex " << sentenceIndex << endl;
+				//cout << "actionEntity->entityName: " << actionEntity->entityName << endl;
+				//cout << "subjectEntity->entity: " << actionSubjectConnection->entity->entityName << endl;
+				//cout << "actionSubjectConnection->sameReferenceSet: " << actionSubjectConnection->sameReferenceSet << endl;
 			#endif
 				actionHasSubject = true;
 				subjectEntity = actionSubjectConnection->entity;

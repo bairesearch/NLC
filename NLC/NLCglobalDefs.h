@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h8a 30-July-2014
+ * Project Version: 1h9a 30-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -62,6 +62,7 @@
 
 #define NLC_USE_PREPROCESSOR	//1g17a 18-July-2014	//reimplementation 1h1a+ 22-July-2014 //first working 1h1f
 #ifdef NLC_USE_PREPROCESSOR
+	#define NLC_PREPROCESSOR_GENERATE_COMMENTS
 	#define NLC_PREPROCESSOR_MATH	//1h1a 22-July-2014	//requires NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE for preprocessor isLogicalConditionOperator detection	//first working 1h2f
 	#ifdef NLC_PREPROCESSOR_MATH
 		#define NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR (CHAR_FULLSTOP)	//this is defined by NLP/English

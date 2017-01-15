@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h8a 30-July-2014
+ * Project Version: 1h9a 30-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1112,6 +1112,18 @@ NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInT
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
+NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockInTree, string comment)
+{
+	NLCitem * item = new NLCitem(comment, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(item);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_COMMENT_SINGLE_LINE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+
 void clearCodeBlock(NLCcodeblock * codeBlock)
 {
 	codeBlock->codeBlockType = NLC_CODEBLOCK_TYPE_UNDEFINED;
@@ -1122,8 +1134,6 @@ void clearCodeBlock(NLCcodeblock * codeBlock)
 	{
 		cout << "error: !(codeBlock->parameters.empty())" << endl;
 	}	
-	
-	
 }
 
 

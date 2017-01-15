@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10b 29-September-2016
+ * Project Version: 1u10c 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -500,7 +500,7 @@ void generateDefiniteEntityExistenceTest(NLCcodeblock** currentCodeBlockInTree, 
 	{
 		NLCcodeblock* lastCodeBlockInTree2 = *currentCodeBlockInTree;
 		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION
-		*currentCodeBlockInTree = createCodeVerifyDefiniteReferenceExistenceExecuteFunction(*currentCodeBlockInTree, entity, genericListAppendName);
+		*currentCodeBlockInTree = createCodeVerifyDefiniteReferenceExistenceExecuteFunction(*currentCodeBlockInTree, entity, genericListAppendName, sentenceIndex);
 		#else
 		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, entity, true, genericListAppendName, sentenceIndex);
 		if(genericListAppendName == NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION)

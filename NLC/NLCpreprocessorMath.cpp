@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10b 29-September-2016
+ * Project Version: 1u10c 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,7 +58,8 @@ bool detectMathSymbolsInLine(string* lineContents)
 bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, bool hasLogicalConditionOperator, bool isMathText)
 {
 	bool result = false;
-
+	//cout << "lineContents = " << *lineContents << endl;
+	
 	if(!hasLogicalConditionOperator)
 	{
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
@@ -72,14 +73,15 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 			int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
 			if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{	
-				lineContentsSubIndexEnd = indexOfStringDelimiter;
+				lineContentsSubIndexEnd = indexOfStringDelimiter+1;
 			}
 			else
 			{
 				lineContentsSubIndexEnd = lineContents->length();
 				stillFindingLineContentsSub = false;
 			}
-			string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd);
+			string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd-lineContentsSubIndex);
+			//cout << "lineContentsSub = " << lineContentsSub << endl;
 		#else
 		string lineContentsSub = *lineContents;
 		#endif
@@ -100,11 +102,12 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 			if(stillFindingLineContentsSub)
 			{	
 				//add the string quotation text
-				int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd+1);
+				int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd);
 				if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 				{
 					lineContentsSubIndex = indexOfStringDelimiter + 1;
 					lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd, indexOfStringDelimiter-lineContentsSubIndexEnd + 1);
+					//cout << "lineContents ss = " << lineContents->substr(lineContentsSubIndexEnd, indexOfStringDelimiter-lineContentsSubIndexEnd + 1) << endl;
 				}
 				else
 				{
@@ -140,7 +143,7 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 		//the following is not supported by NLC at present: "if x is the number of chickens", the user must say "if the number of chickens is equal to x"
 
 	}
-	
+			
 	return result;
 }
 

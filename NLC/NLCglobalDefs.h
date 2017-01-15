@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10b 29-September-2016
+ * Project Version: 1u10c 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -67,7 +67,7 @@
 		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION
 			#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_NAME "verifyDefiniteReferenceExistence"
 			#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_GENERIC_LIST_APPEND_NAME "genericListAppendName"
-			#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_ENTITY_LIST_NAME "entityList"
+			#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_EMPTY_NAME "empty"
 		#endif
 		#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_WARNING_TEXT_APPEND " definite entity not found (ensure to initialise all entities before referencing them): "
 		#define NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT

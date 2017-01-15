@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10b 29-September-2016
+ * Project Version: 1u10c 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1059,16 +1059,15 @@ void generateCodeForConditionList(string entityClassName1, string entityClassNam
 #ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
 void generateCodeVerifyDefiniteReferenceExistenceNewFunction(int progLang, string* code, int level)
 {
-	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	string entityToVerifyName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
-	string entityListName = NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_ENTITY_LIST_NAME;
+	string emptyName = NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_EMPTY_NAME;
 
-	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionTypeTextReference(genericEntityClassName, progLang) + entityListName + progLangClassMemberFunctionParametersNext[progLang] + progLangFunctionParameterStringType[progLang] + entityToVerifyName + progLangClassMemberFunctionParametersNext[progLang] + progLangFunctionParameterStringType[progLang] + NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_GENERIC_LIST_APPEND_NAME + progLangCloseParameterSpace[progLang];	//void verifyDefiniteReferenceExistence(vector<NLCgenericEntityClass*>& entityList, string entityName, string genericListAppendName)
+	string codeBlockTextFunctionHeader = progLangClassMemberFunctionTypeDefault[progLang] + NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + progLangFunctionParameterBooleanType[progLang] + emptyName + progLangClassMemberFunctionParametersNext[progLang] + progLangFunctionParameterStringType[progLang] + entityToVerifyName + progLangClassMemberFunctionParametersNext[progLang] + progLangFunctionParameterStringType[progLang] + NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_GENERIC_LIST_APPEND_NAME + progLangCloseParameterSpace[progLang];	//void verifyDefiniteReferenceExistence(bool empty, string entityName, string genericListAppendName)
 
 	printLine("", level, code);
 	printLine(codeBlockTextFunctionHeader, level, code);
 	printLine(progLangOpenBlock[progLang], level, code);
-		string text = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + entityListName + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang] + progLangCloseParameterSpace[progLang];		//if(entityList.empty()){
+		string text = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + emptyName + progLangCloseParameterSpace[progLang];		//if(empty){
 		printLine(text, (level+1), code);
 			
 			string warningMessageName = "warningMessage";
@@ -1083,12 +1082,12 @@ void generateCodeVerifyDefiniteReferenceExistenceNewFunction(int progLang, strin
 
 void generateCodeVerifyDefiniteReferenceExistenceExecuteFunction(NLCitem* param1, NLCitem* param2, int progLang, string* code, int level)
 {
-	string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 	string entityToVerifyName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
-	string entityListName = string(NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_PARAMETER_ENTITY_LIST_NAME);
+	string genericListAppendName = param2->name;
+	string testEmptyText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang];		//param1CategoryList.empty()
 
 	string codeBlockText = "";
-	codeBlockText = codeBlockText + NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateReinterpretCastOfVectorReference(param1->className, genericEntityClassName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param1->className + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//verifyDefiniteReferenceExistenceExecuteFunction(reinterpret_cast<vector<NLCgenericEntityClass*>&>(entityCategoryList), "entityName", genericListAppendName);
+	codeBlockText = codeBlockText + NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + testEmptyText + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param1->className + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//verifyDefiniteReferenceExistenceExecuteFunction(entityCategoryList.empty(), "entityName", genericListAppendName);
 	printLine(codeBlockText, level, code);
 }
 

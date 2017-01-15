@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u10b 29-September-2016
+ * Project Version: 1u10c 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -67,14 +67,14 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 		int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
 		if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
-			lineContentsSubIndexEnd = indexOfStringDelimiter;
+			lineContentsSubIndexEnd = indexOfStringDelimiter+1;
 		}
 		else
 		{
 			lineContentsSubIndexEnd = lineContents->length();
 			stillFindingLineContentsSub = false;
 		}
-		string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd);
+		string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd-lineContentsSubIndex);
 	#else
 	string lineContentsSub = *lineContents;
 	#endif
@@ -136,7 +136,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 		if(stillFindingLineContentsSub)
 		{	
 			//add the string quotation text
-			int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd+1);
+			int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd);
 			if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
 				lineContentsSubIndex = indexOfStringDelimiter + 1;

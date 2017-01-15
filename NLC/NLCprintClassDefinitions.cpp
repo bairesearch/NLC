@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -326,7 +326,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								string targetName = targetClassDefinition->functionNameSpecial;
 								string functionArguments = "";
 
+								#ifdef NLC_DEBUG
 								//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
+								#endif
 								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
@@ -394,8 +396,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 							addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, entityParamAction.className);
 							#endif
+							#ifdef NLC_DEBUG
 							//cout << "classDefinition->name = " << classDefinition->name << endl;
 							//cout << "entityParamAction.className = " << entityParamAction.className << endl;
+							#endif
 						}
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
 						{
@@ -762,7 +766,9 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString; NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER = " << currentItem->name << endl;
+			#endif
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
@@ -944,7 +950,9 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition*>* classDefinitionLis
 			{
 				if(!(localClassDefinition->printed))
 				{
+					#ifdef NLC_DEBUG
 					//cout << "!printed: localClassDefinition->name = " << localClassDefinition->name << endl;
+					#endif
 					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)	//NB function subject entity cant be printed without its function, and function cant be printed without its subject
 					{

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -96,7 +96,9 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 		if(variableName[0] == preprocessorMathVariableNameCharactersIllegalAsFirst[i])
 		{
 			variableName = string(NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_REPLACEMENT_CHARACTER) + variableName;
+			#ifdef NLC_DEBUG
 			//cout << "variableName = " << variableName << endl;
+			#endif
 		}
 	}
 	#endif
@@ -123,7 +125,9 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "isStringNLPparsableWord{} error: phrase.length() == 0" << endl;
+		#endif
 	}
 	
 	if(isStringValidVariableName(phrase, preprocessorMath))
@@ -164,12 +168,16 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 	}
 	if(!NLPparsableMandatoryCharacterFoundInCurrentWord)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "!NLPparsableMandatoryCharacterFoundInCurrentWord" << endl;
+		#endif
 		stringIsNLPparsableWord = false;
 	}
 	#endif
 	
+	#ifdef NLC_DEBUG
 	//cout << "isStringNLPparsableWord: " << phrase << " = " << stringIsNLPparsableWord << endl;
+	#endif
 	return stringIsNLPparsableWord;
 }
 
@@ -178,7 +186,9 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 {
 	if(phrase.length() == 0)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "isStringValidVariableName{} error: phrase.length() == 0" << endl;
+		#endif
 	}
 	
 	bool stringIsNLPparsableWord = true;
@@ -198,9 +208,11 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 		if(!legalWordCharacterFound)
 		{
 			stringIsNLPparsableWord = false;
+			#ifdef NLC_DEBUG
 			//cout << "!legalWordCharacterFound: " << c << endl;
 			//cout << "phrase = " << phrase << endl;
 			//cout << "i = " << i << endl;
+			#endif
 		}	
 		if(charInCharArray(c, preprocessorMathVariableNameCharactersMandatory, NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
@@ -209,7 +221,9 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 	}
 	if(!variableNameMandatoryCharacterFoundInCurrentWord)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "!variableNameMandatoryCharacterFoundInCurrentWord" << endl;
+		#endif
 		stringIsNLPparsableWord = false;
 	}
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
@@ -220,7 +234,9 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 	}
 	#endif
 
+	#ifdef NLC_DEBUG
 	//cout << "isStringValidVariableName: " << phrase << " = " << stringIsNLPparsableWord << endl;
+	#endif
 	return stringIsNLPparsableWord;
 }
 
@@ -230,7 +246,9 @@ bool isStringNumberPreprocessorMath(string phrase)
 	bool stringIsNumber = true;
 	if(phrase.length() == 0)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "isStringNumberPreprocessorMath{} error: phrase.length() == 0" << endl;
+		#endif
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
@@ -241,7 +259,9 @@ bool isStringNumberPreprocessorMath(string phrase)
 			stringIsNumber = false;
 		}
 	}
+	#ifdef NLC_DEBUG
 	//cout << "isStringNumberPreprocessorMath: " << phrase << " = " << stringIsNumber << endl;
+	#endif
 	return stringIsNumber;
 }
 
@@ -250,7 +270,9 @@ bool isStringNumberOrFractional(string phrase)
 	bool stringIsNumberOrFractional = true;
 	if(phrase.length() == 0)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "isStringNumberOrFractional{} error: phrase.length() == 0" << endl;
+		#endif
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
@@ -262,7 +284,9 @@ bool isStringNumberOrFractional(string phrase)
 			stringIsNumberOrFractional = false;
 		}
 	}
+	#ifdef NLC_DEBUG
 	//cout << "isStringNumberOrFractional: " << phrase << " = " << stringIsNumberOrFractional << endl;
+	#endif
 	return stringIsNumberOrFractional;
 }
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -151,7 +151,9 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									#endif
 									{
 										targetClassDefinition->isActionOrConditionInstanceNotClass = true;
+										#ifdef NLC_DEBUG
 										//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
+										#endif
 									}
 
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
@@ -406,7 +408,9 @@ bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCcla
 		{
 			string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
 			classDeclarationConditionsListItem->className2 = conditionObjectClassName;
+			#ifdef NLC_DEBUG
 			//cout << "\tgenerateClassHeirarchy{}: conditionObjectClassName = " << conditionObjectClassName << endl;
+			#endif
 		}
 		else
 		{
@@ -811,7 +815,9 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 	if(entityNode->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "entityNode->entityName = " << entityNode->entityName << endl;
+		#endif
 		validClass = false;	
 	}
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
@@ -954,14 +960,18 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 		bool localListIterErased = false;
 		NLCclassDefinition* variableClassDefinition = *localListIter;
 		string variableName = variableClassDefinition->name;
+		#ifdef NLC_DEBUG
 		//cout << "variableName = " << variableName << endl;
 		//cout << "variableType = " << entityVectorConnectionNameArray[min(variableType, 12)] << endl;
+		#endif
 		for(vector<NLCclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
 		{
 			if(!localListIterErased)
 			{
-				NLCclassDefinition* targetClassDefinition = *parentListIter;	
+				NLCclassDefinition* targetClassDefinition = *parentListIter;
+				#ifdef NLC_DEBUG	
 				//cout << "targetClassDefinition = " << targetClassDefinition->name << endl;
+				#endif
 
 				if(findVariableInParentClass(targetClassDefinition, variableName, variableType))
 				{

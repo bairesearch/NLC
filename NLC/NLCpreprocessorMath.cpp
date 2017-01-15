@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -92,9 +92,11 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 				
 bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList)
 {
+	#ifdef NLC_DEBUG
 	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " <<* sentenceIndex << endl;
+	//cout << "splitMathDetectedLineIntoNLPparsablePhrases: lineContents = " <<* lineContents << endl;	
+	#endif
 	bool result = true;
-	//cout << "splitMathDetectedLineIntoNLPparsablePhrases: lineContents = " <<* lineContents << endl;
 
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
@@ -193,10 +195,11 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	bool NLPparsableMandatoryCharacterFoundInCurrentWord = false;	//NB NLPparsableMandatoryCharacterFoundInCurrentWord is not currently used with NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES
 	bool parsingWhiteSpace = false;	//added 1h5b 30-July-2014
 	
+	#ifdef NLC_DEBUG
 	//cout << "lineContents = " <<* lineContents << endl;
 	//cout << "lineContents->length() = " << lineContents->length() << endl;
 	//cout << "lineContents[lineContents->length()-1] = " << (*lineContents)[lineContents->length()-1] << endl;
-	//exit(0);
+	#endif
 	
 	bool finalWordInSentenceFoundAndIsLegal = false;
 	for(int i=startIndex; i<lineContents->length(); i++)
@@ -257,7 +260,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		if(!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal)
 		{//!legalWordCharacterFound or (legalWordCharacterFound && last character in sentence)
 
+			#ifdef NLC_DEBUG
 			//cout << "!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal): " << c << endl;
+			#endif
 			
 			//current word checks:
 			#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_REMOVE_REDUNDANT_CODE
@@ -374,10 +379,14 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						#endif
 						
 						//remove all mathTextVariableNames nlp parsable phrase (as an NLP parsable phrase does not contain mathText variable names, or if it does the mathText variable are references to predefined mathText variables and will be detected later)
+						#ifdef NLC_DEBUG
 						//cout << "wordIndex = " << wordIndex << endl;
+						#endif
 						for(int i=0; i<wordIndex; i++)
 						{
+							#ifdef NLC_DEBUG
 							//cout << "(*currentNLCsentenceInList)->mathTextVariableNames.back() = " << (*currentNLCsentenceInList)->mathTextVariableNames.back() << endl;
+							#endif
 							(*currentNLCsentenceInList)->mathTextVariableNames.pop_back();
 						}
 
@@ -391,7 +400,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 							currentPhrase = currentPhrase.substr(0, currentPhrase.length()-1);
 						}
 						#endif
+						#ifdef NLC_DEBUG
 						//cout << "currentPhrase = " << currentPhrase << endl;
+						#endif
 						bool lastCharacterOfPhraseIsFullStop = false;
 						if(currentPhrase[currentPhrase.length()-1] == NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR)
 						{
@@ -411,10 +422,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						#endif
 						(*currentNLCsentenceInList)->sentenceIndex = *sentenceIndex;
 						//(*currentNLCsentenceInList)->indentation = currentIndentation;	//indentation not recorded for NLC parsable phrases
+						mathText = mathText + generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, (*currentNLCsentenceInList));
+						#ifdef NLC_DEBUG
 						//cout << "generateMathTextNLPparsablePhraseReference = " << endl;
 						//cout << "(*currentNLCsentenceInList)->sentenceContents = " << (*currentNLCsentenceInList)->sentenceContents << endl;
-						mathText = mathText + generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, (*currentNLCsentenceInList));
 						//cout << "mathText = " << mathText << endl;
+						#endif
+									
 						#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 						if(spaceAtEndOfPhrase)
 						{
@@ -488,7 +502,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	}
 	if(!finalWordInSentenceFoundAndIsLegal)
 	{
+		#ifdef NLC_DEBUG
 		//cout << "!finalWordInSentenceFoundAndIsLegal" << endl;
+		#endif
 		//insufficient number of words in final phrase detected to create an NLP parsable phrase; add words to mathText instead
 		//currentWord is [assumed to be] a mathText variable name
 		currentPhrase = currentPhrase + currentWord;	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText   
@@ -510,7 +526,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	firstNLCsentenceInFullSentence->isMath = true;
 	firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal = phraseIndex;
 	firstNLCsentenceInFullSentence->mathText = mathText;
+	#ifdef NLC_DEBUG
 	//cout << "mathText = " << mathText << endl;
+	#endif
 	firstNLCsentenceInFullSentence->indentation = currentIndentation;
 	if(firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal == 0)
 	{
@@ -583,7 +601,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		{			
 			if(mathTextVariableName != newlyDeclaredVariable)
 			{
+				#ifdef NLC_DEBUG
 				//cout << "mathTextVariableName = " << mathTextVariableName << endl;
+				#endif
 				if(!findPredefinedNumericalVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence))
 				{
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
@@ -599,14 +619,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	//}	
 	#endif
 
+	#ifdef NLC_DEBUG
 	//cout << "sentenceIndex at end of nlp parsable phrase extraction = " <<* sentenceIndex << endl;
-	
-
+	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{	
+		#ifdef NLC_DEBUG
 		//cout << "hasLogicalConditionOperator" << endl; 
+		#endif
 		if(!splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(firstNLCsentenceInFullSentence, currentNLCsentenceInList, sentenceIndex, additionalClosingBracketRequired, detectedLogicalConditionCommand, phraseIndexOfFirstLogicalCommand, logicalConditionCommandSubphraseContents))
 		{
 			result = false;

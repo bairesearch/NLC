@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1281,8 +1281,10 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 	#endif
 		
 	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+	#ifdef NLC_DEBUG
 	//cout << "printedClassDefinitionSourceFileName = " << printedClassDefinitionSourceFileName << endl;
 	//cout << "printedCodeBlocksSourceText = " << printedCodeBlocksSourceText << endl;
+	#endif
 	appendStringToFile(printedClassDefinitionSourceFileName, &printedCodeBlocksSourceText);	
 	#endif
 	
@@ -1391,7 +1393,9 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionClassDefinition->parameters.begin(); parametersIterator < functionDefinitionClassDefinition->parameters.end(); parametersIterator++)
 		{
 			NLCitem* currentItem = *parametersIterator;
+			#ifdef NLC_DEBUG
 			//cout << "1 currentItem->itemType = " << currentItem->itemType << endl;
+			#endif
 			if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 			{
 				NLCitem* newFunctionArgument = new NLCitem(currentItem);
@@ -1410,10 +1414,14 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	{
 		NLCitem* currentItem = *parametersIterator;
 
+		#ifdef NLC_DEBUG
 		//cout << "2 currentItem->itemType = " << currentItem->itemType << endl;
+		#endif
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "3 currentItem->name = " << currentItem->name << endl;
+			#endif
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];

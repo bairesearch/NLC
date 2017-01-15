@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -195,7 +195,9 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 									//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 									//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 								
+									#ifdef NLC_DEBUG
 									//cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
+									#endif
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 
@@ -218,7 +220,9 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 								
 									NLCcodeblock* currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
 									
+									#ifdef NLC_DEBUG
 									//cout << "logicalConditionOperationObject->isSubstance" << endl;
+									#endif
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 	
@@ -706,7 +710,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								//eg A dog's value = X.
 								if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false, false))
 								{
+									#ifdef NLC_DEBUG
 									//cout << "generateParentInitialisationCodeBlockWithChecks passed" << endl;
+									#endif
 								}					
 							}
 							else
@@ -844,8 +850,10 @@ bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int senten
 	#endif
 	#endif
 	
+	#ifdef NLC_DEBUG
 	//cout << "foundChildEntity = " << foundChildEntity << endl;
 	//cout << "childEntity = " << (*childEntity)->entityName << endl;
+	#endif
 	
 	bool contextFound = false;
 	bool generatedContextForChild = false;
@@ -1009,9 +1017,11 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 										phraseContainsSubstanceWithDefinitionLink = true;
 										*logicalConditionOperationObject = entity;
 										*definitionEntity = definitionEntityTemp;
+										#ifdef NLC_DEBUG
 										//cout << "checkIfPhraseContainsSubstanceWithDefinitionLink: = " << entity->entityName << endl;
 										//cout << "entity = " << entity->entityName << endl;
 										//cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
+										#endif
 									}
 								}
 								else
@@ -1036,7 +1046,9 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 
 void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex)
 {
+	#ifdef NLC_DEBUG
 	//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase: " << endl;
+	#endif
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);

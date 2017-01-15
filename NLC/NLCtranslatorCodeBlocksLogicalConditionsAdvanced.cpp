@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -176,8 +176,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							cout << "generateCodeBlocksPart2logicalConditions{} error: !(currentNLCsentenceInList->hasLogicalConditionOperator)" << endl;
 						}
 						
-
+						#ifdef NLC_DEBUG
 						//cout << "foundConditionSubject && foundConditionObject" << endl;
+						#endif
 						//1. disable all classStructure formation based on condition object subset
 
 						NLCcodeblock* currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
@@ -186,7 +187,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						bool passedLogicalConditionObject = false;
 						if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isConcept || logicalConditionOperationObject->isSubstanceConcept))
 						{//eg If red dogs are pies, eat the cabbage
+							#ifdef NLC_DEBUG
 							//cout << "logicalConditionOperationObject->isSubstanceConcept = " << logicalConditionOperationObject->isSubstanceConcept << endl;
+							#endif
 							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 							//isSubstanceConcept case not yet coded
 							//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
@@ -227,7 +230,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							#endif
 								//eg The sun fights. If the sun fights, the dog is happy. / If the sun fights, eat the cabbage.
 
+								#ifdef NLC_DEBUG
 								//cout << "logicalConditionOperationObject->isAction" << endl;
+								#endif
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
 								//verify the truth of the if statement now
 								//NO: get class and see if it has the relevant action (function) defined with the relevant action object
@@ -243,7 +248,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									{
 										passedLogicalConditionObject = true;
 									}
+									#ifdef NLC_DEBUG
 									//cout << "passedLogicalConditionObject" << endl;
+									#endif
 								}
 								logicalConditionOperationSubject->disabled = false;
 								#endif
@@ -362,7 +369,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							previousCodeBlockInTree = *currentCodeBlockInTree;
 							#endif
 							
+							#ifdef NLC_DEBUG
 							//cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName << endl;
+							#endif
 							addNewLogicalCondition(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionOperationObject);
 
 
@@ -529,7 +538,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								{
 									if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && !elseIfDetected && !elseDetected)
 									{
+										#ifdef NLC_DEBUG
 										//cout << "codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray " << getCurrentLogicalConditionLevel() << "is being defined" << endl;
+										#endif
 										codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()] = previousCodeBlockInTreeAtBaseLevel;
 									}
 								
@@ -657,7 +668,9 @@ void checkConditionForLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GI
 	{
 		if(!(conditionEntity->NLCconjunctionCondition))
 		{
+			#ifdef NLC_DEBUG
 			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
+			#endif
 			conditionEntity->NLCconjunctionCondition = true;
 			GIAentityConnection* logicalConditionConjunctionObjectConnection = conditionEntity->conditionObjectEntity->back();
 			GIAentityConnection* logicalConditionConjunctionSubjectConnection = conditionEntity->conditionSubjectEntity->back();
@@ -883,7 +896,9 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareConcept,
 				{
 					if(numberOfMatchedNodesTemp > 0)
 					{
+						#ifdef NLC_DEBUG
 						//cout << "exactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
+						#endif
 						result = true;
 					}
 				}

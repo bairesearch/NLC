@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -143,7 +143,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				int lineLogicalConditionOperator;
 				if(detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
 				{
+					#ifdef NLC_DEBUG
 					//cout << "hasLogicalConditionOperator" << endl;
+					#endif
 					currentNLCsentenceInList->hasLogicalConditionOperator = true;
 					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					currentNLCsentenceInList->logicalConditionOperator = lineLogicalConditionOperator;
@@ -178,10 +180,14 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					while(stillSentenceToParseOnLine)
 					{
 						bool lineFullStopDetected = false;
+						#ifdef NLC_DEBUG
 						//cout << "stillSentenceToParseOnLine: lineContents = " << lineContents << endl;
+						#endif
 						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
 						int startOfSentenceIndexNew = startOfSentenceIndex;
+						#ifdef NLC_DEBUG
 						//cout << "lineContents.length = " << lineContents.length() << endl;
+						#endif
 						bool stillFinding = true;
 						while(stillFinding)
 						{
@@ -189,7 +195,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 							{	
 								//based on isIntrawordFullStop() code:
+								#ifdef NLC_DEBUG
 								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
+								#endif
 								if(isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
 								{
 									//cout << "isIntrawordPunctuationMark" << endl;
@@ -200,7 +208,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 									lineFullStopDetected = true;
 									stillFinding = false;
 								}
+								#ifdef NLC_DEBUG
 								//cout << "startOfSentenceIndexNew2 = " << startOfSentenceIndexNew << endl;
+								#endif
 							}
 							else
 							{
@@ -231,7 +241,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							cout << "lineFullStopDetected" << endl;
 							#endif
 							sentenceContents = lineContents.substr(startOfSentenceIndex, startOfSentenceIndexNew-startOfSentenceIndex+1);	//+1 append the full stop
+							#ifdef NLC_DEBUG
 							//cout << "sentenceContents = " << sentenceContents << endl;
+							#endif
 
 						}
 						else
@@ -251,7 +263,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						replaceNumericalVariablesWithDummyNameIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
 						#endif
 						#endif
+						#ifdef NLC_DEBUG
 						//cout << "sentenceContents = " << sentenceContents << endl;
+						#endif
 
 						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						bool sentenceIsLogicalCondition = false;
@@ -316,7 +330,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 								if(!isWhiteSpace(c))
 								{
 									nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine = true;
+									#ifdef NLC_DEBUG
 									//cout << "nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine" << endl;
+									#endif
 								}
 							}
 							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -387,7 +403,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 								#else
 								sentenceContents = "" + actionName + NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL + STRING_FULLSTOP; //sentenceContents = sentenceContents.insert((sentenceContents.length()-1), NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL);
 								#endif
+								#ifdef NLC_DEBUG
 								//cout << "sentenceContents = " << sentenceContents << endl;
+								#endif
 							}
 							#endif
 							
@@ -404,7 +422,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							
 							if(startOfSentenceIndexNew == lineContents.length()-1)
 							{
+								#ifdef NLC_DEBUG
 								//cout << "stillSentenceToParseOnLine = false" << endl;
+								#endif
 								stillSentenceToParseOnLine = false;
 							}
 						}
@@ -597,15 +617,18 @@ bool detectFunctionHeader(string* lineContents)
 	if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
 	{
 		functionHeaderFound = true;
-		
+		#ifdef NLC_DEBUG
 		//cout << "detectFunctionHeader{}: functionHeaderFound = " << NLC_PREPROCESSOR_FUNCTION_HEADER_STRING << endl; 
+		#endif
 	}
 	return functionHeaderFound;
 }
 string getFunctionNameFromFunctionHeader(string* lineContents)
 {
 	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length() + string(NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR).length());
+	#ifdef NLC_DEBUG
 	//cout << "getFunctionNameFromFunctionHeader{}: NLCfunctionName = " << NLCfunctionName << endl; 
+	#endif
 	return NLCfunctionName;
 	
 }
@@ -618,7 +641,9 @@ string generateNLCfunctionFileName(string NLCfunctionName)
 
 bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logicalConditionOperator)
 {
+	#ifdef NLC_DEBUG
 	//cout << "detectLogicalConditionOperatorAtStartOfLine() lineContents = " <<* lineContents << endl;
+	#endif
 
 	*logicalConditionOperator = INT_DEFAULT_VALUE;
 	bool logicalConditionOperatorFound = false;

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -628,7 +628,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1r3b 11-December-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1r4a 12-August-2016" << endl;
 			exit(1);
 		}
 
@@ -696,9 +696,11 @@ int main(int argc, char** argv)
 						parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 						string NLCfunctionHeader = generateNLCfunctionHeader(functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass);
 						string functionContents = getFileContents(inputTextPlainTXTfileNameSeparate);
+						#ifdef NLC_DEBUG
 						//cout << "inputTextPlainTXTfileNameSeparate = " << inputTextPlainTXTfileNameSeparate << endl;
 						//cout << "NLCfunctionHeader = " << NLCfunctionHeader << endl;
 						//cout << "functionContents = " << functionContents << endl;
+						#endif
 						string functionText = NLCfunctionHeader + CHAR_NEWLINE + functionContents + CHAR_NEWLINE;
 						setCurrentDirectory(tempFolder);
 						appendStringToFile(inputTextPlainTXTfileName, &functionText);
@@ -750,7 +752,9 @@ int main(int argc, char** argv)
 		cout << "useNLCpreprocessor" << endl;
 		#endif
 		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + NLC_USE_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT;
+		#ifdef NLC_DEBUG
 		//cout << "outputPreprocessedTextForNLConlyPlainTXTFileName = " << outputPreprocessedTextForNLConlyPlainTXTFileName << endl;
+		#endif
 		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		if(!useInputTextPlainTXTFile)
 		{
@@ -833,8 +837,10 @@ int main(int argc, char** argv)
 		{
 			string NLCfunctionName = getFunctionNameFromFunctionHeader(&nlcLibraryFunctionName);
 			createFunctionDefinitionClassDefinition(&classDefinitionList, NLCfunctionName, FUNCTION_INDEX_LIBRARY_FUNCTION, true);
+			#ifdef NLC_DEBUG
 			//cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			//FUTURE NLC - update createFunctionDefinitionClassDefinition/parseFunctionNameFromNLCfunctionName to extract ! delimited tags also to identify auxilliary function arguments
+			#endif
 		}
 		else
 		{
@@ -1222,7 +1228,9 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					actionHasSubject = true;
 					actionSubjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
 				}
+				#ifdef NLC_DEBUG
 				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}: found and replacing possessive action entity with property" << endl;
+				#endif
 				if(actionHasSubject && actionHasObject)
 				{
 					#ifdef NLC_DEBUG
@@ -1613,7 +1621,9 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 			if(classDefinition->functionDependency != NULL)
 			{
 				NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = classDefinition->functionDependency;
+				#ifdef NLC_DEBUG
 				//cout << "functionDefinitionFunctionDependency->functionName = " << functionDefinitionFunctionDependency->functionName << endl;
+				#endif
 				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 				if(functionDefinitionFunctionDependency->functionDefinitionListIndex != FUNCTION_INDEX_LIBRARY_FUNCTION)	//redundant check (NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES: functionDependencies are now only defined for functionDefinition classDefinitions)
 				#else
@@ -1624,12 +1634,16 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 					{
 						if(!(functionDefinitionFunctionDependency->reconciledFunctionDeclarationArguments))
 						{
+							#ifdef NLC_DEBUG
 							//cout << "(!(functionDefinitionFunctionDependency->reconciledFunctionDeclarationArguments))" << endl;
+							#endif
 							bool reconciledChildFunctionDeclarationArguments = true;
 							for(vector<NLCclassDefinition*>::iterator classDefinitionListIter2 = classDefinition->functionDependencyList.begin(); classDefinitionListIter2 != classDefinition->functionDependencyList.end(); classDefinitionListIter2++)
 							{
 								NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependencyChild = (*classDefinitionListIter2)->functionDependency;
+								#ifdef NLC_DEBUG
 								//cout << "functionDefinitionFunctionDependencyChild->functionName = " << functionDefinitionFunctionDependencyChild->functionName << endl;
+								#endif
 								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 								if(functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != FUNCTION_INDEX_LIBRARY_FUNCTION)
 								#else
@@ -1641,7 +1655,9 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 										if(!(functionDefinitionFunctionDependencyChild->reconciledFunctionDeclarationArguments))
 										{
 											reconciledChildFunctionDeclarationArguments = false;
+											#ifdef NLC_DEBUG
 											//cout << "reconciledChildFunctionDeclarationArguments: functionDefinitionFunctionDependencyChild->functionName = " << functionDefinitionFunctionDependencyChild->functionName << endl;
+											#endif
 										}
 									}
 									else

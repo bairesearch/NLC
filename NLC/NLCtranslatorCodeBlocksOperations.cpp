@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -472,15 +472,19 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 	{
 		GIAentityConnection* targetConnection = (*targetNodeListIterator);
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		#ifdef NLC_DEBUG
 		//cout << "entity->entityName = " << entity->entityName  << endl;
 		//cout << "targetConnection->NLCparsedForCodeBlocks = " << targetConnection->NLCparsedForCodeBlocks << endl;
 		//cout << "generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = " << generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet << endl;
 		//cout << "targetConnection->sameReferenceSet = " << targetConnection->sameReferenceSet << endl;
+		#endif
 		if((targetConnection->NLCparsedForCodeBlocks) || sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
 		{
 		#endif
 			GIAentityNode* targetEntity = targetConnection->entity;
+			#ifdef NLC_DEBUG
 			//cout << "targetEntity->entityName = " << targetEntity->entityName  << endl;
+			#endif
 			
 			#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
 			if(!(generateContextBlocksVariables->parseParentEfficient) || (targetEntity != generateContextBlocksVariables->childEntityNotToParse))
@@ -565,7 +569,9 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 								{
 									if(createCodeBlockForGivenAlias(currentCodeBlockInTree, entity, targetEntity, sentenceIndex, generateContextBlocksVariables, &objectEntity, &generateContextForObject))
 									{
+										#ifdef NLC_DEBUG
 										//cout << "createCodeBlockForGivenAlias: parentInstanceName = " << parentInstanceName << ", targetEntity = " << targetEntity->entityName << endl;
+										#endif
 										resultTemp = true;
 									}
 								}
@@ -574,7 +580,9 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 								#endif
 									if(createCodeBlockForGivenDefinition(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables, &objectEntity, &generateContextForObject))
 									{
+										#ifdef NLC_DEBUG
 										//cout << "createCodeBlockForGivenDefinition: parentInstanceName = " << parentInstanceName << ", targetEntity = " << targetEntity->entityName << endl;
+										#endif
 										resultTemp = true;
 									}
 								#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES	
@@ -622,11 +630,13 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 
 										if(verifyObject)
 										{
+											#ifdef NLC_DEBUG
 											//cout << "verifyObject:" << endl;
 											//cout << "entity = " << entity->entityName << endl;
 											//cout << "objectEntity = " << objectEntity->entityName << endl;
 											//cout << "isDefiniteEntity(objectEntity) = " << isDefiniteEntity(objectEntity) << endl;
-
+											#endif
+											
 											//save objectEntity as tempVariable objectEntityCandidate
 											string candidateObjectClassName = generateClassName(objectEntity);
 											string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);
@@ -738,7 +748,9 @@ bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, stri
 	{
 		if(propertyEntity->negative)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "propertyEntity->negative: propertyEntity->entityName = " << propertyEntity->entityName << endl;
+			#endif
 			generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
 		}
 	}
@@ -749,7 +761,9 @@ bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, stri
 		if(checkNumerosity(propertyEntity))
 		{
 			generateContextBlocksVariables->childQuantity = propertyEntity->quantityNumber;
+			#ifdef NLC_DEBUG
 			//cout << "generateContextBlocksVariables->childQuantity = " << generateContextBlocksVariables->childQuantity << endl;
+			#endif
 		}
 	}
 	#endif
@@ -1102,9 +1116,11 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 	
 	*parentEntity = getParent(currentEntity, sentenceIndex, generateContextBlocksVariables);
 	
+	#ifdef NLC_DEBUG
 	//cout << "getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks:" << endl;
 	//cout << "currentEntity = " << currentEntity->entityName << endl;
 	//cout << "*parentEntity = " << (*parentEntity)->entityName << endl;
+	#endif
 	
 	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
 	{//is this required?
@@ -1115,7 +1131,9 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 
 		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, *parentEntity, sentenceIndex, parseLogicalConditions, testOnly))
 		{
+			#ifdef NLC_DEBUG
 			//cout << "generateParentInitialisationCodeBlockWithChecks passed" << endl;
+			#endif
 			
 			result = true;
 			*newInitialisation = true;
@@ -1161,9 +1179,11 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* parentEntity, int sentenceIndex, bool parseLogicalConditions, bool testOnly)
 {
 	bool result = false;
-
+	
+	#ifdef NLC_DEBUG
 	//cout << "generateParentInitialisationCodeBlockWithChecks: parentEntity->NLCparsedForlogicalConditionOperations = " << parentEntity->NLCparsedForlogicalConditionOperations << endl;
 	//cout << "a1" << endl;
+	#endif
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	if(!(parentEntity->NLCparsedForlogicalConditionOperations) || parseLogicalConditions)	//CHECKTHIS; change from !(entity->NLCparsedForlogicalConditionOperations) to !(parentEntity->NLCparsedForlogicalConditionOperations) 1g14a 15-July-2014
 	{
@@ -1234,7 +1254,9 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 
 	entity->NLCparsedForCodeBlocks = true;
 	entity->NLClocalListVariableHasBeenInitialised = true;
+	#ifdef NLC_DEBUG
 	//cout << "createCodeBlocksCreateNewLocalListVariable: " << entity->entityName << endl;
+	#endif
 	
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 	//Part 2b: generate object initialisations based on substance concepts (class inheritance)
@@ -1320,7 +1342,9 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						objectEntity = targetEntity;
 						recurse = true;
 						recurseEntity = targetEntity;
+						#ifdef NLC_DEBUG
 						//cout << "GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES; targetEntity = " << targetEntity->entityName << endl;
+						#endif
 						addObject = true;
 
 					}
@@ -1396,7 +1420,9 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 
 					if(recurse)
 					{
+						#ifdef NLC_DEBUG
 						//cout << "recurse; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+						#endif
 
 						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 						generateContextBlocksVariables.getParentCheckLastParent = true;
@@ -1405,7 +1431,9 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						{
 							actionOrConditionEntity->NLCcontextGeneratedTemp = true;	//prevent actionEntity from being parsed by getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks:generateContextBlocks;
 						}
+						#ifdef NLC_DEBUG
 						//cout << "actionOrConditionEntity->NLCcontextGeneratedTemp = " << actionOrConditionEntity->entityName << endl;
+						#endif
 
 						GIAentityNode* recurseEntityParent = NULL;
 						bool newInitialisation = false;
@@ -1428,7 +1456,9 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 
 					if(addObject)
 					{
+						#ifdef NLC_DEBUG
 						//cout << "addObject; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+						#endif
 
 						result = true;
 						bool isPrimary = false;
@@ -1636,7 +1666,9 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 			if(isStringNumberOrFractional(definitionEntity->entityName)) 
 			{
 				//eg The value is 5.5
+				#ifdef NLC_DEBUG
 				//cout << "NLC_USE_MATH_OBJECTS: generateCodeBlocksAddConnection{} found value = " << definitionEntity->entityName << endl;
+				#endif
 				*currentCodeBlockInTree = createCodeBlockSetMathValue(*currentCodeBlockInTree, subjectEntity, definitionEntity);
 			}
 			else
@@ -2056,7 +2088,9 @@ GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex, NLCgen
 		{
 			GIAentityConnection* conditionConnection = *conditionNodeListIterator;
 			GIAentityNode* conditionEntity = conditionConnection->entity;
+			#ifdef NLC_DEBUG
 			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
+			#endif
 
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			if(!(conditionEntity->inverseConditionTwoWay) || conditionConnection->isReference)	//prevent infinite loop for 2 way conditions 
@@ -2071,7 +2105,9 @@ GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex, NLCgen
 					if(!(conditionEntity->conditionSubjectEntity->empty()))
 					{
 						conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
+						#ifdef NLC_DEBUG
 						//cout << "conditionSubject = " << conditionSubject->entityName << endl;
+						#endif
 
 						foundConditionSubject = true;
 
@@ -2083,7 +2119,9 @@ GIAentityNode* getParent(GIAentityNode* currentEntity, int sentenceIndex, NLCgen
 						{
 							if(!(generateContextBlocksVariables->getParentCheckLastParent) || (conditionSubject != generateContextBlocksVariables->lastParent))
 							{
+								#ifdef NLC_DEBUG
 								//cout << "checkSentenceIndexParsingCodeBlocks conditionSubject pass" << endl;
+								#endif
 								parentEntityNew = getParent(conditionSubject, sentenceIndex, generateContextBlocksVariables);
 							}
 						}

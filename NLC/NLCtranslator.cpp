@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -112,7 +112,9 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		result = false;
 	}
 	
+	#ifdef NLC_DEBUG
 	//cout << "finished generateCodeBlocks{}" << endl;
+	#endif
 
 	//NLC translator Part 2.
 	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete))
@@ -120,7 +122,9 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		result = false;
 	}
 	
+	#ifdef NLC_DEBUG
 	//cout << "finished generateClassHeirarchy{}" << endl;
+	#endif
 		
 	return result;
 }
@@ -202,7 +206,9 @@ bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* ent
 						{
 							logicalConditionConjunctionContainerFirstInOptimumPath = logicalConditionConjunctionContainer;
 							maximumNumberOfConjunctions = numberOfConjunctions;
+							#ifdef NLC_DEBUG
 							//cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
+							#endif
 						}
 					}
 				}
@@ -396,7 +402,9 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 						if(foundConditionSubject && foundConditionObject)
 						{
 							conditionEntity->NLCparsedForlogicalConditionOperations = true;
+							#ifdef NLC_DEBUG
 							//cout << "tagged: conditionEntity->entityName = " << conditionEntity->entityName << endl;
+							#endif
 
 							if(conditionObject->isConcept)
 							{
@@ -520,11 +528,15 @@ void reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclare
 //fine; this function is not duplicating arguments
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(vector<NLCitem*>* functionDefinitionSourceArgumentList, NLCclassDefinition* functionDefinition)
 {
+	#ifdef NLC_DEBUG
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
+	#endif
 	vector<NLCitem*>* functionDefinitionArgumentList = &(functionDefinition->parameters);
 	
 	/*
+	#ifdef NLC_DEBUG
 	cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
+	#endif
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionArgumentList->begin(); parametersIterator < functionDefinitionArgumentList->end(); parametersIterator++)
 	{
 		NLCitem* temp = *parametersIterator;
@@ -556,8 +568,10 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctio
 //fine; this function is not duplicating arguments
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition(NLCclassDefinition* functionDefinitionSource, NLCclassDefinition* functionDefinition)
 {
+	#ifdef NLC_DEBUG
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition{}: functionDefinitionSource->name = " << functionDefinitionSource->name << endl;
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
+	#endif
 	vector<NLCitem*>* functionDefinitionSourceArgumentList = &(functionDefinitionSource->parameters);
 	vector<NLCitem*>* functionDefinitionArgumentList = &(functionDefinition->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
@@ -584,7 +598,9 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefiniti
 //fine; this function is not duplicating arguments
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinitionArguments(NLCclassDefinition* functionDefinitionSource, vector<NLCitem*>* functionDefinitionArgumentList)
 {
+	#ifdef NLC_DEBUG
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinitionArguments{}: functionDefinitionSource->name = " << functionDefinitionSource->name << endl;
+	#endif
 	vector<NLCitem*>* functionDefinitionSourceArgumentList = &(functionDefinitionSource->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
@@ -668,7 +684,9 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListC
 		GIAentityNode* entity = (*entityIter);
 		if(!(entity->disabled))
 		{
+			#ifdef NLC_DEBUG
 			//cout << "entity = " << entity->entityName << endl;
+			#endif
 			if(!isStringNLPparsableWord(entity->entityName, false))
 			{
 				result = false;
@@ -779,8 +797,10 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
 		functionDependency->isReferenceElseFunctionDefinition = isReferenceElseFunctionDefinition;	
 	#endif
-
+	
+		#ifdef NLC_DEBUG
 		//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
+		#endif
 
 		bool foundFunctionOwnerClassDefinition = false;
 		//NB if(hasFunctionOwnerClass), then functionOwnerClassDefinitionName will be set to NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME
@@ -789,17 +809,23 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		{
 			functionOwnerClassDefinition = new NLCclassDefinition(functionOwnerClassDefinitionName);
 			classDefinitionList->push_back(functionOwnerClassDefinition);
+			#ifdef NLC_DEBUG
 			//cout << "!foundClassDefinition" << endl;
+			#endif
 		}
 
+		#ifdef NLC_DEBUG
 		//cout << "functionName = " << functionName << endl;
 		//cout << "functionClassDefinitionName: " << functionClassDefinitionName << endl;
+		#endif
 
 		bool foundFunctionClassDefinition = false;
 		functionClassDefinition = findClassDefinition(classDefinitionList, functionClassDefinitionName, &foundFunctionClassDefinition);	//see if class definition already exists
 		if(!foundFunctionClassDefinition)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "new NLCclassDefinition(" << functionClassDefinitionName << endl;
+			#endif
 			functionClassDefinition = new NLCclassDefinition(functionClassDefinitionName);
 			classDefinitionList->push_back(functionClassDefinition);
 		}
@@ -807,7 +833,9 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		functionClassDefinition->functionNameSpecial = generateFunctionName(functionName);
 
 		functionClassDefinition->isActionOrConditionInstanceNotClass = true;
+		#ifdef NLC_DEBUG
 		//cout << "functionOwnerClassDefinition->isActionOrConditionInstanceNotClass" << endl;
+		#endif
 
 		functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);							
 		

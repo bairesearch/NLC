@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3b 11-December-2015
+ * Project Version: 1r4a 12-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -226,26 +226,33 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 		{
 			logicalConditionCommandContainsNLPparsablePhrase = true;
 			string firstParsablePhraseReferenceInLogicalConditionCommand = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, firstPhraseInLogicalConditionCommandOld);
-			//cout << "firstParsablePhraseReferenceInLogicalConditionCommand = " << firstParsablePhraseReferenceInLogicalConditionCommand << endl;
 			indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(firstParsablePhraseReferenceInLogicalConditionCommand);
+			#ifdef NLC_DEBUG
+			//cout << "firstParsablePhraseReferenceInLogicalConditionCommand = " << firstParsablePhraseReferenceInLogicalConditionCommand << endl;
 			//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;
+			#endif
 		}
 		else
 		{//logical condition command does not contain an nlp parsable phrase; it is just math, eg; "If the house is blue, X = 3+5"
+			#ifdef NLC_DEBUG
 			//cout << "logical condition command does not contain an nlp parsable phrase; it is just math" << endl;
 			//cout << "\n\nphraseIndexOfFirstLogicalCommand = " << phraseIndexOfFirstLogicalCommand << endl;
-
+			#endif
 			if(phraseIndexOfFirstLogicalCommand == 0)
 			{//eg If x+5 == 12405, X = 3+5
 				indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(logicalConditionCommandSubphraseContents);
+				#ifdef NLC_DEBUG
 				//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;
+				#endif
 			}
 			else
 			{//eg If the house is blue, X = 3+5
 				string lastParsablePhraseReferenceBeforeLogicalConditionCommand = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, lastPhraseBeforeLogicalConditionCommand);
-				//cout << "lastParsablePhraseReferenceBeforeLogicalConditionCommand = " << lastParsablePhraseReferenceBeforeLogicalConditionCommand << endl;
 				indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(lastParsablePhraseReferenceBeforeLogicalConditionCommand) + lastParsablePhraseReferenceBeforeLogicalConditionCommand.length();
+				#ifdef NLC_DEBUG
+				//cout << "lastParsablePhraseReferenceBeforeLogicalConditionCommand = " << lastParsablePhraseReferenceBeforeLogicalConditionCommand << endl;
 				//cout << "indexOfLogicalConditionCommandInMathText = " << indexOfLogicalConditionCommandInMathText << endl;			
+				#endif
 			}
 		}
 		
@@ -254,7 +261,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 			//disconnect logical condition command parsable phrases from mathText
 
 			int indentationOfLogicalCommand = firstNLCsentenceInFullSentence->indentation + 1;
+			#ifdef NLC_DEBUG
 			//cout << "indentationOfLogicalCommand = " << indentationOfLogicalCommand << endl;
+			#endif
 			NLCsentence* firstPhraseInLogicalConditionCommand = new NLCsentence();
 			firstPhraseInLogicalConditionCommand->indentation = indentationOfLogicalCommand;
 			firstPhraseInLogicalConditionCommand->next = firstPhraseInLogicalConditionCommandOld->next;
@@ -311,8 +320,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 				{
 					logicalConditionCommandWithoutFullStop = mathTextOfLogicalConditionCommand.substr(0, mathTextOfLogicalConditionCommand.length()-1);
 					logicalConditionCommandIsValidVariableName = isStringValidVariableName(logicalConditionCommandWithoutFullStop, true);
+					#ifdef NLC_DEBUG
 					//cout << "splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands{}: logical condition command NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR detected" << endl;
 					//cout << "logicalConditionCommandWithoutFullStop = " << logicalConditionCommandWithoutFullStop << endl;
+					#endif
 				}
 				if(logicalConditionCommandIsValidVariableName)
 				{
@@ -323,8 +334,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 					#else
 					firstPhraseInLogicalConditionCommand->sentenceContents = "" + actionName + NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL + STRING_FULLSTOP;
 					#endif
+					#ifdef NLC_DEBUG
 					//cout << "splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands{}: logicalConditionCommandIsNLCparsableWord" << endl;
 					//cout << "firstPhraseInLogicalConditionCommand->sentenceContents = " << firstPhraseInLogicalConditionCommand->sentenceContents << endl;
+					#endif
 				}
 				else
 				{
@@ -407,7 +420,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 				{
 					//e.g. If the basket that is near the house is above the tray, and the basket is blue, the dog is happy.*
 					finalParsablePhraseIsLogicalConditionCommand = true;
+					#ifdef NLC_DEBUG
 					//cout << "finalParsablePhraseIsLogicalConditionCommand" << endl;
+					#endif
 				}
 				/*OLD:
 				bool finalParsablePhraseIsLogicalConditionCommand = true;
@@ -614,8 +629,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 					#endif
 					if((indexOfSecondaryAuxiliaryReferencingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfSecondaryAuxiliaryReferencingSubject == 0))
 					{
-					
+						#ifdef NLC_DEBUG
 						//cout << "phrase: " << currentPhraseReferenceToPrimarySubject->sentenceContents << ": found secondary auxiliary" << endl;
+						#endif
 						bool secondaryChecks = false;
 						for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
 						{
@@ -710,9 +726,11 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITHOUT_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
 		{
 			int expectedPosOfConjunctionIfExistent = startPosToSearchForComma;
-			//cout << "expectedPosOfConjunctionIfExistent = " << expectedPosOfConjunctionIfExistent << endl;
 			int indexOfConjunctionTemp = lineContents->find(preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[i], expectedPosOfConjunctionIfExistent);
+			#ifdef NLC_DEBUG
+			//cout << "expectedPosOfConjunctionIfExistent = " << expectedPosOfConjunctionIfExistent << endl;
 			//cout << "indexOfConjunctionTemp = " << indexOfConjunctionTemp << endl;	
+			#endif
 			if((indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunctionTemp == expectedPosOfConjunctionIfExistent))
 			{
 				conjunctionFoundInSubphrase = true;
@@ -838,7 +856,9 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 				//found first phrase in logical condition command
 				*detectedLogicalConditionCommand = true; 
 				//*indexOfLogicalConditionCommand = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
+				#ifdef NLC_DEBUG
 				//cout << "indexOfLogicalConditionCommand = " <<* indexOfLogicalConditionCommand << endl;
+				#endif
 				*logicalConditionCommandSubphraseContents = currentNLCsubphraseInList->phraseContents;
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: found first phrase in logical condition command" << endl;
@@ -861,7 +881,10 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 		commaIndex++;
 	}
 
+	#ifdef NLC_DEBUG
 	//cout << "lineContents = " <<* lineContents << endl;
+	#endif
+	
 	return result;
 }	
 
@@ -882,8 +905,10 @@ bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentenc
 			int indexOfConjunctionTemp = mathTextInCommand.find(progLangCoordinatingConjunctions[i], startPosToSearchForConjunction);	
 			if(indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
+				#ifdef NLC_DEBUG
 				//cout << "mathTextInCommand = " << mathTextInCommand << endl;
 				//cout << "indexOfConjunctionTemp = " << indexOfConjunctionTemp << endl;
+				#endif
 				
 				if(indexOfConjunctionTemp < indexOfNextConjunction)
 				{

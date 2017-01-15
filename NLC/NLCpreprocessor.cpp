@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -163,7 +163,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				if(currentNLCsentenceInList->isMath)
 				{
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-					cout << "splitMathDetectedLineIntoNLPparsablePhrases():" << endl;
+					cout << "splitMathDetectedLineIntoNLPparsablePhrases{}:" << endl;
 					#endif
 					splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 				}
@@ -567,7 +567,7 @@ bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
 	#ifdef NLC_DEBUG_PREPROCESSOR
 	if(result)
 	{
-		cout << "reduceQuotesToSingleWords():" << endl;
+		cout << "reduceQuotesToSingleWords{}:" << endl;
 		cout << "lineText = " << lineText << endl;
 		cout << "*updatedLineText = " << *updatedLineText << endl;
 	}
@@ -602,14 +602,14 @@ bool detectFunctionHeader(string* lineContents)
 	{
 		functionHeaderFound = true;
 		
-		//cout << "detectFunctionHeader(): functionHeaderFound = " << NLC_PREPROCESSOR_FUNCTION_HEADER_STRING << endl; 
+		//cout << "detectFunctionHeader{}: functionHeaderFound = " << NLC_PREPROCESSOR_FUNCTION_HEADER_STRING << endl; 
 	}
 	return functionHeaderFound;
 }
 string getFunctionNameFromFunctionHeader(string* lineContents)
 {
 	string functionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
-	//cout << "getFunctionNameFromFunctionHeader(): functionName = " << functionName << endl; 
+	//cout << "getFunctionNameFromFunctionHeader{}: functionName = " << functionName << endl; 
 	return functionName;
 	
 }
@@ -638,7 +638,7 @@ bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logi
 			logicalConditionOperatorFound = true;
 			*logicalConditionOperator = i;
 			#ifdef NLC_DEBUG_PREPROCESSOR
-			cout << "detectLogicalConditionOperatorAtStartOfLine(): logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl;
+			cout << "detectLogicalConditionOperatorAtStartOfLine{}: logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl;
 			#endif
 		}
 	}

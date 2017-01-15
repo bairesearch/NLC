@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -144,7 +144,7 @@ static string progLangClassNameVariableName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES]
 static string progLangClassNameVariableEquals[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" = ", " = ", " = ", " = ", " = ", " = ", " = "};
 static string progLangClassMemberFunctionTypeDefault[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void ", "void ", "void ", "void ", "void ", "void ", "void "};
 static string progLangClassMemberFunctionTypeBool[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"bool ", "bool ", "bool ", "bool ", "bool ", "bool ", "bool "};
-static string progLangClassMemberFunctionParameters[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"()", "()", "()", "()", "()", "()", "()"};
+static string progLangClassMemberFunctionParameters[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{}", "{}", "{}", "{}", "{}", "{}", "{}"};
 static string progLangClassMemberFunctionParametersOpen[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(", "(", "(", "(", "(", "(", "("};
 static string progLangClassMemberFunctionParametersClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {")", ")", ")", ")", ")", ")", ")"};
 static string progLangClassMemberFunctionParametersNext[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {", ", ", ", ", ", ", ", ", ", ", ", ", "};
@@ -177,17 +177,17 @@ static string progLangForIterPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(", 
 static string progLangForIterPart2a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"::iterator ", "::iterator ", "::iterator ", "::iterator ", "::iterator ", "::iterator ", "::iterator "};
 static string progLangForIterPart2c[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" = ", " = ", " = ", " = ", " = ", " = ", " = "};
 //#ifdef NLC_CATEGORIES_TEST_PLURALITY
-//static string progLangForIterPart3a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".rbegin()", ".rbegin()", ".rbegin()", ".rbegin()", ".rbegin()", ".rbegin()", ".rbegin()"};
+//static string progLangForIterPart3a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".rbegin{}", ".rbegin{}", ".rbegin{}", ".rbegin{}", ".rbegin{}", ".rbegin{}", ".rbegin{}"};
 //#else
-static string progLangForIterPart3a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".begin()", ".begin()", ".begin()", ".begin()", ".begin()", ".begin()", ".begin()"};
+static string progLangForIterPart3a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".begin{}", ".begin{}", ".begin{}", ".begin{}", ".begin{}", ".begin{}", ".begin{}"};
 //#endif
 static string progLangForIterPart3b[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"; ", "; ", "; ", "; ", "; ", "; ", "; "};
 static string progLangForIterPart3c[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" < ", " < ", " < ", " < ", " < ", " < ", " < "};
 static string progLangForIterPart3cMap[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" != ", " != ", " != ", " != ", " != ", " != ", " != "};
 //#ifdef NLC_CATEGORIES_TEST_PLURALITY
-//static string progLangForIterPart3a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".rend()", ".rend()", ".rend()", ".rend()", ".rend()", ".rend()", ".rend()"};
+//static string progLangForIterPart3a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".rend{}", ".rend{}", ".rend{}", ".rend{}", ".rend{}", ".rend{}", ".rend{}"};
 //#else
-static string progLangForIterPart4a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".end()", ".end()", ".end()", ".end()", ".end()", ".end()", ".end()"};
+static string progLangForIterPart4a[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".end{}", ".end{}", ".end{}", ".end{}", ".end{}", ".end{}", ".end{}"};
 //#endif
 static string progLangForIterPart4b[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"; ", "; ", "; ", "; ", "; ", "; ", "; "};
 static string progLangForIterPart4c[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"++) ", "++) ", "++)", "++)", "++)", "++)", "++)"};
@@ -205,8 +205,8 @@ static string progLangNewObject[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"new ", 
 static string progLangAddEntityToList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddProperty[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push_back", "push_back", "push_back", "push_back", "push_back", "push_back", "push_back"};
 static string progLangAddCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"insert", "insert", "insert", "insert", "insert", "insert", "insert"};
-static string progLangHasEntity[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
-static string progLangHasCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty()", "empty()", "empty()", "empty()", "empty()", "empty()", "empty()"};
+static string progLangHasEntity[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty{}", "empty{}", "empty{}", "empty{}", "empty{}", "empty{}", "empty{}"};
+static string progLangHasCondition[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"empty{}", "empty{}", "empty{}", "empty{}", "empty{}", "empty{}", "empty{}"};
 
 static string progLangMainEntryPointFunctionName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"main", "main", "main", "main", "main", "main", "main"};
 
@@ -232,19 +232,19 @@ static string progLangMathMultiply[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"* ",
 static string progLangMathDivide[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" / ", " / ", " / ", " / ", " / ", " / ", " / "};
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-static string progLangRemoveProperties[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"clear()", "clear()", "clear()", "clear()", "clear()", "clear()", "clear()"};
-static string progLangRemoveConditions[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"clear()", "clear()", "clear()", "clear()", "clear()", "clear()", "clear()"};
+static string progLangRemoveProperties[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"clear{}", "clear{}", "clear{}", "clear{}", "clear{}", "clear{}", "clear{}"};
+static string progLangRemoveConditions[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"clear{}", "clear{}", "clear{}", "clear{}", "clear{}", "clear{}", "clear{}"};
 #endif
 
 static string progLangOpenSingleLineComment[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"//", "//", "//", "//", "//", "//", "//"};
 
 static string progLangPrintTextOpen[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"cout << \"", "cout << \"", "cout << \"", "cout << \"", "cout << \"", "cout << \"", "cout << \""};
 static string progLangPrintTextClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\" << endl", "\" << endl", "\" << endl", "\" << endl", "\" << endl", "\" << endl", "\" << endl"};
-static string progLangGetLast[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"back()", "back()", "back()", "back()", "back()", "back()", "back()"};
+static string progLangGetLast[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"back{}", "back{}", "back{}", "back{}", "back{}", "back{}", "back{}"};
 static string progLangGreaterThan[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" > ", " > ", " > ", " > ", " > ", " > ", " > "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_GREATER_THAN
 static string progLangGreaterThanOrEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" >= ", " >= ", " >= ", " >= ", " >= ", " >= ", " >= "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_GREATER_THAN_OR_EQUAL_TO
 static string progLangEqualsTest[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" == ", " == ", " == ", " == ", " == ", " == ", " == "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST
-static string progLangSizeOfList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"size()", "size()", "size()", "size()", "size()", "size()", "size()"};
+static string progLangSizeOfList[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"size{}", "size{}", "size{}", "size{}", "size{}", "size{}", "size{}"};
 static string progLangLessThan[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" < ", " < ", " < ", " < ", " < ", " < ", " < "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN
 static string progLangLessThanOrEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" <= ", " <= ", " <= ", " <= ", " <= ", " <= ", " <= "};	//must be synced with NLC_PREPROCESSOR_MATH_OPERATOR_LESS_THAN_OR_EQUAL_TO
 
@@ -252,8 +252,8 @@ static string progLangLessThanOrEqualTo[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 static string progLangClassLastSentenceReferencedVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"stack<int> ", "stack<int> ", "stack<int> ", "stack<int> ", "stack<int> ", "stack<int> ", "stack<int> "};
 static string progLangStackAdd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"push", "push", "push", "push", "push", "push", "push"};
-static string progLangStackRemove[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"pop()", "pop()", "pop()", "pop()", "pop()", "pop()", "pop()"};
-static string progLangStackGetLast[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"top()", "top()", "top()", "top()", "top()", "top()", "top()"};
+static string progLangStackRemove[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"pop{}", "pop{}", "pop{}", "pop{}", "pop{}", "pop{}", "pop{}"};
+static string progLangStackGetLast[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"top{}", "top{}", "top{}", "top{}", "top{}", "top{}", "top{}"};
 static string progLangClassLastSentenceIndexVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
 #else
 static string progLangClassLastSentenceReferencedVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
@@ -310,43 +310,38 @@ static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] =
 
 void printLine(string command, int level, string* code);
 string generatePropertyListName(NLCitem* item);
+
+string generatePropertyListName(string propertyClassName);	//NLC_NONOO: backwards compatibility wrapper only
 #ifdef NLC_NONOO
-string generatePropertyListName(string propertyClassName);	//backwards compatibility wrapper only
 string generatePropertyListName();
-#else
-string generatePropertyListName(string propertyClassName);
+string generatePropertyReverseListName();
 #endif
+
 #ifdef NLC_RECORD_ACTION_HISTORY
+string generateActionListName(string actionClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionIncomingListName(string actionClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionSubjectListName(string actionSubjectClassName);	//NLC_NONOO: backwards compatibility wrapper only
+string generateActionObjectListName(string actionObjectClassName);	//NLC_NONOO: backwards compatibility wrapper only
 #ifdef NLC_NONOO
-string generateActionListName(string actionClassName);	//backwards compatibility wrapper only
-string generateActionIncomingListName(string actionClassName);	//backwards compatibility wrapper only
-string generateActionSubjectListName(string actionSubjectClassName);	//backwards compatibility wrapper only
-string generateActionObjectListName(string actionObjectClassName);	//backwards compatibility wrapper only
 string generateActionListName();
 string generateActionIncomingListName();
 string generateActionSubjectListName();
 string generateActionObjectListName();
 #endif
-string generateActionListName(string actionClassName);
-string generateActionIncomingListName(string actionClassName);
-string generateActionSubjectListName(string actionSubjectClassName);
-string generateActionObjectListName(string actionObjectClassName);
 #endif
 string generateLocalListName(NLCitem* item);
 string generateEntityListName(NLCitem* entityParam);	//added 1i6a
 string generateEntityListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
-#ifdef NLC_NONOO
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
+#ifdef NLC_NONOO
 string generateConditionListName();
 string generateGIAconditionListName();
 string generateGIAconditionObjectListName();
 string generateGIAincomingConditionListName();
 string generateGIAconditionSubjectListName();
 #else
-string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem);
-string generateConditionListName(string conditionClassName, string conditionObjectClassName);
-string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
+string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem);string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);
 string generateCodeConditionPairText(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, int progLang);
 string generateCodeConditionPairTextWithContext(string conditionName, string conditionClassName, string conditionInstanceName, string conditionObjectClassName, string conditionObjectInstanceName, vector<string>* conditionContext, int progLang);
 #endif
@@ -356,11 +351,10 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
 string generateCodeEntityListDefinitionText(NLCitem* entityParam, int progLang);
 string generateCodeEntityListDefinitionText(string className, string instanceName, int progLang);
+	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
 	#ifdef NLC_NONOO
-	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//backwards compatibility wrapper only
 	string generateCodeEntityListDefinitionTypeText(int progLang);
 	#else
-	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);
 	string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang);
 	#ifdef NLC_GENERATE_TYPE_LISTS
 	string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang);
@@ -370,11 +364,10 @@ string generateCodeEntityListDefinitionReferenceText(NLCitem* entityParam, int p
 	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
 string generateCodeGenericListDefinitionText(NLCitem* entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
+	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
 	#ifdef NLC_NONOO
-	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//backwards compatibility wrapper only
 	string generateCodeConditionListDefinitionTypeText(int progLang);
 	#else
-	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	
 	string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang);
 	#endif
 

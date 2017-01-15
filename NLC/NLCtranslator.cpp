@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -112,7 +112,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		result = false;
 	}
 	
-	//cout << "finished generateCodeBlocks()" << endl;
+	//cout << "finished generateCodeBlocks{}" << endl;
 
 	//NLC translator Part 2.
 	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, functionDependency, functionDependencyList))
@@ -120,7 +120,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		result = false;
 	}
 	
-	//cout << "finished generateClassHeirarchy()" << endl;
+	//cout << "finished generateClassHeirarchy{}" << endl;
 		
 	return result;
 }
@@ -157,7 +157,7 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 								bool wordImmediatelySucceedingForFound = textInTextArray(entity2->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);
 								if(wordImmediatelySucceedingForFound)
 								{
-									cout << "identifyImplicitPluralLogicalConditionOperationsObjects(): wordImmediatelySucceedingForFound" << endl;
+									cout << "identifyImplicitPluralLogicalConditionOperationsObjects{}: wordImmediatelySucceedingForFound" << endl;
 									entity2->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL;
 								}
 							}
@@ -514,7 +514,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(vector<NLCitem*>* functionDefinitionSourceArgumentList, NLCclassDefinition* functionDeclaration)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(): functionDeclaration->name = " << functionDeclaration->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration{}: functionDeclaration->name = " << functionDeclaration->name << endl;
 	vector<NLCitem*>* functionDeclarationArgumentList = &(functionDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
@@ -539,8 +539,8 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclarat
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(NLCclassDefinition* functionDeclarationSource, NLCclassDefinition* functionDeclaration)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(): functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(): functionDeclaration->name = " << functionDeclaration->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration{}: functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration{}: functionDeclaration->name = " << functionDeclaration->name << endl;
 	vector<NLCitem*>* functionDeclarationSourceArgumentList = &(functionDeclarationSource->parameters);
 	vector<NLCitem*>* functionDeclarationArgumentList = &(functionDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
@@ -566,7 +566,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclara
 
 void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(NLCclassDefinition* functionDeclarationSource, vector<NLCitem*>* functionDefinitionArgumentList)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(): functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition{}: functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
 	vector<NLCitem*>* functionDeclarationSourceArgumentList = &(functionDeclarationSource->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
 	{
@@ -652,7 +652,7 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListC
 			if(!isStringNLPparsableWord(entity->entityName, false))
 			{
 				result = false;
-				cout << "checkAlphaNumericEntityNames(): user input error - entity names cannot start with numbers: " << entity->entityName << endl;
+				cout << "checkAlphaNumericEntityNames{}: user input error - entity names cannot start with numbers: " << entity->entityName << endl;
 				exit(0);
 			}
 		}

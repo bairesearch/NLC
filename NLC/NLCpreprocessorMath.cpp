@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -80,7 +80,7 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineCont
 
 				result = true;
 				#ifdef NLC_DEBUG_PREPROCESSOR
-				cout << "detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(): found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
+				cout << "detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol{}: found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
 				#endif
 			}	
 		}
@@ -267,7 +267,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
 				if(!isStringNLPparsableWord(currentWord, true))
 				{
-					cout << "splitMathDetectedLineIntoNLPparsablePhrases(): user input error - variables names cannot start with numbers: " << currentWord << endl;
+					cout << "splitMathDetectedLineIntoNLPparsablePhrases{}: user input error - variables names cannot start with numbers: " << currentWord << endl;
 					exit(0);
 				}
 				#endif
@@ -369,7 +369,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						currentPhrase = currentPhrase + currentWord;
 						
 						#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-						cout << "splitMathDetectedLineIntoNLPparsablePhrases(): create new NLP parsable phrase: currentPhrase = " << currentPhrase << endl;
+						cout << "splitMathDetectedLineIntoNLPparsablePhrases{}: create new NLP parsable phrase: currentPhrase = " << currentPhrase << endl;
 						#endif
 						
 						//remove all mathTextVariableNames nlp parsable phrase (as an NLP parsable phrase does not contain mathText variable names, or if it does the mathText variable are references to predefined mathText variables and will be detected later)
@@ -615,7 +615,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 	{
 		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-		cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): " << endl;
+		cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand{}: " << endl;
 		#endif
 		if(!generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(currentNLCsentenceInList, firstNLCsentenceInFullSentence, firstNLCsentenceInFullSentence->mathText, sentenceIndex, firstNLCsentenceInFullSentence->sentenceIndex, currentIndentation))
 		{
@@ -717,8 +717,8 @@ bool replaceNumericalVariablesWithDummyNameIfNecessary(string* lineContents, NLC
 					int dummyNumericalValue = generateDummyNumericalValue(currentNLCsentenceInList->variableNamesDetected.size());
 					string dummyNumericalValueString = convertIntToString(dummyNumericalValue);
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
-					cout << "replaceNumericalVariablesWithDummyNameIfNecessary(): currentWord = " << currentWord << endl;
-					cout << "replaceNumericalVariablesWithDummyNameIfNecessary(): dummyNumericalValueString = " << dummyNumericalValueString << endl;
+					cout << "replaceNumericalVariablesWithDummyNameIfNecessary{}: currentWord = " << currentWord << endl;
+					cout << "replaceNumericalVariablesWithDummyNameIfNecessary{}: dummyNumericalValueString = " << dummyNumericalValueString << endl;
 					#endif
 					lineContents->replace(i-currentWord.length(), currentWord.length(), dummyNumericalValueString);
 					i = i-currentWord.length()+dummyNumericalValueString.length();
@@ -743,8 +743,8 @@ bool replaceNumericalVariablesWithDummyNameIfNecessary(string* lineContents, NLC
 			int dummyNumericalValue = generateDummyNumericalValue(currentNLCsentenceInList->variableNamesDetected.size());
 			string dummyNumericalValueString = convertIntToString(dummyNumericalValue);
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
-			cout << "replaceNumericalVariablesWithDummyNameIfNecessary(): currentWord = " << currentWord << endl;
-			cout << "replaceNumericalVariablesWithDummyNameIfNecessary(): dummyNumericalValueString = " << dummyNumericalValueString << endl;
+			cout << "replaceNumericalVariablesWithDummyNameIfNecessary{}: currentWord = " << currentWord << endl;
+			cout << "replaceNumericalVariablesWithDummyNameIfNecessary{}: dummyNumericalValueString = " << dummyNumericalValueString << endl;
 			#endif
 			lineContents->replace(lineContents->length()-currentWord.length(), currentWord.length(), dummyNumericalValueString);	
 		}	

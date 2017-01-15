@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1691,7 +1691,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	else
 	{
-		cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString(): NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION not found" << endl;
+		cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{}: NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION not found" << endl;
 		exit(0);
 	}
 	
@@ -1716,7 +1716,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	bool foundFunctionOwnerExactMatch = false;
 	bool foundFunctionObjectExactMatch = false;
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	cout << "\n\n\n\n generateFunctionExecutionArgumentsWithActionConceptInheritanceString():" << endl;
+	cout << "\n\n\n\n generateFunctionExecutionArgumentsWithActionConceptInheritanceString{}:" << endl;
 	cout << "functionName = " << functionName << endl;
 	cout << "functionOwnerName = " << functionOwnerName << endl;
 	cout << "functionObjectName = " << functionObjectName << endl;
@@ -1915,7 +1915,7 @@ string generateCodePluralReferenceText(NLCitem* functionArgumentItem, int progLa
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{	
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-		cout << "generateCodePluralReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
+		cout << "generateCodePluralReferenceText{}: functionArgumentItem->functionArgumentPassCastRequired" << endl;
 		#endif
 		codePropertyTypeText = printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang, categoryList);
 	}
@@ -1933,7 +1933,7 @@ string generateCodeSingularReferenceText(NLCitem* functionArgumentItem, int prog
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-		cout << "generateCodeSingularReferenceText(): functionArgumentItem->functionArgumentPassCastRequired" << endl;
+		cout << "generateCodeSingularReferenceText{}: functionArgumentItem->functionArgumentPassCastRequired" << endl;
 		#endif
 		codePropertyTypeText = generateDynamicCastOfEntity(functionArgumentItem->instanceName, functionArgumentItem->functionArgumentPassCastClassName, progLang); 	//dynamic_cast<parentClass*>(childClassInstance);
 	}
@@ -2003,7 +2003,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 	{
 		NLCitem* currentItem = *parametersIterator;
 		#ifdef NLC_DEBUG
-		//cout << "generateFunctionArgumentsBasedOnActionAndActionObjectVars():" << endl;
+		//cout << "generateFunctionArgumentsBasedOnActionAndActionObjectVars{}:" << endl;
 		//cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
 		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
 		#endif

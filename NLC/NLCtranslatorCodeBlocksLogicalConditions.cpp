@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,7 +43,7 @@
 bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCsentence* firstNLCsentenceInFullSentence, string NLCfunctionName)
 {
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-	cout << "\n generateCodeBlocksFromMathText(): sentenceIndex = " << sentenceIndex << endl;
+	cout << "\n generateCodeBlocksFromMathText{}: sentenceIndex = " << sentenceIndex << endl;
 	#endif
 	bool result = true;
 	
@@ -244,7 +244,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 								}
 							}
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-							cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase()" << endl;
+							cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase{}" << endl;
 							#endif
 							parsablePhrase = parsablePhrase->next;
 							parsablePhraseIter++;
@@ -403,7 +403,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 	#endif
 	
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-	cout << "finished generateCodeBlocksFromMathText()" << endl;
+	cout << "finished generateCodeBlocksFromMathText{}" << endl;
 	#endif
 	
 	return result;
@@ -436,8 +436,8 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 				#endif
 				{
 					#ifdef NLC_DEBUG
-					//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): sentenceIndex = " << sentenceIndex << endl;
-					//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): " << entity->entityName << ", entity->sentenceIndexTemp = " << entity->sentenceIndexTemp << endl;
+					//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: sentenceIndex = " << sentenceIndex << endl;
+					//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: " << entity->entityName << ", entity->sentenceIndexTemp = " << entity->sentenceIndexTemp << endl;
 					#endif
 					
 					if(foundParsablePhrase)
@@ -447,7 +447,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					foundParsablePhrase = true;
 
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found 'number of' designation, entity: " << entity->entityName << endl;
+					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: found 'number of' designation, entity: " << entity->entityName << endl;
 					#endif
 					NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 					#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
@@ -532,7 +532,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 							if(!foundParsablePhrase)
 							{
 								#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found entity: " << entity->entityName << endl;
+								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: found entity: " << entity->entityName << endl;
 								#endif
 
 								NLCcodeblock* NLCcodeBlockBeforeGenerateContext = *currentCodeBlockInTree; 
@@ -563,7 +563,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								}
 								#endif
 								
-								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase{}:  1 generateContextBlocks: ") + parentEntity->entityName);
 								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
 								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
 								
@@ -581,22 +581,22 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									}
 									else
 									{
-										cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+										cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
 									}
 								}
 								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 								#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 								generateContextBlocksVariables.testNumerosity = true;
 								#endif
-								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + parentEntity->entityName);
-								//cout << "generateContextBlocks():, childEntity = " << childEntity->entityName << endl;
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase{}:  2 generateContextBlocks: ") + parentEntity->entityName);
+								//cout << "generateContextBlocks{}:, childEntity = " << childEntity->entityName << endl;
 								if(generateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
 								{
 									contextFound = true;
 								}
 									
 								/*
-								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase{}:  1 generateContextBlocks: ") + parentEntity->entityName);
 								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
 								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
 								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
@@ -608,7 +608,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 								generateContextBlocksVariables.testNumerosity = true;
 								#endif
-								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + parentEntity->entityName);
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase{}:  2 generateContextBlocks: ") + parentEntity->entityName);
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION))
 								{
 									contextFound = true;
@@ -669,7 +669,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 	bool foundParsablePhrase = false;
 	
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-	cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor()" << endl;
+	cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor{}" << endl;
 	#endif
 	//generate NLP parsable phrase eg "all apples in the cart" in "for(all the apples in the cart)"
 	
@@ -719,7 +719,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 							}
 							else
 							{
-								cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(): generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+								cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor{}: generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
 							}
 						}
 						#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_FOR_LOOP_IGNORE_SAME_REFERENCE_SET_COMPENSATE_FOR_NLP_FAILURE_TO_CREATE_RCMOD
@@ -761,7 +761,7 @@ bool findAndSetDummyNumericalValueForReplacement(vector<GIAentityNode*>* entityN
 			if(entity->quantityNumber == dummyNumericalValue)
 			{
 				#ifdef NLC_DEBUG
-				//cout << "findAndSetDummyNumericalValueForReplacement(): " << endl;
+				//cout << "findAndSetDummyNumericalValueForReplacement{}: " << endl;
 				//cout << "entity->quantityNumber = " << entity->quantityNumber << endl;
 				//cout << "dummyNumericalValue = " << dummyNumericalValue << endl;
 				//cout << "sentenceIndex = " << sentenceIndex << endl;
@@ -907,7 +907,7 @@ void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*>* entity
 		{			
 			entity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
 			#ifdef NLC_DEBUG
-			//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase():" << endl;
+			//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase{}:" << endl;
 			//cout << "entity = " << entity->entityName << endl;
 			//cout << "entity->isConcept = " << entity->isConcept << endl;
 			#endif

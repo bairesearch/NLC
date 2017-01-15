@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -638,7 +638,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1o6b 19-March-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1o7b 10-May-2015" << endl;
 			exit(1);
 		}
 
@@ -664,28 +664,28 @@ int main(int argc,char* *argv)
 		{
 			if(!getFilesFromFileList2(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2()" << endl;
+				cout << "main() error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 		if(useInputTextNLPrelationXMLFile)
 		{
 			if(!getFilesFromFileList2(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2()" << endl;
+				cout << "main() error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 		if(useInputTextNLPfeatureXMLFile)
 		{
 			if(!getFilesFromFileList2(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2()" << endl;
+				cout << "main() error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 		if(useInputTextXMLFile)
 		{
 			if(!getFilesFromFileList2(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
 			{
-				cout << "main() error: !getFilesFromFileList2()" << endl;
+				cout << "main() error: !getFilesFromFileList2{}" << endl;
 			}
 		}
 	}
@@ -731,7 +731,7 @@ int main(int argc,char* *argv)
 		}
 		else
 		{
-			cout << "main() error: !preprocessTextForNLC()" << endl;
+			cout << "main() error: !preprocessTextForNLC{}" << endl;
 			exit(0);
 		}
 
@@ -970,18 +970,18 @@ int main(int argc,char* *argv)
 		#endif
 
 		#ifdef NLC_DEBUG
-		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;
+		cout << "translateNetwork{}: NLCfunctionName = " << NLCfunctionName << endl;
 		#endif
 
 		#ifdef NLC_DEBUG
-		cout << "transformTheActionOfPossessionEgHavingIntoAproperty():" << endl;
+		cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:" << endl;
 		#endif
 		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
 
 		#ifdef NLC_DEBUG
-		cout << "removeRedundantConditionConjunctions():" << endl;
+		cout << "removeRedundantConditionConjunctions{}:" << endl;
 		#endif
 
 		//generate class definition function declaration for new function definition
@@ -1229,11 +1229,11 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					actionHasSubject = true;
 					actionSubjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
 				}
-				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
+				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}: found and replacing possessive action entity with property" << endl;
 				if(actionHasSubject && actionHasObject)
 				{
 					#ifdef NLC_DEBUG
-					cout << "transformTheActionOfPossessionEgHavingIntoAproperty():" << endl;
+					cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:" << endl;
 					cout << "actionSubjectEntity->entityName = " << actionSubjectEntity->entityName << endl;
 					cout << "actionObjectEntity->entityName = " << actionObjectEntity->entityName << endl;
 					#endif
@@ -1261,7 +1261,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
 						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
 						#ifdef NLC_DEBUG
-						cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
+						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
 						connectionIter = actionEntity->conditionNodeList->erase(connectionIter);
 					}
@@ -1272,7 +1272,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
 						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
 						#ifdef NLC_DEBUG
-						cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
+						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
 						connectionIter = actionEntity->incomingConditionNodeList->erase(connectionIter);
 					}

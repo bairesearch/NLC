@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1066,7 +1066,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 		bool traceModeIsQuery = false;
 
 		#ifdef NLC_DEBUG
-		//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
+		//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{}: identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
 		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
 		#endif
 		
@@ -1190,7 +1190,7 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
 		#ifdef NLC_DEBUG
-		//cout << "assumedToAlreadyHaveBeenDeclared():" << endl;
+		//cout << "assumedToAlreadyHaveBeenDeclared{}:" << endl;
 		//cout << "entity->grammaticalDefiniteTemp = " << entity->grammaticalDefiniteTemp << endl;
 		//cout << "entity->grammaticalProperNounTemp = " << entity->grammaticalProperNounTemp << endl;
 		//cout << "entity->NLClocalListVariableHasBeenInitialised = " << entity->NLClocalListVariableHasBeenInitialised << endl;
@@ -1407,7 +1407,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 			*hasFunctionOwnerClass = true;
 			*hasFunctionObjectClass = true;
 			#ifdef NLC_DEBUG
-			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
+			cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " <<* functionName << endl;
 			cout << "functionOwnerName = " <<* functionOwnerName << endl;
@@ -1420,7 +1420,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*hasFunctionOwnerClass = true;
 			#ifdef NLC_DEBUG
-			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
+			cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " <<* functionName << endl;
 			cout << "functionOwnerName = " <<* functionOwnerName << endl;
@@ -1433,7 +1433,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functi
 		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*hasFunctionObjectClass = true;
 		#ifdef NLC_DEBUG
-		cout << "parseFunctionNameFromNLCfunctionName():" << endl;
+		cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
 		cout << "NLCfunctionName = " << NLCfunctionName << endl;
 		cout << "functionName = " <<* functionName << endl;
 		cout << "functionObjectName = " <<* functionObjectName << endl;
@@ -2331,7 +2331,7 @@ NLCcodeblock* createCodeBlocksCastVectorExecuteFunction(NLCcodeblock* currentCod
 NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string aliasName)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "createCodeBlocksAddAliasToEntityAliasList():" << endl;
+	cout << "createCodeBlocksAddAliasToEntityAliasList{}:" << endl;
 	#endif
 	
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -2344,7 +2344,7 @@ NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCod
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end createCodeBlocksAddAliasToEntityAliasList():" << endl;
+	cout << "end createCodeBlocksAddAliasToEntityAliasList{}:" << endl;
 	#endif
 	
 	return currentCodeBlockInTree;
@@ -2353,7 +2353,7 @@ NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCod
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "createCodeBlocksFindAliasAndAddToCategoryListNewFunction():" << endl;
+	cout << "createCodeBlocksFindAliasAndAddToCategoryListNewFunction{}:" << endl;
 	#endif
 	
 	//required because printCodeBlocks requires at least 1 param
@@ -2369,7 +2369,7 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodebl
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end createCodeBlocksFindAliasAndAddToCategoryListNewFunction():" << endl;
+	cout << "end createCodeBlocksFindAliasAndAddToCategoryListNewFunction{}:" << endl;
 	#endif
 	
 	return currentCodeBlockInTree;
@@ -2378,7 +2378,7 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodebl
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity, string genericListAppendName)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction():" << endl;
+	cout << "createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction{}:" << endl;
 	#endif
 	
 	NLCitem* aliasEntityItem = new NLCitem(aliasName, NLC_ITEM_TYPE_OBJECT);
@@ -2395,7 +2395,7 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCco
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction():" << endl;
+	cout << "end createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction{}:" << endl;
 	#endif
 	
 	return currentCodeBlockInTree;
@@ -2404,7 +2404,7 @@ NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCco
 NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBlockInTree)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "createCodeBlocksFindAliasNewFunction():" << endl;
+	cout << "createCodeBlocksFindAliasNewFunction{}:" << endl;
 	#endif
 	
 	//required because printCodeBlocks requires at least 1 param
@@ -2420,7 +2420,7 @@ NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBloc
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end createCodeBlocksFindAliasAndAddToCategoryListNewFunction():" << endl;
+	cout << "end createCodeBlocksFindAliasAndAddToCategoryListNewFunction{}:" << endl;
 	#endif
 	
 	return currentCodeBlockInTree;
@@ -2428,7 +2428,7 @@ NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBloc
 NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "createCodeBlocksFindAliasExecuteFunction():" << endl;
+	cout << "createCodeBlocksFindAliasExecuteFunction{}:" << endl;
 	#endif
 	
 	NLCitem* aliasEntityItem = new NLCitem(aliasName, NLC_ITEM_TYPE_OBJECT);
@@ -2442,7 +2442,7 @@ NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCode
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction():" << endl;
+	cout << "end createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction{}:" << endl;
 	#endif
 	
 	return currentCodeBlockInTree;
@@ -2470,19 +2470,19 @@ unordered_map<string, string>* getFunctionAliasClassList()
 void initialiseFunctionAliasClassList()
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "initialiseFunctionAliasClassList():" << endl;
+	cout << "initialiseFunctionAliasClassList{}:" << endl;
 	#endif
 	//functionAliasClassList->clear();
 	functionAliasClassList = new unordered_map<string, string>;
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end initialiseFunctionAliasClassList()" << endl;
+	cout << "end initialiseFunctionAliasClassList{}" << endl;
 	#endif
 }
 
 bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 {
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "start findEntityNameInFunctionAliasList():" << endl;
+	cout << "start findEntityNameInFunctionAliasList{}:" << endl;
 	#endif
 	bool result = false;
 	unordered_map<string, string>::iterator iter1 = functionAliasClassList->find(aliasName);
@@ -2493,7 +2493,7 @@ bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 	}
 	return result;
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	cout << "end findEntityNameInFunctionAliasList():" << endl;
+	cout << "end findEntityNameInFunctionAliasList{}:" << endl;
 	#endif
 }
 #endif

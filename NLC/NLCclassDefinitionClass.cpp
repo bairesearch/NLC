@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -295,7 +295,7 @@ bool findFunctionDependencyInClassDefinitionList(vector<NLCclassDefinition* >* c
 bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	cout << "findFunctionDeclarationClassDefinitionExactOrNonExactMatch(): " << endl;
+	cout << "findFunctionDeclarationClassDefinitionExactOrNonExactMatch{}: " << endl;
 	cout << "functionName = " << functionName << endl;
 	cout << "functionOwnerName = " << functionOwnerName << endl;
 	cout << "functionObjectName = " << functionObjectName << endl;
@@ -381,7 +381,7 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition* >* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool isReference)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	cout << "findFunctionDeclarationClassDefinition():" << endl;
+	cout << "findFunctionDeclarationClassDefinition{}:" << endl;
 	cout << "functionName = " << functionName << endl;
 	#endif
 	bool foundFunctionDeclarationClassDefinition = false;

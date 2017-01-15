@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -405,7 +405,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									}
 								}
 								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-								cout << "generateCodeBlocksPart2logicalConditions(): 2" << endl;
+								cout << "generateCodeBlocksPart2logicalConditions{}: 2" << endl;
 								#endif
 								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 								{
@@ -428,7 +428,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
 								}
 								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-								cout << "generateCodeBlocksPart2logicalConditions(): 3" << endl;
+								cout << "generateCodeBlocksPart2logicalConditions{}: 3" << endl;
 								#endif
 
 							}
@@ -468,7 +468,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						if(passedLogicalConditionObject)
 						{
 							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-							cout << "generateCodeBlocksPart2logicalConditions(): 4" << endl;
+							cout << "generateCodeBlocksPart2logicalConditions{}: 4" << endl;
 							#endif
 							//check if logicalConditionOperationSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
 
@@ -562,7 +562,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								#endif
 							}
 							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-							cout << "generateCodeBlocksPart2logicalConditions(): 5" << endl;
+							cout << "generateCodeBlocksPart2logicalConditions{}: 5" << endl;
 							#endif
 						}
 					}
@@ -579,7 +579,7 @@ void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode
 	NLCcodeblock* currentCodeBlockInTreeAtCurrentLevel1 = *currentCodeBlockInTree;
 
 	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-	cout << "addNewLogicalCondition(): currentLogicalConditionObject = " << currentLogicalConditionObject->entityName << endl;
+	cout << "addNewLogicalCondition{}: currentLogicalConditionObject = " << currentLogicalConditionObject->entityName << endl;
 	#endif
 
 	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
@@ -645,7 +645,7 @@ void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode
 	}
 	
 	#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
-	cout << "addNewLogicalCondition(): end" << endl;
+	cout << "addNewLogicalCondition{}: end" << endl;
 	#endif
 }
 
@@ -763,7 +763,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 								if(tagOrUntag)
 								{
 									#ifdef NLC_DEBUG
-									//cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(): tagged: " << connectedEntity->entityName << endl;
+									//cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{}: tagged: " << connectedEntity->entityName << endl;
 									#endif
 									connection->NLCparsedForlogicalConditionOperations = true;
 									connectedEntity->NLCparsedForlogicalConditionOperations = true;
@@ -771,7 +771,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 								else
 								{
 									#ifdef NLC_DEBUG
-									//cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(): untagged: " << connectedEntity->entityName << endl;
+									//cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{}: untagged: " << connectedEntity->entityName << endl;
 									#endif
 									connection->NLCparsedForlogicalConditionOperations = false;
 									connectedEntity->NLCparsedForlogicalConditionOperations = false;
@@ -799,7 +799,7 @@ bool setCurrentCodeBlockInTreeToStartOfIfStatement(NLCcodeblock** currentCodeBlo
 			{
 				result = true;
 				#ifdef NLC_DEBUG
-				cout << "setCurrentCodeBlockInTreeToStartOfIfStatement():" << endl;
+				cout << "setCurrentCodeBlockInTreeToStartOfIfStatement{}:" << endl;
 				#endif
 				*firstCodeBlockAtStartOfIfStatement = codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()]->next;
 				*currentCodeBlockInTree = codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()];
@@ -823,7 +823,7 @@ bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock** currentC
 		if(elseIfDetected || elseDetected)
 		{
 			#ifdef NLC_DEBUG
-			cout << "restoreCurrentCodeBlockInTreeToStartOfElseStatement():" << endl;
+			cout << "restoreCurrentCodeBlockInTreeToStartOfElseStatement{}:" << endl;
 			#endif
 			//restore currentCodeBlockInTree
 			(*previousCodeBlockInTree)->next = firstCodeBlockAtStartOfIfStatement;
@@ -860,7 +860,7 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareConcept,
 	{
 		GIAentityNode* entityCompare = (*entityIter)->entity;
 		#ifdef GIA_DREAMMODE_REFERENCING_DEBUG
-		cout << "searchForEquivalentSubnetToIfStatement(): identifyReferenceSetsSpecificConcepts: " << entityCompare->entityName << endl;
+		cout << "searchForEquivalentSubnetToIfStatement{}: identifyReferenceSetsSpecificConcepts: " << entityCompare->entityName << endl;
 		#endif
 
 		if(!(entityCompare->disabled))
@@ -870,7 +870,7 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareConcept,
 				GIAqueryTraceParameters queryTraceParameters;		//not used
 
 				#ifdef NLC_DEBUG
-				//cout << "searchForEquivalentSubnetToIfStatement():" << endl;
+				//cout << "searchForEquivalentSubnetToIfStatement{}:" << endl;
 				//cout << "entityCompare->entityName = " << entityCompare->entityName << endl;
 				//cout << "entity->entityName = " << entity->entityName << endl;
 				#endif

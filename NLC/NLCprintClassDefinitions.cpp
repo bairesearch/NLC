@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -82,7 +82,7 @@ bool printClassDefinitions(vector<NLCclassDefinition* >* classDefinitionList, in
 					if(!(classDefinition->isActionOrConditionInstanceNotClass))
 					{
 						#ifdef NLC_DEBUG
-						//cout << "printClassDefinitions(): classDefinition->name:" << classDefinition->name << endl;
+						//cout << "printClassDefinitions{}: classDefinition->name:" << classDefinition->name << endl;
 						#endif
 
 						bool printedParentClassDefinitions = true;
@@ -507,7 +507,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 		NLCitem* currentItem = *parametersIterator;
 		
 		#ifdef NLC_DEBUG
-		//cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(): " << endl;
+		//cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString{}: " << endl;
 		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
 		//cout << "currentItem->className = " << currentItem->className << endl;
 		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
@@ -663,7 +663,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 		NLCitem* currentItem = *parametersIterator;
 		
 		#ifdef NLC_DEBUG
-		//cout << "arefunctionArgumentsPrinted(): " << endl;
+		//cout << "arefunctionArgumentsPrinted{}: " << endl;
 		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
 		//cout << "currentItem->className = " << currentItem->className << endl;
 		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
@@ -722,7 +722,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 				else
 				{
 					#ifdef NLC_DEBUG
-					//cout << "arefunctionArgumentsPrinted(): foundLocalClassDefinition && (localClassDefinition->printed): localClassDefinition->name = " << localClassDefinition->name << endl;
+					//cout << "arefunctionArgumentsPrinted{}: foundLocalClassDefinition && (localClassDefinition->printed): localClassDefinition->name = " << localClassDefinition->name << endl;
 					#endif
 				}
 			}
@@ -736,7 +736,7 @@ bool arefunctionArgumentsPrinted(vector<NLCclassDefinition* >* classDefinitionLi
 					if(currentItem->itemType != NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER)
 					{
 					#endif
-						cout << "arefunctionArgumentsPrinted(): error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
+						cout << "arefunctionArgumentsPrinted{}: error: !foundLocalClassDefinition; currentItem->className = " << currentItem->className << endl;
 					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 					}
 					#endif
@@ -769,7 +769,7 @@ bool isConditionObjectPrinted(vector<NLCclassDefinition* >* classDefinitionList,
 			}
 			else
 			{
-				cout << "isConditionObjectPrinted(): error: !foundLocalClassDefinition; currentItem->className2 = " << currentItem->className2 << endl;
+				cout << "isConditionObjectPrinted{}: error: !foundLocalClassDefinition; currentItem->className2 = " << currentItem->className2 << endl;
 			}
 		}
 	}

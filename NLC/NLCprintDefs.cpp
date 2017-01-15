@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o6b 19-March-2015
+ * Project Version: 1o7b 10-May-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,11 +53,17 @@ string generatePropertyListName(NLCitem* item)
 {
 	return generatePropertyListName(item->className);
 }
-#ifdef NLC_NONOO
+
 string generatePropertyListName(string propertyClassName)
 {
+	#ifdef NLC_NONOO
 	return generatePropertyListName();
+	#else
+	string propertyListName = propertyClassName + NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION;
+	return propertyListName;	
+	#endif
 }
+#ifdef NLC_NONOO
 string generatePropertyListName()
 {
 	string propertyListName = GIA_ENTITYNODECLASS_PROPERTYNODELIST_NAME;
@@ -68,32 +74,47 @@ string generatePropertyReverseListName()
 	string propertyListName = GIA_ENTITYNODECLASS_PROPERTYNODEREVERSELIST_NAME;
 	return propertyListName;
 }
-#else
-string generatePropertyListName(string propertyClassName)
-{
-	string propertyListName = propertyClassName + NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION;
-	return propertyListName;
-}
 #endif
 
 #ifdef NLC_RECORD_ACTION_HISTORY
-#ifdef NLC_NONOO
 string generateActionListName(string actionClassName)
 {
+	#ifdef NLC_NONOO
 	return generateActionListName();
+	#else
+	string actionListName = generateGenericListName(actionClassName, NLC_ITEM_TYPE_ACTION_VAR_APPENDITION);
+	return actionListName;	
+	#endif
 }
 string generateActionIncomingListName(string actionClassName)
 {
+	#ifdef NLC_NONOO
 	return generateActionIncomingListName();
+	#else
+	string actionIncomingListName = generateGenericListName(actionClassName, NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION);
+	return actionIncomingListName;
+	#endif
 }
 string generateActionSubjectListName(string actionSubjectClassName)
 {
+	#ifdef NLC_NONOO
 	return generateActionSubjectListName();
+	#else
+	string actionSubjectListName = generateGenericListName(actionSubjectClassName, NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION);
+	return actionSubjectListName;
+	#endif
 }
 string generateActionObjectListName(string actionObjectClassName)
 {
+	#ifdef NLC_NONOO
 	return generateActionObjectListName();
+	#else
+	string actionObjectListName = generateGenericListName(actionObjectClassName, NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION);
+	return actionObjectListName;
+	#endif
 }
+
+#ifdef NLC_NONOO
 string generateActionListName()
 {
 	string actionListName = GIA_ENTITYNODECLASS_ACTIONNODELIST_NAME;
@@ -112,27 +133,6 @@ string generateActionSubjectListName()
 string generateActionObjectListName()
 {
 	string actionObjectListName = GIA_ENTITYNODECLASS_ACTIONOBJECTLIST_NAME;
-	return actionObjectListName;
-}
-#else
-string generateActionListName(string actionClassName)
-{
-	string actionListName = generateGenericListName(actionClassName, NLC_ITEM_TYPE_ACTION_VAR_APPENDITION);
-	return actionListName;
-}
-string generateActionIncomingListName(string actionClassName)
-{
-	string actionIncomingListName = generateGenericListName(actionClassName, NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION);
-	return actionIncomingListName;
-}
-string generateActionSubjectListName(string actionSubjectClassName)
-{
-	string actionSubjectListName = generateGenericListName(actionSubjectClassName, NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION);
-	return actionSubjectListName;
-}
-string generateActionObjectListName(string actionObjectClassName)
-{
-	string actionObjectListName = generateGenericListName(actionObjectClassName, NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION);
 	return actionObjectListName;
 }
 #endif
@@ -182,11 +182,21 @@ string generateGenericListName(string genericObjectName, string genericListAppen
 	return propertyListName;
 }
 
-#ifdef NLC_NONOO
 string generateConditionListName(string conditionClassName, string conditionObjectClassName)
 {
+	#ifdef NLC_NONOO
 	return generateConditionListName();
+	#else
+	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION;	
+	#else
+	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION;
+	#endif
+	return conditionListName;	
+	#endif
 }
+
+#ifdef NLC_NONOO
 string generateConditionListName()
 {
 	return generateGIAconditionListName();
@@ -215,15 +225,6 @@ string generateGIAconditionSubjectListName()
 string generateConditionListName(NLCitem* conditionItem, NLCitem* conditionObjectItem)
 {
 	return generateConditionListName(conditionItem->className, conditionObjectItem->className);
-}
-string generateConditionListName(string conditionClassName, string conditionObjectClassName)
-{
-	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION;	
-	#else
-	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION;
-	#endif
-	return conditionListName;
 }
 
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName)
@@ -311,22 +312,23 @@ string generateCodeEntityListDefinitionText(string className, string instanceNam
 }
 
 
-#ifdef NLC_NONOO
 string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang)
 {
+	#ifdef NLC_NONOO
 	return generateCodeEntityListDefinitionTypeText(progLang);
+	#else
+	string codeEntityListDefinitionTypeText = progLangClassListTypeStart[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//vector<entityClassName*>
+	return codeEntityListDefinitionTypeText;	
+	#endif
 }
+
+#ifdef NLC_NONOO
 string generateCodeEntityListDefinitionTypeText(int progLang)
 {
 	string codeEntityListDefinitionTypeText = progLangClassListTypeStart[progLang] + NLCNONOO_GENERIC_ENTITY_NODE_NAME + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];
 	return codeEntityListDefinitionTypeText;
 }
 #else
-string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang)
-{
-	string codeEntityListDefinitionTypeText = progLangClassListTypeStart[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//vector<entityClassName*>
-	return codeEntityListDefinitionTypeText;
-}
 string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, int progLang)
 {
 	string codePropertyListDefinitionTextPointer = generateCodeEntityListDefinitionTypeText(entityClassName, progLang) + progLangPointer[progLang];		//vector<entityClassName*>* 
@@ -371,26 +373,26 @@ string generateCodeConditionListDefinitionText(string conditionClassName, string
 	string codeConditionListDefinitionText = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + generateConditionListName(conditionClassName, conditionObjectClassName);
 	return codeConditionListDefinitionText;
 }
-#ifdef NLC_NONOO
 string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang)
 {
+	#ifdef NLC_NONOO
 	return generateCodeConditionListDefinitionTypeText(progLang);
+	#else
+	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string, conditionObjectClassName*>
+	#else
+	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<conditionClassName*, conditionObjectClassName*>
+	#endif
+	return codeConditionListDefinitionTypeText;	
+	#endif
 }
+#ifdef NLC_NONOO
 string generateCodeConditionListDefinitionTypeText(int progLang)
 {
 	string codeConditionListDefinitionTypeText = generateCodeEntityListDefinitionTypeText(progLang);
 	return codeConditionListDefinitionTypeText;
 }
 #else
-string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang)
-{
-	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string, conditionObjectClassName*>
-	#else
-	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<conditionClassName*, conditionObjectClassName*>
-	#endif
-	return codeConditionListDefinitionTypeText;
-}
 string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang)
 {
 	string codeConditionListDefinitionTypeTextPointer = generateCodeConditionListDefinitionTypeText(conditionClassName, conditionObjectClassName, progLang) + progLangPointer[progLang];	//unordered_map<conditionClassName*, conditionObjectClassName*>* 

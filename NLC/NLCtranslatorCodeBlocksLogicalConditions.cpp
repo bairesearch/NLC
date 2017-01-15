@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u6a 28-September-2016
+ * Project Version: 1u7a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -608,11 +608,11 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 		if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT)
 		{//added 1t2a
 			//this is required to parse both the subject and the object of the boolean statement independently
-			NLCgenerateContextBlocksVariables generateContextBlocksVariablesLogicalConditionBooleanStatement;
-			generateContextBlocksVariablesLogicalConditionBooleanStatement.logicalConditionBooleanStatement = true;
-			if(generateCodeBlocksPart3subjectObjectConnections(currentCodeBlockInTree, entityNodesActiveListParsablePhrase, sentenceIndex, &generateContextBlocksVariablesLogicalConditionBooleanStatement))
+			NLCgenerateContextBlocksVariables generateContextBlocksVariablesLogicalConditionStatement;
+			generateContextBlocksVariablesLogicalConditionStatement.logicalConditionStatement = true;
+			if(generateCodeBlocksPart3subjectObjectConnections(currentCodeBlockInTree, entityNodesActiveListParsablePhrase, sentenceIndex, &generateContextBlocksVariablesLogicalConditionStatement))
 			{
-				if(generateContextBlocksVariablesLogicalConditionBooleanStatement.negativeDetectedInContextBlocks)
+				if(generateContextBlocksVariablesLogicalConditionStatement.negativeDetectedInContextBlocks)
 				{
 					int parsablePhraseReferenceNamePosInMathText = currentFullSentence->mathText.find(parsablePhraseReferenceName);
 					if(parsablePhraseReferenceNamePosInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)	//&& (parsablePhraseReferenceNamePosInMathText > 0
@@ -662,11 +662,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 								if(currentFullSentence->hasLogicalConditionOperator)
 								{
-									generateContextBlocksVariables.logicalConditionBooleanStatement = true;
-									if(!assumedToAlreadyHaveBeenDeclared(parentEntity))	//!isDefiniteEntity
-									{
-										parentEntity->NLClogicalConditionIndefiniteEntity = true;
-									}
+									generateContextBlocksVariables.logicalConditionStatement = true;
 								}
 								getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntityTemp, &newInitialisation);
 								#else

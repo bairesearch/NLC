@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u6a 28-September-2016
+ * Project Version: 1u7a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -343,7 +343,7 @@ public:
 	bool searchSubclassesForChildren;
 	#endif
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
-	bool logicalConditionBooleanStatement;
+	bool logicalConditionStatement;
 	bool secondaryComparison;
 	#endif
 };

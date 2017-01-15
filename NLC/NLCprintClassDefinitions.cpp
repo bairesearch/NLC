@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u4a 27-September-2016
+ * Project Version: 1u5a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ public:
 	...
 };
 */
-bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, bool generatingAPIclassList)
+bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, bool generatingAPIclassList, NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 	#ifdef NLC_USE_LIBRARY
@@ -359,6 +359,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						}
 						#endif
 
+						#ifdef NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
+						string printedClassDefinitionSourceTextUndefinedFunctions = "";
+						#endif
+						
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 						{
 							NLCclassDefinition* targetClassDefinition = *localListIter;
@@ -366,16 +370,95 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							if(!(targetClassDefinition->isLibraryFunctionDefinition))	//isLibraryFunctionDefinition function declarations are not added to classDefinition (ie class function are not defined) - this is required to ensure generated code references the library function rather than the class function
 							{
 							#endif
+
 								string targetName = targetClassDefinition->functionNameSpecial;
 								string functionArguments = "";
-
+								
 								#ifdef NLC_DEBUG
 								//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
 								#endif
 								generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
-								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
+								string functionHeaderText = targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang];
+								string functionDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + functionHeaderText + progLangEndLine[progLang];
+								printLine(functionDeclarationText, 1, &printedClassDefinitionHeaderText);
 
+								#ifdef NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
+								NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+								bool undefinedFunctionDetected = true;
+								while(currentNLCfunctionInList->next != NULL)
+								{
+									#ifdef NLC_DEBUG
+									cout << "currentNLCfunctionInList->NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
+									cout << "functionNameSpecial = " << targetClassDefinition->functionNameSpecial << endl;
+									#endif
+									string functionName = "";
+									bool hasFunctionOwnerClass = false;
+									string functionOwnerName = "";
+									bool hasFunctionObjectClass = false;
+									string functionObjectName = "";
+									parseFunctionNameFromNLCfunctionName(currentNLCfunctionInList->NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+									bool foundMatchedFunction = true;
+									for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
+									{
+										NLCitem* currentItem = *parametersIterator;
+										if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER)
+										{
+											if(currentItem->name != functionOwnerName)
+											{
+												foundMatchedFunction = false;
+											}
+										}
+										else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
+										{
+											if(currentItem->name != functionName)
+											{
+												foundMatchedFunction = false;
+											}
+										}
+										else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
+										{
+											if(currentItem->name != functionObjectName)
+											{
+												foundMatchedFunction = false;
+											}
+										}
+									}
+									if(foundMatchedFunction)
+									{
+										#ifdef NLC_DEBUG
+										cout << "foundMatchedFunction" << endl;
+										#endif
+										undefinedFunctionDetected = false;
+									}
+									currentNLCfunctionInList = currentNLCfunctionInList->next;
+								}
+								#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
+								if(classDefinition->name == generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME))
+								{
+									NLCitem* functionDefinitionFunctionArgumentTemp = NULL;
+									if(findFunctionArgument(&(targetClassDefinition->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, &functionDefinitionFunctionArgumentTemp))
+									{
+										if(functionDefinitionFunctionArgumentTemp->className == generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
+										{
+											undefinedFunctionDetected = false;
+											#ifdef NLC_DEBUG
+											cout << "implicitlyDeclaredFunctionDetected" << endl;
+											#endif
+										}
+									}
+								}
+								#endif
+								if(undefinedFunctionDetected)
+								{
+									string functionDefinitionTextHeader = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + functionHeaderText;
+									string functionDefinitionText = functionDefinitionTextHeader;
+									functionDefinitionText = functionDefinitionText + CHAR_NEWLINE + progLangOpenBlock[progLang] + CHAR_NEWLINE;
+									functionDefinitionText = functionDefinitionText + CHAR_TAB + "cout << \"" + NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS_WARNING_TEXT + functionDefinitionTextHeader + "\" << endl;";	//eg cout << "warning: function has not been defined: void tomClass::rideFunction(vector<tomClass*>& tomClassList, vector<rideClass*>& rideClassList, vector<bikeClass*>& bikeClassList)" << endl;
+									functionDefinitionText = functionDefinitionText + CHAR_NEWLINE + progLangCloseBlock[progLang] + CHAR_NEWLINE;
+									printedClassDefinitionSourceTextUndefinedFunctions = printedClassDefinitionSourceTextUndefinedFunctions + functionDefinitionText;
+								}
+								#endif
+								
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 								for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
 								{
@@ -625,6 +708,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						}
 						#endif
 
+						#ifdef NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
+						printedClassDefinitionSourceText = printedClassDefinitionSourceText + printedClassDefinitionSourceTextUndefinedFunctions;
+						#endif
+								
 						#ifdef NLC_API
 						if(classDefinition->APIclass)
 						{

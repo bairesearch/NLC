@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u4a 27-September-2016
+ * Project Version: 1u5a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1u4a 27-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1u5a 28-September-2016" << endl;
 			exit(1);
 		}
 
@@ -685,7 +685,7 @@ int main(int argc, char** argv)
 	}
 	#endif
 
-	int numberOfInputFilesInList = 1;
+	int numberOfInputFilesInList = 0;
 	vector<string> inputTextPlainTXTFileNameList;
 	#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 	vector<string> inputTextNLPrelationXMLFileNameList;
@@ -829,9 +829,6 @@ int main(int argc, char** argv)
 	vector<vector<GIAentityNode*>*> entityNodesActiveListCompleteFunctions;
 	vector<map<int, vector<GIAentityNode*>*>*> entityNodesActiveListSentencesFunctions;
 
-	//#ifdef NLC_USE_PREPROCESSOR
-	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
-	//#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES
 	initialiseFunctionAliasClassList();
@@ -880,6 +877,9 @@ int main(int argc, char** argv)
 	#endif
 	#endif
 
+	//#ifdef NLC_USE_PREPROCESSOR
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+	//#endif
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		int maxNumberSentences;
@@ -1189,7 +1189,7 @@ int main(int argc, char** argv)
 
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-	if(!printClassDefinitions(&classDefinitionList, progLang, &code, false))
+	if(!printClassDefinitions(&classDefinitionList, progLang, &code, false, firstNLCfunctionInList))
 	{
 		result = false;
 	}
@@ -1212,7 +1212,7 @@ int main(int argc, char** argv)
 			result = false;
 		}
 		#else
-		if(!printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code))
+		if(!printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code, firstNLCfunctionInList))
 		{
 			result = false;
 		}

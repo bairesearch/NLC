@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u4a 27-September-2016
+ * Project Version: 1u5a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,8 +36,9 @@
 #define HEADER_NLC_PRINT_CLASSDEFINITIONS
 
 #include "NLCclassDefinitionClass.h"
+#include "NLCpreprocessorSentenceClass.h"	//required for NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
 
-bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, bool generatingAPIclassList);
+bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, bool generatingAPIclassList, NLCfunction* firstNLCfunctionInList);
 	void generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString(vector<NLCitem*>* parameters, string* functionArguments, int progLang);
 		#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 		string generateCodeHeaderCheckOpen(string headerCheckOpenDefinition);

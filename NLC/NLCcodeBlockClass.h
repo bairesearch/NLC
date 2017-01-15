@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u4a 27-September-2016
+ * Project Version: 1u5a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -463,17 +463,6 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnect
 bool checkDuplicateProperty(GIAentityNode* propertyEntity, GIAentityNode* childActionEntity);
 bool checkDuplicateCondition(GIAentityNode* conditionEntity, GIAentityNode* childActionEntity);
 
-#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
-string parseFunctionNameFromNLCfunctionName(string NLCfunctionName);
-void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass);
-void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass);
-#ifdef NLC_USE_LIBRARY
-void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
-#endif
-void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
-string generateNLCfunctionHeader(string functionName, string functionOwnerName, bool hasFunctionOwnerClass, string functionObjectName, bool hasFunctionObjectClass);
-#endif
-
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction* logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel, int logicalConditionCase, bool elseIfDetected);
@@ -608,9 +597,6 @@ NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 string generateCategoryListPropertyCountVariableName(GIAentityNode* entity);
 #endif
-
-//see NLCclassDefinitionClass.cpp for other versions of this function;
-bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, int itemType, NLCitem** functionArgument);
 
 NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock);
 NLCcodeblock* getLastCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree);

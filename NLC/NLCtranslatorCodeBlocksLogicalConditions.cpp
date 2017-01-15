@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u4a 27-September-2016
+ * Project Version: 1u5a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1197,7 +1197,7 @@ bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string par
 			*mathTextSubphraseContainingNLPparsablePhrase = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
 			*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
 			
-			if(removeSurroundingBracketsOfSubphrase(mathTextSubphraseContainingNLPparsablePhrase))	//added 1t3d
+			if(removeSurroundingBracketsOfSubphrase(mathTextSubphraseContainingNLPparsablePhrase))	//added 1u1b
 			{
 				int sizeOfBracket = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING).length();
 				*mathTextSubphraseContainingNLPparsablePhraseIndex = *mathTextSubphraseContainingNLPparsablePhraseIndex + sizeOfBracket;		
@@ -1521,7 +1521,7 @@ string getSourceValueText(string* mathText, int indexOfCommand, int progLang)
 #ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ADDITIONS
 string replaceAllAdditionSymbolsWithAdditionFunction(string text, int progLang)
 {
-	removeSurroundingBracketsOfSubphrase(&text);	//added 1t3d
+	removeSurroundingBracketsOfSubphrase(&text);	//added 1u1b
 	
 	//now detect all instances of "+" within text and insert addMathTextValue{} function
 	//eg thedogsvalue + 5 -> addMathTextValue(thedogsvalue, 5)

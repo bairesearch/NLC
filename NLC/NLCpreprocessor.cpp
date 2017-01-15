@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u4a 27-September-2016
+ * Project Version: 1u5a 28-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,7 +46,7 @@
 
 bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName)
 {
-	*numberOfInputFilesInList = 1;
+	*numberOfInputFilesInList = 0;
 
 	bool result = true;
 	ifstream parseFileObject(inputFileName.c_str());
@@ -93,6 +93,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				//extract functions from file and generate separate files
 				if(*detectedFunctions)
 				{
+					//create new function file based on current text
 					#ifdef NLC_DEBUG_PREPROCESSOR
 					cout << "end function: NLCfunctionName = " << NLCfunctionName << endl;
 					cout << "create new function = " << NLCfunctionName << endl;
@@ -104,7 +105,6 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
 					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 					*numberOfInputFilesInList = *numberOfInputFilesInList+1;
-					//create new function file based on current text
 				}
 				else
 				{
@@ -465,7 +465,11 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << "functionContents = " << functionContents << endl;
 			#endif
 			writeStringToFile(functionFileName, &functionContents);
-			//create new function file based on current text
+			currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
+			currentNLCfunctionInList->next = new NLCfunction();
+			currentNLCfunctionInList = currentNLCfunctionInList->next;
+			currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+			*numberOfInputFilesInList = *numberOfInputFilesInList+1;
 		}
 		else
 		{
@@ -475,6 +479,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
 			writeStringToFile(outputFileName, &functionContents);
+			*numberOfInputFilesInList = *numberOfInputFilesInList+1;
 		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif

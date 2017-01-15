@@ -23,7 +23,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f1b 09-December-2013
+ * Project Version: 1f1c 09-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -180,12 +180,12 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 						}
 						else
 						{//eg if the red dog is the/a pie, eat the cabbage
-							cout << "q3a" << endl;
+							//cout << "q3a" << endl;
 							//code copied from [*^]
 							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, conditionObject, sentenceIndex);	//CHECKTHIS; AndInitialiseParentIfNecessary component
 							tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 							passedConditionObject = true;
-							cout << "q3aEND" << endl;
+							//cout << "q3aEND" << endl;
 						}
 
 						if(passedConditionObject)
@@ -212,23 +212,9 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							}
 							else
 							{
-								cout << "q3b" << endl;
+								//cout << "q3b" << endl;
 								
-								//code copied from [***^]
-
-								GIAentityNode * parentEntity = getParent(conditionSubject, sentenceIndex);
-
-								*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
-								parentEntity->parsedForNLCcodeBlocks = true;
-								parentEntity->NLClocalListVariableHasBeenDeclared = true;
-								//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-								
-								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-								generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
-								#endif
-
-								generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
+								generateInitialisationCodeBlock(currentCodeBlockInTree, conditionSubject, sentenceIndex, NLCfunctionName);
 								
 								tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 							}
@@ -244,7 +230,7 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept
 {
 	bool result = false;
 	
-	//code copied from [*****^] (identifyComparisonVariableAlternateMethod.cpp)
+	//code copied from [*****^] (identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts() in GIAtranslatorDefineReferencing.cpp)
 
 	int referenceSetID = NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID;
 
@@ -695,47 +681,51 @@ bool generateCodeBlocksPart2(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 		GIAentityNode * entity = *entityIter;
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{	
-			//[***^]
-			GIAentityNode * parentEntity = getParent(entity, sentenceIndex);
+			generateInitialisationCodeBlock(currentCodeBlockInTree, entity , sentenceIndex, NLCfunctionName);
+		}
+	}
+}
 
-			#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
-			//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
-			//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
-			if(!(parentEntity->isConcept))
+void generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * entity , int sentenceIndex, string NLCfunctionName)
+{
+	GIAentityNode * parentEntity = getParent(entity, sentenceIndex);
+
+	#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
+	//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
+	//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
+	if(!(parentEntity->isConcept))
+	{
+		if(!(parentEntity->parsedForNLCcodeBlocks))	// && !(entity->parsedForNLCcodeBlocksActionRound)
+		{
+			if(!assumedToAlreadyHaveBeenDeclared(parentEntity))	
 			{
-				if(!(parentEntity->parsedForNLCcodeBlocks))	// && !(entity->parsedForNLCcodeBlocksActionRound)
+				if(!(parentEntity->isAction))	//added 1e6d
 				{
-					if(!assumedToAlreadyHaveBeenDeclared(parentEntity))	
+					if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
 					{
-						if(!(parentEntity->isAction))	//added 1e6d
+						if(!(parentEntity->isCondition))
 						{
-							if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false))
+							if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
 							{
-								if(!(parentEntity->isCondition))
-								{
-									if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
-									{
-										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-										*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
-										parentEntity->parsedForNLCcodeBlocks = true;
-										parentEntity->NLClocalListVariableHasBeenDeclared = true;
-										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+								//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+								*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
+								parentEntity->parsedForNLCcodeBlocks = true;
+								parentEntity->NLClocalListVariableHasBeenDeclared = true;
+								//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 
-										#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-										//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-										generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
-										#endif
-									}
-								}
+								#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+								//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+								generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
+								#endif
 							}
 						}
 					}
 				}
 			}
-			#endif
-			generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
 		}
 	}
+	#endif
+	generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
 }
 
 GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex)

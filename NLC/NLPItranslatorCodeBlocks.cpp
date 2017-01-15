@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e9d 25-November-2013
+ * Project Version: 1e10a 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -114,6 +114,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						
 						if(actionHasSubject)
 						{
+							cout << "executing generateContextBlocksAndInitialiseParentIfNecessary subjectEntity" << endl;
 							generateContextBlocksAndInitialiseParentIfNecessary(&currentCodeBlockInTree, subjectEntity, sentenceIndex);
 						}
 						if(actionHasObject)
@@ -303,15 +304,21 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 	bool result = false;
 	bool possibleContextParentFound = false;
 
-	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false) || currentEntity->parsedForNLPIcodeBlocks)
+	//cout << "generateContextBlocksAndInitialiseParentIfNecessary: currentEntity = " << currentEntity->entityName << endl;
+	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false) || currentEntity->parsedForNLPIcodeBlocks || assumedToAlreadyHaveBeenDeclared(currentEntity))
 	{
+		//cout << "a1" << endl;
 		if(!(currentEntity->propertyNodeReverseList->empty()))
 		{
+			//cout << "a2" << endl;
 			GIAentityNode * parentEntity = (currentEntity->propertyNodeReverseList->back())->entity;
-			if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false) || parentEntity->parsedForNLPIcodeBlocks)
+			if(checkSentenceIndexParsingCodeBlocks(parentEntity, sentenceIndex, false) || parentEntity->parsedForNLPIcodeBlocks || assumedToAlreadyHaveBeenDeclared(parentEntity))
 			{
+				//cout << "a3" << endl;
 				if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex))
 				{
+					//cout << "\tpassed: " << currentEntity->entityName << endl;
+					
 					result = true;
 					NLPIitem * propertyItem = new NLPIitem(currentEntity, NLPI_ITEM_TYPE_CLASS);
 					if(assumedToAlreadyHaveBeenDeclared(currentEntity))
@@ -357,6 +364,8 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 
 		if(possibleContextParentFound)
 		{
+			//cout << "\tpossibleContextParentFound: " << currentEntity->entityName << endl;
+			
 			result = true;
 			#ifdef NLPI_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
 			if(!assumedToAlreadyHaveBeenDeclared(currentEntity))

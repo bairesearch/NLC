@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1d 07-February-2015
+ * Project Version: 1o1e 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -543,7 +543,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 	{
 		GIAentityNode* entity = (*entityIter);
 		
-		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, true))
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
 			if(!checkConceptTypeEntity(entity))
 			{
@@ -661,7 +661,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 						{
 							GIAentityConnection* propertyConnection = *iter;
 							GIAentityNode* propertyEntity = propertyConnection->entity;
-							if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, true))
+							if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false))
 							{
 								if(!(propertyConnection->sameReferenceSet))
 								{
@@ -688,7 +688,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 						{
 							GIAentityConnection* definitionConnection = *iter;
 							GIAentityNode* definitionEntity = definitionConnection->entity;
-							if(checkSentenceIndexParsingCodeBlocks(definitionEntity, definitionConnection, sentenceIndex, true))
+							if(checkSentenceIndexParsingCodeBlocks(definitionEntity, definitionConnection, sentenceIndex, false))
 							{
 								if(!(definitionConnection->sameReferenceSet))
 								{
@@ -739,18 +739,18 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		}
 	}
 
-	//#ifdef NLC_DEBUG
+	#ifdef NLC_DEBUG
 	cout << "entity = " << entity->entityName << endl;
 	cout << "entity->sentenceIndexTemp = " << entity->sentenceIndexTemp << endl;
 	cout << "connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
-	//#endif
+	#endif
 
 	if(foundSubject)
 	{
-		//#ifdef NLC_DEBUG
+		#ifdef NLC_DEBUG
 		cout << "subjectEntity = " << subjectEntity->entityName << endl;
-		cout << "objectEntity = " << objectEntity->entityName << endl;
-		//#endif
+		cout << "\tobjectEntity = " << objectEntity->entityName << endl;
+		#endif
 		generateContextBlocksVariables.getParentCheckLastParent = true;
 		generateContextBlocksVariables.lastParent = objectEntity;	//is this required? (designed for dual/two-way condition connections only)
 
@@ -765,9 +765,9 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	}
 	if(foundObject)
 	{
-		//#ifdef NLC_DEBUG
+		#ifdef NLC_DEBUG
 		cout << "objectEntity = " << objectEntity->entityName << endl;
-		//#endif
+		#endif
 		generateContextBlocksVariables.getParentCheckLastParent = true;
 		generateContextBlocksVariables.lastParent = subjectEntity;
 

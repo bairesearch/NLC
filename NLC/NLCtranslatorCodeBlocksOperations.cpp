@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1d 07-February-2015
+ * Project Version: 1o1e 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1189,10 +1189,10 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 {
 	bool result = true;
 
-	//#ifdef NLC_DEBUG
+	#ifdef NLC_DEBUG
 	cout << "generateObjectInitialisations: " << entity->entityName << endl;
 	cout << "sentenceIndex = " << sentenceIndex << endl;
-	//#endif
+	#endif
 	#ifdef NLC_DEBUG_PARSE_CONTEXT3
 	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisations(): ") + entity->entityName);
 	#endif
@@ -1267,7 +1267,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 	{
 		GIAentityConnection* targetConnection = *targetNodeListIterator;
 		GIAentityNode* targetEntity = targetConnection->entity;
-		if(checkSentenceIndexParsingCodeBlocks(targetEntity, targetConnection, sentenceIndex, true))
+		if(checkSentenceIndexParsingCodeBlocks(targetEntity, targetConnection, sentenceIndex, false))
 		{
 			if(targetConnection->sameReferenceSet)
 			{
@@ -1741,7 +1741,7 @@ bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity
 		if(actionObjectConnection->sameReferenceSet)
 		{		
 			*objectEntity = actionObjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, actionObjectConnection, actionEntity->sentenceIndexTemp, true))
+			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, actionObjectConnection, actionEntity->sentenceIndexTemp, false))
 			{
 				foundObject = true;
 			}	
@@ -1759,7 +1759,7 @@ bool getActionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntit
 		if(actionSubjectConnection->sameReferenceSet)
 		{		
 			*subjectEntity = actionSubjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, actionSubjectConnection, actionEntity->sentenceIndexTemp, true))
+			if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, actionSubjectConnection, actionEntity->sentenceIndexTemp, false))
 			{
 				foundSubject = true;	
 			}
@@ -1777,7 +1777,7 @@ bool getConditionObjectCheckSameReferenceSetAndSentence(GIAentityNode* condition
 		if(conditionObjectConnection->sameReferenceSet)
 		{		
 			*objectEntity = conditionObjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, conditionObjectConnection, conditionEntity->sentenceIndexTemp, true))
+			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, conditionObjectConnection, conditionEntity->sentenceIndexTemp, false))
 			{
 				foundObject = true;	
 			}

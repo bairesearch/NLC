@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k6a 14-October-2014
+ * Project Version: 1k6b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -388,15 +388,16 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
 	if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
 	{
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
+		#ifndef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
 		#endif
-		
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
 		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
 		*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1);
 		*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
 		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+		#endif
 		#endif
 		
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE

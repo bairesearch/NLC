@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k6a 14-October-2014
+ * Project Version: 1k6b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -67,6 +67,9 @@
 				#define NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 				#define NLC_CATEGORIES_TEST_PLURALITY_WARNING
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
+					#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
+						#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS	//1k6b
+					#endif
 					#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE "Execution warning: multiple objects have been added to a singular definite variable (category) - should the entity have been defined as plural instead?"
 				#endif
 				#define NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY	//1j21a - test numerosity of categories and children; only applicable for logical conditions?	//eg "If 3 baskets have a pie, eat the apple."
@@ -146,7 +149,7 @@
 				#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_SENTENCE_INDEX_VARIABLE_NAME "sentenceIndex"
 				//#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_PRINT_LEVEL_USED_INSTEAD_OF_CONTEXT_LEVEL (1)
 			#endif
-			#define NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS	//1k5f
+			#define NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS	//1k6a
 			#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 				#define NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT "dummyactionobject"
 				#define NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION	//required for Stanford NLP

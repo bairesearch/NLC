@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k6a 14-October-2014
+ * Project Version: 1k6b 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -550,7 +550,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string valueString = param3->name;
 
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1instanceCategoryList.size() > 0){
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1instanceCategoryList.size() > X){
 
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
@@ -702,6 +702,27 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				printLine(progLangCloseBlock[progLang], level+q, code);
 				#endif	
 			
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+				string comment = "Singular definite plurality tests";
+				string codeBlockText7 = progLangOpenSingleLineComment[progLang] + comment;
+				printLine(codeBlockText7, level+q, code);
+					//NB this code could be moved to a new codeblock (NLC_CODEBLOCK_TYPE_COMMENT_SINGLE_LINE)
+				#endif
+				int value = 1;	//see generateContextBlocksCategories
+				string intValueString = convertIntToString(value);
+				string codeBlockText8 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + intValueString + progLangCloseParameterSpace[progLang];		//if(param1instanceCategoryList.size() > 1){
+				printLine(codeBlockText8, level+q, code);
+				printLine(progLangOpenBlock[progLang], level+q, code);
+					//NB this code could be moved to a new codeblock (NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY)
+				string codeBlockText9 = progLangPrintTextOpen[progLang] + NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE + progLangPrintTextClose[progLang]  + progLangEndLine[progLang];	//cout << "Execution warning: multiple objects have been added to a singular definite variable (category) - should the entity have been defined as plural instead?" << endl;
+				printLine(codeBlockText9, level+q+1, code);
+					//NB this code could be moved to a new codeblock (NLC_CODEBLOCK_TYPE_PRINT_WARNING)
+				printLine(progLangCloseBlock[progLang], level+q, code);
+				#endif
+				#endif
+		
 			q--;							
 			printLine(progLangCloseBlock[progLang], level+q, code);						
 		}
@@ -858,7 +879,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string valueString = param3->name;
 
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1instanceCategoryList.size() > 0){
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThanOrEqualTo[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(param1instanceCategoryList.size() > X){
 
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);

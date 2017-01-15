@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3h 28-July-2014
+ * Project Version: 1h3i 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -166,6 +166,7 @@
 					
 			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS (10000)
 		#endif
+		//#define NLC_PREPROCESSOR_PRINT_OUTPUT
 	#endif
 	//#define NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES

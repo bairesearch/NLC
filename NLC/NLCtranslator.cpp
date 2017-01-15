@@ -765,8 +765,8 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclarat
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(NLCclassDefinition * functionDeclarationSource, NLCclassDefinition * functionDeclaration)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(): functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(): functionDeclaration->name = " << functionDeclaration->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(): functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclaration(): functionDeclaration->name = " << functionDeclaration->name << endl;
 	vector<NLCitem*> * functionDeclarationSourceArgumentList = &(functionDeclarationSource->parameters);
 	vector<NLCitem*> * functionDeclarationArgumentList = &(functionDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
@@ -792,8 +792,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDeclara
 
 void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(NLCclassDefinition * functionDeclarationSource, vector<NLCitem*> * functionDefinitionArgumentList)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(): functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDeclaration(): functionDeclaration->name = " << functionDeclaration->name << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinition(): functionDeclarationSource->name = " << functionDeclarationSource->name << endl;
 	vector<NLCitem*> * functionDeclarationSourceArgumentList = &(functionDeclarationSource->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = functionDeclarationSourceArgumentList->begin(); parametersIterator < functionDeclarationSourceArgumentList->end(); parametersIterator++)
 	{

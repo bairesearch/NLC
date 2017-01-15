@@ -23,7 +23,7 @@
  * File Name: NLPIglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e9a 25-November-2013
+ * Project Version: 1e9b 25-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 //#define NLPI_DEBUG_PRINT_HIDDEN_CLASSES
 //#define NLPI_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 
-//#define NLPI_LOCAL_LISTS_USE_INSTANCE_NAMES	//removed 1e9a
+#define NLPI_LOCAL_LISTS_USE_INSTANCE_NAMES
 
 //#define NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS	//BAD
 

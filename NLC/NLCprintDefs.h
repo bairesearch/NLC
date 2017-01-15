@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p13a 03-August-2015
+ * Project Version: 1p13b 03-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -380,9 +380,10 @@ string generateCodeGenericListDefinitionText(NLCitem* entityParam, string generi
 string generateCodeConditionListDefinitionText(NLCitem* conditionParam, NLCitem* conditionObjectParam, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);	//NLC_NONOO: backwards compatibility wrapper only
-		string generateCodeMapsListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
+		string generateCodeConditionListDefinitionTypeTextCompact(string conditionClassName, string conditionObjectClassName, int progLang);
+			string generateCodeMapsListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
 	#ifdef NLC_NONOO
-	string generateCodeConditionListDefinitionTypeText(int progLang);
+	string generateCodeConditionListDefinitionTypeTextNonOO(int progLang);
 	#else
 	string generateCodeConditionListDefinitionTypeTextPointer(string conditionClassName, string conditionObjectClassName, int progLang);
 	#endif

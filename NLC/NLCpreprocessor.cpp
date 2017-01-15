@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h6c 30-July-2014
+ * Project Version: 1h7a 30-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -130,18 +130,13 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				}
 				
 				int lineLogicalConditionOperator;
-				bool additionalClosingBracketRequired = false;
 				if(detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
 				{
 					//cout << "hasLogicalConditionOperator" << endl;
 					currentNLCsentenceInList->hasLogicalConditionOperator = true;
 					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					currentNLCsentenceInList->logicalConditionOperator = lineLogicalConditionOperator;
-					#endif
-						
-					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					currentNLCsentenceInList->isMath = true;
-					replaceLogicalConditionNaturalLanguageMathWithSymbols(&lineContents, lineLogicalConditionOperator, &additionalClosingBracketRequired);
 					#endif
 				}
 				else
@@ -163,7 +158,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases():" << endl;
 					#endif
-					splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList, additionalClosingBracketRequired);
+					splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 				}
 				else
 				{				
@@ -410,7 +405,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 	cout << "Premature quit for debug" << endl;	
-	//exit(0);
+	exit(0);
 	#endif
 
 	return result;

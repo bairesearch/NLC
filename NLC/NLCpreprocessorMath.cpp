@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h6c 30-July-2014
+ * Project Version: 1h7a 30-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -110,7 +110,7 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineCon
 	return result;
 }
 				
-bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList, bool additionalClosingBracketRequired)
+bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList)
 {
 	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " << *sentenceIndex << endl;
 
@@ -165,18 +165,46 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 	bool detectedLogicalConditionCommand = false;
 	bool foundImplicitConjunctions = false;	//not used
-	int indexOfLogicalConditionCommand = INT_DEFAULT_VALUE;
+	string logicalConditionCommandSuperphraseContents = "";
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
-		if(!generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(lineContents, &detectedLogicalConditionCommand, &foundImplicitConjunctions, &indexOfLogicalConditionCommand))
+		if(!generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(lineContents, &detectedLogicalConditionCommand, &foundImplicitConjunctions, &logicalConditionCommandSuperphraseContents))
 		{
 			result = false;
 		}
+		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		if(detectedLogicalConditionCommand)
+		{
+			cout << "\n logicalConditionCommandSuperphraseContents = " << logicalConditionCommandSuperphraseContents << endl;
+		}
+		#endif
 	}
-	#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-	cout << "indexOfLogicalConditionCommand = " << indexOfLogicalConditionCommand << endl;
-	#endif
 	int phraseIndexOfFirstLogicalCommand = INT_DEFAULT_VALUE;
+	#endif
+	
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	bool additionalClosingBracketRequired = false;
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
+		if(!replaceLogicalConditionNaturalLanguageMathWithSymbols(lineContents, firstNLCsentenceInFullSentence->logicalConditionOperator, &additionalClosingBracketRequired, false))
+		{
+			result = false;
+		}
+		#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		if(detectedLogicalConditionCommand)
+		{
+			bool tempNotUsed = false;
+			if(!replaceLogicalConditionNaturalLanguageMathWithSymbols(&logicalConditionCommandSuperphraseContents, firstNLCsentenceInFullSentence->logicalConditionOperator, &tempNotUsed, true))
+			{
+					result = false;
+			}
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+			cout << "\n lineContents = " << *lineContents << endl;
+			cout << "logicalConditionCommandSuperphraseContents = " << logicalConditionCommandSuperphraseContents << endl;
+			#endif
+		}
+		#endif
+	}		
 	#endif
 
 	bool parsingWhiteSpace = false;	//added 1h5b 30-July-2014
@@ -189,11 +217,15 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		char c = (*lineContents)[i];
 		
 		#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-		if(i >= indexOfLogicalConditionCommand)
+		int indexOfLogicalConditionCommand = lineContents->find(logicalConditionCommandSuperphraseContents, i);
+		if((indexOfLogicalConditionCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfLogicalConditionCommand == i))
 		{
 			if(phraseIndexOfFirstLogicalCommand == INT_DEFAULT_VALUE)
 			{//do not overwrite phraseIndexOfFirstLogicalCommand
 				phraseIndexOfFirstLogicalCommand = phraseIndex;
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+				cout << "\n phraseIndexOfFirstLogicalCommand = " << phraseIndexOfFirstLogicalCommand << endl;
+				#endif
 			}
 		}
 		#endif

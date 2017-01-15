@@ -25,8 +25,8 @@
  *
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p6a 04-July-2015
+ * Project: Natural Language Programming Interface (compiler)
+ * Project Version: 1p1a 06-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -128,7 +128,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 			}
 			else
 			{
-				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} error: invalid symbol found after logicalConditionOperator: " << logicalConditionOperationsArray[logicalConditionOperator] << characterAfterLogicalConditionOperator << endl;
+				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols() error: invalid symbol found after logicalConditionOperator: " << logicalConditionOperationsArray[logicalConditionOperator] << characterAfterLogicalConditionOperator << endl;
 			}
 		}
 	}
@@ -355,7 +355,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 		}
 		else
 		{
-			cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: indexOfLogicalConditionCommandInMathText not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
+			cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: indexOfLogicalConditionCommandInMathText not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
 		}
 
 	}
@@ -507,7 +507,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 			}
 			else
 			{
-				cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: parsablePhraseReference " << parsablePhraseReference << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
+				cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: parsablePhraseReference " << parsablePhraseReference << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
 			}
 		}
 
@@ -635,7 +635,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 							}
 							else
 							{
-								cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: parsablePhraseReference " << parsablePhraseReference << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
+								cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: parsablePhraseReference " << parsablePhraseReference << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
 							}
 						}
 
@@ -658,7 +658,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 							}
 							else
 							{
-								cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: parsablePhraseReferenceOld " << parsablePhraseReferenceOld << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
+								cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: parsablePhraseReferenceOld " << parsablePhraseReferenceOld << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
 							}
 
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE

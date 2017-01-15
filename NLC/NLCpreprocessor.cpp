@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3b 25-June-2015
+ * Project Version: 1p3c 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,8 +68,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 		*detectedFunctions = false;
 		string functionContents = "";
-		string functionName = "";
-		string functionFileName = "";	//with functionName with extension
+		string NLCfunctionName = "";
+		string functionFileName = "";	//with NLCfunctionName with extension
 		int currentLineNumber = 0;
 		
 		while(getline(parseFileObject, currentLine))
@@ -94,12 +94,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				if(*detectedFunctions)
 				{
 					#ifdef NLC_DEBUG_PREPROCESSOR
-					cout << "end function: functionName = " << functionName << endl;
-					cout << "create new function = " << functionName << endl;
+					cout << "end function: NLCfunctionName = " << NLCfunctionName << endl;
+					cout << "create new function = " << NLCfunctionName << endl;
 					cout << "functionContents = " << functionContents << endl;
 					#endif
 					writeStringToFile(&functionFileName, &functionContents);
-					currentNLCfunctionInList->functionName = functionName;
+					currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
 					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
@@ -114,8 +114,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					*detectedFunctions = true;
 				}
 				sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
-				functionName = getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
-				functionFileName = generateNLCfunctionFileName(functionName);
+				NLCfunctionName = getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
+				functionFileName = generateNLCfunctionFileName(NLCfunctionName);
 				inputTextFileNameList->push_back(functionFileName);
 				functionContents = "";
 			}
@@ -602,14 +602,14 @@ bool detectFunctionHeader(string* lineContents)
 }
 string getFunctionNameFromFunctionHeader(string* lineContents)
 {
-	string functionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
-	//cout << "getFunctionNameFromFunctionHeader{}: functionName = " << functionName << endl; 
-	return functionName;
+	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
+	//cout << "getFunctionNameFromFunctionHeader{}: NLCfunctionName = " << NLCfunctionName << endl; 
+	return NLCfunctionName;
 	
 }
-string generateNLCfunctionFileName(string functionName)
+string generateNLCfunctionFileName(string NLCfunctionName)
 {
-	string functionFileName = functionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
+	string functionFileName = NLCfunctionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
 	return functionFileName;
 }
 #endif

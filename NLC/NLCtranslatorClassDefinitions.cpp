@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3b 25-June-2015
+ * Project Version: 1p3c 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
 #endif
 
-bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete)
 {
 	bool result = true;
 	
@@ -565,9 +565,15 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 						bool foundFunctionOwnerExactMatch = false;
 						bool foundFunctionObjectExactMatch = false;
 						NLCclassDefinition* functionDeclaration = NULL;
+						//cout << "hasFunctionOwnerClass = " << hasFunctionOwnerClass << endl;
+						//cout << "hasFunctionObjectClass = " << hasFunctionObjectClass << endl;
+						//cout << "functionName = " << functionName << endl;
+						//cout << "functionOwnerName = " << functionOwnerName << endl;
+						//cout << "functionObjectName = " << functionObjectName << endl;
 						//look for both exact and non-exact matches here as functionDependencies have already been created for all functions explicitly declared+defined by the user (don't yet reconcile arguments however)
 						if(findFunctionDeclarationClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 						{
+							//cout << "findFunctionDeclarationClassDefinitionExactOrNonExactMatch pass: " << functionName << endl;
 							NLCclassDefinitionFunctionDependency* functionDependenciesInParentTemp = NULL;
 							bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 							if(!foundFunctionDependencyInParent)
@@ -577,6 +583,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 						}
 						else
 						{
+							//cout << "findFunctionDeclarationClassDefinitionExactOrNonExactMatch fail: " << functionName << endl;
 							//function execution reference does not correspond to a new function definition, so create a function declaration for it
 							//cout << "findFunctionDependencyInList: " << targetName << endl;
 

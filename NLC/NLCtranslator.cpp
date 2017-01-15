@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3b 25-June-2015
+ * Project Version: 1p3c 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,7 +59,7 @@ NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContaine
 }
 #endif
 		
-bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency* functionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor)
 {
 	bool result = true;
 
@@ -115,7 +115,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 	//cout << "finished generateCodeBlocks{}" << endl;
 
 	//NLC translator Part 2.
-	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, functionDependency, functionDependencyList))
+	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete))
 	{
 		result = false;
 	}
@@ -595,7 +595,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDeclarationToFunctionDefinit
 #endif
 
 
-bool getFilesFromFileList2(string inputListFileName, vector<string>* inputTextFileNameList, int* numberOfInputFilesInList)
+bool getFilesFromFileList(string inputListFileName, vector<string>* inputTextFileNameList, int* numberOfInputFilesInList)
 {
 	bool result = true;
 	*numberOfInputFilesInList = 0;
@@ -680,6 +680,7 @@ NLCclassDefinitionFunctionDependency* createFunctionDependencyForNewFunctionDefi
 	#endif
 	
 	string functionClassDefinitionName = functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
+	
 	string functionOwnerClassDefinitionName = "";
 	bool passNewFunctionDefinitionChecks = true;
 	if(hasFunctionOwnerClass)
@@ -746,7 +747,6 @@ NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaratio
 	}
 	else
 	{
-		//cout << "!findFunctionDependencyInList" << endl;
 		functionDependency = new NLCclassDefinitionFunctionDependency();
 		functionDependency->functionName = functionName;
 		functionDependency->functionOwnerName = functionOwnerName;
@@ -770,6 +770,7 @@ NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaratio
 		if(createClassDefinition)
 		{
 			//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
+			
 			bool foundClassDefinition = false;
 			NLCclassDefinition* functionOwnerClassDefinition = findClassDefinition(classDefinitionList, functionOwnerClassDefinitionName, &foundClassDefinition);	//see if class definition already exists
 			if(!foundClassDefinition)
@@ -778,7 +779,7 @@ NLCclassDefinitionFunctionDependency* createNewClassDefinitionFunctionDeclaratio
 				classDefinitionList->push_back(functionOwnerClassDefinition);
 				//cout << "!foundClassDefinition" << endl;
 			}
-			//cout << "generateClassHeirarchy: " << functionOwnerClassDefinitionName << endl;
+			//cout << "functionClassDefinitionName: " << functionClassDefinitionName << endl;
 
 			bool foundTargetClassDefinition = false;
 			NLCclassDefinition* functionClassDefinition = findClassDefinition(classDefinitionList, functionClassDefinitionName, &foundTargetClassDefinition);	//see if class definition already exists

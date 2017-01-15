@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8b 04-November-2014
+ * Project Version: 1l8c 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1631,7 +1631,6 @@ string generateCodeSingularReferenceText(NLCitem * functionArgumentItem, int pro
 string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, int progLang, bool categoryList)
 {
 	//see NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION
-	//NO: v2.assign(v1.begin(), v1.end());
 	
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + functionArgumentItem->functionArgumentPassCastClassName + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
 	string codeBlockExecuteFunctionText = "";
@@ -1661,7 +1660,7 @@ string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, i
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 string generateCodeConditionPairReferenceText(NLCitem * functionArgumentConditionItem, int progLang)
 {
-	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
+	//do: add dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
 	string codeConditionPairTypeText = generateCodeConditionPairTextWithContext(functionArgumentConditionItem->name, functionArgumentConditionItem->className, functionArgumentConditionItem->instanceName, functionArgumentConditionItem->className2, functionArgumentConditionItem->instanceName2, &(functionArgumentConditionItem->context), progLang);
 	return codeConditionPairTypeText;
 }
@@ -1692,12 +1691,17 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem * currentItem = *parametersIterator;
+		#ifdef NLC_DEBUG
+		//cout << "generateFunctionArgumentsBasedOnActionAndActionObjectVars():" << endl;
 		//cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
 		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
+		#endif
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER" << endl;
+			#endif
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
@@ -1712,7 +1716,9 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 		#endif
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION" << endl;
+			#endif
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
@@ -1725,7 +1731,9 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
 		{
+			#ifdef NLC_DEBUG
 			//cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT" << endl;
+			#endif
 			if(*functionArguments != "")
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];

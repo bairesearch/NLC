@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8b 04-November-2014
+ * Project Version: 1l8c 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -643,7 +643,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1l8b 04-November-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1l8c 04-November-2014" << endl;
 			exit(1);
 		}
 
@@ -1028,18 +1028,18 @@ int main(int argc,char **argv)
 	{	
 		NLCclassDefinitionFunctionDependency * functionDependencyTemp = *functionDependencyIter;
 		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-		cout << "DEBUG: functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
-		cout << "DEBUG: functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
-		cout << "DEBUG: functionDependency->functionObject = " << functionDependencyTemp->functionObjectName << endl;
-		cout << "DEBUG: functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
+		cout << "functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
+		cout << "functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
+		cout << "functionDependency->functionObject = " << functionDependencyTemp->functionObjectName << endl;
+		cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
 		for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependencyTemp->functionDependencyList.begin(); functionDependencyIter2 != functionDependencyTemp->functionDependencyList.end(); functionDependencyIter2++)
 		{	
 			NLCclassDefinitionFunctionDependency * functionDependencyTemp2 = *functionDependencyIter2;
-			cout << "2. ---------------------------------------------------" << endl;
-			cout << "DEBUG: functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
-			cout << "DEBUG: functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
-			cout << "DEBUG: functionDependencyTemp2->functionObject = " << functionDependencyTemp2->functionObjectName << endl;
-			cout << "DEBUG: functionDependencyTemp2->functionOwner = " << functionDependencyTemp2->functionOwnerName << endl;
+			cout << "  2. ---------------------------------------------------" << endl;
+			cout << "  functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
+			cout << "  functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
+			cout << "  functionDependencyTemp2->functionObject = " << functionDependencyTemp2->functionObjectName << endl;
+			cout << "  functionDependencyTemp2->functionOwner = " << functionDependencyTemp2->functionOwnerName << endl;
 		}
 	}
 	#endif

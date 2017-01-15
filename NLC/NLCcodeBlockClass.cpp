@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8b 04-November-2014
+ * Project Version: 1l8c 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -220,10 +220,11 @@ NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTr
 			currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(currentCodeBlockInTree, propertyEntity, propertyEntity);
 			propertyEntity->NLClocalListVariableHasBeenInitialised = true;
 
-			//DEBUG:
+			#ifdef NLC_DEBUG
 			//string debugString = string("10createCodeBlockAddNewProperty") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + propertyEntity->entityName + string(" ") + convertIntToString(propertyEntity->NLClocalListVariableHasBeenInitialised);
 			//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
 			//cout << debugString << endl;
+			#endif
 		}
 	}
 	#endif
@@ -390,10 +391,11 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 				currentCodeBlockInTree = createCodeBlockAddEntityToLocalList(currentCodeBlockInTree, conditionObject, conditionObject);
 				conditionObject->NLClocalListVariableHasBeenInitialised = true;
 
-				//DEBUG:
+				#ifdef NLC_DEBUG
 				//string debugString = string("11createCodeBlockAddNewCondition") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + conditionObject->entityName + string(" ") + convertIntToString(conditionObject->NLClocalListVariableHasBeenInitialised);
 				//currentCodeBlockInTree = createCodeBlockDebug(currentCodeBlockInTree, debugString);
 				//cout << debugString << endl;
+				#endif
 			}
 		}
 		#endif
@@ -788,8 +790,11 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	{
 		bool traceModeIsQuery = false;
 
-		//cout << "identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
-
+		#ifdef NLC_DEBUG
+		//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
+		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
+		#endif
+		
 		GIAreferenceTraceParameters referenceTraceParameters;
 		referenceTraceParameters.referenceSetID = referenceSetID;
 		#ifdef GIA_SUPPORT_DEFINE_REFERENCE_CONTEXT_BY_TEXT_INDENTATION
@@ -806,17 +811,18 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 		traceEntityNode(currentQueryEntityNode, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 		#endif
 
-		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
 			GIAentityNode * indefiniteEntity = *entityIter;
-			//cout << "\tentity = " << indefiniteEntity->entityName << endl;
+			
 			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
 			{//indefiniteEntityFound
-				//cout << "\tindefiniteEntity = " << indefiniteEntity->entityName << endl;
-
+			
+				#ifdef NLC_DEBUG
+				//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
+				#endif
+				
 				GIAqueryTraceParameters queryTraceParameters;		//not used
-
 				int numberOfMatchedNodesTemp = 0;
 				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
 				//bool exactMatch = testEntityNodeForQueryOrReferenceSet2(definiteEntity, indefiniteEntity, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
@@ -824,10 +830,11 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 
 				if(exactMatch)
 				{
-					//cout << "\texactMatch" << endl;
 					if(numberOfMatchedNodesTemp > 0)
 					{
+						#ifdef NLC_DEBUG
 						//cout << "\texactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
+						#endif
 
 						#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
 						if(numberOfMatchedNodesTemp == maxNumberOfMatchedNodesPossible)
@@ -841,7 +848,9 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 				}
 				else
 				{
+					#ifdef NLC_DEBUG
 					//cout << "\t!exactMatch" << endl;
+					#endif
 				}
 
 				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
@@ -904,33 +913,19 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLClocalListVariableHasBeenInitialised || entity->NLCisSingularArgument)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
-		/*
-		cout << "entity->grammaticalDefiniteTemp = " << entity->grammaticalDefiniteTemp << endl;
-		cout << "entity->grammaticalProperNounTemp = " << entity->grammaticalProperNounTemp << endl;
-		cout << "entity->NLClocalListVariableHasBeenInitialised = " << entity->NLClocalListVariableHasBeenInitialised << endl;
-		cout << "entity->NLCisSingularArgument = " << entity->NLCisSingularArgument << endl;
-		*/
+		#ifdef NLC_DEBUG
+		//cout << "assumedToAlreadyHaveBeenDeclared():" << endl;
+		//cout << "entity->grammaticalDefiniteTemp = " << entity->grammaticalDefiniteTemp << endl;
+		//cout << "entity->grammaticalProperNounTemp = " << entity->grammaticalProperNounTemp << endl;
+		//cout << "entity->NLClocalListVariableHasBeenInitialised = " << entity->NLClocalListVariableHasBeenInitialised << endl;
+		//cout << "entity->NLCisSingularArgument = " << entity->NLCisSingularArgument << endl;
+		#endif
 	}
 	return isAssumedToAlreadyHaveBeenDeclared;
 }
 #endif
 
 
-/*
-NLCcodeblock * createCodeBlockForStatements(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, GIAentityNode* entity, int sentenceIndex)
-{
-	for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
-	{
-		if(codeBlockTypeIfStatementArrayUseVectorEntityConnection[i])
-		{
-			for(vector<GIAentityConnection*>::iterator connectionIter = entityNode->entityVectorConnectionsArray[i].begin(); connectionIter != entityNode->entityVectorConnectionsArray[i].end(); connectionIter++)
-			{
-
-			}
-		}
-	}
-}
-*/
 
 
 
@@ -1126,23 +1121,25 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 			*hasFunctionOwnerClass = true;
 			*hasFunctionObjectClass = true;
-			/*
+			#ifdef NLC_DEBUG
 			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " << *functionName << endl;
 			cout << "functionOwnerName = " << *functionOwnerName << endl;
 			cout << "functionObjectName = " << *functionObjectName << endl;
-			*/
+			#endif
 		}
 		else
 		{
 			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfActionName-NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*hasFunctionOwnerClass = true;
+			#ifdef NLC_DEBUG
 			cout << "parseFunctionNameFromNLCfunctionName():" << endl;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
 			cout << "functionName = " << *functionName << endl;
 			cout << "functionOwnerName = " << *functionOwnerName << endl;
+			#endif
 		}
 	}
 	else if(indexOfObjectName != string::npos)
@@ -1150,10 +1147,12 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
 		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLCfunctionName.length()-indexOfObjectName-(NLC_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*hasFunctionObjectClass = true;
+		#ifdef NLC_DEBUG
 		cout << "parseFunctionNameFromNLCfunctionName():" << endl;
 		cout << "NLCfunctionName = " << NLCfunctionName << endl;
 		cout << "functionName = " << *functionName << endl;
 		cout << "functionObjectName = " << *functionObjectName << endl;
+		#endif
 	}
 	else
 	{

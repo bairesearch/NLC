@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12a 27-July-2015
+ * Project Version: 1p12b 27-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -645,10 +645,10 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			#endif
 			
 			/*for NLP parsable phrase;
-			eg1 "The value" in "The value = 5." 
+			eg1 "The value" in "The value = 5" 
 			eg2 "The value" in "The value = 5.5" 
-			eg3 "the value" in "X = 74 + the value."
-			eg4 "the dog's value" in "The dog's value = 4 + the number of chickens."
+			eg3 "the value" in "X = 74 + the value"
+			eg4 "the dog's value" in "The dog's value = 4 + the number of chickens"
 			eg5 "The brown dog = X"
 			eg6 "A brown dog = X"
 			eg7 "Y = the value + the number of chickens"

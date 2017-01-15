@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n19d 01-February-2015
+ * Project Version: 1n20a 01-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -71,7 +71,10 @@
 	#define NLC_USE_LIBRARY	//1n2a
 	#ifdef NLC_USE_LIBRARY
 		//must be synced with NLClibraryStandard.h:
-		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"
+		//#define NLC_USE_LIBRARY_FROM_CONDITIONS	//unfinished; FUTURE NLC - ensure from condition lists are added to class definitions and are filled correctly
+		#ifdef NLC_USE_LIBRARY_FROM_CONDITIONS
+			#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"
+		#endif
 		#define NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
 	#define NLC_USE_MATH_OBJECTS	//1n3b - not yet finished (each entity has a (double) value which can be set by NLC mathText)

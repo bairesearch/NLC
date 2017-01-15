@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1b 02-November-2013
+ * Project Version: 1d1c 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,12 +36,12 @@
 
 #include "NLPItranslator.h"
 
-bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName)
+bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string NLPIfunctionName)
 {
 	bool result = true;
 
 	//NLPI translator Part 1.
-	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, functionName))
+	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLPIfunctionName))
 	{
 		result = false;
 	}
@@ -53,8 +53,14 @@ bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefi
 	}
 }
 
-bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string functionName)
+bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string NLPIfunctionName)
 {
+	//gets "fight" from "dog::fight"
+	string functionName = "";
+	bool foundFunctionOwnerClass = false;
+	string functionOwnerName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);
+		
 	NLPIcodeblock * currentCodeBlockInTree = firstCodeBlockInTree;
 	
 	#ifdef NLPI_NOT_NECESSARY
@@ -88,7 +94,8 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 				{
 					//cout << "sentenceIndexC = " << sentenceIndex << endl;
 					//cout << "h1" << endl;
-
+					
+					bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 					bool actionHasObject = false;
 					GIAentityNode * objectEntity = NULL;
 					if(!(actionEntity->actionObjectEntity->empty()))
@@ -103,6 +110,11 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					{
 						actionHasSubject = true;
 						subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
+						if(subjectEntity->entityName == functionOwnerName)
+						{
+							formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;
+						}
+						
 					}
 
 					//cout << "h2" << endl;
@@ -115,14 +127,14 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						bool objectRequiredTempVar = false;	//not used
 						NLPIitem * objectItem = NULL;
-						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar);
+						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar, false);
 
 						//cout << "h3" << endl;
 						if(actionHasSubject)
 						{
 							bool subjectRequiredTempVar = false;
 							NLPIitem * subjectItem = NULL;
-							currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
+							currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
 							//cout << "h4" << endl;
 							if(subjectRequiredTempVar)
 							{	
@@ -160,7 +172,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						bool subjectRequiredTempVar = false;	//not used
 						NLPIitem * subjectItem = NULL;
-						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
+						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
 
 						//cout << "h3" << endl;
 						if(subjectRequiredTempVar)
@@ -331,7 +343,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 }
 
 													
-NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar)
+NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar, bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias)
 {
 	*requiredTempVar = false;
 
@@ -359,7 +371,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		*requiredTempVar = true;
 		
 		//for(all items in context){
-		NLPIitem * objectOrSubjectClass = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_CLASS);
+		NLPIitem * objectOrSubjectClass = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_CLASS, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &(objectOrSubjectClass->context), false, sentenceIndex, true);
 		currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectOrSubjectClass);
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_TEMPVAR);
@@ -368,7 +380,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	}
 	else
 	{
-		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_OBJECT);
+		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_OBJECT, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &((*objectOrSubjectItem)->context), false, sentenceIndex, true);
 	}
 	return currentCodeBlockInTree;

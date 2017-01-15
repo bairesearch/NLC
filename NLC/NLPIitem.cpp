@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1b 02-November-2013
+ * Project Version: 1d1c 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -45,7 +45,9 @@ NLPIitem::NLPIitem(void)
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
+	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
 NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
@@ -57,7 +59,31 @@ NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
+	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
+	#endif
+}
+NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType, bool newFormalFunctionArgumentCorrespondsToActionSubjectUseThisAlias)
+{
+	itemType = newItemType;
+	if(newFormalFunctionArgumentCorrespondsToActionSubjectUseThisAlias)
+	{
+		className = NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_CLASS_REPLACEMENT_NAME;
+		instanceName = NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_REPLACEMENT_NAME;	
+	}
+	else
+	{
+		className = generateClassName(entity);
+		instanceName = generateInstanceName(entity);
+	}
+	className2 = "";
+	instanceName2 = "";
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
+	functionArgumentPassCastClassName = "";
+	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
 NLPIitem::NLPIitem(string newName, int newItemType)
@@ -69,7 +95,9 @@ NLPIitem::NLPIitem(string newName, int newItemType)
 	instanceName2 = "";
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
+	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
 NLPIitem::NLPIitem(NLPIitem * newItem)
@@ -81,7 +109,9 @@ NLPIitem::NLPIitem(NLPIitem * newItem)
 	instanceName2 = newItem->instanceName2;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	functionArgumentCertified = false;
+	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = newItem->functionArgumentPassCastClassName;
+	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;;
 	#endif
 }
 NLPIitem::~NLPIitem(void)

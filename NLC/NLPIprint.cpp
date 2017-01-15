@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1b 02-November-2013
+ * Project Version: 1d1c 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -335,7 +335,7 @@ void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceStrin
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodeConditionPairDefinitionText(currentItem->className, currentItem->className2, progLang);
+			*functionArguments = *functionArguments + generateCodeConditionPairDefinitionText(currentItem, progLang);
 		}
 		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 		else if((currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY) || (currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE))		
@@ -347,7 +347,7 @@ void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceStrin
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem->className, currentItem->instanceName, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularDefinitionText(currentItem, progLang);
 		}
 		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 		else if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
@@ -356,15 +356,16 @@ void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceStrin
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem->className, currentItem->instanceName, progLang);
+			*functionArguments = *functionArguments + generateCodePluralDefinitionText(currentItem, progLang);
 		}
 		#endif
 	}
 }
 
-string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang)
+string generateCodeConditionPairDefinitionText(NLPIitem * currentItem, int progLang)
 {
-	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
+	string conditionClassName = currentItem->className;
+	string conditionObjectClassName = currentItem->className2;
 	#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + STRING_SPACE + conditionClassName + NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
 	#else
@@ -373,17 +374,33 @@ string generateCodeConditionPairDefinitionText(string conditionClassName, string
 	return codeConditionListDefinitionText;
 }
 
-string generateCodeSingularDefinitionText(string propertyClassName, string propertyInstanceName, int progLang)
+string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang)
 {	
-	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""			 
+	string propertyClassName = currentItem->className;
+	string propertyInstanceName = currentItem->instanceName;
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	if(functionArgumentPassCastRequired)
+	{
+		//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastRequired	
+		propertyClassName = currentItem->functionArgumentPassCastClassName;
+	}
+	#endif	
 	string codePropertyDefinitionText = propertyClassName + progLangPointer[progLang] + STRING_SPACE + propertyInstanceName;
 	return codePropertyDefinitionText;
 }
 
-string generateCodePluralDefinitionText(string pluralClassName, string pluralInstanceName, int progLang)
+string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang)
 {
-	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
-	string codePluralDefinitionText = progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang]+ STRING_SPACE + pluralInstanceName;				
+	string pluralClassName = currentItem->className;
+	string pluralInstanceName = currentItem->instanceName;
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	if(functionArgumentPassCastRequired)
+	{
+		//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastRequired
+		pluralClassName = currentItem->functionArgumentPassCastClassName;
+	}
+	#endif	
+	string codePluralDefinitionText = progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang]+ STRING_SPACE + pluralInstanceName;	
 	return codePluralDefinitionText;
 }
 
@@ -450,8 +467,14 @@ string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditi
 
 string generateCodeSingularReferenceText(NLPIitem * functionArgumentPropertyItem, int progLang)
 {
-	//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastClassName != ""
-	string codePropertyTypeText = currentItem->instanceName;	
+	string codePropertyTypeText = currentItem->instanceName;
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	if(functionArgumentPassCastRequired)
+	{
+		//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastRequired
+		codePropertyTypeText = progLangDynamicCastStart[progLang] + currentItem->functionArgumentPassCastClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + currentItem->instanceName + progLangCloseParameterSpace[progLang];	//dynamic_cast<parentClass*>(childClassInstance); 
+	}
+	#endif	
 	return codePropertyTypeText;
 }
 

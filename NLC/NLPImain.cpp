@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1b 02-November-2013
+ * Project Version: 1d1c 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -607,7 +607,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1d1b 02-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1d1c 02-November-2013" << endl;
 			exit(1);
 		}
 
@@ -820,9 +820,8 @@ int main(int argc,char **argv)
 			cout << "error: NLPI requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
 		}
 		functionNameList.push_back(NLPIfunctionName);
-		string functionName = parseFunctionNameFromNLPIfunctionName(NLPIfunctionName);	//gets "fight" from "dog::fight"
 		
-		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, functionName);
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLPIfunctionName);
 	}
 	
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
@@ -857,7 +856,9 @@ int main(int argc,char **argv)
 					}	
 				}
 			}
-		}	
+		}
+		
+		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias	
 	}
 	#endif
 
@@ -934,11 +935,13 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 		}
 		if(foundFormalFunctionArgumentCorrelateForExistingArgument)
 		{
-			//store cast information for more generic class type passed as function argument
 			classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentCertified = true;
+			
+			//store cast information for more generic class type passed as function argument
 			if(classDefinitionCorrespondingToExistingFunctionArgument->className != formalFunctionArgument->className)
 			{
 				classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentPassCastClassName = formalFunctionArgument->className;
+				classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentPassCastRequired = true;
 			}
 		}
 		else
@@ -952,6 +955,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 				if(formalFunctionArgument->className == generateClassName(actionSubject))
 				{
 					foundFunctionArgumentInActionSubjectContents = true;
+					//formalFunctionArgument->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;	//not done; this is now handled by generateConditionBlocks()	
 				}
 				/*//ignore conditions of actionSubject; they will need to be explicitly referenced by the function
 				for(vector<GIAentityConnection*>::iterator entityIter = actionSubject->conditionNodeList->begin(); entityIter != actionSubject->conditionNodeList->end(); entityIter++)
@@ -967,7 +971,8 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 						foundFunctionArgumentInActionSubjectContents = true;
 					}
 				}
-			}					
+			}
+			
 			if(!foundFunctionArgumentInActionSubjectContents)
 			{
 				cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument && !foundFunctionArgumentInActionSubjectContents (function arguments will not map)" << endl;

@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1b 02-November-2013
+ * Project Version: 1d1c 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -78,6 +78,7 @@ public:
 
 	NLPIitem(void);
 	NLPIitem(GIAentityNode * entity, int newItemType);
+	NLPIitem(GIAentityNode * entity, int newItemType, bool newFormalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
 	NLPIitem(string newName, int newItemType);
 	NLPIitem(NLPIitem * newItem);
 	~NLPIitem(void);
@@ -87,7 +88,9 @@ public:
 	string instanceName;	//eg dog1
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	bool functionArgumentCertified;
+	bool functionArgumentPassCastRequired;
 	string functionArgumentPassCastClassName;	//used to map function arguments of referenced functions to implicitly defined function arguments (based on function definition content)
+	bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;
 	#endif
 	vector<string> context;	//item context
 	

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10c 14-October-2014
+ * Project Version: 1k11a 17-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -225,6 +225,7 @@ static string progLangFindPart4[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".end(),
 static string progLangFindPart5[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {") != ", ") != ", ") != ", ") != ", ") != ", ") != ", ") != "};
 static string progLangFindPart6[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".end()))", ".end()))", ".end()))", ".end()))", ".end()))", ".end()))", ".end()))"};
 #endif
+#endif
 static string progLangTemplateHeaderPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"template <", "template <", "template <", "template <", "template <", "template <", "template <"};
 static string progLangTemplateHeaderPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 static string progLangTemplateHeaderClassType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -232,7 +233,6 @@ static string progLangTemplateHeaderClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LAN
 static string progLangTemplateUsePart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"<", "<", "<", "<", "<", "<", "<"};
 static string progLangTemplateUsePart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 static string progLangTemplateUseClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {",", ",", ",", ",", ",", ",", ","};
-#endif
 
 static string progLangReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
 static string progLangReturn[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"return ", "return ", "return ", "return ", "return ", "return ", "return "};

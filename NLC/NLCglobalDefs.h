@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10c 14-October-2014
+ * Project Version: 1k11a 17-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,17 +39,21 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
-#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
-	#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY	//1k7c	//required for most output languages
-#endif
+//#define NLC_DISABLE_1i_CODE_FOR_DEBUG	//aka NLC_ENABLE_1h_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+//#define NLC_DISABLE_1j_CODE_FOR_DEBUG	//aka NLC_ENABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+//#define NLC_DISABLE_1k_CODE_FOR_DEBUG	//aka NLC_ENABLE_1j_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+	
 
+
+#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+	#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//added 1e, removed 1j2b+, optional 1k11a+
+#endif
 #ifdef NLC_DISABLE_1i_CODE_FOR_DEBUG
 	#define NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES	
 #else
-	#ifdef NLC_DISABLE_1j_CODE_FOR_DEBUG
-		#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//added 1e, removed 1j2b+
+	#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY	//1k7c	//required for most output languages
 	#endif
-
 	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//1i1a/19-August-2014/1i3 - categories
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES	//1i4a
@@ -427,7 +431,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 		#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 			#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 				#ifdef NLC_USE_PREPROCESSOR
-					//#define NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES	//added 1k10a
+					#define NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES	//added 1k10a
 				#endif
 			#endif
 		#endif

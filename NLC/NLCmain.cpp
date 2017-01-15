@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10c 14-October-2014
+ * Project Version: 1k11a 17-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,9 +54,7 @@
 #ifdef GIA_USE_CORPUS_DATABASE
 #include "GIAcorpusDatabase.h"
 #endif
-#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 #include "GIAtranslatorOperations.h"
-#endif
 #ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 #include "GIAtranslatorDefs.h"
 #endif
@@ -643,7 +641,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1k10c 14-October-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1k11a 17-October-2014" << endl;
 			exit(1);
 		}
 
@@ -794,6 +792,9 @@ int main(int argc,char **argv)
 		}
 		#endif
 		
+		#ifdef GIA_SUPPORT_DEFINE_REFERENCE_CONTEXT_BY_TEXT_INDENTATION
+		setFirstNLCsentenceInList(currentNLCfunctionInList->firstNLCsentenceInFunction);
+		#endif
 		#ifdef USE_CS_WORKAROUND
 		executeGIA2();
 		#endif
@@ -1024,12 +1025,12 @@ int main(int argc,char **argv)
 	#endif
 
 	//create predefined NLC functions
-	#ifdef NLC_USE_ADVANCED_REFERENCING
 	NLCcodeblock * currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
 	while(currentCodeBlockInTree->next != NULL)
 	{
 		currentCodeBlockInTree = currentCodeBlockInTree->next;
 	}
+	#ifdef NLC_USE_ADVANCED_REFERENCING
 	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
 	currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT

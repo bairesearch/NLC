@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q7c 20-August-2015
+ * Project Version: 1q8a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -77,7 +77,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	
 	#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 	#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-	//Part Prep A - declareLocalVariables (for non-specific indefinite entities, eg "a chicken", not "a blue chicken") - added 1g8a;
+	//Part Prep A - declareLocalVariables (for non-specific indefinite entities, eg "a chicken") - added 1g8a;
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocks{}: declareLocalPropertyListsForIndefiniteEntities:" << endl;
 	#endif
@@ -147,7 +147,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		
 		#ifndef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-		//Part Prep A - declareLocalVariables (for non-specific indefinite entities, eg "a chicken", not "a blue chicken") - added 1g8a;
+		//Part Prep A - declareLocalVariables (for non-specific indefinite entities, eg "a chicken") - added 1g8a;
 		#ifdef NLC_DEBUG
 		cout << "declareLocalPropertyListsForIndefiniteEntities:" << endl;
 		#endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q7c 20-August-2015
+ * Project Version: 1q8a 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1712,8 +1712,9 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 								}
 
 								//6. add alsation to alsation local list
-								if(assumedToAlreadyHaveBeenDeclared(definitionEntity))	//added 1q5b
-								{
+								GIAentityNode* definitionEntityConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
+								if(assumedToAlreadyHaveBeenDeclared(definitionEntity) || definitionEntityConceptEntity->NLClocalListVariableHasBeenDeclared)	//added 1q5b, changed 1q8a
+								{								
 									*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
 								}
 								

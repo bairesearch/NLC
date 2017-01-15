@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m4a 04-December-2014
+ * Project Version: 1m4b 04-December-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1731,7 +1731,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					if(propertyConnection->negative || (propertyEntity->isSubstanceQuality && propertyEntity->negative))
 					{
 						#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-						if(assumedToAlreadyHaveBeenDeclared(propertyEntity) || generatedContextForChild)	//|| generatedContextForChild added 1m4a for GIA_USE_ADVANCED_REFERENCING
+						if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
 						{
 							#ifdef NLC_DEBUG_PARSE_CONTEXT2
 							*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 3createCodeBlockRemoveProperties: ") + entity->entityName + string(" ") + propertyEntity->entityName);
@@ -1764,7 +1764,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					{
 					#endif
 						#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-						if(assumedToAlreadyHaveBeenDeclared(propertyEntity) || generatedContextForChild)	//|| generatedContextForChild added 1m4a for GIA_USE_ADVANCED_REFERENCING
+						if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
 						{
 							//use function argument PropertyList (do not create a new property); eg "the ball" in "Tom has the ball"
 							#ifdef NLC_DEBUG_PARSE_CONTEXT2
@@ -1897,7 +1897,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									if(conditionEntity->negative)
 									{
 										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-										if(assumedToAlreadyHaveBeenDeclared(conditionObject) || generatedContextForChild)	//|| generatedContextForChild added 1m4a for GIA_USE_ADVANCED_REFERENCING
+										if(assumedToAlreadyHaveBeenDeclared(conditionObject))
 										{
 											#ifdef NLC_DEBUG_PARSE_CONTEXT2
 											*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 3BcreateCodeBlockRemoveConditions: ") + entity->entityName + string(" ") + conditionEntity->entityName);
@@ -1922,7 +1922,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									{
 									#endif
 										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-										if(assumedToAlreadyHaveBeenDeclared(conditionObject) || generatedContextForChild)	//|| generatedContextForChild added 1m4a for GIA_USE_ADVANCED_REFERENCING
+										if(assumedToAlreadyHaveBeenDeclared(conditionObject))
 										{
 											//use function argument PropertyList (do not create a new property to insert into condition); eg "the house" in "Tom is near a house"
 
@@ -2092,6 +2092,7 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 				NOT: Tom's boat is red. Tom's boat is new
 				*/
 				generatedContextForChild = true;
+				childEntity->NLClocalListVariableHasBeenInitialised = true;	//added 1m4b
 			}
 		}
 	}

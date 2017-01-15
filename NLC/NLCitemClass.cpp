@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1c 22-July-2014
+ * Project Version: 1h1d 24-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,6 +57,7 @@ NLCitem::NLCitem(void)
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
+	name = "";
 }
 NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 {
@@ -76,6 +77,7 @@ NLCitem::NLCitem(GIAentityNode * entity, int newItemType)
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
+	name = "";
 }
 NLCitem::NLCitem(string newName, int newItemType)
 {
@@ -99,6 +101,8 @@ NLCitem::NLCitem(string newName, int newItemType)
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
+	//if(newItemType == NLC_ITEM_TYPE_VARIABLE)
+	name = newName;
 }
 NLCitem::NLCitem(NLCitem * newItem)
 {
@@ -118,30 +122,7 @@ NLCitem::NLCitem(NLCitem * newItem)
 	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 	conjunctionType = INT_DEFAULT_VALUE;
 	#endif
-}
-NLCitem::NLCitem(int newIntValue, int newItemType)
-{
-	itemType = newItemType;
-	className =  "";
-	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-	instanceName = "";
-	#else
-	instanceName = ""
-	#endif
-	functionName = "";
-	className2 = "";
-	instanceName2 = "";
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-	functionArgumentCertified = false;
-	functionArgumentPassCastRequired = false;
-	functionArgumentPassCastClassName = "";
-	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
-	#endif
-	negative = false;
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
-	intValue = newIntValue;
+	name = newItem->name;
 }
 NLCitem::~NLCitem(void)
 {

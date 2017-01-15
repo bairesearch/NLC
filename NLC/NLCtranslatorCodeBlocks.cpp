@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1c 22-July-2014
+ * Project Version: 1h1d 24-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -99,39 +99,80 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
 		#endif
 
-		#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
-		//Part 1 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
-		#ifdef NLC_DEBUG
-		cout << "generateCodeBlocksPart2logicalConditions:" << endl;
-		#endif
-		if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
+		#ifdef NLC_PREPROCESSOR_MATH
+		if(currentNLCsentenceInList->isMath)
 		{
-			result = false;
+			//Part Prep B - generateCodeBlocksFromMathText - added 1h1d;
+			#ifdef NLC_DEBUG
+			cout << "generateCodeBlocksFromMathText:" << endl;
+			#endif
+			if(!generateCodeBlocksFromMathText(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, firstNLCsentenceInFullSentence))
+			{
+				result = false;
+			}
 		}
+		else
+		{
 		#endif
+			#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+			//Part 1 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
+			#ifdef NLC_DEBUG
+			cout << "generateCodeBlocksPart2logicalConditions:" << endl;
+			#endif
+			if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
+			{
+				result = false;
+			}
+			#endif
 
-		//Part 2; actions (eg Tom rides the boat)
-		#ifdef NLC_DEBUG
-		cout << "generateCodeBlocksPart3actions:" << endl;
-		#endif
-		if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
-		{
-			result = false;
-		}
+			//Part 2; actions (eg Tom rides the boat)
+			#ifdef NLC_DEBUG
+			cout << "generateCodeBlocksPart3actions:" << endl;
+			#endif
+			if(!generateCodeBlocksPart3actions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			{
+				result = false;
+			}
 
-		//Part 3: object initialisations (eg Tom has a boat) [without actions]
-		#ifdef NLC_DEBUG
-		cout << "generateCodeBlocksPart4objectInitialisations:" << endl;
-		#endif
-		if(!generateCodeBlocksPart4objectInitialisations(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
-		{
-			result = false;
+			//Part 3: object initialisations (eg Tom has a boat) [without actions]
+			#ifdef NLC_DEBUG
+			cout << "generateCodeBlocksPart4objectInitialisations:" << endl;
+			#endif
+			if(!generateCodeBlocksPart4objectInitialisations(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			{
+				result = false;
+			}
+		#ifdef NLC_PREPROCESSOR_MATH
 		}
+		#endif
 
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		clearContextGeneratedVariable(entityNodesActiveListComplete);
 		#endif
 
+		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+		//reconcile temporary variable name replacement
+		for(int i=0; i<currentNLCsentenceInList->variableNamesDetected.size(); i++)
+		{	
+			if(!(currentNLCsentenceInList->isMath))
+			{//only replace variables names (and reconcile temporary variable name replacement) for non math text
+				int dummyNumericalValue = generateDummyNumericalValue(i);
+				string numericalVariableName = currentNLCsentenceInList->variableNamesDetected[i];
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
+				cout << "dummyNumericalValue = " << dummyNumericalValue << endl;
+				cout << "numericalVariableName = " << numericalVariableName << endl;
+				#endif
+				if(!findAndReplaceDummyNumericalValue(entityNodesActiveListComplete, sentenceIndex, dummyNumericalValue, numericalVariableName))
+				{
+					cout << "generateCodeBlocks() error: !findAndReplaceDummyNumericalValue, dummyNumericalValueToRestore = " << dummyNumericalValue << ", numericalVariableName = " << numericalVariableName << endl;
+				}
+			}
+			else
+			{
+				cout << "generateCodeBlocks() error: currentNLCsentenceInList->variableNamesDetected && currentNLCsentenceInList->isMath" << endl;
+			}
+		}
+		#endif
 
 		#ifdef NLC_USE_PREPROCESSOR
 		if(useNLCpreprocessor)
@@ -198,6 +239,81 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	}
 	return result;
 }
+
+#ifdef NLC_PREPROCESSOR_MATH
+bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * firstNLCsentenceInFullSentence)
+{
+	bool result = true;
+	NLCsentence * parsablePhrase = firstNLCsentenceInFullSentence;
+	if(firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal > 0)
+	{
+		for(int i=phraseIndex; i<firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal; i++)
+		{
+			if(currentSentence->mathTextNLPparsablePhraseIndex != i)
+			{
+				cout << "generateCodeBlocksFromMathText() error: (currentSentence->mathTextNLPparsablePhraseIndex != i)" << endl;
+			}
+			if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, parsablePhrase))
+			{
+				result = false;
+			}
+			parsablePhrase = parsablePhrase->next;
+		}
+	}
+	if(firstNLCsentenceInFullSentence->isLogicalConditionOperator)
+	{
+		*currentCodeBlockInTree = createCodeBlockMathTextWithLogicalOperator(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->mathText);
+	}
+	else
+	{
+		*currentCodeBlockInTree = createCodeBlockMathTextLine(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->mathText);
+	}
+	return result;
+}	
+
+bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * parsablePhrase, int phraseIndex)
+{
+	bool foundParsablePhrase = false;
+	
+	string parsablePhraseNumberOfElementCounterName = generateMathTextNLPparsablePhraseReference(phraseIndex);	//parsablePhraseGenerateNumberOfElementCounterName
+	*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, parsablePhraseNumberOfElementCounterName, 0);
+	NLCcodeblock * currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
+	
+	//currently only accept entities with $qVar defined, eg "Number of red dogs". prep_of(number-4, dogs-7) [NLP] / _quantity(dog[8], _$qVar[1]) [GIA]
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+		{
+			if(entity->isQuery)
+			{
+				if(foundParsablePhrase)
+				{
+					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: more than one parsable phrase primary entity found" << endl;
+				}
+				foundParsablePhrase = true;
+				
+				cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found 'number of' $qVar /  _quantity(dog[8], _$qVar[1]) variable: " << entity->entityName << endl;
+				NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;
+				if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables, true, false))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+				{
+					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: parent of  parsable phrase primary entity not previously initialised" << endl;
+				}
+				
+				*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, parsablePhraseNumberOfElementCounterName);
+				*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase->next;
+			}
+
+		}
+	}	
+	if(!foundParsablePhrase)
+	{
+		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !foundParsablePhrase" << endl;
+	}
+	
+	return foundParsablePhrase;
+}
+#endif
 
 bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence * currentNLCsentenceInList)
 {
@@ -365,12 +481,17 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 						}
 						#endif
 						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+						//perform additional checks;
 						if(currentNLCsentenceInList->ifDetected || currentNLCsentenceInList->elseIfDetected || currentNLCsentenceInList->elseDetected)
 						{
 							if(logicalOperation != NLC_CONDITION_LOGICAL_OPERATIONS_IF)
 							{
 								cout << "generateCodeBlocksPart2logicalConditions() error: (currentNLCsentenceInList->ifDetected || currentNLCsentenceInList->elseIfDetected || currentNLCsentenceInList->elseDetected) && (logicalOperation != NLC_CONDITION_LOGICAL_OPERATIONS_IF)" << endl;
 							}
+						}
+						if(!(currentNLCsentenceInList->isLogicalConditionOperator))
+						{
+							cout << "generateCodeBlocksPart2logicalConditions() error: !(currentNLCsentenceInList->isLogicalConditionOperator)" << endl;
 						}
 						#endif
 
@@ -1279,7 +1400,36 @@ bool clearContextGeneratedVariable(vector<GIAentityNode*> * entityNodesActiveLis
 }
 #endif
 
+#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+bool findAndReplaceDummyNumericalValue(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, int dummyNumericalValue, string numericalVariableName)
+{
+	bool result = true;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+		{
+			if(entity->quantityNumber == dummyNumericalValue)
+			{
+				entity->NLCoriginalNumericalVariableName = numericalVariableName;
+				result = true;
+			}
+		}
+		
+	}
+	return result;
+}
+#endif
 
+/*
+#ifdef NLC_PREPROCESSOR_MATH
+string parsablePhraseGenerateNumberOfElementCounterName(int phraseIndex)
+{
+	string parsablePhraseNumberOfElementCounterName = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMBER_OF_ELEMENTS_COUNTER_NAME) + convertIntToString(phraseIndex);
+	return parsablePhraseNumberOfElementCounterName;
+}
+#endif
+*/
 
 
 

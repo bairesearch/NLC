@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -34,15 +34,15 @@
 #include "NLPIclassDefinition.h"
 
 
-NLPIclassDefinition::NLPIclassDefinition(string newClassName)
+NLPIclassDefinition::NLPIclassDefinition(string newName)
 {
-	className = newClassName;	
+	name = newName;	
 
 	isActionOrConditionInstanceNotClass = false;
 }
 NLPIclassDefinition::NLPIclassDefinition(void)
 {
-	className = "";	
+	name = "";	
 
 	isActionOrConditionInstanceNotClass = false;
 }
@@ -62,13 +62,13 @@ bool checkSentenceIndexParsingClassHeirarchy(GIAentityNode * entity, int sentenc
 }
 */
 
-NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string className, bool * foundClassDefinition)
+NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition)
 {
 	NLPIclassDefinition * classDefinitionFound = NULL;
 	for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{	
 		NLPIclassDefinition *  currentClassDef = *classDefinitionIter;
-		if(currentClassDef->className == className)
+		if(currentClassDef->name == name)
 		{
 			//cout << "foundClassDefinition: className = " << className << endl;
 			classDefinitionFound = currentClassDef;

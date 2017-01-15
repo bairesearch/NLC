@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -68,6 +68,7 @@ using namespace std;
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST (7)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST (8)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT (9)
+#define NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION (10)
 
 #define NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 
@@ -83,6 +84,10 @@ public:
 	int itemType;
 	string className;	//eg dog
 	string instanceName;	//eg dog1
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	bool functionArgumentCertified;
+	string functionArgumentPassCastClassName;	//used to map function arguments of referenced functions to implicitly defined function arguments (based on function definition content)
+	#endif
 	vector<string> context;	//item context
 	
 	string className2;	//used for NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION only

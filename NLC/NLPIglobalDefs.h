@@ -23,7 +23,7 @@
  * File Name: NLPIglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -34,6 +34,8 @@
 #define HEADER_NLPI_GLOBAL_DEFS
 
 #include "SHAREDglobalDefs.h"
+
+#define NLPI_SUPPORT_INPUT_FILE_LISTS
 
 #define NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 #define NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS	//this implementation has known weaknesses

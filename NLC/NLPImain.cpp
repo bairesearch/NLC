@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ static char errmessage[] = "Usage:  OpenNLPI.exe [options]\n\n\twhere options ar
 "\n\t-ionlprelq [string]: query NLP dependency relation parser .xml intermediary input/output filename (def: inputNLPrelationQuery.xml)"
 "\n\t-ionlptagq [string]: query NLP feature tag parser .xml intermediary input/output filename (def: inputNLPfeatureQuery.xml)"
 "\n\t-ixmlq [string]    : query semantic network definition .xml input filename (def: semanticNetQuery.xml)"
-#ifdef GIA_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 "\n\t-ilist		: all input files will be treated as file lists (new line delimited)"
 #endif
 "\n\t-oxml [string]     : semantic network definition .xml output filename (def: semanticNet.xml)"
@@ -199,8 +199,12 @@ int main(int argc,char **argv)
 	string outputTextAnswerPlainTXTFileName = "answer.txt";
 
 #ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
-	bool inputFileList = false;
+	bool inputFileList = false;	//not used by NLPI
+#endif
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS	
+	bool NLPIinputFileList = false;
 #endif	
+	
 	bool printOutput = false;
 	bool printOutputQuery = false;
 	bool displayInOpenGLAndOutputScreenshot = true;
@@ -296,10 +300,10 @@ int main(int argc,char **argv)
 			useInputQuery = true;
 		}
 		
-	#ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS	
 		if(argumentExists(argc,argv,"-ilist"))
 		{
-			inputFileList = true;
+			NLPIinputFileList = true;
 		}
 	#endif		
 
@@ -603,7 +607,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenGIA.exe - Project Version: 1s6a 28-June-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1c5a 02-November-2013" << endl;
 			exit(1);
 		}
 
@@ -616,142 +620,256 @@ int main(int argc,char **argv)
 		exit(1);
 	}
 
-	vector<GIAentityNode*> * entityNodesActiveListComplete = new vector<GIAentityNode*>;
-	unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts = new unordered_map<string, GIAentityNode*>;
-	vector<GIAentityNode*> * entityNodesActiveListSubstances = new vector<GIAentityNode*>;
-	vector<GIAentityNode*> * entityNodesActiveListActions = new vector<GIAentityNode*>;
-	vector<GIAentityNode*> * entityNodesActiveListConditions = new vector<GIAentityNode*>;
-	unordered_map<long, GIAtimeConditionNode*> * timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
-	
-	int maxNumberSentences;
-			
-	executeGIA(
-
-		NLPfeatureParser,
-		NLPdependencyRelationsParser,
-		NLPrelexCompatibilityMode,
-		NLPassumePreCollapsedStanfordRelations,
-
-		queryNLPfeatureParser,
-		queryNLPdependencyRelationsParser,
-		queryNLPrelexCompatibilityMode     ,
-		queryNLPassumePreCollapsedStanfordRelations,
-
-		NLPexeFolderArray,
-
-		useInputTextPlainTXTFile,
-		inputTextPlainTXTfileName,
-
-	#ifdef USE_CE
-		useInputTextCodeextensionsTXTFileName,
-		inputTextCodeextensionsTXTFileName,
+	int numberOfInputFilesInList = 1;
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	vector<string> inputTextPlainTXTFileNameList;
+	vector<string> inputTextNLPrelationXMLFileNameList;
+	vector<string> inputTextNLPfeatureXMLFileNameList;
+	vector<string> inputTextXMLFileNameList;
+	vector<string> functionNameList;
+	if(NLPIinputFileList)
+	{
+		if(useInputTextPlainTXTFile)
+		{
+			numberOfInputFilesInList = getFilesFromFileList2(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList);
+		}
+		if(useInputTextNLPrelationXMLFile)
+		{
+			numberOfInputFilesInList = getFilesFromFileList2(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList);
+		}
+		if(useInputTextNLPfeatureXMLFile)
+		{
+			numberOfInputFilesInList = getFilesFromFileList2(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList);
+		}
+		if(useInputTextXMLFile)
+		{
+			numberOfInputFilesInList = getFilesFromFileList2(inputTextXMLFileName, &inputTextXMLFileNameList);
+		}
+	}
 	#endif
 
-		useInputTextNLPrelationXMLFile,
-		inputTextNLPrelationXMLfileName,
-		useInputTextNLPfeatureXMLFile,
-		inputTextNLPfeatureXMLfileName,
-		useOutputTextCFFFile,
-		outputTextCFFFileName,
-		useInputTextXMLFile,
-		inputTextXMLFileName,
-		useOutputTextXMLFile,
-		outputTextXMLFileName,
-		useOutputTextCXLFile,
-		outputTextCXLFileName,
-		useOutputTextLDRFile,
-		outputTextLDRFileName,
-		useOutputTextPPMFile,
-		outputTextPPMFileName,
-		useOutputTextSVGFile,
-		outputTextSVGFileName,
-		useInputQueryPlainTXTFile,
-		inputQueryPlainTXTFileName,
-		useInputQueryNLPrelationXMLFile,
-		inputQueryNLPrelationXMLFileName,
-		useInputQueryNLPfeatureXMLFile,
-		inputQueryNLPfeatureXMLFileName,
-		useOutputQueryCFFFile,
-		outputQueryCFFFileName,
-		useInputQueryXMLFile,
-		inputQueryXMLFileName,
-		useOutputQueryXMLFile,
-		outputQueryXMLFileName,
-		useOutputQueryCXLFile,
-		outputQueryCXLFileName,
-		useOutputQueryLDRFile,
-		outputQueryLDRFileName,
-		useOutputQueryPPMFile,
-		outputQueryPPMFileName,
-		useOutputQuerySVGFile,
-		outputQuerySVGFileName,
-		useOutputTextAllFile,
-		outputTextAllFileName,
-		useOutputTextAnswerPlainTXTFile,
-		outputTextAnswerPlainTXTFileName,
-
-	#ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
-		inputFileList,
-	#endif	
-		printOutput,
-		printOutputQuery,
-		displayInOpenGLAndOutputScreenshot,
-
-		rasterImageWidth,
-		rasterImageHeight,
-
-		useInputQuery,
-
-	#ifdef GIA_USE_DATABASE
-		readFromDatabase,
-		writeToDatabase,
-		useDatabase,
-		databaseFolderName,
-	#endif
-
-	#ifdef GIA_USE_LRP
-		useLRP,
-		useOutputLRPTextPlainTXTFile,
-		outputLRPTextPlainTXTFileName,
-		useOutputLRPTextForNLPonlyPlainTXTFile,
-		outputLRPTextForNLPonlyPlainTXTFileName,
-		useOutputQueryLRPTextPlainTXTFile,
-		outputQueryLRPTextPlainTXTFileName,
-		useOutputQueryLRPTextForNLPonlyPlainTXTFile,
-		outputQueryLRPTextForNLPonlyPlainTXTFileName,
-		lrpDataFolderName,
-	#endif
-
-	#ifdef USE_WORDNET
-		synonymnDetectionStatus,
-	#endif
-	
-		entityNodesActiveListComplete,
-		entityNodesActiveListConcepts, 
-		entityNodesActiveListSubstances, 
-		entityNodesActiveListActions, 
-		entityNodesActiveListConditions, 
-		timeConditionNodesActiveList,
+	vector<NLPIcodeblock*> firstCodeBlockInTreeList;
+	vector<NLPIclassDefinition *> classDefinitionList;
 		
-		&maxNumberSentences	
-	);
+	for(int i=0; i<numberOfInputFilesInList; i++)
+	{	
+		int maxNumberSentences;
+		
+		NLPIcodeblock * firstCodeBlockInTree = new NLPIcodeblock();
+		firstCodeBlockInTreeList.push_back(firstCodeBlockInTree);
+
+		vector<GIAentityNode*> * entityNodesActiveListComplete = new vector<GIAentityNode*>;
+		unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts = new unordered_map<string, GIAentityNode*>;
+		vector<GIAentityNode*> * entityNodesActiveListSubstances = new vector<GIAentityNode*>;
+		vector<GIAentityNode*> * entityNodesActiveListActions = new vector<GIAentityNode*>;
+		vector<GIAentityNode*> * entityNodesActiveListConditions = new vector<GIAentityNode*>;
+		unordered_map<long, GIAtimeConditionNode*> * timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
 	
-	string NLPIfunctionName = "";
-	if(useInputTextPlainTXTFile)
-	{
-		NLPIfunctionName = inputTextPlainTXTfileName;
-	}
-	else if(useInputTextXMLFile)
-	{
-		NLPIfunctionName = inputTextXMLFileName;
-	}
-	else
-	{
-		cout << "error: NLPI requires useInputTextPlainTXTFile or useInputTextXMLFile" << endl; 
+		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+		if(NLPIinputFileList)
+		{
+			if(useInputTextPlainTXTFile)
+			{
+				inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(i);
+			}
+			if(useInputTextNLPrelationXMLFile)
+			{
+				inputTextNLPrelationXMLfileName = inputTextNLPrelationXMLFileNameList.at(i);
+			}
+			if(useInputTextNLPfeatureXMLFile)
+			{
+				inputTextNLPfeatureXMLfileName = inputTextNLPfeatureXMLFileNameList.at(i);
+			}
+			if(useInputTextXMLFile)
+			{
+				inputTextXMLFileName = inputTextXMLFileNameList.at(i);
+			}
+		}
+		#endif
+					
+		executeGIA(
+
+			NLPfeatureParser,
+			NLPdependencyRelationsParser,
+			NLPrelexCompatibilityMode,
+			NLPassumePreCollapsedStanfordRelations,
+
+			queryNLPfeatureParser,
+			queryNLPdependencyRelationsParser,
+			queryNLPrelexCompatibilityMode     ,
+			queryNLPassumePreCollapsedStanfordRelations,
+
+			NLPexeFolderArray,
+
+			useInputTextPlainTXTFile,
+			inputTextPlainTXTfileName,
+
+		#ifdef USE_CE
+			useInputTextCodeextensionsTXTFileName,
+			inputTextCodeextensionsTXTFileName,
+		#endif
+
+			useInputTextNLPrelationXMLFile,
+			inputTextNLPrelationXMLfileName,
+			useInputTextNLPfeatureXMLFile,
+			inputTextNLPfeatureXMLfileName,
+			useOutputTextCFFFile,
+			outputTextCFFFileName,
+			useInputTextXMLFile,
+			inputTextXMLFileName,
+			useOutputTextXMLFile,
+			outputTextXMLFileName,
+			useOutputTextCXLFile,
+			outputTextCXLFileName,
+			useOutputTextLDRFile,
+			outputTextLDRFileName,
+			useOutputTextPPMFile,
+			outputTextPPMFileName,
+			useOutputTextSVGFile,
+			outputTextSVGFileName,
+			useInputQueryPlainTXTFile,
+			inputQueryPlainTXTFileName,
+			useInputQueryNLPrelationXMLFile,
+			inputQueryNLPrelationXMLFileName,
+			useInputQueryNLPfeatureXMLFile,
+			inputQueryNLPfeatureXMLFileName,
+			useOutputQueryCFFFile,
+			outputQueryCFFFileName,
+			useInputQueryXMLFile,
+			inputQueryXMLFileName,
+			useOutputQueryXMLFile,
+			outputQueryXMLFileName,
+			useOutputQueryCXLFile,
+			outputQueryCXLFileName,
+			useOutputQueryLDRFile,
+			outputQueryLDRFileName,
+			useOutputQueryPPMFile,
+			outputQueryPPMFileName,
+			useOutputQuerySVGFile,
+			outputQuerySVGFileName,
+			useOutputTextAllFile,
+			outputTextAllFileName,
+			useOutputTextAnswerPlainTXTFile,
+			outputTextAnswerPlainTXTFileName,
+
+		#ifdef GIA_SUPPORT_INPUT_FILE_LISTS	
+			inputFileList,
+		#endif	
+			printOutput,
+			printOutputQuery,
+			displayInOpenGLAndOutputScreenshot,
+
+			rasterImageWidth,
+			rasterImageHeight,
+
+			useInputQuery,
+
+		#ifdef GIA_USE_DATABASE
+			readFromDatabase,
+			writeToDatabase,
+			useDatabase,
+			databaseFolderName,
+		#endif
+
+		#ifdef GIA_USE_LRP
+			useLRP,
+			useOutputLRPTextPlainTXTFile,
+			outputLRPTextPlainTXTFileName,
+			useOutputLRPTextForNLPonlyPlainTXTFile,
+			outputLRPTextForNLPonlyPlainTXTFileName,
+			useOutputQueryLRPTextPlainTXTFile,
+			outputQueryLRPTextPlainTXTFileName,
+			useOutputQueryLRPTextForNLPonlyPlainTXTFile,
+			outputQueryLRPTextForNLPonlyPlainTXTFileName,
+			lrpDataFolderName,
+		#endif
+
+		#ifdef USE_WORDNET
+			synonymnDetectionStatus,
+		#endif
+
+			entityNodesActiveListComplete,
+			entityNodesActiveListConcepts, 
+			entityNodesActiveListSubstances, 
+			entityNodesActiveListActions, 
+			entityNodesActiveListConditions, 
+			timeConditionNodesActiveList,
+
+			&maxNumberSentences	
+		);
+
+		string NLPIfunctionName = "";
+		if(useInputTextPlainTXTFile)
+		{
+			NLPIfunctionName = inputTextPlainTXTfileName;
+		}
+		else if(useInputTextNLPrelationXMLFile)
+		{
+			NLPIfunctionName = inputTextNLPrelationXMLfileName;
+		}
+		else if(useInputTextNLPfeatureXMLFile)
+		{
+			NLPIfunctionName = inputTextNLPfeatureXMLfileName;
+		}
+		else if(useInputTextXMLFile)
+		{
+			NLPIfunctionName = inputTextXMLFileName;
+		}
+		else
+		{
+			cout << "error: NLPI requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
+		}
+		functionNameList.push_back(NLPIfunctionName);
+		string functionName = parseFunctionNameFromNLPIfunctionName(NLPIfunctionName);	//gets "fight" from "dog::fight"
+		
+		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, functionName);
 	}
 	
-	executeNLPI(entityNodesActiveListComplete, entityNodesActiveListConcepts, entityNodesActiveListSubstances, entityNodesActiveListActions, entityNodesActiveListConditions, maxNumberSentences, NLPIfunctionName);
-	
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	for(int i=0; i<numberOfInputFilesInList; i++)
+	{
+		//updates all classDefinition functionList function arguments corresponding to a single defined function (i)
+		
+		NLPIcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
+
+		//reconcile function arguments (both class function header and code function reference)
+		string NLPIfunctionName = functionNameList.at(i);
+		string functionName = "";	
+		string functionOwnerName = "";
+		bool foundFunctionOwnerClass = false; 
+		parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	//gets "fight" from "dog::fight"
+		
+		NLPIclassDefinition * classDefinitionFound = NULL;
+		for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList.begin(); classDefinitionIter != classDefinitionList.end(); classDefinitionIter++)
+		{	
+			NLPIclassDefinition * currentClassDef = *classDefinitionIter;
+			if((currentClassDef->name == functionOwnerName) || !foundFunctionOwnerClass)
+			{
+				for(vector<NLPIclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end();)
+				{
+					NLPIclassDefinition * functionClassDefinition = *localListIter;
+					if(functionClassDefinition->name == functionName)
+					{
+						//cout << "foundClassDefinition: className = " << className << endl;
+						//contrast and compare function class arguments vs 
+
+						findFormalFunctionArgumentCorrelateInExistingList(&(functionClassDefinition->parameters), &(firstCodeBlockInTree->parameters), &classDefinitionList); 
+					}	
+				}
+			}
+		}	
+	}
+	#endif
+
+	for(int i=0; i<numberOfInputFilesInList; i++)
+	{
+		NLPIcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
+
+		string code = "";
+		int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
+		printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code);
+	}
+				
 	//print execution time (end)
 	time(&now);
 	current = localtime(&now);
@@ -759,16 +877,171 @@ int main(int argc,char **argv)
 	cout << "NLPI execution time: " << timeAndDateString << " (finish)" << endl;	
 }	
 
-bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences, string functionName)
-{
-	NLPIcodeblock * firstCodeBlockInTree = new NLPIcodeblock();
-	vector<NLPIclassDefinition *> classDefinitionList;
-	
-	translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, functionName);
-		
-	string code = "";
-	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
-	printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code);
-	
-	cout << "code = \n" << code << endl;
+
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+
+bool findFormalFunctionArgumentCorrelateInExistingList(vector<NLPIitem*> * existingFunctionArgumentList, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList)
+{		
+	for(vector<NLPIitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
+	{
+		NLPIitem * formalFunctionArgument = *parametersIterator;
+
+		NLPIclassDefinition * classDefinitionCorrespondingToExistingFunctionArgument = NULL;	
+		bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
+		for(vector<NLPIitem*>::iterator parametersIterator = existingFunctionArgumentList->begin(); parametersIterator < existingFunctionArgumentList->end(); parametersIterator++)
+		{
+			NLPIitem * existingFunctionArgument = *parametersIterator;
+
+			bool foundClassDefinitionCorrespondingToExistingFunctionArgument = false;
+			for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList.begin(); classDefinitionIter != classDefinitionList.end(); classDefinitionIter++)
+			{
+				NLPIclassDefinition * currentClassDef = *classDefinitionIter;
+				if(currentClassDef->name == existingFunctionArgument->className)
+				{
+					classDefinitionCorrespondingToExistingFunctionArgument = currentClassDef;
+					foundClassDefinitionCorrespondingToExistingFunctionArgument = true;	
+				}
+			}
+
+			if(foundClassDefinitionCorrespondingToExistingFunctionArgument)
+			{
+
+				if(formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
+				{
+					if(findParentClass(classDefinitionCorrespondingToExistingFunctionArgument, formalFunctionArgument->className))
+					{
+						foundFormalFunctionArgumentCorrelateForExistingArgument = true;
+					}
+				}
+				else if(formalFunctionArgument->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE)
+				{
+					if(findParentClass(classDefinitionCorrespondingToExistingFunctionArgument, formalFunctionArgument->className))
+					{
+						foundFormalFunctionArgumentCorrelateForExistingArgument = true;
+					}
+				}
+				else
+				{
+					cout << "unsupported function argument" << endl;
+				}
+			}
+			else
+			{	
+				cout << "findFormalFunctionArgumentCorrelateInExistingList() error: !foundClassDefinitionCorrespondingToExistingFunctionArgument: " << existingFunctionArgument->className << endl;
+			}
+		}
+		if(foundFormalFunctionArgumentCorrelateForExistingArgument)
+		{
+			//store cast information for more generic class type passed as function argument
+			classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentCertified = true;
+			if(classDefinitionCorrespondingToExistingFunctionArgument->className != formalFunctionArgument->className)
+			{
+				classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentPassCastClassName = formalFunctionArgument->className;
+			}
+		}
+		else
+		{
+			cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map)" << endl;
+			//add a new function argument to the existing function argument list
+			
+			classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentCertified = true;
+			NLPIitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLPIitem(actionCondition, NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
+			argumentConditionItem->className2 = generateClassName(conditionObject);
+			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);
+			
+		}
+	}
 }
+
+bool findParentClass(NLPIclassDefinition * classDefinition, string variableName)
+{
+	bool foundVariable = false;
+	if(classDefinition->name == variableName)
+	{
+		foundVariable = true;
+	}
+	else 
+	{	
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+		{
+			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			if(findParentClass(targetClassDefinition, variableName))
+			{
+				foundVariable = true;
+			}
+		}
+	}
+	return foundVariable;
+}
+
+int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList)
+{
+	bool result = true;
+	int numberOfInputFilesInList = 0;
+	ifstream parseFileObject(inputListFileName.c_str());
+	if(!parseFileObject.rdbuf( )->is_open( ))
+	{
+		//txt file does not exist in current directory.
+		cout << "Error: input list file does not exist in current directory: " << inputListFileName << endl;
+		result = false;
+	}
+	else
+	{
+		char currentToken;
+		int fileNameIndex = 0;
+		int charCount = 0;
+		string currentFileName = "";
+		while(parseFileObject.get(currentToken))
+		{
+			if(currentToken == CHAR_NEWLINE)
+			{
+				inputTextFileNameList->push_back(currentFileName);
+				#ifdef GIA_MAIN_DEBUG
+				//cout << "currentFileName = " << currentFileName << endl;
+				#endif
+				currentFileName = "";
+				fileNameIndex++;
+			}
+			else
+			{
+				currentFileName = currentFileName + currentToken;
+			}
+			charCount++;
+		}
+		numberOfInputFilesInList = fileNameIndex;
+	}
+	#ifdef GIA_MAIN_DEBUG
+	//cout << "numberOfInputFilesInList = " << numberOfInputFilesInList << endl;
+	#endif
+	return numberOfInputFilesInList;
+}
+
+string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
+{
+	//gets "fight" from "dog::fight"
+	string functionName = "";
+	bool foundFunctionOwnerClass = false;
+	string functionOwnerName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
+	return functionName;
+}
+
+void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
+{
+	//gets "fight" from "dog::fight"
+	*foundFunctionOwnerClass = false;
+	*functionOwnerName = "";
+	*functionName = NLPIfunctionName;
+	int indexOfClassContext = NLPIfunctionName.find("::");
+	if(indexOfClassContext != string::npos)
+	{
+		*functionName = NLPIfunctionName.substr(indexOfClassContext, NLPIfunctionName.length()-indexOfClassContext);
+		*functionOwnerName = NLPIfunctionName.substr(0, indexOfClassContext);
+		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+		cout << "functionName = " << *functionName << endl;
+		cout << "functionOwnerName = " << *functionOwnerName << endl;
+		*foundFunctionOwnerClass = true;
+	}
+}
+
+#endif

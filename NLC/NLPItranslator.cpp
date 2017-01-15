@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -180,8 +180,10 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					if(actionHasObject || actionHasSubject)
 					{						
 						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));
-
+						#ifndef NLPI_SUPPORT_INPUT_FILE_LISTS
+						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
+						#endif
+						
 						//detect action properties and conditions (and disable these for NLPI generate code block parse: they will become function execution arguments)
 						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
 						{					
@@ -403,7 +405,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 					{
 					
 						string targetName = "";
-
+						string targetClassName = "";
 						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
 						{
 							#ifndef NLPI_BAD_IMPLEMENTATION
@@ -411,6 +413,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							#else
 							targetName = generateActionName(targetEntity);
 							#endif
+							
 						}
 						else
 						{
@@ -425,6 +428,12 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							targetClassDefinition = new NLPIclassDefinition(targetName);
 							classDefinitionList->push_back(targetClassDefinition);
 						}
+						
+						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+						{
+							targetClassDefinition->classNameSpecial = generateClassName(targetEntity);
+						}
+						
 						#ifndef NLPI_BAD_IMPLEMENTATION
 						//if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))	//CAN BE TEMPORARILY MODIFED FOR DEBUGGING
 						if((targetEntity->isCondition) && !(targetEntity->isConcept))
@@ -498,11 +507,13 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 								//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
 								classDefinition->functionList.push_back(targetClassDefinition);
 
+								//NLPIitem * classDeclarationFunctionItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION);
+								//targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);	//required for NLPI 1c5a+ (print function class name not instance name)
 								if(!(targetEntity->actionObjectEntity->empty()))
 								{							
 									GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
-									NLPIitem * classDeclarationFunctionItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
-									targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+									NLPIitem * classDeclarationFunctionObjectItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+									targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 								}
 								#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 								generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
@@ -522,86 +533,42 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 	{	
 		NLPIclassDefinition * classDefinition = *classDefinitionIter;
 
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end();)
-		{
-			bool localListIterErased = false;
-			NLPIclassDefinition * variableClassDefinition = *localListIter;
-			string variableName = variableClassDefinition->className;
-			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
-			{
-				if(!localListIterErased)
-				{
-					NLPIclassDefinition * targetClassDefinition = *parentListIter;
-					if(findVariableInParentClass(classDefinition, variableName, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
-					{
-						localListIter = classDefinition->propertyList.erase(localListIter);	
-						localListIterErased = true;
-						//cout << "classDefinition->name = " << classDefinition->name << endl;
-						//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
-					}
-				}
-			}
-			if(!localListIterErased)
-			{
-				localListIter++;
-			}			
-		}
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end();)
-		{
-			bool localListIterErased = false;
-			NLPIclassDefinition * variableClassDefinition = *localListIter;
-			//string variableName = variableClassDefinition->actionOrConditionInstance->entityName;
-			string variableName = variableClassDefinition->className;
-			//cout << "classDefinition->name = " << classDefinition->name << endl;		
-			//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;		
-
-			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
-			{
-				if(!localListIterErased)
-				{	
-					NLPIclassDefinition * targetClassDefinition = *parentListIter;
-					if(findVariableInParentClass(classDefinition, variableName, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
-					{
-						localListIter = classDefinition->propertyList.erase(localListIter);
-						localListIterErased = true;
-					}
-				}
-			}
-			if(!localListIterErased)
-			{
-				localListIter++;
-			}			
-	
-		}
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end();)
-		{//check this implementation; this code will not work when functions are declared using their instance id eg "action1". This code will only work if functions are declared without their instance ids eg "action"/"actionClass"
-			bool localListIterErased = false;
-			NLPIclassDefinition * variableClassDefinition = *localListIter;
-			//string variableName = variableClassDefinition->actionOrConditionInstance->entityName;
-			string variableName = variableClassDefinition->className;
-			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
-			{
-				if(!localListIterErased)
-				{			
-					NLPIclassDefinition * targetClassDefinition = *parentListIter;
-					if(findVariableInParentClass(classDefinition, variableName, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
-					{
-						localListIter = classDefinition->propertyList.erase(localListIter);
-						localListIterErased = true;
-					}
-				}
-			}
-			if(!localListIterErased)
-			{
-				localListIter++;
-			}
-		}
+		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
+		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
+		eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->functionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
 	}		
-	
 	#endif
 }	
 
 #ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition *> classDefinitionSublist, int variableName)
+{
+	for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinitionSublist->begin(); localListIter != classDefinitionSublist->end();)
+	{
+		bool localListIterErased = false;
+		NLPIclassDefinition * variableClassDefinition = *localListIter;
+		string variableName = variableClassDefinition->name;
+		for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
+		{
+			if(!localListIterErased)
+			{
+				NLPIclassDefinition * targetClassDefinition = *parentListIter;
+				if(findVariableInParentClass(classDefinition, variableName, variableName))
+				{
+					localListIter = classDefinitionSublist->erase(localListIter);	
+					localListIterErased = true;
+					//cout << "classDefinition->name = " << classDefinition->name << endl;
+					//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
+				}
+			}
+		}
+		if(!localListIterErased)
+		{
+			localListIter++;
+		}			
+	}
+}
+
 bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string variableName, int variableType)
 {
 	bool foundVariable = false;
@@ -610,7 +577,7 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->className;
+			string targetName = targetClassDefinition->name;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -623,7 +590,7 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
-			string targetName = targetClassDefinition->className;
+			string targetName = targetClassDefinition->name;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -636,7 +603,7 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
-			string targetName = targetClassDefinition->className;
+			string targetName = targetClassDefinition->name;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -699,7 +666,7 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 			}					
 			NLPIitem * argumentConditionItem = new NLPIitem(actionCondition, NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
 			argumentConditionItem->className2 = generateClassName(conditionObject);
-			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);;
+			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);
 			parameters->push_back(argumentConditionItem);		
 		}
 	}

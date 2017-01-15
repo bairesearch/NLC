@@ -23,7 +23,7 @@
  * File Name: NLPImain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -42,12 +42,15 @@
 #include <vector>
 using namespace std;
 
-#include "GIAglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
+#include "NLPIglobalDefs.h"
 
 int main(int argc,char **argv);
-	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences, string functionName);
-
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+bool findFormalFunctionArgumentCorrelateInExistingList(vector<NLPIitem*> * existingFunctionArgumentList, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList);
+	bool findParentClass(NLPIclassDefinition * classDefinition, string variableName);
+int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
+void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass);
+	string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName);
+#endif
 
 #endif

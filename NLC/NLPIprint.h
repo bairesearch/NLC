@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -49,14 +49,15 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);	
 		string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 		string generateCodePropertyListDefinitionText(string targetClassName, int progLang);
-	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
+	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code, int level);	//classDefinitionList is required by NLPI_SUPPORT_INPUT_FILE_LISTS only
 		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 		void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 			string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-			string generateCodePropertyDefinitionText(string propertyClassName, string propertyInstanceName, int progLang);		
-		void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+			string generateCodeSingularDefinitionText(string propertyClassName, string propertyInstanceName, int progLang);		
+			string generateCodePluralDefinitionText(string pluralClassName, string pluralInstanceName, int progLang);
+		void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIclassDefinition *> * classDefinitionList, vector<NLPIitem*> * codeBlockParameters, string * functionArguments, int progLang);
 			string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang);
-			//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
+			string generateCodeSingularReferenceText(NLPIitem * functionArgumentPropertyItem, int progLang);
 				string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
 		#endif
 		void printLine(string command, int level, string * code);

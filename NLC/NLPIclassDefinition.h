@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4d 29-October-2013
+ * Project Version: 1c5a 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -83,10 +83,12 @@ class NLPIclassDefinition
 public:
 
 	NLPIclassDefinition(void);
-	NLPIclassDefinition(string newClassName);
+	NLPIclassDefinition(string newName);
 	~NLPIclassDefinition(void);
 	
-	string className;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
+	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
+	string classNameSpecial;
+		//classdefinition sublists;
 	vector<NLPIclassDefinition *> propertyList;	//subclass
 	vector<NLPIclassDefinition *> conditionList;	//declared conditions
 	vector<NLPIclassDefinition *> definitionList;	//inherited parents
@@ -99,7 +101,7 @@ public:
 	bool isDisabledChildReplicantDeclaration;
 };
 
-NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string className, bool * foundClassDefinition);
+NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition);
 
 
 

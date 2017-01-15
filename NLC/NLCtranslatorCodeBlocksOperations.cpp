@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h11a 19-August-2014
+ * Project Version: 1i1b 19-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -366,10 +366,13 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	{
 		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = entity->entityNodeDefinitionList->begin(); definitionNodeListIterator < entity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
 		{
-			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept	
-			if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, entity, parentSubstanceConcept, logicalConditionConjunctionVariables))
-			{
-				result = true;
+			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
+			if(parentSubstanceConcept->isSubstanceConcept)
+			{				
+				if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, entity, parentSubstanceConcept, logicalConditionConjunctionVariables))
+				{
+					result = true;
+				}
 			}
 		}
 	}
@@ -396,46 +399,53 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 {
 	bool result = false;
 	cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;		
-	if(parentSubstanceConcept->isSubstanceConcept)
+	for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator = parentSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator < parentSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator++)
 	{
-		for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator = parentSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator < parentSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator++)
+		GIAentityNode* childSubstanceConcept = (*reverseDefinitionNodeListIterator)->entity;
+		if(childSubstanceConcept->isSubstanceConcept)
 		{
-			GIAentityNode* childSubstanceConcept = (*reverseDefinitionNodeListIterator)->entity;
 			if(childSubstanceConcept != parentInstance)
 			{
 				cout << "childSubstanceConcept = " << childSubstanceConcept->entityName << endl;		
+				for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator2 = childSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator2 < childSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator2++)
+				{	
+					cout << "childSubstance" << endl;			
+					GIAentityNode* childSubstance = (*reverseDefinitionNodeListIterator2)->entity;
+					if(!(childSubstance->isSubstanceConcept))
+					{
+						//definition child (e.g. apple)
+						NLCcodeblock * originalCodeBlockInTree = *currentCodeBlockInTree;
 
-				//definition child (e.g. apple)
-				NLCcodeblock * originalCodeBlockInTree = *currentCodeBlockInTree;
+						NLCitem * propertyItem = new NLCitem(childSubstance, NLC_ITEM_TYPE_CLASS);
+						//context property item:		
+						if(assumedToAlreadyHaveBeenDeclared(childSubstance))
+						{
+							cout << "1 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
+							*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
+						}
+						else
+						{
+							cout << "2 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN !assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
+							*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+						}	
 
-				NLCitem * propertyItem = new NLCitem(childSubstanceConcept, NLC_ITEM_TYPE_CLASS);
-				//context property item:		
-				if(assumedToAlreadyHaveBeenDeclared(childSubstanceConcept))
-				{
-					cout << "1 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN assumedToAlreadyHaveBeenDeclared: childSubstanceConcept = " << childSubstanceConcept->entityName << endl;
-					*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
-				}
-				else
-				{
-					cout << "2 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN !assumedToAlreadyHaveBeenDeclared: childSubstanceConcept = " << childSubstanceConcept->entityName << endl;
-					*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
-				}	
-				
-				//set fruit2 iter to bannana1: "fruit2 = bannana1;
-				if(parentInstance != NULL)
-				{
-					//cout << "createCodeBlockReassignIter" << endl;
-					*currentCodeBlockInTree =  createCodeBlockReassignIter(*currentCodeBlockInTree, parentInstance);
-				}
-									
-				if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstanceConcept), childSubstanceConcept, childSubstanceConcept->sentenceIndexTemp, logicalConditionConjunctionVariables))
-				{
-					result = true;
-				}
-				else
-				{
-					*currentCodeBlockInTree = originalCodeBlockInTree;
-					clearCodeBlock(*currentCodeBlockInTree);
+						//set fruit2 iter to bannana1: "fruit2 = bannana1;
+						if(parentInstance != NULL)
+						{
+							//cout << "createCodeBlockReassignIter" << endl;
+							*currentCodeBlockInTree =  createCodeBlockReassignIter(*currentCodeBlockInTree, parentInstance);
+						}
+
+						if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstance), childSubstance, childSubstance->sentenceIndexTemp, logicalConditionConjunctionVariables))
+						{
+							result = true;
+						}
+						else
+						{
+							*currentCodeBlockInTree = originalCodeBlockInTree;
+							clearCodeBlock(*currentCodeBlockInTree);
+						}
+					}
 				}
 			}
 		}

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3a 11-December-2015
+ * Project Version: 1r3b 11-December-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -628,7 +628,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1r3a 11-December-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1r3b 11-December-2015" << endl;
 			exit(1);
 		}
 
@@ -1252,12 +1252,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
-						#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
-						bool rcmodIndicatesSameReferenceSet = (*connectionIter)->rcmodIndicatesSameReferenceSet;
-						#else
-						bool rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
-						#endif
-						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
+						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
@@ -1268,12 +1263,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
-						#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
-						bool rcmodIndicatesSameReferenceSet = (*connectionIter)->rcmodIndicatesSameReferenceSet;
-						#else
-						bool rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
-						#endif
-						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet, rcmodIndicatesSameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
+						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, (*connectionIter)->sameReferenceSet);		//changed 1p2b to use existing sameReferenceSet value
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
@@ -1315,19 +1305,6 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sameReferenceSet inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
-						#ifdef GIA_RECORD_RCMOD_SET_INFORMATION
-						bool rcmodIndicatesSameReferenceSet = (actionEntity->actionSubjectEntity->back())->rcmodIndicatesSameReferenceSet;
-						#ifdef NLC_DEBUG
-						//cout << "rcmodIndicatesSameReferenceSet = " << rcmodIndicatesSameReferenceSet << endl;
-						#endif
-						if(rcmodIndicatesSameReferenceSet != (actionEntity->actionObjectEntity->back())->rcmodIndicatesSameReferenceSet)
-						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: rcmodIndicatesSameReferenceSet inconsistent between action object and action subject" << endl;
-							exit(0);
-						}
-						#else
-						bool rcmodIndicatesSameReferenceSet = IRRELEVANT_SAME_REFERENCE_SET_VALUE_NO_ADVANCED_REFERENCING;
-						#endif
 						
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
 						bool isReference = (actionEntity->actionSubjectEntity->back())->isReference;
@@ -1521,8 +1498,8 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							setCurrentSentenceIndex(sentenceIndex);
 							#endif
 							//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-							GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
-							GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
+							GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet);
+							GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet);
 							#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 							if(actionEntity->negative)
 							{

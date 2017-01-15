@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r3a 11-December-2015
+ * Project Version: 1r3b 11-December-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -207,7 +207,7 @@
 	#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
 		#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE	//added 1p10a
 	#elif defined GIA_RECORD_RCMOD_SET_INFORMATION
-		//#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET	//added 1p2b, removed 1p10a	
+		//#define NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_RCMOD_DOES_NOT_INDICATE_SAME_REFERENCE_SET	//added 1p2b, removed 1p10a, no longer supported 1r4a
 	#endif
 	
 	//#ifdef NLC_PREPROCESSOR_MATH	//has not been defined yet

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l15a 07-November-2014
+ * Project Version: 1l15b 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -168,7 +168,6 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		#endif
 		markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
 		#endif
-
 
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 		if(getUseNLCpreprocessor())
@@ -1362,12 +1361,15 @@ bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities
 			if(entity->sentenceIndexTemp == sentenceIndex)	//changed 1l15a
 			//if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{
-				if(assumedToAlreadyHaveBeenDeclared(entity))
-				{//definite entity found
-					#ifdef NLC_DEBUG
-					//cout << "generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(): entity: " << entity->entityName << endl;
-					#endif
-					generateObjectInitialisationsBasedOnSubstanceConcepts(entity, currentCodeBlockInTree, sentenceIndex, false);
+				if(!(entity->disabled))
+				{
+					if(assumedToAlreadyHaveBeenDeclared(entity))
+					{//definite entity found
+						#ifdef NLC_DEBUG
+						cout << "generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(): entity: " << entity->entityName << endl;
+						#endif
+						generateObjectInitialisationsBasedOnSubstanceConcepts(entity, currentCodeBlockInTree, sentenceIndex, false);
+					}
 				}	
 			}
 		}

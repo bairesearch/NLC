@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l15a 07-November-2014
+ * Project Version: 1l15b 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2109,7 +2109,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 				bool loopUsed = false;
 
 				#ifdef NLC_DEBUG
-				//cout << "generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(): property initialisation: entity->entityName = " << entity->entityName << endl;
+				cout << "generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(): property initialisation: entity->entityName = " << entity->entityName << endl;
 				#endif
 				NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
@@ -2160,7 +2160,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 					foundConditionObject = true;
 
 					#ifdef NLC_DEBUG
-					//cout << "generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(): condition initialisation:  entity->entityName = " << entity->entityName << endl;
+					cout << "generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(): condition initialisation:  entity->entityName = " << entity->entityName << endl;
 					#endif
 					NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 

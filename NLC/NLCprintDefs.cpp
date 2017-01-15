@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1e 12-September-2016
+ * Project Version: 1t2a 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -888,9 +888,16 @@ string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang)
 
 
 #ifdef NLC_USE_MATH_OBJECTS
+string generateCodeTestEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang)
+{
+	string testEntityMathNumericalValueText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathNumericalValueText(param1, progLang) + progLangStringEqualsTest[progLang] + param2->name + progLangCloseParameterSpace[progLang];	//if(param1->numericalValue == param2)
+	return testEntityMathNumericalValueText;
+}
+
 string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang)
 {
-	return generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, progLang);
+	string entityMathNumericalValueText = generateCodeEntityMathValueText(generateEntityName(param1), NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, progLang);
+	return entityMathNumericalValueText;
 }
 string generateCodeEntityMathValuePointerText(string entityName, int progLang)
 {

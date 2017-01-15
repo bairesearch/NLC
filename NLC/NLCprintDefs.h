@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1e 12-September-2016
+ * Project Version: 1t2a 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -508,6 +508,7 @@ string generateCodeClassNameVariableDefinitionText(NLCitem* param1, int progLang
 string generateCodeNameVariableDefinitionText(NLCitem* param1, int progLang);
 
 #ifdef NLC_USE_MATH_OBJECTS
+string generateCodeTestEntityMathNumericalValueText(NLCitem* param1, NLCitem* param2, int progLang);
 string generateCodeEntityMathNumericalValueText(NLCitem* param1, int progLang);
 string generateCodeEntityMathValuePointerText(string entityName, int progLang);
 string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int progLang);

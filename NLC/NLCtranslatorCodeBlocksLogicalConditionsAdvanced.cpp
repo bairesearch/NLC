@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1e 12-September-2016
+ * Project Version: 1t2a 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -190,13 +190,13 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							#ifdef NLC_DEBUG
 							//cout << "logicalConditionOperationObject->isConcept = " << logicalConditionOperationObject->isConcept << endl;
 							#endif
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
+							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 							//isConcept case not yet coded
 							//logical operations on networkIndexes are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 							if(logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
 							}
 							else if(logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
@@ -483,10 +483,10 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 
 							if(logicalConditionOperationSubject->isNetworkIndex || logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 								if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 								{
-									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
 								}
 								else if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
@@ -765,7 +765,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 						{
 							if(connectedEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXES only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "connectedEntity = " << connectedEntity->entityName;
 							}
 							else

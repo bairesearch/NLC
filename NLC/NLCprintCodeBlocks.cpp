@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t1e 12-September-2016
+ * Project Version: 1t2a 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1187,6 +1187,15 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		#endif	
 		#endif
 		#ifdef NLC_USE_MATH_OBJECTS
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_MATH_NUMERICAL_VALUE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_TEST_MATH_NUMERICAL_VALUE" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			string testEntityMathNumericalValueText = generateCodeTestEntityMathNumericalValueText(param1, param2, progLang);	//if(param1->numericalValue == param2)
+			printLine(testEntityMathNumericalValueText, level, &printedCodeBlocksSourceText);
+		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_NUMERICAL_VALUE)
 		{
 			#ifdef NLC_DEBUG

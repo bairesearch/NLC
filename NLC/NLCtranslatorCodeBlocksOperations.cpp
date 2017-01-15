@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s7b 08-September-2016
+ * Project Version: 1s8a 09-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -123,6 +123,25 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 				}
 			}
 		}
+		
+		#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES
+		if(generateContextBlocksVariables->searchSubclassesForChildren)
+		{
+			if(parentEntity->isSubClass)
+			{
+				//eg "The goal has a line. The ball is near the goal line."			
+				bool foundNearestSubClassParentEntity = false;
+				GIAentityNode* nearestSubclassParentEntity = NULL;
+				if(findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(parentEntity, &nearestSubclassParentEntity))
+				{
+					if(createCodeBlockForStatementsForNearestSubClassParentReference(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, nearestSubclassParentEntity, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
+					{
+						contextFound = true;
+					}
+				}
+			}
+		}
+		#endif
 
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
@@ -400,6 +419,116 @@ bool addPropertyToCategoryList(NLCcodeblock** currentCodeBlockInTree, GIAentityN
 
 	return result;
 }	
+
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES
+bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(GIAentityNode* subclassEntity, GIAentityNode** nearestSubclassParentEntity)
+{
+	bool foundNearestSubClassParentEntity = false;
+
+	/*
+	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES_MULTIPLE
+	vector<string> subclassChildEntityNames;
+	getSubclassChildEntityNames(parentEntity->entityName, &subclassChildEntityNames);
+	#else
+	*/
+	string subclassParentEntityName = getParentClassEntityNameFromSubClassEntityName(subclassEntity->entityName);	
+						
+	#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
+	GIAentityNode* subclassEntityConcept = getNonspecificSubstanceConceptEntityFromInstance(subclassEntity);	
+	#else
+	GIAentityNode* subclassEntityConcept = getPrimaryConceptNodeDefiningInstance(subclassEntity);
+	#endif	
+	if(subclassEntityConcept != NULL)
+	{
+		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = subclassEntityConcept->entityNodeDefinitionList->begin(); definitionNodeListIterator < subclassEntityConcept->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+		{
+			GIAentityNode* subclassParentEntityConcept = (*definitionNodeListIterator)->entity;
+			#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
+			subclassParentEntityConcept = getPrimaryConceptNodeDefiningInstance(subclassParentEntityConcept);
+			#endif
+			
+			if(subclassParentEntityConcept->entityName == subclassParentEntityName)
+			{			
+				for(vector<GIAentityConnection*>::iterator iter = subclassParentEntityConcept->associatedInstanceNodeList->begin(); iter < subclassParentEntityConcept->associatedInstanceNodeList->end(); iter++)
+				{
+					GIAentityNode* subclassParentEntity = (*iter)->entity;
+					#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
+					if(!(subclassParentEntity->isSubstanceConcept))
+					{
+					#endif
+						GIAentityNode definiteEntityArtificial;
+						definiteEntityArtificial.sentenceIndexTemp = subclassEntity->sentenceIndexTemp;
+						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+						int indentationDifferenceFoundMin = NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS;
+						#endif
+						int indentationDifferenceFound = 0;
+						//NB don't enforce indefinite condition for subclassParentEntity, just find the nearest legal reference to the subclass entity; definite or indefinite (OLD: isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext)
+						if(checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(subclassParentEntity, &definiteEntityArtificial, &indentationDifferenceFound))
+						{
+							#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+							if(indentationDifferenceFound < indentationDifferenceFoundMin)
+							{
+								//find the indefinite entity closest to the definite entity, as a subclass reference which has not been explicitly declared previously eg "goal line" (but only more generally declared; ie "line"), should refer to the most recent reference (ie line)
+								indentationDifferenceMin = indentationDifferenceFound;
+							#endif
+								*nearestSubclassParentEntity = subclassParentEntity;
+								foundNearestSubClassParentEntity = true;
+							#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+							}
+							#endif
+						}
+					#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
+					}
+					#endif
+				}
+			}
+		}
+	}
+	else
+	{
+		cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES generateContextBlocksCategories{} error: subclassEntity->isSubClass && subclassEntityConcept == NULL" << endl;
+	}
+}
+
+bool createCodeBlockForStatementsForNearestSubClassParentReference(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** lastCodeBlockInTree, GIAentityNode* parentInstance, GIAentityNode* nearestSubclassParentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool generateContext, string genericListAppendName)
+{
+	bool contextFound = false;
+	//this code is from createCodeBlockForStatementsForDefinitionChildren{}:
+
+	//context property item:		
+	if(assumedToAlreadyHaveBeenDeclared(nearestSubclassParentEntity))
+	{
+		*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, nearestSubclassParentEntity);
+	}
+	else
+	{
+		cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES generateContextBlocksCategories{} error: !assumedToAlreadyHaveBeenDeclared: parentInstance = " << parentInstance->entityName << ", nearestSubclassParentEntity = " << nearestSubclassParentEntity->entityName << endl;
+		exit(0);
+	}	
+
+	if(generateContext)
+	{
+		if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(nearestSubclassParentEntity), parentInstance, sentenceIndex, generateContextBlocksVariables))
+		{
+			contextFound = true;
+		}
+	}
+	else
+	{
+		contextFound = true;
+	}
+					
+	addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, nearestSubclassParentEntity, genericListAppendName, generateContextBlocksVariables, sentenceIndex);
+
+	*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
+	*lastCodeBlockInTree = *currentCodeBlockInTree;
+	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+	cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES createCodeBlockForStatementsForNearestSubClassParentReference{}: contextFound: parentInstance = " << parentInstance->entityName << ", nearestSubclassParentEntity = " << nearestSubclassParentEntity->entityName << endl;
+	#endif
+}
+
+#endif
+
 #endif
 
 bool createCodeBlockForStatements(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* entity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)

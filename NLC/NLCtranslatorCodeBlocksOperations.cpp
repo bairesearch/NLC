@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5d 17-January-2015
+ * Project Version: 1n5e 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -512,7 +512,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		{
 			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
 			if(parentSubstanceConcept->isSubstanceConcept)
-			{		
+			{	
 				#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
 				cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren(): parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
 				#endif
@@ -736,44 +736,50 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 			{
 				GIAentityNode* childSubstance = child;
 				//definition child (e.g. apple)
+				#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
+				if(child->entityName != parentInstance->entityName)
+				{
+				#endif	
+					//this code is from generateContextBlocksSimple():
 
-				//this code is from generateContextBlocksSimple():
-				
-				//context property item:		
-				if(assumedToAlreadyHaveBeenDeclared(childSubstance))
-				{
-					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-					cout << "1 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForLocalList(): assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
-					#endif
-					*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, childSubstance);
-				}
-				else
-				{
-					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-					cout << "2 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForPropertyList(): !assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
-					#endif
-					*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, childSubstance);
-				}	
+					//context property item:		
+					if(assumedToAlreadyHaveBeenDeclared(childSubstance))
+					{
+						#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+						cout << "1 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForLocalList(): assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
+						#endif
+						*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, childSubstance);
+					}
+					else
+					{
+						#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+						cout << "2 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForPropertyList(): !assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
+						#endif
+						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, childSubstance);
+					}	
 
-				if(generateContext)
-				{
-					if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstance), parentInstance, sentenceIndex, generateContextBlocksVariables))
+					if(generateContext)
+					{
+						if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstance), parentInstance, sentenceIndex, generateContextBlocksVariables))
+						{
+							contextFound = true;
+						}
+					}
+					else
 					{
 						contextFound = true;
 					}
+
+					addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables);
+
+					*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
+					*lastCodeBlockInTree = *currentCodeBlockInTree;
+					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+					cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements(): contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance << endl;
+					#endif
+				#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
 				}
-				else
-				{
-					contextFound = true;
-				}
-				
-				addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables);
-				
-				*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
-				*lastCodeBlockInTree = *currentCodeBlockInTree;
-				#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-				cout << "3 NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN createCodeBlockForStatements(): contextFound: parentInstance = " << parentInstance->entityName << ", childSubstance = " << childSubstance << endl;
-				#endif
+				#endif	
 			}
 		}
 	}

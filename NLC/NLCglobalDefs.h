@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5d 17-January-2015
+ * Project Version: 1n5e 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,6 +47,7 @@
 //#define NLC_DISABLE_1n_CODE_FOR_DEBUG	//aka NLC_ENABLE_1m_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
+	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
 	#define NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN	//required for NLC_SUPPORT_REDEFINITIONS and prevents circular definition; eg Chickens are animals. An animal is happy. The animal is a blue chicken.
 	#define NLC_SUPPORT_REDEFINITIONS
 	#ifdef NLC_SUPPORT_REDEFINITIONS

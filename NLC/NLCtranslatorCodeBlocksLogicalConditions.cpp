@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5d 17-January-2015
+ * Project Version: 1n5e 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -792,8 +792,8 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*> * e
 								phraseContainsSubstanceWithDefinitionLink = true;
 								*logicalConditionOperationObject = entity;
 								*definitionEntity = definitionEntityTemp;
-								cout << "entity = " << entity->entityName << endl;
-								cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
+								//cout << "entity = " << entity->entityName << endl;
+								//cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
 							}
 						}
 						else

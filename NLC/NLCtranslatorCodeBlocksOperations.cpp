@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2b 31-October-2014
+ * Project Version: 1l2c 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -110,7 +110,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		if(actionHasObject)
 		{
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
-			#ifdef NLC_USE_ADVANCED_REFERENCING
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS_ENTER_GENERATED_CATEGORY_LIST
 			generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
 			NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 			#else
@@ -128,7 +128,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#endif
 			
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
-			#ifdef NLC_USE_ADVANCED_REFERENCING
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS_ENTER_GENERATED_CATEGORY_LIST
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
 			#endif
 			#endif
@@ -137,7 +137,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			if(actionHasSubject)
 			{
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-				#ifdef NLC_USE_ADVANCED_REFERENCING
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
 				generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
 				codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 				//cout << "subjectEntity = " << subjectEntity->entityName << endl;
@@ -156,7 +156,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				#endif
 			
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-				#ifdef NLC_USE_ADVANCED_REFERENCING
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
 				*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
 				//cout << "passcontext2: subjectEntity = " << subjectEntity->entityName << endl;
 				#endif
@@ -180,7 +180,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		else if(actionHasSubject)
 		{
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-			#ifdef NLC_USE_ADVANCED_REFERENCING
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
 			generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
 			NLCcodeblock * codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
 			#else
@@ -200,7 +200,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			#endif
 				
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-			#ifdef NLC_USE_ADVANCED_REFERENCING
+			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_ENTER_GENERATED_CATEGORY_LIST
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
 			#endif
 			#endif

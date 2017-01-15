@@ -439,7 +439,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 							}
 							else
 							{
-								cout << "1. !foundFunctionDependencyInList: " << functionName << endl;
+								//cout << "1. !foundFunctionDependencyInList: " << functionName << endl;
 
 								functionDependency = new NLCclassDefinitionFunctionDependency();
 								functionDependency->functionName = functionName;

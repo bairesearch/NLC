@@ -1000,9 +1000,9 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 						#endif
 						#endif
 
-						//#ifdef NLC_DEBUG
+						#ifdef NLC_DEBUG
 						cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
-						//#endif
+						#endif
 					}
 				}
 			}

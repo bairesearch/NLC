@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l6g 02-November-2014
+ * Project Version: 1k23h 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -94,7 +94,7 @@
 		#endif
 		#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1k18a
-			//#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1k18b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN 
+			#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1k18b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN 
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 				#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS	//1k18b
 				#define NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS	//1k18b
@@ -179,6 +179,9 @@
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 			//GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS hasnt been coded therefore NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS cannot be used
 			//static bool isIncomingOutgoingConditionArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES] = {false, false, true, true, false, false, false, false, false, false, false, false, false, false};
+			#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
+				#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
+			#endif
 		#endif
 	#endif
 	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID (99)

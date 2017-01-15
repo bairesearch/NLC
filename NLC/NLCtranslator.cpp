@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k9e 14-October-2014
+ * Project Version: 1k9f 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -726,7 +726,7 @@ bool findFunctionArgument(NLCclassDefinition * classDefinition, int itemType, NL
 
 void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(NLCclassDefinition * functionClassDeclaration, vector<NLCitem*> * formalFunctionArgumentList)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition():" << endl;
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(): functionClassDeclaration->name = " << functionClassDeclaration->name << endl;
 	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
 	{
@@ -734,7 +734,9 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(
 		if(formalFunctionArgument->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 		{
 			//add a new function argument to the existing function argument list
+			//cout << "formalFunctionArgumentToAddExistingFunctionArgumentList: formalFunctionArgument->name = " << formalFunctionArgument->name << endl;
 			NLCitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLCitem(formalFunctionArgument);	//NLC by default uses plural (lists) not singular entities
+			formalFunctionArgumentToAddExistingFunctionArgumentList->itemType = NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST;
 			existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);
 		}
 	}

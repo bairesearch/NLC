@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j5a 09-September-2014
+ * Project Version: 1j5b 09-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -322,6 +322,11 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
 		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, parentEntity);
 		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+	}
+	else
+	{
+		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);	
 	}
 	#else
 	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);

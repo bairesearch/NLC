@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5b 05-July-2014
+ * Project Version: 1g5c 06-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -252,7 +252,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 								//logicalConditionObject->parsedForNLCcodeBlocks = true;	//is this required?????? [NB only connections are being parsed...]
 								addNewLogicalCondition(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
 							
-								//cout << "asfg1" << endl;
+								cout << "asfg1" << endl;
 								int logicalConditionConjunctionIndexMax = logicalConditionConjunctionIndex;
 								//error checking:
 								for(int i=1; i<logicalConditionConjunctionIndexMax; i++)	//i=0 should not have a conjunction type assigned
@@ -262,13 +262,13 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 										cout << "generateCodeBlocksPart0() error: missing conjunction type: " << i << endl;
 									}
 								}
-								//cout << "asfg2" << endl;
+								cout << "asfg2" << endl;
 								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, NLC_CONDITION_LOGICAL_OPERATIONS_IF, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax);
 								if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
 								}	
-								//cout << "asfg3" << endl;							
+								cout << "asfg3" << endl;							
 							}
 							else
 							{//this code is suitable for NLC_CONDITION_LOGICAL_OPERATIONS_FOR
@@ -292,7 +292,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 
 						if(passedConditionObject)
 						{
-							//cout << "asfg4" << endl;
+							cout << "asfg4" << endl;
 							//check if logicalConditionSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
 							
 							if(logicalConditionSubject->isConcept || logicalConditionSubject->isSubstanceConcept)
@@ -323,7 +323,7 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 
 								generateInitialisationCodeBlock(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex, NLCfunctionName);
 							}
-							//cout << "asfg5" << endl;
+							cout << "asfg5" << endl;
 						}
 					}
 				}
@@ -340,7 +340,7 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 	
 	//code copied from [*^]
 	
-	//cout << "q1" << endl;
+	cout << "q1" << endl;
 	
 	//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
 	bool contextFound = false;
@@ -355,13 +355,13 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 	}
 	tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(currentLogicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 	
-	//cout << "q2" << endl;
+	cout << "q2" << endl;
 	
 	//handle condition logical operations; eg "If the basket is near the house" in "If the basket is near the house, the dog is happy." //added GIA 1g3a
 	//if object near a red car / if object has a red car (if object has a car which is red)
 	//if(item->has(property) && item->has(property1) etc..){
 	NLCcodeblock * currentCodeBlockInTreeAtCurrentLevel2 = *currentCodeBlockInTree;
-	NLCitem * conditionObjectItem1 = NULL;
+	NLCitem * conditionObjectItem1 = new NLCitem(currentLogicalConditionObject, NLC_ITEM_TYPE_TEMPVAR);	//not used
 	if(createCodeBlockForGivenProperties(currentCodeBlockInTree, conditionObjectItem1, currentLogicalConditionObject, sentenceIndex, logicalOperation, BOOL_IRRELEVANT, *logicalConditionConjunctionIndex))
 	{
 		string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(*logicalConditionConjunctionIndex);
@@ -370,15 +370,19 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 		cout << "B: *logicalConditionConjunctionIndex = " << *logicalConditionConjunctionIndex << endl;
 		*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel2->next;
 		currentCodeBlockInTreeAtCurrentLevel2 = currentCodeBlockInTreeAtCurrentLevel2->next;
+		if(!contextFound)
+		{
+			currentCodeBlockInTreeAtCurrentLevel1 = currentCodeBlockInTreeAtCurrentLevel1->next;
+		}
 	}
 	
-	//cout << "q3" << endl;
+	cout << "q3" << endl;
 	
 		//REDUNDANT: only createCodeBlockForGivenConditions() is necessary here [because logical conditions and conjunction conditions will be connected to the children already]
 		//NB am attempting to create a general implementation (ie NLP independent, based on what is semantically correct based on GIA specification); therefore need to handle all cases, not just those generated by NLP at present: therefore implement REDUNDANT case 
 	//if object near a car that is behind the driveway / if object has a car that is near the house
 	//if(item > 3){		/	if(greaterthan(item, 3)){
-	NLCitem * conditionObjectItem2 = NULL;
+	NLCitem * conditionObjectItem2 = new NLCitem(currentLogicalConditionObject, NLC_ITEM_TYPE_TEMPVAR);	//not used
 	if(createCodeBlockForGivenConditions(currentCodeBlockInTree, conditionObjectItem2, currentLogicalConditionObject, sentenceIndex, logicalOperation, BOOL_IRRELEVANT, *logicalConditionConjunctionIndex))
 	{
 		string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(*logicalConditionConjunctionIndex);
@@ -387,9 +391,13 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 		cout << "C: *logicalConditionConjunctionIndex = " << *logicalConditionConjunctionIndex << endl;
 		*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel2->next;
 		currentCodeBlockInTreeAtCurrentLevel2 = currentCodeBlockInTreeAtCurrentLevel2->next;
+		if(!contextFound)
+		{
+			currentCodeBlockInTreeAtCurrentLevel1 = currentCodeBlockInTreeAtCurrentLevel1->next;
+		}
 	}
 	
-	//cout << "q4" << endl;
+	cout << "q4" << endl;
 	
 	*currentCodeBlockInTree = currentCodeBlockInTreeAtCurrentLevel1;
 	
@@ -467,10 +475,10 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 				addNewLogicalCondition(currentCodeBlockInTree, logicalConditionConjunctionObjectEntity, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
 			}
 		}
-	}
-	else
-	{
-		cout << "addNewLogicalCondition() error: (conditionEntity->NLCconjunctionCondition)" << endl;
+		else
+		{
+			cout << "addNewLogicalCondition() error: (conditionEntity->NLCconjunctionCondition)" << endl;
+		}
 	}
 }
 
@@ -820,7 +828,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 			{
 				if(generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, parentEntity, sentenceIndex, logicalOperation, negative, contextFound))
 				{
-					cout << "\tgenerateContextBlocksAndInitialiseParentIfNecessary passed: " << currentEntity->entityName << endl;
+					//cout << "\tgenerateContextBlocksAndInitialiseParentIfNecessary passed: " << currentEntity->entityName << endl;
 
 					result = true;
 					*contextFound = true;
@@ -881,20 +889,21 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 
 		if(possibleContextParentFound)
 		{
+			/*
 			cout << "\tpossibleContextParentFound: " << currentEntity->entityName << endl;
 			cout << "currentEntity->grammaticalDefiniteTemp = " << currentEntity->grammaticalDefiniteTemp << endl;
 			cout << "currentEntity->grammaticalProperNounTemp = " << currentEntity->grammaticalProperNounTemp << endl;
 			cout << "currentEntity->NLClocalListVariableHasBeenDeclared = " << currentEntity->NLClocalListVariableHasBeenDeclared << endl;
 			cout << "currentEntity->NLCisSingularArgument = " << currentEntity->NLCisSingularArgument << endl;
-
+			*/
 			result = true;
 			#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
 			if(!assumedToAlreadyHaveBeenDeclared(currentEntity))
 			{
-				cout << "!assumedToAlreadyHaveBeenDeclared" << endl;
+				//cout << "!assumedToAlreadyHaveBeenDeclared" << endl;
 				if(!(currentEntity->parsedForNLCcodeBlocks))
 				{
-					cout << "createCodeBlocksCreateNewLocalListVariable: " << currentEntity->entityName << endl;
+					//cout << "createCodeBlocksCreateNewLocalListVariable: " << currentEntity->entityName << endl;
 					*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, currentEntity);
 					currentEntity->parsedForNLCcodeBlocks = true;
 					currentEntity->NLClocalListVariableHasBeenDeclared = true;

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5b 05-July-2014
+ * Project Version: 1g5c 06-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -561,12 +561,15 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, NL
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-
+		//cout << "conditionObject = " << conditionObject->entityName << endl;
+		
 		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_CLASS);
 		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_CLASS);
+		//cout << "createCodeBlockForGivenCondition: " << conditionObjectItem->instanceName << endl;
 
 		conditionItem->context.push_back(item->instanceName);
 		conditionObjectItem->context.push_back(item->instanceName);	//redundant
+		
 		#ifndef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 		if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
 		{
@@ -584,7 +587,6 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, NL
 		}
 		#endif
 		
-		//cout << "createCodeBlockForGivenCondition: " << conditionObjectItem->instanceName << endl;
 		createCodeBlockForStatements(currentCodeBlockInTree, conditionObjectItem, conditionObject, sentenceIndex, logicalOperation, negative, logicalConditionConjunctionIndex);
 	}
 	else

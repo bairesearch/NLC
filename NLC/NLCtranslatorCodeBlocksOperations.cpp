@@ -263,6 +263,35 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	if(logicalConditionBooleanStatement)
 	{
 		generateContextBlocksVariables.logicalConditionBooleanStatement = true;
+		
+		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
+		//modified 1t2e
+		bool parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite = false;
+		if(foundSubject)
+		{		
+			if(!assumedToAlreadyHaveBeenDeclared(subjectEntity))	//!isDefiniteEntity
+			{
+				subjectEntity->NLCbooleanStatmentIndefiniteEntity = true;
+			}	
+			if(foundObject)
+			{
+				if(!assumedToAlreadyHaveBeenDeclared(objectEntity))	//!isDefiniteEntity
+				{	
+					foundObject = false;
+				}
+			}	
+		}
+		else
+		{
+			if(foundObject)
+			{
+				if(!assumedToAlreadyHaveBeenDeclared(objectEntity))	//!isDefiniteEntity
+				{
+					objectEntity->NLCbooleanStatmentIndefiniteEntity = true;
+				}
+			}
+		}
+		#endif	
 	}
 	#endif
 		
@@ -1800,7 +1829,7 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 				bool parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite = false;
 				if(generateContextBlocksVariables->logicalConditionBooleanStatement)
 				{
-					if(!assumedToAlreadyHaveBeenDeclared(*parentEntity))	//!isDefiniteEntity
+					if((*parentEntity)->NLCbooleanStatmentIndefiniteEntity)
 					{
 						//code copied from generateCodeBlocksFromMathTextNLPparsablePhrase
 						parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite = true;
@@ -1810,11 +1839,11 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, parentEntity);
 						#else
 						(*parentEntity)->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b	//CHECKTHIS
-						(*parentEntity)->NLCbooleanStatmentIndefiniteEntity = true;	//added 1t2d
 						#endif
 					}
 				}
 				#endif
+				
 				if(generateContextForChildEntity(currentCodeBlockInTree, NULL, currentEntity, sentenceIndex, true, parsingBooleanStatmentParsablePhraseAndParentEntityIndefinite))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetUniqueParent()
 				{
 					result = true;
@@ -2593,15 +2622,13 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 			#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 			if(connection->isAlias)
 			{	
-				cout << "isAlias" << endl;
-
 				//CHECKTHIS
 				//eg If the name of the dog is Max, ride the bike.
 				if(createCodeBlockForGivenAlias(currentCodeBlockInTree, subjectEntity, definitionEntity, sentenceIndex, &generateContextBlocksVariables, &objectEntityTemp, &generateContextForObjectTemp))
 				{
-					//#ifdef NLC_DEBUG
+					#ifdef NLC_DEBUG
 					cout << "createCodeBlockForGivenAlias: subjectEntity = " << subjectEntity->entityName << ", definitionEntity = " << definitionEntity->entityName << endl;
-					//#endif
+					#endif
 					result = true;
 
 					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -2660,14 +2687,19 @@ bool generateCodeBlocksVerifyConnection(NLCcodeblock** currentCodeBlockInTree, i
 
 		if(generateTest)
 		{
-			//ignore cases without action subject or object; eg If the car rode...
+			//ignore cases without action subject or object; eg If the car rode... 
 			
 			GIAentityNode targetEntity;	//reference target variable/iterator in subject entity property/condition/action/definition list
 			targetEntity.entityName = objectEntityTemp->entityName;
 			targetEntity.idInstance = objectEntityTemp->idInstance;
 			secondaryComparisonRestoreIDinstance(objectEntityTemp);
 			
-			*currentCodeBlockInTree = createCodeBlockIfTempVariableEqualsEntity(*currentCodeBlockInTree, &targetEntity, objectEntity);	//if(param1 == param2) {
+			if(foundSubject && foundObject)
+			{
+				//ignore cases with indefinite object eg if Tom has a car (in which case foundObject will have been set to false)
+				
+				*currentCodeBlockInTree = createCodeBlockIfTempVariableEqualsEntity(*currentCodeBlockInTree, &targetEntity, objectEntity);	//if(param1 == param2) {
+			}
 		}
 	}
 	

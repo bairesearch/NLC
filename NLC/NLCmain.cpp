@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u13a 02-October-2016
+ * Project Version: 1u13b 02-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1u13a 02-October-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1u13b 02-October-2016" << endl;
 			exit(1);
 		}
 
@@ -1179,7 +1179,7 @@ int main(int argc, char** argv)
 		}
 		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 		#else
-		if(printClassDefinitions(classDefinitionListAPI, progLang, &code, true))
+		if(printClassDefinitions(classDefinitionListAPI, progLang, &code, true, firstNLCfunctionInList))
 		{
 
 		}

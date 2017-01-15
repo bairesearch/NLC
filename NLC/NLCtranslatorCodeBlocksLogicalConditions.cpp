@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5i 15-August-2016
+ * Project Version: 1r5j 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -663,19 +663,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								}
 							}
 							#endif
-
-							if(currentFullSentence->hasLogicalConditionOperator)
-							{
-								if(!contextFound)
-								{
-									//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-									cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !parseParsablePhraseParent: sentenceIndex = " << sentenceIndex << endl;
-									exit(0);
-									//#endif
-									
-									//*currentCodeBlockInTree = clearCodeBlock(NLCcodeBlockBeforeGenerateContext);	
-								}
-							}
 							
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 							cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} pass: parseParsablePhraseParent: sentenceIndex = " << sentenceIndex << endl;
@@ -770,9 +757,20 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 	cout << "parsablePhraseReferenceName = " << parsablePhraseReferenceName << endl;
 	
 	int mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+
+	string mathTextSubphraseContainingNLPparsablePhrase = "";
+	int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
+	if(currentFullSentence->hasLogicalConditionOperator)
+	{
+		getMathTextSubphraseContainingNLPparsablePhrase(currentFullSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
+	}
+	else
+	{
+		mathTextSubphraseContainingNLPparsablePhrase = currentFullSentence->mathText;	
+	}
 	
-	//find boolean expressions
-	bool foundBooleanExpression = false;
+	//find boolean inflated expressions
+	bool foundBooleanInflatedExpression = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
@@ -791,7 +789,7 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 						#endif
 							if(!(connection->sameReferenceSet))
 							{	
-								foundBooleanExpression = true;
+								foundBooleanInflatedExpression = true;
 							}
 						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 						}
@@ -812,12 +810,12 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 				int indexOfRcmodTemp = currentPhrasePrimarySubject->sentenceContents.rfind(preprocessorMathRcmodSameReferenceSetDelimiter[i2], indexOfAuxiliaryTemp);
 				if((indexOfAuxiliaryTemp != indexOfAuxiliaryTemp-(preprocessorMathRcmodSameReferenceSetDelimiter[i2].length()+1))
 				{
-					foundBooleanExpression = true;
+					foundBooleanInflatedExpression = true;
 				}
 		}
 	}
 	*/
-	if(foundBooleanExpression)
+	if(foundBooleanInflatedExpression)
 	{
 		if(currentFullSentence->hasLogicalConditionOperator)
 		{
@@ -826,23 +824,25 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		}
 		else
 		{
-			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)" << endl;
+			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
+			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanInflatedExpression" << endl;
 			cout << "parsablePhrase->sentenceContents = " << parsablePhrase->sentenceContents << endl;
 			exit(0);
 		}
 	}
-		
+	/*future:
+	//find boolean expressions
+	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES; i++)
+	{
+		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeBooleanOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;
+		}
+	}	
+	*/
+	
 	//find numerical expressions
-	string mathTextSubphraseContainingNLPparsablePhrase = "";
-	int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
-	if(currentFullSentence->hasLogicalConditionOperator)
-	{
-		getMathTextSubphraseContainingNLPparsablePhrase(&(currentFullSentence->mathText), parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
-	}
-	else
-	{
-		mathTextSubphraseContainingNLPparsablePhrase = currentFullSentence->mathText;	
-	}
 	for(int i=0; i<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
 		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeNumericalOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -878,56 +878,170 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 	return mathObjectVariableType;	
 }
 
-bool getMathTextSubphraseContainingNLPparsablePhrase(string* mathText, string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex)
+bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex)
 {
-	bool result = false;
+	bool result = true;
+	bool foundConjunction = false;
 	
-	//find numerical expressions
-	int parsablePhraseReferenceNamePositionInMathtext = mathText->find(parsablePhraseReferenceName);
-	if(parsablePhraseReferenceNamePositionInMathtext != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	//remove the preceeding "if(" and trailing ")" of logical condition
+	string mathTextLogicalConditionContents = "";
+	int mathTextLogicalConditionContentsIndex = CPP_STRING_FIND_RESULT_FAIL_VALUE;
+	bool foundLogicalConditionStartText = false;
+	string logicalConditionEndText = string("") + NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET;
+	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
 	{
-		//find all subphrases as demarcated by &&, ||
-		int subphraseStartPosition = 0;
-		int subphraseEndPosition = mathText->length();
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+		string logicalConditionStartText = logicalConditionOperationsArray[i] + NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET;
+		if(mathText.find(logicalConditionStartText) == 0)
 		{
-			int tempPos = mathText->find(progLangCoordinatingConjunctions[i], parsablePhraseReferenceNamePositionInMathtext);
-			if(tempPos != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-			{
-				//tempPos = tempPos - 1;	//character before &&,||
-				if(tempPos < subphraseEndPosition)
-				{
-					subphraseEndPosition = tempPos;
-				}
-			}
-		}	
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
-		{
-			int tempPos = mathText->rfind(progLangCoordinatingConjunctions[i], parsablePhraseReferenceNamePositionInMathtext);
-			if(tempPos != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-			{
-				tempPos = tempPos + progLangCoordinatingConjunctions[i].length();	//character after &&,||
-				if(tempPos > subphraseStartPosition)
-				{
-					subphraseStartPosition = tempPos;
-				}
-			}				
+			mathTextLogicalConditionContents = mathText.substr(logicalConditionStartText.length(), mathText.length() - logicalConditionStartText.length() - logicalConditionEndText.length());
+			mathTextLogicalConditionContentsIndex = logicalConditionStartText.length();
+			foundLogicalConditionStartText = true;
 		}
-		result = true;
-		*mathTextSubphraseContainingNLPparsablePhrase = mathText->substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
-		*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition;
-		cout << "*mathTextSubphraseContainingNLPparsablePhrase = " << *mathTextSubphraseContainingNLPparsablePhrase << endl;
+	}
+	if(foundLogicalConditionStartText)
+	{
+		cout << " mathText = " << mathText << endl;
+		cout << " mathTextLogicalConditionContents = " << mathTextLogicalConditionContents << endl;
+		//algorithm: extract "&& (thehouse == " -> " (thehouse " -> "thehouse" 
+		
+		//find numerical expressions
+		int parsablePhraseReferenceNamePositionInMathtext = mathTextLogicalConditionContents.find(parsablePhraseReferenceName);
+		if(parsablePhraseReferenceNamePositionInMathtext != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			//find all subphrases as demarcated by &&, ||
+			int subphraseStartPosition = 0;
+			int subphraseEndPosition = mathTextLogicalConditionContents.length();
+			bool foundConjunctionLeft = false;
+			bool foundConjunctionRight = false;
+			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_AND_WITHOUT_WHITESPACE_ARRAY_NUMBER_OF_TYPES; i++)
+			{
+				int tempPos = mathTextLogicalConditionContents.find(progLangCoordinatingConjunctionsWithAndWithoutWhiteSpace[i], parsablePhraseReferenceNamePositionInMathtext);
+				if(tempPos != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+				{
+					if(tempPos < subphraseEndPosition)
+					{
+						subphraseEndPosition = tempPos;
+						foundConjunctionRight = true;
+					}
+				}
+			}	
+			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_AND_WITHOUT_WHITESPACE_ARRAY_NUMBER_OF_TYPES; i++)
+			{
+				int tempPos = mathTextLogicalConditionContents.rfind(progLangCoordinatingConjunctionsWithAndWithoutWhiteSpace[i], parsablePhraseReferenceNamePositionInMathtext);
+				if(tempPos != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+				{
+					tempPos = tempPos + progLangCoordinatingConjunctionsWithAndWithoutWhiteSpace[i].length();	//character after &&
+					if(tempPos > subphraseStartPosition)
+					{
+						subphraseStartPosition = tempPos;
+						foundConjunctionLeft = true;
+					}
+				}				
+			}
+
+			string subphraseTemp = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
+			if(foundConjunctionLeft || foundConjunctionRight)
+			{
+				int subphraseStartPositionTemp = CPP_STRING_FIND_RESULT_FAIL_VALUE;
+				int subphraseEndPositionTemp = CPP_STRING_FIND_RESULT_FAIL_VALUE;
+				cout << "subphraseTemp = " << subphraseTemp << endl;
+				if(findMatchingBrackets(subphraseTemp, &subphraseStartPositionTemp, &subphraseEndPositionTemp))
+				{
+					//cout << "subphraseStartPosition = " << subphraseStartPosition << endl;
+					//cout << "subphraseEndPosition = " << subphraseEndPosition << endl;
+					//cout << "subphraseStartPositionTemp = " << subphraseStartPositionTemp << endl;
+					//cout << "subphraseEndPositionTemp = " << subphraseEndPositionTemp << endl;
+					subphraseStartPosition = subphraseStartPosition + subphraseStartPositionTemp;
+					subphraseEndPosition = subphraseStartPosition + (subphraseEndPositionTemp - subphraseStartPositionTemp);
+					//cout << "subphraseStartPosition = " << subphraseStartPosition << endl;
+					//cout << "subphraseEndPosition = " << subphraseEndPosition << endl;
+				}
+				foundConjunction = true;
+			}
+			else
+			{
+				foundConjunction = false;
+			}
+
+			*mathTextSubphraseContainingNLPparsablePhrase = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
+			*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
+			cout << "*mathTextSubphraseContainingNLPparsablePhrase = " << *mathTextSubphraseContainingNLPparsablePhrase << endl;
+		}
+		else
+		{
+			result = false;
+			cout << "getMathObjectVariableType{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
+			exit(0);
+		}
 	}
 	else
 	{
-		cout << "getMathObjectVariableType{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
+		result = false;
+		cout << "getMathObjectVariableType{} error: !foundLogicalConditionStartText" << endl;
 		exit(0);
 	}
 
 	return result;
 }
 
-
+bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp, int* subphraseEndPositionTemp)
+{
+	bool result = true;
+	int numberOfOpenBrackets = 0;
+	int numberOfCloseBrackets = 0;
+	for(int i=0; i<subphraseTemp.length(); i++)
+	{
+		if(subphraseTemp[i] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
+		{
+			numberOfOpenBrackets++;
+		}
+	}
+	for(int i=0; i<subphraseTemp.length(); i++)
+	{
+		if(subphraseTemp[i] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET)
+		{
+			numberOfCloseBrackets++;
+		}
+	}
+	if(numberOfOpenBrackets > numberOfCloseBrackets)
+	{
+		int numberExtraOpenBrackets = numberOfOpenBrackets - numberOfCloseBrackets;
+		int numberOpenBracketsFound = 0;
+		int i = 0;
+		while(numberOpenBracketsFound < numberExtraOpenBrackets)
+		{
+			if(subphraseTemp[i] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
+			{
+				numberOpenBracketsFound++;
+			}
+			i++;
+		}
+		*subphraseStartPositionTemp = i;
+		*subphraseEndPositionTemp = subphraseTemp.length();
+	}
+	else if(numberOfOpenBrackets < numberOfCloseBrackets)
+	{
+		int numberExtraCloseBrackets = numberOfCloseBrackets - numberOfOpenBrackets;
+		int numberCloseBracketsFound = 0;
+		int i = subphraseTemp.length()-1;
+		while(numberCloseBracketsFound < numberExtraCloseBrackets)
+		{
+			if(subphraseTemp[i] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET)
+			{
+				numberCloseBracketsFound++;
+			}
+			i--;
+		}
+		*subphraseStartPositionTemp = 0;
+		*subphraseEndPositionTemp = i+1;
+	}
+	else
+	{
+		*subphraseStartPositionTemp = 0;
+		*subphraseEndPositionTemp = subphraseTemp.length();
+	}
+	return result;
+}
 
 #ifdef NLC_USE_MATH_OBJECTS_STRING
 string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, string parsablePhraseReferenceName, bool hasLogicalConditionOperator)
@@ -1001,27 +1115,36 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 	if(hasLogicalConditionOperator)
 	{
 		bool foundParsablePhraseReferenceNameTest = false;
-		if(!foundMathtextVariableAssignment)
+		if(foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)
 		{
-			int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
-			string mathTextSubphraseContainingNLPparsablePhrase = "";
-			getMathTextSubphraseContainingNLPparsablePhrase(mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
-			int indexOfMathEqualsTestCommand = mathTextSubphraseContainingNLPparsablePhrase.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
-			if(indexOfMathEqualsTestCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-			{	
-				//eg1 X == thecatssvalue, eg2 eg1 thedogsvalue == X eg3 thedogsvalue == thecatssvalue, eg3 thedogsvalue == thecatssvalue + themousessvalue, eg4 X == thecatssvalue + themousessvalue, eg5 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == thecatssvalue + Y [not X == Y]
-				if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) != 0)
-				{//only create one instance of = testMathObjectValue(.. per sentence; eg1 X == thecatssvalue + themousessvalue, eg2 thecatssvalue == themousessvalue
-					string targetValueText = getTargetValueText(mathText, indexOfMathEqualsTestCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST, progLang);
-					string sourceValueText = getSourceValueText(mathText, indexOfMathEqualsTestCommand, progLang);
-					#ifdef NLC_USE_MATH_OBJECTS_STRING_COMPARISONS
-					string mathTextSubphraseContainingNLPparsablePhraseUpdated = string(NLC_USE_MATH_OBJECTS_STRING_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + sourceValueText + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X == thechickensvalue"  ->  "testMathObjectValue(X, thechickensvalue)"			
-					#else
-					string mathTextSubphraseContainingNLPparsablePhraseUpdated = sourceValueText + NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING + targetValueText;
-					#endif
-					mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
-					//progLangParameterSpaceNextParam
-				}
+			cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: hasLogicalConditionOperator && (foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)" << endl;
+			exit(0);
+		}
+		
+		int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
+		string mathTextSubphraseContainingNLPparsablePhrase = "";
+		bool subphraseFound = false;
+		if(!getMathTextSubphraseContainingNLPparsablePhrase(*mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex))
+		{
+			cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: !getMathTextSubphraseContainingNLPparsablePhrase" << endl;
+			exit(0);
+		}
+		int indexOfMathEqualsTestCommand = mathTextSubphraseContainingNLPparsablePhrase.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
+		if(indexOfMathEqualsTestCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{	
+			//eg1 X == thecatssvalue, eg2 eg1 thedogsvalue == X eg3 thedogsvalue == thecatssvalue, eg3 thedogsvalue == thecatssvalue + themousessvalue, eg4 X == thecatssvalue + themousessvalue, eg5 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == thecatssvalue + Y [not X == Y]
+			if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) != 0)
+			{//only create one instance of = testMathObjectValue(.. per sentence; eg1 X == thecatssvalue + themousessvalue, eg2 thecatssvalue == themousessvalue
+				string targetValueText = getTargetValueText(&mathTextSubphraseContainingNLPparsablePhrase, indexOfMathEqualsTestCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST, progLang);
+				string sourceValueText = getSourceValueText(&mathTextSubphraseContainingNLPparsablePhrase, indexOfMathEqualsTestCommand, progLang);
+				#ifdef NLC_USE_MATH_OBJECTS_STRING_COMPARISONS
+				string mathTextSubphraseContainingNLPparsablePhraseUpdated = string(NLC_USE_MATH_OBJECTS_STRING_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + sourceValueText + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X == thechickensvalue"  ->  "testMathObjectValue(X, thechickensvalue)"			
+				#else
+				string mathTextSubphraseContainingNLPparsablePhraseUpdated = sourceValueText + NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING + targetValueText;
+				#endif
+				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
+				cout << "mathTextUpdated = " << mathTextUpdated << endl;
+				//progLangParameterSpaceNextParam
 			}
 		}
 	}

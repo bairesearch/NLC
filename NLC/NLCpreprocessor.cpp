@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17a 17-July-2014
+ * Project Version: 1h1b 22-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,8 +47,9 @@ NLCsentence::NLCsentence(void)
 	sentenceIndex = 0;
 	indentation = 0;
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	elseDetected = false;
+	ifDetected = false;
 	elseIfDetected = false;
+	elseDetected = false;
 	#endif
 	next = NULL;
 }
@@ -287,6 +288,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					{
 						lineIsLogicalCondition = true;
 						sentenceContents = sentenceContents + currentToken;
+						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+						if(lowerCaseSentenceContents == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
+						{
+							currentNLCsentenceInList->ifDetected = true;	
+						}
+						#endif
 					}
 					else if(lowerCaseSentenceContents == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF)
 					{

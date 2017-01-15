@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h1a 22-July-2014
+ * Project Version: 1h1b 22-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -86,6 +86,7 @@
 	#endif
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES (7)
 	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_IF "if"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE "else"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF "else if"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)

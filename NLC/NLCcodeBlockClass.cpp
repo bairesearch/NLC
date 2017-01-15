@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l6a 02-November-2014
+ * Project Version: 1l6b 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1010,30 +1010,6 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 }
 
 
-/*
-#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection)
-{
-	bool result = false;
-	//cout << "connection->sentenceIndexTemp = " << connection->sentenceIndexTemp << endl;
-	if(checkSameSentenceConnection)
-	{
-		if(checkSentenceIndexParsingCodeBlocks(entity, GIAentityConnection, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
-		{
-			result = true;
-		}
-	}
-	else
-	{
-		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
-		{
-			result = true;
-		}	
-	}
-	return result;
-}
-#endif
-*/
 
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {

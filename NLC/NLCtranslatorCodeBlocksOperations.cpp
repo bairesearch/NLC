@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l6a 02-November-2014
+ * Project Version: 1l6b 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1432,25 +1432,26 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		else
 		{
-			cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContext && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << endl;
-			exit(0);
+			//entity pertains to a future sentence (it is a reference) and its connections will be ignored (because they pertain to a future sentence): generateObjectInitialisationsBasedOnPropertiesAndConditions() will exit with !performedAtLeastOneObjectInitialisation
+			if(!(entity->wasReference))	
+			{
+				cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContext && !assumedToAlreadyHaveBeenDeclared && !wasReference: entity = " << entity->entityName << ", sentenceIndex = " << sentenceIndex << endl;
+				exit(0);
+			}
 		}
 	}
 	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	if(newlyDeclaredEntityInCategoryList)		//this could equally check for !(entity->NLCcontextGenerated)?
+	if(newlyDeclaredEntityInCategoryList)		//this could equally check for !(entity->NLCcontextGenerated)
 	{
 		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 		entity->NLCcontextGenerated = true;
 	}
-	#endif
-	#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	#else
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	if(!(entity->NLCcontextGenerated))
 	{//context block already created by generateContextBlocks()	//added 1g14b 15-July-2014
 	#endif
-		//cout << "entity->entityName = " << entity->entityName << endl;
-		//for(all items in context){
 		NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 		if(assumedToAlreadyHaveBeenDeclared(entity))
 		{
@@ -1462,8 +1463,12 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 		else
 		{
-			cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: !(entity->NLCcontextGenerated) && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << endl;
-			exit(0);
+			//entity pertains to a future sentence (it is a reference) and its connections will be ignored (because they pertain to a future sentence): generateObjectInitialisationsBasedOnPropertiesAndConditions() will exit with !performedAtLeastOneObjectInitialisation
+			if(!(entity->wasReference))	
+			{
+				cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: !(entity->NLCcontextGenerated) && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName  << ", sentenceIndex = " << sentenceIndex << endl;
+				exit(0);
+			}
 			
 			/*
 			#ifdef NLC_DEBUG_PARSE_CONTEXT2

@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m3a 30-November-2014
+ * Project Version: 1m3b 30-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -84,7 +84,7 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 					#endif
 					
 					bool printedParentClassDefinitions = true;
-					/*
+				
 					#ifdef NLC_CLASS_DEFINITIONS_ORDER_BY_DEPENDENCIES
 					//only print class definitions once their parent class definitions have been printed
 					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
@@ -106,15 +106,38 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
 					{
 						NLCclassDefinition * targetClassDefinition = *localListIter;
+						
+						bool foundClassDefinitionConditionClass;
+						NLCclassDefinition * targetClassDefinitionConditionClass = findClassDefinition(classDefinitionList, targetClassDefinition->name, &foundClassDefinitionConditionClass);
+						if(foundClassDefinitionConditionClass)
+						{
+							if(!(targetClassDefinitionConditionClass->printed))
+							{
+								printedParentClassDefinitions = false;
+							}
+						}
+						else
+						{
+							cout << "printClassDefinitions() error: !foundClassDefinitionConditionClass, targetClassDefinition->name = " << targetClassDefinition->name << endl;
+							exit(0);
+						}
+						/*
+						//OLD: not possible with 1m3a implementation (use of findClassDefinitionCondition and isConditionInstance) as targetClassDefinition will be a condition instance and will therefore not be printed
 						if(!(targetClassDefinition->printed))
 						{
 							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
 						}
+						*/
+						
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+						//FUTURE: must upgrade printClassDefinitions() to generate classes in separate files such that they can reference each other (bidirectional)
+						#else
 						//isConditionObjectPrinted() is required because conditions are stored as a tuple (to prevent use of isConditionObjectPrinted, NLCclassDefinition conditionLists could be stored as an array[2]; ie vector<NLCclassDefinition *> conditionList[2])
 						if(!isConditionObjectPrinted(classDefinitionList, &(targetClassDefinition->parameters)))
 						{
 							printedParentClassDefinitions = false;	//at least one parent class definition has not been printed
 						}
+						#endif
 					}
 					for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 					{
@@ -125,7 +148,6 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 						}
 					}
 					#endif
-					*/
 					
 					if(printedParentClassDefinitions)
 					{//only print class definitions once their parent class definitions have been printed

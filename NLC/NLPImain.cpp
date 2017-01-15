@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1b 14-September-2013
+ * Project Version: 1a1c 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,8 +36,9 @@
 
 #include "NLPImain.h"
 #include "NLPIcodeBlock.h"
+#include "NLPItranslator.h"
+#include "NLPIprint.h"
 
-#include "GIAglobalDefs.h"
 #include "GIAmain.h"
 #include "GIAdatabase.h"
 #include "SHAREDvars.h"
@@ -753,184 +754,6 @@ bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unorder
 	string code = "";
 	int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
 	printCodeBlocks(firstCodeBlockInTree, progLang, &code, level);
-}
-
-bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree ,vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences)
-{
 	
-	NLPIcodeblock * currentCodeBlockInTree = firstCodeBlockInTree;
-	
-	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, "main")
-
-
-	//NLPIcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
-	//for each action (command) in sentence;
-	
-	//method2;
-	/*
-	for(int sentenceIndex=1; sentenceIndex <= maxNumberSentences; sentenceIndex++)
-	{
-		//cout << "*** sentenceIndex = " << sentenceIndex << endl;
-		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-		{
-			GIAentityNode * entityNode = *entityIter;
-			if((entityNode->sentenceIndexTemp == sentenceIndex) || (entityNode->wasReference))
-			{
-			
-			}
-		}
-	}
-	*/
-		
-	//method1;
-	for(vector<GIAentityNode*>::iterator entityNodesActiveCompleteListIterator = entityNodesActiveListActions->begin(); entityNodesActiveCompleteListIterator < entityNodesActiveListActions->end(); entityNodesActiveCompleteListIterator++)
-	{		
-		GIAentityNode * actionEntity = (*entityNodesActiveCompleteListIterator);
-		int sentenceIndex = actionEntity->sentenceIndexTemp;
-		
-		bool actionHasObject = false;
-		GIAentityNode * objectEntity ;
-		if(actionEntity->actionObjectEntity != NULL)
-		{
-			objectEntity = (actionEntity->actionObjectEntity->back())->entity;
-		}
-		bool actionHasSubject = false;
-		GIAentityNode * subjectEntity ;
-		if(actionEntity->actionSubjectEntity != NULL)
-		{
-			subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
-		}
-		
-		if(actionHasObject)
-		{
-			bool objectHasProperties = false;
-			if(!(objectEntity->propertyNodeList->empty()))
-			{
-				objectHasProperties = true;
-			}
-			bool objectHasConditions = false;
-			if(!(objectEntity->conditionNodeList->empty()))
-			{
-				objectHasConditions = true;	//not used
-			}		
-			bool multipleObjects = false;
-			if(objectEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
-			{
-				multipleObjects = true;
-			}
-			bool objectsHaveParent = false;
-			
-			NLPIitem * objectItem = new NLPIitem(objectEntity->entityName);
-			objectsHaveParent = getEntityContext(objectEntity, &(objectItem->context), false);
-
-			if(multipleObjects || objectHasProperties)
-			{//for loop required
-				
-				//for(all items in context){
-				currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectItem);
-			}
-
-			//specificObjects
-			currentCodeBlockInTree = createCodeBlockIfHasProperties(currentCodeBlockInTree, objectItem, objectEntity, sentenceIndex);
-			//if(item->has(property) && item->has(property1) etc..){
-			
-			currentCodeBlockInTree = createCodeBlockIfHasConditions(currentCodeBlockInTree, objectItem, objectEntity, sentenceIndex);
-			//if(item > 3){		/	if(greaterthan(item, 3)){
-			//}
-
-			NLPIitem * functionItem = new NLPIitem(actionEntity->entityName);
-			if(actionHasSubject)
-			{
-				getEntityContext(subjectEntity, &(functionItem->context), true);
-			}
-			currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem, objectItem);
-		}
-		
-		/*		
-		findContextOfObject(objectEntity)
-				
-		#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
-		if(!(currentEntity->disabled))
-		{
-		#endif
-			
-		#ifdef GIA_SEMANTIC_NET_DO_NOT_WRITE_DISABLED_ENTITY_NODES
-		}
-		#endif
-		*/
-	}
+	cout << "code = \n" << code << endl;
 }
-
-bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level)
-{
-	NLPIcodeblock * currentCodeBlockInLevel = firstCodeBlockInLevel;
-	while(currentCodeBlockInLevel->next != NULL)
-	{
-		NLPIitem * param1 = currentCodeBlockInLevel->parameters.at(0);
-		string contextParam1 = generateStringFromContextVector(param1, iprogLang);
-			
-		if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION)
-		{
-			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);
-			string contextParam1 = generateStringFromContextVector(param1, progLang);
-
-			string codeBlockText = contextParam1 + progLangObjectReferenceDelimiter[progLang] + param1->name + progLangOpenParameterSpace[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context.param1(param2); 	[param1 = function, context = subject, param2 = object]
-			printLine(codeBlockText, level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_FOR)
-		{
-			string codeBlockText = progLangFor[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + progLangObjectReferenceDelimiter[progLang] + param1->name + progLangCloseParameterSpace[progLang];	//forall(context.param1){
-			printLine(codeBlockText, level, code);
-			printLine(progLangOpenBlock[progLang], level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_NEW_FUNCTION)
-		{
-			string codeBlockText = param1->name + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//main(){
-			printLine(codeBlockText, level, code);		
-			printLine(progLangOpenBlock[progLang], level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION)
-		{
-			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);		
-			NLPIitem * param3 = currentCodeBlockInLevel->parameters.at(2);
-			string contextParam3 = generateStringFromContextVector(param3, progLang);
-				
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param2->name + progLangOpenParameterSpace[progLang] + contextParam1 + progLangObjectReferenceDelimiter[progLang] + param1->name + progLangParameterSpaceNextParam[progLang] + contextParam3 + progLangObjectReferenceDelimiter[progLang] + param3->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(param2(context.param1, context.param3)){
-			printLine(codeBlockText, level, code);
-			printLine(progLangOpenBlock[progLang], level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY)
-		{
-			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
-				
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] +  contextParam1 + progLangObjectReferenceDelimiter[progLang] + param1->name + progLangObjectReferenceDelimiter[progLang] + progLangObjectCheckHasPropertyFunction[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(context.param1->has(param2)){
-			printLine(codeBlockText, level, code);
-			printLine(progLangOpenBlock[progLang], level, code);
-		}
-		/*
-		else if(currentCodeBlockInLevel->codeBlockType == ...)
-		{
-		
-		}
-		...
-		*/
-				
-		if(currentCodeBlockInLevel->lowerLevel != NULL)
-		{
-			printCodeBlock(currentCodeBlockInLevel->lowerLevel, progLang, code, (level+1));
-			printLine(progLangCloseBlock[progLang], level, code);
-		}
-	}
-}
-
-void printLine(string command, int level, string * code)
-{
-	string line = "";
-	for(int i=0; i<level; i++)
-	{
-		line = line + CHAR_TAB;
-	}
-	line = line + command;
-	*code = *code + line;
-}
-

@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1b 14-September-2013
+ * Project Version: 1a1c 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -38,10 +38,12 @@ NLPIcodeblock::NLPIcodeblock(void)
 {
 	codeBlockType = NLPI_CODEBLOCK_TYPE_UNDEFINED;
 
+	/*
 	//used by language specific code generator (eg C++, java);
 	codeBlockName = ""; 	//eg "for"
 	openingText = "";	//eg "for(...){"
 	closingText = ""; 	//eg "}";
+	*/
 	
 	lowerLevel = NULL;
 	next = NULL;	
@@ -52,14 +54,48 @@ NLPIcodeblock::~NLPIcodeblock(void)
 
 NLPIitem::NLPIitem(void)
 {
+	itemType = NLPI_ITEM_TYPE_UNDEFINED;
 	name = "";
 }
-NLPIitem::NLPIitem(string newName)
+NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 {
+	itemType = newItemType;
+	entity->parsedForNLPI = true;
+	name = generateItemName(entity, itemType);	
+}
+NLPIitem::NLPIitem(string newName, int newItemType)
+{
+	itemType = newItemType;
 	name = newName;
 }
 NLPIitem::~NLPIitem(void)
 {
+}
+
+string generateItemName(GIAentityNode * entity, int itemType)
+{
+	string itemName = "";
+	if(itemType == NLPI_ITEM_TYPE_OBJECT)
+	{
+		itemName = entity->entityName + convertLongToString(entity->idInstance);	//NLPI_ITEM_TYPE_OBJECT: variable name; eg car23		//Alternative [safer] use: idActiveList
+	}
+	else if(itemType == NLPI_ITEM_TYPE_TEMPVAR)
+	{
+		itemName = entity->entityName + NLPI_ITEM_TYPE_TEMPVAR_APPENDITION;
+	}	
+	else
+	{
+		itemName = entity->entityName;	//NLPI_ITEM_TYPE_CLASS/NLPI_ITEM_TYPE_FUNCTION: name; eg car 
+	}
+	return itemName;
+}
+string convertLongToString(long number)
+{
+	//return to_string(number);	//C++11
+	
+	char tempString[100];
+	sprintf(tempString, "%ld", number);
+	return string(tempString);
 }
 
 
@@ -69,6 +105,9 @@ NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIi
 	int codeBlockType = NLPI_CODEBLOCK_TYPE_FOR;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+
+
+
 
 /*
 NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* entity, int sentenceIndex)
@@ -117,7 +156,7 @@ NLPIcodeblock * createCodeBlockIfHasProperties(NLPIcodeblock * currentCodeBlockI
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 	{
 		GIAentityNode* propertyEntity = (*propertyNodeListIterator)->entity;
-		if(propertyEntity->sentenceIndexTemp == sentenceIndex)
+		if(checkSentenceIndex(propertyEntity,  sentenceIndex))
 		{//only write conditions that are explicated in current sentence
 			currentCodeBlockInTree = createCodeBlockIfHasProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
 		}
@@ -128,7 +167,7 @@ NLPIcodeblock * createCodeBlockIfHasProperty(NLPIcodeblock * currentCodeBlockInT
 {
 	currentCodeBlockInTree->parameters.push_back(item);
 	
-	NLPIitem * propertyItem = new NLPIitem(propertyEntity->entityName);
+	NLPIitem * propertyItem = new NLPIitem(propertyEntity, NLPI_ITEM_TYPE_CLASS);
 	currentCodeBlockInTree->parameters.push_back(propertyItem);
 	
 	int codeBlockType = NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY;
@@ -143,7 +182,7 @@ NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockI
 	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
 	{
 		GIAentityNode* conditionEntity = (*conditionNodeListIterator)->entity;
-		if(conditionEntity->sentenceIndexTemp == sentenceIndex)
+		if(checkSentenceIndex(conditionEntity,  sentenceIndex))
 		{	
 			currentCodeBlockInTree = createCodeBlockIfHasCondition(currentCodeBlockInTree, item, conditionEntity, sentenceIndex);
 		}
@@ -152,14 +191,14 @@ NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockI
 }
 NLPIcodeblock * createCodeBlockIfHasCondition(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* conditionEntity, int sentenceIndex)
 {
-	if(conditionEntity->conditionObjectEntity != NULL)
+	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		currentCodeBlockInTree->parameters.push_back(item);
-		NLPIitem * conditionItem = new NLPIitem(conditionEntity->entityName);
+		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_FUNCTION);
 		currentCodeBlockInTree->parameters.push_back(conditionItem);
 		
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject->entityName);
+		NLPIitem * conditionObjectItem = new NLPIitem(conditionObject, NLPI_ITEM_TYPE_OBJECT);
 		getEntityContext(conditionObject, &(conditionObjectItem->context), false);
 		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 		
@@ -180,6 +219,7 @@ NLPIcodeblock * createCodeBlockIfHasCondition(NLPIcodeblock * currentCodeBlockIn
 
 NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType)
 {
+	cout << "createCodeBlock [" << codeBlockType << "] = " << ((currentCodeBlockInTree->parameters).front())->name << endl;
 	currentCodeBlockInTree->codeBlockType = codeBlockType;
 	currentCodeBlockInTree->next = new NLPIcodeblock();
 	
@@ -206,7 +246,7 @@ NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, N
 
 NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName)
 {
-	NLPIitem * functionItem = new NLPIitem(functionName);
+	NLPIitem * functionItem = new NLPIitem(functionName, NLPI_ITEM_TYPE_FUNCTION);
 	currentCodeBlockInTree->parameters.push_back(functionItem);
 	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_NEW_FUNCTION);
 }
@@ -223,7 +263,7 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 {
 	if(includePresentObject)
 	{
-		context->push_back(entity->entityName);
+		context->push_back(generateItemName(entity, NLPI_ITEM_TYPE_OBJECT));
 	}
 	bool entityHasParent = false;
 	bool stillSearching = true;
@@ -235,7 +275,9 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 		{
 			entityHasParent = true;
 			currentEntity = (currentEntity->propertyNodeReverseList->back())->entity;
-			context->push_back(currentEntity->entityName);
+			string itemName = generateItemName(currentEntity, NLPI_ITEM_TYPE_OBJECT);
+			//string itemName = currentEntity->entityName;	//OLD
+			context->push_back(itemName);
 		}
 		else
 		{
@@ -264,5 +306,16 @@ string generateStringFromContextVector(vector<string> * context, int progLang)
 		*/
 		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
 	}
+	return contextString;
+}
+
+bool checkSentenceIndex(GIAentityNode * entity, int sentenceIndex)
+{
+	bool result = false;
+	if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference) && !(entity->parsedForNLPI))
+	{
+		result = true;
+	}
+	return result;
 }
 

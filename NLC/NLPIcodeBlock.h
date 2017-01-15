@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1b 14-September-2013
+ * Project Version: 1a1c 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -49,9 +49,9 @@ using namespace std;
 #include "GIAentityConnectionClass.h"
 
 #define NLPI_CODEBLOCK_TYPE_UNDEFINED (-1)
-#define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (2)	//context.param1(param2); [param1 = function, context = subject, param2 = object]
+#define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (2)	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 #define NLPI_CODEBLOCK_TYPE_FOR (3)			//forall(context.param1){
-#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (4)		main(){
+#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (4)		//main(){
 #define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (12)	//if(param2(context.param1, context.param3)){
 #define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (13)	//if(context.param1->has(param2)){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR)
@@ -66,15 +66,20 @@ using namespace std;
 #define NLPI_PROGRAMMING_LANGUAGE_DEFAULT (NLPI_PROGRAMMING_LANGUAGE_CPP)
 #define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)
 
-static bool progLangOpenBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{", "{", "{", "{", "{", "{", "{"};
-static bool progLangCloseBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"}", "}", "}", "}", "}", "}", "}"};
-static bool progLangObjectReferenceDelimiter[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".", ".", ".", ".", ".", ".", "."};
-static bool progLangOpenParameterSpace[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(", "(", "(", "(", "(", "(", "("};
-static bool progLangCloseParameterSpace[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {")", ")", ")", ")", ")", ")", ")"};
-static bool progLangEndLine[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {";", ";", ";", ";", ";", ";", ";"};
-static bool progLangFor[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"for", "for", "for", "for", "for", "for", "for"};
-static bool progLangIf[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"if", "if", "if", "if", "if", "if", "if"};
-static bool progLangObjectCheckHasPropertyFunction[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"has", "has", "has", "has", "has", "has", "has"};
+static string progLangOpenBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{", "{", "{", "{", "{", "{", "{"};
+static string progLangCloseBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"}", "}", "}", "}", "}", "}", "}"};
+static string progLangObjectReferenceDelimiter[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".", ".", ".", ".", ".", ".", "."};
+static string progLangFunctionReferenceDelimiter[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".", ".", ".", ".", ".", ".", "."};
+static string progLangOpenParameterSpace[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"(", "(", "(", "(", "(", "(", "("};
+static string progLangCloseParameterSpace[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {")", ")", ")", ")", ")", ")", ")"};
+static string progLangEndLine[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {";", ";", ";", ";", ";", ";", ";"};
+static string progLangFor[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"for", "for", "for", "for", "for", "for", "for"};
+static string progLangIf[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"if", "if", "if", "if", "if", "if", "if"};
+static string progLangObjectCheckHasPropertyFunction[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"hasObjectOfClass", "hasObjectOfClass", "hasObjectOfClass", "hasObjectOfClass", "hasObjectOfClass", "hasObjectOfClass", "hasObjectOfClass"};
+static string progLangParameterSpaceNextParam[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {",", ",", ",", ",", ",", ",", ","};
+static string progLangPointer[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*", "*", "*", "*", "*", "*", "*"};
+
+
 
 
 /*
@@ -91,14 +96,24 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 
 //shared with GIAtranslatorDefineReferencing.cpp
 
+#define NLPI_ITEM_TYPE_UNDEFINED (-1)
+#define NLPI_ITEM_TYPE_OBJECT (0)
+#define NLPI_ITEM_TYPE_CLASS (1)
+#define NLPI_ITEM_TYPE_FUNCTION (2)
+#define NLPI_ITEM_TYPE_TEMPVAR (3)
+#define NLPI_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
+#define NLPI_ITEM_TYPE_LISTVAR_APPENDITION "List"
+
 class NLPIitem
 {
 public:
 
 	NLPIitem(void);
-	NLPIitem(string newName);
+	NLPIitem(GIAentityNode * entity, int newItemType);
+	NLPIitem(string newName, int newItemType);
 	~NLPIitem(void);
 
+	int itemType;
 	string name;
 	vector<string> context;	//item context
 };
@@ -114,17 +129,19 @@ public:
 	int codeBlockType;
 	vector<NLPIitem*> parameters;
 	
+	/*
 	//used by language specific code generator (eg C++, java);
 	string codeBlockName; 	//eg "for"
 	string openingText;	//eg "for(...){"
 	string closingText; 	//eg "}";
+	*/
 	
 	NLPIcodeblock * lowerLevel;
 	NLPIcodeblock * next;
 };
 
-
-
+string generateItemName(GIAentityNode * entity, int itemType);
+string convertLongToString(long number);
 
 NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
 NLPIcodeblock * createCodeBlockIfHasProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex);
@@ -138,5 +155,6 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 	NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType);
 
 string generateStringFromContextVector(vector<string> * context, int progLang);
+bool checkSentenceIndex(GIAentityNode * entity, int sentenceIndex);
 
 #endif

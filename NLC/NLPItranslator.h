@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPImain.h
+ * File Name: NLPItranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1a1c 15-September-2013
@@ -29,8 +29,8 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_MAIN
-#define HEADER_NLPI_MAIN
+#ifndef HEADER_NLPI_TRANSLATOR
+#define HEADER_NLPI_TRANSLATOR
 
 #include <iostream>
 #include <fstream>
@@ -45,9 +45,8 @@ using namespace std;
 #include "GIAglobalDefs.h"
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
+#include "NLPIcodeBlock.h"
 
-int main(int argc,char **argv);
-	bool executeNLPI(vector<GIAentityNode*> * entityNodesActiveListComplete, unordered_map<string, GIAentityNode*> * entityNodesActiveListConcepts, vector<GIAentityNode*> * entityNodesActiveListSubstances, vector<GIAentityNode*> * entityNodesActiveListActions, vector<GIAentityNode*> * entityNodesActiveListConditions, int maxNumberSentences);
-
+bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences);
 
 #endif

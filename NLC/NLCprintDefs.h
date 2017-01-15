@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12c 07-November-2014
+ * Project Version: 1l12d 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -306,5 +306,7 @@ string generateCodeEntityStringPairListDefinitionText(string entityClassName, st
 string generateCodeEntityStringPairListDefinitionTypeText(string entityClassName, int progLang);
 string generateEntityStringPairListName(string genericListNameStart, string genericListAppendName);
 string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang);
+
+string generateNewObject(string objectName, int progLang);
 
 #endif

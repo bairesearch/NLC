@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12c 07-November-2014
+ * Project Version: 1l12d 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -209,7 +209,7 @@
 	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID (99)
 #endif
 #ifndef NLC_DISABLE_1l_CODE_FOR_DEBUG
-	#define NLC_RECORD_ACTION_HISTORY_GENERALISABLE	//code introduced by NLC_RECORD_ACTION_HISTORY but don't necessarily require it
+	#define NLC_RECORD_ACTION_HISTORY_GENERALISABLE	//code introduced by NLC_RECORD_ACTION_HISTORY but doesn't necessarily require it
 	#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 		#define NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS	//this currently fails with NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 	#endif

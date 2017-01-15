@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12c 07-November-2014
+ * Project Version: 1l12d 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,12 +68,14 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 			bool hasActionSubject = false;
 			NLCitem * functionOwnerArgument = NULL;
-			string functionOwnerName = "";
 			string functionOwnerNameWithReferenceDelimiter = "";
 			if(findFunctionArgument(&(currentCodeBlockInLevel->parameters), NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 			{
-				functionOwnerName = functionOwnerArgument->instanceName;
-				functionOwnerNameWithReferenceDelimiter = functionOwnerName + progLangObjectReferenceDelimiter[progLang];
+				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
+				functionOwnerNameWithReferenceDelimiter = generateNewObject(functionOwnerArgument->name, progLang) + progLangObjectReferenceDelimiter[progLang];
+				#else
+				functionOwnerNameWithReferenceDelimiter = functionOwnerArgument->instanceName + progLangObjectReferenceDelimiter[progLang];
+				#endif
 				hasActionSubject = true;
 			}
 			

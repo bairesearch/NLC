@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l12c 07-November-2014
+ * Project Version: 1l12d 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -292,5 +292,11 @@ string generateEntityStringPairText(string entity1Name, string entity2ClassName,
 {
 	string codeEntityStringPairPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entity2ClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + entity1Name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + entity2Name + progLangClassMemberFunctionParametersClose[progLang];	//pair<string, entity2className*>(entity1name, entity2name)
 	return codeEntityStringPairPairTypeText;
+}
+
+string generateNewObject(string objectName, int progLang)
+{
+	string newObjectText = progLangOpenParameterSpace[progLang] + progLangNewObject[progLang] + objectName + progLangCloseParameterSpace[progLang];	//(new objectName)
+	return newObjectText;
 }
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14c 21-October-2014
+ * Project Version: 1k14d 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -431,11 +431,11 @@ NLCcodeblock * createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock * currentC
 NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock * currentCodeBlockInTree);
 NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, string aliasName, GIAentityNode* categoryEntity, string genericListAppendName);
 bool findAliasInEntity(GIAentityNode * entity, string * aliasName);
-/*
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 unordered_map<string, string> * getFunctionAliasClassList();
 void initialiseFunctionAliasClassList();
 bool findEntityNameInFunctionAliasList(string aliasName, string * aliasClassName);
-*/
+#endif
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);

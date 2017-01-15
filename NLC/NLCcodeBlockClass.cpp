@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14c 21-October-2014
+ * Project Version: 1k14d 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -657,20 +657,44 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 						if(!findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(entityNodesActiveListComplete, entity, firstNLCsentenceInList))	//NB findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() could be reimplemented to be performed during generateCodeBlocks() sentence parsing, but then generateLocalFunctionArgumentsBasedOnImplicitDeclarations() could not be decared at start of generateCodeBlocks(), ie it would have to be moved out of createCodeBlockNewFunction()
 						{
 						#endif
-							//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
-							//detected "the x" without declaring x (ie implicit declaration)
-							NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
-							parameters->push_back(thisFunctionArgumentInstanceItem);
-							
-							//added 1j5d
-							#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-							entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
-							#else
-							GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-							if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
+							bool entityIsAlias = false;
+							string aliasClassName = "";
+							if(findEntityNameInFunctionAliasList(entity->entityName, &aliasClassName))
 							{
-								entity->NLClocalListVariableHasBeenDeclared = true;
-								conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+								entityIsAlias = true;
+							}
+							/*
+							for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListReverseIterator = entity->entityNodeDefinitionReverseList->begin(); entityNodeDefinitionListReverseIterator < entity->entityNodeDefinitionReverseList->end(); entityNodeDefinitionListReverseIterator++)
+							{
+								GIAentityConnection * definitionConnection = (*entityNodeDefinitionListReverseIterator);
+								if(definitionConnection->isAlias)
+								{
+									entityIsAlias = true;
+									cout << "entityIsAlias: " << entity->entityName << endl;
+								}
+							}
+							*/
+							if(!entityIsAlias)
+							{
+							#endif
+								//cout << "generateLocalFunctionArgumentsBasedOnImplicitDeclarations: entity->entityName = " << entity->entityName << endl;
+								//detected "the x" without declaring x (ie implicit declaration)
+								NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
+								parameters->push_back(thisFunctionArgumentInstanceItem);
+
+								//added 1j5d
+								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+								entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
+								#else
+								GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+								if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+								{
+									entity->NLClocalListVariableHasBeenDeclared = true;
+									conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+								}
+								#endif
+							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 							}
 							#endif
 						#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
@@ -2024,8 +2048,7 @@ bool findAliasInEntity(GIAentityNode * entity, string * aliasName)
 	return result;
 }
 
-
-/*
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 unordered_map<string, string> * functionAliasClassList;	//<aliasName, aliasClassName>
 
 unordered_map<string, string> * getFunctionAliasClassList()
@@ -2047,6 +2070,9 @@ void initialiseFunctionAliasClassList()
 
 bool findEntityNameInFunctionAliasList(string aliasName, string * aliasClassName)
 {
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "start findEntityNameInFunctionAliasList():" << endl;
+	#endif
 	bool result = false;
 	unordered_map<string, string>::iterator iter1 = functionAliasClassList->find(aliasName);
 	if(iter1 != functionAliasClassList->end())
@@ -2055,8 +2081,11 @@ bool findEntityNameInFunctionAliasList(string aliasName, string * aliasClassName
 		result = true;
 	}
 	return result;
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "end findEntityNameInFunctionAliasList():" << endl;
+	#endif
 }
-*/
+#endif
 #endif
 
 

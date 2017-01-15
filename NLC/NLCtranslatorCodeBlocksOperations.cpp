@@ -2083,8 +2083,39 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 
-//"Tom rides a bike. Tom is a red dog."
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
+//CURRENTLYILLEGAL: "Tom rides a bike. Tom is the red dog."
+void fillFunctionAliasClassList(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete)
+{	
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "start fillFunctionAliasClassList():" << endl;
+	#endif
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * aliasClassEntity = (*entityIter);
+
+		for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = aliasClassEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < aliasClassEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+		{
+			GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+			GIAentityNode * aliasEntity = definitionConnection->entity;
+
+			if(definitionConnection->isAlias)
+			{
+				string aliasName = aliasEntity->entityName;
+				string aliasClassName = aliasClassEntity->entityName;
+					
+				unordered_map<string, string> *  functionAliasClassList = getFunctionAliasClassList();
+				functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
+			}
+		}
+	}
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "end fillFunctionAliasClassList():" << endl;
+	#endif
+}
+#endif
 /*
+//CURRENTLYILLEGAL; "Tom rides a bike. Tom is a/the red dog."
 void fillFunctionAliasClassList(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete)
 {	
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES

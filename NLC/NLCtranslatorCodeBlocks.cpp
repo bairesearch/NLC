@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14c 21-October-2014
+ * Project Version: 1k14d 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,6 +53,19 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	vector<NLCitem *> implictlyDeclaredFunctionListTopLevel;	//top level function list (used to store implicitly declared functions without subject/context/owner)
 	#endif
 	
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
+	#ifndef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES
+	#ifdef NLC_DEBUG
+	cout << "initialiseFunctionAliasClassList:" << endl;
+	#endif
+	initialiseFunctionAliasClassList();
+	#endif
+	#ifdef NLC_DEBUG
+	cout << "fillFunctionAliasClassList:" << endl;
+	#endif
+	fillFunctionAliasClassList(&currentCodeBlockInTree, entityNodesActiveListComplete);
+	#endif
+	
 	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete, (currentNLCfunctionInList->firstNLCsentenceInFunction));
 
 	//#ifdef NLC_USE_PREPROCESSOR
@@ -73,21 +86,6 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	#endif
 	#endif
 	#endif
-	
-	/*
-	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	#ifndef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES
-	#ifdef NLC_DEBUG
-	cout << "initialiseFunctionAliasClassList:" << endl;
-	#endif
-	initialiseFunctionAliasClassList();
-	#endif
-	#ifdef NLC_DEBUG
-	cout << "fillFunctionAliasClassList:" << endl;
-	#endif
-	fillFunctionAliasClassList(&currentCodeBlockInTree, entityNodesActiveListComplete);
-	#endif
-	*/
 	
 	#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 	#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
@@ -955,8 +953,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 				#endif
 					//cout << "pass2: " << entity->entityName << endl;
 					if(!assumedToAlreadyHaveBeenDeclared(entity))
-					{//indefinite entity found
-							
+					{//indefinite entity found	
 						//cout << "pass3: " << entity->entityName << endl;
 						/*OLD declareLocalPropertyListsForAllNonSpecificIndefiniteEntities() code;
 						bool foundPropertyInSameSentence = false;
@@ -994,7 +991,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 						#endif
 
 						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(*currentCodeBlockInTree, entity);
-						
+
 						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						#ifdef NLC_USE_PREPROCESSOR
 						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
@@ -1002,10 +999,10 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 						#endif
 						#endif
 						#endif
-						
-						#ifdef NLC_DEBUG
+
+						//#ifdef NLC_DEBUG
 						cout << "declareLocalPropertyListsForIndefiniteEntities(): createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
-						#endif
+						//#endif
 					}
 				}
 			}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4c 12-October-2016
+ * Project Version: 1v4d 12-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -497,30 +497,35 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					#endif
 					NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 					generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
+					
 					#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
-					#ifdef NLC_GENERATE_TYPE_LISTS
-					//number of statements must be expressed using definite variables, but they will not be advanced referenced by GIA (and so must be located in the typeList)
-						//"the number of x" will have already been declared, but is not advanced referenced, so much search the typeList
-					entity->grammaticalDefiniteTemp = false;	//this triggers generateContextBlocks{} to execute createCodeBlockForOrInPropertyList{} on parent rather than createCodeBlockForOrInLocalList{}
 					if(!assumedToAlreadyHaveBeenDeclared(entity))
 					{
+						cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: isNumberOf entities must be definite " << endl;
+					}
+					//number of statements must be expressed using definite variables, but they will not be advanced referenced by GIA (and so must be located in the typeList)
+						//"the number of x" will have already been declared, but is not advanced referenced, so much search the typeList
+					#ifdef NLC_GENERATE_TYPE_LISTS
+					entity->grammaticalDefiniteTemp = false;	//this triggers generateContextBlocks{} to execute createCodeBlockForOrInPropertyList{} on parent rather than createCodeBlockForOrInLocalList{}
+					#endif
+					if(!assumedToAlreadyHaveBeenDeclared(entity))
+					{
+						#ifdef NLC_GENERATE_TYPE_LISTS
 						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, entity);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
 						//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
 						//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
-					}
-					#else
-					if(!assumedToAlreadyHaveBeenDeclared(entity))
-					{
+						#else
 						//entity->grammaticalDefiniteTemp = true;		//removed 1j15a, readded 1j15c, removed 1n22b
 						entity->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b
+						#endif
 					}
 					#endif
-					#endif
+					
 					if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables))
 					{
-						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 						cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: !getParentAndGenerateContextBlocks: " << entity->entityName << endl;
-						#endif
+						//#endif
 					}
 					#ifdef NLC_GENERATE_TYPE_LISTS
 					entity->grammaticalDefiniteTemp = true;
@@ -680,6 +685,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								//initialise parsing of indefinate entities (set how to intepret these, eg "a house")
 								bool parentEntityWasNotDeclared = false;
 								bool initialisedParent = false;
+								#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
+								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{}: error: NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY and indefinite entity detected during parse of math object parsable phrase" << endl;	
+								#else
 								if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
 								{
 									parentEntityWasNotDeclared = true;
@@ -721,6 +729,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								{
 									//eg The dog's value = X.
 								}
+								#endif
 								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
 								GIAentityNode* childEntity = NULL;
 								if(initialisedParent)

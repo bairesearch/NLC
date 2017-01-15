@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4c 12-October-2016
+ * Project Version: 1v4d 12-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -879,6 +879,7 @@ bool generateContextBlocksSimple(NLCcodeblock** currentCodeBlockInTree, GIAentit
 		//context property item:
 		if(assumedToAlreadyHaveBeenDeclared(parentEntity))
 		{
+			//cout << "at1 parentEntity = " << parentEntity->entityName << "sentenceIndex = " << sentenceIndex << endl;
 			*currentCodeBlockInTree = createCodeBlockForOrInLocalList(*currentCodeBlockInTree, parentEntity);	
 			#ifdef NLC_DEBUG_PARSE_CONTEXT3
 			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple{}: 1createCodeBlockForOrInLocalList: ") + parentEntity->entityName);
@@ -886,6 +887,7 @@ bool generateContextBlocksSimple(NLCcodeblock** currentCodeBlockInTree, GIAentit
 		}
 		else
 		{
+			//cout << "at2 parentEntity = " << parentEntity->entityName << "sentenceIndex = " << sentenceIndex << endl;
 			*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, parentEntity);	
 			#ifdef NLC_DEBUG_PARSE_CONTEXT3
 			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple{}: 2createCodeBlockForOrInPropertyList: ") + parentEntity->entityName);
@@ -2079,7 +2081,7 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 					#ifdef NLC_GENERATE_TYPE_LISTS
 					*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, *parentEntity);
 					#else
-					(*parentEntity)->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b	//CHECKTHIS
+					(*parentEntity)->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b
 					#endif
 				}
 			}
@@ -3582,8 +3584,8 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 	}
 	#endif
 	
-	if(assumedToAlreadyHaveBeenDeclared(childEntity))
-	{
+	//if(assumedToAlreadyHaveBeenDeclared(childEntity))
+	//{
 		#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		#ifndef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
 		if(!generatedContextForChild)
@@ -3609,25 +3611,26 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 		}
 		#endif
 		#endif				
-	}
+	//}
+	/*
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//ie #ifndef NLC_USE_ADVANCED_REFERENCING
 	else 
 	{
 		if(!generatedContextForChild)
 		{
-			#ifdef NLC_DEBUG
+			//#ifdef NLC_DEBUG
 			cout << "generateContextForChildEntity{}: generateContextBasedOnDeclaredParent: childEntity = " << childEntity->entityName << endl;
-			#endif
+			cout << "generateContextForChildEntity childEntity = " << childEntity->entityName << "sentenceIndex = " << sentenceIndex << endl;		
+			//#endif
 			#ifdef NLC_DEBUG_PARSE_CONTEXT4
 			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity{}: generateContextBasedOnDeclaredParent{childEntity}: ") + childEntity->entityName);
 			#endif
 			if(generateContextBasedOnDeclaredParent(childEntity, currentCodeBlockInTree, topLevel, entity, sentenceIndex, generateContextBlocksVariablesLogicalConditionStatement))
 			{
-				/*for cases in which GIA advanced referencing has referenced entities whose parent was defined in a previous sentence;
-				eg 1 Tom's boat is red. The chicken rowed the red boat.
-				eg 2 Tom's boat is red. The red boat is new
-				NOT: Tom's boat is red. Tom's boat is new
-				*/
+				//for cases in which GIA advanced referencing has referenced entities whose parent was defined in a previous sentence;
+				//eg 1 Tom's boat is red. The chicken rowed the red boat.
+				//eg 2 Tom's boat is red. The red boat is new
+				//NOT: Tom's boat is red. Tom's boat is new
 				generatedContextForChild = true;
 				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
 				addIntermediaryImplicitlyDeclaredEntityToLocalList(currentCodeBlockInTree, childEntity, sentenceIndex);
@@ -3637,6 +3640,7 @@ bool generateContextForChildEntity(NLCcodeblock** currentCodeBlockInTree, GIAent
 		}
 	}
 	#endif
+	*/
 	#endif
 			
 	return generatedContextForChild;

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u3b 27-September-2016
+ * Project Version: 1u3c 27-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -590,7 +590,21 @@ bool generateContextBlocksCategories(NLCcodeblock** currentCodeBlockInTree, GIAe
 		{
 		#endif
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY
+			bool testPlurality = false;
 			if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
+			{
+				testPlurality = true;
+			}
+			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
+			if(generateContextBlocksVariables->logicalConditionBooleanStatement)
+			{
+				if(parentEntity->NLClogicalConditionIndefiniteEntity)
+				{
+					testPlurality = false;
+				}
+			}
+			#endif
+			if(testPlurality)
 			{
 				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
@@ -3786,7 +3800,7 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** 
 							
 							if(generateContextBlocksVariablesLogicalConditionBooleanStatement->logicalConditionBooleanStatement)
 							{
-								generateContextBlocksVariables.logicalConditionBooleanStatement = true;	//not used as NLC_LOCAL_LISTS_USE_INSTANCE_NAMES implies that createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction will be executed regardless
+								generateContextBlocksVariables.logicalConditionBooleanStatement = true;	//NB this is not used by addEntityToCategoryList as NLC_LOCAL_LISTS_USE_INSTANCE_NAMES implies that createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction will be executed regardless
 							}
 
 							generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;	//CHECKTHIS

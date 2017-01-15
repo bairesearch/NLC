@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2g 28-July-2014
+ * Project Version: 1h2h 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -176,12 +176,13 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				}
 				else
 				{
+					//#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					if(detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
 					{
 						currentNLCsentenceInList->isMath = true;
 					}
+					//#endif
 				}
-				//#endif
 				
 				if(currentNLCsentenceInList->isMath)
 				{
@@ -572,7 +573,6 @@ bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineCon
 #ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents, int logicalConditionOperator, bool * additionalClosingBracketRequired)
 {
-
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
 		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i]);	//NB this is type sensitive; could be changed in the future
@@ -640,6 +640,10 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents
 	{
 		cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols() error: invalid symbol found after logicalConditionOperator: " << logicalConditionOperationsArray[logicalConditionOperator] << characterAfterLogicalConditionOperator << endl;
 	}
+	
+	#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
+	*lineContents = replaceAllOccurancesOfString(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_WITH_PADDING, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING);
+	#endif
 }
 #endif
 

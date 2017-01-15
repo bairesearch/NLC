@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1b 07-February-2015
+ * Project Version: 1o1c 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1189,9 +1189,10 @@ bool generateObjectInitialisations(NLCcodeblock** currentCodeBlockInTree, GIAent
 {
 	bool result = true;
 
-	#ifdef NLC_DEBUG
+	//#ifdef NLC_DEBUG
 	cout << "generateObjectInitialisations: " << entity->entityName << endl;
-	#endif
+	cout << "sentenceIndex = " << sentenceIndex << endl;
+	//#endif
 	#ifdef NLC_DEBUG_PARSE_CONTEXT3
 	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisations(): ") + entity->entityName);
 	#endif
@@ -1655,6 +1656,13 @@ bool generateCodeBlocksAddObject(NLCcodeblock** currentCodeBlockInTree, int conn
 
 							//6. add alsation to alsation local list
 							*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
+							
+							/*
+							#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+							//7. generate object initialisations based on substance concepts (class inheritance)
+							generateObjectInitialisationsBasedOnSubstanceConcepts(definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
+							#endif
+							*/							
 
 						}
 				#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES

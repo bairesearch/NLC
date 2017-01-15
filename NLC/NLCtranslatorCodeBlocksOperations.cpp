@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8i 04-November-2014
+ * Project Version: 1l9a 05-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2362,9 +2362,11 @@ bool getActionSubjectEntityConnection(GIAentityNode * actionEntity, int sentence
 	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
 	{
 		GIAentityConnection * actionSubjectConnectionTemp = *iter;
-		cout << "actionSubjectConnectionTemp->sentenceIndexTemp = " << actionSubjectConnectionTemp->sentenceIndexTemp << endl;
 		if(actionSubjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
 		{
+			#ifdef NLC_DEBUG
+			//cout << "getActionSubjectEntityConnection(): actionSubjectConnectionTemp->sentenceIndexTemp = " << actionSubjectConnectionTemp->sentenceIndexTemp << endl;
+			#endif
 			*actionSubjectConnection = actionSubjectConnectionTemp;
 			actionHasSubject = true;	
 		}
@@ -2387,9 +2389,11 @@ bool getActionObjectEntityConnection(GIAentityNode * actionEntity, int sentenceI
 	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
 	{
 		GIAentityConnection * actionObjectConnectionTemp = *iter;
-		cout << "actionObjectConnectionTemp->sentenceIndexTemp = " << actionObjectConnectionTemp->sentenceIndexTemp << endl;
 		if(actionObjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
-		{
+		{	
+			#ifdef NLC_DEBUG
+			//cout << "getActionObjectEntityConnection(): actionObjectConnectionTemp->sentenceIndexTemp = " << actionObjectConnectionTemp->sentenceIndexTemp << endl;
+			#endif
 			*actionObjectConnection = actionObjectConnectionTemp;
 			actionHasObject = true;	
 		}

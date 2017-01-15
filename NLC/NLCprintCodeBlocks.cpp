@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2b 07-January-2015
+ * Project Version: 1n2c 08-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -183,6 +183,21 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 			generateCodeAddConditionAndObjectEntityToList(param1, param2, param3, progLang, code, level);
 		}
+		#ifdef NLC_USE_LIBRARY
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
+			#ifndef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+			string codeBlockTextCreate2 = generateCodeNewTempEntity(param2, progLang);
+			printLine(codeBlockTextCreate2, level, code);
+			#endif
+			generateCodeAddConditionAndObjectEntityToList(param1, param2, param3, progLang, code, level);
+		}
+		#endif
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_PROPERTY)
 		{
 			#ifdef NLC_DEBUG
@@ -1409,7 +1424,25 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 		}
 		#endif
-		
+		/*
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE" << endl;
+			#endif
+			string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + progLangNullPointer + progLangEndLine[progLang];	//param1Class* param1 = NULL;
+			printLine(tempEntityDeclarationText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string tempEntitySetText = generateTempEntityDeclarationSetToNull(param1, param2, progLang);	//param1 = param2;
+			printLine(tempEntitySetText, level, code);
+		}
+		*/
 		/*
 		else if(currentCodeBlockInLevel->codeBlockType == ...)
 		{

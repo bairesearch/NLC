@@ -1,6 +1,6 @@
 #include "NLClibraryStandard.h"
 
-void print(vector<printClass*> printClassList, vector<NLCgenericEntityClass*> &printObjectClassList)
+void printFunction(vector<printClass*> printClassList, vector<NLCgenericEntityClass*> &printObjectClassList)
 {
 	for(vector<NLCgenericEntityClass*> ::iterator iter1 = printObjectClassList.begin(); iter1 < printObjectClassList.end(); iter1++) 
 	{
@@ -21,7 +21,7 @@ void print(vector<printClass*> printClassList, vector<NLCgenericEntityClass*> &p
 	}
 }
 
-void move(vector<moveClass*> moveClassList, vector<NLCgenericEntityClass*> &moveObjectClassList)
+void moveFunction(vector<moveClass*> moveClassList, vector<NLCgenericEntityClass*> &moveObjectClassList)
 {
 	for(vector<NLCgenericEntityClass*> ::iterator iter1 = moveClassList.begin(); iter1 < moveClassList.end(); iter1++) 
 	{

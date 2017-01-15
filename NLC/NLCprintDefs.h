@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2b 07-January-2015
+ * Project Version: 1n2c 08-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -302,6 +302,7 @@ static string progLangReinterpretCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] 
 static string progLangReinterpretCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {">", ">", ">", ">", ">", ">", ">"};
 static string progLangAddress[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
 #endif
+static string progLangNullPointer[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"NULL", "NULL", "NULL", "NULL", "NULL", "NULL", "NULL"};
 
 
 void printLine(string command, int level, string * code);
@@ -382,6 +383,10 @@ string generateCodeNewTempEntity(NLCitem * param, int progLang);
 		string generateTempEntityName(NLCitem * param);
 		string generateTempEntityClassName(NLCitem * param);
 		string generateTempEntityDeclaration(string className, string instanceName, int progLang);
+/*
+string generateCodeSetTempEntity(NLCitem * param, NLCitem * param2, int progLang);
+string generateTempEntityDeclarationSetToNull(NLCitem * param, NLCitem * param2, int progLang);
+*/
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2b 07-January-2015
+ * Project Version: 1n2c 08-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -133,6 +133,13 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT (51)
 	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (52)
 #endif
+#ifdef NLC_USE_LIBRARY
+#define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT (53)			//context1->param1->param2param3ConditionList.insert(param2, param3);
+#endif
+/*
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (54)			//param1class * param1 = NULL;
+#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (55)			//param1 = param2;
+*/
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (100)		//forall(context1.param1PropertyList){
@@ -303,6 +310,7 @@ NLCcodeblock * createCodeBlockCreateNewProperty(NLCcodeblock * currentCodeBlockI
 NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList);
 	NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex, bool copyNewItemsToLocalList);
 		NLCcodeblock * createCodeBlockAddNewConditionSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject);
+		NLCcodeblock * createCodeBlockAddNewConditionExistingObjectSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject);
 NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 	NLCcodeblock * createCodeBlockAddConditionSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject);
 
@@ -506,5 +514,10 @@ NLCcodeblock * getLastCodeBlockInLevel(NLCcodeblock * currentCodeBlockInTree);
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity);
 #endif
+
+/*
+NLCcodeblock * createCodeBlockDeclareTempVariable(NLCcodeblock * currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName);
+NLCcodeblock * createCodeBlockSetTempVariable(NLCcodeblock * currentCodeBlockInTree, string tempVariableInstanceName, GIAentityNode* entity);
+*/
 
 #endif

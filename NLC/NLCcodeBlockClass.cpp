@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n2b 07-January-2015
+ * Project Version: 1n2c 08-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -441,6 +441,23 @@ NLCcodeblock * createCodeBlockAddNewConditionSimple(NLCcodeblock * currentCodeBl
 	currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockAddNewConditionExistingObjectSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+	NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 	
 	return currentCodeBlockInTree;
@@ -2318,6 +2335,37 @@ GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity)
 }
 #endif
 
+/*
+#ifdef NLC_USE_LIBRARY
+NLCcodeblock * createCodeBlockDeclareTempVariable(NLCcodeblock * currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName)
+{
+	NLCitem * tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
+	tempVariableItem->className = tempVariableClassName;
+	tempVariableItem->instanceName = tempVariableInstanceName;
+	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockSetTempVariable(NLCcodeblock * currentCodeBlockInTree, string tempVariableInstanceName, GIAentityNode* entity)
+{
+	NLCitem * tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
+	tempVariableItem->instanceName = tempVariableInstanceName;
+	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
+
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+#endif
+*/
 
 
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10b 21-August-2015
+ * Project Version: 1q10c 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -751,7 +751,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 	{
 		//initialise the action
-		if(initialiseFunctionArguments(currentCodeBlockInTree, entity, sentenceIndex))
+		if(generateObjectInitialisationsFunction(currentCodeBlockInTree, entity, sentenceIndex))
 		{
 
 		}
@@ -886,16 +886,11 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-bool initialiseFunctionArguments(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
+bool generateObjectInitialisationsFunction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
 {
 	bool result = true;
 	actionEntity->NLCisSingularArgument = true;	//added 1e2c
-
-	//declare an "abstract" variable for the action (that will be filled with the its properties and conditions) and passed as an argument to the function; eg "fast" of "run fast"
-	if(!generateObjectInitialisations(currentCodeBlockInTree, actionEntity, sentenceIndex))
-	{
-		result = false;
-	}
+	result = generateObjectInitialisationsAction(currentCodeBlockInTree, actionEntity, sentenceIndex);
 	return result;
 }
 #endif

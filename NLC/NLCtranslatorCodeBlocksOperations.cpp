@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q10b 21-August-2015
+ * Project Version: 1q10c 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1361,14 +1361,16 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					#endif
 
 					//targetEntity->NLCparsedForCodeBlocks = true;
+					#ifdef NLC_RECORD_ACTION_HISTORY
 					if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
 					{
 						//initialise the action
-						if(generateObjectInitialisations(currentCodeBlockInTree, actionOrConditionEntity, sentenceIndex))	//subset of initialiseFunctionArguments()
+						if(generateObjectInitialisationsAction(currentCodeBlockInTree, actionOrConditionEntity, sentenceIndex))	//subset of generateObjectInitialisationsFunction()
 						{
 
 						}
 					}
+					#endif
 
 					if(recurse)
 					{
@@ -2736,5 +2738,30 @@ bool checkNumerosity(GIAentityNode* entity)
 }
 #endif
 					
+bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* actionEntity, int sentenceIndex)
+{
+	bool result = true;
+	
+	//declare an "abstract" variable for the action (that will be filled with the its properties and conditions) and passed as an argument to the function; eg "fast" of "run fast"
+	if(!generateObjectInitialisations(currentCodeBlockInTree, actionEntity, sentenceIndex))
+	{
+		result = false;
+	}
+	
+	#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	actionEntity->NLClocalListVariableHasBeenDeclared = false;
+	#else
+	actionEntity->NLClocalListVariableHasBeenDeclared = false;
+	GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(actionEntity);
+	if(conceptEntity->NLClocalListVariableHasBeenDeclared)
+	{
+		conceptEntity->NLClocalListVariableHasBeenDeclared = false;
+	}
+	#endif
+	#endif
+	
+	return result;
+}
 
 

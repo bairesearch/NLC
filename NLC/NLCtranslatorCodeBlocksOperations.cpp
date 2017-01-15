@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h11d 20-August-2014
+ * Project Version: 1i2a 20-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -289,8 +289,85 @@ bool initialiseParentIfNecessaryAndGenerateCodeBlocks(NLCcodeblock ** currentCod
 
 
 
-
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
 bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
+{
+	bool contextFound = false;
+	*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND);
+
+	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
+	contextFound = generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, logicalConditionConjunctionVariables);
+
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	if(!contextFound && logicalConditionConjunctionVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC)
+	{
+		//*currentCodeBlockInTree = lastCodeBlockInTree;
+		//clearCodeBlock(*currentCodeBlockInTree);		
+	}
+	else
+	{
+	#endif
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND);
+		*currentCodeBlockInTree = lastCodeBlockInTree->next;
+		contextFound = true;
+		cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	}
+	#endif
+	
+	/*
+	for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+	{
+		GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
+		if(parentSubstanceConcept->isSubstanceConcept)
+		{				
+			if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, entity, parentSubstanceConcept, logicalConditionConjunctionVariables))
+			{
+				result = true;
+			}
+		}
+	}
+	*/
+	
+	if(contextFound)
+	{
+		NLCitem * parentItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_CLASS);
+		*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentItem, NLC_PARSE_CONTEXT_CHILDREN_CATEGORY_VARIABLE_NAME_APPEND);
+	}
+		
+	/*
+	//eg A yellow bannana is on the table. Yellow bannanas are fruit. Apples are fruit. An apple is on the green tree. The fruit is tasty.
+	//entity = parent instance
+	if(entity->isSubstanceConcept)
+	{
+		if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, NULL, entity, logicalConditionConjunctionVariables))
+		{
+			result = true;
+		}
+	}
+	else
+	{
+		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = entity->entityNodeDefinitionList->begin(); definitionNodeListIterator < entity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+		{
+			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
+			if(parentSubstanceConcept->isSubstanceConcept)
+			{				
+				if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, entity, parentSubstanceConcept, logicalConditionConjunctionVariables))
+				{
+					result = true;
+				}
+			}
+		}
+	}
+	*/
+
+	return contextFound;
+
+}
+bool generateContextBlocksSimple(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
+#else
+bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
+#endif
 {
 	bool contextFound = false;
 	
@@ -318,7 +395,7 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		if(logicalConditionConjunctionVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC)
 		{
-			//cout << "onlyGenerateContextBlocksIfConnectionsParsedForNLC: currentCodeBlockInTree = originalCodeBlockInTree" << endl;
+			cout << "onlyGenerateContextBlocksIfConnectionsParsedForNLC: currentCodeBlockInTree = originalCodeBlockInTree" << endl;
 			*currentCodeBlockInTree = originalCodeBlockInTree;
 		}
 		#endif
@@ -352,6 +429,34 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	{
 		result = true;
 	}
+
+	/*
+	#ifdef NLC_PARSE_CONTEXT_CHILDREN
+	//eg A yellow bannana is on the table. Yellow bannanas are fruit. Apples are fruit. An apple is on the green tree. The fruit is tasty.
+	//entity = parent instance
+	if(entity->isSubstanceConcept)
+	{
+		if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, NULL, entity, logicalConditionConjunctionVariables))
+		{
+			result = true;
+		}
+	}
+	else
+	{
+		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = entity->entityNodeDefinitionList->begin(); definitionNodeListIterator < entity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+		{
+			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
+			if(parentSubstanceConcept->isSubstanceConcept)
+			{				
+				if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, entity, parentSubstanceConcept, logicalConditionConjunctionVariables))
+				{
+					result = true;
+				}
+			}
+		}
+	}
+	#endif
+	*/
 	
 	/*
 	//if object near a car that is towed by a truck / if object has a car that is towed by a truck
@@ -368,6 +473,66 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	*/
 	return result;
 }
+
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* parentInstance, GIAentityNode* parentSubstanceConcept, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
+{
+	bool result = false;
+	cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;		
+	for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator = parentSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator < parentSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator++)
+	{
+		GIAentityNode* childSubstanceConcept = (*reverseDefinitionNodeListIterator)->entity;
+		if(childSubstanceConcept->isSubstanceConcept)
+		{
+			if(childSubstanceConcept != parentInstance)
+			{
+				cout << "childSubstanceConcept = " << childSubstanceConcept->entityName << endl;		
+				for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator2 = childSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator2 < childSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator2++)
+				{	
+					cout << "childSubstance" << endl;			
+					GIAentityNode* childSubstance = (*reverseDefinitionNodeListIterator2)->entity;
+					if(!(childSubstance->isSubstanceConcept))
+					{
+						//definition child (e.g. apple)
+						NLCcodeblock * originalCodeBlockInTree = *currentCodeBlockInTree;
+
+						NLCitem * propertyItem = new NLCitem(childSubstance, NLC_ITEM_TYPE_CLASS);
+						//context property item:		
+						if(assumedToAlreadyHaveBeenDeclared(childSubstance))
+						{
+							cout << "1 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
+							*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
+						}
+						else
+						{
+							cout << "2 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN !assumedToAlreadyHaveBeenDeclared: childSubstance = " << childSubstance->entityName << endl;
+							*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+						}	
+
+						//set fruit2 iter to bannana1: "fruit2 = bannana1;
+						if(parentInstance != NULL)
+						{
+							//cout << "createCodeBlockReassignIter" << endl;
+							*currentCodeBlockInTree =  createCodeBlockReassignIter(*currentCodeBlockInTree, parentInstance);
+						}
+
+						if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstance), childSubstance, childSubstance->sentenceIndexTemp, logicalConditionConjunctionVariables))
+						{
+							result = true;
+						}
+						else
+						{
+							*currentCodeBlockInTree = originalCodeBlockInTree;
+							clearCodeBlock(*currentCodeBlockInTree);
+						}
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+#endif
 			
 bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode * entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
 {
@@ -382,15 +547,12 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 			GIAentityNode* propertyEntity = propertyConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false))	//changed from true to false 1e5b	//logicalConditionConjunctionVariables->checkSameSentenceConnection
 			{//only write conditions that are explicated in current sentence
-				#ifdef NLC_DEBUG
+				//#ifdef NLC_DEBUG
 				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
-				#endif
-				#ifdef NLC_DEBUG_PARSE_CONTEXT2
-				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
+				//#endif
 				cout << "\t propertyConnection->NLCparsedForCodeBlocks: " << propertyConnection->NLCparsedForCodeBlocks << endl;
 				cout << "\t logicalConditionConjunctionVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC: " << logicalConditionConjunctionVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC << endl;
 				cout << "\t propertyConnection->isReference: " << propertyConnection->isReference << endl;
-				#endif
 				
 				propertyConnection->NLCparsedForCodeBlocks = true;
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -833,7 +995,7 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 										#endif
 										parentEntity->NLCparsedForCodeBlocks = true;
 										parentEntity->NLClocalListVariableHasBeenInitialised = true;
-										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+										cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 
 										#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 										//Part 2b: generate object initialisations based on substance concepts (class inheritance)
@@ -876,24 +1038,21 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 
 GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool parseConditionParents)
 {
-	GIAentityNode * parentEntityNew = currentEntity;
-	
 	bool foundParentProperty = false;
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = currentEntity->propertyNodeReverseList->begin(); propertyNodeListIterator < currentEntity->propertyNodeReverseList->end(); propertyNodeListIterator++)
 	{
 		GIAentityConnection * parentConnection = *propertyNodeListIterator;
 		GIAentityNode * parentEntity = parentConnection->entity;
-		
+
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		if(checkSentenceIndexParsingCodeBlocks(parentEntity, parentConnection, sentenceIndex, false))	//NB will parse references to entities in previous sentence
 		#else
 		if(checkSentenceIndexParsingCodeBlocks(parentEntity, parentConnection, sentenceIndex, false) || parentEntity->NLCparsedForCodeBlocks)
 		#endif
 		{
-			parentEntityNew = getParent(parentEntity, sentenceIndex, parseConditionParents);
+			currentEntity = getParent(parentEntity, sentenceIndex, parseConditionParents);
 		}
 		foundParentProperty = true;
-
 	}
 	if(!foundParentProperty && parseConditionParents)
 	{//added 1e9a
@@ -907,7 +1066,6 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 			if(!(conditionEntity->conditionSubjectEntity->empty()))
 			{
 				conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
-
 				foundConditionSubject = true;
 
 				#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
@@ -916,13 +1074,13 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 				if(checkSentenceIndexParsingCodeBlocks(conditionSubject, conditionConnection, sentenceIndex, false) || conditionSubject->NLCparsedForCodeBlocks)
 				#endif
 				{
-					parentEntityNew = getParent(conditionSubject, sentenceIndex, parseConditionParents);
+					currentEntity = getParent(conditionSubject, sentenceIndex, parseConditionParents);
 				}
 			}
 		}
 	}
 
-	return parentEntityNew;
+	return currentEntity;
 }
 
 

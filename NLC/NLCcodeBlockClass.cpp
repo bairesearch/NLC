@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h11d 20-August-2014
+ * Project Version: 1i2a 20-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,6 +42,9 @@
 
 NLClogicalConditionConjunctionVariables::NLClogicalConditionConjunctionVariables(void)
 {
+	#ifdef NLC_PARSE_CONTEXT_CHILDREN
+	checkSameSentenceConnection = true;
+	#endif
 	logicalOperation = NLC_LOGICAL_CONDITION_OPERATIONS_FOR;
 	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	negative = BOOL_IRRELEVANT;
@@ -643,6 +646,32 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 	return entityHasParent;
 }
 
+
+/*
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection)
+{
+	bool result = false;
+	//cout << "connection->sentenceIndexTemp = " << connection->sentenceIndexTemp << endl;
+	if(checkSameSentenceConnection)
+	{
+		if(checkSentenceIndexParsingCodeBlocks(entity, GIAentityConnection, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
+		{
+			result = true;
+		}
+	}
+	else
+	{
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
+		{
+			result = true;
+		}	
+	}
+	return result;
+}
+#endif
+*/
+
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
@@ -1121,6 +1150,62 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 
 	return currentCodeBlockInTree;
 }
+
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{	
+	NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_CLASS);
+
+	currentCodeBlockInTree->parameters.push_back(entityClass);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REASSIGN_ITER;
+
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string categoryListName)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * categoryItem = new NLCitem(categoryListName, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(categoryItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_CATEGORY_LIST_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string categoryListName)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	NLCitem * categoryItem = new NLCitem(categoryListName, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(categoryItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_CATEGORY_LIST;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, string categoryListName)
+{
+	currentCodeBlockInTree->parameters.push_back(item);
+	
+	NLCitem * categoryItem = new NLCitem(categoryListName, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(categoryItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_CATEGORY;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+#endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock)
 {

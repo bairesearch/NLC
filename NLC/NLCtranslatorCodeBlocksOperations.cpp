@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u2b 26-September-2016
+ * Project Version: 1u2c 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1866,6 +1866,10 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 		}
 		else
 		{
+			#ifdef NLC_DEBUG
+			cout << "generateParentInitialisationCodeBlockWithChecks failed" << endl;
+			#endif
+
 			bool logicalConditionBooleanStatement = false;
 			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 			if(generateContextBlocksVariables->logicalConditionBooleanStatement)

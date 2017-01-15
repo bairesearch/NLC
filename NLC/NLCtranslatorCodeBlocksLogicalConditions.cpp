@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u2b 26-September-2016
+ * Project Version: 1u2c 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -655,6 +655,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 
 								//initialise parsing of indefinate entities (set how to intepret these, eg "a house")
 								bool parentEntityWasNotDeclared = false;
+								bool initialisedParent = false;
 								if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
 								{
 									parentEntityWasNotDeclared = true;
@@ -681,12 +682,17 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									{
 										//isnt this redundant with parseParsablePhraseParent?
 										//eg A dog's value = X.
+										#ifndef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
 										if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false, false))
 										{
 											#ifdef NLC_DEBUG
 											//cout << "generateParentInitialisationCodeBlockWithChecks passed" << endl;
 											#endif
+											#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
+											initialisedParent = true;
+											#endif
 										}
+										#endif
 									}
 								}
 								else
@@ -694,9 +700,53 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									//eg The dog's value = X.
 								}
 
-								GIAentityNode* childEntity = NULL;
+								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
+								bool foundChildEntity = false;
+								GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
+								
+								GIAentityNode* parentEntityTemp = NULL;	//already determined
+								bool newInitialisation = false;
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-								bool contextFound = parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
+								if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntityTemp, &newInitialisation))
+								{
+								}
+								#else
+								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
+								GIAentityNode* childEntity = NULL;
+								if(initialisedParent)
+								{
+									bool foundChildEntity = false;
+									childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
+									if(foundChildEntity)
+									{
+										//NB even if NLC_LOCAL_LISTS_USE_INSTANCE_NAMES, the parent entity will not be more than 1 level above the child (as a new entity has been declared; eg "A dog's value = X.")
+										#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+										*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, sentenceIndex);
+										#else
+										*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entity);
+										#endif
+									}
+									else
+									{
+										#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+										*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, *parentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, sentenceIndex);
+										#else
+										*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, *parentEntity);
+										#endif
+										*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, entity, generateInstanceName(*parentEntity));
+									}
+								}
+								else
+								{
+								#endif
+									childEntity = NULL;
+									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+									bool contextFound = parseParsablePhraseParent(currentCodeBlockInTree, sentenceIndex, parentEntity, &generateContextBlocksVariables, &childEntity, currentFullSentence->logicalConditionOperator);
+
+								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
+								}
+								#endif
+								#endif
 
 								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
 								if(currentFullSentence->hasLogicalConditionOperator)
@@ -711,7 +761,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									}
 								}
 								#endif
-
+									
 								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} pass: parseParsablePhraseParent: sentenceIndex = " << sentenceIndex << endl;
 								#endif
@@ -893,10 +943,14 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		}
 		else
 		{
+			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_IGNORE_NLP_BUG
+			foundBooleanStatementExpression = false;
+			#else
 			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
 			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
 			cout << "parsablePhrase->sentenceContents = " << parsablePhrase->sentenceContents << endl;
 			exit(0);
+			#endif
 		}
 	}
 

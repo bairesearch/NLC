@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g3a 01-July-2014
+ * Project Version: 1g4a 03-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,14 +49,15 @@
 
 #define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS		//1f1a+ if statement support
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
-	#define NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES (6)
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES (7)
 	#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 		#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID (99)
 	#endif
-	static string conditionLogicalOperationsArray[NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES] = {"if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
-	#define NLC_CONDITION_LOGICAL_OPERATIONS_IF (0)
-	#define NLC_CONDITION_LOGICAL_OPERATIONS_WHILE (4)
+	static string conditionLogicalOperationsArray[NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_FOR (0)	//default
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_IF (1)
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_WHILE (5)
 	#ifdef GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS	//hasnt been coded [always use substance concept nodes rather than raw concept nodes to store concept relationships]
 		#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
 		#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
@@ -69,8 +70,6 @@
 //#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES
 //#define NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
-
-#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 
 //#define NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS	//BAD
 

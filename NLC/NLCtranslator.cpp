@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g3a 01-July-2014
+ * Project Version: 1g4a 03-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -81,7 +81,7 @@ bool identifyAndTagAllConditionLogicalOperations(vector<GIAentityNode*> * entity
 				if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, true))	//could be set to false instead
 				{
 					bool foundConditionLogicalOperation = false;
-					for(int i=0; i<NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES; i++)
+					for(int i=1; i<NLC_CONDITION_LOGICAL_OPERATIONS_NUMBER_OF_TYPES; i++)		//i=1 to ignore "for"
 					{
 						if(conditionEntity->entityName == conditionLogicalOperationsArray[i])
 						{

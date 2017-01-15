@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13e 18-October-2014
+ * Project Version: 1k13f 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -283,6 +283,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 											//cout << "(!foundLocalClassDefinition): " << targetName << endl;
 											#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 											targetClassDefinition->functionDependency = functionDependency;
+											targetClassDefinition->functionDependencyParent = parentFunctionDependency;
 											#endif
 											
 											classDefinition->functionList.push_back(targetClassDefinition);
@@ -515,6 +516,7 @@ NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclarati
 
 			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 			functionClassDefinition->functionDependency = functionDependency;
+			functionClassDefinition->functionDependencyParent = parentFunctionDependency;
 			#endif
 
 			functionClassDefinition->functionNameSpecial = generateFunctionName(functionName);

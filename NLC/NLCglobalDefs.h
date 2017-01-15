@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,8 +57,8 @@
 	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN	//1i1a/19-August-2014/1i3 - categories
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 		#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES	//1i4a
-		#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"
-		#define NLC_ITEM_TYPE_LOGICALCONDITIONVAR_APPENDITION "LogicalCondition"	//1j15b
+		#define NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION "Category"
+		#define NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION "LogicalCondition"	//1j15b
 		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 			#define NLC_USE_ADVANCED_REFERENCING	//added 1j3a+ (replaces GIA_USE_ADVANCED_REFERENCING)
 			#ifdef NLC_USE_ADVANCED_REFERENCING
@@ -111,8 +111,8 @@
 			#define NLC_GENERATE_TYPE_LISTS
 		#endif
 		#ifdef NLC_GENERATE_TYPE_LISTS
-			#define NLC_ITEM_TYPE_TYPEVAR_APPENDITION2 "Type"
-			#define NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION2 "Instance"
+			#define NLC_ITEM_TYPE_TYPE_VAR_APPENDITION2 "Type"
+			#define NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION2 "Instance"
 		#endif
 	#endif
 
@@ -163,6 +163,18 @@
 	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
 		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID (99)
+		#define NLC_RECORD_ACTION_HISTORY
+		#ifdef NLC_RECORD_ACTION_HISTORY
+			#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_ADVANCED
+			#define NLC_ITEM_TYPE_ACTION_VAR_APPENDITION "Action"
+			#define NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION "ActionIncoming"
+			#define NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION "ActionSubject"
+			#define NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION "ActionObject"
+		#else
+			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+				#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC		//only for !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+			#endif
+		#endif
 	#endif	
 #endif
 
@@ -393,10 +405,12 @@
 	#define NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE "C"		//eg logicalConditionL0C0	//C="case"
 	
 	#define NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE	//this is a more restricted implementation but is faster. It still requires modifications of GIA (it requires entityIndex information to be stored in GIAdatabase.cpp or GIAxmlConversion.cpp)
-	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS	//1gXy+ logical if/while/for support + conjunction support
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED	//1gXy+ logical if/while/for support + conjunction support
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 		#define NLC_MAXIMUM_NUMBER_OF_CONJUNCTIONS_IN_SENTENCE (100)
 		//#assert defined NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
+	#else
+		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_BASIC
 	#endif
 	
 	#ifdef GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS	//hasnt been coded [always use substance concept nodes rather than raw concept nodes to store concept relationships]
@@ -526,6 +540,5 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 //#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES
 
-//defined NLC_NOT_NECESSARY
 
 #endif

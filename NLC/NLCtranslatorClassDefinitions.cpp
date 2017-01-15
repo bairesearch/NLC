@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #include <cmath>
 
 #include "NLCtranslatorClassDefinitions.h"
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 #include "GIAtranslatorDefs.h"
 #endif
 
@@ -252,6 +252,63 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 												targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 											}
 
+											#ifdef NLC_RECORD_ACTION_HISTORY
+											bool foundClassDefinitionAction = false;
+											string actionClassName = generateClassName(targetEntity);
+											NLCclassDefinition * classDefinitionAction = findClassDefinition(classDefinitionList, actionClassName, &foundClassDefinitionAction);	//see if class definition already exists
+											if(!foundClassDefinitionAction)
+											{
+												classDefinitionAction = new NLCclassDefinition(actionClassName);
+												classDefinitionList->push_back(classDefinitionAction);
+											}
+
+											bool foundLocalClassDefinitionAction = false;
+											NLCclassDefinition * localClassDefinitionAction = findClassDefinition(&(classDefinition->actionList), actionClassName, &foundLocalClassDefinitionAction);	//see if class definition already exists
+											if(!foundLocalClassDefinitionAction)
+											{
+												classDefinition->actionList.push_back(classDefinitionAction);
+
+											}									
+											bool foundLocalClassDefinitionActionOwner = false;
+											string actionOwnerClassName = className;
+											NLCclassDefinition * localClassDefinitionActionOwner = findClassDefinition(&(classDefinitionAction->actionSubjectList), actionOwnerClassName, &foundLocalClassDefinitionActionOwner);	//see if class definition already exists
+											if(!foundLocalClassDefinitionActionOwner)
+											{
+												classDefinitionAction->actionSubjectList.push_back(classDefinition);
+											}		
+											
+											if(hasActionObject)
+											{
+												bool foundClassDefinitionActionObject = false;
+												string actionObjectClassName = generateClassName(actionObjectName);
+												NLCclassDefinition * classDefinitionActionObject = findClassDefinition(classDefinitionList, actionObjectClassName, &foundClassDefinitionActionObject);	//see if class definition already exists
+												if(!foundClassDefinitionActionObject)
+												{
+													classDefinitionActionObject = new NLCclassDefinition(actionObjectClassName);
+													classDefinitionList->push_back(classDefinitionActionObject);
+													//cout << "!foundClassDefinition" << endl;
+													classDefinitionAction->actionObjectList.push_back(classDefinitionActionObject);
+													classDefinitionActionObject->actionIncomingList.push_back(classDefinitionAction);
+												}
+												else
+												{
+													bool foundLocalClassDefinitionActionObject = false;
+													string actionObjectClassName = generateClassName(actionObjectName);
+													NLCclassDefinition * localClassDefinitionActionObject = findClassDefinition(&(classDefinitionAction->actionObjectList), actionObjectClassName, &foundLocalClassDefinitionActionObject);	//see if class definition already exists
+													if(!foundLocalClassDefinitionActionObject)
+													{
+														classDefinitionAction->actionObjectList.push_back(classDefinitionActionObject);
+													}
+													bool foundLocalClassDefinitionActionIncoming = false;
+													NLCclassDefinition * localClassDefinitionActionIncoming = findClassDefinition(&(classDefinitionActionObject->actionIncomingList), actionClassName, &foundLocalClassDefinitionActionIncoming);	//see if class definition already exists
+													if(!foundLocalClassDefinitionActionIncoming)
+													{
+														classDefinitionActionObject->actionIncomingList.push_back(classDefinitionAction);
+													}
+												}
+											}
+											#endif
+											
 											#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 											//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
 											generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
@@ -421,10 +478,9 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 							{
 								//this will be true if an action (function reference) has been declared twice, but the action (function) has not been defined, eg "A chicken ate a pie. The chicken that ate a pie rowed the boat."
 								/*
-								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList functionName: " << functionName << endl;
-								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList functionOwnerName: " << functionOwnerName << endl;
-								cout << "generateClassHeirarchyFunctions() error: foundFunctionDependencyInList functionObjectName: " << functionObjectName << endl;
-								exit(0);
+								cout << "generateClassHeirarchyFunctions(): foundFunctionDependencyInList functionName: " << functionName << endl;
+								cout << "generateClassHeirarchyFunctions(): foundFunctionDependencyInList functionOwnerName: " << functionOwnerName << endl;
+								cout << "generateClassHeirarchyFunctions(): foundFunctionDependencyInList functionObjectName: " << functionObjectName << endl;
 								*/
 								NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
 								bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependenciesInParentTemp);
@@ -460,88 +516,146 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 								parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 								functionDependencyList->push_back(functionDependency);
 
-								string functionOwnerClassDefinitionName = "";
+								string classDefinitionFunctionOwnerName = "";
 								if(hasActionSubject)
 								{
-									functionOwnerClassDefinitionName = generateClassName(actionSubject);
+									classDefinitionFunctionOwnerName = generateClassName(actionSubject);
 									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 									if(actionEntity->isSubstanceConcept)
 									{
-										functionOwnerClassDefinitionName = generateSubstanceConceptClassName(actionSubject);	//is this still required?
+										classDefinitionFunctionOwnerName = generateSubstanceConceptClassName(actionSubject);	//is this still required?
 									}
 									#endif
 								}
 								else
 								{
-									functionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
+									classDefinitionFunctionOwnerName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
 								}
-								bool foundFunctionOwnerClassDefinition = false;
-								NLCclassDefinition * functionOwnerClassDefinition = findClassDefinition(classDefinitionList, functionOwnerClassDefinitionName, &foundFunctionOwnerClassDefinition);	//see if class definition already exists
-								if(!foundFunctionOwnerClassDefinition)
+								bool foundClassDefinitionFunctionOwner = false;
+								NLCclassDefinition * classDefinitionFunctionOwner = findClassDefinition(classDefinitionList, classDefinitionFunctionOwnerName, &foundClassDefinitionFunctionOwner);	//see if class definition already exists
+								if(!foundClassDefinitionFunctionOwner)
 								{
-									functionOwnerClassDefinition = new NLCclassDefinition(functionOwnerClassDefinitionName);
-									classDefinitionList->push_back(functionOwnerClassDefinition);
+									classDefinitionFunctionOwner = new NLCclassDefinition(classDefinitionFunctionOwnerName);
+									classDefinitionList->push_back(classDefinitionFunctionOwner);
 									//cout << "!foundClassDefinition" << endl;
 								}
 
-								string functionClassDefinitionName = generateInstanceName(actionEntity);
-								bool foundFunctionClassDefinition = false;
-								NLCclassDefinition * functionClassDefinition = findClassDefinition(classDefinitionList, functionClassDefinitionName, &foundFunctionClassDefinition);	//see if class definition already exists
-								if(!foundFunctionClassDefinition)
+								string classDefinitionFunctionName = generateInstanceName(actionEntity);
+								bool foundClassDefinitionFunction = false;
+								NLCclassDefinition * classDefinitionFunction = findClassDefinition(classDefinitionList, classDefinitionFunctionName, &foundClassDefinitionFunction);	//see if class definition already exists
+								if(!foundClassDefinitionFunction)
 								{
-									//cout << "new NLCclassDefinition(" << functionClassDefinitionName << endl;
-									functionClassDefinition = new NLCclassDefinition(functionClassDefinitionName);
-									classDefinitionList->push_back(functionClassDefinition);
+									//cout << "new NLCclassDefinition(" << classDefinitionFunctionName << endl;
+									classDefinitionFunction = new NLCclassDefinition(classDefinitionFunctionName);
+									classDefinitionList->push_back(classDefinitionFunction);
 								}
 
-								//cout << "generateClassHeirarchy: functionClassDefinitionName = " << functionClassDefinitionName << endl;
-								//cout << "generateClassHeirarchy: functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
+								//cout << "generateClassHeirarchy: classDefinitionFunctionName = " << classDefinitionFunctionName << endl;
+								//cout << "generateClassHeirarchy: classDefinitionFunctionOwnerName = " << classDefinitionFunctionOwnerName << endl;
 
-								functionClassDefinition->functionNameSpecial = generateFunctionName(actionEntity);
+								classDefinitionFunction->functionNameSpecial = generateFunctionName(actionEntity);
 								#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-								functionClassDefinition->actionOrConditionInstance = actionEntity;
+								classDefinitionFunction->actionOrConditionInstance = actionEntity;
 								#endif
-								functionClassDefinition->isActionOrConditionInstanceNotClass = true;
-								//cout << "functionOwnerClassDefinitionName->isActionOrConditionInstanceNotClass" << endl;
+								classDefinitionFunction->isActionOrConditionInstanceNotClass = true;
+								//cout << "classDefinitionFunctionOwnerName->isActionOrConditionInstanceNotClass" << endl;
 
 								//declare functions
 
 								//functionList
-								bool foundLocalClassDefinition = false;
-								//cout << "findClassDefinition: " << functionClassDefinitionName << endl;
-								NLCclassDefinition * localClassDefinition = findClassDefinition(&(functionOwnerClassDefinition->functionList), functionClassDefinitionName, &foundLocalClassDefinition);	//see if class definition already exists	//note this check will not work for functions because they are added by instance 
-								//cout << "done findClassDefinition: " << functionClassDefinitionName << endl;
-								if(!foundLocalClassDefinition)
+								bool foundLocalClassDefinitionFunction = false;
+								//cout << "findClassDefinition: " << classDefinitionFunctionName << endl;
+								NLCclassDefinition * localClassDefinitionFunction = findClassDefinition(&(classDefinitionFunctionOwner->functionList), classDefinitionFunctionName, &foundLocalClassDefinitionFunction);	//see if class definition already exists	//note this check will not work for functions because they are added by instance 
+								//cout << "done findClassDefinition: " << classDefinitionFunctionName << endl;
+								if(!foundLocalClassDefinitionFunction)
 								{
-									//cout << "(!foundLocalClassDefinition): " << functionClassDefinitionName << endl;
+									//cout << "(!foundLocalClassDefinition): " << classDefinitionFunctionName << endl;
 									#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-									functionClassDefinition->functionDependency = functionDependency;
+									classDefinitionFunction->functionDependency = functionDependency;
 									#endif
 
-									functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
+									classDefinitionFunctionOwner->functionList.push_back(classDefinitionFunction);
 									
 									#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 									//added 1k18a for dynamic casting of children
 									if(hasFunctionOwnerClass)
 									{
 										NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
-										functionClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
+										classDefinitionFunction->parameters.push_back(classDeclarationFunctionOwnerItem);
 									}
 									#endif
 																		
 									NLCitem * classDeclarationFunctionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
-									functionClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+									classDefinitionFunction->parameters.push_back(classDeclarationFunctionItem);
 									
 									if(hasFunctionObjectClass)
 									{
 										NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
-										functionClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
+										classDefinitionFunction->parameters.push_back(classDeclarationFunctionObjectItem);
 									}
 
+									#ifdef NLC_RECORD_ACTION_HISTORY
+									bool foundClassDefinitionAction = false;
+									string actionClassName =  generateClassName(actionEntity);
+									NLCclassDefinition * classDefinitionAction = findClassDefinition(classDefinitionList, actionClassName, &foundClassDefinitionAction);	//see if class definition already exists
+									if(!foundClassDefinitionAction)
+									{
+										classDefinitionAction = new NLCclassDefinition(actionClassName);
+										classDefinitionList->push_back(classDefinitionAction);
+									}
+									if(hasActionSubject)
+									{
+										bool foundLocalClassDefinitionAction = false;
+										NLCclassDefinition * localClassDefinitionAction = findClassDefinition(&(classDefinitionFunctionOwner->actionList), actionClassName, &foundLocalClassDefinitionAction);	//see if class definition already exists
+										if(!foundLocalClassDefinitionAction)
+										{
+											classDefinitionFunctionOwner->actionList.push_back(classDefinitionAction);
+
+										}
+										bool foundLocalClassDefinitionActionOwner = false;
+										string actionOwnerClassName = classDefinitionFunctionOwnerName;
+										NLCclassDefinition * localClassDefinitionActionOwner = findClassDefinition(&(classDefinitionAction->actionSubjectList), actionOwnerClassName, &foundLocalClassDefinitionActionOwner);	//see if class definition already exists
+										if(!foundLocalClassDefinitionActionOwner)
+										{
+											classDefinitionAction->actionSubjectList.push_back(classDefinitionFunctionOwner);
+										}
+									}
+									
+									if(hasActionObject)
+									{
+										bool foundClassDefinitionActionObject = false;
+										string actionObjectClassName = generateClassName(actionObjectName);
+										NLCclassDefinition * classDefinitionActionObject = findClassDefinition(classDefinitionList, actionObjectClassName, &foundClassDefinitionActionObject);	//see if class definition already exists
+										if(!foundClassDefinitionActionObject)
+										{
+											classDefinitionActionObject = new NLCclassDefinition(actionObjectClassName);
+											classDefinitionList->push_back(classDefinitionActionObject);
+											//cout << "!foundClassDefinition" << endl;
+											classDefinitionAction->actionObjectList.push_back(classDefinitionActionObject);
+											classDefinitionActionObject->actionIncomingList.push_back(classDefinitionAction);
+										}
+										else
+										{
+											bool foundLocalClassDefinitionActionObject = false;
+											string actionObjectClassName = generateClassName(actionObjectName);
+											NLCclassDefinition * localClassDefinitionActionObject = findClassDefinition(&(classDefinitionAction->actionObjectList), actionObjectClassName, &foundLocalClassDefinitionActionObject);	//see if class definition already exists
+											if(!foundLocalClassDefinitionActionObject)
+											{
+												classDefinitionAction->actionObjectList.push_back(classDefinitionActionObject);
+											}
+											bool foundLocalClassDefinitionActionIncoming = false;
+											NLCclassDefinition * localClassDefinitionActionIncoming = findClassDefinition(&(classDefinitionActionObject->actionIncomingList), actionClassName, &foundLocalClassDefinitionActionIncoming);	//see if class definition already exists
+											if(!foundLocalClassDefinitionActionIncoming)
+											{
+												classDefinitionActionObject->actionIncomingList.push_back(classDefinitionAction);
+											}
+										}
+									}
+									#endif
 
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 									//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
-									generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionClassDefinition->parameters));
+									generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(classDefinitionFunction->parameters));
 									//#endif
 									#endif
 								}
@@ -588,7 +702,7 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	bool conjunctionConditionFound = textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 	if(conjunctionConditionFound)
 	{
@@ -654,7 +768,7 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	#endif
 	
 	//#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED	//this criteria was used [perhaps unintentionally] before 1k6a
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 	if(conjunctionConditionFound)
 	{

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,9 +50,32 @@ void printLine(string command, int level, string * code)
 
 string generatePropertyListName(string propertyClassName)
 {
-	string propertyListName = propertyClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+	string propertyListName = propertyClassName + NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION;
 	return propertyListName;
 }
+
+#ifdef NLC_RECORD_ACTION_HISTORY
+string generateActionListName(string actionClassName)
+{
+	string actionListName = actionClassName + NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
+	return actionListName;
+}
+string generateActionIncomingListName(string actionClassName)
+{
+	string actionIncomingListName = actionClassName + NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
+	return actionIncomingListName;
+}
+string generateActionSubjectListName(string actionSubjectClassName)
+{
+	string actionSubjectListName = actionSubjectClassName + NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION;
+	return actionSubjectListName;
+}
+string generateActionObjectListName(string actionObjectClassName)
+{
+	string actionObjectListName = actionObjectClassName + NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION;
+	return actionObjectListName;
+}
+#endif
 
 string generateEntityListName(NLCitem * entityParam)
 {
@@ -74,12 +97,12 @@ string generateEntityListAppendName()
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
-		string entityLocalListAppendName = NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+		string entityLocalListAppendName = NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION;
 		#else
-		string entityLocalListAppendName = NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION;	
+		string entityLocalListAppendName = NLC_ITEM_TYPE_INSTANCELIST_VAR_APPENDITION;	
 		#endif
 	#else
-		string entityLocalListAppendName =  NLC_ITEM_TYPE_LISTVAR_APPENDITION;		
+		string entityLocalListAppendName =  NLC_ITEM_TYPE_LIST_VAR_APPENDITION;		
 	#endif
 	return entityLocalListAppendName;
 }
@@ -87,9 +110,9 @@ string generateEntityListAppendName()
 string generateGenericListName(string genericObjectName, string genericListAppendName)
 {
 	#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
-	string propertyListName = genericObjectName + genericListAppendName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION;
+	string propertyListName = genericObjectName + genericListAppendName + NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION;
 	#else
-	string propertyListName = genericObjectName + genericListAppendName + NLC_ITEM_TYPE_LISTVAR_APPENDITION;
+	string propertyListName = genericObjectName + genericListAppendName + NLC_ITEM_TYPE_LIST_VAR_APPENDITION;
 	#endif
 	return propertyListName;
 }
@@ -97,9 +120,9 @@ string generateGenericListName(string genericObjectName, string genericListAppen
 string generateConditionListName(string conditionClassName, string conditionObjectClassName)
 {
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;	
+	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION;	
 	#else
-	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION;
+	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION;
 	#endif
 	return conditionListName;
 }
@@ -107,9 +130,9 @@ string generateConditionListName(string conditionClassName, string conditionObje
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName)
 {
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	string conditionListName = conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONPAIR_VAR_APPENDITION;
 	#else
-	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	string conditionListName = conditionClassName + conditionObjectClassName + NLC_ITEM_TYPE_CONDITIONPAIR_VAR_APPENDITION;
 	#endif
 	return conditionListName;
 }
@@ -199,6 +222,13 @@ string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName,
 	#endif
 	return codeEntityListDefinitionReferenceTypeText;
 }
+
+string generateCodeGenericListDefinitionText(NLCitem * entityParam, string genericListAppendName, int progLang)
+{
+	string codeGenericListDefinitionText = generateCodeEntityListDefinitionTypeText(entityParam->className, progLang) + generateGenericListName(entityParam->genericObjectName, genericListAppendName);
+	return codeGenericListDefinitionText;
+}
+
 
 
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang)

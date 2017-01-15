@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,8 +54,8 @@ using namespace std;
 #define NLC_ITEM_INSTANCE_ID_UNDEFINED (INT_DEFAULT_VALUE)
 
 #define NLC_ITEM_TYPE_UNDEFINED (-1)
-#define NLC_ITEM_TYPE_OBJECT (0)
-#define NLC_ITEM_TYPE_CLASS (1)
+#define NLC_ITEM_TYPE_OBJECT (0)	//primary item type
+#define NLC_ITEM_TYPE_CLASS (1)		//not used
 #define NLC_ITEM_TYPE_TEMPVAR (3)
 #define NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST (7)
 #define NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST (8)
@@ -121,12 +121,12 @@ public:
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION/NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST only
 
 	bool negative;
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	int conjunctionType;
 	#endif
 	
 	string name;	//added 1h1d 24-July-2014 for NLC_ITEM_TYPE_VARIABLE
-	string genericObjectName;	//added 1i7a
+	string genericObjectName;	//added 1i7a	//NB name could be co-opted for this purpose (ie instead of using genericObjectName)
 };
 
 

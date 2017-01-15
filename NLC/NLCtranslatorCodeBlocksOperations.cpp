@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,6 +105,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		}
 
 		NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+		generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
 		
 		if(actionHasObject)
 		{
@@ -120,13 +121,18 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			{
 				//cout << "actionHasObject: parent and its children initialised" << endl;
 			}
+						
+			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
+			#ifdef NLC_RECORD_ACTION_HISTORY
+			*currentCodeBlockInTree = createCodeBlockRecordHistoryActionObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
+			#endif
+			
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
 			#ifdef NLC_USE_ADVANCED_REFERENCING
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
 			#endif
 			#endif
 			
-			NLCitem *functionObjectItem = new NLCitem(objectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT);
 			NLCitem *functionSubjectItem = NULL;
 			if(actionHasSubject)
 			{
@@ -134,7 +140,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				#ifdef NLC_USE_ADVANCED_REFERENCING
 				generateContextBlocksVariables.enterGeneratedCategoryList = true;	//is required for createCodeBlockUpdateLastSentenceReferenced()
 				codeBlockInTreeBeforeParseContext = *currentCodeBlockInTree;
-				cout << "subjectEntity = " << subjectEntity->entityName << endl;
+				//cout << "subjectEntity = " << subjectEntity->entityName << endl;
 				#else
 				generateContextBlocksVariables.enterGeneratedCategoryList = false;	
 				#endif
@@ -143,32 +149,24 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				{
 					//cout << "actionHasSubject2: parent and its children initialised" << endl;
 				}
+					
+				functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+				#ifdef NLC_RECORD_ACTION_HISTORY
+				*currentCodeBlockInTree = createCodeBlockRecordHistoryActionSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+				#endif
+			
 				#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 				#ifdef NLC_USE_ADVANCED_REFERENCING
 				*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);
-				cout << "passcontext2: subjectEntity = " << subjectEntity->entityName << endl;
+				//cout << "passcontext2: subjectEntity = " << subjectEntity->entityName << endl;
 				#endif
 				#endif
-					
-				functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
-			
-				#ifdef NLC_NOT_NECESSARY
-				//required just for implictlyDeclaredFunctionList...;
-				NLCitem * functionItemFullContextForRecordOnly = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION);
-				getEntityContext(subjectEntity, &(functionItemFullContextForRecordOnly->context), true, sentenceIndex, true);
-				implictlyDeclaredFunctionList.push_back(functionItemFullContextForRecordOnly);
-				#endif
-				//subjectEntity->parsedForNLCcodeBlocksActionRound = true;
-				
+							
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
 				*currentCodeBlockInTree = createCodeBlockExecuteSubjectObject(*currentCodeBlockInTree, functionItem, functionSubjectItem, functionObjectItem);
 			}
 			else
 			{
-				#ifdef NLC_NOT_NECESSARY
-				implictlyDeclaredFunctionListTopLevel.push_back(functionItem);
-				#endif
-				
 				functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
 				*currentCodeBlockInTree = createCodeBlockExecuteObject(*currentCodeBlockInTree, functionItem, functionObjectItem);
 			}
@@ -193,15 +191,20 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 			{
 				//cout << "actionHasSubject: parent and its children initialised" << endl;
 			}
+
+			//cout << "subjectRequiredTempVar" << endl;
+			NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
+				
+			#ifdef NLC_RECORD_ACTION_HISTORY
+			*currentCodeBlockInTree = createCodeBlockRecordHistoryActionSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
+			#endif
+				
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 			#ifdef NLC_USE_ADVANCED_REFERENCING
 			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseContext);	
 			#endif
 			#endif
 
-			//cout << "subjectRequiredTempVar" << endl;
-			NLCitem *functionSubjectItem = new NLCitem(subjectEntity, NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER);
-				
 			functionExecuteCodeBlockInTree = *currentCodeBlockInTree;
 			*currentCodeBlockInTree = createCodeBlockExecuteSubject(*currentCodeBlockInTree, functionItem, functionSubjectItem);
 
@@ -314,15 +317,15 @@ bool initialiseParentIfNecessaryOrGenerateCodeBlocks(NLCcodeblock ** currentCode
 	if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, parseLogicalConditions))
 	{
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 		#else
-		generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+		generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 		#endif
 		result = true;
 	}
 	else
 	{
-		if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))
+		if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
 		{
 			result = true;	//added 1k18b but not used
 		}
@@ -704,25 +707,33 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 
 	//if object near a red car / if object has a red car (if object has a car which is red)
 	//if(item->has(property) && item->has(property1) etc..){
-	if(createCodeBlockForGivenProperties(currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
+	if(createCodeBlockForConnectionType(GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
 	{
 		result = true;
 	}
 
 	//if object near a car that is behind the driveway / if object has a car that is near the house
 	//if(item > 3){		/	if(greaterthan(item, 3)){
-	if(createCodeBlockForGivenConditions(currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
+	if(createCodeBlockForConnectionType(GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS, currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
 	{
 		result = true;
 	}
 	
-	/*
-	//if object near a car that is towed by a truck / if object has a car that is towed by a truck
-	currentCodeBlockInTree = createCodeBlockIfIsActionObject(currentCodeBlockInTree, item, entity, sentenceIndex);
-
+	#ifdef NLC_RECORD_ACTION_HISTORY
 	//if object near a car that drives /if object has a car that drives
-	currentCodeBlockInTree = createCodeBlockIfHasAction(currentCodeBlockInTree, item, entity, sentenceIndex);
+	if(createCodeBlockForConnectionType(GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS, currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
+	{
+		result = true;
+	}
 
+	//if object near a car that is towed by a truck / if object has a car that is towed by a truck
+	if(createCodeBlockForConnectionType(GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS, currentCodeBlockInTree, parentInstanceName, entity, sentenceIndex, generateContextBlocksVariables))
+	{
+		result = true;
+	}
+	#endif
+	
+	/*
 	//if object near car that is a flyingCar
 	currentCodeBlockInTree = createCodeBlockIfHasDefinition(currentCodeBlockInTree, item, entity, sentenceIndex);
 
@@ -731,83 +742,90 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	*/
 	return result;
 }
-			
-bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode * entity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
+		
+bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode * entity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
 	bool result = false;
 	
-	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
+	for(vector<GIAentityConnection*>::iterator targetNodeListIterator = entity->entityVectorConnectionsArray[connectionType].begin(); targetNodeListIterator < entity->entityVectorConnectionsArray[connectionType].end(); targetNodeListIterator++)
 	{
-		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
+		GIAentityConnection * targetConnection = (*targetNodeListIterator);
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		#ifdef GIA_USE_ADVANCED_REFERENCING
-		if((propertyConnection->NLCparsedForCodeBlocks) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC) || (propertyConnection->isReference) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (propertyConnection->sameReferenceSet)))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
+		if((targetConnection->NLCparsedForCodeBlocks) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC) || (targetConnection->isReference) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (targetConnection->sameReferenceSet)))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
 		#else
-		if((propertyConnection->NLCparsedForCodeBlocks) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (propertyConnection->sameReferenceSet)))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014
+		if((targetConnection->NLCparsedForCodeBlocks) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (targetConnection->sameReferenceSet)))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014
 		#endif
 		{
 		#endif
-			GIAentityNode* propertyEntity = propertyConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false))	//changed from true to false 1e5b	//generateContextBlocksVariables->checkSameSentenceConnection
+			GIAentityNode* targetEntity = targetConnection->entity;
+			if(checkSentenceIndexParsingCodeBlocks(targetEntity, targetConnection, sentenceIndex, false))	//changed from true to false 1e5b	//generateContextBlocksVariables->checkSameSentenceConnection
 			{//only write conditions that are explicated in current sentence
 				#ifdef NLC_DEBUG
-				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
+				cout << "createCodeBlockForConnectionType: " << targetEntity->entityName << endl;
 				#endif
 				#ifdef NLC_DEBUG_PARSE_CONTEXT
-				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
-				cout << "\t propertyConnection->NLCparsedForCodeBlocks: " << propertyConnection->NLCparsedForCodeBlocks << endl;
+				cout << "createCodeBlockForConnectionType: " << targetEntity->entityName << endl;
+				cout << "\t targetConnection->NLCparsedForCodeBlocks: " << targetConnection->NLCparsedForCodeBlocks << endl;
 				cout << "\t generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC: " << generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC << endl;
 				#ifdef GIA_USE_ADVANCED_REFERENCING
-				cout << "\t propertyConnection->isReference: " << propertyConnection->isReference << endl;
+				cout << "\t targetConnection->isReference: " << targetConnection->isReference << endl;
 				#endif
 				#endif
 				#ifdef NLC_DEBUG_PARSE_CONTEXT3
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForGivenProperties(): ") + entity->entityName + string(" ") + propertyEntity->entityName);
+				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForConnectionType(): ") + entity->entityName + string(" ") + targetEntity->entityName);
 				#endif
 				
-				propertyConnection->NLCparsedForCodeBlocks = true;
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-				bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(propertyEntity, generateContextBlocksVariables->primaryEntityInLogicalConditionConjunctionSubset, generateContextBlocksVariables->logicalConditionConjunctionIndex, &(generateContextBlocksVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
+				targetConnection->NLCparsedForCodeBlocks = true;
+				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+				bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(targetEntity, generateContextBlocksVariables->primaryEntityInLogicalConditionConjunctionSubset, generateContextBlocksVariables->logicalConditionConjunctionIndex, &(generateContextBlocksVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 				if(!conjunctionConditionConnectionFound)
 				{
 				#endif
-					result = true;
-					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-					//propertyConnection->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
-					propertyEntity->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
-					#endif
-					//propertyEntity->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
-					createCodeBlockForGivenProperty(currentCodeBlockInTree, parentInstanceName, propertyEntity, sentenceIndex, generateContextBlocksVariables);
-					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-					propertyEntity->NLClogicalConditionConjunctionIndex = generateContextBlocksVariables->logicalConditionConjunctionIndex;
-					#endif
-					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					if(propertyConnection->negative)
+					bool resultTemp = false;
+					if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 					{
-						generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
-						//cout << "propertyConnection->negative: propertyEntity->entityName = " << propertyEntity->entityName << endl;
-					}
-					if(propertyEntity->isSubstanceQuality)
-					{
-						if(propertyEntity->negative)
+						if(createCodeBlockForGivenProperty(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
 						{
-							//cout << "propertyEntity->negative: propertyEntity->entityName = " << propertyEntity->entityName << endl;
-							generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+							resultTemp = true;
+							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+							if(targetConnection->negative)
+							{
+								generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+								//cout << "propertyConnection->negative: targetEntity->entityName = " << targetEntity->entityName << endl;
+							}
+							#endif
 						}
 					}
-					#endif
-					#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
-					if(generateContextBlocksVariables->testNumerosity)
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 					{
-						if(propertyEntity->hasQuantity)
+						if(createCodeBlockForGivenCondition(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
 						{
-							generateContextBlocksVariables->childQuantity = propertyEntity->quantityNumber;
-							//cout << "generateContextBlocksVariables->childQuantity = " << generateContextBlocksVariables->childQuantity << endl;
+							resultTemp = true;
 						}
 					}
-					#endif
-					
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+					{
+						if(createCodeBlockForGivenAction(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
+						{
+							resultTemp = true;
+						}
+					}
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
+					{
+						if(createCodeBlockForGivenActionIncoming(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables))
+						{
+							resultTemp = true;
+						}
+					}
+					if(resultTemp)
+					{
+						result = true;
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+						targetEntity->NLClogicalConditionConjunctionIndex = generateContextBlocksVariables->logicalConditionConjunctionIndex;
+						#endif
+					}					
+				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 				}
 				#endif
 			}
@@ -820,42 +838,19 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* propertyEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
 	bool result = true;
+	
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	propertyEntity->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
+	#endif
+					
 	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 
-	//cout << "createCodeBlockForGivenProperty: propertyEntity = " << propertyEntity->entityName << endl;
-	/*
-	if(assumedToAlreadyHaveBeenDeclared(propertyEntity))
-	{
-		#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-		if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
-		{
-		#endif
-			*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, propertyItem);
-		#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-		}
-		else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-		{
-			*currentCodeBlockInTree = createCodeBlockIfHasPropertyLocal(*currentCodeBlockInTree, propertyItem, generateContextBlocksVariables->negative);
-		}
-		else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-		{
-			*currentCodeBlockInTree = createCodeBlockWhileHasPropertyLocal(*currentCodeBlockInTree, propertyItem, generateContextBlocksVariables->negative);
-		}
-		#endif
-	}
-	else
-	{
-	*/
 	propertyItem->context.push_back(parentInstanceName);
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+	
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_BASIC
 	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 	{
-	#endif
-	#endif
 		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	}
 	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 	{
@@ -865,143 +860,196 @@ bool createCodeBlockForGivenProperty(NLCcodeblock ** currentCodeBlockInTree, str
 	{
 		*currentCodeBlockInTree = createCodeBlockWhileHasProperty(*currentCodeBlockInTree, propertyItem, generateContextBlocksVariables->negative);
 	}
+	#else
+	*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);	
 	#endif
-	#endif
-	/*
-	}
-	*/
 
-	//DEBUG:
+	//cout << "createCodeBlockForGivenProperty: propertyEntity = " << propertyEntity->entityName << endl;
 	//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, propertyEntity->entityName);
-
+	
 	createCodeBlockForStatements(currentCodeBlockInTree, propertyItem->instanceName, propertyEntity, sentenceIndex, generateContextBlocksVariables);
 
-
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(propertyEntity->isSubstanceQuality)
+	{
+		if(propertyEntity->negative)
+		{
+			//cout << "propertyEntity->negative: propertyEntity->entityName = " << propertyEntity->entityName << endl;
+			generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+		}
+	}
+	#endif
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+	if(generateContextBlocksVariables->testNumerosity)
+	{
+		if(propertyEntity->hasQuantity)
+		{
+			generateContextBlocksVariables->childQuantity = propertyEntity->quantityNumber;
+			//cout << "generateContextBlocksVariables->childQuantity = " << generateContextBlocksVariables->childQuantity << endl;
+		}
+	}
+	#endif
+					
 	return result;
 }
 
-bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName,  GIAentityNode * entity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
+bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* conditionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
 	bool result = false;
-	//cout << "createCodeBlockForGivenConditions: " << endl;
-	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
-	{
-		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-		#ifdef GIA_USE_ADVANCED_REFERENCING
-		if((conditionConnection->NLCparsedForCodeBlocks) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC) || (conditionConnection->isReference) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (conditionConnection->sameReferenceSet)))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check	
-		#else
-		if((conditionConnection->NLCparsedForCodeBlocks) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLC) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (conditionConnection->sameReferenceSet)))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014		
-		#endif
-		{
-		#endif
-			GIAentityNode* conditionEntity = conditionConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(conditionEntity, conditionConnection, sentenceIndex, false))	//changed from true to false 1e5b	//generateContextBlocksVariables->checkSameSentenceConnection 
-			{
-				conditionConnection->NLCparsedForCodeBlocks = true;
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-				bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-				if(!conjunctionConditionFound)
-				{//do not parse conjunction conditions
-					bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(conditionEntity, generateContextBlocksVariables->primaryEntityInLogicalConditionConjunctionSubset, generateContextBlocksVariables->logicalConditionConjunctionIndex, &(generateContextBlocksVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
-					if(!conjunctionConditionConnectionFound)
-					{
-				#endif
-						if(!(conditionEntity->conditionObjectEntity->empty()))
-						{
-							GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-							//cout << "conditionObject = " << conditionObject->entityName << endl;
-							#ifdef NLC_DEBUG
-							cout << "createCodeBlockForGivenConditions: " << conditionEntity->entityName << endl;
-							#endif
-							#ifdef NLC_DEBUG_PARSE_CONTEXT3
-							*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForGivenConditions(): ") + entity->entityName + string(" ") + conditionObject->entityName);
-							#endif
-							result = true;
-							#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-							//conditionConnection->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
-							conditionObject->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
-							#endif
-							createCodeBlockForGivenCondition(currentCodeBlockInTree, parentInstanceName, conditionEntity, conditionObject, sentenceIndex, generateContextBlocksVariables);
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-							conditionEntity->NLClogicalConditionConjunctionIndex = generateContextBlocksVariables->logicalConditionConjunctionIndex;
-							#endif
-							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-							if(conditionEntity->negative)
-							{
-								//cout << "conditionEntity->negative: conditionEntity->entityName = " << conditionEntity->entityName << endl;
-								generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
-							}
-							#endif
-							#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
-							if(generateContextBlocksVariables->testNumerosity)
-							{
-								if(conditionObject->hasQuantity)
-								{
-									generateContextBlocksVariables->childQuantity = conditionObject->quantityNumber;
-								}
-							}
-							#endif
-						}
-						else
-						{
-							result = false;
-							cout << "error createCodeBlockForGivenCondition(): condition does not have object" << endl;
-						}
 
-				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-					}
-				}
-				else
-				{
-					generateContextBlocksVariables->foundLogicalConditionConjunction = conditionEntity;
-				}
-				#endif
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
+	if(!conjunctionConditionFound)
+	{//do not parse conjunction conditions
+	#endif	
+		if(!(conditionEntity->conditionObjectEntity->empty()))
+		{	
+			result = true;	
+			GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+			//cout << "conditionObject = " << conditionObject->entityName << endl;	
+
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+			//conditionConnection->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
+			conditionObject->NLCcontextGenerated = true;	//added 1g14b 15-July-2014
+			#endif
+					
+			NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+			NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+			//cout << "createCodeBlockForGivenCondition: " << conditionObjectItem->instanceName << endl;
+
+			conditionItem->context.push_back(parentInstanceName);
+			conditionObjectItem->context.push_back(parentInstanceName);	//redundant
+
+			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_BASIC
+			if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+			{
+				*currentCodeBlockInTree = createCodeBlockForConditionList(*currentCodeBlockInTree, conditionItem, conditionObjectItem);
 			}
-		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+			else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
+			{
+				*currentCodeBlockInTree = createCodeBlockIfHasCondition(*currentCodeBlockInTree, conditionItem, conditionObjectItem, generateContextBlocksVariables->negative);
+			}
+			else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
+			{
+				*currentCodeBlockInTree = createCodeBlockWhileHasCondition(*currentCodeBlockInTree, conditionItem, conditionObjectItem, generateContextBlocksVariables->negative);
+			}
+			#else
+			*currentCodeBlockInTree = createCodeBlockForConditionList(*currentCodeBlockInTree, conditionItem, conditionObjectItem);
+			#endif
+
+			createCodeBlockForStatements(currentCodeBlockInTree, conditionObjectItem->instanceName, conditionObject, sentenceIndex, generateContextBlocksVariables);
+			
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			if(conditionEntity->negative)
+			{
+				//cout << "conditionEntity->negative: conditionEntity->entityName = " << conditionEntity->entityName << endl;
+				generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+			}
+			#endif
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+			if(generateContextBlocksVariables->testNumerosity)
+			{
+				if(conditionObject->hasQuantity)
+				{
+					generateContextBlocksVariables->childQuantity = conditionObject->quantityNumber;
+				}
+			}
+			#endif
 		}
-		#endif
+		else
+		{
+			result = false;
+			cout << "error createCodeBlockForGivenCondition(): condition does not have object" << endl;
+		}
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	}
+	else
+	{
+		generateContextBlocksVariables->foundLogicalConditionConjunction = conditionEntity;
+	}
+	#endif
+	
 	return result;
 }
-bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* conditionEntity, GIAentityNode* conditionObject, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
+
+#ifdef NLC_RECORD_ACTION_HISTORY
+bool createCodeBlockForGivenAction(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* actionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
 {
 	bool result = true;
 
-	NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
-	NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-	//cout << "createCodeBlockForGivenCondition: " << conditionObjectItem->instanceName << endl;
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	actionEntity->NLCcontextGenerated = true;
+	#endif
+		
+	NLCitem * actionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_OBJECT);
+	//cout << "createCodeBlockForGivenAction: " << actionObjectItem->instanceName << endl;
+	actionItem->context.push_back(parentInstanceName);
+	*currentCodeBlockInTree = createCodeBlockForActionList(*currentCodeBlockInTree, actionItem);	
 
-	conditionItem->context.push_back(parentInstanceName);
-	conditionObjectItem->context.push_back(parentInstanceName);	//redundant
+	bool hasActionObject = false;
+	if(!(actionEntity->actionObjectEntity->empty()))
+	{
+		GIAentityNode * actionObject = (actionEntity->actionObjectEntity->back())->entity;
+					
+		NLCitem * actionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_OBJECT);
+		hasActionObject = true;
+		actionObjectItem->context.push_back(actionObjectItem->instanceName);
+		*currentCodeBlockInTree = createCodeBlockForActionObjectList(*currentCodeBlockInTree, actionObjectItem);
+		
+		createCodeBlockForStatements(currentCodeBlockInTree, actionObjectItem->instanceName, actionObject, sentenceIndex, generateContextBlocksVariables);
+	}
 
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(actionEntity->negative)
 	{
-	#endif
-	#endif
-		*currentCodeBlockInTree = createCodeBlockForConditionList(*currentCodeBlockInTree, conditionItem, conditionObjectItem);
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	}
-	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-	{
-		*currentCodeBlockInTree = createCodeBlockIfHasCondition(*currentCodeBlockInTree, conditionItem, conditionObjectItem, generateContextBlocksVariables->negative);
-	}
-	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-	{
-		*currentCodeBlockInTree = createCodeBlockWhileHasCondition(*currentCodeBlockInTree, conditionItem, conditionObjectItem, generateContextBlocksVariables->negative);
+		//cout << "actionEntity->negative: actionEntity->entityName = " << actionEntity->entityName << endl;
+		generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
 	}
 	#endif
-	#endif
-
-	createCodeBlockForStatements(currentCodeBlockInTree, conditionObjectItem->instanceName, conditionObject, sentenceIndex, generateContextBlocksVariables);
 
 	return result;
 }
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* actionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables)
+{
+	bool result = true;
+
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	//actionConnection->NLCcontextGenerated = true;
+	actionEntity->NLCcontextGenerated = true;
+	#endif
+
+	NLCitem * actionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_OBJECT);
+	//cout << "createCodeBlockForGivenAction: " << actionObjectItem->instanceName << endl;
+	actionItem->context.push_back(parentInstanceName);
+	*currentCodeBlockInTree = createCodeBlockForActionIncomingList(*currentCodeBlockInTree, actionItem);	
+
+	bool hasActionSubject = false;
+	if(!(actionEntity->actionSubjectEntity->empty()))
+	{
+		GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
+				
+		NLCitem * actionSubjectItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_OBJECT);
+		hasActionSubject = true;
+		actionSubjectItem->context.push_back(actionSubjectItem->instanceName);
+		*currentCodeBlockInTree = createCodeBlockForActionSubjectList(*currentCodeBlockInTree, actionSubjectItem);
+		
+		createCodeBlockForStatements(currentCodeBlockInTree, actionSubjectItem->instanceName, actionSubject, sentenceIndex, generateContextBlocksVariables);
+	}
+	
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	if(actionEntity->negative)
+	{
+		//cout << "actionEntity->negative: actionEntity->entityName = " << actionEntity->entityName << endl;
+		generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
+	}
+	#endif
+							
+	return result;
+}
+#endif
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 {
 	bool conjunctionConditionConnectionFound = false;
@@ -1318,7 +1366,7 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, G
 {
 	GIAentityNode * parentEntity = getParent(currentEntity, sentenceIndex, parseConditionParents);
 
-	bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+	bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 
 	return generatedContextBlocks;
 
@@ -1349,13 +1397,13 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	{	
 		NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 		generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
-		generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+		generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 	}
 	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
 	if(newlyDeclaredEntityInCategoryList)
 	{
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 		entity->NLCcontextGenerated = true;
 	}
 	#endif
@@ -1400,7 +1448,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != propertyEntity) propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
 					#endif
 
-					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))		//changed from generateCategories 1i11o
+					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))		//changed from generateCategories 1i11o
 					{
 						//cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
 						//cout << "1c: parentEntity = " << parentEntity->entityName << endl;
@@ -1428,7 +1476,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					if(!generatedContext)
 					{
 					#endif
-						if(generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &generateContextBlocksVariables, generatedContext, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))	//pass generatedContext 1j10a
+						if(generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &generateContextBlocksVariables, generatedContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))	//pass generatedContext 1j10a
 						{
 							generatedContext = true;
 						}
@@ -1637,7 +1685,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 			}
 		}
 
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 		//added NLC 1g5e:
 		if(!(entity->isCondition))
 		{//do not parse conditions of conditions as one of the conditions is a logical condition conjunction (ie and/or)
@@ -1693,7 +1741,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != conditionObject) conditionObject: ") + conditionObject->entityName + string(", parentEntity: ") + parentEntity->entityName);
 								#endif
 
-								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))			//changed from generateCategories 1i11o
+								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))			//changed from generateCategories 1i11o
 								{
 									generatedContext = true;
 									#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
@@ -1719,7 +1767,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + conditionObject->entityName);
 									#endif
 
-									if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &generateContextBlocksVariables, generatedContext, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))	//pass generatedContext 1j10a		
+									if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &generateContextBlocksVariables, generatedContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))	//pass generatedContext 1j10a		
 									{
 										generatedContext = true;
 									}
@@ -1924,7 +1972,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				}
 				#endif
 			}
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 		}
 		#endif
 	}
@@ -2049,7 +2097,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
 				if(newlyDeclaredEntityInCategoryList)
 				{
-					*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+					*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 				}
 				else
 				{
@@ -2101,7 +2149,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
 					if(newlyDeclaredEntityInCategoryList)
 					{
-						*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION);
+						*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 					}
 					else
 					{
@@ -2279,7 +2327,7 @@ void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, ve
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//CHECKTHIS
 								bool generatedParentContext = false;	//CHECKTHIS
 								NLCcodeblock * firstCodeBlockInSentence = *currentCodeBlockInTree;
-								if(!generateContextBlocks(currentCodeBlockInTree, aliasClassEntity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))
+								if(!generateContextBlocks(currentCodeBlockInTree, aliasClassEntity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
 								{
 									#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 									cout << "identifyAliasesInCurrentSentence(): !generateContextBlocks: aliasClassEntity = " << aliasClassEntity->entityName << endl;

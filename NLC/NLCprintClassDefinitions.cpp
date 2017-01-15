@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -232,6 +232,53 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							#endif
 							#endif
 						}
+						
+						#ifdef NLC_RECORD_ACTION_HISTORY
+						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
+						{
+							NLCclassDefinition * targetClassDefinition = *localListIter;
+							GIAentityNode entityAction;
+							entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+							NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
+							entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
+							string genericListAppendName = NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
+							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
+							printLine(localListDeclarationText, 1, code);
+						}
+						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
+						{
+							NLCclassDefinition * targetClassDefinition = *localListIter;
+							GIAentityNode entityAction;
+							entityAction.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+							NLCitem entityParamAction(&entityAction, NLC_ITEM_TYPE_OBJECT);
+							entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
+							string genericListAppendName = NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
+							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
+							printLine(localListDeclarationText, 1, code);
+						}
+						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionSubjectList.begin(); localListIter != classDefinition->actionSubjectList.end(); localListIter++)
+						{
+							NLCclassDefinition * targetClassDefinition = *localListIter;
+							GIAentityNode entityActionSubject;
+							entityActionSubject.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+							NLCitem entityParamActionSubject(&entityActionSubject, NLC_ITEM_TYPE_OBJECT);
+							entityParamActionSubject.genericObjectName = generateClassName(entityActionSubject.entityName);
+							string genericListAppendName = NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION;
+							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionSubject, genericListAppendName, progLang) + progLangEndLine[progLang];
+							printLine(localListDeclarationText, 1, code);
+						}
+						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionObjectList.begin(); localListIter != classDefinition->actionObjectList.end(); localListIter++)
+						{
+							NLCclassDefinition * targetClassDefinition = *localListIter;
+							GIAentityNode entityActionObject;
+							entityActionObject.entityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+							NLCitem entityParamActionObject(&entityActionObject, NLC_ITEM_TYPE_OBJECT);
+							entityParamActionObject.genericObjectName = generateClassName(entityActionObject.entityName);
+							string genericListAppendName = NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION;
+							string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionObject, genericListAppendName, progLang) + progLangEndLine[progLang];
+							printLine(localListDeclarationText, 1, code);
+						}
+						#endif
 
 						printLine(progLangCloseClass[progLang], 0, code);
 						printLine("", 0, code);
@@ -370,7 +417,7 @@ string generateCodePluralDefinitionText(NLCitem * currentItem, int progLang)
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_PASS_LISTS_BY_REFERENCE
 	string codePluralDefinitionText = generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 	#else
-	string codePluralDefinitionText = generateCodeEntityListDefinitionText(currentItem, progLang);	//OLD: generateCodePropertyListDefinitionText / progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + pluralClassName + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION; 
+	string codePluralDefinitionText = generateCodeEntityListDefinitionText(currentItem, progLang);	//OLD: generateCodePropertyListDefinitionText / progLangClassListTypeStart[progLang] + pluralClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + pluralClassName + NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION; 
 	#endif
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 	#ifndef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -406,7 +453,7 @@ string generateCodeConditionPairDefinitionText(NLCitem * currentItem, int progLa
 	string conditionClassName = currentItem->className;
 	string conditionObjectClassName = currentItem->className2;
 	#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + STRING_SPACE + conditionClassName + NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION;
+	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + STRING_SPACE + conditionClassName + NLC_ITEM_TYPE_CONDITIONPAIR_VAR_APPENDITION;
 	#else
 	string codeConditionListDefinitionText = progLangClassPairTypeStart[progLang] + conditionClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + conditionObjectClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang]+ STRING_SPACE + generateConditionPairDefinitionName(conditionClassName, conditionObjectClassName);
 	#endif

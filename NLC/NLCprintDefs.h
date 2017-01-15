@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l2a 31-October-2014
+ * Project Version: 1l2b 31-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,36 +58,36 @@ using namespace std;
 #define NLC_PROGRAMMING_LANGUAGE_DEFAULT (NLC_PROGRAMMING_LANGUAGE_CPP)
 #define NLC_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLCglobalDefs.h
 
-#define NLC_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
-#define NLC_ITEM_TYPE_LISTVAR_APPENDITION "List"
-//#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION "Category"	//moved to NLCglobalDefs.h
-#define NLC_ITEM_TYPE_TYPEVAR_APPENDITION "Type"
-#define NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION "Instance"
-#define NLC_ITEM_TYPE_PROPERTYCOUNTVAR_APPENDITION "PropertyCount"
+#define NLC_ITEM_TYPE_TEMP_VAR_APPENDITION "Temp"
+#define NLC_ITEM_TYPE_LIST_VAR_APPENDITION "List"
+//#define NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION "Category"	//moved to NLCglobalDefs.h
+#define NLC_ITEM_TYPE_TYPE_VAR_APPENDITION "Type"
+#define NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION "Instance"
+#define NLC_ITEM_TYPE_PROPERTYCOUNT_VAR_APPENDITION "PropertyCount"
 
-#define NLC_ITEM_TYPE_CLASSVAR_APPENDITION NLC_CLASS_NAME_APPEND //"Class"
-#define NLC_ITEM_TYPE_PROPERTYVAR_APPENDITION "Property"
-#define NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION "Condition"
-#define NLC_ITEM_TYPE_DEFINITIONVAR_APPENDITION "Definition"
-#define NLC_ITEM_TYPE_PAIRVAR_APPENDITION "Pair"
+#define NLC_ITEM_TYPE_CLASS_VAR_APPENDITION NLC_CLASS_NAME_APPEND //"Class"
+#define NLC_ITEM_TYPE_PROPERTY_VAR_APPENDITION "Property"
+#define NLC_ITEM_TYPE_CONDITION_VAR_APPENDITION "Condition"
+#define NLC_ITEM_TYPE_DEFINITION_VAR_APPENDITION "Definition"
+#define NLC_ITEM_TYPE_PAIR_VAR_APPENDITION "Pair"
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-#define NLC_ITEM_TYPE_REFERENCECONTEXTVAR_APPENDITION "referenceContext"
+#define NLC_ITEM_TYPE_REFERENCECONTEXT_VAR_APPENDITION "referenceContext"
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 #define NLC_ITEM_TYPE_ALIAS_APPENDITION "Alias"
 #endif
 
-#define NLC_ITEM_TYPE_CLASSLISTVAR_APPENDITION NLC_ITEM_TYPE_CLASSVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"ClassList"
-#define NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION NLC_ITEM_TYPE_PROPERTYVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"PropertyList"
-#define NLC_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"ConditionList"
-#define NLC_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION NLC_ITEM_TYPE_DEFINITIONVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"DefinitionList"
-#define NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION NLC_ITEM_TYPE_PAIRVAR_APPENDITION	//"ConditionPair"
-#define NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"InstanceList"
-#define NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION NLC_ITEM_TYPE_REFERENCECONTEXTVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"referenceContextList"
+#define NLC_ITEM_TYPE_CLASSLIST_VAR_APPENDITION NLC_ITEM_TYPE_CLASS_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"ClassList"
+#define NLC_ITEM_TYPE_PROPERTYLIST_VAR_APPENDITION NLC_ITEM_TYPE_PROPERTY_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"PropertyList"
+#define NLC_ITEM_TYPE_CONDITIONLIST_VAR_APPENDITION NLC_ITEM_TYPE_CONDITION_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"ConditionList"
+#define NLC_ITEM_TYPE_DEFINITIONLIST_VAR_APPENDITION NLC_ITEM_TYPE_DEFINITION_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"DefinitionList"
+#define NLC_ITEM_TYPE_CONDITIONPAIR_VAR_APPENDITION NLC_ITEM_TYPE_CONDITION_VAR_APPENDITION NLC_ITEM_TYPE_PAIR_VAR_APPENDITION	//"ConditionPair"
+#define NLC_ITEM_TYPE_INSTANCELIST_VAR_APPENDITION NLC_ITEM_TYPE_INSTANCE_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"InstanceList"
+#define NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLIST_VAR_APPENDITION NLC_ITEM_TYPE_REFERENCECONTEXT_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"referenceContextList"
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-#define NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION NLC_ITEM_TYPE_ALIASVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"AliasList"
+#define NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION NLC_ITEM_TYPE_ALIAS_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"AliasList"
 #endif
-#define NLC_ITEM_TYPE_CATEGORYLISTVAR_APPENDITION NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"CategoryList"
+#define NLC_ITEM_TYPE_CATEGORYLIST_VAR_APPENDITION NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION NLC_ITEM_TYPE_LIST_VAR_APPENDITION	//"CategoryList"
 
 
 //from NLCclassDefinitionClass.h
@@ -259,6 +259,12 @@ static string progLangTypeName[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"typename
 
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyClassName);
+#ifdef NLC_RECORD_ACTION_HISTORY
+string generateActionListName(string actionClassName);
+string generateActionIncomingListName(string actionClassName);
+string generateActionSubjectListName(string actionSubjectClassName);
+string generateActionObjectListName(string actionObjectClassName);
+#endif
 string generateEntityListName(NLCitem * entityParam);	//added 1i6a
 string generateEntityListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
@@ -273,6 +279,7 @@ string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);
 string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang);
 	string generateCodeEntityListDefinitionReferenceTypeText(string entityClassName, int progLang);
+string generateCodeGenericListDefinitionText(NLCitem * entityParam, string genericListAppendName, int progLang);
 string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 	string generateCodeConditionListDefinitionTypeText(string conditionClassName, string conditionObjectClassName, int progLang);
 

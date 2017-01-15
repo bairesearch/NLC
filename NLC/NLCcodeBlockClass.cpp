@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m4b 04-December-2014
+ * Project Version: 1m4c 01-December-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -442,6 +442,8 @@ NLCcodeblock * createCodeBlockAddNewConditionSimple(NLCcodeblock * currentCodeBl
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
 }
 
 NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
@@ -486,6 +488,8 @@ NLCcodeblock * createCodeBlockAddConditionSimple(NLCcodeblock * currentCodeBlock
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_CONDITION;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
 }
 
 
@@ -1468,6 +1472,8 @@ NLCcodeblock * createCodeBlockRemoveConditionsSimple(NLCcodeblock * currentCodeB
 
 	int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
 }
 		
 #endif

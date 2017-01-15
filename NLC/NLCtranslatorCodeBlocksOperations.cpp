@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1c 14-November-2014
+ * Project Version: 1m1d 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -757,7 +757,7 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 {
 	bool result = false;
 
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	entity->NLCcontextGeneratedTemp = true;
 	#endif
 				
@@ -789,7 +789,7 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	}
 	#endif
 
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	entity->NLCcontextGeneratedTemp = false;
 	#endif
 	
@@ -807,7 +807,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 {				
 	bool result = false;
 	
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	entity->NLCcontextGeneratedTemp = true;
 	#endif
 	
@@ -900,7 +900,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 		#endif
 	}
 	
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	entity->NLCcontextGeneratedTemp = false;
 	#endif
 	
@@ -978,7 +978,7 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 		if(!(conditionEntity->conditionObjectEntity->empty()))
 		{		
 			GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-			#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 			if(!(conditionObject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions
 			{
 			#endif
@@ -1032,7 +1032,7 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 					}
 				}
 				#endif
-			#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 			}
 			#endif
 		}
@@ -1427,7 +1427,7 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 {
 	GIAentityNode * parentEntityNew = currentEntity;
 
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	currentEntity->NLCcontextGeneratedTemp = true;
 	#endif
 									
@@ -1465,10 +1465,10 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 				if(!(conditionEntity->conditionSubjectEntity->empty()))
 				{
 					conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
-					//#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+					#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 					if(!(conditionSubject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions 
 					{
-					//#endif
+					#endif
 						//cout << "conditionSubject = " << conditionSubject->entityName << endl;
 
 						foundConditionSubject = true;
@@ -1482,9 +1482,9 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 							//cout << "checkSentenceIndexParsingCodeBlocks conditionSubject pass" << endl;
 							parentEntityNew = getParent(conditionSubject, sentenceIndex, parseConditionParents);
 						}
-					//#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+					#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 					}
-					//#endif
+					#endif
 				}		
 			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 			}
@@ -1493,7 +1493,7 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 	}
 	#endif
 
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	currentEntity->NLCcontextGeneratedTemp = false;
 	#endif
 		
@@ -1520,7 +1520,7 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, G
 
 bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, GIAentityNode * parentEntity, string parentConditionName, bool generateParentContextTopLevel, bool generateParentContextPassThrough)
 {
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	entity->NLCcontextGeneratedTemp = true;
 	#endif
 
@@ -1850,7 +1850,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					if(!(conditionEntity->conditionObjectEntity->empty()))
 					{
 						conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-						#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 						if(!(conditionObject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions 
 						{
 						#endif
@@ -1961,7 +1961,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 								generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 							}
-						#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 						}
 						#endif
 					}
@@ -1978,7 +1978,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		#endif
 	}
 	
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	entity->NLCcontextGeneratedTemp = false;
 	#endif
 	//cout << "performedAtLeastOneObjectInitialisation = " << performedAtLeastOneObjectInitialisation << " entity = " << entity->entityName << endl;
@@ -2093,7 +2093,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 	GIAentityNode * parentEntityNew = currentEntity;
 	bool foundParentProperty = false;
 
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	currentEntity->NLCcontextGeneratedTemp = true;
 	#endif
 	
@@ -2151,10 +2151,10 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 				{
 					conditionSubject = (conditionEntity->conditionSubjectEntity->back())->entity;
 
-					//#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+					#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 					if(!(conditionSubject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions 
 					{
-					//#endif
+					#endif
 						foundConditionSubject = true;
 
 						#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
@@ -2177,9 +2177,9 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 								}
 							}
 						}
-					//#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+					#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 					}
-					//#endif
+					#endif
 				}		
 			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 			}
@@ -2188,7 +2188,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 	}
 	#endif
 	
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	currentEntity->NLCcontextGeneratedTemp = false;
 	#endif
 		
@@ -2251,7 +2251,7 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode * entit
 
 void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode * entity, GIAentityNode * definitionEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, GIAentityNode * parentEntity, string parentConditionName, bool newlyDeclaredEntityInCategoryList)
 {
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	definitionEntity->NLCcontextGeneratedTemp = true;
 	#endif
 	
@@ -2326,7 +2326,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 				if(!(conditionEntity->conditionObjectEntity->empty()))
 				{
 					conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-					#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+					#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 					if(!(conditionObject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions
 					{
 					#endif
@@ -2365,7 +2365,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 						generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, definitionEntity, conditionEntity->entityName, true);	//updated 9 November 2013 - support recursion of complex substance concept definition
 
 						*currentCodeBlockInTree = firstCodeBlockInSection->next;
-					#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+					#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 					}
 					#endif
 				}
@@ -2375,7 +2375,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 	}
 	#endif
 	
-	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	definitionEntity->NLCcontextGeneratedTemp = false;
 	#endif
 }

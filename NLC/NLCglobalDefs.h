@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1c 14-November-2014
+ * Project Version: 1m1d 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,6 +48,9 @@
 #ifndef NLC_DISABLE_1m_CODE_FOR_DEBUG
 	#ifdef GIA_LRP_NORMALISE_INVERSE_PREPOSITIONS
 		#define NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#endif
+	#ifdef GIA_LRP_NORMALISE_TWOWAY_PREPOSITIONS
+		#define NLC_NORMALISE_TWOWAY_PREPOSITIONS
 	#endif
 #endif
 

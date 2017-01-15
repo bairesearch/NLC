@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g15a 16-July-2014
+ * Project Version: 1g15b 16-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -580,36 +580,43 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 							{
 								if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
 								{
-									#ifdef NLC_DEBUG
-									cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-									#endif
-									#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-									if(parentEntity->NLClocalListVariableHasBeenDeclared)
-									{//added 1g8a 11-July-2014
-										*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity);
-									}
-									else
+									#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+									if(parentEntity->sentenceIndexTemp == sentenceIndex)	//ie "wasReference" is not a sufficient condition to initialise parent
 									{
-									#endif
-										
-										*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);	//is this ever called with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES?
-									#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-									}
-									#endif
-									parentEntity->NLCparsedForCodeBlocks = true;
-									parentEntity->NLClocalListVariableHasBeenInitialised = true;
-									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+									#endif								
+										#ifdef NLC_DEBUG
+										cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+										#endif
+										#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+										if(parentEntity->NLClocalListVariableHasBeenDeclared)
+										{//added 1g8a 11-July-2014
+											*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity);
+										}
+										else
+										{
+										#endif
 
-									#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-									//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-									generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
-									#endif
-									
-									#ifdef NLC_DEBUG
-									cout << "\tgenerateObjectInitialisationsBasedOnPropertiesAndConditions:" << parentEntity->entityName << endl;
-									cout << "sentenceIndex = " << sentenceIndex << endl;
-									#endif
-									performedAtLeastParentObjectInitialisation = generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "", false);
+											*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);	//is this ever called with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES?
+										#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
+										}
+										#endif
+										parentEntity->NLCparsedForCodeBlocks = true;
+										parentEntity->NLClocalListVariableHasBeenInitialised = true;
+										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+
+										#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+										//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+										generateObjectInitialisationsBasedOnSubstanceConcepts(parentEntity, currentCodeBlockInTree, sentenceIndex);
+										#endif
+
+										#ifdef NLC_DEBUG
+										cout << "\tgenerateObjectInitialisationsBasedOnPropertiesAndConditions:" << parentEntity->entityName << endl;
+										cout << "sentenceIndex = " << sentenceIndex << endl;
+										#endif
+										performedAtLeastParentObjectInitialisation = generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "", false);
+									#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+									}
+									#endif								
 								}
 							}
 						#ifndef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES

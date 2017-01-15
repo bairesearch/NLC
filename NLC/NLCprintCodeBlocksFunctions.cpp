@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q12b 22-August-2015
+ * Project Version: 1q12c 22-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -765,9 +765,9 @@ void generateCodeAddConditionAndObjectEntityToList(NLCitem* param1, NLCitem* par
 	#endif
 	#else
 	#ifdef NLC_CONDITION_LISTS_VECTOR
-	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionNewPairText(param2->name, generatePointerText(param2->className, progLang), param2->instanceName, generatePointerText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1->param1->param2param3ConditionList.push_back(new pair<param2className*, param3className*>(param2, param3));	
+	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionNewPairText(param2->name, generatePointerTypeText(param2->className, progLang), param2->instanceName, generatePointerTypeText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1->param1->param2param3ConditionList.push_back(new pair<param2className*, param3className*>(param2, param3));	
 	#else
-	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionPairText(param2->name, generatePointerText(param2->className, progLang), param2->instanceName, generatePointerText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1->param1->param2param3ConditionList.insert(pair<param2className*, param3className*>(param2, param3));
+	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generateConditionListName(param2->className, param3->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionPairText(param2->name, generatePointerTypeText(param2->className, progLang), param2->instanceName, generatePointerTypeText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1->param1->param2param3ConditionList.insert(pair<param2className*, param3className*>(param2, param3));
 	#endif
 	printLine(codeBlockText, level, code);
 	#endif
@@ -811,9 +811,9 @@ void generateCodeAddConditionNewFunction(int progLang, string* code, int level)
 	string codeBlockTextCreate2 = generateCodeNewEntity(param2, progLang);
 	printLine(codeBlockTextCreate2, level+q, code);
 	#ifdef NLC_CONDITION_LISTS_VECTOR
-	string codeBlockText = generateConditionListName(param2, param3) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionNewPairText(param2->name, generatePointerText(param2->className, progLang), param2->instanceName, generatePointerText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param2param3ConditionList.push_back(new pair<param2className*, param3className*>(param2, param3));	
+	string codeBlockText = generateConditionListName(param2, param3) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionNewPairText(param2->name, generatePointerTypeText(param2->className, progLang), param2->instanceName, generatePointerTypeText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param2param3ConditionList.push_back(new pair<param2className*, param3className*>(param2, param3));	
 	#else
-	string codeBlockText = generateConditionListName(param2, param3) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionPairText(param2->name, generatePointerText(param2->className, progLang), param2->instanceName, generatePointerText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param2param3ConditionList.insert(pair<param2className*, param3className*>(param2, param3));
+	string codeBlockText = generateConditionListName(param2, param3) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateCodeConditionPairText(param2->name, generatePointerTypeText(param2->className, progLang), param2->instanceName, generatePointerTypeText(param3->className, progLang), param3->instanceName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//param2param3ConditionList.insert(pair<param2className*, param3className*>(param2, param3));
 	#endif
 	printLine(codeBlockText, level+q, code);	
 

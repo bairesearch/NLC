@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p12c 27-July-2015
+ * Project Version: 1p12d 27-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -133,7 +133,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	}
 	#endif
 
-	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
 	string newlyDeclaredVariable = "";
 	#endif
 	
@@ -287,7 +287,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 
 				}
 				
-				#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+				#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
 				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 				{
 					if((c == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR) || (wordDelimiterCharacterFound && (i<lineContents->length()+1) && ((*lineContents)[i+1] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR)))	//mathText: "X=.." or "X =..."
@@ -493,6 +493,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		currentPhrase = currentPhrase + currentWord;	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText   
 		mathText = mathText + currentPhrase;
 		currentPhrase = "";	//restart phrase (assuming it contains text)	//redundant (as it is the final word in the sentence)
+		
+		#ifdef NLC_PREPROCESSOR_MATH_DETECT_MATHTEXT_VARIABLES_AT_END_OF_LINE
+		if(NLPparsableMandatoryCharacterFoundInCurrentWord)
+		{
+			firstNLCsentenceInFullSentence->mathTextVariableNames.push_back(currentWord);	//added 1p12d
+		}
+		#endif
 	}
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH	
 	cout << "mathText = " << mathText << endl;
@@ -533,7 +540,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	}
 	#endif
 	
-	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+	#ifdef NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES
 	//if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 	//{
 	for(vector<string>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariableNames.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariableNames.end(); iter++)
@@ -558,7 +565,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			#endif
 			ignoreVariable = true;
 		}
-		
+				
 		if(!ignoreVariable)
 		{			
 			if(mathTextVariableName != newlyDeclaredVariable)

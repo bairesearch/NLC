@@ -23,7 +23,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLCclassDefinitionClass.h
+ * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1h6a 30-July-2014
@@ -32,8 +32,9 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLC_CLASSDEFINITION_CLASS
-#define HEADER_NLC_CLASSDEFINITION_CLASS
+#ifndef HEADER_NLC_PREPROCESSOR_SENTENCE_CLASS
+#define HEADER_NLC_PREPROCESSOR_SENTENCE_CLASS
+
 
 #include <iostream>
 #include <fstream>
@@ -43,48 +44,60 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#include <vector>
-#include <unordered_map>
 using namespace std;
 
 #include "NLCglobalDefs.h"
-#include "NLCitemClass.h"
-#include "GIAglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
 
-	//progLangEndLine
-
-class NLCclassDefinition
+class NLCsentence
 {
 public:
 
-	NLCclassDefinition(void);
-	NLCclassDefinition(string newName);
-	~NLCclassDefinition(void);
+	NLCsentence(void);
+	~NLCsentence(void);
 
-	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass)
-	string functionNameSpecial;
-		//classdefinition sublists;
-	vector<NLCclassDefinition *> propertyList;	//subclass
-	vector<NLCclassDefinition *> conditionList;	//declared conditions
-	vector<NLCclassDefinition *> definitionList;	//inherited parents
-	vector<NLCclassDefinition *> functionList;
-
-	bool isActionOrConditionInstanceNotClass;
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-	GIAentityNode * actionOrConditionInstance;
+	string sentenceContents;
+	int sentenceIndex;
+	int indentation;
+	bool hasLogicalConditionOperator;
+	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+	int logicalConditionOperator;
 	#endif
-	vector<NLCitem*> parameters;
-
-	bool isDisabledChildReplicantDeclaration;
-
-	bool printed;
+	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+	bool ifDetected;
+	bool elseIfDetected;
+	bool elseDetected;
+	#endif
+	#ifdef NLC_PREPROCESSOR_MATH
+	bool isMath;		//set true for first parsable phrase only, or if no NLP parsable phrases
+	string mathText;	//set true for first parsable phrase only, or if no NLP parsable phrases
+	int mathTextNLPparsablePhraseIndex;
+	int mathTextNLPparsablePhraseTotal;	//set true for first parsable phrase only, or if no NLP parsable phrases
+	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+	vector<string> mathTextVariableNames;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
+	vector<string> variableNamesDetected;	//record of original variable name that has been replaced by dummy number for NLP/GIA to parse
+	#endif
+	#endif
+	NLCsentence* next;
 };
 
-NLCclassDefinition * findClassDefinition(vector<NLCclassDefinition *> * classDefinitionList, string name, bool * foundClassDefinition);
+class NLCfunction
+{
+public:
 
+	NLCfunction(void);
+	~NLCfunction(void);
 
+	string functionName;
+	NLCsentence* firstNLCsentenceInFunction;
+	NLCfunction* next;
+};
 
+#ifdef NLC_PREPROCESSOR_MATH
+string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence * currentPhrase);
+
+#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+int generateDummyNumericalValue(int predefinedVariableIndex);
+#endif
+#endif
 
 #endif

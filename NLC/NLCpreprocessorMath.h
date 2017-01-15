@@ -23,7 +23,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLCpreprocessor.h
+ * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1h6a 30-July-2014
@@ -32,8 +32,8 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLC_PREPROCESSOR
-#define HEADER_NLC_PREPROCESSOR
+#ifndef HEADER_NLC_PREPROCESSOR_MATH
+#define HEADER_NLC_PREPROCESSOR_MATH
 
 
 #include <iostream>
@@ -49,16 +49,25 @@ using namespace std;
 #include "NLCglobalDefs.h"
 #include "NLCpreprocessorSentenceClass.h"
 
-
 #ifdef NLC_USE_PREPROCESSOR
-bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName);
-	void writeStringToFile(string * fileName, string * s);
-	void extractIndentationFromCurrentLine(string * currentLine, int * currentIndentation, string * lineContents, string * indentationContents);
-	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-	bool detectFunctionHeader(string * lineContents);
-	string getFunctionNameFromFunctionHeader(string * lineContents);
-	#endif	
-	bool detectLogicalConditionOperatorAtStartOfLine(string * lineContents, int * logicalConditionOperator);
+#ifdef NLC_PREPROCESSOR_MATH
+
+bool detectMathSymbolsInLine(string * lineContents);
+bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * lineContents);
+bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineContents, bool hasLogicalConditionOperator, bool isMathText);
+
+bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsentence ** currentNLCsentenceInList, int * sentenceIndex, int currentIndentation, string * functionContents, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList, bool additionalClosingBracketRequired);
+#endif
+
+#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+bool replaceNumericalVariablesWithDummyNameIfNecessary(string * lineContents, NLCsentence * currentNLCsentenceInList, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList);
+	bool isWhiteSpaceOrInvalidWordCharacter(char c);
+	bool findPredefinedNumericalVariable(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);
+		#ifdef NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES
+		bool findPredefinedNumericalVariableInAnyFunctions(string * currentWord, NLCfunction * firstNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);	//allows global numerical variable definitions; not just local numerical variable definitions
+		#endif
+			bool findPredefinedNumericalVariableInFunction(string * currentWord, NLCfunction * currentNLCfunctionInList, NLCsentence * sentenceToIgnoreWhileSearching);
+#endif
 #endif
 
 #endif

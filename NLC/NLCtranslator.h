@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h5b 30-July-2014
+ * Project Version: 1h6a 30-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,7 +54,7 @@ using namespace std;
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
 //#ifdef NLC_USE_PREPROCESSOR
-#include "NLCpreprocessor.h"	//required for NLCfunction
+#include "NLCpreprocessorSentenceClass.h"	//required for NLCfunction
 //#endif
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS

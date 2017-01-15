@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11q 25-August-2014
+ * Project Version: 1i11r 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1187,9 +1187,11 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						//cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
 						//cout << "1c: parentEntity = " << parentEntity->entityName << endl;
 						generatedContext = true;
+						#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 						propertyEntityClass->context.push_back(generateInstanceName(parentEntity));
-						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);						
+						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);	
+						#endif				
 						*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);
 						propertyEntity->NLClocalListVariableHasBeenInitialised = true;
 					}
@@ -1202,10 +1204,17 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + propertyEntity->entityName);
 					#endif
 
-					if(generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
+					#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+					if(!generatedContext)
 					{
-						generatedContext = true;
+					#endif
+						if(generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
+						{
+							generatedContext = true;
+						}
+					#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 					}
+					#endif						
 				}
 				
 				if(!generatedContext)
@@ -1375,6 +1384,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				}
 				else
 				{//added 1i11l
+					#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 					if(!generatedContext)
 					{
 						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
@@ -1384,7 +1394,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						//generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
 						//parse the children (properties and conditions) of an undeclared definite parent
 						createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(propertyEntity), propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);		//added 1i11n
-					}			
+					}
+					#endif			
 				}
 
 				NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
@@ -1451,9 +1462,11 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))			//changed from generateCategories 1i11o
 								{
 									generatedContext = true;
+									#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 									conditionObjectEntityClass->context.push_back(generateInstanceName(parentEntity));
-									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);										
+									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);	
+									#endif									
 									*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);
 									conditionObject->NLClocalListVariableHasBeenInitialised = true;
 								}
@@ -1462,14 +1475,21 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 							if(assumedToAlreadyHaveBeenDeclared(conditionObject))
 							{
-								#ifdef NLC_DEBUG_PARSE_CONTEXT4
-								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + conditionObject->entityName);
-								#endif
-								
-								if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
+								#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+								if(!generatedContext)
 								{
-									generatedContext = true;
+								#endif
+									#ifdef NLC_DEBUG_PARSE_CONTEXT4
+									*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + conditionObject->entityName);
+									#endif
+
+									if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
+									{
+										generatedContext = true;
+									}
+								#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 								}
+								#endif	
 							}
 							
 							if(!generatedContext)
@@ -1627,6 +1647,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							}
 							else
 							{//added 1i11l
+								#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 								if(!generatedContext)
 								{
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
@@ -1637,6 +1658,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									//parse the children (properties and conditions) of an undeclared definite parent
 									createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(conditionObject), conditionObject, sentenceIndex, &logicalConditionConjunctionVariables);	//added 1i11n
 								}			
+								#endif
 							}
 
 							NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5n 15-August-2016
+ * Project Version: 1r5o 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -400,9 +400,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 									if((indexOfType != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfType < i))
 									{
 										explictTypeFound = true;
-										//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+										#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 										cout << "explicit mathText variable type detected for currentWord: " << preprocessorMathNaturalLanguageVariables[j] << " " << currentWord << endl;
-										//#endif
+										#endif
 
 										newlyDeclaredVariable = currentWord;
 										NLPparsableMandatoryCharacterFoundInCurrentWord = false;
@@ -439,20 +439,12 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 						
 			if(NLPparsableMandatoryCharacterFoundInCurrentWord)
 			{
-				
 				if(!parsingWhiteSpace)
 				{	
-					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
-					if(!textInTextArray(currentWord, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))	//NB do not check preprocessorMathMathTextVariables because currentWord will not contain the appended $ character 
-					{
-					#endif
-						#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-						addNewMathTextVariable(firstNLCsentenceInFullSentence, currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
-						#else
-						addNewMathTextVariable((*currentNLCsentenceInList), currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariables
-						#endif
-					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
-					}
+					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
+					addNewMathTextVariable(firstNLCsentenceInFullSentence, currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
+					#else
+					addNewMathTextVariable((*currentNLCsentenceInList), currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariables
 					#endif
 				}
 				else
@@ -692,12 +684,13 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	#ifdef NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES
 	//if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 	//{
-	for(vector<NLCvariable*>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariables.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariables.end(); iter++)
+	for(vector<NLCvariable*>::iterator iter = firstNLCsentenceInFullSentence->mathTextVariables.begin(); iter != firstNLCsentenceInFullSentence->mathTextVariables.end(); )
 	{
 		NLCvariable* mathTextVariable = (*iter);
 		string mathTextVariableName = mathTextVariable->name;
 		
 		bool ignoreVariable = false;
+		bool removeVariable = false;
 		#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
 		if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 		{
@@ -710,52 +703,62 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			}
 		}
 		#endif
-		#ifndef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
-		if(textInTextArray(mathTextVariableName, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))
+		if(textInTextArray(mathTextVariableName, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))	//NB do not check preprocessorMathMathTextVariables because currentWord will not contain the appended $ character 
 		{	
+			#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
+			removeVariable = true;	//remove type eg "double"
+			#else
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 			cout << "mathText variable type detected: ignoreVariable = true" << endl;
 			#endif
+			#endif
 			ignoreVariable = true;
 		}
-		#endif
-						
-		if(mathTextVariableName != newlyDeclaredVariable)
+		
+		if(removeVariable)
 		{
-			#ifdef NLC_DEBUG
-			//cout << "mathTextVariableName = " << mathTextVariableName << endl;
-			#endif
-			int variableTypeTemp = INT_DEFAULT_VALUE;
-			if(findPredefinedMathtextVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence, &variableTypeTemp))
+			iter = firstNLCsentenceInFullSentence->mathTextVariables.erase(iter);
+		}
+		else
+		{	
+			if(mathTextVariableName != newlyDeclaredVariable)
 			{
-				#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
-				if(variableTypeTemp == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+				#ifdef NLC_DEBUG
+				//cout << "mathTextVariableName = " << mathTextVariableName << endl;
+				#endif
+				int variableTypeTemp = INT_DEFAULT_VALUE;
+				if(findPredefinedMathtextVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence, &variableTypeTemp))
 				{
-					cout << "NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES: splitMathDetectedLineIntoNLPparsablePhrases{} error: first instance of mathText variable type in function == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN" << endl;
-					exit(0);
+					#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
+					if(variableTypeTemp == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+					{
+						cout << "NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES: splitMathDetectedLineIntoNLPparsablePhrases{} error: first instance of mathText variable type in function == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN" << endl;
+						exit(0);
+					}
+					else
+					{
+						/*
+						required for:
+						String l = ""
+						l = the house
+						*/
+						mathTextVariable->type = variableTypeTemp;
+					}
+					#endif
 				}
 				else
 				{
-					/*
-					required for:
-					String l = ""
-					l = the house
-					*/
-					mathTextVariable->type = variableTypeTemp;
-				}
-				#endif
-			}
-			else
-			{
-				if(!ignoreVariable)
-				{
-					cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
-					//cout << "lineContents = " <<* lineContents << endl;
-					#ifndef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_MATHTEXT_VARIABLES_TO_BE_REFERENCED_BY_MATH
-					exit(0);
-					#endif
+					if(!ignoreVariable)
+					{
+						cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
+						//cout << "lineContents = " <<* lineContents << endl;
+						#ifndef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_MATHTEXT_VARIABLES_TO_BE_REFERENCED_BY_MATH
+						exit(0);
+						#endif
+					}
 				}
 			}
+			iter++;
 		}
 	}	
 	//}	

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5n 15-August-2016
+ * Project Version: 1r5o 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -482,7 +482,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		setCurrentDirectory(workingFolder);	//set current directory back to the original workingFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's workingFolder is changed to tempFolder as it should be in the case of NLC preprocessed input)
 	}
 	
-	//#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 	NLCsentence* currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentNLCsentenceInList->next != NULL)
 	{
@@ -502,7 +502,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		}
 		currentNLCsentenceInList = currentNLCsentenceInList->next;
 	}
-	//#endif
+	#endif
 	
 	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;	

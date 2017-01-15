@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5n 15-August-2016
+ * Project Version: 1r5o 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -81,7 +81,7 @@
 				static char preprocessorMathtextVariableValidCharacters[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_VALID_CHARACTERS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
 			#endif
 		#endif
-		//#define NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS	//1r5i
+		//#define NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS	//1r5i	//optional
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			//NB strings: must use unique string concatenation & and equality test ~~ symbols instead of + and ==
 			//NB booleans: boolean "== true" / "== false" test statements are not supported; must say if(theDog) or if(!theDog). "the x" == "the y" statments are not supported either (eg "if the dog == the cat")

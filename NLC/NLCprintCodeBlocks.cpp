@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3f 25-June-2015
+ * Project Version: 1p4a 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1296,10 +1296,10 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	cout << "functionObjectName = " << functionObjectName << endl;
 	#endif
 	NLCclassDefinition* functionDeclaration = NULL;	//NB "functionDeclaration" should be "functionDeclaration"
-	if(findFunctionDeclarationClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
+	if(findFunctionDefinitionClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-		cout << "findFunctionDeclarationClassDefinition" << endl;
+		cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch" << endl;
 		#endif
 		
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
@@ -1309,7 +1309,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			cout << "(hasFunctionOwnerClass && !foundFunctionOwnerExactMatch)" << endl;
 			#endif
 			NLCitem* functionOwnerArgumentDeclaration = NULL;
-			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgumentDeclaration))
+			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgumentDeclaration))
 			{
 				functionOwnerArgument->functionArgumentPassCastRequired = true;
 				functionOwnerArgument->functionArgumentPassCastClassName = generateClassName(functionOwnerArgumentDeclaration->name);
@@ -1319,7 +1319,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			else
 			{
-				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{} error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
+				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{} error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER - functionName = " << functionName << endl;
 			}
 		}	
 		#endif
@@ -1329,7 +1329,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			cout << "(hasFunctionObjectClass && !foundFunctionObjectExactMatch)" << endl;
 			#endif
 			NLCitem* functionObjectArgumentDeclaration = NULL;
-			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgumentDeclaration))
+			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgumentDeclaration))
 			{
 				functionObjectArgument->functionArgumentPassCastRequired = true;
 				functionObjectArgument->functionArgumentPassCastClassName = generateClassName(functionObjectArgumentDeclaration->name);
@@ -1339,7 +1339,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 			else
 			{
-				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{} error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
+				cout << "generateFunctionExecutionArgumentsWithActionConceptInheritanceString{} error: !findFunctionArgument: NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT - functionName = " << functionName << endl;
 			}
 		}
 		
@@ -1348,7 +1348,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 		{
 			NLCitem* currentItem = *parametersIterator;
 			//cout << "1 currentItem->itemType = " << currentItem->itemType << endl;
-			if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
+			if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 			{
 				NLCitem* newFunctionArgument = new NLCitem(currentItem);
 				newFunctionArgument->itemType = NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_INSTANCE_OR_CLASS_LIST;

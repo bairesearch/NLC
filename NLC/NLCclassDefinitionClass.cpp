@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3f 25-June-2015
+ * Project Version: 1p4a 27-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,7 +35,7 @@
 #include "NLCclassDefinitionClass.h"
 
 
-//#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 NLCclassDefinitionFunctionDependency::NLCclassDefinitionFunctionDependency(void)
 {	
 	functionName = "";
@@ -47,14 +47,12 @@ NLCclassDefinitionFunctionDependency::NLCclassDefinitionFunctionDependency(void)
 	functionDefinitionListIndex = INT_DEFAULT_VALUE;
 	reconciledFunctionDeclarationArguments = false;
 	
-	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 	isReferenceElseFunctionDefinition = false;
-	#endif
 }
 NLCclassDefinitionFunctionDependency::~NLCclassDefinitionFunctionDependency(void)
 {
 }
-//#endif
+#endif
 
 
 NLCclassDefinition::NLCclassDefinition(string newName)
@@ -160,38 +158,41 @@ NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition*>* cl
 	return classDefinitionFound;
 }
 
-bool findFunctionDependencyInList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
 {
-	bool foundFunctionDependency = false;
-	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList->begin(); functionDependencyIter != functionDependencyList->end(); functionDependencyIter++)
+	bool foundFunctionDefinitionFunctionDependency = false;
+	NLCclassDefinition* functionDependencyClassDefinitionFound = NULL;
+	if(findFunctionDependencyClassDefinitionInList(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependencyClassDefinitionFound))
 	{
-		NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
-		if(compareFunctionDependency(functionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass))
+		*functionDependencyFound = functionDependencyClassDefinitionFound->functionDependency;
+		if(!((*functionDependencyFound)->isReferenceElseFunctionDefinition))
 		{
-			//cout << "foundFunctionDependency: functionName = " << functionName << endl;
-			*functionDependencyFound = functionDependency;
-			foundFunctionDependency = true;
+			foundFunctionDefinitionFunctionDependency = true;
 		}
 	}
-	return foundFunctionDependency;
+	return foundFunctionDefinitionFunctionDependency;
 }
 
-bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDependencyClassDefinitionInList(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** classDefinitionFound)
 {
-	bool foundFunctionDependency = false;
-	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = functionDependencyList->begin(); functionDependencyIter != functionDependencyList->end(); functionDependencyIter++)
+	bool foundFunctionDependencyClassDefinition = false;
+	for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)
 	{
-		NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
-		if(functionDependency->functionDefinitionListIndex == functionIndex)
-		{ 
-			//cout << "foundFunctionDependency: functionName = " << functionName << endl;
-			*functionDependencyFound = functionDependency;
-			foundFunctionDependency = true;
+		NLCclassDefinition* classDefinition = *classDefinitionListIter;
+		if(classDefinition->functionDependency != NULL)
+		{
+			NLCclassDefinitionFunctionDependency* functionDependency = classDefinition->functionDependency;
+			if(compareFunctionDependency(functionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass))
+			{
+				//cout << "foundFunctionDependency: functionName = " << functionName << endl;
+				*classDefinitionFound = classDefinition;
+				foundFunctionDependencyClassDefinition = true;
+			}
 		}
 	}
-	return foundFunctionDependency;
+	return foundFunctionDependencyClassDefinition;
 }
-			
+
 bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDependency, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass)
 {
 	bool result = false;
@@ -241,14 +242,50 @@ bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDep
 	return result;
 }
 
+bool findFunctionDefinitionFunctionDependencyInList(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+{
+	bool foundFunctionDefinitionFunctionDependency = false;
+	NLCclassDefinition* functionDefinitionClassDefinitionFound = NULL;
+	if(findFunctionDefinitionClassDefinitionInList(classDefinitionList, functionIndex, &functionDefinitionClassDefinitionFound))
+	{
+		*functionDependencyFound = functionDefinitionClassDefinitionFound->functionDependency;
+		if(!((*functionDependencyFound)->isReferenceElseFunctionDefinition))	//redundant test (as already testing functionIndex)
+		{
+			foundFunctionDefinitionFunctionDependency = true;
+		}
+	}
+	return foundFunctionDefinitionFunctionDependency;
+}
+
+bool findFunctionDefinitionClassDefinitionInList(vector<NLCclassDefinition*>* classDefinitionList, int functionIndex, NLCclassDefinition** functionDefinitionFound)
+{
+	bool foundFunctionDefinitionClassDefinition = false;
+	for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)
+	{
+		NLCclassDefinition* classDefinition = *classDefinitionListIter;
+		if(classDefinition->functionDependency != NULL)
+		{
+			NLCclassDefinitionFunctionDependency* functionDependency = classDefinition->functionDependency;
+			if(functionDependency->functionDefinitionListIndex == functionIndex)
+			{ 
+				//cout << "foundFunctionDependency: functionName = " << functionName << endl;
+				*functionDefinitionFound = classDefinition;
+				foundFunctionDefinitionClassDefinition = true;
+			}
+		}
+	}
+	return foundFunctionDefinitionClassDefinition;
+}
+		
+
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 
-bool findFunctionDependencyInParent(NLCclassDefinitionFunctionDependency* parentFunctionDependency, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
+bool findFunctionDependencyInParent(NLCclassDefinition* parentFunctionDependencyClassDefinition, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinitionFunctionDependency** functionDependencyFound)
 {
 	bool foundFunctionDependency = false;
-	for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter = parentFunctionDependency->functionDependencyList.begin(); functionDependencyIter != parentFunctionDependency->functionDependencyList.end(); functionDependencyIter++)
+	for(vector<NLCclassDefinition*>::iterator functionDependencyListIter = parentFunctionDependencyClassDefinition->functionDependencyList.begin(); functionDependencyListIter != parentFunctionDependencyClassDefinition->functionDependencyList.end(); functionDependencyListIter++)
 	{
-		NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
+		NLCclassDefinitionFunctionDependency* functionDependency = (*functionDependencyListIter)->functionDependency;
 		if(compareFunctionDependency(functionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass))
 		{
 			//cout << "foundFunctionDependency: functionName = " << functionName << endl;
@@ -292,17 +329,16 @@ bool findFunctionDependencyInClassDefinitionList(vector<NLCclassDefinition*>* cl
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch)
+bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool* foundFunctionOwnerExactMatch, bool* foundFunctionObjectExactMatch)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	cout << "findFunctionDeclarationClassDefinitionExactOrNonExactMatch{}: " << endl;
+	cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch{}: " << endl;
 	cout << "functionName = " << functionName << endl;
 	cout << "functionOwnerName = " << functionOwnerName << endl;
 	cout << "functionObjectName = " << functionObjectName << endl;
 	#endif
-	bool foundFunctionDeclarationClassDefinition = false;
+	bool foundFunctionDefinitionClassDefinition = false;
 	
-	bool isReferenceElseFunctionDefinition = false;	
 	bool findFunctionOwnerExactMatch;
 	bool findFunctionObjectExactMatch;
 		
@@ -312,9 +348,9 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "start: findFunctionOwnerExactMatch && findFunctionObjectExactMatch" << endl;
 	#endif
-	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList, isReferenceElseFunctionDefinition))
+	if(findFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList))
 	{
-		foundFunctionDeclarationClassDefinition = true;
+		foundFunctionDefinitionClassDefinition = true;
 		*foundFunctionOwnerExactMatch = true;
 		*foundFunctionObjectExactMatch = true;
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -329,9 +365,9 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "start: findFunctionOwnerExactMatch && !findFunctionObjectExactMatch" << endl;
 		#endif
-		if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList, isReferenceElseFunctionDefinition))
+		if(findFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList))
 		{
-			foundFunctionDeclarationClassDefinition = true;
+			foundFunctionDefinitionClassDefinition = true;
 			*foundFunctionOwnerExactMatch = true;
 			*foundFunctionObjectExactMatch = false;
 			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -346,9 +382,9 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 			cout << "start: !findFunctionOwnerExactMatch && findFunctionObjectExactMatch" << endl;
 			#endif
-			if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList, isReferenceElseFunctionDefinition))
+			if(findFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList))
 			{
-				foundFunctionDeclarationClassDefinition = true;
+				foundFunctionDefinitionClassDefinition = true;
 				*foundFunctionOwnerExactMatch = false;
 				*foundFunctionObjectExactMatch = true;
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -363,9 +399,9 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				cout << "start: !findFunctionOwnerExactMatch && !findFunctionObjectExactMatch" << endl;
 				#endif
-				if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList, isReferenceElseFunctionDefinition))
+				if(findFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, functionClassDeclarationFound, rearrangeClassList))
 				{
-					foundFunctionDeclarationClassDefinition = true;
+					foundFunctionDefinitionClassDefinition = true;
 					*foundFunctionOwnerExactMatch = false;
 					*foundFunctionObjectExactMatch = false;
 					#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -375,13 +411,13 @@ bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassD
 			}		
 		}		
 	}
-	return foundFunctionDeclarationClassDefinition;
+	return foundFunctionDefinitionClassDefinition;
 }
 
-bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList, bool isReferenceElseFunctionDefinition)
+bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionClassDeclarationFound, bool rearrangeClassList)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	cout << "findFunctionDeclarationClassDefinition{}:" << endl;
+	cout << "findFunctionDefinitionClassDefinition{}:" << endl;
 	cout << "functionName = " << functionName << endl;
 	#endif
 	bool foundFunctionDeclarationClassDefinition = false;
@@ -394,22 +430,21 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 		#endif
 		for(vector<NLCclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
 		{
-			NLCclassDefinition* functionDeclaration = *localListIter;
+			NLCclassDefinition* functionDeclarationClassDefinition = *localListIter;
 			#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-			cout << "functionDeclaration->functionNameSpecial = " << functionDeclaration->functionNameSpecial << endl;
+			cout << "functionDeclarationClassDefinition->functionNameSpecial = " << functionDeclarationClassDefinition->functionNameSpecial << endl;
 			#endif
-			if(functionDeclaration->functionNameSpecial == generateFunctionName(functionName))
+			if(functionDeclarationClassDefinition->functionNameSpecial == generateFunctionName(functionName))
 			{
 				#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-				cout << "(functionDeclaration->functionNameSpecial == generateFunctionName(functionName))" << endl;
+				cout << "(functionDeclarationClassDefinition->functionNameSpecial == generateFunctionName(functionName))" << endl;
 				#endif
-				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-				if(functionDeclaration->functionDependency->isReferenceElseFunctionDefinition == isReferenceElseFunctionDefinition)
+				if(functionDeclarationClassDefinition->functionDependency->isReferenceElseFunctionDefinition == false)
 				{
 					#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-					cout << "functionDeclaration->functionDependency->isReferenceElseFunctionDefinition = " << functionDeclaration->functionDependency->isReferenceElseFunctionDefinition << endl;
+					cout << "functionDeclarationClassDefinition->functionDependency->isReferenceElseFunctionDefinition = " << functionDeclarationClassDefinition->functionDependency->isReferenceElseFunctionDefinition << endl;
 					#endif
-				#endif
+
 					NLCclassDefinition* parentFunctionOwnerClassDef = NULL;
 					NLCclassDefinition* parentFunctionObjectClassDef = NULL;
 					#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
@@ -418,7 +453,7 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 					NLCitem* functionObjectArgument = NULL;
 					bool passFunctionDefinitionRequirements = true;
 					#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-					//cout << "(functionDeclaration->functionNameSpecial == generateFunctionName(functionName)) = " << functionDeclaration->functionNameSpecial << endl;
+					//cout << "(functionDeclarationClassDefinition->functionNameSpecial == generateFunctionName(functionName)) = " << functionDeclarationClassDefinition->functionNameSpecial << endl;
 					#endif
 					if(hasFunctionOwnerClass)
 					{
@@ -451,9 +486,9 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 										cout << "2 findParentClass(currentClassDef, generateClassName(functionOwnerName), 0, &inheritanceLevel, &parentFunctionOwnerClassDef)" << endl;
 										#endif
 										#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-										if(!findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
+										if(!findFunctionArgument(&(functionDeclarationClassDefinition->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 										{
-											cout << "findFunctionDeclarationClassDefinition{} error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 1" << endl;
+											cout << "findFunctionDefinitionClassDefinition{} error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER 1" << endl;
 										}
 										#endif
 									}
@@ -478,9 +513,9 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 											cout << "2 findParentClass(currentClassDef, generateClassName(functionOwnerName), 0, &inheritanceLevel, &parentFunctionOwnerClassDef)" << endl;
 											#endif
 											#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
-											if(!findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
+											if(!findFunctionArgument(&(functionDeclarationClassDefinition->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, &functionOwnerArgument))
 											{
-												cout << "findFunctionDeclarationClassDefinition{} error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER 2" << endl;
+												cout << "findFunctionDefinitionClassDefinition{} error: !findFunctionArgument NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER 2" << endl;
 											}
 											#endif
 										}
@@ -513,11 +548,11 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 								cout << "findFunctionObjectExactMatch..." << endl;
 								cout << "functionObjectName = " << functionObjectName << endl;
 								#endif
-								if(findFunctionArgument(&(functionDeclaration->parameters), functionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))	//NB generateClassName(functionObjectName) not required
+								if(findFunctionArgument(&(functionDeclarationClassDefinition->parameters), functionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))	//NB generateClassName(functionObjectName) not required
 								{
 									passFunctionDefinitionRequirements = true;
 									#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-									cout << "3 findFunctionArgument(functionDeclaration, functionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument)" << endl;
+									cout << "3 findFunctionArgument(functionDeclarationClassDefinition, functionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument)" << endl;
 									#endif
 								}
 							}
@@ -527,7 +562,7 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 								#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 								cout << "!findFunctionObjectExactMatch ... " << endl;
 								#endif
-								if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
+								if(findFunctionArgument(&(functionDeclarationClassDefinition->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
 								{
 									//cout << "functionObjectArgument->name = " << functionObjectArgument->name << endl;
 									if(rearrangeClassList)
@@ -582,7 +617,7 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 					#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_ARGUMENTS_NO_OBJECT
 					else
 					{
-						if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
+						if(findFunctionArgument(&(functionDeclarationClassDefinition->parameters), NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
 						{
 							passFunctionDefinitionRequirements = false;
 							cout << "NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_ARGUMENTS_NO_OBJECT: passFunctionDefinitionRequirements = false;" << endl;
@@ -595,11 +630,9 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition*>* classDe
 						cout << "passFunctionDefinitionRequirements" << endl;
 						#endif
 						foundFunctionDeclarationClassDefinition = true;
-						*functionClassDeclarationFound = functionDeclaration;
+						*functionClassDeclarationFound = functionDeclarationClassDefinition;
 					}
-				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
 				}
-				#endif
 			}
 		}
 	}

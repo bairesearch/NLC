@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3c 01-November-2014
+ * Project Version: 1l3d 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,7 +55,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		#endif
 		//cout << "sentenceIndexC = " << sentenceIndex << endl;
 
-		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 		bool sameReferenceSet = false;
 		#endif
 		
@@ -74,7 +74,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				objectEntity->disabled = true;	//prevent parsing of dummyActionObject by generateCodeBlocksPart4objectInitialisations()
 			}
 			#endif
-			#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 			if((actionEntity->actionObjectEntity->back())->sameReferenceSet)
 			{
 				sameReferenceSet = true;	
@@ -87,7 +87,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		{
 			actionHasSubject = true;
 			subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
-			#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+			#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
 			if((actionEntity->actionSubjectEntity->back())->sameReferenceSet)
 			{
 				sameReferenceSet = true;	

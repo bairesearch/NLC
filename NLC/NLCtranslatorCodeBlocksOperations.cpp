@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l9b 05-November-2014
+ * Project Version: 1l9c 05-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -336,15 +336,42 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 	if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))
 	{//is this required?
 	
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+		//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) the actionSubject[/object]'s category list must be created here such that it can be accessed by a) createCodeBlockForCategoryList/createCodeBlockForLocalList and b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
+		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//create new category list
+		currentEntity->NLCcategoryListCreatedTemp = true;
+		#endif
+		
 		if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, parseLogicalConditions))
 		{
 			result = true;
+			//eg A chicken's barrel eats the bike.
+			/*
+			NB this code aligns with generateObjectInitialisationsBasedOnPropertiesAndConditions part c)
+			definite children of indefinite parents are illegal here, eg "A chicken has the barrel - eat the bike" [NB ignoring irrelevant case "A chicken has the barrel that eats the bike" because the action is sameReferenceSet and as such will not be parsed by generateActionCodeBlocks()]
+			indefinite children of definite parents are illegal here also, eg "The chicken has a barrel - eat the bike" [NB ignoring irrelevant case "The chicken has a barrel that eats the bike" because the action is sameReferenceSet and as such will not be parsed by generateActionCodeBlocks()]
+			only indefinite children of indefinite parents are legal eg "A chicken's barrel eats the bike"
+			This means that if the parent is indefinite, the child is also, and as such the child's full context does not have to be generated (ie can use createCodeBlockForCategoryList/createCodeBlockForLocalList instead of generateContextForChildEntity)
+			*/
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+			#else
+			NLCitem * entityItem = new NLCitem(currentEntity, NLC_ITEM_TYPE_OBJECT);
+			*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entityItem);
+			#endif
 		}
-
-		if(generateContextForChildEntity(NULL, currentEntity, currentCodeBlockInTree, sentenceIndex, true))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetDefiniteUniqueParent()
+		else
 		{
-			result = true;
+			//eg The chicken's barrel eats the bike.
+			if(generateContextForChildEntity(NULL, currentEntity, currentCodeBlockInTree, sentenceIndex, true))	//NB parent entity parameter is set to NULL such that it can be obtained by getSameReferenceSetDefiniteUniqueParent()
+			{
+				result = true;
+			}
 		}
+		
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+		currentEntity->NLCcategoryListCreatedTemp = false;
+		#endif
 	}
 
 	return result;

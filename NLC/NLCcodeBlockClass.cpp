@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l9b 05-November-2014
+ * Project Version: 1l9c 05-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1495,7 +1495,18 @@ NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree
 
 NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName)
 {
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+	if(!(entity->NLCcategoryListCreatedTemp))
+	{
+		return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
+	}
+	else
+	{
+		return currentCodeBlockInTree;
+	}
+	#else
 	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName);
+	#endif
 }
 
 NLCcodeblock * createCodeBlockAddEntityToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName)

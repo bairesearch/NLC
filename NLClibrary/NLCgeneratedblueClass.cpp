@@ -1,4 +1,5 @@
 #include "NLCgeneratedblueClass.hpp"
+#include "NLClibrary.hpp"
 
 blueClass::blueClass(void)
 {

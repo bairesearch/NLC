@@ -1,4 +1,5 @@
 #include "NLCgeneratedrideClass.hpp"
+#include "NLClibrary.hpp"
 
 rideClass::rideClass(void)
 {

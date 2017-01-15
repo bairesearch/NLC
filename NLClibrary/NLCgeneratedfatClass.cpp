@@ -1,4 +1,5 @@
 #include "NLCgeneratedfatClass.hpp"
+#include "NLClibrary.hpp"
 
 fatClass::fatClass(void)
 {

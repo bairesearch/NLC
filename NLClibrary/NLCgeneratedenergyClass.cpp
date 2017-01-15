@@ -1,4 +1,5 @@
 #include "NLCgeneratedenergyClass.hpp"
+#include "NLClibrary.hpp"
 
 energyClass::energyClass(void)
 {

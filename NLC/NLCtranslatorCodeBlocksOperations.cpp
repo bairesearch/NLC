@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1c 11-August-2015
+ * Project Version: 1q1d 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2541,7 +2541,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode*
 
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 //CURRENTLYILLEGAL: "Tom rides a bike. Tom is the red dog."
-void fillFunctionAliasClassList(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete)
+void fillFunctionAliasClassList(vector<GIAentityNode*>* entityNodesActiveListComplete)
 {	
 	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	cout << "start fillFunctionAliasClassList{}:" << endl;

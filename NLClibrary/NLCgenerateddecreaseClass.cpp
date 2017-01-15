@@ -1,4 +1,5 @@
 #include "NLCgenerateddecreaseClass.hpp"
+#include "NLClibrary.hpp"
 
 decreaseClass::decreaseClass(void)
 {

@@ -1,4 +1,5 @@
 #include "NLCgeneratedmoveClass.hpp"
+#include "NLClibrary.hpp"
 
 moveClass::moveClass(void)
 {

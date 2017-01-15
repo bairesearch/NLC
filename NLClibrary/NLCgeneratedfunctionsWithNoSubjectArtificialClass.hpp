@@ -3,7 +3,7 @@
 
 #include "NLClibraryGenericEntityClass.hpp"
 
-class moveClass;
+//class moveClass;
 class NLCgenericEntityClass;
 class mainClass;
 class bikeClass;
@@ -11,7 +11,7 @@ class functionsWithNoSubjectArtificialClass : public NLCgenericEntityClass
 {
 public:
 	functionsWithNoSubjectArtificialClass(void);
-	void moveFunction(vector<moveClass*>& moveClassList, vector<NLCgenericEntityClass*>& NLCgenericEntityClassList);
+	//void moveFunction(vector<moveClass*>& moveClassList, vector<NLCgenericEntityClass*>& NLCgenericEntityClassList);
 	void mainFunction(vector<mainClass*>& mainClassList, vector<bikeClass*>& bikeClassList);
 };
 

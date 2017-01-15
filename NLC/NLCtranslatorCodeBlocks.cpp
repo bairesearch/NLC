@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1c 11-August-2015
+ * Project Version: 1q1d 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,7 +55,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 	#ifdef NLC_DEBUG
 	cout << "generateCodeBlocks{}: fillFunctionAliasClassList:" << endl;
 	#endif
-	fillFunctionAliasClassList(&currentCodeBlockInTree, entityNodesActiveListComplete);
+	fillFunctionAliasClassList(entityNodesActiveListComplete);
 	#endif
 	
 	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete, (currentNLCfunctionInList->firstNLCsentenceInFunction));

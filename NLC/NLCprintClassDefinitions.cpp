@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1c 11-August-2015
+ * Project Version: 1q1d 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -170,11 +170,11 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						if(printedParentClassDefinitions)
 						{//only print class definitions once their parent class definitions have been printed
 
-							string printedClassDefinitionTextCPP = "";
-							string printedClassDefinitionTextHPP = "";
+							string printedClassDefinitionSourceText = "";
+							string printedClassDefinitionHeaderText = "";
 							#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-							vector<string> printedClassDefinitionTextCPPforwardDeclarationList;
-							string printedClassDefinitionTextHPPheader = "";
+							vector<string> printedClassDefinitionTextHeaderTopForwardDeclarationList;
+							string printedClassDefinitionTextHeaderTop = "";
 							#endif
 							
 							string className = classDefinition->name;
@@ -212,7 +212,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								{
 									classDefinitionParentDefinitionFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + targetName + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
 								}
-								printedClassDefinitionTextHPPheader = printedClassDefinitionTextHPPheader + generateCodeHashIncludeReference(classDefinitionParentDefinitionFileName, progLang);
+								printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReference(classDefinitionParentDefinitionFileName, progLang);
 								#endif
 							}
 
@@ -221,14 +221,14 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 
 							string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className + classTitleText;
 
-							printLine(classDefinitionEntryText, 0, &printedClassDefinitionTextHPP);
-							printLine(progLangOpenClass[progLang], 0, &printedClassDefinitionTextHPP);
-							printLine(progLangClassIntro[progLang], 0, &printedClassDefinitionTextHPP);
+							printLine(classDefinitionEntryText, 0, &printedClassDefinitionHeaderText);
+							printLine(progLangOpenClass[progLang], 0, &printedClassDefinitionHeaderText);
+							printLine(progLangClassIntro[progLang], 0, &printedClassDefinitionHeaderText);
 							string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
-							printLine(classConstructorDeclaration, 1, &printedClassDefinitionTextHPP);
+							printLine(classConstructorDeclaration, 1, &printedClassDefinitionHeaderText);
 							#ifdef NLC_USE_DESTRUCTORS
 							string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang] + progLangEndLine[progLang];
-							printLine(classDestructorDeclaration, 1, &printedClassDefinitionTextHPP);
+							printLine(classDestructorDeclaration, 1, &printedClassDefinitionHeaderText);
 							#endif
 							string classNameRaw = removeClassTextFromClassDefinitionName(className);
 							//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//string name = "dog";
@@ -240,45 +240,45 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							{//top level NLClibraryEntity class found
 							#endif
 								string classDefinitionNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangEndLine[progLang];	//string name;
-								printLine(classDefinitionNameCode, 1, &printedClassDefinitionTextHPP);
+								printLine(classDefinitionNameCode, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_ADVANCED_REFERENCING
 								string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//stack<int> lastSentenceReferenced;
-								printLine(classDefinitionLastSentenceReferencedCode, 1, &printedClassDefinitionTextHPP);
+								printLine(classDefinitionLastSentenceReferencedCode, 1, &printedClassDefinitionHeaderText);
 								#endif
 								#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 								string classDefinitionAliasListCode = progLangAliasListVariableType[progLang] + string(NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangEndLine[progLang];	//vector<string> aliasList;
-								printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionTextHPP);			
+								printLine(classDefinitionAliasListCode, 1, &printedClassDefinitionHeaderText);			
 								#endif
 								
 								#ifdef NLC_USE_MATH_OBJECTS
 								string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEndLine[progLang];	//double value;
-								printLine(classDefinitionValueCode, 1, &printedClassDefinitionTextHPP);
+								printLine(classDefinitionValueCode, 1, &printedClassDefinitionHeaderText);
 								#endif
 								#ifdef NLC_USE_LIBRARY
 								string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> propertyLists;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								allListDeclarationText = generateCodeAllPropertyIncomingListDefinitionText(progLang);	//vector<NLCgenericEntityClass*> propertyIncomingList;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);		//unordered_map<pair<string, string>*, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>*> conditionLists;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								allListDeclarationText = generateCodeAllConditionIncomingListDefinitionText(progLang);	//unordered_map<string, NLCgenericEntityClass*> conditionIncomingList;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_RECORD_ACTION_HISTORY
 								allListDeclarationText = generateCodeAllActionListDefinitionText(progLang);		//unordered_map<string, vector<NLCgenericEntityClass*>*> actionLists;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								allListDeclarationText = generateCodeAllActionIncomingListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionIncomingLists;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								allListDeclarationText = generateCodeAllActionSubjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionSubjectLists;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								allListDeclarationText = generateCodeAllActionObjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionObjectLists;
-								printLine(allListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#endif
 								#endif
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
 								string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
 								string parentClassListClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 								string parentClassListDeclarationText = generateCodeEntityListDefinitionText(parentClassListClassName, parentClassListName, progLang) + progLangEndLine[progLang];  	//vector<NLCgenericEntityClass*> parentClassList;
-								printLine(parentClassListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(parentClassListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#endif
 							
 							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
@@ -294,9 +294,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								string propertyClassName = targetClassDefinition->name;
 								//NLCitem* param1 = targetClassDefinition->parameters.at(0);	//not required to be used
 								string localListDeclarationText = generateCodePropertyListDefinitionText(propertyClassName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, propertyClassName);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, propertyClassName);
 								#endif
 							}
 
@@ -306,10 +306,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								//string targetName = targetClassDefinition->name;	//condition instance name not used
 								NLCitem* param1 = targetClassDefinition->parameters.at(0);
 								string localListDeclarationText = generateCodeConditionListDefinitionText(param1->className, param1->className2, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, param1->className);
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, param1->className2);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, param1->className);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, param1->className2);
 								#endif
 							}
 							#endif
@@ -324,7 +324,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
 								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 								for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
@@ -333,20 +333,20 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 									if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST)
 									{
 										#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-										addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, currentItem->className);
+										addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
 										#endif
 									}
 									#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 									if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 									{
 										#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-										addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, currentItem->className);
+										addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
 										#endif
 									}
 									else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
 									{
 										#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-										addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, currentItem->className);
+										addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, currentItem->className);
 										#endif
 									}
 									#endif
@@ -368,9 +368,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
 								string genericListAppendName = NLC_ITEM_TYPE_ACTION_VAR_APPENDITION;
 								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, entityParamAction.className);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, entityParamAction.className);
 								#endif
 								//cout << "classDefinition->name = " << classDefinition->name << endl;
 								//cout << "entityParamAction.className = " << entityParamAction.className << endl;
@@ -384,9 +384,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								entityParamAction.genericObjectName = generateClassName(entityAction.entityName);
 								string genericListAppendName = NLC_ITEM_TYPE_ACTIONINCOMING_VAR_APPENDITION;
 								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamAction, genericListAppendName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, entityParamAction.className);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, entityParamAction.className);
 								#endif
 							}
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionSubjectList.begin(); localListIter != classDefinition->actionSubjectList.end(); localListIter++)
@@ -398,9 +398,9 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								entityParamActionSubject.genericObjectName = generateClassName(entityActionSubject.entityName);
 								string genericListAppendName = NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION;
 								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionSubject, genericListAppendName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, entityParamActionSubject.className);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, entityParamActionSubject.className);
 								#endif
 							}
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionObjectList.begin(); localListIter != classDefinition->actionObjectList.end(); localListIter++)
@@ -412,32 +412,32 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								entityParamActionObject.genericObjectName = generateClassName(entityActionObject.entityName);
 								string genericListAppendName = NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION;
 								string localListDeclarationText = generateCodeGenericListDefinitionText(&entityParamActionObject, genericListAppendName, progLang) + progLangEndLine[progLang];
-								printLine(localListDeclarationText, 1, &printedClassDefinitionTextHPP);
+								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 								#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-								addToForwardDeclarationList(&printedClassDefinitionTextCPPforwardDeclarationList, entityParamActionObject.className);
+								addToForwardDeclarationList(&printedClassDefinitionTextHeaderTopForwardDeclarationList, entityParamActionObject.className);
 								#endif
 							}
 							#endif
 							#endif
 							
-							printLine(progLangCloseClass[progLang], 0, &printedClassDefinitionTextHPP);
-							printLine("", 0, &printedClassDefinitionTextHPP);
+							printLine(progLangCloseClass[progLang], 0, &printedClassDefinitionHeaderText);
+							printLine("", 0, &printedClassDefinitionHeaderText);
 
 							string classConstructorEntryText = classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + classDefinition->name + progLangClassMemberFunctionParametersOpen[progLang] + progLangClassConstructorParameters[progLang] + progLangClassMemberFunctionParametersClose[progLang];
-							printLine(classConstructorEntryText, 0, &printedClassDefinitionTextCPP);
-							printLine(progLangOpenBlock[progLang], 0, &printedClassDefinitionTextCPP);
+							printLine(classConstructorEntryText, 0, &printedClassDefinitionSourceText);
+							printLine(progLangOpenBlock[progLang], 0, &printedClassDefinitionSourceText);
 							#ifndef NLC_NONOO
 							string classConstructorNameCode = progLangClassNameVariableName[progLang] + progLangClassNameVariableEquals[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//name = "dog";
-							printLine(classConstructorNameCode, 1, &printedClassDefinitionTextCPP);
+							printLine(classConstructorNameCode, 1, &printedClassDefinitionSourceText);
 							#ifdef NLC_USE_ADVANCED_REFERENCING
 							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 							//string classConstructorLastSentenceReferencedCode = "";
 							//classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangObjectReferenceDelimiter2[progLang] + progLangStackAdd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + "0" + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];	//lastSentenceReferenced.push(0);
-							//printLine(classConstructorLastSentenceReferencedCode, 1, &printedClassDefinitionTextCPP);	
+							//printLine(classConstructorLastSentenceReferencedCode, 1, &printedClassDefinitionSourceText);	
 							#else
 							string classConstructorLastSentenceReferencedCode = "";
 							classConstructorLastSentenceReferencedCode = classConstructorLastSentenceReferencedCode + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangClassNameVariableEquals[progLang] + "0" + progLangEndLine[progLang];	//lastSentenceReferenced = 0;
-							printLine(classConstructorLastSentenceReferencedCode, 1, &printedClassDefinitionTextCPP);	
+							printLine(classConstructorLastSentenceReferencedCode, 1, &printedClassDefinitionSourceText);	
 							#endif
 							#endif
 							#endif
@@ -447,7 +447,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							#endif
 								#ifdef NLC_USE_MATH_OBJECTS
 								string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang];	//value = 0.0;
-								printLine(setValueCode, 1, &printedClassDefinitionTextCPP);
+								printLine(setValueCode, 1, &printedClassDefinitionSourceText);
 								#endif							
 							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 							}
@@ -460,7 +460,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								string propertyClassName = targetClassDefinition->name;
 								//NLCitem* param1 = targetClassDefinition->parameters.at(0);	//not required to be used
 								string codeAllPropertyListAddText = generateCodeAllPropertyListAddText(propertyClassName, progLang);
-								printLine(codeAllPropertyListAddText, 1, &printedClassDefinitionTextCPP);
+								printLine(codeAllPropertyListAddText, 1, &printedClassDefinitionSourceText);
 							}
 
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
@@ -469,7 +469,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								//string targetName = targetClassDefinition->name;	//condition instance name not used
 								NLCitem* param1 = targetClassDefinition->parameters.at(0);
 								string codeAllConditionListAddText = generateCodeAllConditionListAddText(param1->className, param1->className2, progLang);
-								printLine(codeAllConditionListAddText, 1, &printedClassDefinitionTextCPP);
+								printLine(codeAllConditionListAddText, 1, &printedClassDefinitionSourceText);
 							}
 
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
@@ -477,28 +477,28 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								NLCclassDefinition* targetClassDefinition = *localListIter;
 								string actionClassName = targetClassDefinition->name;
 								string codeAllActionListAddText = generateCodeAllActionListAddText(actionClassName, progLang);
-								printLine(codeAllActionListAddText, 1, &printedClassDefinitionTextCPP);
+								printLine(codeAllActionListAddText, 1, &printedClassDefinitionSourceText);
 							}
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
 							{
 								NLCclassDefinition* targetClassDefinition = *localListIter;
 								string actionIncomingClassName = targetClassDefinition->name;
 								string codeAllActionIncomingListAddText = generateCodeAllActionIncomingListAddText(actionIncomingClassName, progLang);
-								printLine(codeAllActionIncomingListAddText, 1, &printedClassDefinitionTextCPP);
+								printLine(codeAllActionIncomingListAddText, 1, &printedClassDefinitionSourceText);
 							}
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionSubjectList.begin(); localListIter != classDefinition->actionSubjectList.end(); localListIter++)
 							{
 								NLCclassDefinition* targetClassDefinition = *localListIter;
 								string actionSubjectClassName = targetClassDefinition->name;
 								string codeAllActionSubjectListAddText = generateCodeAllActionSubjectListAddText(actionSubjectClassName, progLang);
-								printLine(codeAllActionSubjectListAddText, 1, &printedClassDefinitionTextCPP);
+								printLine(codeAllActionSubjectListAddText, 1, &printedClassDefinitionSourceText);
 							}
 							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionObjectList.begin(); localListIter != classDefinition->actionObjectList.end(); localListIter++)
 							{
 								NLCclassDefinition* targetClassDefinition = *localListIter;
 								string actionObjectClassName = targetClassDefinition->name;
 								string codeAllActionObjectListAddText = generateCodeAllActionObjectListAddText(actionObjectClassName, progLang);
-								printLine(codeAllActionObjectListAddText, 1, &printedClassDefinitionTextCPP);
+								printLine(codeAllActionObjectListAddText, 1, &printedClassDefinitionSourceText);
 							}
 							#endif
 
@@ -510,36 +510,44 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								string parentEntityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
 								/*
 								string parentEntityDefinitionText = generateCodeNewEntity(parentClassName, parentEntityName, progLang);	//parentClassDefinitionClass* parentClassDefinition = new parentClassDefinitionClass();
-								printLine(parentEntityDefinitionText, 1, &printedClassDefinitionTextCPP);
+								printLine(parentEntityDefinitionText, 1, &printedClassDefinitionSourceText);
 								*/
 								string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
 								string parentClassListClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 								string addParentEntityToParentClassListText = parentClassListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateStaticCastOfNewEntity(parentClassName, parentClassListClassName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new parentClassDefinition));
-								printLine(addParentEntityToParentClassListText, 1, &printedClassDefinitionTextCPP);
+								printLine(addParentEntityToParentClassListText, 1, &printedClassDefinitionSourceText);
 							}
 							#endif
 							
-							printLine(progLangCloseBlock[progLang], 0, &printedClassDefinitionTextCPP);
-							printLine("", 0, &printedClassDefinitionTextCPP);
+							printLine(progLangCloseBlock[progLang], 0, &printedClassDefinitionSourceText);
+							printLine("", 0, &printedClassDefinitionSourceText);
 							
 							#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-							string printedClassDefinitionHPPfileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP; 	//eg NLClibraryDynamicmoveClass.hpp
-							string printedClassDefinitionCPPfileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLClibraryDynamicmoveClass.cpp
-							string printedClassDefinitionTextCPPheader = generateCodeHashIncludeReference(printedClassDefinitionHPPfileName, progLang) + CHAR_NEWLINE;
-							printedClassDefinitionTextCPP = printedClassDefinitionTextCPPheader + printedClassDefinitionTextCPP;
-							printedClassDefinitionTextHPPheader = printedClassDefinitionTextHPPheader + CHAR_NEWLINE;	//add a space between #include file (definition parent ) and foward declarations
-							for(vector<string>::iterator printedClassDefinitionTextCPPforwardDeclarationListIter = printedClassDefinitionTextCPPforwardDeclarationList.begin(); printedClassDefinitionTextCPPforwardDeclarationListIter != printedClassDefinitionTextCPPforwardDeclarationList.end(); printedClassDefinitionTextCPPforwardDeclarationListIter++)
+							string printedClassDefinitionHeaderFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP; 	//eg NLCgeneratedmoveClass.hpp
+							string printedClassDefinitionSourceFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
+							
+							string printedClassDefinitionTextCPPheader = "";
+							printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);		//eg #include "NLCgeneratedmoveClass.hpp"
+							#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+							printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + generateCodeHashIncludeReference(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME, progLang);	//eg #include "NLClibrary.hpp"
+							#endif
+							printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + CHAR_NEWLINE;
+							printedClassDefinitionSourceText = printedClassDefinitionTextCPPheader + printedClassDefinitionSourceText;
+							
+							printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + CHAR_NEWLINE;	//add a space between #include file (definition parent ) and foward declarations
+							for(vector<string>::iterator printedClassDefinitionTextCPPforwardDeclarationListIter = printedClassDefinitionTextHeaderTopForwardDeclarationList.begin(); printedClassDefinitionTextCPPforwardDeclarationListIter != printedClassDefinitionTextHeaderTopForwardDeclarationList.end(); printedClassDefinitionTextCPPforwardDeclarationListIter++)
 							{
 								string forwardDeclarationClassName = *printedClassDefinitionTextCPPforwardDeclarationListIter;
-								printedClassDefinitionTextHPPheader = printedClassDefinitionTextHPPheader + generateForwardDeclaration(forwardDeclarationClassName, progLang);
+								printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateForwardDeclaration(forwardDeclarationClassName, progLang);
 							}
 							string preprocessorName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_DELIMITER + classDefinition->name;
-							string printedClassDefinitionTextHPPb = generateCodeHeaderCheckOpen(preprocessorName) + printedClassDefinitionTextHPPheader + printedClassDefinitionTextHPP + generateCodeHeaderCheckClose();
-							writeStringToFile(printedClassDefinitionHPPfileName, &printedClassDefinitionTextHPPb);
-							writeStringToFile(printedClassDefinitionCPPfileName, &printedClassDefinitionTextCPP);
+							printedClassDefinitionHeaderText = generateCodeHeaderCheckOpen(preprocessorName) + printedClassDefinitionTextHeaderTop + printedClassDefinitionHeaderText + generateCodeHeaderCheckClose();
+							
+							writeStringToFile(printedClassDefinitionHeaderFileName, &printedClassDefinitionHeaderText);
+							writeStringToFile(printedClassDefinitionSourceFileName, &printedClassDefinitionSourceText);
 							#else
-							*code = *code + printedClassDefinitionTextHPP;
-							*code = *code + printedClassDefinitionTextCPP;
+							*code = *code + printedClassDefinitionHeaderText;
+							*code = *code + printedClassDefinitionSourceText;
 							#endif
 						}
 					}
@@ -559,52 +567,52 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 	int level = 0;
 	
 	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-	string NLClibraryDynamicCodeCPP = "";
-	string NLClibraryDynamicCPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLClibraryDynamic.cpp
-	string NLClibraryDynamicHPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLClibraryDynamic.h	
-	NLClibraryDynamicCodeCPP = NLClibraryDynamicCodeCPP + generateCodeHashIncludeReference(NLClibraryDynamicHPPfileName, progLang) + CHAR_NEWLINE;
-	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLClibraryDynamicCodeCPP, level);
-	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLClibraryDynamicCodeCPP, level);
-	writeStringToFile(NLClibraryDynamicCPPfileName, &NLClibraryDynamicCodeCPP);
+	string NLCgeneratedCodeSource = "";
+	string NLCgeneratedCodeSourceFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgenerated.cpp
+	string NLCgeneratedCodeHeaderFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgenerated.h	
+	NLCgeneratedCodeSource = NLCgeneratedCodeSource + generateCodeHashIncludeReference(NLCgeneratedCodeHeaderFileName, progLang) + CHAR_NEWLINE;
+	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
+	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
+	writeStringToFile(NLCgeneratedCodeSourceFileName, &NLCgeneratedCodeSource);
 	
-	string NLClibraryDynamicCodeHPP = "";
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + generateCodeHeaderCheckOpen(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_PREPEND);
+	string NLCgeneratedCodeHeader = "";
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHeaderCheckOpen(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_PREPEND);
 	string NLClibraryGenericClassHPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME) + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + generateCodeHashIncludeReference(NLClibraryGenericClassHPPfileName, progLang);
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReference(NLClibraryGenericClassHPPfileName, progLang);
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
 		if(classDefinition->printed)
 		{
-			string NLClibraryDynamicCodeHPPIncludedClassDefinitionHPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
-			NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + generateCodeHashIncludeReference(NLClibraryDynamicCodeHPPIncludedClassDefinitionHPPfileName, progLang);	//eg #include "NLClibraryDynamicmoveClass.hpp"
+			string NLCgeneratedCodeHPPIncludedClassDefinitionHPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;
+			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHashIncludeReference(NLCgeneratedCodeHPPIncludedClassDefinitionHPPfileName, progLang);	//eg #include "NLCgeneratedmoveClass.hpp"
 		}
 	}	
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + CHAR_NEWLINE;
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + generateCodeGenerateObjectByNameDeclareFunction(progLang) + progLangEndLine[progLang] + CHAR_NEWLINE; 
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + generateCodeCopyObjectByNameDeclareFunction(progLang) + progLangEndLine[progLang] + CHAR_NEWLINE;	
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + CHAR_NEWLINE;
-	NLClibraryDynamicCodeHPP = NLClibraryDynamicCodeHPP + generateCodeHeaderCheckClose();
-	writeStringToFile(NLClibraryDynamicHPPfileName, &NLClibraryDynamicCodeHPP);
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + CHAR_NEWLINE;
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeGenerateObjectByNameDeclareFunction(progLang) + progLangEndLine[progLang] + CHAR_NEWLINE; 
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeCopyObjectByNameDeclareFunction(progLang) + progLangEndLine[progLang] + CHAR_NEWLINE;	
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + CHAR_NEWLINE;
+	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + generateCodeHeaderCheckClose();
+	writeStringToFile(NLCgeneratedCodeHeaderFileName, &NLCgeneratedCodeHeader);
 
-	string NLClibraryDynamicCPPfileNameList = "";
-	NLClibraryDynamicCPPfileNameList = NLClibraryDynamicCPPfileNameList + NLClibraryDynamicCPPfileName + CHAR_SPACE;
+	string NLCgeneratedCodeSourceFileNameList = "";
+	NLCgeneratedCodeSourceFileNameList = NLCgeneratedCodeSourceFileNameList + NLCgeneratedCodeSourceFileName + CHAR_SPACE;
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
 		if(classDefinition->printed)
 		{
-			string NLClibraryDynamicCodeHPPIncludedClassDefinitionCPPfileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;			
-			NLClibraryDynamicCPPfileNameList = NLClibraryDynamicCPPfileNameList + NLClibraryDynamicCodeHPPIncludedClassDefinitionCPPfileName + CHAR_SPACE; 
+			string NLCgeneratedCodeHeaderIncludedClassDefinitionSourceFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + classDefinition->name + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;			
+			NLCgeneratedCodeSourceFileNameList = NLCgeneratedCodeSourceFileNameList + NLCgeneratedCodeHeaderIncludedClassDefinitionSourceFileName + CHAR_SPACE; 
 		}
 	}	
-	string NLClibraryDynamicCPPfileNameListFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME);
-	writeStringToFile(NLClibraryDynamicCPPfileNameListFileName, &NLClibraryDynamicCPPfileNameList);
+	string NLCgeneratedCodeSourceFileNameListFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME);
+	writeStringToFile(NLCgeneratedCodeSourceFileNameListFileName, &NLCgeneratedCodeSourceFileNameList);
 	#else
-	string NLClibraryDynamicCodeCPP = "";
-	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLClibraryDynamicCodeCPP, level);
-	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLClibraryDynamicCodeCPP, level);
-	*code = code + NLClibraryDynamicCodeCPP;
+	string NLCgeneratedCodeSource = "";
+	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
+	generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
+	*code = code + NLCgeneratedCodeSource;
 	#endif
 	
 	#endif
@@ -638,11 +646,11 @@ string generateForwardDeclaration(string className, int progLang)
 	return forwardDeclaration;
 }
 
-void addToForwardDeclarationList(vector<string>* printedClassDefinitionTextCPPforwardDeclarationList, string className)
+void addToForwardDeclarationList(vector<string>* printedClassDefinitionTextHeaderTopForwardDeclarationList, string className)
 {
-	if(find(printedClassDefinitionTextCPPforwardDeclarationList->begin(), printedClassDefinitionTextCPPforwardDeclarationList->end(), className) == printedClassDefinitionTextCPPforwardDeclarationList->end())
+	if(find(printedClassDefinitionTextHeaderTopForwardDeclarationList->begin(), printedClassDefinitionTextHeaderTopForwardDeclarationList->end(), className) == printedClassDefinitionTextHeaderTopForwardDeclarationList->end())
 	{
-		printedClassDefinitionTextCPPforwardDeclarationList->push_back(className);
+		printedClassDefinitionTextHeaderTopForwardDeclarationList->push_back(className);
 	}
 }
 #endif

@@ -1,4 +1,5 @@
 #include "NLCgeneratedmainClass.hpp"
+#include "NLClibrary.hpp"
 
 mainClass::mainClass(void)
 {

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1c 11-August-2015
+ * Project Version: 1q1d 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,10 +55,11 @@
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND "NLCgenerated"	//1q1a
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_PREPEND "HEADER_NLC_GENERATED"	//1q1c
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_PREPROCSSOR_NAME_DELIMITER '_'	//1q1c
-			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS	//1q1d	//requires NLC_SUPPORT_INPUT_FUNCTION_LISTS
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS	//1q1d	//requires NLC_SUPPORT_INPUT_FUNCTION_LISTS	//requires NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP ".cpp"
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP ".hpp"
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_GENERIC_ENTITY_CLASS_NAME "NLClibraryGenericEntityClass"
+			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME "NLClibrary.hpp"	//must be sychronised with progLangDependenciesNLClibary[]
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME "NLCgeneratedList.txt"
 		#endif
 		//#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION	//has not been defined yet

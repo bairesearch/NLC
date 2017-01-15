@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2f 15-September-2016
+ * Project Version: 1t2g 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -59,9 +59,9 @@ public:
 	string sentenceContents;
 	int sentenceIndex;
 	int indentation;
-	bool hasLogicalConditionOperator;
+	bool hasLogicalConditionOperator;	//set true for first parsable phrase only, or if no NLP parsable phrases [CHECKTHIS]
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	int logicalConditionOperator;
+	int logicalConditionOperator;		//set true for first parsable phrase only, or if no NLP parsable phrases [CHECKTHIS]
 	#endif
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 	bool ifDetected;
@@ -124,5 +124,6 @@ bool isStringAliasFileName(string phrase);
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 bool isStringIllegalTargetSourceCharacter(string phrase);
 #endif
+bool sentencePertainsToLogicalCondition(NLCsentence* currentNLCsentenceInList);
 
 #endif

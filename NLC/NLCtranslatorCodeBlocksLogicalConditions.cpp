@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2f 15-September-2016
+ * Project Version: 1t2g 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1656,7 +1656,7 @@ bool checkIfPhraseContainsConcept(vector<GIAentityNode*>* entityNodesActiveListC
 				{
 					GIAentityConnection* definitionConnection = *iter;
 					GIAentityNode* definitionChildEntity =  definitionConnection->entity;
-					if(definitionChildEntity->sentenceIndexTemp == sentenceIndex)
+					if(definitionChildEntity->sentenceIndexTemp == sentenceIndex)	//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
 					{
 						if(!(definitionConnection->sameReferenceSet))
 						{
@@ -1696,7 +1696,7 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 				{
 					GIAentityConnection* definitionConnection = *iter;
 					GIAentityNode* definitionEntityTemp = definitionConnection->entity;
-					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
+					if(definitionConnection->sentenceIndexTemp == sentenceIndex)	//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
 					{
 						if(!(definitionConnection->sameReferenceSet))
 						{

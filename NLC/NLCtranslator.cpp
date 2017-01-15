@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2f 15-September-2016
+ * Project Version: 1t2g 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -117,7 +117,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 	#endif
 
 	//NLC translator Part 2.
-	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, currentNLCfunctionInList, maxNumberSentences))
+	if(!generateClassHeirarchy(classDefinitionList, entityNodesActiveListComplete, currentNLCfunctionInList))
 	{
 		result = false;
 	}

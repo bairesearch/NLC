@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2f 15-September-2016
+ * Project Version: 1t2g 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -341,3 +341,13 @@ bool isStringIllegalTargetSourceCharacter(string phrase)
 }
 #endif
 	
+bool sentencePertainsToLogicalCondition(NLCsentence* currentNLCsentenceInList)
+{
+	bool result = false; 
+	if(currentNLCsentenceInList->hasLogicalConditionOperator || currentNLCsentenceInList->mathTextNLPparsablePhraseIndex != NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX)
+	{
+		result = true;	//sentence pertains to a logical condition (first parsable phrase in a logical condition || non-first parsable phrase in a logical condition)
+	}
+	return result;
+}
+

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2f 15-September-2016
+ * Project Version: 1t2g 15-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,6 +57,7 @@
 //#define NLC_DISABLE_1s_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1t_CODE_FOR_DEBUG
 #ifndef NLC_DISABLE_1t_CODE_FOR_DEBUG
+	#define NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_LOGICAL_CONDITION_CONCEPTS	//1t2g
 	#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY	//1t2a
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 		#define NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_DEFINITIONS	//1t2a
@@ -672,6 +673,8 @@
 	#define NLC_PREPROCESSOR_MATH	//1h1a/22-July-2014	//requires NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE for preprocessor isLogicalConditionOperator detection	//first working 1h2f
 	#ifdef NLC_PREPROCESSOR_MATH
 	
+		#define NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX (0)
+		
 		#ifndef GIA_SUPPORT_NUMBER_OF
 			#define NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
 		#endif

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p13c 03-August-2015
+ * Project Version: 1p14a 06-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1171,7 +1171,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_VALUE" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string setDecimalPointerToEntityMathValueText = generateCodePointerValueText(param1, progLang) + progLangEquals[progLang] + generateCodeEntityMathValueText(param2, progLang) + progLangEndLine[progLang];	 //*param1 = param2->value;
+			string setDecimalPointerToEntityMathValueText = param1->name + progLangEquals[progLang] + progLangAddress[progLang] + progLangOpenParameterSpace[progLang] + generateCodeEntityMathValueText(param2, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	 //param1 = &(param2->value);
 			printLine(setDecimalPointerToEntityMathValueText, level, code);
 		}
 		#ifdef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT

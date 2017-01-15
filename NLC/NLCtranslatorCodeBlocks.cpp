@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g6h 09-July-2014
+ * Project Version: 1g6i 09-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -250,6 +250,11 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 								int logicalConditionConjunctionIndex = 0;	// try to start all variables seen by the user at 1 instead of 0: NOT POSSIBLE HERE AS USES ARRAY
 								logicalConditionObject->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value 
 								//logicalConditionObject->parsedForNLCcodeBlocks = true;	//is this required?????? [NB only connections are being parsed...]
+								if(logicalConditionObject->negative)
+								{//added 1g6i
+									logicalConditionConjunctionArray[logicalConditionConjunctionIndex].negative = true;	
+								}
+								//cout << "logicalConditionObject = " << logicalConditionObject->entityName << endl;
 								addNewLogicalCondition(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionObject);
 							
 								cout << "asfg1" << endl;

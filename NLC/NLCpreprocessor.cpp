@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2f 27-July-2014
+ * Project Version: 1h2g 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -174,11 +174,9 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					replaceLogicalConditionNaturalLanguageMathWithSymbols(&lineContents, lineLogicalConditionOperator, &additionalClosingBracketRequired);
 					#endif
 				}
-				
-				//#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-				if(!(currentNLCsentenceInList->isMath))
+				else
 				{
-					if(detectAndReplaceIsEqualToInformalTextWithSymbol(&lineContents))
+					if(detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
 					{
 						currentNLCsentenceInList->isMath = true;
 					}
@@ -536,26 +534,37 @@ bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string * line
 }
 #endif
 
-bool detectAndReplaceIsEqualToInformalTextWithSymbol(string * lineContents)
+bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string * lineContents, bool hasLogicalConditionOperator, bool isMathText)
 {
 	bool result = false;
 	
-	//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
-	//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.; convert to mathText and parsable phrase ("x = the number of chickens")*
-	int indexOfFirstSpace = lineContents->find(CHAR_SPACE);
-	if(indexOfFirstSpace != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	if(!hasLogicalConditionOperator)
 	{
-		int indexOfIs = lineContents->find(string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL), indexOfFirstSpace);
-		if((indexOfIs != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfIs == 0))
+		//convert x is equal to/equals the number of chickens" to mathText and arsable phrase ("x = the number of chickens")
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
+		{	
+			*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i]);	//NB this is type sensitive; could be changed in the future
+		}			
+
+		//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
+		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.
+		//convert "x is the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
+		int indexOfFirstSpace = lineContents->find(CHAR_SPACE);
+		if(indexOfFirstSpace != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
-			lineContents->replace(indexOfIs, string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL).length(), string(NLC_PREPROCESSOR_MATH_OPERATOR_IS_EQUAL_TO));
-			result = true;
-			#ifdef NLC_DEBUG_PREPROCESSOR
-			cout << "detectAndReplaceIsEqualToInformalTextWithSymbol(): found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
-			#endif
-		}	
+			int indexOfIs = lineContents->find(string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL), indexOfFirstSpace);
+			if((indexOfIs != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfIs == 0))
+			{
+				lineContents->replace(indexOfIs, string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL).length(), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET));
+
+				result = true;
+				#ifdef NLC_DEBUG_PREPROCESSOR
+				cout << "detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(): found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
+				#endif
+			}	
+		}
+		//the following is not supported by NLC at present: "if x is the number of chickens", the user must say "if the number of chickens is equal to x"
 	}
-	//the following is not supported by NLC at present: "if x is the number of chickens", the user must say "if the number of chickens is equal to x"
 	
 	return result;
 }
@@ -566,7 +575,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents
 
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
-		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i]);	//NB this is type sensitive; could be changed in the future
+		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i]);	//NB this is type sensitive; could be changed in the future
 	}
 	
 	//replace the logical condition operator with a lower case version if necessary
@@ -690,21 +699,24 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				//cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
 				#endif
 				#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-				if(i == currentWord.length())	//word comprises first mathText contents
-				{//first word in mathText
-					if((c == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_CHAR) || (wordDelimiterCharacterFound && (i<lineContents->length()) && ((*lineContents)[i+1] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_CHAR)))	//mathText: "X=.." or "X =..."
-					{
-						if(!findPredefinedNumericalVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, (*currentNLCsentenceInList)))
-						{	
-							//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
-							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-							cout << "undeclared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT << currentWord << endl;	//inserting mathText variable declaration type (eg double)
-							//cout << "old currentPhrase = " << currentPhrase << endl;
-							#endif
-							currentPhrase.insert(0, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT);
-							newlyDeclaredVariable = currentWord;
-							mandatoryCharacterFoundInCurrentWord = false;
-							//cout << "new currentPhrase = " << currentPhrase << endl;
+				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
+				{
+					if(i == currentWord.length())	//word comprises first mathText contents
+					{//first word in mathText
+						if((c == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR) || (wordDelimiterCharacterFound && (i<lineContents->length()) && ((*lineContents)[i+1] == NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR)))	//mathText: "X=.." or "X =..."
+						{
+							if(!findPredefinedNumericalVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, (*currentNLCsentenceInList)))
+							{	
+								//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
+								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+								cout << "undeclared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT << currentWord << endl;	//inserting mathText variable declaration type (eg double)
+								//cout << "old currentPhrase = " << currentPhrase << endl;
+								#endif
+								currentPhrase.insert(0, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT);
+								newlyDeclaredVariable = currentWord;
+								mandatoryCharacterFoundInCurrentWord = false;
+								//cout << "new currentPhrase = " << currentPhrase << endl;
+							}
 						}
 					}
 				}
@@ -864,9 +876,9 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
-		//need to parse "is" as equals, eg if "x is 33534"; for all mathText which is not NLP parsable text, replace "is" with "=" 
+		//need to parse "is" as equals, eg "if x is 33534"; for all mathText which is not NLP parsable text, replace "is" with "=" 
 		//replace all instances of "is" in all mathText which is not NLP parsable text with "="
-		firstNLCsentenceInFullSentence->mathText = replaceAllOccurancesOfString(&(firstNLCsentenceInFullSentence->mathText), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL), string(NLC_PREPROCESSOR_MATH_OPERATOR_IS_EQUAL_TO));	//NB this is type sensitive; could be changed in the future
+		firstNLCsentenceInFullSentence->mathText = replaceAllOccurancesOfString(&(firstNLCsentenceInFullSentence->mathText), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST));	//NB this is type sensitive; could be changed in the future
 			
 		//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
 		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.; convert to mathText and parsable phrase ("x = the number of chickens")*

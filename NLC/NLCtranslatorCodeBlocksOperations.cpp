@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9d 25-January-2015
+ * Project Version: 1n9e 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -156,7 +156,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				#endif
 				#endif
 				GIAentityNode* parentEntityFunctionObject = NULL;
-				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, true, false, &parentEntityFunctionObject))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, true, false, &parentEntityFunctionObject, true))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 				{
 					#ifdef NLC_DEBUG
 					//cout << "actionHasObject: parent and its children initialised" << endl;
@@ -192,7 +192,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 					#endif
 					#endif
 					GIAentityNode* parentEntityFunctionSubject = NULL;
-					if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false, &parentEntityFunctionSubject))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+					if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false, &parentEntityFunctionSubject, true))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 					{
 						#ifdef NLC_DEBUG
 						//cout << "actionHasSubject2: parent and its children initialised" << endl;
@@ -249,7 +249,7 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 				#endif
 				#endif
 				GIAentityNode* parentEntityFunctionSubject = NULL;
-				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false, &parentEntityFunctionSubject))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
+				if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, subjectEntity, sentenceIndex, &generateContextBlocksVariables, true, false, &parentEntityFunctionSubject, true))	//parseConditionParents was previously set false in original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"]
 				{
 					#ifdef NLC_DEBUG
 					//cout << "actionHasSubject: parent and its children initialised" << endl;
@@ -380,7 +380,7 @@ bool isPotentialAction(GIAentityNode * actionEntity)
 }
 #endif
 
-bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool parseConditionParents, bool parseLogicalConditions, GIAentityNode ** parentEntity)
+bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool parseConditionParents, bool parseLogicalConditions, GIAentityNode ** parentEntity, bool parseAction)
 {
 	*parentEntity = getParent(currentEntity, sentenceIndex, parseConditionParents);
 
@@ -389,15 +389,18 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 	{//is this required?
 	
 		#ifdef NLC_ACTION_CATEGORY_LISTS
-		#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-		if(!(currentEntity->NLCcategoryListCreatedTemp))
+		if(parseAction)
 		{
-		#endif
-			//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) a new actionSubject[/object]'s "action" category list must be created here such that it can be accessed by [a) createCodeBlockForCategoryList/createCodeBlockForLocalList? and] b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
-			*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//create new action category list
-		#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+			if(!(currentEntity->NLCcategoryListCreatedTemp))
+			{
+			#endif
+				//in the case that the action subject[/object] is indefinite and has an indefinite parent (eg A chicken's barrel eats the bike.) a new actionSubject[/object]'s "action" category list must be created here such that it can be accessed by [a) createCodeBlockForCategoryList/createCodeBlockForLocalList? and] b) NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS: executeFunction(with plural action subject[/object] argument actionSubject[/Object]CategoryList) 
+				*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//create new action category list
+			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
+			}
+			#endif
 		}
-		#endif
 		#endif
 		
 		#ifdef NLC_DEBUG_PARSE_CONTEXT4
@@ -421,14 +424,17 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 			*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, currentEntity);
 			#endif
 			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-			currentEntity->NLCcategoryListCreatedTemp = true;
+			if(parseAction)
+			{
+				currentEntity->NLCcategoryListCreatedTemp = true;
+			}
 			#endif
 		}
 		else
 		{
 			//eg The chicken's barrel eats the bike.
 			#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
-			if(currentEntity->NLCcategoryListCreatedTemp)
+			if(currentEntity->NLCcategoryListCreatedTemp && parseAction)
 			{
 				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);	//added 1l11a - for "3 chickens that ate a pie row the boat."	//NB NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION is required here instead of NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION in the case that the action subject/object is a child eg "The chickens' blue bears eat a pie." [this example/scenario does not relate to NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES but is still required to be covered] 
 			}
@@ -445,7 +451,10 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 		}
 		
 		#ifdef NLC_ACTION_CATEGORY_LISTS
-		*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, currentEntity, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
+		if(parseAction)
+		{
+			*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, currentEntity, currentEntity, NLC_ITEM_TYPE_ACTIONCATEGORY_VAR_APPENDITION);
+		}
 		#endif
 	}
 
@@ -2109,7 +2118,18 @@ bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * child
 			//eg Tom has Jack's blue ball
 			generatedContextForChild = true;
 			#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntityNew));	
+			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+			if(childEntity->hasQuantity)
+			{
+				*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntityNew), childEntity->quantityNumber);	
+			}
+			else
+			{
+			#endif
+				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntityNew));	
+			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+			}
+			#endif
 			#endif
 			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
 			addIntermediaryImplicitlyDeclaredEntityToLocalList(currentCodeBlockInTree, childEntity);

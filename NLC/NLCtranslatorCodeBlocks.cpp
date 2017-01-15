@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9d 25-January-2015
+ * Project Version: 1n9e 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -722,14 +722,13 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock ** currentCodeBlockInTree
 		{	
 			NLCcodeblock * firstCodeBlockInLevel = *currentCodeBlockInTree;
 			
-			//1. get parent of the dog (eg pound)
-			GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);
+			GIAentityNode * parentEntity = NULL;
 			
-			//2. generate context of the dog
+			//1. and 2. get parent of the dog (eg pound) and generate context of the dog
 			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-			generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition)
-			bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
-
+			generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
+			bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, false, &parentEntity, false);
+			
 			//3. verify that alsations are dogs
 			*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);
 									

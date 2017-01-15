@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9d 25-January-2015
+ * Project Version: 1n9e 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -629,6 +629,19 @@ NLCcodeblock * createCodeBlockInPropertyList(NLCcodeblock * currentCodeBlockInTr
 	NLCitem * item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 	currentCodeBlockInTree->parameters.push_back(item);
 	
+	string intValueString = convertIntToString(index);
+	NLCitem * intValueItem = new NLCitem(intValueString, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(intValueItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+NLCcodeblock * createCodeBlockInPropertyList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context, int index)
+{
+	NLCitem * item = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(item);
+	item->context.push_back(context);
+		
 	string intValueString = convertIntToString(index);
 	NLCitem * intValueItem = new NLCitem(intValueString, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(intValueItem);

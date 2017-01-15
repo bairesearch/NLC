@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n9d 25-January-2015
+ * Project Version: 1n9e 25-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -340,6 +340,7 @@ NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInT
 		NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 NLCcodeblock * createCodeBlockInPropertyList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, int index);
+NLCcodeblock * createCodeBlockInPropertyList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity, string context, int index);
 #endif
 NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode * entity);
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER

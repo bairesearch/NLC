@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s8d 09-September-2016
+ * Project Version: 1s9a 11-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -312,7 +312,7 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 {
 	bool contextFound = false;
 	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-	cout << "\t NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren{}: parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;		
+	cout << "\t NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren{}: parentInstance = " << parentInstance->entityName << ", parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;		
 	#endif
 	for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator = parentSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator < parentSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator++)
 	{
@@ -368,6 +368,10 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock** currentCod
 
 					addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance, genericListAppendName, generateContextBlocksVariables, sentenceIndex, false);
 
+					#ifdef NLC_DEBUG_PARSE_CONTEXT2
+					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForStatementsForDefinitionChildren{}"));
+					#endif
+					
 					*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 					*lastCodeBlockInTree = *currentCodeBlockInTree;
 					#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
@@ -545,6 +549,10 @@ bool createCodeBlockForStatementsForNearestSubClassParentReference(NLCcodeblock*
 				
 	addPropertyToCategoryList(currentCodeBlockInTree, subclassEntity, nearestSubclassParentEntity, genericListAppendName, generateContextBlocksVariables, sentenceIndex, true);
 
+	#ifdef NLC_DEBUG_PARSE_CONTEXT2
+	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("createCodeBlockForStatementsForNearestSubClassParentReference{}"));
+	#endif
+					
 	*currentCodeBlockInTree = getLastCodeBlockInLevel(*lastCodeBlockInTree);
 	*lastCodeBlockInTree = *currentCodeBlockInTree;
 	

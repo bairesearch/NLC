@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b2a 03-October-2013
+ * Project Version: 1b2b 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -219,6 +219,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							//cout << "sentenceIndexA = " << sentenceIndex << endl;
 							currentCodeBlockInTree = createCodeBlockAddProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
 							propertyConnection->parsedForNLPIcodeBlocks = true;
+							propertyEntity->parsedForNLPIcodeBlocks = true;		//added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 						}
 					}
 				}
@@ -234,6 +235,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							//cout << "sentenceIndexB = " << sentenceIndex << endl;
 							currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
 							conditionConnection->parsedForNLPIcodeBlocks = true;
+							conditionEntity->parsedForNLPIcodeBlocks = true;	//added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 						}
 					}
 				}					
@@ -265,8 +267,10 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		multipleobjectOrSubjects = true;
 	}
 	bool objectOrSubjectsHaveParent = false;
-
-	if(multipleobjectOrSubjects || objectOrSubjectHasProperties || objectOrSubjectHasConditions)
+	
+	//cout << "objectOrSubjectEntity->parsedForNLPIcodeBlocks = " << objectOrSubjectEntity->parsedForNLPIcodeBlocks << endl;
+	
+	if((multipleobjectOrSubjects || objectOrSubjectHasProperties || objectOrSubjectHasConditions) && !(objectOrSubjectEntity->parsedForNLPIcodeBlocks))	//"&& !(objectOrSubjectEntity->parsedForNLPIcodeBlocks)" added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 	{//for loop required
 		*requiredTempVar = true;
 		
@@ -277,15 +281,6 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_TEMPVAR);
 		
 		currentCodeBlockInTree = createCodeBlockIfStatements(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
-
-		/*
-		//specificobjectOrSubjects
-		currentCodeBlockInTree = createCodeBlockIfHasProperties(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
-		//if(item->has(property) && item->has(property1) etc..){
-
-		currentCodeBlockInTree = createCodeBlockIfHasConditions(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
-		//if(item > 3){		/	if(greaterthan(item, 3)){						
-		*/
 	}
 	else
 	{

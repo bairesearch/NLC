@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5f 15-August-2016
+ * Project Version: 1r5g 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1073,16 +1073,23 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 		int indexOfMathEqualsSetCommand = mathText->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR);
 		if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
-			//mathText eg: "X =" OR "X="
-			if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) == (indexOfMathEqualsSetCommand + 2))
+			if(!findInvertedCommasEitherSideOfCharacter(mathText, indexOfMathEqualsSetCommand))
 			{
-				//only create one instance of = getMathObjectValue(.. per sentence
+				//mathText eg: "X =" OR "X="
+				if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) == (indexOfMathEqualsSetCommand + 2))
+				{
+					//only create one instance of = getMathObjectValue(.. per sentence
+				}
+				else
+				{
+					string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);
+					targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
+					mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
+				}
 			}
 			else
 			{
-				string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, progLang);
-				targetValueText = string(NLC_USE_MATH_OBJECTS_STRING_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
-				mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
+				//ignore all equals signs within inverted commas
 			}
 		}
 	}
@@ -1091,6 +1098,19 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 	cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: requires NLC_USE_LIBRARY_BASE_EXTENDED" << endl;
 	#endif
 	return mathTextUpdated;
+}
+
+bool findInvertedCommasEitherSideOfCharacter(string* mathText, int indexOfCharacter)
+{
+	bool foundInvertedCommasEitherSideOfCharacter = false;
+	if(mathText->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHARACTER, indexOfCharacter) != CPP_STRING_FIND_RESULT_FAIL_VALUE)	
+	{
+		if(mathText->rfind(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHARACTER, indexOfCharacter) != CPP_STRING_FIND_RESULT_FAIL_VALUE)	
+		{
+			foundInvertedCommasEitherSideOfCharacter = true;
+		}	
+	}
+	return foundInvertedCommasEitherSideOfCharacter;
 }
 
 string getTargetValueText(string* mathText, int indexOfMathEqualsSetCommand, int progLang)
@@ -1122,7 +1142,7 @@ string getTargetValueText(string* mathText, int indexOfMathEqualsSetCommand, int
 		}
 		
 		string replacementString = "";
-		if(numberOfAdditionsFound > 1)
+		if(numberOfAdditionsFound > 0)
 		{
 			replacementString = progLangCloseParameterSpace[progLang] + progLangParameterSpaceNextParam[progLang];
 		}

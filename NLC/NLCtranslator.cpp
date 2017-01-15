@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g14c 15-July-2014
+ * Project Version: 1g15a 16-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -167,21 +167,24 @@ int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode * conditi
 {
 	int maximumNumberOfConjunctions = 0;
 	GIAentityNode * conditionObjectEntity = NULL;
+	GIAentityConnection * conditionConnection = NULL;
 	bool conditionHasObject = false;
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		conditionHasObject = true;
-		conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
+		conditionConnection = conditionEntity->conditionObjectEntity->back();
+		conditionObjectEntity = conditionConnection->entity;
 	}
 	if(conditionHasObject)
 	{
-		if(checkSentenceIndexParsingCodeBlocks(conditionObjectEntity, sentenceIndex, false))
+		if(checkSentenceIndexParsingCodeBlocks(conditionObjectEntity, conditionConnection, sentenceIndex, false))
 		{
 			int conjunctionIndex = 0;
 			for(vector<GIAentityConnection*>::iterator connectionIter = conditionObjectEntity->conditionNodeList->begin(); connectionIter != conditionObjectEntity->conditionNodeList->end(); connectionIter++)
 			{
-				GIAentityNode * conditionEntity2 = (*connectionIter)->entity;
-				if(checkSentenceIndexParsingCodeBlocks(conditionEntity2, sentenceIndex, false))
+				GIAentityConnection * conditionConnection2 = (*connectionIter);
+				GIAentityNode * conditionEntity2 = conditionConnection2->entity;
+				if(checkSentenceIndexParsingCodeBlocks(conditionEntity2, conditionConnection2, sentenceIndex, false))
 				{				
 					int conjunctionType = INT_DEFAULT_VALUE;
 					bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);

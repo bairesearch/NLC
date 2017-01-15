@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g14c 15-July-2014
+ * Project Version: 1g15a 16-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -527,10 +527,12 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 		{
 			cout << "conditionEntity = " << conditionEntity->entityName << endl;
 			conditionEntity->NLCconjunctionCondition = true;
-			GIAentityNode * logicalConditionConjunctionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
-			GIAentityNode * logicalConditionConjunctionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;
+			GIAentityConnection * logicalConditionConjunctionObjectConnection = conditionEntity->conditionObjectEntity->back();
+			GIAentityConnection * logicalConditionConjunctionSubjectConnection = conditionEntity->conditionSubjectEntity->back();
+			GIAentityNode * logicalConditionConjunctionObjectEntity = logicalConditionConjunctionObjectConnection->entity;
+			GIAentityNode * logicalConditionConjunctionSubjectEntity = logicalConditionConjunctionSubjectConnection->entity;
 
-			if(checkSentenceIndexParsingCodeBlocks(logicalConditionConjunctionObjectEntity, sentenceIndex, false))
+			if(checkSentenceIndexParsingCodeBlocks(logicalConditionConjunctionObjectEntity, logicalConditionConjunctionObjectConnection, sentenceIndex, false))
 			{//added 1g7a for safety: shouldnt be required			
 				if(logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex != INT_DEFAULT_VALUE)
 				{
@@ -668,7 +670,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(GIAen
 				{
 					if(!(connectedEntity->NLClogicalConditionOperation))
 					{//don't cross the "if" boundary
-						if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
+						if(checkSentenceIndexParsingCodeBlocks(connectedEntity, connection, sentenceIndex, false))
 						{
 							if(connectedEntity->isConcept)
 							{

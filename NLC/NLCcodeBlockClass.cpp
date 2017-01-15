@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g14c 15-July-2014
+ * Project Version: 1g15a 16-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -609,12 +609,29 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 }
 
 
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
+{
+	bool result = false;
+	#ifdef GIA_STORE_CONNECTION_SENTENCE_INDEX
+	if(connection->sentenceIndexTemp == sentenceIndex)
+	{
+	#endif
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
+		{
+			result = true;
+		}
+	#ifdef GIA_STORE_CONNECTION_SENTENCE_INDEX
+	}
+	#endif
+	return result;
+}
+
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
 	if(!checkIfEntityHasBeenParsedForNLCcodeBlocks || !(entity->NLCparsedForCodeBlocks))
 	{
-		#ifdef GIA_DRAW_PRINT_ENTITY_NODES_IN_ORDER_OF_SENTENCE_INDEX
+		#ifdef GIA_RECORD_WAS_REFERENCE_INFORMATION
 		if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference))
 		#else
 		if(entity->sentenceIndexTemp == sentenceIndex)

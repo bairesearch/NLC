@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u14a 03-October-2016
+ * Project Version: 1u15a 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -146,7 +146,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 										if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
 										#else
-										if((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) || (targetEntity->isActionConcept) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//removed; || (targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) 16 April 2014
+										if((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//removed; || (targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) 16 April 2014	//removed || (targetEntity->isActionConcept) 1u15a
 										#endif
 										#endif
 										{

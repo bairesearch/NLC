@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u14a 03-October-2016
+ * Project Version: 1u15a 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1767,7 +1767,7 @@ bool checkIfPhraseContainsAction(vector<GIAentityNode*>* entityNodesActiveListCo
 		GIAentityNode* entity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(entity->isAction || (entity->isConcept && entity->isActionConcept))
+			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)	//removed || (entity->isConcept && entity->isActionConcept) 1u15a
 			{
 				phraseContainsAction = true;
 				*logicalConditionOperationObject = entity;

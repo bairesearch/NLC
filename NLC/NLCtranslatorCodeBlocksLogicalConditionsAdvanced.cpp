@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u14a 03-October-2016
+ * Project Version: 1u15a 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -217,7 +217,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							}
 							#endif
 						}
-						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionConcept))
+						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_ACTION))	//removed || (logicalConditionOperationObject->isActionConcept) 1u15a
 						{
 							#ifdef NLC_USE_PREPROCESSOR
 							if(elseDetected)

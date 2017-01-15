@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u14a 03-October-2016
+ * Project Version: 1u15a 03-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1u14a 03-October-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1u15a 03-October-2016" << endl;
 			exit(1);
 		}
 
@@ -1120,7 +1120,7 @@ int main(int argc, char** argv)
 		#ifdef NLC_DEBUG
 		cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:" << endl;
 		#endif
-		#ifdef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
+		#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
 
@@ -1267,7 +1267,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* actionEntity = (*entityIter);
-		if((actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) && !(actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) && !(actionEntity->disabled))
+		if((actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) && !(actionEntity->disabled))
 		{
 			if(isActionSpecialPossessive(actionEntity))
 			{
@@ -1291,6 +1291,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 				if(actionHasSubject && actionHasObject)
 				{
 					#ifdef NLC_DEBUG
+					cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
 					cout << "transformTheActionOfPossessionEgHavingIntoAproperty{}:" << endl;
 					cout << "actionSubjectEntity->entityName = " << actionSubjectEntity->entityName << endl;
 					cout << "actionObjectEntity->entityName = " << actionObjectEntity->entityName << endl;

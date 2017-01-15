@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v9b 23-October-2016
+ * Project Version: 1v9c 23-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2060,6 +2060,9 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 			cout << "generateParentInitialisationCodeBlockWithChecks failed" << endl;
 			#endif
 
+			#ifdef NLC_GENERATE_TYPE_LISTS
+			bool parseTypeList = false;
+			#endif
 			#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_INDEFINITE
 			if(generateContextBlocksVariables->logicalConditionStatement)
 			{
@@ -2069,11 +2072,31 @@ bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodebloc
 
 					//eg "If a house is green, do this
 					#ifdef NLC_GENERATE_TYPE_LISTS
-					*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, *parentEntity);
+					parseTypeList = true;
 					#else
 					(*parentEntity)->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b
 					#endif
 				}
+			}
+			#endif
+			#ifdef NLC_GENERATE_TYPE_LISTS
+			#ifdef GIA_ADVANCED_REFERENCING_PREVENT_REFERENCING_OF_ENTITIES_WITH_PREDETERMINERS
+			if(detectPredeterminer(*parentEntity, sentenceIndex))
+			{
+				parseTypeList = true;	//added 1v9c
+				(*parentEntity)->grammaticalDefiniteTemp = false;
+			}
+			#endif
+			#ifdef GIA_ADVANCED_REFERENCING_PREVENT_REFERENCING_OF_PLURAL_ENTITIES
+			if((*parentEntity)->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
+			{	
+				parseTypeList = true;	//added 1v9c
+				(*parentEntity)->grammaticalDefiniteTemp = false;
+			}
+			#endif
+			if(parseTypeList)
+			{
+				*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, *parentEntity);
 			}
 			#endif
 

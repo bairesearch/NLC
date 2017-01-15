@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5g 17-January-2015
+ * Project Version: 1n6a 20-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -744,14 +744,17 @@ bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNod
 					GIAentityNode * definitionEntityTemp =  definitionConnection->entity;
 					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
 					{
-						if(!isDefiniteEntity(entity) && !isDefiniteEntity(definitionEntityTemp))
+						if(!(definitionConnection->sameReferenceSet))
 						{
-							phraseContainsSubstanceConceptWithDefinitionLink = true;
-							*logicalConditionOperationObject = entity;
-						}
-						else
-						{
-							cout << "checkIfPhraseContainsSubstanceConceptWithDefinitionLink() warning: !(!isDefiniteEntity(entity)) && !isDefiniteEntity(definitionEntityTemp))" << endl;
+							if(!isDefiniteEntity(entity) && !isDefiniteEntity(definitionEntityTemp))
+							{
+								phraseContainsSubstanceConceptWithDefinitionLink = true;
+								*logicalConditionOperationObject = entity;
+							}
+							else
+							{
+								cout << "checkIfPhraseContainsSubstanceConceptWithDefinitionLink() warning: !(!isDefiniteEntity(entity)) && !isDefiniteEntity(definitionEntityTemp))" << endl;
+							}
 						}
 					}
 				}
@@ -786,20 +789,23 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*> * e
 					GIAentityNode * definitionEntityTemp = definitionConnection->entity;
 					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
 					{
-						if(isDefiniteEntity(entity) && !isDefiniteEntity(definitionEntityTemp))
+						if(!(definitionConnection->sameReferenceSet))
 						{
-							if(entity->entityName != definitionEntityTemp->entityName)
-							{//ignore substanceConcept definitions for for entities of same name
-								phraseContainsSubstanceWithDefinitionLink = true;
-								*logicalConditionOperationObject = entity;
-								*definitionEntity = definitionEntityTemp;
-								//cout << "entity = " << entity->entityName << endl;
-								//cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
+							if(isDefiniteEntity(entity) && !isDefiniteEntity(definitionEntityTemp))
+							{
+								if(entity->entityName != definitionEntityTemp->entityName)
+								{//ignore substanceConcept definitions for for entities of same name
+									phraseContainsSubstanceWithDefinitionLink = true;
+									*logicalConditionOperationObject = entity;
+									*definitionEntity = definitionEntityTemp;
+									//cout << "entity = " << entity->entityName << endl;
+									//cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
+								}
 							}
-						}
-						else
-						{
-							cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(entity)) && !isDefiniteEntity(definitionEntityTemp))" << endl;
+							else
+							{
+								cout << "checkIfPhraseContainsSubstanceWithDefinitionLink() warning: !(isDefiniteEntity(entity)) && !isDefiniteEntity(definitionEntityTemp))" << endl;
+							}
 						}
 					}
 				}

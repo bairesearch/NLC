@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1e 14-November-2014
+ * Project Version: 1m1f 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -811,7 +811,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 		{
 		#endif
 			GIAentityNode* targetEntity = targetConnection->entity;
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			if(!(targetEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions
 			{
 			#endif
@@ -887,7 +887,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 					}
 					#endif
 				}
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			}
 			#endif
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
@@ -1437,7 +1437,7 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 			GIAentityNode * conditionEntity = conditionConnection->entity;
 			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
 			
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
 			{
 			#endif
@@ -1467,7 +1467,7 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 				}
 				#endif
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			}
 			#endif
 		}
@@ -1497,6 +1497,10 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, G
 
 bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, GIAentityNode * parentEntity, string parentConditionName, bool generateParentContextTopLevel, bool generateParentContextPassThrough)
 {
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+	entity->NLCcontextGeneratedTemp = true;
+	#endif
+	
 	string parentName = "";
 	if(parentEntity != NULL)
 	{
@@ -1708,7 +1712,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							#endif
 
 							NLCitem * propertyClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-							*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, propertyEntity);
+							//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, propertyEntity);	//removed 1m1f
 							*currentCodeBlockInTree = createCodeBlockRemoveProperties(*currentCodeBlockInTree, entity, propertyEntity);
 						}
 						else
@@ -1814,142 +1818,187 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
 				GIAentityNode* conditionEntity = conditionConnection->entity;
 
-				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+				/*
+				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 				if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
 				{
 				#endif
-					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-					if(!(conditionEntity->NLClogicalConditionOperation))		//if(!(conditionConnection->NLCparsedForlogicalConditionOperations) && !(conditionEntity->NLCparsedForlogicalConditionOperations))	//this alternative test would require "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionSubject, sentenceIndex, false);" to be called before "generateObjectInitialisationsBasedOnPropertiesAndConditions()"
+				*/
+				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+				if(!(conditionEntity->NLClogicalConditionOperation))		//if(!(conditionConnection->NLCparsedForlogicalConditionOperations) && !(conditionEntity->NLCparsedForlogicalConditionOperations))	//this alternative test would require "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionSubject, sentenceIndex, false);" to be called before "generateObjectInitialisationsBasedOnPropertiesAndConditions()"
+				{
+				#endif
+					bool foundConditionObject = false;
+					GIAentityNode * conditionObject = NULL;
+					if(!(conditionEntity->conditionObjectEntity->empty()))
 					{
-					#endif
-						bool foundConditionObject = false;
-						GIAentityNode * conditionObject = NULL;
-						if(!(conditionEntity->conditionObjectEntity->empty()))
+						conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+						if(!(conditionObject->NLCcontextGeneratedTemp))	//prevent infinite loop for 2 way conditions 
 						{
-							conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-								foundConditionObject = true;
+						#endif
+							foundConditionObject = true;
 
-								#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-								if((checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false) || conditionEntity->NLCparsedForCodeBlocks) && (conditionConnection->sentenceIndexTemp == sentenceIndex))
-								#else
-								if((checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false) || conditionEntity->NLCparsedForCodeBlocks))
-								#endif
-								{//only write conditions that are explicated in current sentence
+							#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+							if((checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false) || conditionEntity->NLCparsedForCodeBlocks) && (conditionConnection->sentenceIndexTemp == sentenceIndex))
+							#else
+							if((checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false) || conditionEntity->NLCparsedForCodeBlocks))
+							#endif
+							{//only write conditions that are explicated in current sentence
 
-									bool newlyDeclaredEntityInCategoryList2 = false;
-									bool performedAtLeastOneObjectInitialisationAtThisLevel = false;
-									NLCcodeblock * firstCodeBlockInSection = *currentCodeBlockInTree;
+								bool newlyDeclaredEntityInCategoryList2 = false;
+								bool performedAtLeastOneObjectInitialisationAtThisLevel = false;
+								NLCcodeblock * firstCodeBlockInSection = *currentCodeBlockInTree;
 
-									NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-									NLCitem * conditionObjectClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+								NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+								NLCitem * conditionObjectClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 
-									bool generatedContextForChild = generateContextForChildEntity(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, true);
-									bool passThrough = !generatedContextForChild;
+								bool generatedContextForChild = generateContextForChildEntity(entity, conditionObject, currentCodeBlockInTree, sentenceIndex, true);
+								bool passThrough = !generatedContextForChild;
 
-									if(!(conditionConnection->NLCparsedForCodeBlocks))
+								if(!(conditionConnection->NLCparsedForCodeBlocks))
+								{
+									#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+									GIAentityNode * entityInverse = conditionObject;
+									GIAentityNode * conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+									#endif
+
+									#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+									if(conditionEntity->negative)
 									{
-										#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-										if(conditionEntity->negative)
+										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+										if(assumedToAlreadyHaveBeenDeclared(conditionObject))
 										{
-											#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-											if(assumedToAlreadyHaveBeenDeclared(conditionObject))
-											{
-												#ifdef NLC_DEBUG_PARSE_CONTEXT2
-												*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 3BcreateCodeBlockRemoveConditions: ") + entity->entityName + string(" ") + conditionEntity->entityName);
-												#endif
-
-												*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, conditionObject);
-												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
-											}
-											else
-											{
+											#ifdef NLC_DEBUG_PARSE_CONTEXT2
+											*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 3BcreateCodeBlockRemoveConditions: ") + entity->entityName + string(" ") + conditionEntity->entityName);
 											#endif
-												#ifdef NLC_DEBUG_PARSE_CONTEXT2
-												*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions():  4BcreateCodeBlockRemoveProperties: ") + entity->entityName + string(" ") + conditionEntity->entityName);
-												#endif
 
-												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
-											#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+											//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, conditionObject);	//removed 1m1f
+											*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+											if(conditionEntity->inverseConditionTwoWay)
+											{
+												//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, entityInverse);	//removed 1m1f
+												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entityInverse, conditionEntityInverse);
 											}
 											#endif
 										}
 										else
 										{
 										#endif
-											#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-											if(assumedToAlreadyHaveBeenDeclared(conditionObject))
-											{
-												//use function argument PropertyList (do not create a new property to insert into condition); eg "the house" in "Tom is near a house"
-
-												#ifdef NLC_DEBUG_PARSE_CONTEXT2
-												*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 3BcreateCodeBlockCondition: ") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + conditionObject->entityName + string(" ") + convertIntToString(conditionObject->NLClocalListVariableHasBeenInitialised));
-												#endif
-
-												#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
-												NLCcodeblock * firstCodeBlockInSection2 = *currentCodeBlockInTree;
-												*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, conditionObjectClass);
-												#endif
-
-												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
-
-												#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
-												*currentCodeBlockInTree = firstCodeBlockInSection2->next;
-												#endif
-											}
-											else
-											{
+											#ifdef NLC_DEBUG_PARSE_CONTEXT2
+											*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions():  4BcreateCodeBlockRemoveProperties: ") + entity->entityName + string(" ") + conditionEntity->entityName);
 											#endif
-												#ifdef NLC_DEBUG_PARSE_CONTEXT2
-												*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 4BcreateCodeBlockAddNewCondition: ") + entity->entityName + string(" ") + conditionObject->entityName);
-												#endif
 
-												//create a new condition; eg "a house" in "Tom is near a house"
-												newlyDeclaredEntityInCategoryList2 = true;
-												*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, true);
-
-											#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+											*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+											if(conditionEntity->inverseConditionTwoWay)
+											{
+												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entityInverse, conditionEntityInverse);
 											}
 											#endif
+										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+										}
+										#endif
+									}
+									else
+									{
+									#endif
+										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+										if(assumedToAlreadyHaveBeenDeclared(conditionObject))
+										{
+											//use function argument PropertyList (do not create a new property to insert into condition); eg "the house" in "Tom is near a house"
 
-											#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-											//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
-											//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-											generateObjectInitialisationsBasedOnSubstanceConcepts(conditionEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList2);
+											#ifdef NLC_DEBUG_PARSE_CONTEXT2
+											*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 3BcreateCodeBlockCondition: ") + entity->entityName + string(" ") + convertIntToString(entity->NLClocalListVariableHasBeenInitialised) + string(" ") + conditionObject->entityName + string(" ") + convertIntToString(conditionObject->NLClocalListVariableHasBeenInitialised));
 											#endif
-										#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+
+											#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
+											NLCcodeblock * firstCodeBlockInSection2 = *currentCodeBlockInTree;
+											*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, conditionObjectClass);
+											#endif
+
+											*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+											if(conditionEntity->inverseConditionTwoWay)
+											{
+												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex);
+											}
+											#endif
+
+											#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
+											*currentCodeBlockInTree = firstCodeBlockInSection2->next;
+											#endif
+										}
+										else
+										{
+										#endif
+											#ifdef NLC_DEBUG_PARSE_CONTEXT2
+											*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 4BcreateCodeBlockAddNewCondition: ") + entity->entityName + string(" ") + conditionObject->entityName);
+											#endif
+
+											//create a new condition; eg "a house" in "Tom is near a house"
+											newlyDeclaredEntityInCategoryList2 = true;
+											*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, true);
+											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+											if(conditionEntity->inverseConditionTwoWay)
+											{
+												*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex, true);
+											}
+											#endif
+
+										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 										}
 										#endif
 
-										conditionConnection->NLCparsedForCodeBlocks = true;
-										conditionEntity->NLCparsedForCodeBlocks = true;	//added NLC 1b2b/3 October 2013 - used for quick access of instances already declared in current context
-										conditionObject->NLCparsedForCodeBlocks = true;	//added 1e6d
-
-										performedAtLeastOneObjectInitialisationAtThisLevel = true;
-
-										passThrough = false;	//added 1l8b
+										#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+										//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
+										//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+										generateObjectInitialisationsBasedOnSubstanceConcepts(conditionEntity, currentCodeBlockInTree, sentenceIndex, newlyDeclaredEntityInCategoryList2);
+										#endif
+									#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 									}
+									#endif
 
-									NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-									bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, entity, conditionEntity->entityName, false, passThrough);
+									conditionConnection->NLCparsedForCodeBlocks = true;
+									conditionEntity->NLCparsedForCodeBlocks = true;	//added NLC 1b2b/3 October 2013 - used for quick access of instances already declared in current context
+									conditionObject->NLCparsedForCodeBlocks = true;	//added 1e6d
 
-									generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
+									performedAtLeastOneObjectInitialisationAtThisLevel = true;
+
+									passThrough = false;	//added 1l8b
 								}
+
+								NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
+								bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, entity, conditionEntity->entityName, false, passThrough);
+
+								generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 							}
-							else
-							{
-								//no condition object
-							}
-					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+						}
+						#endif
 					}
-					#endif
-				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+					else
+					{
+						//no condition object
+					}
+				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 				}
 				#endif
+				/*
+				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+				}
+				#endif
+				*/
 			}
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 		}
 		#endif
 	}
+	
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+	entity->NLCcontextGeneratedTemp = false;
+	#endif
 	
 	//cout << "performedAtLeastOneObjectInitialisation = " << performedAtLeastOneObjectInitialisation << " entity = " << entity->entityName << endl;
 	
@@ -2106,7 +2155,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 		{
 			GIAentityConnection * conditionConnection = *conditionNodeListIterator;
 			GIAentityNode * conditionEntity = conditionConnection->entity;
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
 			{
 			#endif
@@ -2145,7 +2194,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 				}
 				#endif
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			}
 			#endif
 		}
@@ -2272,7 +2321,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 			GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
 			GIAentityNode* conditionEntity = conditionConnection->entity;
 
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions
 			{
 			#endif		
@@ -2324,7 +2373,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 
 					}
 				}
-			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			}
 			#endif
 		}
@@ -2682,5 +2731,18 @@ bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntit
 	}
 	
 	return logicalConditionTests;
+}
+#endif
+
+#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity)
+{
+	GIAentityNode * conditionEntityInverse = new GIAentityNode();
+	conditionEntityInverse->isCondition = true;
+	conditionEntityInverse->entityName = conditionEntity->entityName;
+	conditionEntityInverse->idInstance = conditionEntity->idInstance;
+	conditionEntityInverse->conditionSubjectEntity->push_back(conditionEntity->conditionObjectEntity->back());	//CHECKTHIS: reused existing connections
+	conditionEntityInverse->conditionObjectEntity->push_back(conditionEntity->conditionSubjectEntity->back());	//CHECKTHIS: reused existing connections
+	return conditionEntityInverse;
 }
 #endif

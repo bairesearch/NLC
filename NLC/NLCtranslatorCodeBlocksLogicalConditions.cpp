@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t3b 21-September-2016
+ * Project Version: 1u1a 24-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -764,7 +764,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetGenericEntityPointerToEntity(*currentCodeBlockInTree, parsablePhraseReferenceName, childEntity);		//eg thedogsvalue = childEntity;
-									currentFullSentence->mathText = generateAssignMathTextValueExecuteFunctionMathText(&(currentFullSentence->mathText), parsablePhraseReferenceName, (currentFullSentence->hasLogicalConditionOperator));	//replace "thedogsvalue = ..." with "assignMathTextValue(thedogsvalue, ...)", replace "X = thedogsvalue" with "assignMathTextValue(X, thedogsvalue)" etc
+									currentFullSentence->mathText = generateAssignMathTextValueExecuteFunctionMathText(currentFullSentence, parsablePhraseReferenceName, (currentFullSentence->hasLogicalConditionOperator));	//replace "thedogsvalue = ..." with "assignMathObjectValue(thedogsvalue, ...)", replace "X = thedogsvalue" with "assignMathTextValue(X, thedogsvalue)" etc
 								}
 								#endif
 
@@ -941,7 +941,7 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 	#endif
 
 	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
-	//NB this code is not absolutely required (as the getMathObjectValue return type will be inferred when compiling generated code), however it will simplify/normalise the generated output code
+	//NB this code is not absolutely required (as assignMathObjectValue types can be inferred when compiling generated code), however it will simplify/normalise the generated output code
 	for(vector<NLCvariable*>::iterator iter = currentFullSentence->mathTextVariables.begin(); iter != currentFullSentence->mathTextVariables.end(); iter++)
 	{
 		NLCvariable* mathTextVariable = (*iter);
@@ -1217,8 +1217,10 @@ bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp,
 }
 
 #ifdef NLC_USE_MATH_OBJECTS_ADVANCED
-string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, string parsablePhraseReferenceName, bool hasLogicalConditionOperator)
+string generateAssignMathTextValueExecuteFunctionMathText(NLCsentence* currentFullSentence, string parsablePhraseReferenceName, bool hasLogicalConditionOperator)
 {
+	string* mathText = &(currentFullSentence->mathText);
+	 
 	bool foundParsablePhraseReferenceNameAssignment = false;
 	int progLang = getProgLang();	//CHECKTHIS - note this is an unusual implementation, in future could update NLCtranslatorCodeBlocksLogicalConditions.cpp generateCodeBlocksFromMathText{} to not execute generateCodeBlocksFromMathText (ie print updated mathText), but instead execute a new codeBlocks subroutine createCodeBlockAssignMathTextValueExecute(targetText, sourceText)
 	string mathTextUpdated = *mathText;
@@ -1242,7 +1244,7 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 			#endif
 				foundParsablePhraseReferenceNameAssignment = true;
 				string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, progLang);	//eg thedogsvalue
-				mathTextUpdated = NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(thedogsvalue, thechickensvalue)", eg1 "assignMathTextValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
+				mathTextUpdated = NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathObjectValue(thedogsvalue, thechickensvalue)", eg1 "assignMathObjectValue(thedogsvalue, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathObjectValue(thedogsvalue, addMathTextValue("the dog's name is ", maxsName))"
 			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			}
 			#endif
@@ -1260,27 +1262,86 @@ string generateAssignMathTextValueExecuteFunctionMathText(string* mathText, stri
 			#else
 			//eg1 X = thecatssvalue, eg2 X = thecatssvalue + themousessvalue
 			#endif
+			
+		
 			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 			if(mathText->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST, indexOfMathEqualsSetCommand) != indexOfMathEqualsSetCommand)
 			{//a) ignore equals test ("==") expressions
 				if(!findInvertedCommasEitherSideOfCharacter(mathText, indexOfMathEqualsSetCommand))
 				{//b) ignore all equals signs within inverted commas
 					//mathText eg: "X =" OR "X="
-					if(mathText->find(NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) != (indexOfMathEqualsSetCommand + 2))
+					#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION
+					if(mathText->find(NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME, indexOfMathEqualsSetCommand) != (indexOfMathEqualsSetCommand + 2))
 					{//c) only create one instance of = getMathObjectValue(.. per sentence;	eg X = thecatssvalue + themousessvalue
+					#else
+					if(mathText->find(NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME) != CPP_STRING_FIND_RESULT_FAIL_VALUE)	//redundant
+					{//c) only create one instance of assignMathtextValue(.. per sentence;	eg X = thecatssvalue + themousessvalue
+					#endif
 			#else
 			//redundant as a) !(currentFullSentence->hasLogicalConditionOperator), b) finding first instance of '=', so there will be no '"' characters before the '=' character, and c) there are no additions (+) so there will only be one parsable phrase found in the sentence
 			#endif
+						#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION
+						//verify that the equality source value text does not contain an NLP parsable phrase reference
+						bool sourceIsParsablePhrase = false;
+						string sourceValueText = getSourceValueText(mathText, indexOfMathEqualsSetCommand, progLang);
+						NLCsentence* currentParsablePhrase2 = currentFullSentence;
+						for(int i = 0; i < currentFullSentence->mathTextNLPparsablePhraseTotal; i++)
+						{
+							string parsablePhraseReferenceName2 = generateMathTextNLPparsablePhraseReference(currentFullSentence->sentenceIndex, currentParsablePhrase2);
+							if(sourceValueText.find(parsablePhraseReferenceName2) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+							{
+								sourceIsParsablePhrase = true;
+							}
+							currentParsablePhrase2 = currentParsablePhrase2->next;
+						}
+						if(!sourceIsParsablePhrase)
+						{		
+							bool mathtextValueDeclarationDetected = false;
+							int mathtextValueDeclarationType = INT_DEFAULT_VALUE;
+							for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
+							{
+								int indexOfType = mathText->find(preprocessorMathNaturalLanguageVariables[j]);
+								if((indexOfType != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfType == 0))
+								{
+									mathtextValueDeclarationDetected = true;	//explictTypeFound
+									mathtextValueDeclarationType = j;	
+								}
+							}		
+							if(mathtextValueDeclarationDetected)
+							{
+								//CHECKTHIS
+								//eg "string X = thecatssvalue + themousessvalue" -> "string X; assignMathTextValue(X, thecatssvalue + themousessvalue);
+								string mathTextValueDeclaration = sourceValueText + progLangEndLine[progLang] + progLangSpace[progLang];	//eg "string X; "
+								string mathTextValueInitialisation = mathText->substr(preprocessorMathNaturalLanguageVariables[mathtextValueDeclarationType].length() + 1);	//eg "X = thecatssvalue + themousessvalue"	//+1 to remove space after type
+								int indexOfMathEqualsSetCommandInitialisation = indexOfMathEqualsSetCommand - (preprocessorMathNaturalLanguageVariables[mathtextValueDeclarationType].length() + 1);		//+1 to remove space after type
+								string sourceValueTextInitialisation = getSourceValueText(&mathTextValueInitialisation, indexOfMathEqualsSetCommandInitialisation, progLang);
+								string targetValueTextInitialisation = getTargetValueText(&mathTextValueInitialisation, indexOfMathEqualsSetCommandInitialisation, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, progLang);
+								string assignMathTextValueText = string(NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + generateReferenceText(sourceValueTextInitialisation, progLang) + progLangClassMemberFunctionParametersNext[progLang] + targetValueTextInitialisation + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(X, thechickensvalue)", eg1 "assignMathTextValue(X, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(X, addMathTextValue("the dog's name is ", maxsName))"
+								mathTextUpdated = mathTextValueDeclaration + assignMathTextValueText;
+								foundMathtextVariableAssignment = true;
+							}
+							else
+							{
+								//eg "X = thecatssvalue + themousessvalue" -> "assignMathTextValue(X, thecatssvalue + themousessvalue);
+								string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, progLang);
+								string assignMathTextValueText = string(NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + generateReferenceText(sourceValueText, progLang) + progLangClassMemberFunctionParametersNext[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg0 "assignMathTextValue(X, thechickensvalue)", eg1 "assignMathTextValue(X, addMathTextValue(5 + theNumberOfApplesNearTheFarm))", eg2 "assignMathTextValue(X, addMathTextValue("the dog's name is ", maxsName))"
+								mathTextUpdated = assignMathTextValueText;
+								foundMathtextVariableAssignment = true;
+							}
+						}
+						#else
 						string targetValueText = getTargetValueText(mathText, indexOfMathEqualsSetCommand, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, progLang);
-						targetValueText = string(NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathTextValue(thechickensvalue)"
-						mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + targetValueText;
+						string getMathObjectValueText = string(NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + targetValueText + progLangCloseParameterSpace[progLang];	//eg "X = thechickensvalue"  ->  "X = getMathObjectValue(thechickensvalue)"
+						mathTextUpdated = mathText->substr(0, indexOfMathEqualsSetCommand+1) + STRING_SPACE + getMathObjectValueText;
 						foundMathtextVariableAssignment = true;
+						#endif
 			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 					}
 
 				}
 			}
 			#endif
+		
 		}
 	}
 

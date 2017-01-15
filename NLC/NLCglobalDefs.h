@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t3b 21-September-2016
+ * Project Version: 1u1a 24-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
 //#define NLC_USE_LIBRARY_USER
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
-	#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
+	//#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
 #endif
 
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -92,7 +92,12 @@
 	#define NLC_USE_MATH_OBJECTS_ADVANCED	//1r5c	//requires NLC_USE_LIBRARY_BASE_EXTENDED
 	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
 		#define NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHOBJECT_VALUE_FUNCTION_NAME "assignMathObjectValue"
-		#define NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME "getMathObjectValue"
+		#define NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION	//1t3c
+		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION
+			#define NLC_USE_MATH_OBJECTS_ADVANCED_ASSIGN_MATHTEXT_VALUE_FUNCTION_NAME "assignMathtextValue"
+		#else
+			#define NLC_USE_MATH_OBJECTS_ADVANCED_GET_MATHOBJECT_VALUE_FUNCTION_NAME "getMathObjectValue"
+		#endif
 		#define NLC_USE_MATH_OBJECTS_STRING	//1r5c
 		#ifdef NLC_USE_MATH_OBJECTS_STRING
 			#define NLC_USE_MATH_OBJECTS_STRING_DELIMITER STRING_INVERTED_COMMAS
@@ -103,7 +108,7 @@
 			#define NLC_USE_MATH_OBJECTS_BOOLEAN_VALUE_TRUE "true"
 			#define NLC_USE_MATH_OBJECTS_BOOLEAN_VALUE_FALSE "false"
 		#endif
-		#define NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES	//1r5l	//NB this code is not absolutely required (as the getMathObjectValue return type will be inferred when compiling generated code), however it will simplify/normalise the generated output code
+		#define NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES	//1r5l	//NB this code is not absolutely required (as assignMathObjectValue types can be inferred when compiling generated code), however it will simplify/normalise the generated output code
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
 			#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE	//1r5b //CHECKTHIS
 			#define NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES	//1r5l

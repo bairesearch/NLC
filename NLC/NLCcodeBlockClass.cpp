@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v6a 20-October-2016
+ * Project Version: 1v7a 22-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1649,11 +1649,11 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblo
 	return createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, value);
 }
 #endif
-#ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockIfHasCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName, int sentenceIndex)
 {
 	return createCodeBlockIfHasGenericEntity(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, negative);
 }
+#ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType)
 {
 	return createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(currentCodeBlockInTree, entity, generateCategoryListGenericObjectName(entity, sentenceIndex), genericListAppendName, propertyEntity, castToCategoryType);
@@ -1781,7 +1781,6 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodebl
 }
 #endif
 
-#ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);
@@ -1797,6 +1796,7 @@ NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockIn
 	}
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+#ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType)
 {
 	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT, genericObjectName);

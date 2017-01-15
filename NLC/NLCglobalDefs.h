@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v6a 20-October-2016
+ * Project Version: 1v7a 22-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -554,6 +554,8 @@
 					#endif
 				#endif
 			#endif
+		#endif
+		#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//removed 1v7b
 			#define NLC_CATEGORIES_TEST_PLURALITY	//1j1a
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY
 				#define NLC_CATEGORIES_TEST_PLURALITY_ENFORCE	//interpret user definite singular references as singular even if an appropriate plural match exists

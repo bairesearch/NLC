@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v6a 20-October-2016
+ * Project Version: 1v7a 22-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -207,9 +207,7 @@
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
 		#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY (116)
 	#endif
-	#ifdef NLC_USE_ADVANCED_REFERENCING
-		#define NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY (117)
-	#endif
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY (117)
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
 	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST2 (118)
@@ -514,8 +512,8 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanNumCategoryItem(NLCcodeblock* curre
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value, int sentenceIndex);
 #endif
-#ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockIfHasCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName, int sentenceIndex);
+#ifdef NLC_USE_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType);
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree);
 #endif
@@ -534,8 +532,8 @@ NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedP
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
 	#endif
-	#ifdef NLC_USE_ADVANCED_REFERENCING
 	NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
+	#ifdef NLC_USE_ADVANCED_REFERENCING
 	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType);
 	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree);
 	NLCcodeblock* createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);

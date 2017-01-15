@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v6a 20-October-2016
+ * Project Version: 1v7a 22-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1v6a 20-October-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1v7a 22-October-2016" << endl;
 			exit(1);
 		}
 
@@ -1349,51 +1349,55 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						#ifdef NLC_DEBUG
 						//cout << "i = " << i << endl;
 						#endif
+					#else
+					int i = 0;	//->back()
 					#endif
 
-						int sentenceIndex = (actionEntity->actionSubjectEntity->back())->sentenceIndexTemp;
+						int sentenceIndex = (actionEntity->actionSubjectEntity->at(i))->sentenceIndexTemp;
 						#ifdef NLC_DEBUG
 						//cout << "sentenceIndex = " << sentenceIndex << endl;
 						#endif
-						if(sentenceIndex != (actionEntity->actionObjectEntity->back())->sentenceIndexTemp)
+						if(sentenceIndex != (actionEntity->actionObjectEntity->at(i))->sentenceIndexTemp)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sentenceIndex inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 
 						//added 1i8g
-						bool sameReferenceSet = (actionEntity->actionSubjectEntity->back())->sameReferenceSet;
+						bool sameReferenceSet = (actionEntity->actionSubjectEntity->at(i))->sameReferenceSet;
 						#ifdef NLC_DEBUG
 						//cout << "sameReferenceSet = " << sameReferenceSet << endl;
 						#endif
-						if(sameReferenceSet != (actionEntity->actionObjectEntity->back())->sameReferenceSet)
+						if(sameReferenceSet != (actionEntity->actionObjectEntity->at(i))->sameReferenceSet)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sameReferenceSet inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
-						bool isReference = (actionEntity->actionSubjectEntity->back())->isReference;
+						bool isReference = (actionEntity->actionSubjectEntity->at(i))->isReference;
 						#ifdef NLC_DEBUG
 						//cout << "isReference = " << isReference << endl;
 						#endif
-						if(isReference != (actionEntity->actionObjectEntity->back())->isReference)
+						if(isReference != (actionEntity->actionObjectEntity->at(i))->isReference)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: isReference inconsistent between action object and action subject" << endl;
 							cout << " actionEntity->entityName = " <<  actionEntity->entityName << endl;
-							cout << " (actionEntity->actionSubjectEntity->back())->entityName = " <<  (actionEntity->actionSubjectEntity->back())->entityName << endl;
-							cout << " (actionEntity->actionObjectEntity->back())->entityName = " <<  (actionEntity->actionObjectEntity->back())->entityName << endl;
+							cout << " (actionEntity->actionSubjectEntity->at(i))->entityName = " <<  (actionEntity->actionSubjectEntity->at(i))->entityName << endl;
+							cout << " (actionEntity->actionObjectEntity->at(i))->entityName = " <<  (actionEntity->actionObjectEntity->at(i))->entityName << endl;
 							exit(0);
 						}
 						#endif
 
 						bool foundConnection = false;
 						foundConnection = false;
+						cout << "at1" << endl;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionSubjectEntity->begin(); connectionIter != actionEntity->actionSubjectEntity->end(); )
 						{
 							GIAentityConnection* connection = (*connectionIter);
 							if(connection->sentenceIndexTemp == sentenceIndex)
 							{
+								cout << "(connection->sentenceIndexTemp == sentenceIndex)" << endl;
 								if(connection->entity == actionSubjectEntity)
 								{
 									connectionIter = actionEntity->actionSubjectEntity->erase(connectionIter);
@@ -1415,7 +1419,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "1 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						foundConnection = false;
@@ -1445,7 +1449,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "2 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						foundConnection = false;
@@ -1475,7 +1479,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "3 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						foundConnection = false;
@@ -1505,7 +1509,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						}
 						if(!foundConnection)
 						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
+							cout << "4 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 

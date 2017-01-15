@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1c 20-November-2013
+ * Project Version: 1e1d 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -68,11 +68,8 @@ using namespace std;
 #define NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL (6)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST (7)
 #define NLPI_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST (8)
-//#define NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT (9)
-#define NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION (10)
 #define NLPI_ITEM_TYPE_FUNCTION_OWNER (11)
-#define NLPI_ITEM_TYPE_FUNCTION_SUBJECT (12)	//should be merged with NLPI_ITEM_TYPE_FUNCTION_OWNER
-#define NLPI_ITEM_TYPE_FUNCTION_OBJECT (13)
+#define NLPI_ITEM_TYPE_FUNCTION_OBJECT (12)
 
 #define NLPI_CLASS_NAME_APPEND "Class"
 #define NLPI_FUNCTION_NAME_APPEND "Function"

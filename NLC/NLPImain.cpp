@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1c 20-November-2013
+ * Project Version: 1e1d 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -609,7 +609,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1e1c 20-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1e1d 20-November-2013" << endl;
 			exit(1);
 		}
 
@@ -839,8 +839,10 @@ int main(int argc,char **argv)
 		functionNameList.push_back(NLPIfunctionName);
 		#endif
 		
-		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;	
-
+		#ifdef NLPI_DEBUG
+		cout << "translateNetwork(): NLPIfunctionName = " << NLPIfunctionName << endl;	
+		#endif
+		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLPIfunctionName);
 	}
 	
@@ -856,7 +858,7 @@ int main(int argc,char **argv)
 
 		string NLPIfunctionName = functionNameList.at(i);
 		
-		//cout << "start reconcile: NLPIfunctionName = " << NLPIfunctionName << endl;
+		cout << "start reconcile: NLPIfunctionName = " << NLPIfunctionName << endl;
 		/*
 		for(vector<NLPIitem*>::iterator parametersIterator = firstCodeBlockInTree->parameters.begin(); parametersIterator < firstCodeBlockInTree->parameters.end(); parametersIterator++)
 		{

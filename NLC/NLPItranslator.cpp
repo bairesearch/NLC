@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1c 20-November-2013
+ * Project Version: 1e1d 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -278,10 +278,10 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	}
 	else
 	{
-		itemType = NLPI_ITEM_TYPE_FUNCTION_SUBJECT;
+		itemType = NLPI_ITEM_TYPE_FUNCTION_OWNER;
 	}
 			
-	cout << "itemType = " << itemType << endl;
+	//cout << "itemType = " << itemType << endl;
 	
 	if(!(objectOrSubjectEntity->parsedForNLPIcodeBlocks))	//"&& !(objectOrSubjectEntity->parsedForNLPIcodeBlocks)" added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 	{//for loop required
@@ -292,7 +292,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &(objectOrSubjectClass->context), false, sentenceIndex, true);
 		currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectOrSubjectClass);
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, itemType);	//OLD: NLPI_ITEM_TYPE_TEMPVAR
-		cout << "!parsedForNLPIcodeBlocks, objectOrSubjectEntity = " << objectOrSubjectEntity->entityName << endl;
+		//cout << "!parsedForNLPIcodeBlocks, objectOrSubjectEntity = " << objectOrSubjectEntity->entityName << endl;
 		
 		currentCodeBlockInTree = createCodeBlockIfStatements(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
 	}
@@ -300,7 +300,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	{
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, itemType);	//OLD: NLPI_ITEM_TYPE_OBJECT
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &((*objectOrSubjectItem)->context), false, sentenceIndex, true);
-		cout << "objectOrSubjectEntity = " << objectOrSubjectEntity->entityName << endl;
+		//cout << "objectOrSubjectEntity = " << objectOrSubjectEntity->entityName << endl;
 	}
 	return currentCodeBlockInTree;
 }
@@ -486,10 +486,14 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 							#endif
 						}
 						
-						#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+						#ifdef NLPI_DEBUG_PRINT_HIDDEN_CLASSES
 						if((targetEntity->isCondition) && !(targetEntity->isConcept))
 						#else
+						#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+						if(((targetEntity->isCondition) && !(targetEntity->isConcept)) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
+						#else
 						if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))
+						#endif
 						#endif
 						{
 							targetClassDefinition->isActionOrConditionInstanceNotClass = true;

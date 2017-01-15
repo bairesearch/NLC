@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1c 20-November-2013
+ * Project Version: 1e1d 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -511,21 +511,23 @@ void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * fun
 	*functionObjectName = "";
 	*functionName = NLPIfunctionName;
 	int indexOfActionName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER);
-	int indexOfObjectName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_OPEN);
+	int indexOfObjectName = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER);
 	if(indexOfActionName != string::npos)
 	{
 		if(indexOfObjectName != string::npos)
 		{
 			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
-			*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
+			*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 			*foundFunctionOwnerClass = true;
 			*foundFunctionObjectClass = true;	
+			/*
 			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
 			cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
 			cout << "functionName = " << *functionName << endl;
 			cout << "functionOwnerName = " << *functionOwnerName << endl;
 			cout << "functionObjectName = " << *functionObjectName << endl;	
+			*/
 		}
 		else
 		{
@@ -541,12 +543,16 @@ void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * fun
 	else if(indexOfObjectName != string::npos)
 	{
 		*functionName = NLPIfunctionName.substr(0, indexOfObjectName);
-		*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
+		*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*foundFunctionObjectClass = true;
 		cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
 		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
 		cout << "functionName = " << *functionName << endl;
 		cout << "functionObjectName = " << *functionObjectName << endl;	
+	}
+	else
+	{
+		*functionName = NLPIfunctionName;
 	}
 }
 #endif

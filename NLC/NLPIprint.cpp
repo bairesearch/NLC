@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1c 20-November-2013
+ * Project Version: 1e1d 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -303,7 +303,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
 			
-			string codeBlockTextDeclareAndInitialiseVariable = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + param2->className + progLangEndLine[progLang];	
+			string codeBlockTextDeclareAndInitialiseVariable = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + param2->instanceName + progLangEndLine[progLang];	
 			printLine(codeBlockTextDeclareAndInitialiseVariable, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE)
@@ -345,10 +345,11 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem
 	{
 		//do: ADD: if(functionArgumentCertified);
 		NLPIitem * currentItem = *parametersIterator;
+		/*
 		cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
 		cout << "currentItem->className = " << currentItem->className << endl;
 		cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
-		
+		*/
 		if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
 		{
 			if(*functionArguments != "")

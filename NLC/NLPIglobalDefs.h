@@ -23,7 +23,7 @@
  * File Name: NLPIglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1c 20-November-2013
+ * Project Version: 1e1d 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,6 +36,7 @@
 #include "SHAREDglobalDefs.h"
 
 //#define NLPI_DEBUG
+//#define NLPI_DEBUG_PRINT_HIDDEN_CLASSES
 //#define NLPI_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 
 //#define NLPI_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS	//BAD
@@ -44,10 +45,9 @@
 #ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	#define NLPI_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING (99)
 	#define NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS	//added 1d1b
-	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER "::"
-	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH (2)
-	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_OPEN "("
-	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE ")"
+	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER "#"
+	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH (1)
+	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER "+"
 	#define NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH (1)
 #endif
 

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8a 24-August-2014
+ * Project Version: 1i8b 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -939,7 +939,7 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock ** currentCodeBlo
 				GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);
 				if(!generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity , sentenceIndex, false))
 				{
-					generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", false);
+					generateObjectInitialisationsBasedOnPropertiesAndConditionsEntry(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", true);	//NB mustGetParentAndGenerateContext is true because: parent is already obtained but contextBlocks must be generated - added 1i8a
 				}
 				#endif
 			}

@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b2b 03-October-2013
+ * Project Version: 1b3a 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -105,10 +105,10 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 		printLine(classConstructorDeclaration, 1, code);
 		string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
 		printLine(classDestructorDeclaration, 1, code);
-		printLine(STRING_NEW_LINE, 1, code);
+		//printLine("", 1, code);
 		string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + className + progLangStringOpenClose[progLang] + progLangEndLine[progLang];
 		printLine(classNameCode, 1, code);
-		printLine(STRING_NEW_LINE, 1, code);
+		//printLine("", 1, code);
 		
 		//cout << "className = " << className << endl;
 				
@@ -142,7 +142,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 		}
 						
 		printLine(progLangCloseClass[progLang], 0, code);
-		printLine(STRING_NEW_LINE, 0, code);
+		printLine("", 0, code);
 	}
 } 
 
@@ -266,6 +266,8 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 
 void printLine(string command, int level, string * code)
 {
+	//if(command != "")
+	//{
 	string line = "";
 	for(int i=0; i<level; i++)
 	{
@@ -274,5 +276,6 @@ void printLine(string command, int level, string * code)
 	line = line + command;
 	line = line + CHAR_NEWLINE;
 	*code = *code + line;
+	//}
 }
 

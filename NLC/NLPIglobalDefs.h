@@ -20,7 +20,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLPIprint.h
+ * File Name: NLPIglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
  * Project Version: 1b3a 03-October-2013
@@ -29,25 +29,15 @@
  *******************************************************************************/
 
 
-#ifndef HEADER_NLPI_PRINT
-#define HEADER_NLPI_PRINT
 
-#include <iostream>
-#include <fstream>
-#include <ctime>
-#include <cstring>
-#include <cstdlib>	//for random number generation
-#include <cmath>
-#include <string>
-#include <vector>
-using namespace std;
+#ifndef HEADER_NLPI_GLOBAL_DEFS
+#define HEADER_NLPI_GLOBAL_DEFS
 
-#include "NLPIcodeBlock.h"
-#include "NLPIclassDefinition.h"
+#include "SHAREDglobalDefs.h"
 
-bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
-	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
-	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
-		void printLine(string command, int level, string * code);
-	
+//#define NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT
+#ifdef NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT
+	#define NLPI_LOCAL_CONTEXT_NAME "locaL"
+#endif
+
 #endif

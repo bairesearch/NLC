@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b2b 03-October-2013
+ * Project Version: 1b3a 03-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -400,6 +400,14 @@ string generateStringFromContextVector(vector<string> * context, int progLang)
 		*/
 		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
 	}
+	
+	#ifdef NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT
+	if(contextString == "")
+	{
+		contextString = string(NLPI_LOCAL_CONTEXT_NAME) + progLangObjectReferenceDelimiter[progLang];
+	}
+	#endif
+	
 	return contextString;
 }
 

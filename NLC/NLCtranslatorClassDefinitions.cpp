@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m3b 30-November-2014
+ * Project Version: 1m3c 30-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -127,7 +127,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									{
 										targetClassDefinition = new NLCclassDefinition(targetName);
 										classDefinitionList->push_back(targetClassDefinition);
-										
 									}
 
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
@@ -176,31 +175,48 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 									{//declare conditions
 										//conditionList
-										bool foundLocalClassDefinition = false;
-										NLCclassDefinition * localClassDefinition = findClassDefinitionCondition(&(classDefinition->conditionList), targetEntity, &foundLocalClassDefinition);	//see if class definition already exists
-										if(!foundLocalClassDefinition)
+										if(!generateClassHeirarchyCondition(classDefinition, targetClassDefinition, targetEntity))
 										{
-											#ifdef NLC_DEBUG
-											//cout << "generateClassHeirarchy(): classDefinition->conditionList.push_back: " << targetClassDefinition->name << endl;
-											#endif
-											
-											classDefinition->conditionList.push_back(targetClassDefinition);
+											result = false;
+										}
 
-											NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
-
+										#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
+										if(targetEntity->conditionTwoWay)
+										{
 											if(!(targetEntity->conditionObjectEntity->empty()))
 											{
 												string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
-												classDeclarationConditionsListItem->className2 = conditionObjectClassName;
-												//cout << "\tgenerateClassHeirarchy(): conditionObjectClassName = " << conditionObjectClassName << endl;
-											}
-											else
-											{
-												cout << "generateClassHeirarchy() error: condition has no object" << endl;
-											}
+												bool foundClassDefinitionInverse = false;
+												NLCclassDefinition * classDefinitionInverse = findClassDefinition(classDefinitionList, conditionObjectClassName, &foundClassDefinitionInverse);	//see if class definition already exists
+												if(!foundClassDefinitionInverse)
+												{
+													classDefinitionInverse = new NLCclassDefinition(conditionObjectClassName);
+													classDefinitionList->push_back(classDefinitionInverse);
+												}
+				
+												GIAentityNode * conditionEntity = targetEntity;
+												GIAentityNode * conditionEntityInverse = NULL;
+												conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+												#ifdef NLC_DEBUG
+												cout << "conditionEntityInverse: conditionEntityInverse = " << conditionEntityInverse->entityName << endl;
+												#endif
+												bool foundTargetClassDefinitionInverse = false;
+												NLCclassDefinition * targetClassDefinitionInverse = findClassDefinitionCondition(classDefinitionList, conditionEntityInverse, &foundTargetClassDefinition);	//see if class definition already exists
+												if(!foundTargetClassDefinitionInverse)
+												{
+													targetClassDefinitionInverse = new NLCclassDefinition(generateClassName(conditionEntityInverse));
+													classDefinitionList->push_back(targetClassDefinitionInverse);
+												}
+												targetClassDefinitionInverse->isConditionInstance = true;
+												targetClassDefinitionInverse->isActionOrConditionInstanceNotClass = true;
 
-											targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
+												if(!generateClassHeirarchyCondition(classDefinitionInverse, targetClassDefinitionInverse, conditionEntityInverse))
+												{
+													result = false;
+												}
+											}
 										}
+										#endif
 									}
 									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 									{//declare inheritance
@@ -384,6 +400,35 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 	return result;
 }
 
+bool generateClassHeirarchyCondition(NLCclassDefinition * classDefinition, NLCclassDefinition * targetClassDefinition, GIAentityNode * targetEntity)
+{
+	//conditionList
+	bool foundLocalClassDefinition = false;
+	NLCclassDefinition * localClassDefinition = findClassDefinitionCondition(&(classDefinition->conditionList), targetEntity, &foundLocalClassDefinition);	//see if class definition already exists
+	if(!foundLocalClassDefinition)
+	{
+		#ifdef NLC_DEBUG
+		//cout << "generateClassHeirarchy(): classDefinition->conditionList.push_back: " << targetClassDefinition->name << endl;
+		#endif
+
+		classDefinition->conditionList.push_back(targetClassDefinition);
+
+		NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
+
+		if(!(targetEntity->conditionObjectEntity->empty()))
+		{
+			string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+			classDeclarationConditionsListItem->className2 = conditionObjectClassName;
+			//cout << "\tgenerateClassHeirarchy(): conditionObjectClassName = " << conditionObjectClassName << endl;
+		}
+		else
+		{
+			cout << "generateClassHeirarchy() error: condition has no object" << endl;
+		}
+
+		targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
+	}
+}
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r6b 27-August-2016
+ * Project Version: 1s1a 03-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -388,7 +388,12 @@ void addPropertyListToClassDefinition(NLCclassDefinition* classDefinition, NLCcl
 bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* parentEntity)
 {	
 	bool parentClassIsChildOfChildClass = false;
-	GIAentityNode* parentConceptEntity = getPrimaryConceptNodeDefiningInstance(parentEntity);
+	
+	GIAentityNode* parentConceptEntity = parentEntity;
+	if(!(parentEntity->isConcept))	//added 1r7a
+	{ 
+		parentConceptEntity = getPrimaryConceptNodeDefiningInstance(parentEntity);
+	}
 
 	for(vector<GIAentityConnection*>::iterator connectionIter = parentConceptEntity->associatedInstanceNodeList->begin(); connectionIter != parentConceptEntity->associatedInstanceNodeList->end(); connectionIter++)
 	{
@@ -849,10 +854,12 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
-	if(entityNode->isConcept)	//added 1n2f
+	/*
+	if(entityNode->isConcept)	//added 1n2f, removed 1r7a
 	{
 		validClass = false;
 	}
+	*/
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	if(entityNode->NLCisAlias)
 	{

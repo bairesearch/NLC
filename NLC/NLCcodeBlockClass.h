@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h10c 05-August-2014
+ * Project Version: 1h11a 19-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -86,6 +86,9 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_DECLARE_NEW_INT_VARIABLE (26)
 #define NLC_CODEBLOCK_TYPE_INCREMENT_INT_VARIABLE (27)
 #define NLC_CODEBLOCK_TYPE_COMMENT_SINGLE_LINE (28)
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+	#define NLC_CODEBLOCK_TYPE_REASSIGN_ITER (29)
+#endif
 
 //containers:
 #define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (30)		//forall(context1.param1PropertyList){
@@ -132,6 +135,9 @@ public:
 	NLClogicalConditionConjunctionVariables(void);
 	~NLClogicalConditionConjunctionVariables(void);
 
+	#ifdef NLC_PARSE_CONTEXT_CHILDREN
+	bool checkSameSentenceConnection;
+	#endif
 	int logicalOperation;
 	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	bool negative;
@@ -213,6 +219,11 @@ NLCcodeblock * createLowerLevel(NLCcodeblock * currentCodeBlockInTree);
 
 bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed);
 
+/*
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection);
+#endif
+*/	
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks);
 	bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks);
 
@@ -261,6 +272,10 @@ NLCcodeblock * createCodeBlockDeclareNewIntVar(NLCcodeblock * currentCodeBlockIn
 NLCcodeblock * createCodeBlockIncrementIntVar(NLCcodeblock * currentCodeBlockInTree, string intVariableName);
 
 NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockInTree, string comment);
+
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+#endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);
 

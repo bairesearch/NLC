@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h10c 05-August-2014
+ * Project Version: 1h11a 19-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -494,6 +494,17 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string codeBlockText = progLangOpenSingleLineComment[progLang] + param1->name;
 			printLine(codeBlockText, level, code);
 		}
+		#ifdef NLC_PARSE_CONTEXT_CHILDREN
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_REASSIGN_ITER)
+		{
+			string iterIndexString = convertIntToString(level);
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_REASSIGN_ITER" << endl;
+			#endif
+			string tempVarDeclarationText = param1->instanceName + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];
+			printLine(tempVarDeclarationText, level, code);
+		}
+		#endif		
 		else
 		{
 			cout << "printCodeBlocks: error: currentCodeBlockInLevel->codeBlockType = " << currentCodeBlockInLevel->codeBlockType << endl;

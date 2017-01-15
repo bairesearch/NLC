@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h10c 05-August-2014
+ * Project Version: 1h11a 19-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -352,6 +352,29 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 		result = true;
 	}
 
+	#ifdef NLC_PARSE_CONTEXT_CHILDREN
+	//eg A yellow bannana is on the table. Yellow bannanas are fruit. Apples are fruit. An apple is on the green tree. The fruit is tasty.
+	//entity = parent instance
+	if(entity->isSubstanceConcept)
+	{
+		if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, NULL, entity, logicalConditionConjunctionVariables))
+		{
+			result = true;
+		}
+	}
+	else
+	{
+		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = entity->entityNodeDefinitionList->begin(); definitionNodeListIterator < entity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+		{
+			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept	
+			if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, entity, parentSubstanceConcept, logicalConditionConjunctionVariables))
+			{
+				result = true;
+			}
+		}
+	}
+	#endif
+	
 	/*
 	//if object near a car that is towed by a truck / if object has a car that is towed by a truck
 	currentCodeBlockInTree = createCodeBlockIfIsActionObject(currentCodeBlockInTree, item, entity, sentenceIndex);
@@ -362,12 +385,65 @@ bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string
 	//if object near car that is a flyingCar
 	currentCodeBlockInTree = createCodeBlockIfHasDefinition(currentCodeBlockInTree, item, entity, sentenceIndex);
 
-	//if object near Tom's car
+	//if object near Tom's carparentInstanceName
 	currentCodeBlockInTree = createCodeBlockIfHasPropertyOwner(currentCodeBlockInTree, item, entity, sentenceIndex);
 	*/
 	return result;
 }
 
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* parentInstance, GIAentityNode* parentSubstanceConcept, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
+{
+	bool result = false;
+	cout << "parentSubstanceConcept = " << parentSubstanceConcept->entityName << endl;		
+	if(parentSubstanceConcept->isSubstanceConcept)
+	{
+		for(vector<GIAentityConnection*>::iterator reverseDefinitionNodeListIterator = parentSubstanceConcept->entityNodeDefinitionReverseList->begin(); reverseDefinitionNodeListIterator < parentSubstanceConcept->entityNodeDefinitionReverseList->end(); reverseDefinitionNodeListIterator++)
+		{
+			GIAentityNode* childSubstanceConcept = (*reverseDefinitionNodeListIterator)->entity;
+			if(childSubstanceConcept != parentInstance)
+			{
+				cout << "childSubstanceConcept = " << childSubstanceConcept->entityName << endl;		
+
+				//definition child (e.g. apple)
+				NLCcodeblock * originalCodeBlockInTree = *currentCodeBlockInTree;
+
+				NLCitem * propertyItem = new NLCitem(childSubstanceConcept, NLC_ITEM_TYPE_CLASS);
+				//context property item:		
+				if(assumedToAlreadyHaveBeenDeclared(childSubstanceConcept))
+				{
+					cout << "1 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN assumedToAlreadyHaveBeenDeclared: childSubstanceConcept = " << childSubstanceConcept->entityName << endl;
+					*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
+				}
+				else
+				{
+					cout << "2 createCodeBlockForStatements() NLC_PARSE_CONTEXT_CHILDREN !assumedToAlreadyHaveBeenDeclared: childSubstanceConcept = " << childSubstanceConcept->entityName << endl;
+					*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
+				}	
+				
+				//set fruit2 iter to bannana1: "fruit2 = bannana1;
+				if(parentInstance != NULL)
+				{
+					//cout << "createCodeBlockReassignIter" << endl;
+					*currentCodeBlockInTree =  createCodeBlockReassignIter(*currentCodeBlockInTree, parentInstance);
+				}
+									
+				if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(childSubstanceConcept), childSubstanceConcept, childSubstanceConcept->sentenceIndexTemp, logicalConditionConjunctionVariables))
+				{
+					result = true;
+				}
+				else
+				{
+					*currentCodeBlockInTree = originalCodeBlockInTree;
+					clearCodeBlock(*currentCodeBlockInTree);
+				}
+			}
+		}
+	}
+	return result;
+}
+#endif
+			
 bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode * entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
 {
 	bool result = false;
@@ -379,7 +455,7 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 		{
 		#endif
 			GIAentityNode* propertyEntity = propertyConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false))	//changed from true to false 1e5b
+			if(checkSentenceIndexParsingCodeBlocks(propertyEntity, propertyConnection, sentenceIndex, false))	//changed from true to false 1e5b	//logicalConditionConjunctionVariables->checkSameSentenceConnection
 			{//only write conditions that are explicated in current sentence
 				#ifdef NLC_DEBUG
 				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
@@ -500,7 +576,7 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 		{
 		#endif
 			GIAentityNode* conditionEntity = conditionConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(conditionEntity, conditionConnection, sentenceIndex, false))	//changed from true to false 1e5b
+			if(checkSentenceIndexParsingCodeBlocks(conditionEntity, conditionConnection, sentenceIndex, false))	//changed from true to false 1e5b	//logicalConditionConjunctionVariables->checkSameSentenceConnection 
 			{
 				conditionConnection->NLCparsedForCodeBlocks = true;
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS

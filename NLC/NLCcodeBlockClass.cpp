@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h10c 05-August-2014
+ * Project Version: 1h11a 19-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,6 +42,9 @@
 
 NLClogicalConditionConjunctionVariables::NLClogicalConditionConjunctionVariables(void)
 {
+	#ifdef NLC_PARSE_CONTEXT_CHILDREN
+	checkSameSentenceConnection = true;
+	#endif
 	logicalOperation = NLC_LOGICAL_CONDITION_OPERATIONS_FOR;
 	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	negative = BOOL_IRRELEVANT;
@@ -644,6 +647,31 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 }
 
 
+/*
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks, bool checkSameSentenceConnection)
+{
+	bool result = false;
+	//cout << "connection->sentenceIndexTemp = " << connection->sentenceIndexTemp << endl;
+	if(checkSameSentenceConnection)
+	{
+		if(checkSentenceIndexParsingCodeBlocks(entity, GIAentityConnection, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
+		{
+			result = true;
+		}
+	}
+	else
+	{
+		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, checkIfEntityHasBeenParsedForNLCcodeBlocks))
+		{
+			result = true;
+		}	
+	}
+	return result;
+}
+#endif
+*/
+
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, GIAentityConnection * connection, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLCcodeBlocks)
 {
 	bool result = false;
@@ -1123,6 +1151,18 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 	return currentCodeBlockInTree;
 }
 
+#ifdef NLC_PARSE_CONTEXT_CHILDREN
+NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{	
+	NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_CLASS);
+
+	currentCodeBlockInTree->parameters.push_back(entityClass);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REASSIGN_ITER;
+
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock)
 {

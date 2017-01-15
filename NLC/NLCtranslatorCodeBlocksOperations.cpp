@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8h 04-November-2014
+ * Project Version: 1l8i 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1454,14 +1454,14 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	if(generateParentContextPassThrough)
 	{
 		//b) the previous level call generateObjectInitialisationsBasedOnPropertiesAndConditions resulted in parsing sameReferenceSet connnections without the creation of a new property/conditionObject (pass through);
-		//added 1i11l, moved 1k
+		//added 1i11l, moved 1l8b (fixed context 1l8i)
 		//eg Tom's apple is blue.
 		#ifdef NLC_DEBUG
 		cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions(): b) createCodeBlockForPropertyList: " << entity->entityName << endl;
 		#endif
 
 		NLCitem * propertyEntityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		propertyEntityClass->context.push_back(generateInstanceName(entity));
+		propertyEntityClass->context.push_back(parentName);
 		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);
 
 		//Tom's bright apple is blue.

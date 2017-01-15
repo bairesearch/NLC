@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s4a 06-September-2016
+ * Project Version: 1s5a 06-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -565,7 +565,9 @@
 				#endif
 			#else
 				#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-					#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC		//only for !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+					#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS	//required for searchForEquivalentSubnetToIfStatement
+						#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC		//only for !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+					#endif
 				#endif
 			#endif
 		#endif
@@ -576,7 +578,9 @@
 			//GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS hasnt been coded therefore NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS cannot be used
 			//static bool isIncomingOutgoingConditionArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES] = {false, false, true, true, false, false, false, false, false, false, false, false, false, false};
 			#ifndef NLC_DISABLE_1l_CODE_FOR_DEBUG
-				#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
+				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS	//required for searchForEquivalentSubnetToIfStatement
+					#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
+				#endif
 			#endif
 		#endif
 	#endif

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s4a 06-September-2016
+ * Project Version: 1s5a 06-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -261,7 +261,11 @@ int main(int argc, char** argv)
 #endif
 
 #ifdef USE_WORDNET
+	#ifdef GIA_USE_SYNONYMN_DETECTION_DEFAULT_QUERIES_AND_ADVANCED_REFERENCING
 	int synonymnDetectionStatus = SYNONYMN_DETECTION_STATUS_QUERIES_AND_ADVANCED_REFERENCING;
+	#else
+	int synonymnDetectionStatus = SYNONYMN_DETECTION_STATUS_QUERIES_ONLY;
+	#endif
 #endif
 	
 	//bool train = false;
@@ -654,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1s4a 06-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1s5a 06-September-2016" << endl;
 			exit(1);
 		}
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r1a 14-October-2015
+ * Project Version: 1r2a 15-October-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -565,8 +565,6 @@ bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 #endif
 #endif
 
-NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock);
-
 NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string warning);
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
@@ -576,6 +574,7 @@ string generateCategoryListPropertyCountVariableName(GIAentityNode* entity);
 //see NLCclassDefinitionClass.cpp for other versions of this function;
 bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, int itemType, NLCitem** functionArgument);
 
+NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock);
 NLCcodeblock* getLastCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree);
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS

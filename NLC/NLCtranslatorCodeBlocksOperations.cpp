@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r1a 14-October-2015
+ * Project Version: 1r2a 15-October-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -516,6 +516,11 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 							bool resultTemp = false;
 							bool generateContextForObject = false;
 							GIAentityNode* objectEntity = NULL;
+							
+							#ifdef NLC_REFERENCING_WILD_CARDS
+							NLCcodeblock* currentCodeBlockInTreeBeforeParsingConnection = *currentCodeBlockInTree;
+							#endif
+							
 							if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 							{
 								if(createCodeBlockForGivenProperty(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables, &objectEntity, &generateContextForObject))
@@ -584,76 +589,87 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 
 								if(generateContextForObject)
 								{
-									#ifdef NLC_RECORD_ACTION_HISTORY
-									if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+									#ifdef NLC_REFERENCING_WILD_CARDS
+									if(textInTextArray(objectEntity->entityName, giaReferencingWildCardSubstanceArray, GIA_REFERENCING_WILD_CARDS_SUBSTANCES_NUMBER_OF_TYPES))
 									{
-										targetEntity->NLCcontextGeneratedTemp = true;
-									}
-									#endif	
-
-									#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
-									bool verifyObject = false;
-									bool foundParentEntityNew = false;
-									GIAentityNode* parentEntityNew = NULL;
-
-									bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
-									bool checkIsDefinite = false;	//CHECKTHIS; support isolated definite objects, indefinite parents, and definite parents; eg 1. "the chicken that is next to the pie." , 2. "the chicken that is next to a dog's pie." and 3. "the chicken that is next to the dog's pie."
-									parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, entity, &foundParentEntityNew, parseConditionParents, checkIsDefinite);
-									if(isDefiniteEntity(objectEntity) || foundParentEntityNew)	//ie objectEntity is explicitly or implicitly definite
-									{
-										if(!(objectEntity->isSubstanceQuality))	//added 1n24a
-										{
-											verifyObject = true;
-										}
-									}
-
-									if(verifyObject)
-									{
-										//cout << "verifyObject:" << endl;
-										//cout << "entity = " << entity->entityName << endl;
-										//cout << "objectEntity = " << objectEntity->entityName << endl;
-										//cout << "isDefiniteEntity(objectEntity) = " << isDefiniteEntity(objectEntity) << endl;
-										
-										//save objectEntity as tempVariable objectEntityCandidate
-										string candidateObjectClassName = generateClassName(objectEntity);
-										string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);
-										*currentCodeBlockInTree = createCodeBlockDeclareTempVariableAndSetToEntity(*currentCodeBlockInTree, candidateObjectClassName, candidateObjectInstanceName, objectEntity);
-
-										//NB this code is based on generateContextForChildEntity{}: it requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN, NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD and NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-										bool generatedContextForChild = false;
-										if(foundParentEntityNew)
-										{
-											if(generateContextBlocksForParentEntity(currentCodeBlockInTree, objectEntity, parentEntityNew, sentenceIndex, generateContextBlocksVariables))
-											{
-												generatedContextForChild = true;
-											}
-											else
-											{
-												cout << "createCodeBlockForConnectionType{}: generateContextBlocksForParentEntity{} error: !generatedContextForChild" << endl;
-											}
-										}
-										if(generateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
-										{
-
-										}
-
-										//now verify that objectEntity == objectEntityCandidate
-										*currentCodeBlockInTree = createCodeBlockIfTempVariableEqualsEntity(*currentCodeBlockInTree, candidateObjectClassName, candidateObjectInstanceName, objectEntity);
+										*currentCodeBlockInTree = clearCodeBlock(currentCodeBlockInTreeBeforeParsingConnection);
 									}
 									else
-									{	//CHECKTHIS; support isolated indefinite objects; eg 4. "the chicken that is next to a pie."
-									#endif
-										createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(objectEntity), objectEntity, sentenceIndex, generateContextBlocksVariables);
-									#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
-									}
-									#endif
-
-									#ifdef NLC_RECORD_ACTION_HISTORY
-									if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
 									{
-										targetEntity->NLCcontextGeneratedTemp = false;
+									#endif
+										#ifdef NLC_RECORD_ACTION_HISTORY
+										if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+										{
+											targetEntity->NLCcontextGeneratedTemp = true;
+										}
+										#endif	
+
+										#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
+										bool verifyObject = false;
+										bool foundParentEntityNew = false;
+										GIAentityNode* parentEntityNew = NULL;
+
+										bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
+										bool checkIsDefinite = false;	//CHECKTHIS; support isolated definite objects, indefinite parents, and definite parents; eg 1. "the chicken that is next to the pie." , 2. "the chicken that is next to a dog's pie." and 3. "the chicken that is next to the dog's pie."
+										parentEntityNew = getSameReferenceSetUniqueParent(objectEntity, sentenceIndex, entity, &foundParentEntityNew, parseConditionParents, checkIsDefinite);
+										if(isDefiniteEntity(objectEntity) || foundParentEntityNew)	//ie objectEntity is explicitly or implicitly definite
+										{
+											if(!(objectEntity->isSubstanceQuality))	//added 1n24a
+											{
+												verifyObject = true;
+											}
+										}
+
+										if(verifyObject)
+										{
+											//cout << "verifyObject:" << endl;
+											//cout << "entity = " << entity->entityName << endl;
+											//cout << "objectEntity = " << objectEntity->entityName << endl;
+											//cout << "isDefiniteEntity(objectEntity) = " << isDefiniteEntity(objectEntity) << endl;
+
+											//save objectEntity as tempVariable objectEntityCandidate
+											string candidateObjectClassName = generateClassName(objectEntity);
+											string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);
+											*currentCodeBlockInTree = createCodeBlockDeclareTempVariableAndSetToEntity(*currentCodeBlockInTree, candidateObjectClassName, candidateObjectInstanceName, objectEntity);
+
+											//NB this code is based on generateContextForChildEntity{}: it requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN, NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD and NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
+											bool generatedContextForChild = false;
+											if(foundParentEntityNew)
+											{
+												if(generateContextBlocksForParentEntity(currentCodeBlockInTree, objectEntity, parentEntityNew, sentenceIndex, generateContextBlocksVariables))
+												{
+													generatedContextForChild = true;
+												}
+												else
+												{
+													cout << "createCodeBlockForConnectionType{}: generateContextBlocksForParentEntity{} error: !generatedContextForChild" << endl;
+												}
+											}
+											if(generateContextBlocks(currentCodeBlockInTree, objectEntity, sentenceIndex, generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+											{
+
+											}
+
+											//now verify that objectEntity == objectEntityCandidate
+											*currentCodeBlockInTree = createCodeBlockIfTempVariableEqualsEntity(*currentCodeBlockInTree, candidateObjectClassName, candidateObjectInstanceName, objectEntity);
+										}
+										else
+										{	//CHECKTHIS; support isolated indefinite objects; eg 4. "the chicken that is next to a pie."
+										#endif
+											createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(objectEntity), objectEntity, sentenceIndex, generateContextBlocksVariables);
+										#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
+										}
+										#endif
+
+										#ifdef NLC_RECORD_ACTION_HISTORY
+										if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+										{
+											targetEntity->NLCcontextGeneratedTemp = false;
+										}
+										#endif	
+									#ifdef NLC_REFERENCING_WILD_CARDS
 									}
-									#endif	
+									#endif
 								}							
 
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED

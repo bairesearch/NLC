@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r1a 14-October-2015
+ * Project Version: 1r2a 15-October-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,6 +50,13 @@
 //#define NLC_DISABLE_1o_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1p_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1q_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1r_CODE_FOR_DEBUG
+
+#ifndef NLC_DISABLE_1r_CODE_FOR_DEBUG
+	#ifdef GIA_REFERENCING_WILD_CARDS
+		#define NLC_REFERENCING_WILD_CARDS	//ignore something/anything entities while parsing context
+	#endif
+#endif
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
 	#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING	//ie !NLC_LOCAL_LISTS_USE_INSTANCE_NAMES (NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT): has not yet been defined
@@ -113,7 +120,7 @@
 			//#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT	//enabled 1q2a, disabled 1q3b
 			#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN	//1q4a
 		#endif
-		#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES	//1q1a
+		//#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES	//1q1a
 		#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND "NLCgenerated"	//1q1a
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND_BASE ""		//1q6d

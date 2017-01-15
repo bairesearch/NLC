@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r1a 14-October-2015
+ * Project Version: 1r2a 15-October-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2617,20 +2617,6 @@ bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName)
 #endif
 #endif
 
-
-NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock)
-{
-	codeBlock->codeBlockType = NLC_CODEBLOCK_TYPE_UNDEFINED;
-	codeBlock->next = NULL;
-	codeBlock->lowerLevel = NULL;
-	codeBlock->parameters.clear();
-	if(!(codeBlock->parameters.empty()))
-	{
-		cout << "error: !(codeBlock->parameters.empty())" << endl;
-	}
-	return codeBlock;
-}
-
 NLCcodeblock* createCodeBlockDebug(NLCcodeblock* currentCodeBlockInTree, string warning)
 {
 	NLCitem* debugItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
@@ -2674,6 +2660,19 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, GIAentityNode* entity, i
 		}
 	}
 	return foundFunctionArgument;
+}
+
+NLCcodeblock* clearCodeBlock(NLCcodeblock* codeBlock)
+{
+	codeBlock->codeBlockType = NLC_CODEBLOCK_TYPE_UNDEFINED;
+	codeBlock->next = NULL;
+	codeBlock->lowerLevel = NULL;
+	codeBlock->parameters.clear();
+	if(!(codeBlock->parameters.empty()))
+	{
+		cout << "error: !(codeBlock->parameters.empty())" << endl;
+	}
+	return codeBlock;
 }
 
 NLCcodeblock* getLastCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree)

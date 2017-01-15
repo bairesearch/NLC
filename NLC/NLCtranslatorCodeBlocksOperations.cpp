@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u2c 26-September-2016
+ * Project Version: 1u2d 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -340,10 +340,8 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			generateContextBlocksVariables.getParentCheckLastParent = true;
 			generateContextBlocksVariables.lastParent = subjectEntity;	//is this required? (designed for dual/two-way condition connections only)
 			
-			/*	
 			GIAentityNode* objectParentEntity = NULL;
 			getParentAndInitialiseParentIfNecessary(currentCodeBlockInTree, objectEntity, sentenceIndex, &generateContextBlocksVariables, false, &objectParentEntity, &newInitialisationObject);
-			*/
 			
 			bool subjectEntityPredeterminerDetected = false;
 			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES			
@@ -1770,7 +1768,7 @@ bool hasConjunctionConditionConnection(GIAentityNode* conditionEntity, GIAentity
 
 
 
-/*
+
 bool getParentAndInitialiseParentIfNecessary(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool parseLogicalConditions, GIAentityNode** parentEntity, bool* newInitialisation)
 {
 	bool result = false;
@@ -1808,7 +1806,7 @@ bool getParentAndInitialiseParentIfNecessary(NLCcodeblock** currentCodeBlockInTr
 		}
 	}
 }
-*/
+
 
 
 bool getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, bool parseLogicalConditions, GIAentityNode** parentEntity, bool* newInitialisation)

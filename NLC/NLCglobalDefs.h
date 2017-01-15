@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2b 06-September-2014
+ * Project Version: 1j2c 06-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -75,7 +75,8 @@
 	#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES	//1i4a
 	#define NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2 "Category"
 	#define NLC_CATEGORIES_TEST_PLURALITY	//1j1a
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	#define NLC_CATEGORIES_TEST_PLURALITY_OLD	//1j1a
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 		#define NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE "Execution warning: multiple objects are being added to a singular definite variable (category) - should the entity have been defined as plural instead?"
 	#endif
 #endif

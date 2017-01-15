@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2b 06-September-2014
+ * Project Version: 1j2c 06-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -310,7 +310,7 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		contextFound = true;
 	}
 
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
 	{
 		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
@@ -343,8 +343,12 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		}
 	}
 	
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	*currentCodeBlockInTree = createCodeBlockGetBackPropertyListCategory(*currentCodeBlockInTree, parentEntity);	
+	#else
 	*currentCodeBlockInTree = createCodeBlockForPropertyListCategory(*currentCodeBlockInTree, parentEntity);
-
+	#endif
+	
 	return contextFound;
 
 }

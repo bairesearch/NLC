@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2b 06-September-2014
+ * Project Version: 1j2c 06-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -540,6 +540,20 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			printLine(tempVarDeclarationText, (level+1), code);
 		}
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC" << endl;
+			#endif
+			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string genericListAppendName = param2->name;
+
+			string tempVarDeclarationText = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName + progLangEquals[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangFunctionReferenceDelimiter[progLang] + progLangGetLast[progLang] + progLangEndLine[progLang];
+
+			printLine(tempVarDeclarationText, level, code);
+		}
+		#endif
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY_GENERIC)
 		{
 			#ifdef NLC_DEBUG

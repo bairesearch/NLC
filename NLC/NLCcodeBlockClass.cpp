@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2b 06-September-2014
+ * Project Version: 1j2c 06-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1195,6 +1195,13 @@ NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCode
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
+NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{
+	return createCodeBlockGetBackPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+}
+#endif
+
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 NLCcodeblock * createCodeBlockIfHasCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative)
 {
 	return createCodeBlockIfHasPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, negative);
@@ -1248,6 +1255,21 @@ NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeB
 }
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
+NLCcodeblock * createCodeBlockGetBackPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+	
+	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
+
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 NLCcodeblock * createCodeBlockIfHasPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);

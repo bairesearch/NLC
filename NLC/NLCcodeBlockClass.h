@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j2b 06-September-2014
+ * Project Version: 1j2c 06-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -91,13 +91,16 @@ using namespace std;
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE (30)
 	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST (31)
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 		#define NLC_CODEBLOCK_TYPE_PRINT_WARNING (32)
 	#endif
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (33)
 	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_TO_GENERIC_LIST2 (34)
+#endif
+#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+	#define NLC_CODEBLOCK_TYPE_GET_BACK_PROPERTY_LIST_GENERIC (35)
 #endif
 
 //containers:
@@ -124,7 +127,7 @@ using namespace std;
 #define NLC_CODEBLOCK_TYPE_WHILE (54)
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_GENERIC (55)
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 		#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY_GENERIC (56)
 	#endif
 #endif
@@ -298,15 +301,22 @@ NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * cur
 NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 #ifdef NLC_CATEGORIES_TEST_PLURALITY
+NLCcodeblock * createCodeBlockGetBackPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+#endif
+#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 NLCcodeblock * createCodeBlockIfHasCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative);
 #endif
 	NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	NLCcodeblock * createCodeBlockAddPropertyToGenericList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
 	NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+	NLCcodeblock * createCodeBlockGetBackPropertyListGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName);
+	#endif	
+	#ifdef NLC_CATEGORIES_TEST_PLURALITY_OLD
 	NLCcodeblock * createCodeBlockIfHasPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
 	NLCcodeblock * createCodeBlockPrintWarning(NLCcodeblock * currentCodeBlockInTree, string warning);
 	#endif
+
 #endif
 
 #ifdef NLC_GENERATE_TYPE_LISTS

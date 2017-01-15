@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u8a 28-September-2016
+ * Project Version: 1u9a 29-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1151,27 +1151,30 @@ bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListC
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
 			GIAentityNode* entity = *entityIter;
-			if(entity->entityName == definiteEntity->entityName)
+			if(entity->entityType != GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)	//added 1u9a
 			{
-				if(entity->grammaticalProperNounTemp)
+				if(entity->entityName == definiteEntity->entityName)
 				{
-					if(entity->sentenceIndexTemp < firstReferenceToPropernounInContextSentenceIndex)
+					if(entity->grammaticalProperNounTemp)
 					{
-						//NB this method doesn't support multiple declarations of a given propernoun in a given context (function)
-						firstReferenceToPropernounInContextSentenceIndex = entity->sentenceIndexTemp;
-						firstReferenceToPropernounInContext = entity;
-					}
-					for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
-					{
-						GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
-						GIAentityNode* definitionEntity = definitionConnection->entity;
-						if(definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+						if(entity->sentenceIndexTemp < firstReferenceToPropernounInContextSentenceIndex)
 						{
-							if(definitionEntity->entityName != entity->entityName)	//ignore dream mode definitions connections
+							//NB this method doesn't support multiple declarations of a given propernoun in a given context (function)
+							firstReferenceToPropernounInContextSentenceIndex = entity->sentenceIndexTemp;
+							firstReferenceToPropernounInContext = entity;
+						}
+						for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+						{
+							GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
+							GIAentityNode* definitionEntity = definitionConnection->entity;
+							if(definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 							{
-								//if NLC ref, verify sentence index TODO
-								//eg Africa is a country. Africa has a castle with knights.
-								foundPropernounDefinitionLink = true;
+								if(definitionEntity->entityName != entity->entityName)	//ignore dream mode definitions connections
+								{
+									//if NLC ref, verify sentence index TODO
+									//eg Africa is a country. Africa has a castle with knights.
+									foundPropernounDefinitionLink = true;
+								}
 							}
 						}
 					}
@@ -1180,7 +1183,6 @@ bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListC
 		}
 		if(foundPropernounDefinitionLink)
 		{
-			//cout << "foundPropernounDefinitionLink" << endl;
 			firstReferenceToPropernounInContext->NLCfirstInstanceOfProperNounInContext = true;	//so that the entity will be interpreted as a new declaration by isDefiniteEntity
 		}
 	}

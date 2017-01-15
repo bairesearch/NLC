@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5a 17-January-2015
+ * Project Version: 1n5b 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -222,6 +222,7 @@ static string progLangFalse[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"false", "fa
 static string progLangTrue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"true", "true", "true", "true", "true", "true", "true"};
 static string progLangInteger[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"int ", "int ", "int ", "int ", "int ", "int ", "int "};
 static string progLangForIndex[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"index", "index", "index", "index", "index", "index", "index"};
+static string progLangDecimalType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"double ", "double ", "double ", "double ", "double ", "double ", "double "};
 
 static string progLangAnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&&", "&&", "&&", "&&", "&&", "&&", "&&"};
 static string progLangOr[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"||", "||", "||", "||", "||", "||", "||"};
@@ -311,6 +312,9 @@ static string progLangNullPointer[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"NULL"
 static string progLangGetAtPositionPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {".at(", ".at(", ".at(", ".at(", ".at(", ".at(", ".at("};
 static string progLangGetAtPositionPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"-1)", "-1)", "-1)", "-1)", "-1)", "-1)", "-1)"};
 #endif
+#ifdef NLC_USE_MATH_OBJECTS
+static string progLangDefaultDecimalValue[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "0.0"};
+#endif
 
 
 void printLine(string command, int level, string * code);
@@ -359,6 +363,7 @@ string generateCodeConditionPairTextWithContext(string conditionName, string con
 		
 string generateCodePropertyListDefinitionText(string propertyClassName, int progLang);
 string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang);
+string generateCodeEntityListDefinitionText(string className, string instanceName, int progLang);
 	#ifdef NLC_NONOO
 	string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang);	//backwards compatibility wrapper only
 	string generateCodeEntityListDefinitionTypeText(int progLang);
@@ -391,10 +396,13 @@ string generateCodeEntityNameTestText(NLCitem * param, int progLang);
 #endif
 
 string generateCodeNewTempEntity(NLCitem * param, int progLang);
+string generateCodeNewTempEntity(string className, string instanceName, int progLang);
 	string generateTempEntityDeclaration(NLCitem * param, int progLang);
 		string generateTempEntityName(NLCitem * param);
 		string generateTempEntityClassName(NLCitem * param);
 		string generateTempEntityDeclaration(string className, string instanceName, int progLang);
+
+
 /*
 string generateCodeSetTempEntity(NLCitem * param, NLCitem * param2, int progLang);
 string generateTempEntityDeclarationSetToNull(NLCitem * param, NLCitem * param2, int progLang);

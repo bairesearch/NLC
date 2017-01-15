@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5a 17-January-2015
+ * Project Version: 1n5b 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -226,20 +226,31 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 								printLine(classDefinitionAliasListCode, 1, code);			
 								#endif
 								
-								/*
+								#ifdef NLC_USE_MATH_OBJECTS
+								string classDefinitionValueCode = progLangDecimalType[progLang] + string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEndLine[progLang];	//double value;
+								printLine(classDefinitionValueCode, 1, code);
+								#endif
 								#ifdef NLC_USE_LIBRARY
-								string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);
+								string allListDeclarationText = generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>  *> propertyListAll;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);
+								allListDeclarationText = generateCodeAllConditionListDefinitionText(progLang);		//unordered_map<pair<string, string>, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*> *> conditionListAll;
 								printLine(allListDeclarationText, 1, code);
 								#ifdef NLC_RECORD_ACTION_HISTORY
-								allListDeclarationText = generateCodeAllActionListDefinitionText(progLang);
+								allListDeclarationText = generateCodeAllActionListDefinitionText(progLang);		//unordered_map<string, vector<NLCgenericEntityClass*>  *> actionListAll;
 								printLine(allListDeclarationText, 1, code);
-								allListDeclarationText = generateCodeAllActionIncomingListDefinitionText(progLang);
+								allListDeclarationText = generateCodeAllActionIncomingListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>  *> actionIncomingListAll;
+								printLine(allListDeclarationText, 1, code);
+								allListDeclarationText = generateCodeAllActionSubjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>  *> actionSubjectListAll;
+								printLine(allListDeclarationText, 1, code);
+								allListDeclarationText = generateCodeAllActionObjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>  *> actionObjectListAll;
 								printLine(allListDeclarationText, 1, code);
 								#endif
 								#endif
-								*/
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+								string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
+								string parentClassListClassName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
+								generateCodeEntityListDefinitionText(parentClassListClassName, parentClassListName, progLang) + progLangEndLine[progLang];  	//vector<NLCgenericEntity*> parentClassList;
+								#endif
 							
 							#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 							}
@@ -359,6 +370,10 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							printLine(classConstructorLastSentenceReferencedCode, 1, code);	
 							#endif
 							#endif
+							#ifdef NLC_USE_MATH_OBJECTS
+							string setValueCode = string(NLC_USE_MATH_OBJECTS_VALUE_NAME) + progLangEquals[progLang] + progLangDefaultDecimalValue[progLang];	//value = 0.0;
+							printLine(setValueCode, 1, code);
+							#endif
 							#endif
 							
 							#ifdef NLC_USE_LIBRARY
@@ -410,6 +425,21 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							}
 							#endif
 
+							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+							for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+							{
+								NLCclassDefinition * targetClassDefinition = *localListIter;
+								string parentClassName = targetClassDefinition->name;
+								string parentEntityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								string parentEntityDefinitionText = generateCodeNewTempEntity(parentClassName, parentEntityName, progLang);	//parentClassDefinitionClass * parentClassDefinition = new parentClassDefinitionClass();
+								printLine(parentEntityDefinitionText, 1, code);
+								string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
+								string parentClassListClassName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
+								string addParentEntityToParentClassListText = parentClassListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(parentEntityName, parentClassListClassName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//parentClassList.push_back(dynamic_cast<E2*>(parentClassDefinition));
+								printLine(addParentEntityToParentClassListText, 1, code);
+							}
+							#endif
+							
 							printLine(progLangCloseClass[progLang], 0, code);
 							printLine("", 0, code);
 						}

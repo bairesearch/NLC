@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5a 17-January-2015
+ * Project Version: 1n5b 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,6 +47,11 @@
 //#define NLC_DISABLE_1n_CODE_FOR_DEBUG	//aka NLC_ENABLE_1m_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
+	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+		#define NLC_CLASS_PARENT_CLASS_LIST_NAME "parentClassList"
+		#define NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME "checkParentClassName"
+	#endif
 	#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	#define NLC_USE_LIBRARY
 		//must be synced with NLClibraryStandard.h:
@@ -55,6 +60,9 @@
 	#ifdef NLC_USE_LIBRARY
 	#endif
 	#define NLC_USE_MATH_OBJECTS	//not yet finished (each entity has a (double) value which can be set by NLC mathText)
+	#ifdef NLC_USE_MATH_OBJECTS
+		#define NLC_USE_MATH_OBJECTS_VALUE_NAME "value"
+	#endif
 	//#define NLC_NONOO
 	#ifdef NLC_NONOO
 		#define NLC_NONOO_CREATE_REVERSE_LISTS

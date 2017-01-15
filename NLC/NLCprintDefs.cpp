@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5a 17-January-2015
+ * Project Version: 1n5b 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -295,6 +295,16 @@ string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
 	#endif
 	return codeEntityListDefinitionText;
 }
+string generateCodeEntityListDefinitionText(string className, string instanceName, int progLang)
+{
+	#ifdef NLC_NONOO
+	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(NLCNONOO_GENERIC_ENTITY_NODE_NAME, progLang) + instanceName;
+	#else
+	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(className, progLang) + instanceName;
+	#endif
+	return codeEntityListDefinitionText;
+}
+
 
 #ifdef NLC_NONOO
 string generateCodeEntityListDefinitionTypeText(string entityClassName, int progLang)
@@ -442,6 +452,16 @@ string generateCodeNewTempEntity(NLCitem * param, int progLang)
 	string newTempEntityText = generateTempEntityDeclaration(param, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + generateTempEntityClassName(param) + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
 	#endif
 	return newTempEntityText;
+}
+
+
+string generateCodeNewTempEntity(string className, string instanceName, int progLang)
+{
+	#ifdef NLC_NONOO
+	string newTempEntityText = generateTempEntityDeclaration(className, instanceName, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + className + progLangOpenParameterSpace[progLang] + progLangStringOpenClose[progLang] + removeClassTextFromClassDefinitionName(className) + progLangStringOpenClose[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	
+	#else
+	string newTempEntityText = generateTempEntityDeclaration(className, instanceName, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
+	#endif
 }
 
 string generateTempEntityDeclaration(NLCitem * param, int progLang)

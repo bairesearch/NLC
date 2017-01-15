@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5a 17-January-2015
+ * Project Version: 1n5b 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -134,7 +134,7 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (52)
 #endif
 #ifdef NLC_USE_LIBRARY
-#define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT (53)			//context1->param1->param2param3ConditionList.insert(param2, param3);
+	#define NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION_EXISTING_OBJECT (53)			//context1->param1->param2param3ConditionList.insert(param2, param3);
 #endif
 /*
 #define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (54)			//param1class * param1 = NULL;
@@ -203,6 +203,9 @@ using namespace std;
 #ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	#define NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST (131)
 	#define NLC_CODEBLOCK_TYPE_IN_LOCAL_LIST (132)
+#endif
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION (133)
 #endif
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
@@ -528,6 +531,10 @@ NLCcodeblock * getLastCodeBlockInLevel(NLCcodeblock * currentCodeBlockInTree);
 
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity);
+#endif
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+NLCcodeblock * createCodeBlockCheckParentClassNameExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
 #endif
 
 /*

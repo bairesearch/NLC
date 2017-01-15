@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5a 17-January-2015
+ * Project Version: 1n5b 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -165,6 +165,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 							}
 							else
 							{
+								GIAentityNode * definitionEntity = NULL;
 								GIAentityNode * logicalConditionOperationObject = NULL;
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
 								if(checkIfPhraseContainsAction(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
@@ -206,6 +207,32 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS: passed logical condition" << endl;
 										#endif
 									}
+								} else
+								#endif
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+								if(checkIfPhraseContainsSubstanceWithDefinitionLink(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject, &definitionEntity))
+								{//eg "The dog is an alsation. / If the dog is an alsation, eat the cabbage."
+	
+									//cout << "logicalConditionOperationObject->isSubstance" << endl;
+									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
+									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
+	
+									bool parseConditionParents = true;	//use default value here
+									GIAentityNode * parentEntity = getParent(logicalConditionOperationObject, sentenceIndex, parseConditionParents);
+									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+									bool generatedContextBlocks = generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
+									//bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
+									
+									//eg If the dog is an alsation, eat the cabbage
+									*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction(*currentCodeBlockInTree, logicalConditionOperationObject, definitionEntity->entityName);
+									
+									//eg If the dog is a red alsation, eat the cabbage
+									if(createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(logicalConditionOperationObject), definitionEntity, sentenceIndex, &generateContextBlocksVariables))
+									{
+										
+									}
+									
+									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
 								} else
 								#endif
 								if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, caseIndex))
@@ -702,7 +729,7 @@ bool checkIfPhraseContainsAction(vector<GIAentityNode*> * entityNodesActiveListC
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC
 bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject)
 {
-	bool phraseContainsSubstanceConcept = false;
+	bool phraseContainsSubstanceConceptWithDefinitionLink = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * connectedEntity = (*entityIter);
@@ -710,17 +737,57 @@ bool checkIfPhraseContainsSubstanceConceptWithDefinitionLink(vector<GIAentityNod
 		{		
 			if(connectedEntity->isSubstanceConcept)
 			{
+				for(vector<GIAentityConnection*>::iterator iter = connectedEntity->entityNodeDefinitionList->begin(); iter < connectedEntity->entityNodeDefinitionList->end(); iter++)
+				{
+					GIAentityConnection * definitionConnection = *iter;
+					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
+					{
+						phraseContainsSubstanceConceptWithDefinitionLink = true;
+						*logicalConditionOperationObject = connectedEntity;
+					}
+				}
+				/*OLD: before 1n5b update;	
 				if(!(connectedEntity->entityNodeDefinitionList->empty()))
 				{
 					phraseContainsSubstanceConcept = true;
 					*logicalConditionOperationObject = connectedEntity;
 				}
+				*/
 			}
 		}
 	}
-	return phraseContainsSubstanceConcept;
+	return phraseContainsSubstanceConceptWithDefinitionLink;
 }
 #endif
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject, GIAentityNode ** definitionEntity)
+{
+	bool phraseContainsSubstanceWithDefinitionLink = false;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * connectedEntity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
+		{		
+			if((connectedEntity->isSubstance) && (!connectedEntity->isSubstanceConcept))
+			{
+				for(vector<GIAentityConnection*>::iterator iter = connectedEntity->entityNodeDefinitionList->begin(); iter < connectedEntity->entityNodeDefinitionList->end(); iter++)
+				{
+					GIAentityConnection * definitionConnection = *iter;
+					if(definitionConnection->sentenceIndexTemp == sentenceIndex)
+					{
+						phraseContainsSubstanceWithDefinitionLink = true;
+						*logicalConditionOperationObject = connectedEntity;
+						*definitionEntity = definitionConnection->entity;
+					}
+				}
+			}
+		}
+	}
+	return phraseContainsSubstanceWithDefinitionLink;
+}
+#endif
+
 
 void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
 {

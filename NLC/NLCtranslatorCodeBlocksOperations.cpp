@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n29a 06-February-2015
+ * Project Version: 1n30a 06-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -975,7 +975,6 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 									#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 									if(targetConnection->negative)
 									{
-										cout << "if(targetConnection->negative)" << endl;
 										generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
 									}
 									#endif
@@ -2516,8 +2515,11 @@ GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parent
 		{
 			if(!(propertyEntity->isSubstanceQuality))
 			{
-				childEntity = getSameReferenceSetSubstanceNonQualityChild(propertyEntity, sentenceIndex, foundChildEntity);
-				*foundChildEntity = true;
+				if(propertyConnection->sameReferenceSet)	//added 1n30a
+				{
+					childEntity = getSameReferenceSetSubstanceNonQualityChild(propertyEntity, sentenceIndex, foundChildEntity);
+					*foundChildEntity = true;
+				}
 			}
 		}
 	}

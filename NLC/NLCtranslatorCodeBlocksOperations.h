@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l6d 02-November-2014
+ * Project Version: 1l6e 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -112,6 +112,6 @@ void fillFunctionAliasClassList(NLCcodeblock ** currentCodeBlockInTree, vector<G
 void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex);
 #endif
 
-bool checkSpecialCaseEntity(GIAentityNode * entity);
+bool checkSpecialCaseEntity(GIAentityNode * entity, bool detectActions);
 
 #endif

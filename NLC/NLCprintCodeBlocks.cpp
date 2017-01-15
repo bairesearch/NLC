@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q9b 20-August-2015
+ * Project Version: 1q10a 21-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1244,18 +1244,9 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 				cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CLEAR_CONTEXT_LIST_EXECUTE_FUNCTION" << endl;
 				#endif
 
-				string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_PRINT_LEVEL_USED_INSTEAD_OF_CONTEXT_LEVEL
-				string contextLevelString = convertIntToString(level + 1);
-				#else
-				string contextLevelString = convertIntToString(currentCodeBlockInLevel->contextLevel);
-				#endif
-				string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLIST_VAR_APPENDITION) + contextLevelString;
-				//cout << "contextLevelString = " << contextLevelString << endl;
-
-				string codeBlockExecuteFunctionText = "";
-				codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME +  progLangOpenParameterSpace[progLang] + contextListName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//clearContextLevelList(contextListX);
-				printLine(codeBlockExecuteFunctionText, level+1, &printedCodeBlocksSourceText);
+				NLCitem param1;
+				param1.name = convertIntToString(currentCodeBlockInLevel->contextLevel);
+				generateCodeClearReferenceContextListExecuteFunction(&param1, progLang, &printedCodeBlocksSourceText, level+1);
 			}
 			#endif
 			printLine(progLangCloseBlock[progLang], level, &printedCodeBlocksSourceText);

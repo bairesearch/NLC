@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6b 20-August-2015
+ * Project Version: 1q6c 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -94,6 +94,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 {
 	//cout << "sentenceIndex at start of nlp parsable phrase extraction = " <<* sentenceIndex << endl;
 	bool result = true;
+	//cout << "splitMathDetectedLineIntoNLPparsablePhrases: lineContents = " <<* lineContents << endl;
 
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
@@ -685,7 +686,7 @@ bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineC
 	//replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords() is required to prevent creation of nlp parsable phrase from 2 word variable declarations
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
 	{
-		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathNaturalLanguageVariables[i], preprocessorMathMathTextVariables[i]);	//NB this is type sensitive; could be changed in the future
+		*lineContents = replaceSubstringAtStartOfString(lineContents, preprocessorMathNaturalLanguageVariables[i]+STRING_SPACE, preprocessorMathMathTextVariables[i]+STRING_SPACE);	//NB this is type sensitive; could be changed in the future
 		result = true;
 	}
 
@@ -697,12 +698,31 @@ bool restoreExplicitVariableTypes(string* mathText)
 	bool result = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
 	{
-		*mathText = replaceAllOccurancesOfString(mathText, preprocessorMathMathTextVariables[i] , preprocessorMathNaturalLanguageVariables[i]);
+		*mathText = replaceSubstringAtStartOfString(mathText, preprocessorMathMathTextVariables[i]+STRING_SPACE, preprocessorMathNaturalLanguageVariables[i]+STRING_SPACE);
 		result = true;
 	}
 
 	return result;
 }
+
+string replaceSubstringAtStartOfString(string* textOrig, string stringToFind, string replacementString)
+{
+	string text = *textOrig; 
+	int startCharacterOfSentence = 0;
+	if(text.substr(startCharacterOfSentence, stringToFind.length()) == stringToFind)
+	{
+		text.replace(startCharacterOfSentence, stringToFind.length(), replacementString);
+	}
+	/*
+	int pos = text.find(preprocessorMathNaturalLanguageVariables[i], startCharacterOfSentence)
+	if(pos == startCharacterOfSentence)
+	{
+		text.replace(pos, stringToFind.length(), replacementString);
+	}
+	*/
+	return text;
+}
+	
 #endif
 
 

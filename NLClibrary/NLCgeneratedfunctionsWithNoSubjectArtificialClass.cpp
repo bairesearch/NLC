@@ -143,7 +143,7 @@ void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtific
 		sunClass* sun1 = *iter1;
 		addActionSubject<fightClass, sunClass>(fight1, sun1, &(sun1->fightClassActionList), &(fight1->sunClassActionSubjectList));
 	}
-	(new sunClass)->fightFunction(sun1SubjectCategoryList, fightClassList);
+	//(new sunClass)->fightFunction(sun1SubjectCategoryList, fightClassList);
 	//If the sun fights, print the cabbage.
 	bool thesunfights5 = false;
 	vector<sunClass*> sun2CategoryList;
@@ -165,10 +165,35 @@ void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunctionArtific
 		sun2->lastSentenceReferenced.top() = 5;
 		thesunfights5 = true;
 	}
-	if(thesunfights5print )
+	if(thesunfights5)
 	{
 		vector<NLCgenericEntityClass*> referenceContextList1;
 		//
+		vector<printClass*> printClassList;
+		vector<printClass*> print1CategoryList;
+		printClass* print1 = addNewEntityToLocalList<printClass>(&(printClassList));
+		print1CategoryList.push_back(print1);
+		addEntityToReferenceContextList(referenceContextList1, print1, 6);
+		vector<cabbageClass*> cabbage4ObjectCategoryList;
+		vector<cabbageClass*> cabbage4CategoryList;
+		for(vector<cabbageClass*>::iterator iter2 = cabbageClassList.begin(); iter2 < cabbageClassList.end(); iter2++) 
+		{
+			cabbageClass* cabbage4 = *iter2;
+			//Singular definite referencing tests
+			addToCategoryIfPassSingularDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage4CategoryList, cabbage4);
+		}
+		if(!(cabbage4CategoryList.empty()))
+		{
+			cabbageClass* cabbage4 = cabbage4CategoryList.back();
+			cabbage4->lastSentenceReferenced.top() = 6;
+			addToCategoryIfPassPluralDefiniteReferencingTests<cabbageClass, cabbageClass> (cabbage4ObjectCategoryList, cabbage4);
+		}
+		for(vector<cabbageClass*>::iterator iter2 = cabbage4ObjectCategoryList.begin(); iter2 < cabbage4ObjectCategoryList.end(); iter2++) 
+		{
+			cabbageClass* cabbage4 = *iter2;
+			addActionObject<printClass, cabbageClass>(print1, cabbage4, &(cabbage4->printClassActionIncomingList), &(print1->cabbageClassActionObjectList));
+		}
+		printFunction(castVector<printClass, NLCgenericEntityClass>(printClassList), castVector<cabbageClass, NLCgenericEntityClass>(cabbage4ObjectCategoryList));
 		clearReferenceContextList(referenceContextList1);
 	}
 	clearReferenceContextList(referenceContextList0);

@@ -7,6 +7,7 @@ class brownClass;
 class happyClass;
 class nearClass;
 class boatClass;
+class printClass;
 class cabbageClass : public NLCgenericEntityClass
 {
 public:
@@ -14,6 +15,7 @@ public:
 	vector<brownClass*> brownClassPropertyList;
 	vector<happyClass*> happyClassPropertyList;
 	unordered_map<nearClass*, boatClass*> nearClassboatClassConditionList;
+	vector<printClass*> printClassActionIncomingList;
 };
 
 #endif

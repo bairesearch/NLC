@@ -43,6 +43,11 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		fightClass* newfightClass = new fightClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfightClass);
 	}
+	if(name == "print")
+	{
+		printClass* newprintClass = new printClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newprintClass);
+	}
 	return newGenericObject;
 }
 
@@ -88,6 +93,11 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 	{
 		fightClass* newfightClass = new fightClass(*(static_cast<fightClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newfightClass);
+	}
+	if(name == "print")
+	{
+		printClass* newprintClass = new printClass(*(static_cast<printClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newprintClass);
 	}
 	return newGenericObject;
 }

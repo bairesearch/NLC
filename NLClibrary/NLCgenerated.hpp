@@ -10,6 +10,7 @@
 #include "NLCgeneratedhappyClass.hpp"
 #include "NLCgeneratedsunClass.hpp"
 #include "NLCgeneratedfightClass.hpp"
+#include "NLCgeneratedprintClass.hpp"
 
 NLCgenericEntityClass* generateObjectByName(string name);
 NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* entityToCopy);

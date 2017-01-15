@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q6b 20-August-2015
+ * Project Version: 1q6c 20-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,6 +48,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 	bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents);
 	bool restoreExplicitVariableTypes(string* mathText);
+	string replaceSubstringAtStartOfString(string* textOrig, string stringToFind, string replacementString);
 	#endif
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP

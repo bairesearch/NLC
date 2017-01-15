@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g7b 11-July-2014
+ * Project Version: 1g8a 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -431,13 +431,13 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 {
 	bool isAssumedToAlreadyHaveBeenDeclared = false;
-	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLClocalListVariableHasBeenDeclared || entity->NLCisSingularArgument)
+	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLClocalListVariableHasBeenInitialised || entity->NLCisSingularArgument)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
 		/*
 		cout << "entity->grammaticalDefiniteTemp = " << entity->grammaticalDefiniteTemp << endl;
 		cout << "entity->grammaticalProperNounTemp = " << entity->grammaticalProperNounTemp << endl;
-		cout << "entity->NLClocalListVariableHasBeenDeclared = " << entity->NLClocalListVariableHasBeenDeclared << endl;
+		cout << "entity->NLClocalListVariableHasBeenInitialised = " << entity->NLClocalListVariableHasBeenInitialised << endl;
 		cout << "entity->NLCisSingularArgument = " << entity->NLCisSingularArgument << endl;
 		*/
 	}

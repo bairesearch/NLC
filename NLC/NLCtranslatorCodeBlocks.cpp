@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g7b 11-July-2014
+ * Project Version: 1g8a 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,6 +64,8 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		cout << "*** sentenceIndex = " << sentenceIndex << endl;
 		#endif
 
+		declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName);	//added 1g8a 11-July-2014
+		
 		#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 		//Part 0 - added 1f1a;
 		#ifdef NLC_DEBUG
@@ -94,6 +96,62 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		}
 	}
 	return result;
+}
+
+bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+{
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = (*entityIter);
+		if(!(entity->isConcept) && !(entity->isAction))
+		{
+			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
+			{
+				if(!assumedToAlreadyHaveBeenDeclared(entity))
+				{//indefinite entity found
+					bool foundPropertyInSameSentence = false;
+					bool foundConditionInSameSentence = false;
+					for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
+					{
+						GIAentityNode* propertyEntity = (*propertyNodeListIterator)->entity;
+						if(checkSentenceIndexParsingCodeBlocks(propertyEntity, sentenceIndex, false))
+						{
+							foundPropertyInSameSentence = true;
+						}
+					}
+					for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
+					{
+						GIAentityNode* conditionEntity = (*conditionNodeListIterator)->entity;
+						if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, false))
+						{
+							foundConditionInSameSentence = true;
+						}
+					}
+					if(!foundPropertyInSameSentence && !foundConditionInSameSentence)
+					{
+						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
+					}
+					/*
+					bool foundProperty = false;
+					bool foundCondition = false;
+					if(!(entity->propertyNodeList->empty()))
+					{
+						foundProperty = true;
+					}
+					if(!(entity->conditionNodeList->empty()))
+					{
+						foundCondition = true;
+					}
+					if(!foundProperty && !foundCondition)
+					{
+						*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(*currentCodeBlockInTree, entity);
+					}
+					*/
+					entity->NLClocalListVariableHasBeenDeclared = true;
+				}
+			}
+		}
+	}
 }
 
 #ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
@@ -980,7 +1038,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 			cout << "\tpossibleContextParentFound: " << currentEntity->entityName << endl;
 			cout << "currentEntity->grammaticalDefiniteTemp = " << currentEntity->grammaticalDefiniteTemp << endl;
 			cout << "currentEntity->grammaticalProperNounTemp = " << currentEntity->grammaticalProperNounTemp << endl;
-			cout << "currentEntity->NLClocalListVariableHasBeenDeclared = " << currentEntity->NLClocalListVariableHasBeenDeclared << endl;
+			cout << "currentEntity->NLClocalListVariableHasBeenInitialised = " << currentEntity->NLClocalListVariableHasBeenInitialised << endl;
 			cout << "currentEntity->NLCisSingularArgument = " << currentEntity->NLCisSingularArgument << endl;
 			*/
 			result = true;
@@ -993,9 +1051,17 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 					#ifdef NLC_DEBUG2
 					cout << "createCodeBlocksCreateNewLocalListVariable: " << currentEntity->entityName << endl;
 					#endif
-					*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, currentEntity);
+					
+					if(currentEntity->NLClocalListVariableHasBeenDeclared)
+					{//added 1g8a 11-July-2014
+						*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, currentEntity, currentEntity);
+					}
+					else
+					{
+						*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, currentEntity);
+					}			
 					currentEntity->parsedForNLCcodeBlocks = true;
-					currentEntity->NLClocalListVariableHasBeenDeclared = true;
+					currentEntity->NLClocalListVariableHasBeenInitialised = true;
 					//NLCcodeblock firstCodeBlockInSection = *currentCodeBlockInTree;
 					generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
 
@@ -1020,7 +1086,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 
 			#ifdef generateContextBlocksAndInitialiseParentIfNecessary_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT			
 			//added 1g6a
-			//if((currentEntity->grammaticalDefiniteTemp) && !(currentEntity->grammaticalProperNounTemp) && !(currentEntity->NLClocalListVariableHasBeenDeclared) && !(currentEntity->NLCisSingularArgument))
+			//if((currentEntity->grammaticalDefiniteTemp) && !(currentEntity->grammaticalProperNounTemp) && !(currentEntity->NLClocalListVariableHasBeenInitialised) && !(currentEntity->NLCisSingularArgument))
 			//{
 			cout << "generateConditionBlocks: " << currentEntity->entityName << endl;
 			//parse the children (properties and conditions) of an undeclared definite parent 
@@ -1086,10 +1152,17 @@ void generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIA
 							{
 								if(!(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
 								{
-									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
-									*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
+									cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
+									if(parentEntity->NLClocalListVariableHasBeenDeclared)
+									{//added 1g8a 11-July-2014
+										*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity);
+									}
+									else
+									{
+										*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity);
+									}
 									parentEntity->parsedForNLCcodeBlocks = true;
-									parentEntity->NLClocalListVariableHasBeenDeclared = true;
+									parentEntity->NLClocalListVariableHasBeenInitialised = true;
 									//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;
 
 									#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
@@ -1104,6 +1177,7 @@ void generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIA
 			}
 		}
 		#endif
+		cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions:" << endl;
 		generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "");
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	}
@@ -1202,6 +1276,12 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 						*currentCodeBlockInTree = createCodeBlockAddNewProperty(*currentCodeBlockInTree, entity, propertyEntity, sentenceIndex);
 						//cout << "createCodeBlockAddNewProperty: " << entity->entityName << ", " << propertyEntity->entityName << endl;
+						
+						if(propertyEntity->NLClocalListVariableHasBeenDeclared)
+						{//added 1g8a 11-July-2014
+							*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);
+						}
+
 					#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 					}
 					#endif
@@ -1324,6 +1404,15 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								#endif
 									//create a new condition; eg "a house" in "Tom is near a house"
 									*currentCodeBlockInTree = createCodeBlockAddNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
+									
+									if(conditionEntity->NLClocalListVariableHasBeenDeclared)
+									{//added 1g8a 11-July-2014
+										if(!(conditionEntity->conditionObjectEntity->empty()))
+										{
+											GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
+											*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);
+										}
+									}
 								#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 								}
 								#endif

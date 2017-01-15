@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v7a 22-October-2016
+ * Project Version: 1v8a 22-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -702,7 +702,6 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string tempVarDeclarationText = generateCodeEntityDefinitionText(param1, progLang) + progLangEquals[progLang] + generateCodeIterReference(iterIndexString, progLang) + progLangEndLine[progLang];	//OLD:  param1->className + NLC_ITEM_TYPE_TEMP_VAR_APPENDITION
 			printLine(tempVarDeclarationText, (level+1), &printedCodeBlocksSourceText);
 		}
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY)
 		{
 			#ifdef NLC_DEBUG
@@ -716,6 +715,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
 		}
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_PRINT_WARNING)
 		{
 			#ifdef NLC_DEBUG
@@ -741,7 +741,6 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
 		}
 		#endif
-		#ifdef NLC_USE_ADVANCED_REFERENCING
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_GET_BACK_GENERIC_ENTITY_LIST)
 		{
 			#ifdef NLC_DEBUG
@@ -754,6 +753,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 
 			printLine(tempVarDeclarationText, level, &printedCodeBlocksSourceText);
 		}
+		#ifdef NLC_USE_ADVANCED_REFERENCING		
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION)
 		{
 			#ifdef NLC_DEBUG

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j13f 12-September-2014
+ * Project Version: 1j14a 13-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -517,14 +517,14 @@ bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentity
 		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
 		#endif
-		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity);
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity);
 	}
 	else
 	{
 		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
 		#endif
-		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, entity, propertyEntity);	
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity);
 	}
 	#else
 	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, entity, propertyEntity);

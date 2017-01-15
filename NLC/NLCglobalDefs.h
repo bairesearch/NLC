@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j13f 12-September-2014
+ * Project Version: 1j14a 13-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,8 @@
 			#ifdef NLC_USE_ADVANCED_REFERENCING
 				#define NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME "lastSentenceReferenced"
 				#define NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES	//1j8a
-				#define NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_PLURALITY_TESTS_FUNCTION_NAME "addToCategoryIfPassSingularDefinitePluralityTests"
+				#define NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassSingularDefiniteReferencingTests"
+				#define NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassPluralDefiniteReferencingTests"
 				#define NLC_USE_ADVANCED_REFERENCING_COMMENT
 			#endif
 			#define NLC_CATEGORIES_TEST_PLURALITY	//1j1a

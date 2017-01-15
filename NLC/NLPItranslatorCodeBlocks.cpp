@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e6b 23-November-2013
+ * Project Version: 1e6c 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -363,7 +363,25 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLPIcodeblock ** currentCodeBlockInTree, int sentenceIndex)
 {
 	if(!(entity->isSubstanceConcept) && !(entity->isActionConcept))
-	{	
+	{
+		#ifdef NLPI_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
+		//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
+		if(!(entity->isConcept))
+		{
+			if(!(entity->parsedForNLPIcodeBlocks))
+			{
+				if(!assumedToAlreadyHaveBeenDeclared(entity))	
+				{
+					if(entity->propertyNodeReverseList->empty())
+					{
+						//cout << "createCodeBlockAddNewListVariable: " << currentEntity->entityName << endl;
+						*currentCodeBlockInTree = createCodeBlockAddNewListVariable(*currentCodeBlockInTree, entity, sentenceIndex);
+					}
+				}
+			}
+		}
+		#endif
+			
 		//property initialisations
 		for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 		{

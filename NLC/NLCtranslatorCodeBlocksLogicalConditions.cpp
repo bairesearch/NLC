@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n22b 02-February-2015
+ * Project Version: 1n22c 02-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -460,7 +460,8 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 						//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
 						//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 						#else
-						entity->grammaticalDefiniteTemp = true;		//removed 1j15a, readded 1j15c, removed 1n22b
+						//entity->grammaticalDefiniteTemp = true;		//removed 1j15a, readded 1j15c, removed 1n22b
+						entity->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b
 						#endif					
 					//}
 					#endif
@@ -534,7 +535,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								bool foundChildEntity = false;
 								GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
 								
-								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
 								//if/while statements can be expressed using either definite or indefinate variables, but if they indefinite they will not be advanced referenced by GIA (and so must be located in the typeList)
 								if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
@@ -550,9 +550,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 									#else
 									//entity->grammaticalDefiniteTemp = true;		//removed 1j15a
+									parentEntity->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b
 									#endif
 								}
-								#endif
 								#endif
 								
 								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);

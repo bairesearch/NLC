@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s3a 05-September-2016
+ * Project Version: 1s4a 06-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,7 +40,7 @@
 //#include "NLCprintDefs.h" //required for progLangOpenParameterSpace
 #include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-#include "GIAlrp.h"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_ASSUME_QUOTES_HAVE_BEEN_REDUCED_TO_SINGLE_WORDS_FILLER
+#include "GIAlrp.h"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_TRANSLATOR_UNIQUE_CONCATENATION_TYPES_QUOTES_DELIMITER
 
 #ifdef NLC_USE_PREPROCESSOR
 
@@ -627,7 +627,7 @@ bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
 		}
 		else if(readingQuotation && whiteSpaceFound)
 		{
-			*updatedLineText = *updatedLineText + GIA_ASSUME_QUOTES_HAVE_BEEN_REDUCED_TO_SINGLE_WORDS_FILLER;
+			*updatedLineText = *updatedLineText + GIA_TRANSLATOR_UNIQUE_CONCATENATION_TYPES_QUOTES_DELIMITER;
 		}
 		else
 		{

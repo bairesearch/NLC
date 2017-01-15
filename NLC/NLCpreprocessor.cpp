@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3k 28-July-2014
+ * Project Version: 1h4b 29-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -813,8 +813,6 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 				}
 				
-			
-
 				#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 				{
@@ -826,15 +824,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 							{//first word in mathText (type will automatically be assigned)
 								
 								//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
-								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+								//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 								cout << "undeclared mathText variable detected: declaring " << NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT << currentWord << endl;	//inserting mathText variable declaration type (eg double)
+								//#endif
 								//cout << "old currentPhrase = " << currentPhrase << endl;
-								#endif
 								currentPhrase.insert(0, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_DEFAULT);
-								
+								//cout << "new currentPhrase = " << currentPhrase << endl;
+
 								newlyDeclaredVariable = currentWord;
 								mandatoryCharacterFoundInCurrentWord = false;
-								//cout << "new currentPhrase = " << currentPhrase << endl;
+								(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);
 							}
 							else
 							{//explicit type provided
@@ -848,11 +847,12 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 									#endif
 									if((indexOfType != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfType < i))
 									{
-										#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+										//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 										cout << "explicit mathText variable type detected for currentWord: " << preprocessorMathNaturalLanguageVariables[i2] << " " << currentWord << endl;
-										#endif									
+										//#endif									
 										newlyDeclaredVariable = currentWord;
 										mandatoryCharacterFoundInCurrentWord = false;
+										(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);
 									}
 								}
 							}
@@ -1022,6 +1022,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 			cout << "mathText variable type detected: ignoreVariable = true" << endl;
 			#endif
+			ignoreVariable = true;
+		}
+		if(currentWord == "")
+		{
 			ignoreVariable = true;
 		}
 		

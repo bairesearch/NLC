@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k12a 17-October-2014
+ * Project Version: 1k12b 17-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,9 +35,11 @@
 
 
 #include "NLCcodeBlockClass.h"
-#include "GIAtranslatorOperations.h"
 #include "NLCprintDefs.h"	//required for progLangArrayOpen/progLangArrayClose/NLC_ITEM_TYPE_PROPERTYCOUNTVAR_APPENDITION
-
+#include "GIAtranslatorOperations.h"
+#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED
+#include "GIAtranslatorDefineReferencing.h"
+#endif
 
 //#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED || NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 static int currentLogicalConditionLevel;
@@ -656,7 +658,7 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 							//detected "the x" without declaring x (ie implicit declaration)
 							NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);
 							parameters->push_back(thisFunctionArgumentInstanceItem);
-
+							
 							//added 1j5d
 							#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 							entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
@@ -682,85 +684,107 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 }
 
 #ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-//see checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext()
 bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*> * entityNodesActiveListComplete, GIAentityNode * definiteEntity, NLCsentence * firstNLCsentenceInList)
 {
-	//cout << "definiteEntity = " << definiteEntity->entityName << endl;
 	bool foundIndefiniteEntity = false;
+
+	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED
+	int referenceSetID = 0;
+	//see identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts()
+
+	int minimumEntityIndexOfReferenceSet = definiteEntity->entityIndexTemp;
+
+	//cout << "definiteEntity->entityName  = " << definiteEntity->entityName << endl;
+	if(identifyReferenceSetDetermineNextCourseOfAction(definiteEntity, true, referenceSetID, minimumEntityIndexOfReferenceSet, false))
+	{
+		bool traceModeIsQuery = false;
+
+		//cout << "identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
+
+		GIAreferenceTraceParameters referenceTraceParameters;
+		referenceTraceParameters.referenceSetID = referenceSetID;
+		#ifdef GIA_SUPPORT_DEFINE_REFERENCE_CONTEXT_BY_TEXT_INDENTATION
+		referenceTraceParameters.referenceSetDefiniteEntity = referenceSetDefiniteEntity;
+		//referenceTraceParameters.firstSentenceInList = firstNLCsentenceInList;
+		#endif
+
+		#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
+		int irrelevant;
+		string printEntityNodeString = "";
+		int maxNumberOfMatchedNodesPossible = 0;
+		bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
+		traceEntityNode(firstNodeConceptEntityNodesListQuery, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_DETERMINE_MAX_NUMBER_MATCHED_NODES_SAME_SET_ONLY, &maxNumberOfMatchedNodesPossible, NULL, false, referenceSetID, traceInstantiations);
+		traceEntityNode(currentQueryEntityNode, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
+		#endif
+
+		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+		{
+			GIAentityNode * indefiniteEntity = *entityIter;
+			//cout << "\tentity = " << indefiniteEntity->entityName << endl;
+			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
+			{//indefiniteEntityFound
+				//cout << "\tindefiniteEntity = " << indefiniteEntity->entityName << endl;
+
+				GIAqueryTraceParameters queryTraceParameters;		//not used
+
+				int numberOfMatchedNodesTemp = 0;
+				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
+				//bool exactMatch = testEntityNodeForQueryOrReferenceSet2(definiteEntity, indefiniteEntity, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
+				bool exactMatch = testReferencedEntityNodeForExactNameMatch2(definiteEntity, indefiniteEntity, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
+
+				if(exactMatch)
+				{
+					//cout << "\texactMatch" << endl;
+					if(numberOfMatchedNodesTemp > 0)
+					{
+						//cout << "\texactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
+
+						#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
+						if(numberOfMatchedNodesTemp == maxNumberOfMatchedNodesPossible)
+						{
+						#endif
+							foundIndefiniteEntity = true;
+						#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
+						}
+						#endif
+					}
+				}
+				else
+				{
+					//cout << "\t!exactMatch" << endl;
+				}
+
+				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
+				int irrelevant;
+				string printEntityNodeString = "";
+				bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
+				traceEntityNode(definiteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
+				traceEntityNode(indefiniteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
+
+
+				referenceSetID	= referenceSetID + 1;
+			}
+		}
+	}
+	#else
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * indefiniteEntity = *entityIter;
 		if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
-		{//indefiniteEntityFound
-			//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
+		{	
 			if(((indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && (definiteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)) || (indefiniteEntity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL))
 			{
-				//cout << "definiteEntity->grammaticalNumber  = " << definiteEntity->grammaticalNumber << endl;
-
-				if(indefiniteEntity->sentenceIndexTemp < definiteEntity->sentenceIndexTemp)
-				{	
-					//cout << "(indefiniteEntity->sentenceIndexTemp < definiteEntity->sentenceIndexTemp)" << endl;
-				 
-					 NLCsentence * currentNLCsentenceInList = firstNLCsentenceInList;
-					 bool foundIndefiniteEntitySentence = false;
-					 while((currentNLCsentenceInList->next != NULL) && !foundIndefiniteEntitySentence)
-					 {
-					 	if(currentNLCsentenceInList->sentenceIndex == indefiniteEntity->sentenceIndexTemp)
-						{
-							foundIndefiniteEntitySentence = true;
-						}
-						else
-						{
-							currentNLCsentenceInList = currentNLCsentenceInList->next;
-					 	}
-					 }
-					 NLCsentence * indefiniteEntityNLCsentenceInList = currentNLCsentenceInList;
-					  
-					 bool foundDefiniteEntitySentence = false;
-					 int minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
-					 while((currentNLCsentenceInList->next != NULL) && !foundDefiniteEntitySentence)
-					 {	
-						if(currentNLCsentenceInList->indentation < minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence)
-						{
-							minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
-						}
-		
-					 	if(currentNLCsentenceInList->sentenceIndex == definiteEntity->sentenceIndexTemp)
-						{
-							foundDefiniteEntitySentence = true;
-						}
-						else
-						{
-							currentNLCsentenceInList = currentNLCsentenceInList->next;
-					 	}	 	
-					 }
-					 NLCsentence * definiteEntityNLCsentenceInList = currentNLCsentenceInList;
-
-					 
-					 //cout << "definiteEntity = " << definiteEntity->entityName << endl;
-					 //cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
-					 if(foundDefiniteEntitySentence)
-					 {
-					 	if(minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence < indefiniteEntityNLCsentenceInList->indentation)
-						{
-							//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): no reference found" << endl;
-						}
-						else
-						{
-							//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(): entity declared in this function" << endl;
-					 		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
-					 		//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
-							foundIndefiniteEntity = true;
-						}
-					 }
-					 else
-					 {
-					 	//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext() error: !foundDefiniteEntitySentence" << endl;
-					 }
+				setFirstNLCsentenceInList(firstNLCsentenceInList);
+				if(checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(indefiniteEntity, definiteEntity))
+				{
+					foundIndefiniteEntity = true;
 				}
 			}
+			
 		}
 	}
+	#endif
 	return foundIndefiniteEntity;
 }
 #endif
@@ -777,6 +801,10 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(G
 	}
 	#endif
 	#endif
+	if(entityNode->isSubstanceConcept)
+	{
+		validClass = false;	
+	}
 	
 	return validClass;
 }

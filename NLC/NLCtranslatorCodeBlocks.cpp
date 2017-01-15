@@ -528,7 +528,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 	{
 		GIAentityNode * entity = (*entityIter);
 		if(!checkSpecialCaseEntity(entity, true) && !(entity->isSubstanceQuality))
-		{
+		{	
 			if(declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(entity))
 			{
 				#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES

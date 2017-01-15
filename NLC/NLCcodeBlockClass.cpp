@@ -996,7 +996,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 		GIAreferenceTraceParameters referenceTraceParameters;
 		referenceTraceParameters.referenceSetID = referenceSetID;
 		#ifdef GIA_SUPPORT_DEFINE_REFERENCE_CONTEXT_BY_TEXT_INDENTATION
-		referenceTraceParameters.referenceSetDefiniteEntity = referenceSetDefiniteEntity;
+		referenceTraceParameters.referenceSetDefiniteEntity = true;	//referenceSetDefiniteEntity
 		//referenceTraceParameters.firstSentenceInList = firstNLCsentenceInList;
 		#endif
 
@@ -1077,7 +1077,6 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 					foundIndefiniteEntity = true;
 				}
 			}
-			
 		}
 	}
 	#endif

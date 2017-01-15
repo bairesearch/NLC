@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15c 23-October-2014
+ * Project Version: 1k15d 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -118,14 +118,14 @@ int generateDummyNumericalValue(int predefinedVariableIndex)
 #endif
 
 //isStringNLPparsableWord: either variable name or all numbers
-bool isStringNLPparsableWord(string phrase)
+bool isStringNLPparsableWord(string phrase, bool preprocessor)
 {
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
 		//cout << "isStringNLPparsableWord() error: phrase.length() == 0" << endl;
 	}
-	if(isStringValidVariableName(phrase) || isStringNumber(phrase))
+	if(isStringValidVariableName(phrase, preprocessor) || isStringNumber(phrase))
 	{
 		stringIsNLPparsableWord = true;
 	}
@@ -152,7 +152,7 @@ bool isStringNLPparsableWord(string phrase)
 }
 
 //isStringValidVariableName: alphanumeric string but can't start with number 
-bool isStringValidVariableName(string phrase)
+bool isStringValidVariableName(string phrase, bool preprocessor)
 {
 	if(phrase.length() == 0)
 	{
@@ -164,7 +164,15 @@ bool isStringValidVariableName(string phrase)
 	for(int i=0; i<phrase.length(); i++)
 	{
 		char c = phrase[i];
-		bool legalWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
+		bool legalWordCharacterFound;
+		if(preprocessor)
+		{
+			legalWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
+		}
+		else
+		{
+			legalWordCharacterFound = charInCharArray(c, NLPparsableCharacters, NLC_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);			
+		}
 		if(!legalWordCharacterFound)
 		{
 			stringIsNLPparsableWord = false;

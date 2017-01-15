@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15c 23-October-2014
+ * Project Version: 1k15d 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -935,7 +935,7 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*> * entityNodesActiveList
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = (*entityIter);
-		if(!isStringNLPparsableWord(entity->entityName))
+		if(!isStringNLPparsableWord(entity->entityName, false))
 		{
 			result = false;
 			cout << "checkAlphaNumericEntityNames(): user input error - entity names cannot start with numbers: " << entity->entityName << endl;

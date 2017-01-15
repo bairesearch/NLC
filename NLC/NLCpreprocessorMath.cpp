@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k15c 23-October-2014
+ * Project Version: 1k15d 23-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -246,7 +246,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				//add final word in sentence to phrase if it is legal
 				currentWord = currentWord + c;
 				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
-				if(isStringNLPparsableWord(currentWord))
+				if(isStringNLPparsableWord(currentWord, true))
 				{
 				#endif
 					finalWordInSentenceFoundAndIsLegal = true;
@@ -270,7 +270,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 			{
 			#endif
 				#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
-				if(!isStringNLPparsableWord(currentWord))
+				if(!isStringNLPparsableWord(currentWord, true))
 				{
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases(): user input error - variables names cannot start with numbers: " << currentWord << endl;
 					exit(0);

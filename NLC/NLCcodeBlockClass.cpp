@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j5c 09-September-2014
+ * Project Version: 1j5d 09-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -576,6 +576,17 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 					//detected "the x" without declaring x (ie implicit declaration)
 					NLCitem * thisFunctionArgumentInstanceItem = new NLCitem(entity, NLC_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
 					parameters->push_back(thisFunctionArgumentInstanceItem);
+					
+					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+					entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
+					#else
+					GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+					if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+					{
+						entity->NLClocalListVariableHasBeenDeclared = true;
+						conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+					}
+					#endif
 				#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 				}
 				#endif

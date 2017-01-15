@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11m 25-August-2014
+ * Project Version: 1i11n 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1393,6 +1393,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 						propertyEntityClass->context.push_back(generateInstanceName(entity));
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);
+						
+						//generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
+						//parse the children (properties and conditions) of an undeclared definite parent
+						createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(propertyEntity), propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
 					}			
 				}
 
@@ -1653,6 +1657,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 									conditionObjectEntityClass->context.push_back(generateInstanceName(entity));
 									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);	
+									
+									//generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
+									//parse the children (properties and conditions) of an undeclared definite parent
+									createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(conditionObject), conditionObject, sentenceIndex, &logicalConditionConjunctionVariables);
 								}			
 							}
 

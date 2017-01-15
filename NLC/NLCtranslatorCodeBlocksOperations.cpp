@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o2b 12-February-2015
+ * Project Version: 1o3a 13-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1295,7 +1295,8 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					}
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 					{
-						if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity, sentenceIndex, true))
+						GIAentityConnection* conditionObjectConnection = NULL;
+						if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity, &conditionObjectConnection, sentenceIndex, true))
 						{
 							foundSubject = true;
 							subjectEntity = entity;
@@ -1314,7 +1315,8 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						//foundSubject = true;
 						subjectEntity = entity;
 						actionOrConditionEntity = targetEntity;
-						if(getActionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity, sentenceIndex, true))
+						GIAentityConnection* actionObjectConnection = NULL;
+						if(getActionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity, &actionObjectConnection, sentenceIndex, true))
 						{
 							foundObject = true;
 							recurse = true;
@@ -1327,7 +1329,8 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						//foundObject = true;
 						objectEntity = entity;
 						actionOrConditionEntity = targetEntity;
-						if(getActionSubjectCheckSameReferenceSetAndSentence(targetEntity, &subjectEntity, sentenceIndex, true))
+						GIAentityConnection* actionSubjectConnection = NULL;
+						if(getActionSubjectCheckSameReferenceSetAndSentence(targetEntity, &subjectEntity, &actionSubjectConnection, sentenceIndex, true))
 						{
 							foundSubject = true;
 							recurse = true;
@@ -1736,16 +1739,15 @@ bool isPotentialAction(GIAentityNode* actionEntity)
 }
 #endif
 
-bool getActionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** subjectEntity, int sentenceIndex, bool sameReferenceSet)
+bool getActionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** subjectEntity, GIAentityConnection** actionSubjectConnection, int sentenceIndex, bool sameReferenceSet)
 {
 	bool foundSubject = false;
-	GIAentityConnection* actionSubjectConnection = NULL;
-	if(getActionSubjectEntityConnection(actionEntity, sentenceIndex, &actionSubjectConnection))
+	if(getActionSubjectEntityConnection(actionEntity, sentenceIndex, actionSubjectConnection))
 	{
-		if(actionSubjectConnection->sameReferenceSet == sameReferenceSet)
+		if((*actionSubjectConnection)->sameReferenceSet == sameReferenceSet)
 		{		
-			*subjectEntity = actionSubjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, actionSubjectConnection, sentenceIndex, false))
+			*subjectEntity = (*actionSubjectConnection)->entity;
+			if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, *actionSubjectConnection, sentenceIndex, false))
 			{
 				foundSubject = true;	
 			}
@@ -1781,16 +1783,15 @@ bool getActionSubjectEntityConnection(GIAentityNode* actionEntity, int sentenceI
 	return actionHasSubject;
 }	
 
-bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** objectEntity, int sentenceIndex, bool sameReferenceSet)
+bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** objectEntity, GIAentityConnection** actionObjectConnection, int sentenceIndex, bool sameReferenceSet)
 {	
 	bool foundObject = false;
-	GIAentityConnection* actionObjectConnection = NULL;
-	if(getActionObjectEntityConnection(actionEntity, sentenceIndex, &actionObjectConnection))
+	if(getActionObjectEntityConnection(actionEntity, sentenceIndex, actionObjectConnection))
 	{
-		if(actionObjectConnection->sameReferenceSet == sameReferenceSet)
+		if((*actionObjectConnection)->sameReferenceSet == sameReferenceSet)
 		{		
-			*objectEntity = actionObjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, actionObjectConnection, actionEntity->sentenceIndexTemp, false))
+			*objectEntity = (*actionObjectConnection)->entity;
+			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, *actionObjectConnection, actionEntity->sentenceIndexTemp, false))
 			{
 				foundObject = true;
 			}	
@@ -1827,20 +1828,19 @@ bool getActionObjectEntityConnection(GIAentityNode* actionEntity, int sentenceIn
 }
 
 
-bool getConditionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** subjectEntity, int sentenceIndex, bool sameReferenceSet)
+bool getConditionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** subjectEntity, GIAentityConnection** conditionSubjectConnection, int sentenceIndex, bool sameReferenceSet)
 {
 	bool foundObject = false;
-	GIAentityConnection* conditionSubjectConnection = NULL;
-	if(getConditionSubjectEntityConnection(conditionEntity, sentenceIndex, &conditionSubjectConnection))
+	if(getConditionSubjectEntityConnection(conditionEntity, sentenceIndex, conditionSubjectConnection))
 	{
-		if(conditionSubjectConnection->sameReferenceSet == sameReferenceSet)
+		if((*conditionSubjectConnection)->sameReferenceSet == sameReferenceSet)
 		{		
-			*subjectEntity = conditionSubjectConnection->entity;
+			*subjectEntity = (*conditionSubjectConnection)->entity;
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			if(!(conditionEntity->inverseConditionTwoWay) || conditionSubjectConnection->isReference)	//prevent infinite loop for 2 way conditions 
+			if(!(conditionEntity->inverseConditionTwoWay) || (*conditionSubjectConnection)->isReference)	//prevent infinite loop for 2 way conditions 
 			{
 			#endif
-				if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, conditionSubjectConnection, sentenceIndex, false))
+				if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, *conditionSubjectConnection, sentenceIndex, false))
 				{
 					foundObject = true;	
 				}
@@ -1879,20 +1879,19 @@ bool getConditionSubjectEntityConnection(GIAentityNode* conditionEntity, int sen
 	return conditionHasSubject;
 }
 
-bool getConditionObjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** objectEntity, int sentenceIndex, bool sameReferenceSet)
+bool getConditionObjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** objectEntity, GIAentityConnection** conditionObjectConnection, int sentenceIndex, bool sameReferenceSet)
 {
 	bool foundObject = false;
-	GIAentityConnection* conditionObjectConnection = NULL;
-	if(getConditionObjectEntityConnection(conditionEntity, sentenceIndex, &conditionObjectConnection))
+	if(getConditionObjectEntityConnection(conditionEntity, sentenceIndex, conditionObjectConnection))
 	{
-		if(conditionObjectConnection->sameReferenceSet == sameReferenceSet)
+		if((*conditionObjectConnection)->sameReferenceSet == sameReferenceSet)
 		{		
-			*objectEntity = conditionObjectConnection->entity;
+			*objectEntity = (*conditionObjectConnection)->entity;
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			if(!(conditionEntity->inverseConditionTwoWay) || conditionObjectConnection->isReference)	//prevent infinite loop for 2 way conditions 
+			if(!(conditionEntity->inverseConditionTwoWay) || (*conditionObjectConnection)->isReference)	//prevent infinite loop for 2 way conditions 
 			{
 			#endif
-				if(checkSentenceIndexParsingCodeBlocks(*objectEntity, conditionObjectConnection, sentenceIndex, false))
+				if(checkSentenceIndexParsingCodeBlocks(*objectEntity, *conditionObjectConnection, sentenceIndex, false))
 				{
 					foundObject = true;	
 				}

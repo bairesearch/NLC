@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o2b 12-February-2015
+ * Project Version: 1o3a 13-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -572,27 +572,35 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 						{
 						#endif
 							bool actionIsSingleWord = false;
-							if(getActionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, sentenceIndex, false))
+							GIAentityConnection* actionSubjectConnection = NULL;
+							if(getActionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, &actionSubjectConnection, sentenceIndex, false))
 							{
-								if(!checkConceptTypeEntity(subjectEntity))	//redundant
+								if(!(actionSubjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 								{
-									foundSubject = true;	
+									if(!checkConceptTypeEntity(subjectEntity))	//redundant
+									{
+										foundSubject = true;	
+									}
 								}
 							}
-							if(getActionObjectCheckSameReferenceSetAndSentence(entity, &objectEntity, sentenceIndex, false))
+							GIAentityConnection* actionObjectConnection = NULL;
+							if(getActionObjectCheckSameReferenceSetAndSentence(entity, &objectEntity, &actionObjectConnection, sentenceIndex, false))
 							{
-								if(!checkConceptTypeEntity(objectEntity))	//redundant
+								if(!(actionObjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 								{
-									foundObject = true;
-									#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-									if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+									if(!checkConceptTypeEntity(objectEntity))	//redundant
 									{
-										actionIsSingleWord = true;
-										foundObject = false;
-										objectEntity->disabled = true;	//prevent parsing of dummyActionObject
-										actionIsSingleWord = true;
+										foundObject = true;
+										#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+										if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
+										{
+											actionIsSingleWord = true;
+											foundObject = false;
+											objectEntity->disabled = true;	//prevent parsing of dummyActionObject
+											actionIsSingleWord = true;
+										}
+										#endif	
 									}
-									#endif	
 								}
 							}
 							if(foundSubject || foundObject || actionIsSingleWord)
@@ -603,7 +611,14 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 								//cout << "sentenceIndex = " << sentenceIndex << endl;
 								if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
 								{
-
+									if(foundSubject)
+									{
+										actionSubjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+									}
+									if(foundObject)
+									{
+										actionObjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+									}
 								}
 							}
 						#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
@@ -616,13 +631,21 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 					}
 					else if(entity->isCondition)
 					{
-						if(getConditionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, sentenceIndex, false))
+						GIAentityConnection* conditionSubjectConnection = NULL;
+						if(getConditionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, &conditionSubjectConnection, sentenceIndex, false))
 						{
-							foundSubject = true;
+							if(!(conditionSubjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
+							{
+								foundSubject = true;
+							}
 						}
-						if(getConditionObjectCheckSameReferenceSetAndSentence(entity, &objectEntity, sentenceIndex, false))
+						GIAentityConnection* conditionObjectConnection = NULL;
+						if(getConditionObjectCheckSameReferenceSetAndSentence(entity, &objectEntity, &conditionObjectConnection, sentenceIndex, false))
 						{
-							foundObject = true;
+							if(!(conditionObjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
+							{
+								foundObject = true;
+							}
 						}
 						if(foundSubject && foundObject)
 						{
@@ -631,7 +654,8 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 
 							if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
 							{
-
+								conditionSubjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+								conditionObjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
 							}
 						}
 					}
@@ -645,19 +669,22 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 							{
 								if(!(propertyConnection->sameReferenceSet))
 								{
-									if(!checkConceptTypeEntity(propertyEntity))	//redundant
+									if(!(propertyConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 									{
-										subjectEntity = entity;
-										objectEntity = propertyEntity;
-										foundSubject = true;
-										foundObject = true;
-										foundSubjectObjectConnection = true;	
-										connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES;
-										connection = propertyConnection;
-										
-										if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
+										if(!checkConceptTypeEntity(propertyEntity))	//redundant
 										{
+											subjectEntity = entity;
+											objectEntity = propertyEntity;
+											foundSubject = true;
+											foundObject = true;
+											foundSubjectObjectConnection = true;	
+											connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES;
+											connection = propertyConnection;
 
+											if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
+											{
+												propertyConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+											}
 										}
 									}
 								}
@@ -672,19 +699,22 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 							{
 								if(!(definitionConnection->sameReferenceSet))
 								{
-									if(definitionEntity->entityName != entity->entityName)	//ignore these dream mode definition connections
+									if(!(definitionConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 									{
-										subjectEntity = entity;
-										objectEntity = definitionEntity;
-										foundSubject = true;
-										foundObject = false;
-										foundSubjectObjectConnection = true;	
-										connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS;
-										connection = definitionConnection;
-										
-										if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
+										if(definitionEntity->entityName != entity->entityName)	//ignore these dream mode definition connections
 										{
+											subjectEntity = entity;
+											objectEntity = definitionEntity;
+											foundSubject = true;
+											foundObject = false;
+											foundSubjectObjectConnection = true;	
+											connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS;
+											connection = definitionConnection;
 
+											if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
+											{
+												definitionConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+											}	
 										}
 									}
 								}
@@ -704,6 +734,8 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 
 bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* entity, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityConnection* connection, bool foundSubject, bool foundObject, int connectionType)
 {
+	bool result = true;
+	
 	NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
 	
 	NLCgenerateContextBlocksVariables generateContextBlocksVariables;
@@ -777,6 +809,8 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	}
 
 	*currentCodeBlockInTree = getLastCodeBlockInLevel(firstCodeBlockInSentence);
+	
+	return result;
 }
 
 

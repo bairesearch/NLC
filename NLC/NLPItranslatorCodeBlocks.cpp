@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e7c 23-November-2013
+ * Project Version: 1e7d 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -333,15 +333,18 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 		if(!assumedToAlreadyHaveBeenDeclared(currentEntity))
 		{
 			if(!(currentEntity->parsedForNLPIcodeBlocks))
-			{	
-				//cout << "createCodeBlockAddNewListVariable: " << currentEntity->entityName << endl;
-				*currentCodeBlockInTree = createCodeBlockAddNewListVariable(*currentCodeBlockInTree, currentEntity, sentenceIndex);
-				currentEntity->parsedForNLPIcodeBlocks = true;
-				generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex);	
-				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-				//Part 2b: generate object initialisations based on substance concepts (class inheritance)
-				generateObjectInitialisationsBasedOnSubstanceConcepts(currentEntity, currentCodeBlockInTree, sentenceIndex);
-				#endif
+			{
+				//if(checkSentenceIndexParsingCodeBlocks(currentEntity, sentenceIndex, false))	//considered for 1e7d but rejected
+				//{	
+					//cout << "createCodeBlockAddNewListVariable: " << currentEntity->entityName << endl;
+					*currentCodeBlockInTree = createCodeBlockAddNewListVariable(*currentCodeBlockInTree, currentEntity, sentenceIndex);
+					currentEntity->parsedForNLPIcodeBlocks = true;
+					generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex);	
+					#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+					//Part 2b: generate object initialisations based on substance concepts (class inheritance)
+					generateObjectInitialisationsBasedOnSubstanceConcepts(currentEntity, currentCodeBlockInTree, sentenceIndex);
+					#endif
+				//}
 			}
 		}
 		#endif		

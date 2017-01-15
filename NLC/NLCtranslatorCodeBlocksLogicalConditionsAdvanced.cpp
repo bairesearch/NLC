@@ -25,8 +25,8 @@
  *
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p2c 12-June-2015
+ * Project: Natural Language Programming Interface (compiler)
+ * Project Version: 1p1a 06-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -167,13 +167,13 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						{
 							if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 							{
-								cout << "generateCodeBlocksPart2logicalConditions{} error: (currentNLCsentenceInList->ifDetected || currentNLCsentenceInList->elseIfDetected || currentNLCsentenceInList->elseDetected) && (logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_IF)" << endl;
+								cout << "generateCodeBlocksPart2logicalConditions() error: (currentNLCsentenceInList->ifDetected || currentNLCsentenceInList->elseIfDetected || currentNLCsentenceInList->elseDetected) && (logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_IF)" << endl;
 							}
 						}
 						#endif
 						if(!(currentNLCsentenceInList->hasLogicalConditionOperator))
 						{
-							cout << "generateCodeBlocksPart2logicalConditions{} error: !(currentNLCsentenceInList->hasLogicalConditionOperator)" << endl;
+							cout << "generateCodeBlocksPart2logicalConditions() error: !(currentNLCsentenceInList->hasLogicalConditionOperator)" << endl;
 						}
 						
 
@@ -193,7 +193,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 							if(logicalConditionOperationObject->isConcept)
 							{
-								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "generateCodeBlocks() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
 							}
 							else if(logicalConditionOperationObject->isSubstanceConcept)
@@ -401,7 +401,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								{
 									if(logicalConditionConjunctionArray[i].conjunctionType == INT_DEFAULT_VALUE)
 									{
-										cout << "generateCodeBlocksPart2logicalConditions{} error: missing conjunction type: " << i << endl;
+										cout << "generateCodeBlocksPart2logicalConditions() error: missing conjunction type: " << i << endl;
 									}
 								}
 								#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
@@ -477,7 +477,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 								if(logicalConditionOperationSubject->isConcept)
 								{
-									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+									cout << "generateCodeBlocks() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
 								}
 								else if(logicalConditionOperationSubject->isSubstanceConcept)
@@ -547,7 +547,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									}
 									else
 									{
-										cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions{} error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+										cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 										cout << "currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation + 1" << endl;
 										cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 										cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
@@ -680,7 +680,7 @@ void checkConditionForLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GI
 				}
 				else
 				{
-					cout << "checkConditionForLogicalCondition{} error: logicalConditionConjunctionSubjectEntity = " << logicalConditionConjunctionSubjectEntity->entityName << endl;
+					cout << "checkConditionForLogicalCondition() error: logicalConditionConjunctionSubjectEntity = " << logicalConditionConjunctionSubjectEntity->entityName << endl;
 					cout << "logicalConditionConjunctionSubjectEntity->NLClogicalConditionConjunctionIndex == INT_DEFAULT_VALUE" << endl;
 				}
 
@@ -721,12 +721,12 @@ void checkConditionForLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GI
 			}
 			else
 			{
-				cout << "addNewLogicalCondition{} error: logicalConditionConjunctionObjectEntity has bad sentence index" << endl;
+				cout << "addNewLogicalCondition() error: logicalConditionConjunctionObjectEntity has bad sentence index" << endl;
 			}
 		}
 		else
 		{
-			cout << "addNewLogicalCondition{} error: (conditionEntity->NLCconjunctionCondition)" << endl;
+			cout << "addNewLogicalCondition() error: (conditionEntity->NLCconjunctionCondition)" << endl;
 		}
 	}
 }
@@ -752,7 +752,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 						{
 							if(connectedEntity->isConcept)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "connectedEntity = " << connectedEntity->entityName;
 							}
 							else
@@ -808,7 +808,7 @@ bool setCurrentCodeBlockInTreeToStartOfIfStatement(NLCcodeblock** currentCodeBlo
 			}
 			else
 			{
-				cout << "setCurrentCodeBlockInTreeToStartOfIfStatement{} error: codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()] is undefined and new else (if) statement is being created" << endl;
+				cout << "setCurrentCodeBlockInTreeToStartOfIfStatement() error: codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[getCurrentLogicalConditionLevel()] is undefined and new else (if) statement is being created" << endl;
 			}
 		}
 	}

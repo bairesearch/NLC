@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11n 25-August-2014
+ * Project Version: 1i11o 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1182,21 +1182,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != propertyEntity) propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
 					#endif
 
-					#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-					if(generateCategories(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
-					{
-						/*//removed 1i11j
-						if(parentEntity == entity)
-						{
-							propertyConnection->NLCparsedForCodeBlocks = true;
-							generateParentContextTests = false;
-						}
-						parentEntity->NLCcontextGenerated = true;		
-						*/
-					#else
 					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
 					{
-					#endif
 						//cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
 						//cout << "1c: parentEntity = " << parentEntity->entityName << endl;
 						generatedContext = true;
@@ -1461,20 +1448,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != conditionObject) conditionObject: ") + conditionObject->entityName + string(", parentEntity: ") + parentEntity->entityName);
 								#endif
 
-								#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-								if(generateCategories(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//only generate categories (do not parse their context yet)
-								{
-									/*//not possible because getSameReferenceSetDefiniteUniqueParent() only parses parent properties not conditions
-									if(parentEntity == entity)
-									{
-										conditionConnection->NLCparsedForCodeBlocks = true;
-									}
-									*/
-									//parentEntity->NLCcontextGenerated = true;	//removed 1i11j
-								#else
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
 								{
-								#endif
 									generatedContext = true;
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 									conditionObjectEntityClass->context.push_back(generateInstanceName(parentEntity));

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r6a 27-August-2016
+ * Project Version: 1r6b 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -654,7 +654,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1r6a 27-August-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1r6b 27-August-2016" << endl;
 			exit(1);
 		}
 
@@ -1181,20 +1181,9 @@ int main(int argc, char** argv)
 		}
 		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS	
 		#else
-		if(printClassDefinitions(classDefinitionListAPI, progLang, &code))
+		if(printClassDefinitions(classDefinitionListAPI, progLang, &code, true))
 		{
 		
-		}
-		for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionListAPI->begin(); classDefinitionIter != classDefinitionListAPI->end(); classDefinitionIter++)
-		{
-			NLCclassDefinition* classDefinition = *classDefinitionIter;
-			if(classDefinition->printed)
-			{
-				string printedClassDefinitionSourceFileName = generateCodeClassDefinitionSourceFileName(classDefinition->name);
-				string printedClassDefinitionHeaderFileName = generateCodeClassDefinitionHeaderFileName(classDefinition->name);
-				appendStringToFile(printedClassDefinitionSourceFileName, classDefinition->APIwrapperSourceText);
-				appendStringToFile(printedClassDefinitionHeaderFileName, classDefinition->APIwrapperHeaderText);
-			}
 		}
 		#endif
 	}
@@ -1202,7 +1191,7 @@ int main(int argc, char** argv)
 		
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-	if(!printClassDefinitions(&classDefinitionList, progLang, &code))
+	if(!printClassDefinitions(&classDefinitionList, progLang, &code, false))
 	{
 		result = false;
 	}

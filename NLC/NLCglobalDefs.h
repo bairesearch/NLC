@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r6a 27-August-2016
+ * Project Version: 1r6b 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #define NLC_USE_LIBRARY_STANDARD	//disabled for OpenNLC
 //#define NLC_USE_LIBRARY_USER
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
-	//#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
+	#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a
 #endif
 
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -124,7 +124,7 @@
 		//#define NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE	//1r5i (never enabled or tested): alternate implementation of NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
 	#endif
 	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
-		//#define NLC_API	//1r6a (coded ~1r5d)		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
+		#define NLC_API	//1r6b (coded ~1r5d)		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 	#endif
 	#ifdef NLC_API
 		#define NLC_API_DEBUG
@@ -771,7 +771,7 @@
 				#ifdef NLC_API
 				#define NLC_API_VARIABLE_TYPE_STANDARD_NUMBER_OF_TYPES (8)	//this needs to be extended (and made programming language independent)
 				static string APIvariableTypeStandard[NLC_API_VARIABLE_TYPE_STANDARD_NUMBER_OF_TYPES] = {"bool", "char", "short", "int", "integer", "float", "double", "string"};	//should be synced with preprocessorMathNaturalLanguageVariables
-				static int APIvariableTypeStandardMathObjectTypes[NLC_API_VARIABLE_TYPE_STANDARD_NUMBER_OF_TYPES] = {NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING};	//should be synced with preprocessorMathTextVariableMathObjectTypes
+				static int APIvariableTypeStandardMathObjectTypes[NLC_API_VARIABLE_TYPE_STANDARD_NUMBER_OF_TYPES] = {NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING};	//should be synced with preprocessorMathTextVariableMathObjectTypes
 				#endif
 				#endif
 			#endif

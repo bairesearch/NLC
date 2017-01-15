@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r6a 27-August-2016
+ * Project Version: 1r6b 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -343,6 +343,7 @@ bool addClassDefinitionToList(vector<NLCclassDefinition*>* classDefinitionList, 
 	*classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
 	if(!foundClassDefinition)
 	{
+		cout << "adding: " << className << endl;
 		*classDefinition = new NLCclassDefinition(className);
 		classDefinitionList->push_back(*classDefinition);
 		foundClassDefinition = true;

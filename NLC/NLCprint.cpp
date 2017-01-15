@@ -26,7 +26,7 @@
  * File Name: NLCprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r6a 27-August-2016
+ * Project Version: 1r6b 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,7 +43,7 @@ bool printCode(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinition*>*
 	bool result = true;
 
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-	if(!printClassDefinitions(classDefinitionList, progLang, code))
+	if(!printClassDefinitions(classDefinitionList, progLang, code, false))
 	{
 		result = false;
 	}

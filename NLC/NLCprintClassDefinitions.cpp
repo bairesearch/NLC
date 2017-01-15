@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r6a 27-August-2016
+ * Project Version: 1r6b 27-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ public:
 	...
 };
 */
-bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code)
+bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int progLang, string* code, bool generatingAPIclassList)
 {
 	bool result = true;
 	#ifdef NLC_USE_LIBRARY
@@ -74,7 +74,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 		for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 		{
 			NLCclassDefinition* classDefinition = *classDefinitionIter;
-
+			
 			if(!(classDefinition->printed))
 			{
 				if(printClassHeirarchyValidDefinitionClassChecks(classDefinition))
@@ -163,6 +163,16 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 					}
 					#endif
 
+					#ifdef NLC_API
+					if(classDefinition->APIclass)
+					{
+						if(!printedParentClassDefinitions)
+						{
+							printedParentClassDefinitions = true;	//prevents failure due to recursion eg GIAsentenceClass -> nextClass -> GIAsentenceClass
+						}
+					}
+					#endif
+								
 					if(printedParentClassDefinitions)
 					{//only print class definitions once their parent class definitions have been printed
 
@@ -217,16 +227,12 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						string classNameRaw = removeClassTextFromClassDefinitionName(className);
 						//string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + classNameRaw + progLangStringOpenClose[progLang] + progLangEndLine[progLang];	//eg string name = "dog";
 
-						/*
 						#ifdef NLC_API
-						#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 						if(classDefinition->APIclass)
 						{
-							printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReference(*(classDefinition->APIsourceFileFullPath), progLang);	//eg #include "APIsourceFileFullPath"
+							printedClassDefinitionTextHeaderTop = printedClassDefinitionTextHeaderTop + generateCodeHashIncludeReference(classDefinition->APIsourceFileFullPath, progLang);	//eg #include "APIsourceFileFullPath"
 						}
 						#endif
-						#endif
-						*/
 
 						printedClassDefinitionThisRound = true;
 						classDefinition->printed = true;
@@ -244,12 +250,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						#endif
 						
 						#ifdef NLC_API
-						#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 						if(classDefinition->APIclass)
 						{
 							printedClassDefinitionHeaderText = printedClassDefinitionHeaderText + *(classDefinition->APIwrapperHeaderText);
 						}
-						#endif
 						#endif
 						
 						#ifndef NLC_USE_LIBRARY
@@ -513,12 +517,12 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							#endif
 							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 							string classDefinitionInverseConditionCode = string(NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS_NAME) + progLangEquals[progLang] + progLangFalse[progLang] + progLangEndLine[progLang];	//inverseConditionTwoWay = false;
-							printLine(classDefinitionInverseConditionCode, 1, &printedClassDefinitionHeaderText);							
+							printLine(classDefinitionInverseConditionCode, 1, &printedClassDefinitionSourceText);							
 							#endif	
 							
 							#ifdef NLC_API
 							string thirdpartyAPIobjectInitialisationText = string(NLC_API_THIRD_PARTY_API_OBJECT_VARIABLE_NAME) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//thirdpartyAPIobject = NULL;
-							printLine(thirdpartyAPIobjectInitialisationText, 1, &printedClassDefinitionHeaderText);
+							printLine(thirdpartyAPIobjectInitialisationText, 1, &printedClassDefinitionSourceText);
 							#endif
 												
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
@@ -606,12 +610,10 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						#endif
 						
 						#ifdef NLC_API
-						#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 						if(classDefinition->APIclass)
 						{
 							printedClassDefinitionSourceText = printedClassDefinitionSourceText + *(classDefinition->APIwrapperSourceText);
 						}
-						#endif
 						#endif
 						
 						#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
@@ -685,7 +687,14 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 	writeStringToFile(NLCgeneratedCodeHeaderFileName, &NLCgeneratedCodeHeader);
 
 	string NLCgeneratedCodeSourceFileNameList = "";
-	NLCgeneratedCodeSourceFileNameList = NLCgeneratedCodeSourceFileNameList + NLCgeneratedCodeSourceFileName + CHAR_SPACE;
+	#ifdef NLC_API
+	if(generatingAPIclassList)
+	{
+	#endif
+		NLCgeneratedCodeSourceFileNameList = NLCgeneratedCodeSourceFileNameList + NLCgeneratedCodeSourceFileName + CHAR_SPACE;
+	#ifdef NLC_API
+	}
+	#endif
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
@@ -696,7 +705,18 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 		}
 	}	
 	string NLCgeneratedCodeSourceFileNameListFileName = string(NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIST_NAME);
-	writeStringToFile(NLCgeneratedCodeSourceFileNameListFileName, &NLCgeneratedCodeSourceFileNameList);
+	#ifdef NLC_API
+	if(!generatingAPIclassList)
+	{
+		appendStringToFile(NLCgeneratedCodeSourceFileNameListFileName, &NLCgeneratedCodeSourceFileNameList);
+	}
+	else
+	{
+	#endif
+		writeStringToFile(NLCgeneratedCodeSourceFileNameListFileName, &NLCgeneratedCodeSourceFileNameList);
+	#ifdef NLC_API
+	}
+	#endif
 	#else
 	string NLCgeneratedCodeSource = "";
 	generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);

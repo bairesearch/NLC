@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v3a 12-October-2016
+ * Project Version: 1v4a 12-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -372,7 +372,7 @@ string generateCodeEntityListDefinitionTypeTextPointer(string entityClassName, i
 #ifdef NLC_GENERATE_TYPE_LISTS
 string generateCodeEntityListDefinitionTypeText2(string propertyClassName, int progLang)
 {
-	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + progLangClassListTypeStart[progLang] + generatePointerTypeText(propertyClassName, progLang) + progLangClassListTypeEnd[progLang] + progLangClassListTypeEnd[progLang];
+	string codePropertyListDefinitionText = progLangClassListTypeStart[progLang] + generateCodeVectorListDefinitionTypeTextPointer(propertyClassName, progLang) + progLangClassListTypeEnd[progLang];
 	return codePropertyListDefinitionText;
 }
 #endif
@@ -996,6 +996,12 @@ string generatePointerTypeText(string entityName, int progLang)
 {
 	string pointerVariableText = entityName + progLangPointer[progLang];	//entityName*
 	return pointerVariableText;
+}
+
+string generateReferenceTypeText(string entityName, int progLang)
+{
+	string pointerValueText = entityName + progLangReference[progLang];	//entityName&
+	return pointerValueText;
 }
 
 string generateCodeListPointer(string list, int progLang)

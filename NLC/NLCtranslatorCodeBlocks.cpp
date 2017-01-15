@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12e 30-September-2016
+ * Project Version: 1u12f 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -766,52 +766,55 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, NLCfunction* currentN
 	bool isLogicalConditionIndefiniteSubjectEntity = false;
 	if(!isDefiniteEntity(entity))
 	{
-		if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
+		if(entity->entityName != NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT)
 		{
-			NLCsentence* sentence = NULL;
-			if(getSentenceInFunction(entity, currentNLCfunctionInList, &sentence))
+			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
 			{
-				if(sentencePertainsToLogicalCondition(sentence))
+				NLCsentence* sentence = NULL;
+				if(getSentenceInFunction(entity, currentNLCfunctionInList, &sentence))
 				{
-					bool entityIsEffectiveSubject = false;
+					if(sentencePertainsToLogicalCondition(sentence))
+					{
+						bool entityIsEffectiveSubject = false;
 
-					bool foundAction = false;
-					bool foundActionIncoming = false;
-					bool foundChildEntity = false;
-					int sentenceIndex = entity->sentenceIndexTemp;
-					GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(entity, sentenceIndex, &foundChildEntity);
+						bool foundAction = false;
+						bool foundActionIncoming = false;
+						bool foundChildEntity = false;
+						int sentenceIndex = entity->sentenceIndexTemp;
+						GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(entity, sentenceIndex, &foundChildEntity);
 
-					GIAentityNode* targetEntity = NULL;
-					GIAentityConnection* connection = NULL;
-					if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
-					{
-						entityIsEffectiveSubject = true;
-					}
-					else if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
-					{
-						entityIsEffectiveSubject = true;
-					}
-					else if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
-					{
-						entityIsEffectiveSubject = true;
-					}
-					else if(getEntityCheckSameReferenceSetAndSentence(entity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
-					{
-						foundActionIncoming = true;
-						GIAentityNode* actionSubject = NULL;
-						GIAentityConnection* actionSubjectConnection = NULL;
-						if(!getEntityCheckSameReferenceSetAndSentence(targetEntity, &actionSubject, &actionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT))
+						GIAentityNode* targetEntity = NULL;
+						GIAentityConnection* connection = NULL;
+						if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
 						{
-							entityIsEffectiveSubject = true;	//this is required to sync with generateCodeBlocksPart3subjectObjectConnection implementation
+							entityIsEffectiveSubject = true;
 						}
-					}
-					
-					if(entityIsEffectiveSubject)
-					{
-						isLogicalConditionIndefiniteSubjectEntity = true;
-						#ifdef NLC_DEBUG
-						cout << "isLogicalConditionIndefiniteSubjectEntity" << endl;
-						#endif
+						else if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
+						{
+							entityIsEffectiveSubject = true;
+						}
+						else if(getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
+						{
+							entityIsEffectiveSubject = true;
+						}
+						else if(getEntityCheckSameReferenceSetAndSentence(entity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+						{
+							foundActionIncoming = true;
+							GIAentityNode* actionSubject = NULL;
+							GIAentityConnection* actionSubjectConnection = NULL;
+							if(!getEntityCheckSameReferenceSetAndSentence(targetEntity, &actionSubject, &actionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT))
+							{
+								entityIsEffectiveSubject = true;	//this is required to sync with generateCodeBlocksPart3subjectObjectConnection implementation
+							}
+						}
+
+						if(entityIsEffectiveSubject)
+						{
+							isLogicalConditionIndefiniteSubjectEntity = true;
+							#ifdef NLC_DEBUG
+							cout << "isLogicalConditionIndefiniteSubjectEntity:" << entity->entityName << endl;
+							#endif
+						}
 					}
 				}
 			}
@@ -856,7 +859,7 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(G
 	{
 		validClass = false;
 	}
-
+	
 	return validClass;
 }
 

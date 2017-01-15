@@ -23,7 +23,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f1a 06-December-2013
+ * Project Version: 1f1b 09-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -208,6 +208,13 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 							}
 						}
 					#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+					}
+					else
+					{
+						cout << "entityNode->entityName = " << entityNode->entityName << endl;
+						cout << "i = " << i << endl;
+						cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
+
 					}
 					#endif
 				}

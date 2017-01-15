@@ -23,7 +23,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f1a 06-December-2013
+ * Project Version: 1f1b 09-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -320,7 +320,9 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	else
 	{
-		cout << "error: !foundLocalClassDefinition: param1->instanceName = " << param1->instanceName << endl;
+		cout << "warning: !foundLocalClassDefinition: param1->instanceName = " << param1->instanceName << endl;
+		cout << "(action probably has not subject)." << endl;
+		parameters = codeBlockParameters;
 	}
 	#else		
 	parameters = codeBlockParameters;				

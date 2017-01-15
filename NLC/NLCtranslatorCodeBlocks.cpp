@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,7 +37,7 @@
 #include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
 #include "NLCtranslatorCodeBlocksOperations.h"
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
-#include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
+#include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance()
 	
 bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList)
 {
@@ -157,11 +157,11 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		#endif
 		#endif
 		
-		#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
+		#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
 		#ifdef NLC_DEBUG
-		cout << "generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities:" << endl;
+		cout << "generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities:" << endl;
 		#endif
-		generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
+		generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex);
 		#endif
 
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -214,7 +214,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		
 			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
 			//added 1q10b - used prevent redeclarations of xSubjectCategoryList/xObjectCategoryList//xCategoryList
-			//NB createCodeBlocksCreateContextBlock be executed after generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities because newlyDeclaredEntityInCategoryList=false is set (ie category lists are not created)
+			//NB createCodeBlocksCreateContextBlock be executed after generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities because newlyDeclaredEntityInCategoryList=false is set (ie category lists are not created)
 			NLCcodeblock* firstCodeBlockInSentence = currentCodeBlockInTree;
 			currentCodeBlockInTree = createCodeBlocksCreateContextBlock(currentCodeBlockInTree);		
 			#endif
@@ -535,8 +535,8 @@ bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveList
 #endif
 
 
-#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
-bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
+#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
+bool generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
 {
 	bool result = true;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
@@ -552,9 +552,9 @@ bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities
 					if(assumedToAlreadyHaveBeenDeclared(entity))
 					{//definite entity found
 						#ifdef NLC_DEBUG
-						cout << "generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities{}: entity: " << entity->entityName << endl;
+						cout << "generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities{}: entity: " << entity->entityName << endl;
 						#endif
-						generateObjectInitialisationsBasedOnSubstanceConcepts(entity, entity, currentCodeBlockInTree, sentenceIndex, false);
+						generateObjectInitialisationsBasedOnConcepts(entity, entity, currentCodeBlockInTree, sentenceIndex, false);
 					}
 				}	
 			}
@@ -575,7 +575,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 		
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(!checkConceptTypeEntity(entity))
+			if(!checkNetworkIndexTypeEntity(entity))
 			{
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 				if(!(entity->NLCparsedForlogicalConditionOperations))
@@ -594,7 +594,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 					if(entity->isAction)
 					{
 						/*//CHECKTHIS;
-						if(!(entity->isActionConcept))
+						if(!(entity->isActionNetworkIndex))
 						{
 						*/
 						#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
@@ -607,7 +607,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 							{
 								if(!(actionSubjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 								{
-									if(!checkConceptTypeEntity(subjectEntity))	//redundant
+									if(!checkNetworkIndexTypeEntity(subjectEntity))	//redundant
 									{
 										foundSubject = true;	
 									}
@@ -618,7 +618,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 							{
 								if(!(actionObjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 								{
-									if(!checkConceptTypeEntity(objectEntity))	//redundant
+									if(!checkNetworkIndexTypeEntity(objectEntity))	//redundant
 									{
 										foundObject = true;
 										#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
@@ -703,7 +703,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 								{
 									if(!(propertyConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
 									{
-										if(!checkConceptTypeEntity(propertyEntity))	//redundant
+										if(!checkNetworkIndexTypeEntity(propertyEntity))	//redundant
 										{
 											subjectEntity = entity;
 											objectEntity = propertyEntity;

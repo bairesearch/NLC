@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -185,28 +185,28 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						NLCcodeblock* previousCodeBlockInTreeAtBaseLevel = currentCodeBlockInTreeAtBaseLevel;
 
 						bool passedLogicalConditionObject = false;
-						if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isConcept || logicalConditionOperationObject->isSubstanceConcept))
+						if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isNetworkIndex || logicalConditionOperationObject->isConcept))
 						{//eg If red dogs are pies, eat the cabbage
 							#ifdef NLC_DEBUG
-							//cout << "logicalConditionOperationObject->isSubstanceConcept = " << logicalConditionOperationObject->isSubstanceConcept << endl;
+							//cout << "logicalConditionOperationObject->isConcept = " << logicalConditionOperationObject->isConcept << endl;
 							#endif
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
-							//isSubstanceConcept case not yet coded
-							//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
+							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
+							//isConcept case not yet coded
+							//logical operations on networkIndexs are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
-							if(logicalConditionOperationObject->isConcept)
+							if(logicalConditionOperationObject->isNetworkIndex)
 							{
-								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles substance networkIndexs. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
 								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
 							}
-							else if(logicalConditionOperationObject->isSubstanceConcept)
+							else if(logicalConditionOperationObject->isConcept)
 							{
-								cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
-								GIAentityNode* substanceConceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
-								GIAentityNode* substanceConceptEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(substanceConceptEntityCompare);
+								cout << "logicalConditionOperationObject->isConcept" << endl;
+								GIAentityNode* conceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
+								GIAentityNode* conceptEntityCompareNetworkIndex = getPrimaryNetworkIndexNodeDefiningInstance(conceptEntityCompare);
 
 								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject, true))
+								if(searchForEquivalentSubnetToIfStatement(conceptEntityCompareNetworkIndex, logicalConditionOperationObject, true))
 								{
 									if(!simpleNonConjunctionLogicalConditionNegative)
 									{
@@ -217,7 +217,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							}
 							#endif
 						}
-						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionConcept))
+						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionNetworkIndex))
 						{
 							#ifdef NLC_USE_PREPROCESSOR
 							if(elseDetected)
@@ -239,10 +239,10 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								//perform an exact trace of logicalConditionOperationObject (actionEntityCompare) with every actionEntity that matches actionEntityCompare->entityName to verify that such a specific action already [ie sentence <= currentSentence] exists (actionEntityCompare)
 
 								GIAentityNode* actionEntityCompare = logicalConditionOperationObject;	//if statement comparison...
-								GIAentityNode* actionEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(actionEntityCompare);
+								GIAentityNode* actionEntityCompareNetworkIndex = getPrimaryNetworkIndexNodeDefiningInstance(actionEntityCompare);
 
 								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject, false))
+								if(searchForEquivalentSubnetToIfStatement(actionEntityCompareNetworkIndex, logicalConditionOperationObject, false))
 								{
 									if(!simpleNonConjunctionLogicalConditionNegative)
 									{
@@ -481,15 +481,15 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							#endif
 							//check if logicalConditionOperationSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
 
-							if(logicalConditionOperationSubject->isConcept || logicalConditionOperationSubject->isSubstanceConcept)
+							if(logicalConditionOperationSubject->isNetworkIndex || logicalConditionOperationSubject->isConcept)
 							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
-								if(logicalConditionOperationSubject->isConcept)
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS
+								if(logicalConditionOperationSubject->isNetworkIndex)
 								{
-									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles substance networkIndexs. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
 									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
 								}
-								else if(logicalConditionOperationSubject->isSubstanceConcept)
+								else if(logicalConditionOperationSubject->isConcept)
 								{
 									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);
 								}
@@ -763,15 +763,15 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 					{//don't cross the "if" boundary
 						if(checkSentenceIndexParsingCodeBlocks(connectedEntity, connection, sentenceIndex, false))
 						{
-							if(connectedEntity->isConcept)
+							if(connectedEntity->isNetworkIndex)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles substance networkIndexs. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
 								cout << "connectedEntity = " << connectedEntity->entityName;
 							}
 							else
 							{
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
-								connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
+								connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXS_DUMMY_REFERENCE_SET_ID;
 								#endif
 								if(tagOrUntag)
 								{
@@ -852,24 +852,24 @@ bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock** currentC
 #endif
 
 #ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareConcept, GIAentityNode* entity, bool compareSubstanceConcepts)
+bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareNetworkIndex, GIAentityNode* entity, bool compareConcepts)
 {
 	bool result = false;
 
-	//code copied from identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts() in GIAtranslatorDefineReferencing.cpp
+	//code copied from identifyReferenceSetsSpecificConceptsAndLinkWithConcepts() in GIAtranslatorDefineReferencing.cpp
 
-	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
+	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXS_DUMMY_REFERENCE_SET_ID;
 
 	bool traceModeIsQuery = false;
 	GIAreferenceTraceParameters referenceTraceParameters;
 	referenceTraceParameters.referenceSetID = referenceSetID;
 	referenceTraceParameters.sameReferenceSetTests = true;
-	if(!compareSubstanceConcepts)
+	if(!compareConcepts)
 	{
 		referenceTraceParameters.linkSpecificConceptsAndActions = true;
 	}
 	
-	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareConcept->associatedInstanceNodeList->begin(); entityIter != entityCompareConcept->associatedInstanceNodeList->end(); entityIter++)
+	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareNetworkIndex->associatedInstanceNodeList->begin(); entityIter != entityCompareNetworkIndex->associatedInstanceNodeList->end(); entityIter++)
 	{
 		GIAentityNode* entityCompare = (*entityIter)->entity;
 		#ifdef GIA_DREAMMODE_REFERENCING_DEBUG
@@ -906,7 +906,7 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareConcept,
 				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
 				int irrelevant;
 				string printEntityNodeString = "";
-				bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
+				bool traceInstantiations = GIA_QUERY_TRACE_NETWORK_INDEX_NODES_DEFINING_INSTANTIATIONS_VALUE;
 				traceEntityNode(entityCompare, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 				traceEntityNode(entity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 			}

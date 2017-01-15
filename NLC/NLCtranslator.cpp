@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -376,14 +376,14 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 				}
 				if(foundLogicalConditionOperation)
 				{
-					//concepts must be tagged as NLClogicalConditionOperation to prevent generateClassHeirarchy from creating class definitions for logical conditions
+					//networkIndexs must be tagged as NLClogicalConditionOperation to prevent generateClassHeirarchy from creating class definitions for logical conditions
 					#ifdef NLC_DEBUG
 					cout << "foundLogicalConditionOperation: " << conditionEntity->entityName << endl;
 					#endif
 					conditionEntity->NLClogicalConditionOperation = true;
 
 					if(conditionEntity->isCondition)
-					{//ignore concepts
+					{//ignore networkIndexs
 
 						GIAentityNode* conditionSubject = NULL;
 						GIAentityNode* conditionObject = NULL;
@@ -406,18 +406,18 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 							//cout << "tagged: conditionEntity->entityName = " << conditionEntity->entityName << endl;
 							#endif
 
-							if(conditionObject->isConcept)
+							if(conditionObject->isNetworkIndex)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles substance networkIndexs. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
 								cout << "conditionObject = " << conditionObject->entityName;
 							}
 							else
 							{
 								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionObject, sentenceIndex, true);
 							}
-							if(conditionSubject->isConcept)
+							if(conditionSubject->isNetworkIndex)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS only handles substance networkIndexs. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXS must be enabled." << endl;
 								cout << "conditionSubject = " << conditionSubject->entityName;
 							}
 							else
@@ -451,20 +451,20 @@ bool disableAllForLoopPredeterminers(map<int, vector<GIAentityNode*>*>* entityNo
 			bool wordImmediatelySucceedingForFound = textInTextArray(entity->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);
 			if(wordImmediatelySucceedingForFound)
 			{
-				entity->disabled = true;	//should not be required; disableInstanceAndConceptEntityNLC(entity);
+				entity->disabled = true;	//should not be required; disableInstanceAndNetworkIndexEntityNLC(entity);
 			}
 		}
 	}
 	return result;
 }
 /*
-void disableInstanceAndConceptEntityNLC(GIAentityNode* entity)
+void disableInstanceAndNetworkIndexEntityNLC(GIAentityNode* entity)
 {
 	entity->disabled = true;
 	if(!(entity->entityNodeDefiningThisInstance->empty()))
 	{
-		GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-		conceptEntity->disabled = true
+		GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
+		networkIndexEntity->disabled = true
 	}
 }
 */

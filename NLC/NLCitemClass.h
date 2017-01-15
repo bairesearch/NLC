@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -65,9 +65,9 @@
 #define NLC_CLASS_NAME_APPEND "Class"
 #define NLC_FUNCTION_NAME_APPEND "Function"
 
-#define NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND "With"
-#define NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION "Condition"
-#define NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY "Property"
+#define NLC_CONCEPT_CLASS_PREPEND "With"
+#define NLC_CONCEPT_CLASS_CONDITION "Condition"
+#define NLC_CONCEPT_CLASS_PROPERTY "Property"
 
 #define NLC_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 

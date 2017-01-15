@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,7 +105,7 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	enterGeneratedCategoryList = true;
 	#endif
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-	searchSubstanceConceptsForChildren = true;
+	searchConceptsForChildren = true;
 	#endif
 	#ifdef NLC_PARSE_CONDITION_PARENTS
 	parseConditionParents = true;
@@ -616,11 +616,11 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodebloc
 			entity->NLClocalListVariableHasBeenDeclared = true;
 		#else
 		entity->NLClocalListVariableHasBeenDeclared = true;	//added 1n4a
-		GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-		if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))
+		GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
+		if(!(networkIndexEntity->NLClocalListVariableHasBeenDeclared))
 		{
 
-			conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+			networkIndexEntity->NLClocalListVariableHasBeenDeclared = true;
 		#endif
 
 			currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity, setNLCLocalListVariableHasBeenDeclared);
@@ -646,7 +646,7 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentC
 	if(createTypeList)
 	{
 		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-		if(!(getPrimaryConceptNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared))	//ie typeList has not been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:conceptEntity->NLClocalListVariableHasBeenDeclared)
+		if(!(getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared))	//ie typeList has not been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
 		{	
 		#endif
 			//declare a generic type list (typeList) of local instance lists (instanceLists)
@@ -656,7 +656,7 @@ NLCcodeblock* createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock* currentC
 			currentCodeBlockInTree = createCodeBlockAddInstanceListToTypeList(currentCodeBlockInTree, entity, entity);
 
 		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-			getPrimaryConceptNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;	//ie typeList has been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:conceptEntity->NLClocalListVariableHasBeenDeclared)
+			getPrimaryNetworkIndexNodeDefiningInstance(entity)->NLClocalListVariableHasBeenDeclared = true;	//ie typeList has been declared (NLC_LOCAL_LISTS_USE_INSTANCE_NAMES:networkIndexEntity->NLClocalListVariableHasBeenDeclared)
 		}
 		#endif
 	}
@@ -914,7 +914,7 @@ NLCcodeblock* createCodeBlockNewFunction(NLCcodeblock* currentCodeBlockInTree, s
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = *entityIter;
-		if(!(entity->isConcept) && !(entity->isActionConcept) && !(entity->isSubstanceConcept))
+		if(!(entity->isNetworkIndex) && !(entity->isActionNetworkIndex) && !(entity->isConcept))
 		{
 			if(entity->entityName == functionOwnerName)
 			{
@@ -1079,11 +1079,11 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 						entity->NLClocalListVariableHasBeenDeclared = true;	//redundant
 						#else
-						GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
-						if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
+						GIAentityNode* networkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(entity);
+						if(!(networkIndexEntity->NLClocalListVariableHasBeenDeclared))	//redundant test
 						{
 							entity->NLClocalListVariableHasBeenDeclared = true;
-							conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+							networkIndexEntity->NLClocalListVariableHasBeenDeclared = true;
 						}
 						#endif
 					#ifdef NLC_USE_ADVANCED_REFERENCING
@@ -1126,7 +1126,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 	*/
 		
 	int referenceSetID = 0;
-	//see identifyReferenceSetsSpecificConceptsAndLinkWithSubstanceConcepts()
+	//see identifyReferenceSetsSpecificConceptsAndLinkWithConcepts()
 
 	int minimumEntityIndexOfReferenceSet = definiteEntity->entityIndexTemp;
 
@@ -1150,8 +1150,8 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 		int irrelevant;
 		string printEntityNodeString = "";
 		int maxNumberOfMatchedNodesPossible = 0;
-		bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
-		traceEntityNode(firstNodeConceptEntityNodesListQuery, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_DETERMINE_MAX_NUMBER_MATCHED_NODES_SAME_SET_ONLY, &maxNumberOfMatchedNodesPossible, NULL, false, referenceSetID, traceInstantiations);
+		bool traceInstantiations = GIA_QUERY_TRACE_NETWORK_INDEX_NODES_DEFINING_INSTANTIATIONS_VALUE;
+		traceEntityNode(firstNodeNetworkIndexEntityNodesListQuery, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_DETERMINE_MAX_NUMBER_MATCHED_NODES_SAME_SET_ONLY, &maxNumberOfMatchedNodesPossible, NULL, false, referenceSetID, traceInstantiations);
 		traceEntityNode(currentQueryEntityNode, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 		#endif
 
@@ -1204,7 +1204,7 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
 				int irrelevant;
 				string printEntityNodeString = "";
-				bool traceInstantiations = GIA_QUERY_TRACE_CONCEPT_NODES_DEFINING_INSTANTIATIONS_VALUE;
+				bool traceInstantiations = GIA_QUERY_TRACE_NETWORK_INDEX_NODES_DEFINING_INSTANTIATIONS_VALUE;
 				traceEntityNode(definiteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 				traceEntityNode(indefiniteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
 
@@ -1231,7 +1231,7 @@ bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode*
 	
 	if(indefiniteEntity->entityName == definiteEntity->entityName)
 	{
-		if(!(indefiniteEntity->isSubstanceConcept))
+		if(!(indefiniteEntity->isConcept))
 		{
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
 			if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
@@ -1276,7 +1276,7 @@ bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(G
 	}
 	#endif
 	#endif
-	if(entityNode->isSubstanceConcept)
+	if(entityNode->isConcept)
 	{
 		validClass = false;	
 	}
@@ -1329,7 +1329,7 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity)
 	
 	if(isDefiniteEntity(entity))
 	{
-		if(!(entity->isConcept))
+		if(!(entity->isNetworkIndex))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 			if(!entity->NLCisSingularArgument)

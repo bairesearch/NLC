@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1s9c 11-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1t1a 12-September-2016" << endl;
 			exit(1);
 		}
 
@@ -889,7 +889,7 @@ int main(int argc, char** argv)
 
 		vector<GIAentityNode*>* entityNodesActiveListComplete = new vector<GIAentityNode*>;
 		entityNodesActiveListCompleteFunctions.push_back(entityNodesActiveListComplete);
-		unordered_map<string, GIAentityNode*>* entityNodesActiveListConcepts = new unordered_map<string, GIAentityNode*>;
+		unordered_map<string, GIAentityNode*>* entityNodesActiveListNetworkIndexs = new unordered_map<string, GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListSubstances = new vector<GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListActions = new vector<GIAentityNode*>;
 		vector<GIAentityNode*>* entityNodesActiveListConditions = new vector<GIAentityNode*>;
@@ -1043,7 +1043,7 @@ int main(int argc, char** argv)
 		#endif
 
 			entityNodesActiveListComplete,
-			entityNodesActiveListConcepts,
+			entityNodesActiveListNetworkIndexs,
 			entityNodesActiveListSubstances,
 			entityNodesActiveListActions,
 			entityNodesActiveListConditions,
@@ -1273,7 +1273,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* actionEntity = (*entityIter);
-		if((actionEntity->isAction) && !(actionEntity->isConcept) && !(actionEntity->disabled))
+		if((actionEntity->isAction) && !(actionEntity->isNetworkIndex) && !(actionEntity->disabled))
 		{
 			if(isActionSpecialPossessive(actionEntity))
 			{
@@ -1612,7 +1612,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					actionEntity->disabled = true;	//disable have instance entity
 					if(!(actionEntity->entityNodeDefiningThisInstance->empty()))
 					{
-						getPrimaryConceptNodeDefiningInstance(actionEntity)->disabled = true;	//disable have concept entity
+						getPrimaryNetworkIndexNodeDefiningInstance(actionEntity)->disabled = true;	//disable have networkIndex entity
 					}
 				}
 			}

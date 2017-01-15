@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -311,7 +311,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 							printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#endif
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC_DYNAMIC
 							string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
 							string parentClassListClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 							string parentClassListDeclarationText = generateCodeEntityListDefinitionText(parentClassListClassName, parentClassListName, progLang) + progLangEndLine[progLang];  	//vector<NLCgenericEntityClass*> parentClassList;
@@ -369,7 +369,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 								#ifdef NLC_DEBUG
 								//cout << "\tclassDefinition->functionList; classDefinition = " << classDefinition->name << endl;
 								#endif
-								generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
+								generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString(&(targetClassDefinition->parameters), &functionArguments, progLang);
 								string localListDeclarationText = progLangClassMemberFunctionTypeDefault[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 								printLine(localListDeclarationText, 1, &printedClassDefinitionHeaderText);
 
@@ -578,7 +578,7 @@ bool printClassDefinitions(vector<NLCclassDefinition*>* classDefinitionList, int
 						}
 						#endif
 
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_NETWORK_INDEXS_BASIC_DYNAMIC
 						for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 						{
 							NLCclassDefinition* targetClassDefinition = *localListIter;
@@ -829,7 +829,7 @@ bool printClassHeirarchyValidDefinitionClassChecks(NLCclassDefinition* classDefi
 	return validClass;
 }
 
-void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vector<NLCitem*>* parameters, string* functionArguments, int progLang)
+void generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString(vector<NLCitem*>* parameters, string* functionArguments, int progLang)
 {
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
@@ -838,7 +838,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 		NLCitem* currentItem = *parametersIterator;
 		
 		#ifdef NLC_DEBUG
-		//cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString{}: " << endl;
+		//cout << "generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString{}: " << endl;
 		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
 		//cout << "currentItem->className = " << currentItem->className << endl;
 		//cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
@@ -857,7 +857,7 @@ void generateFunctionDeclarationArgumentsWithActionConceptInheritanceString(vect
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER)
 		{
 			#ifdef NLC_DEBUG
-			//cout << "generateFunctionDeclarationArgumentsWithActionConceptInheritanceString; NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER = " << currentItem->name << endl;
+			//cout << "generateFunctionDeclarationArgumentsWithActionNetworkIndexInheritanceString; NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER = " << currentItem->name << endl;
 			#endif
 			if(*functionArguments != "")
 			{

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s9c 11-September-2016
+ * Project Version: 1t1a 12-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #endif
 #ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 #include "NLCtranslatorCodeBlocksOperations.h"	//required for getSameReferenceSetUniqueParent()
-#include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
+#include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance()
 #endif
 
 bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete)
@@ -55,10 +55,10 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 			if(generateClassHeirarchyValidClassChecks(entityNode))
 			{
 				string className = generateClassName(entityNode);
-				#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-				if(entityNode->isSubstanceConcept)
+				#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
+				if(entityNode->isConcept)
 				{
-					className = generateSubstanceConceptClassName(entityNode);
+					className = generateConceptClassName(entityNode);
 				}
 				#endif
 
@@ -95,10 +95,10 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									{
 										targetName = generateInstanceName(targetEntity);
 									}
-									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-									else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->isSubstanceConcept))
+									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
+									else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->isConcept))
 									{
-										targetName = generateSubstanceConceptClassName(targetEntity);
+										targetName = generateConceptClassName(targetEntity);
 									}
 									#endif
 									else
@@ -136,12 +136,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									}
 
 									#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
-									if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isConcept)) 16 April 2014
+									if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isNetworkIndex)) 16 April 2014
 									#else
 									#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isConcept) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
+									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isNetworkIndex) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
 									#else
-									if((targetEntity->isAction) || (targetEntity->isActionConcept) && !(targetEntity->isConcept))	//removed; || (targetEntity->isCondition) 16 April 2014
+									if((targetEntity->isAction) || (targetEntity->isActionNetworkIndex) && !(targetEntity->isNetworkIndex))	//removed; || (targetEntity->isCondition) 16 April 2014
 									#endif
 									#endif
 									{
@@ -207,7 +207,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 									{//declare inheritance
 										#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 										#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-										//chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a substanceConcept-substanceConcept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
+										//chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as substance networkIndexs. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a concept-concept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
 										bool indefiniteChild = false;
 										if(!isDefiniteEntity(entityNode))
 										{
@@ -229,13 +229,13 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										#endif
 										{	
 										#endif
-											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-											if(targetName != className)	//eg do not create a separate class for substance concept definitions
+											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
+											if(targetName != className)	//eg do not create a separate class for substance networkIndex definitions
 											{
 											#endif
 												addDefinitionToClassDefinition(classDefinition, targetClassDefinition);
 												
-											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
 											}
 											#endif
 										#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
@@ -287,7 +287,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 											
 											#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 											//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
-											generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
+											generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(targetEntity, &(targetClassDefinition->parameters));
 											//#endif
 											#endif
 										}
@@ -389,25 +389,25 @@ bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* 
 {	
 	bool parentClassIsChildOfChildClass = false;
 	
-	GIAentityNode* parentConceptEntity = parentEntity;
-	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
-	if(!(parentEntity->isConcept))	//added 1r1a
+	GIAentityNode* parentNetworkIndexEntity = parentEntity;
+	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+	if(!(parentEntity->isNetworkIndex))	//added 1r1a
 	{
 	#endif
-		parentConceptEntity = getPrimaryConceptNodeDefiningInstance(parentEntity);
-	#ifndef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
+		parentNetworkIndexEntity = getPrimaryNetworkIndexNodeDefiningInstance(parentEntity);
+	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
 	}
 	#endif
 
-	for(vector<GIAentityConnection*>::iterator connectionIter = parentConceptEntity->associatedInstanceNodeList->begin(); connectionIter != parentConceptEntity->associatedInstanceNodeList->end(); connectionIter++)
+	for(vector<GIAentityConnection*>::iterator connectionIter = parentNetworkIndexEntity->associatedInstanceNodeList->begin(); connectionIter != parentNetworkIndexEntity->associatedInstanceNodeList->end(); connectionIter++)
 	{
-		GIAentityNode* parentSubstanceConceptEntity = (*connectionIter)->entity;
-		if(parentSubstanceConceptEntity->isSubstanceConcept || parentSubstanceConceptEntity->isActionConcept)
+		GIAentityNode* parentConceptEntity = (*connectionIter)->entity;
+		if(parentConceptEntity->isConcept || parentConceptEntity->isActionNetworkIndex)
 		{
-			for(vector<GIAentityConnection*>::iterator connectionIter2 = parentSubstanceConceptEntity->entityNodeDefinitionList->begin(); connectionIter2 != parentSubstanceConceptEntity->entityNodeDefinitionList->end(); connectionIter2++)
+			for(vector<GIAentityConnection*>::iterator connectionIter2 = parentConceptEntity->entityNodeDefinitionList->begin(); connectionIter2 != parentConceptEntity->entityNodeDefinitionList->end(); connectionIter2++)
 			{
-				GIAentityNode* parentSubstanceConceptParentEntity = (*connectionIter2)->entity;
-				if(parentSubstanceConceptParentEntity->entityName == childEntity->entityName)
+				GIAentityNode* parentConceptParentEntity = (*connectionIter2)->entity;
+				if(parentConceptParentEntity->entityName == childEntity->entityName)
 				{
 					parentClassIsChildOfChildClass = true;
 				}
@@ -627,10 +627,10 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 								if(hasActionSubject)
 								{
 									classDefinitionFunctionOwnerName = generateClassName(actionSubject);
-									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-									if(actionEntity->isSubstanceConcept)
+									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
+									if(actionEntity->isConcept)
 									{
-										classDefinitionFunctionOwnerName = generateSubstanceConceptClassName(actionSubject);	//is this still required?
+										classDefinitionFunctionOwnerName = generateConceptClassName(actionSubject);	//is this still required?
 									}
 									#endif
 								}
@@ -721,7 +721,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 											
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 									//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
-									generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(classDefinitionFunction->parameters));
+									generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(actionEntity, &(classDefinitionFunction->parameters));
 									//#endif
 									#endif
 								}
@@ -858,8 +858,8 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
-	#ifdef GIA_CREATE_NON_SPECIFIC_SUBSTANCE_CONCEPTS_FOR_ALL_CONCEPTS
-	if(entityNode->isConcept)	//added 1n2f
+	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXS
+	if(entityNode->isNetworkIndex)	//added 1n2f
 	{
 		validClass = false;
 	}
@@ -879,7 +879,7 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	/*
 	cout << "\nentityNode->entityName = " << entityNode->entityName << endl;
 	cout << "entityNode->isSubstance = " << entityNode->isSubstance << endl;
-	cout << "entityNode->isConcept = " << entityNode->isConcept << endl;
+	cout << "entityNode->isNetworkIndex = " << entityNode->isNetworkIndex << endl;
 	cout << "entityNode->disabled = " << entityNode->disabled << endl;
 	*/
 	
@@ -924,43 +924,43 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 
 
 
-#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-string generateSubstanceConceptClassName(GIAentityNode* substanceConceptEntity)
+#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
+string generateConceptClassName(GIAentityNode* conceptEntity)
 {
-	string substanceConceptClassName = substanceConceptEntity->entityName;
-	generateSubstanceConceptClassNameRecurse(substanceConceptEntity, &substanceConceptClassName);
-	substanceConceptClassName = substanceConceptClassName + NLC_CLASS_NAME_APPEND;
-	return substanceConceptClassName;
+	string conceptClassName = conceptEntity->entityName;
+	generateConceptClassNameRecurse(conceptEntity, &conceptClassName);
+	conceptClassName = conceptClassName + NLC_CLASS_NAME_APPEND;
+	return conceptClassName;
 }
 
-void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEntity, string* substanceConceptClassName)
+void generateConceptClassNameRecurse(GIAentityNode* conceptEntity, string* conceptClassName)
 {
-	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->conditionNodeList->begin(); entityIter != substanceConceptEntity->conditionNodeList->end(); entityIter++)
+	for(vector<GIAentityConnection*>::iterator entityIter = conceptEntity->conditionNodeList->begin(); entityIter != conceptEntity->conditionNodeList->end(); entityIter++)
 	{
-		GIAentityNode* substanceConceptCondition = (*entityIter)->entity;
+		GIAentityNode* conceptCondition = (*entityIter)->entity;
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-		if(!(substanceConceptCondition->inverseConditionTwoWay) || (*entityIter)->isReferenceElseFunctionDefinition)		//prevent infinite loop for 2 way conditions
+		if(!(conceptCondition->inverseConditionTwoWay) || (*entityIter)->isReferenceElseFunctionDefinition)		//prevent infinite loop for 2 way conditions
 		{
 		#endif
-			if(!(substanceConceptCondition->conditionObjectEntity->empty()))
+			if(!(conceptCondition->conditionObjectEntity->empty()))
 			{
-				GIAentityNode* substanceConceptConditionObject = (substanceConceptCondition->conditionObjectEntity->back())->entity;
-				*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptCondition->entityName + substanceConceptConditionObject->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_CONDITION;
-				*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptConditionObject, substanceConceptClassName);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+				GIAentityNode* conceptConditionObject = (conceptCondition->conditionObjectEntity->back())->entity;
+				*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptCondition->entityName + conceptConditionObject->entityName + NLC_CONCEPT_CLASS_CONDITION;
+				*conceptClassName = *conceptClassName + generateConceptClassNameRecurse(conceptConditionObject, conceptClassName);	//recurse in case of very detailed substance networkIndex eg "red dogs next to blue cows"
 			}
 			else
 			{
-				cout << "generateSubstanceConceptClassNameRecurse{} error: condition has no object" << endl;
+				cout << "generateConceptClassNameRecurse{} error: condition has no object" << endl;
 			}
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 		}
 		#endif
 	}
-	for(vector<GIAentityConnection*>::iterator entityIter = substanceConceptEntity->propertyNodeList->begin(); entityIter != substanceConceptEntity->propertyNodeList->end(); entityIter++)
+	for(vector<GIAentityConnection*>::iterator entityIter = conceptEntity->propertyNodeList->begin(); entityIter != conceptEntity->propertyNodeList->end(); entityIter++)
 	{
-		GIAentityNode* substanceConceptProperty = (*entityIter)->entity;
-		*substanceConceptClassName = *substanceConceptClassName + NLC_SUBSTANCE_CONCEPT_CLASS_PREPEND + substanceConceptProperty->entityName + NLC_SUBSTANCE_CONCEPT_CLASS_PROPERTY;
-		*substanceConceptClassName = *substanceConceptClassName + generateSubstanceConceptClassNameRecurse(substanceConceptProperty, substanceConceptClassName);	//recurse in case of very detailed substance concept eg "red dogs next to blue cows"
+		GIAentityNode* conceptProperty = (*entityIter)->entity;
+		*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptProperty->entityName + NLC_CONCEPT_CLASS_PROPERTY;
+		*conceptClassName = *conceptClassName + generateConceptClassNameRecurse(conceptProperty, conceptClassName);	//recurse in case of very detailed substance networkIndex eg "red dogs next to blue cows"
 	}
 }
 			
@@ -1135,18 +1135,18 @@ bool findVariableInParentClass(NLCclassDefinition* classDefinition, string varia
 
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode* actionEntity, vector<NLCitem*>* parameters)
+void generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(GIAentityNode* actionEntity, vector<NLCitem*>* parameters)
 {
 	generateFunctionPropertyConditionArguments(actionEntity, parameters, false);
 
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
-	//Part b: generate object initialisations based on action concepts (class inheritance)
+	//Part b: generate object initialisations based on action networkIndexs (class inheritance)
 	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
 	{
 		GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
 		definitionConnection->NLCparsedForCodeBlocks = true;
 		GIAentityNode* definitionEntity = definitionConnection->entity;
-		if(definitionEntity->isActionConcept)
+		if(definitionEntity->isActionNetworkIndex)
 		{
 			generateFunctionPropertyConditionArguments(definitionEntity, parameters, true);
 		}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2b 28-November-2014
+ * Project Version: 1m2c 28-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1905,13 +1905,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 											//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, conditionObject);	//removed 1m1f
 											*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-											if(conditionEntity->conditionTwoWay)
-											{
-												//*currentCodeBlockInTree = createCodeBlockRemoveEntitiesFromLocalList(*currentCodeBlockInTree, entityInverse);	//removed 1m1f
-												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entityInverse, conditionEntityInverse);
-											}
-											#endif
 										}
 										else
 										{
@@ -1921,12 +1914,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											#endif
 
 											*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entity, conditionEntity);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-											if(conditionEntity->conditionTwoWay)
-											{
-												*currentCodeBlockInTree = createCodeBlockRemoveConditions(*currentCodeBlockInTree, entityInverse, conditionEntityInverse);
-											}
-											#endif
 										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 										}
 										#endif
@@ -1949,15 +1936,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											#endif
 
 											*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-											if(conditionEntity->conditionTwoWay)
-											{
-												conditionConnection->NLCparsedForCodeBlocks = true;
-												conditionEntity->NLCparsedForCodeBlocks = true;	//added NLC 1b2b/3 October 2013 - used for quick access of instances already declared in current context
-												conditionObject->NLCparsedForCodeBlocks = true;	//added 1e6d
-												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex);
-											}
-											#endif
 
 											#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD
 											*currentCodeBlockInTree = firstCodeBlockInSection2->next;
@@ -1973,15 +1951,6 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											//create a new condition; eg "a house" in "Tom is near a house"
 											newlyDeclaredEntityInCategoryList2 = true;
 											*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, true);
-											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-											if(conditionEntity->conditionTwoWay)
-											{
-												conditionConnection->NLCparsedForCodeBlocks = true;
-												conditionEntity->NLCparsedForCodeBlocks = true;	//added NLC 1b2b/3 October 2013 - used for quick access of instances already declared in current context
-												conditionObject->NLCparsedForCodeBlocks = true;	//added 1e6d
-												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex);
-											}
-											#endif
 
 										#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 										}
@@ -2761,15 +2730,4 @@ bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntit
 }
 #endif
 
-#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity)
-{
-	GIAentityNode * conditionEntityInverse = new GIAentityNode();
-	conditionEntityInverse->isCondition = true;
-	conditionEntityInverse->entityName = conditionEntity->entityName;
-	conditionEntityInverse->idInstance = conditionEntity->idInstance;
-	conditionEntityInverse->conditionSubjectEntity->push_back(conditionEntity->conditionObjectEntity->back());	//CHECKTHIS: reused existing connections
-	conditionEntityInverse->conditionObjectEntity->push_back(conditionEntity->conditionSubjectEntity->back());	//CHECKTHIS: reused existing connections
-	return conditionEntityInverse;
-}
-#endif
+

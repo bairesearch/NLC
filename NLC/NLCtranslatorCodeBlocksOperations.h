@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2b 28-November-2014
+ * Project Version: 1m2c 28-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -128,10 +128,6 @@ void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock ** currentC
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntity);
-#endif
-
-#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
-GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity);
 #endif
 
 #endif

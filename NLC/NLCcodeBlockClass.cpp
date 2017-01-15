@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2b 28-November-2014
+ * Project Version: 1m2c 28-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -371,17 +371,19 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 		//{
 		#endif
 
-		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(entityItem);
-
-		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionItem);
-
-		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
-
-		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+		currentCodeBlockInTree = createCodeBlockAddNewConditionSimple(currentCodeBlockInTree, entity, conditionEntity, conditionObject);
+		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+		if(conditionEntity->conditionTwoWay)
+		{
+			GIAentityNode * entityInverse = conditionObject;
+			GIAentityNode * conditionEntityInverse = NULL;
+			conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+			#ifdef NLC_DEBUG
+			cout << "conditionEntityInverse: conditionEntity = " << conditionEntity->entityName << endl;
+			#endif
+			currentCodeBlockInTree = createCodeBlockAddConditionSimple(currentCodeBlockInTree, conditionObject, conditionEntityInverse, entity);
+		}
+		#endif
 
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		if(copyNewItemsToLocalList)
@@ -427,23 +429,40 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 	return currentCodeBlockInTree;
 }
 
+NLCcodeblock * createCodeBlockAddNewConditionSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+	NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
 NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex)
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
-		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
-		currentCodeBlockInTree->parameters.push_back(entityItem);
-
-		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionItem);
-
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
-
-		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_CONDITION;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+		
+		currentCodeBlockInTree = createCodeBlockAddConditionSimple(currentCodeBlockInTree, entity, conditionEntity, conditionObject);
+		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+		if(conditionEntity->conditionTwoWay)
+		{
+			GIAentityNode * entityInverse = conditionObject;
+			GIAentityNode * conditionEntityInverse = NULL;
+			conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+			#ifdef NLC_DEBUG
+			cout << "conditionEntityInverse: conditionEntity = " << conditionEntity->entityName << endl;
+			#endif
+			currentCodeBlockInTree = createCodeBlockAddConditionSimple(currentCodeBlockInTree, conditionObject, conditionEntityInverse, entity);
+		}
+		#endif
 	}
 	else
 	{
@@ -452,6 +471,23 @@ NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree
 
 	return currentCodeBlockInTree;
 }
+
+NLCcodeblock * createCodeBlockAddConditionSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+	NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_CONDITION;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
 
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
 {	
@@ -1394,19 +1430,21 @@ NLCcodeblock * createCodeBlockRemoveConditions(NLCcodeblock * currentCodeBlockIn
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
-		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
-		currentCodeBlockInTree->parameters.push_back(entityItem);
-
-		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionItem);
-
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
-		int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+		currentCodeBlockInTree = createCodeBlockRemoveConditionsSimple(currentCodeBlockInTree, entity, conditionEntity, conditionObject);
+		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+		if(conditionEntity->conditionTwoWay)
+		{
+			GIAentityNode * entityInverse = conditionObject;
+			GIAentityNode * conditionEntityInverse = NULL;
+			conditionEntityInverse = generateInverseConditionEntity(conditionEntity);
+			#ifdef NLC_DEBUG
+			cout << "conditionEntityInverse: conditionEntity = " << conditionEntity->entityName << endl;
+			#endif
+			currentCodeBlockInTree = createCodeBlockRemoveConditionsSimple(currentCodeBlockInTree, conditionObject, conditionEntityInverse, entity);
+		}
+		#endif
 	}
 	else
 	{
@@ -1415,6 +1453,23 @@ NLCcodeblock * createCodeBlockRemoveConditions(NLCcodeblock * currentCodeBlockIn
 
 	return currentCodeBlockInTree;
 }
+
+NLCcodeblock * createCodeBlockRemoveConditionsSimple(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+	NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+		
 #endif
 
 #ifdef NLC_PREPROCESSOR_MATH
@@ -2202,6 +2257,18 @@ NLCcodeblock * getLastCodeBlockInLevel(NLCcodeblock * currentCodeBlockInTree)
 	return currentCodeBlockInTree;
 }
 
+#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
+GIAentityNode * generateInverseConditionEntity(GIAentityNode * conditionEntity)
+{
+	GIAentityNode * conditionEntityInverse = new GIAentityNode();
+	conditionEntityInverse->isCondition = true;
+	conditionEntityInverse->entityName = conditionEntity->entityName;
+	conditionEntityInverse->idInstance = conditionEntity->idInstance;
+	conditionEntityInverse->conditionSubjectEntity->push_back(conditionEntity->conditionObjectEntity->back());	//CHECKTHIS: reused existing connections
+	conditionEntityInverse->conditionObjectEntity->push_back(conditionEntity->conditionSubjectEntity->back());	//CHECKTHIS: reused existing connections
+	return conditionEntityInverse;
+}
+#endif
 
 
 

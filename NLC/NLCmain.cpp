@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q2a 18-August-2015
+ * Project Version: 1q2b 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1q2a 18-August-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1q2b 18-August-2015" << endl;
 			exit(1);
 		}
 
@@ -658,14 +658,24 @@ int main(int argc, char** argv)
 		cout << "error: NLCrules.xml file not detected" << endl;
 		exit(0);
 	}
+
+	#ifndef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
+	if(!useInputTextPlainTXTFile)
+	{
+		cout << "NLC requires useInputTextPlainTXTFile (itxt)" << endl;
+	}	
+	#endif
 	
 	int numberOfInputFilesInList = 1;
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 	vector<string> inputTextPlainTXTFileNameList;
+	#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 	vector<string> inputTextNLPrelationXMLFileNameList;
 	vector<string> inputTextNLPfeatureXMLFileNameList;
 	vector<string> inputTextXMLFileNameList;
+	#endif
 	vector<string> functionNameList;
+	
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 	if(NLCinputFileList)
 	{
 		if(useInputTextPlainTXTFile)
@@ -675,6 +685,7 @@ int main(int argc, char** argv)
 				cout << "main{} error: !getFilesFromFileList: " << inputTextPlainTXTfileName << endl;
 			}
 		}
+		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		if(useInputTextNLPrelationXMLFile)
 		{
 			if(!getFilesFromFileList(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
@@ -696,10 +707,13 @@ int main(int argc, char** argv)
 				cout << "main{} error: !getFilesFromFileList: " << inputTextXMLFileName << endl;
 			}
 		}
+		#endif
 	}
 	#endif
-
+	
+	//#ifdef NLC_USE_PREPROCESSOR
 	NLCfunction* firstNLCfunctionInList = new NLCfunction();
+	//#endif
 	#ifdef NLC_USE_PREPROCESSOR
 	//vector<string> inputTextPlainTXTFileNameList;
 	bool preprocessorDetectedFunctions = false;
@@ -710,6 +724,7 @@ int main(int argc, char** argv)
 		cout << "useNLCpreprocessor" << endl;
 		#endif
 		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + "afterPreprocessedforNLConly.txt";
+		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		if(!useInputTextPlainTXTFile)
 		{
 			cout << "useNLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
@@ -718,6 +733,8 @@ int main(int argc, char** argv)
 		{
 			cout << "useNLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
 		}
+		#endif
+		
 		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
@@ -742,8 +759,6 @@ int main(int argc, char** argv)
 			cout << "main{} error: !preprocessTextForNLC{}" << endl;
 			exit(0);
 		}
-
-
 	}
 	#endif
 
@@ -822,6 +837,7 @@ int main(int argc, char** argv)
 			{
 				inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(functionDefinitionIndex);
 			}
+			#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 			if(useInputTextNLPrelationXMLFile)
 			{
 				inputTextNLPrelationXMLfileName = inputTextNLPrelationXMLFileNameList.at(functionDefinitionIndex);
@@ -834,6 +850,7 @@ int main(int argc, char** argv)
 			{
 				inputTextXMLFileName = inputTextXMLFileNameList.at(functionDefinitionIndex);
 			}
+			#endif
 		}
 		#endif
 
@@ -981,7 +998,7 @@ int main(int argc, char** argv)
 		if(useInputTextPlainTXTFile)
 		{
 			#ifdef NLC_USE_PREPROCESSOR
-			if(useNLCpreprocessor && !preprocessorDetectedFunctions)
+			if(useNLCpreprocessor && !NLCinputFileList)
 			{
 				NLCfunctionName = inputTextPlainTXTfileNameOrig;	//NLC 1i2c - do not add "afterPreprocessedforNLConly" to function name
 			}
@@ -991,9 +1008,9 @@ int main(int argc, char** argv)
 				NLCfunctionName = inputTextPlainTXTfileName;
 			#ifdef NLC_USE_PREPROCESSOR
 			}
-			#endif				
-		
+			#endif
 		}
+		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		else if(useInputTextNLPrelationXMLFile)
 		{
 			NLCfunctionName = inputTextNLPrelationXMLfileName;
@@ -1010,6 +1027,13 @@ int main(int argc, char** argv)
 		{
 			cout << "error: NLC requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl;
 		}
+		#else
+		else
+		{
+			cout << "error: NLC requires useInputTextPlainTXTFile" << endl;
+		}		
+		#endif
+
 
 		#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 		NLCfunctionName = progLangMainEntryPointFunctionName[progLang];

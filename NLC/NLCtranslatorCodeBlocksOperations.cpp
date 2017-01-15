@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m2a 18-November-2014
+ * Project Version: 1m2b 28-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1952,6 +1952,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 											if(conditionEntity->conditionTwoWay)
 											{
+												conditionConnection->NLCparsedForCodeBlocks = true;
+												conditionEntity->NLCparsedForCodeBlocks = true;	//added NLC 1b2b/3 October 2013 - used for quick access of instances already declared in current context
+												conditionObject->NLCparsedForCodeBlocks = true;	//added 1e6d
 												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex);
 											}
 											#endif
@@ -1973,7 +1976,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS
 											if(conditionEntity->conditionTwoWay)
 											{
-												*currentCodeBlockInTree = createCodeBlockCreateNewCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex, true);
+												conditionConnection->NLCparsedForCodeBlocks = true;
+												conditionEntity->NLCparsedForCodeBlocks = true;	//added NLC 1b2b/3 October 2013 - used for quick access of instances already declared in current context
+												conditionObject->NLCparsedForCodeBlocks = true;	//added 1e6d
+												*currentCodeBlockInTree = createCodeBlockAddCondition(*currentCodeBlockInTree, entityInverse, conditionEntityInverse, sentenceIndex);
 											}
 											#endif
 

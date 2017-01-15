@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p14b 06-August-2015
+ * Project Version: 1q1a 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -501,15 +501,14 @@ string generateEntityClassName(NLCitem* param)
 
 
 
-
-string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang)
+string generateStaticCastOfEntity(string entityName, string castClassName, int progLang)
 {
-	string castText = progLangDynamicCastStart[progLang] + castClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang];	//dynamic_cast<castClassName*>(entityName)
+	string castText = progLangStaticCastStart[progLang] + castClassName + progLangStaticCastEnd[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang];	//static_cast<castClassName*>(entityName)
 	return castText;
 }
-string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang)
+string generateStaticCastOfNewEntity(string entityClassName, string castClassName, int progLang)
 {
-	string castText = progLangDynamicCastStart[progLang] + castClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangNewObject[progLang] + entityClassName + progLangCloseParameterSpace[progLang];	//dynamic_cast<castClassName*>(new entityClassName)
+	string castText = progLangStaticCastStart[progLang] + castClassName + progLangStaticCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangNewObject[progLang] + entityClassName + progLangCloseParameterSpace[progLang];	//static_cast<castClassName*>(new entityClassName)
 	return castText;
 }
 string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang)
@@ -847,6 +846,13 @@ string generateCodePointerValueText(string entityName, int progLang)
 	return pointerValueText;
 }
 #endif
+
+string generatePointerText(string entityName, int progLang)
+{
+	string pointerValueText = progLangPointer[progLang] + entityName;	//*entityName
+	return pointerValueText;
+}
+
 
 string generateCodeListPointer(string list, int progLang)
 {

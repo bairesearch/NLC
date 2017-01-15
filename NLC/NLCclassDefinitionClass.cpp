@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p14b 06-August-2015
+ * Project Version: 1q1a 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,12 +68,12 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	#endif
 
 	printed = false;
-	
+		
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	functionDependency = NULL;	//for function class definitions only
 	#endif
 	
-	#ifdef NLC_USE_LIBRARY
+	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
 }
@@ -94,7 +94,7 @@ NLCclassDefinition::NLCclassDefinition(void)
 	functionDependency = NULL;	//for function class definitions only
 	#endif
 	
-	#ifdef NLC_USE_LIBRARY
+	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
 }

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p14b 06-August-2015
+ * Project Version: 1q1a 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,8 +38,6 @@
 #include "SHAREDglobalDefs.h"
 #include "GIAglobalDefs.h"
 
-#define NLC_DEBUG_COMPILE_LIBRARY
-
 //#define NLC_DISABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1j_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1k_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -48,7 +46,23 @@
 //#define NLC_DISABLE_1n_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1o_CODE_FOR_DEBUG
 //#define NLC_DISABLE_1p_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1q_CODE_FOR_DEBUG
 
+#ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
+	//#ifdef NLC_USE_LIBRARY	//has not been defined yet
+		#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS	//1q1a
+		#ifdef NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS
+			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_NAME_PREPEND "NLClibraryDynamic"
+			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_EXTENSION_CPP ".cpp"
+			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_EXTENSION_HPP ".hpp"
+			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_NAME_GENERIC_ENTITY_CLASS "NLClibraryGenericEntityClass"
+			#define NLC_USE_LIBRARY_GENERATE_DYNAMIC_FUNCTIONS_LIST_NAME "NLClibraryDynamicList.txt"
+		#endif
+		//#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION	//has not been defined yet
+			#define NLC_USE_LIBRARY_ASSUME_STANDARD_AND_USER_LIBRARY_FUNCTIONS_ACTION_ARGUMENT_TYPE_IS_NLC_GENERIC_ENTITY_CLASS	//1q1a	//if this is not defined, then wrapper functions must be created for every NLClibrary function (x) whose function action argument is of type NLCgenericEntityClass (instead of xClass)
+		//#endif
+	//#endif
+#endif
 #ifndef NLC_DISABLE_1p_CODE_FOR_DEBUG
 	//#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES		//has not been defined yet
 		#define NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES	//effectively disabled 1h4b, reactivated 1p12c
@@ -87,8 +101,13 @@
 		#endif
 		#define NLC_USE_LIBRARY_COPY_FUNCTION_COPY_INTERNAL_CONDITION_LISTS	//1p11a
 		#define NLC_USE_LIBRARY_COPY_OBJECT_BY_NAME_FUNCTION_NAME "copyObjectByName"	//1p2a
-		#define NLC_USE_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME "NLClibraryStandardFunctionList.txt"	//1p3c
-		#define NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME "NLClibraryUserFunctionList.txt"	//1p3c
+		//#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS	//has not been defined yet
+			#define NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION	//1p3c
+			#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+				#define NLC_USE_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME "NLClibraryStandardFunctionList.txt"	//1p3c
+				#define NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME "NLClibraryUserFunctionList.txt"	//1p3c
+			#endif
+		//#endif
 		#define NLC_USE_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING	//1p4e (temporary addition for testing)
 	//#endif
 	#define NLC_USE_MATH_OBJECTS	//1p2a (first declared 1n3b) - each entity has a (double) value which can be set by NLC mathText
@@ -139,7 +158,7 @@
 	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 		#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES	//not supported by Stanford NLP at present (_num relation is not generated)
 	#endif
-	#define NLC_USE_LIBRARY	//1n2a
+	#define NLC_USE_LIBRARY	//1n2a	//currently requires NLC_PROGRAMMING_LANGUAGE_CPP
 	#ifdef NLC_USE_LIBRARY
 		//must be synced with NLClibraryStandard.h:
 		//#define NLC_USE_LIBRARY_FROM_CONDITIONS	//unfinished; FUTURE NLC - ensure from condition lists are added to class definitions and are filled correctly

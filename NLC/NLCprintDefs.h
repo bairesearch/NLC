@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p14b 06-August-2015
+ * Project Version: 1q1a 11-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -137,8 +137,11 @@ static string progLangClassPairTypeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"
 
 static string progLangDependenciesStandardLibaries[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"#include <string>\n#include <vector>\n#include <stack>\n#include <unordered_map>\n#include <utility>\n#include <algorithm>\n#include <iostream>\nusing namespace std;\n", "", "", "", "", "", ""};
 #ifdef NLC_USE_LIBRARY
-static string progLangDependenciesNLClibary[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"#include \"NLClibrary.h\"", "", "", "", "", "", ""};
+static string progLangDependenciesNLClibary[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"#include \"NLClibrary.hpp\"", "", "", "", "", "", ""};
 #endif
+static string progLangIncludeStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"#include \"", "#include \"", "#include \"", "#include \"", "#include \"", "#include \"", "#include \""};
+static string progLangIncludeEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\"", "\"", "\"", "\"", "\"", "\"", "\""};
+
 static string progLangClassConstructorParameters[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"void", "void", "void", "void", "void", "void", "void"};
 
 static string progLangClassNameVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
@@ -154,8 +157,8 @@ static string progLangClassMemberFunctionParametersNext[NLC_NUMBER_OF_PROGRAMMIN
 static string progLangClassInheritanceHeader[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"public ", "public ", "public ", "public ", "public ", "public ", "public "};
 static string progLangStringOpenClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"\"", "\"", "\"", "\"", "\"", "\"", "\""};
 
-static string progLangDynamicCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<", "dynamic_cast<"};
-static string progLangDynamicCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*>", "*>", "*>", "*>", "*>", "*>", "*>"};
+static string progLangStaticCastStart[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"static_cast<", "static_cast<", "static_cast<", "static_cast<", "static_cast<", "static_cast<", "static_cast<"};
+static string progLangStaticCastEnd[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"*>", "*>", "*>", "*>", "*>", "*>", "*>"};
 static string progLangFunctionOwnerClassDelimiter[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"::", "::", "::", "::", "::", "::", "::"};
 
 //from NLCcodeBlockClass.h
@@ -404,8 +407,8 @@ string generateCodeEntityDeclarationSetToNull(NLCitem* param1, int progLang);
 string generateCodeSetEntity(NLCitem* param1, NLCitem* param2, int progLang);
 string generateCodeEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2, int progLang);
 
-string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
-string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang);
+string generateStaticCastOfEntity(string entityName, string castClassName, int progLang);
+string generateStaticCastOfNewEntity(string entityClassName, string castClassName, int progLang);
 string generateReinterpretCastOfVector(string vectorName, string castClassName, int progLang);
 string generateReinterpretCastOfVectorReference(string vectorName, string castClassName, int progLang);	//CHECKTHIS
 string generateReinterpretCastOfMap(string vectorName, string castClassName1, string castClassName2, int progLang);
@@ -480,6 +483,7 @@ string generateCodeDeclareNewDecimalPointerVariableText(NLCitem* param1, int pro
 string generateCodePointerValueText(NLCitem* param1, int progLang);
 string generateCodePointerValueText(string entityName, int progLang);
 #endif
+string generatePointerText(string entityName, int progLang);
 
 string generateCodeListPointer(string list, int progLang);
 

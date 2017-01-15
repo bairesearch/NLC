@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b8a 04-October-2013
+ * Project Version: 1c1a 27-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -79,7 +79,7 @@ public:
 	NLPIclassDefinition(string newName);
 	~NLPIclassDefinition(void);
 	
-	string name;
+	string name;	//CHECKTHIS; className (or instanceName if actionOrConditionInstanceNotClass) 
 	vector<NLPIclassDefinition *> propertyList;	//subclass
 	vector<NLPIclassDefinition *> conditionList;	//declared conditions
 	vector<NLPIclassDefinition *> definitionList;	//inherited parents

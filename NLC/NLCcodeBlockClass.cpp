@@ -23,7 +23,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f3a 14-December-2013
+ * Project Version: 1f4a 14-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -74,17 +74,23 @@ NLCcodeblock * createCodeBlockExecute(NLCcodeblock * currentCodeBlockInTree, NLC
 //add property
 NLCcodeblock * createCodeBlockAddNewProperty(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex)
 {
-	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
-	currentCodeBlockInTree->parameters.push_back(entityItem);
-	
-	NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
-	//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
-	currentCodeBlockInTree->parameters.push_back(propertyItem);
-	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
+	#ifdef NLC_SUPPORT_QUANTITIES
+	for(int i=0; i<propertyEntity->quantityNumber; i++)
+	{
+	#endif
+		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(entityItem);
+
+		NLCitem * propertyItem = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+		//removed 1e7c as it is not used: propertyItem->context = generateInstance(entityItem); 	//OLD:	getEntityContext(propertyEntity, &(propertyItem->context), false, sentenceIndex, false);
+		currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_PROPERTY;
+		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	#ifdef NLC_SUPPORT_QUANTITIES
+	}
+	#endif		
 	return currentCodeBlockInTree;
 }
 
@@ -124,20 +130,29 @@ NLCcodeblock * createCodeBlockAddNewCondition(NLCcodeblock * currentCodeBlockInT
 {
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
-		NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);	
-		currentCodeBlockInTree->parameters.push_back(entityItem);
-
-		NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
-		currentCodeBlockInTree->parameters.push_back(conditionItem);
-
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
-		//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
-		currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
 
-		int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
-		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+		#ifdef NLC_SUPPORT_QUANTITIES
+		for(int i=0; i<conditionObject->quantityNumber; i++)
+		{
+		#endif
+
+			NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+			//removed 1e7c as it is not used: getEntityContext(entity, &(entityItem->context), false, sentenceIndex, false);	
+			currentCodeBlockInTree->parameters.push_back(entityItem);
+
+			NLCitem * conditionItem = new NLCitem(conditionEntity, NLC_ITEM_TYPE_OBJECT);
+			currentCodeBlockInTree->parameters.push_back(conditionItem);
+
+			NLCitem * conditionObjectItem = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+			//removed 1e7c as it is not used: conditionObjectItem->context = generateInstance(entityItem);	//OLD:	getEntityContext(conditionObject, &(conditionObjectItem->context), false, sentenceIndex, false);
+			currentCodeBlockInTree->parameters.push_back(conditionObjectItem);
+
+			int codeBlockType = NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION;
+			currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+		#ifdef NLC_SUPPORT_QUANTITIES
+		}
+		#endif
 	}
 	else
 	{
@@ -377,6 +392,12 @@ bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity)
 	if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp) || entity->NLClocalListVariableHasBeenDeclared || entity->NLCisSingularArgument)
 	{
 		isAssumedToAlreadyHaveBeenDeclared = true;
+		/*
+		cout << "entity->grammaticalDefiniteTemp = " << entity->grammaticalDefiniteTemp << endl;
+		cout << "entity->grammaticalProperNounTemp = " << entity->grammaticalProperNounTemp << endl;
+		cout << "entity->NLClocalListVariableHasBeenDeclared = " << entity->NLClocalListVariableHasBeenDeclared << endl;
+		cout << "entity->NLCisSingularArgument = " << entity->NLCisSingularArgument << endl;
+		*/
 	}
 	return isAssumedToAlreadyHaveBeenDeclared;
 }

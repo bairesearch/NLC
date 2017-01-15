@@ -23,7 +23,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f3a 14-December-2013
+ * Project Version: 1f4a 14-December-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -936,7 +936,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 
 						if(!(conditionConnection->parsedForNLCcodeBlocks) && !(conditionEntity->parsedForNLCcodeBlocks))
 						{
-							//cout << "!(conditionConnection->parsedForNLCcodeBlocks): " << conditionObject->entityName << endl;
+							cout << "!(conditionConnection->parsedForNLCcodeBlocks): " << conditionObject->entityName << endl;
 
 							#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS		
 							if(assumedToAlreadyHaveBeenDeclared(conditionObject))
@@ -944,7 +944,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								NLCcodeblock * firstCodeBlockInSection2 = *currentCodeBlockInTree;
 
 								//use function argument PropertyList (do not create a new property to insert into condition); eg "the house" in "Tom is near a house"
-								//cout << "conditionObject->entityName = " << conditionObject->entityName << endl;
+								cout << "conditionObject->entityName = " << conditionObject->entityName << endl;
 								//for(all items in context){
 
 								//bool entityHasParent = getEntityContext(conditionObject, &(conditionObjectClass->context), false, sentenceIndex, true);	//removed 1e6b

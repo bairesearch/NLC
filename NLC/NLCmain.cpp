@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q2b 18-August-2015
+ * Project Version: 1q2c 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1q2b 18-August-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1q2c 18-August-2015" << endl;
 			exit(1);
 		}
 
@@ -684,6 +684,36 @@ int main(int argc, char** argv)
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextPlainTXTfileName << endl;
 			}
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR
+			else
+			{
+				if(useNLCpreprocessor)
+				{
+					//collapse all input list text files into single input text file
+					inputTextPlainTXTfileName = inputTextPlainTXTfileName + NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR_COMBINED_FILE_NAME_APPEND_TEXT;
+					string tempStr = "";
+					writeStringToFile(inputTextPlainTXTfileName, &tempStr);
+					for(vector<string>::iterator inputTextPlainTXTFileNameListIter = inputTextPlainTXTFileNameList.begin(); inputTextPlainTXTFileNameListIter != inputTextPlainTXTFileNameList.end(); inputTextPlainTXTFileNameListIter++)
+					{
+						string inputTextPlainTXTfileNameSeparate = *inputTextPlainTXTFileNameListIter;
+						string NLCfunctionName = removeNLCfileNameExtension(inputTextPlainTXTfileNameSeparate);
+						string functionName = "";
+						string functionOwnerName = "";
+						string functionObjectName = "";
+						bool hasFunctionOwnerClass = false;
+						bool hasFunctionObjectClass = false;
+						parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+						string NLCfunctionHeader = generateNLCfunctionHeader(functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass);
+						string functionContents = getFileContents(inputTextPlainTXTfileNameSeparate);
+						//cout << "inputTextPlainTXTfileNameSeparate = " << inputTextPlainTXTfileNameSeparate << endl;
+						//cout << "NLCfunctionHeader = " << NLCfunctionHeader << endl;
+						//cout << "functionContents = " << functionContents << endl;
+						string functionText = NLCfunctionHeader + CHAR_NEWLINE + functionContents + CHAR_NEWLINE;
+						appendStringToFile(inputTextPlainTXTfileName, &functionText);
+					}
+				}
+			}
+			#endif
 		}
 		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		if(useInputTextNLPrelationXMLFile)
@@ -723,7 +753,7 @@ int main(int argc, char** argv)
 		#ifdef NLC_DEBUG_PREPROCESSOR
 		cout << "useNLCpreprocessor" << endl;
 		#endif
-		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + "afterPreprocessedforNLConly.txt";
+		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + NLC_USE_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT;
 		#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
 		if(!useInputTextPlainTXTFile)
 		{
@@ -1129,7 +1159,7 @@ string removeFileNameExtensions(string NLCfunctionName)
 {
 	string NLCfunctionNameCleaned = NLCfunctionName;
 	int indexOfFirstFileExtension = NLCfunctionName.find(".");
-	if(indexOfFirstFileExtension != string::npos)
+	if(indexOfFirstFileExtension != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		NLCfunctionNameCleaned = NLCfunctionName.substr(0, indexOfFirstFileExtension);
 	}
@@ -1140,10 +1170,17 @@ string removeNLCfileNameExtension(string NLCfunctionName)
 {
 	string NLCfunctionNameCleaned = NLCfunctionName;
 	int indexOfFirstFileExtension = NLCfunctionName.find(NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION);
-	if(indexOfFirstFileExtension != string::npos)
+	if(indexOfFirstFileExtension != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		NLCfunctionNameCleaned = NLCfunctionName.substr(0, indexOfFirstFileExtension);
 	}
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_ENFORCE_NLC_FILE_EXTENSIONS
+	else
+	{
+		cout << "removeNLCfileNameExtension{} error: .nlc (natural language code) file extension expected, NLCfunctionName = " << NLCfunctionName << endl;
+		exit(0);
+	}
+	#endif
 	return NLCfunctionNameCleaned;
 }
 

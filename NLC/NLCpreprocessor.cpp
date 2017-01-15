@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q2b 18-August-2015
+ * Project Version: 1q2c 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -602,7 +602,7 @@ bool detectFunctionHeader(string* lineContents)
 }
 string getFunctionNameFromFunctionHeader(string* lineContents)
 {
-	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
+	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length() + string(NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR).length());
 	//cout << "getFunctionNameFromFunctionHeader{}: NLCfunctionName = " << NLCfunctionName << endl; 
 	return NLCfunctionName;
 	
@@ -613,7 +613,6 @@ string generateNLCfunctionFileName(string NLCfunctionName)
 	return functionFileName;
 }
 #endif
-
 
 bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logicalConditionOperator)
 {

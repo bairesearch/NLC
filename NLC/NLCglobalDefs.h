@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q2b 18-August-2015
+ * Project Version: 1q2c 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,6 +50,11 @@
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
 	//#define NLC_SUPPORT_GIA_NLP_OR_XML_INPUT	//disabled 1q2b
+	#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR	//1q2b
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR
+		#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR_COMBINED_FILE_NAME_APPEND_TEXT "afterInputListCombination.txt"
+		#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_ENFORCE_NLC_FILE_EXTENSIONS
+	#endif
 	//#ifdef NLC_USE_LIBRARY	//has not been defined yet
 		#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED	//1q1f	//new implementation: requires all functions specified in explicit input list (NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE) to have .nlc extension
 		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
@@ -408,6 +413,7 @@
 
 #define NLC_USE_PREPROCESSOR	//1g17a/18-July-2014	//reimplementation 1h1a+/22-July-2014 //first working 1h1f
 #ifdef NLC_USE_PREPROCESSOR
+	#define NLC_USE_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT "afterPreprocessedforNLConly.txt"
 	#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
 		#ifdef NLC_USE_ADVANCED_REFERENCING
 			#define NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT	//1k2a
@@ -610,7 +616,7 @@
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES
 	#define NLC_PREPROCESSOR_INDENTATION_CHAR (CHAR_TAB)
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_STRING "function"
-	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR (CHAR_SPACE)
+	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR (STRING_SPACE)
 	#define NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS (100)
 #endif
 

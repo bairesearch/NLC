@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q2b 18-August-2015
+ * Project Version: 1q2c 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1396,9 +1396,9 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 		indexOfFirstArgumentOrEnd = indexOfFirstArgumentName;
 	}
 	#endif
-	if(indexOfActionName != string::npos)
+	if(indexOfActionName != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
-		if(indexOfObjectName != string::npos)
+		if(indexOfObjectName != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
@@ -1426,7 +1426,7 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 			#endif
 		}
 	}
-	else if(indexOfObjectName != string::npos)
+	else if(indexOfObjectName != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
 		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfObjectName-(NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
@@ -1444,7 +1444,7 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 	}
 
 	#ifdef NLC_USE_LIBRARY
-	if(indexOfFirstArgumentName != string::npos)
+	if(indexOfFirstArgumentName != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		int indexOfArgument = indexOfFirstArgumentName+NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER_LENGTH;
 		bool stillFindingArguments = true;
@@ -1469,6 +1469,23 @@ void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string*
 	}	
 	#endif
 }
+
+string generateNLCfunctionHeader(string functionName, string functionOwnerName, bool hasFunctionOwnerClass, string functionObjectName, bool hasFunctionObjectClass)
+{
+	string NLCfunctionHeader = string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING) + NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR;
+	if(hasFunctionOwnerClass)
+	{
+		NLCfunctionHeader = NLCfunctionHeader + functionOwnerName + NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_DELIMITER;
+	}
+	NLCfunctionHeader = NLCfunctionHeader + functionName;
+	if(hasFunctionObjectClass)
+	{
+		NLCfunctionHeader = NLCfunctionHeader + NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER + functionObjectName;
+	}
+	NLCfunctionHeader = NLCfunctionHeader + CHAR_NEWLINE;
+	return NLCfunctionHeader;
+}
+
 #endif
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED

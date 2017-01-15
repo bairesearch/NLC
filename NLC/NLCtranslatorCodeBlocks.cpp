@@ -891,7 +891,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 		
 		GIAentityNode * parentEntity = generateInitialisationCodeBlock(currentCodeBlockInTree, currentEntity, sentenceIndex, parseConditionParents, parseLogicalConditions, true);
 
-		cout << "generateContextBlocksAndInitialiseParentIfNecessary parent: " << parentEntity->entityName << endl;
+		//cout << "generateContextBlocksAndInitialiseParentIfNecessary parent: " << parentEntity->entityName << endl;
 		NLCitem * propertyItem = new NLCitem(parentEntity, NLC_ITEM_TYPE_CLASS);
 		//context property item:
 		if(assumedToAlreadyHaveBeenDeclared(parentEntity))
@@ -943,14 +943,14 @@ GIAentityNode * generateInitialisationCodeBlock(NLCcodeblock ** currentCodeBlock
 {
 	GIAentityNode * parentEntity = entity;
 	
-	cout << "generateInitialisationCodeBlock: entity->NLCparsedForlogicalConditionOperations = " << entity->NLCparsedForlogicalConditionOperations << endl;
+	//cout << "generateInitialisationCodeBlock: entity->NLCparsedForlogicalConditionOperations = " << entity->NLCparsedForlogicalConditionOperations << endl;
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	if(!(entity->NLCparsedForlogicalConditionOperations) || parseLogicalConditions)
 	{
 	#endif
 
 		parentEntity = getParent(entity, sentenceIndex, parseConditionParents);
-		cout << "parentEntity = " << parentEntity->entityName << endl;
+		//cout << "parentEntity = " << parentEntity->entityName << endl;
 		
 		#ifdef NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
 		//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)

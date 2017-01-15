@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p11a 19-July-2015
+ * Project Version: 1p11b 19-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p11a 19-July-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p11b 19-July-2015" << endl;
 			exit(1);
 		}
 
@@ -1254,7 +1254,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 									connectionIter = actionEntity->actionSubjectEntity->erase(connectionIter);
 									if(foundConnection)
 									{
-										cout << "error" << endl;
+										cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: dual action connections detected" << endl;
 									}
 									foundConnection = true;
 								}
@@ -1284,7 +1284,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 									connectionIter = actionEntity->actionObjectEntity->erase(connectionIter);
 									if(foundConnection)
 									{
-										cout << "error" << endl;
+										cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: dual action connections detected" << endl;
 									}
 									foundConnection = true;
 								}
@@ -1314,7 +1314,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 									connectionIter = actionSubjectEntity->actionNodeList->erase(connectionIter);
 									if(foundConnection)
 									{
-										cout << "error" << endl;
+										cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: dual action connections detected" << endl;
 									}
 									foundConnection = true;
 								}
@@ -1344,7 +1344,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 									connectionIter = actionObjectEntity->incomingActionNodeList->erase(connectionIter);
 									if(foundConnection)
 									{
-										cout << "error" << endl;
+										cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: dual action connections detected" << endl;
 									}
 									foundConnection = true;
 								}
@@ -1364,50 +1364,98 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							exit(0);
 						}			
 
-						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
-						/*not required:
-						#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
-						sentenceIndex = actionEntity->sentenceIndexTemp;
-						#endif
-						*/
-						setCurrentSentenceIndex(sentenceIndex);
-						#endif
-						//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-						GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
-						GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
-						#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
-						if(actionEntity->negative)
+						#ifdef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC_HYBRID
+						bool artificialHaveEntityDetected = false;
+						for(vector<GIAentityConnection*>::iterator connectionIter = actionSubjectEntity->propertyNodeList->begin(); connectionIter != actionSubjectEntity->propertyNodeList->end(); connectionIter++)
 						{
-							propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
-							propertyConnectionReverse->negative = true;	//not used
+							GIAentityConnection* connection = (*connectionIter);
+							if(connection->sentenceIndexTemp == sentenceIndex)
+							{
+								if(connection->entity == actionObjectEntity)
+								{
+									if(artificialHaveEntityDetected)
+									{
+										cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: dual property connections detected" << endl;
+									}
+									artificialHaveEntityDetected = true;
+								}
+							}
 						}
-						#endif
-						#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
-						//imitates old code before 1i8g fix:
-						propertyConnection->sameReferenceSet = false;
-						propertyConnectionReverse->sameReferenceSet = false;
-						#endif
-						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
-						//added 1l8h - NB overwrite isReference is required these values will have been incorrectly determined by writeVectorConnection() - an alternative means of correction would be to use "int sentenceIndex = (actionEntity->actionSubjectEntity->front())->sentenceIndexTemp;", as the first connection added between 2 nodes is always deemed to be !isReference, and all additional connections are auto designated as isReference
-						propertyConnection->isReference = isReference;
-						propertyConnectionReverse->isReference = isReference;
-						#endif
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-						if(actionEntity->negative)
+						if(artificialHaveEntityDetected)
 						{
-							actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
+							artificialHaveEntityDetected = false;
+							for(vector<GIAentityConnection*>::iterator connectionIter = actionObjectEntity->propertyNodeReverseList->begin(); connectionIter != actionObjectEntity->propertyNodeReverseList->end(); connectionIter++)
+							{
+								GIAentityConnection* connection = (*connectionIter);
+								if(connection->sentenceIndexTemp == sentenceIndex)
+								{
+									if(connection->entity == actionSubjectEntity)
+									{
+										if(artificialHaveEntityDetected)
+										{
+											cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: dual property connections detected" << endl;
+										}
+										artificialHaveEntityDetected = true;
+									}
+								}
+							}
+							if(!artificialHaveEntityDetected)
+							{
+								cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: artificialHaveEntityDetected - connection (or sentence indicies) is inconsistent between property parent and property" << endl;
+								exit(0);
+							}
 						}
-						#endif
-						#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE
-						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
-						if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES_HAVE)
+						if(artificialHaveEntityDetected)
+						{
+							//leave existing property connection in tact (do not set possessionAuxiliaryHave)
+						}
+						else
 						{
 						#endif
-							propertyConnection->possessionAuxiliaryHave = true;	//added 1p10a
-							propertyConnectionReverse->possessionAuxiliaryHave = true;	//added 1p10a
-						#ifdef GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION
+						
+							#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+							/*not required:
+							#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
+							sentenceIndex = actionEntity->sentenceIndexTemp;
+							#endif
+							*/
+							setCurrentSentenceIndex(sentenceIndex);
+							#endif
+							//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
+							GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
+							GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, sameReferenceSet, rcmodIndicatesSameReferenceSet);
+							#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+							if(actionEntity->negative)
+							{
+								propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
+								propertyConnectionReverse->negative = true;	//not used
+							}
+							#endif
+							#ifndef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
+							//imitates old code before 1i8g fix:
+							propertyConnection->sameReferenceSet = false;
+							propertyConnectionReverse->sameReferenceSet = false;
+							#endif
+							#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
+							//added 1l8h - NB overwrite isReference is required these values will have been incorrectly determined by writeVectorConnection() - an alternative means of correction would be to use "int sentenceIndex = (actionEntity->actionSubjectEntity->front())->sentenceIndexTemp;", as the first connection added between 2 nodes is always deemed to be !isReference, and all additional connections are auto designated as isReference
+							propertyConnection->isReference = isReference;
+							propertyConnectionReverse->isReference = isReference;
+							#endif
+							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+							if(actionEntity->negative)
+							{
+								actionObjectEntity->negative = true;	//this is required to be set for the current logical conditions/conjunctions implementation
+							}
+							#endif
+							#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE
+							if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES)		//GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION: this should more precisely be set to RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES_HAVE  
+							{
+								propertyConnection->possessionAuxiliaryHave = true;	//added 1p10a
+								propertyConnectionReverse->possessionAuxiliaryHave = true;	//added 1p10a
+							}
+							#endif
+						#ifdef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC_HYBRID
 						}
-						#endif
 						#endif
 					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 					}

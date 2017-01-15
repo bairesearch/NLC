@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g12e 14-July-2014
+ * Project Version: 1g12f 14-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -508,7 +508,7 @@ void checkConditionForLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, G
 	{
 		if(!(conditionEntity->NLCconjunctionCondition))
 		{
-			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
+			cout << "conditionEntity = " << conditionEntity->entityName << endl;
 			conditionEntity->NLCconjunctionCondition = true;
 			GIAentityNode * logicalConditionConjunctionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
 			GIAentityNode * logicalConditionConjunctionSubjectEntity = (conditionEntity->conditionSubjectEntity->back())->entity;

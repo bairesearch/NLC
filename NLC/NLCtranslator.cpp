@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g12e 14-July-2014
+ * Project Version: 1g12f 14-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -243,48 +243,49 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
 			GIAentityNode * conditionEntity = (*entityIter);
-			if(conditionEntity->isCondition)
+			if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, true))	//could be set to false instead
 			{
-				if(checkSentenceIndexParsingCodeBlocks(conditionEntity, sentenceIndex, true))	//could be set to false instead
+				bool foundLogicalConditionOperation = false;
+				int logicalOperation;
+				bool foundLogicalConditionOperationBasic = textInTextArray(conditionEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
+				if(foundLogicalConditionOperationBasic && (logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR))
 				{
-					bool foundLogicalConditionOperation = false;
-					int logicalOperation;
-					bool foundLogicalConditionOperationBasic = textInTextArray(conditionEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
-					if(foundLogicalConditionOperationBasic && (logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR))
-					{
-						//FUTURE: NB this implementation must be made compatible with GIAdatabase.cpp and GIAxmlConversion.cpp (eg store entityIndex and sentenceIndexTemp). NB sentenceIndexTemp is necessary for other NLC functions also.
-						#ifdef NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE
-						if(conditionEntity->entityIndexTemp == 1)
-						{
-							foundLogicalConditionOperation = true;
-						}
-						#else
-						//because GIA Sentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition): 
-						for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
-						{
-							GIAentityNode * entity2 = (*entityIter);
-							if(entity2->sentenceIndexTemp == sentenceIndex)
-							{
-								if(entity2->entityIndexTemp = conditionEntity->entityIndex+1)
-								{
-									bool wordImmediatelySucceedingForFound = textInTextArray(entity2->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);				
-									foundLogicalConditionOperation = true;
-								}
-							}
-						}
-						#endif
-					}
-					else if(foundLogicalConditionOperationBasic)
+					//FUTURE: NB this implementation must be made compatible with GIAdatabase.cpp and GIAxmlConversion.cpp (eg store entityIndex and sentenceIndexTemp). NB sentenceIndexTemp is necessary for other NLC functions also.
+					#ifdef NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE
+					if(conditionEntity->entityIndexTemp == 1)
 					{
 						foundLogicalConditionOperation = true;
 					}
-
-					if(foundLogicalConditionOperation)
+					#else
+					//because GIA Sentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition): 
+					for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
 					{
-						#ifdef NLC_DEBUG
-						cout << "foundLogicalConditionOperation: " << conditionEntity->entityName << endl;
-						#endif
-						conditionEntity->NLClogicalConditionOperation = true;
+						GIAentityNode * entity2 = (*entityIter);
+						if(entity2->sentenceIndexTemp == sentenceIndex)
+						{
+							if(entity2->entityIndexTemp = conditionEntity->entityIndex+1)
+							{
+								bool wordImmediatelySucceedingForFound = textInTextArray(entity2->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);				
+								foundLogicalConditionOperation = true;
+							}
+						}
+					}
+					#endif
+				}
+				else if(foundLogicalConditionOperationBasic)
+				{
+					foundLogicalConditionOperation = true;
+				}
+				if(foundLogicalConditionOperation)
+				{
+					//concepts must be tagged as NLClogicalConditionOperation to prevent generateClassHeirarchy from creating class definitions for logical conditions
+					#ifdef NLC_DEBUG
+					cout << "foundLogicalConditionOperation: " << conditionEntity->entityName << endl;
+					#endif
+					conditionEntity->NLClogicalConditionOperation = true;
+
+					if(conditionEntity->isCondition)
+					{//ignore concepts					
 						
 						GIAentityNode * conditionSubject = NULL;
 						GIAentityNode * conditionObject = NULL;

@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15e 28-January-2015
+ * Project Version: 1n15f 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -638,7 +638,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1n15e 28-January-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1n15f 28-January-2015" << endl;
 			exit(1);
 		}
 
@@ -1255,7 +1255,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionSubjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS, false);
+						connectConditionInstanceToSubject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case A" << endl;
 						#endif
@@ -1266,7 +1266,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						GIAentityNode* conditionEntity = (*connectionIter)->entity;
 
 						(conditionEntity->conditionObjectEntity->back())->entity = actionObjectEntity;
-						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS, false);
+						connectConditionInstanceToObject(actionObjectEntity, conditionEntity, DEFAULT_SAME_REFERENCE_SET_VALUE_FOR_CONDITIONS);
 						#ifdef NLC_DEBUG
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty():  NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION case B" << endl;
 						#endif
@@ -1306,16 +1306,6 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						if(sameReferenceSet != (actionEntity->actionObjectEntity->back())->sameReferenceSet)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: sameReferenceSet inconsistent between action object and action subject" << endl;
-							exit(0);
-						}
-						//added 1n14a
-						bool rcmodIndicatesSameReferenceSet = (actionEntity->actionSubjectEntity->back())->rcmodIndicatesSameReferenceSet;
-						#ifdef NLC_DEBUG
-						//cout << "rcmodIndicatesSameReferenceSet = " << rcmodIndicatesSameReferenceSet << endl;
-						#endif
-						if(rcmodIndicatesSameReferenceSet != (actionEntity->actionObjectEntity->back())->rcmodIndicatesSameReferenceSet)
-						{
-							cout << "transformTheActionOfPossessionEgHavingIntoAproperty() error: rcmodIndicatesSameReferenceSet inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
 						#endif
@@ -1462,8 +1452,8 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						setCurrentSentenceIndex(sentenceIndex);
 						#endif
 						//addOrConnectPropertyToEntity(actionSubjectEntity, actionObjectEntity, false);
-						GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false, false);
-						GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false, false);
+						GIAentityConnection* propertyConnection = writeVectorConnection(actionSubjectEntity, actionObjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES, false);
+						GIAentityConnection* propertyConnectionReverse = writeVectorConnection(actionObjectEntity, actionSubjectEntity, GIA_ENTITY_VECTOR_CONNECTION_TYPE_REVERSE_PROPERTIES, false);
 						#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 						if(actionEntity->negative)
 						{
@@ -1477,11 +1467,6 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						{
 							propertyConnection->sameReferenceSet = true;
 							propertyConnectionReverse->sameReferenceSet = true;
-						}
-						if(rcmodIndicatesSameReferenceSet)
-						{
-							propertyConnection->rcmodIndicatesSameReferenceSet = true;
-							propertyConnectionReverse->rcmodIndicatesSameReferenceSet = true;
 						}
 						#endif
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS

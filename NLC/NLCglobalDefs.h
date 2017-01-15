@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m3c 30-November-2014
+ * Project Version: 1m3d 30-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -108,7 +108,7 @@
 		#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_ADD_DUPLICATES	//1j8a
 		#ifndef NLC_DISABLE_1l_CODE_FOR_DEBUG
 			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_PATCH //1l1a
-			//#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1l1b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+			#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS	//1l1b		//requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 				#define NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS	//1l1b
 				#define NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS	//1l1b

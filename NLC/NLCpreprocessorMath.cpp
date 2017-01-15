@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j18c 24-September-2014
+ * Project Version: 1j19a 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -207,6 +207,11 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	}		
 	#endif
 
+	//cout << "lineContents = " << *lineContents << endl;
+	//cout << "lineContents->length() = " << lineContents->length() << endl;
+	//cout << "lineContents[lineContents->length()-1] = " << (*lineContents)[lineContents->length()-1] << endl;
+	//exit(0);
+	
 	bool parsingWhiteSpace = false;	//added 1h5b 30-July-2014
 	
 	bool finalWordInSentenceFoundAndIsLegal = false;
@@ -475,7 +480,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
 		(*sentenceIndex) = (*sentenceIndex) + 1;
 	}
-	
+
 	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 	//if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 	//{

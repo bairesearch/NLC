@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15c 28-January-2015
+ * Project Version: 1n15d 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,6 +74,8 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, GIAentityNode* logicalConditionConjunctionToTest);
 	#endif
 	bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences);
+	#else
+	bool disableAllForLoopPredeterminers(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences);
 	#endif
 	/*
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE

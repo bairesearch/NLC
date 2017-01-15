@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15c 28-January-2015
+ * Project Version: 1n15d 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -87,12 +87,16 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		result = false;
 	}
 	#endif
-
 	//NLC translator Part prep C.
 	if(!identifyAndTagAllLogicalConditionOperations(entityNodesActiveListSentences, maxNumberSentences))
 	{
 		result = false;
 	}
+	#else
+	if(!disableAllForLoopPredeterminers(entityNodesActiveListSentences, maxNumberSentences))
+	{
+		result = false;
+	}	
 	#endif
 	
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
@@ -177,7 +181,7 @@ bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* ent
 	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
 	{
 		int sentenceIndex = sentenceIter->first;
-		GIAentityNode* entityNodesActiveListSentence = sentenceIter->second;
+		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
 	
 		NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainerFirstInOptimumPath = NULL;
 		int maximumNumberOfConjunctions = 0;
@@ -326,7 +330,7 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
 	{
 		int sentenceIndex = sentenceIter->first;
-		GIAentityNode* entityNodesActiveListSentence = sentenceIter->second;
+		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
 	
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 		{
@@ -420,6 +424,43 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 	}
 	return result;
 }
+#else
+
+
+bool disableAllForLoopPredeterminers(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences)
+{
+	//this function prevents predeterminers from being parsed by generateCodeBlocksFromMathTextNLPparsablePhrase/generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor (which prevents all entities from being parsed by generateCodeBlocksFromMathTextNLPparsablePhrase/generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor)
+	bool result = true;
+	
+	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
+	{
+		int sentenceIndex = sentenceIter->first;
+		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
+	
+		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
+		{
+			GIAentityNode* entity = (*entityIter);
+			bool wordImmediatelySucceedingForFound = textInTextArray(entity->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);
+			if(wordImmediatelySucceedingForFound)
+			{
+				entity->disabled = true;	//should not be required; disableInstanceAndConceptEntityNLC(entity);
+			}
+		}
+	}
+	return result;
+}
+/*
+void disableInstanceAndConceptEntityNLC(GIAentityNode* entity)
+{
+	entity->disabled = true;
+	if(!(entity->entityNodeDefiningThisInstance->empty()))
+	{
+		GIAentityNode* conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+		conceptEntity->disabled = true
+	}
+}
+*/
+
 #endif
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS

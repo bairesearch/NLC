@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15c 28-January-2015
+ * Project Version: 1n15d 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -550,7 +550,7 @@
 	#endif
 #endif
 #define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)
-static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml
+static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml (should sync with GIArules.xml redistributeStanfordRelationsSetPluralBasedOnPredeterminers)
 
 //#define NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 //#define NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS	//BAD

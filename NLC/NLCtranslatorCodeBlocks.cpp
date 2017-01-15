@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18a 21-July-2014
+ * Project Version: 1g18b 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -895,8 +895,6 @@ bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vect
 		GIAentityNode * actionEntity = (*entityIter);
 		if(actionEntity->isAction)
 		{
-			NLCcodeblock * firstCodeBlockInSentence = *currentCodeBlockInTree;
-
 			if(!(actionEntity->isActionConcept))
 			{
 				//cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
@@ -907,12 +905,6 @@ bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vect
 					generateActionCodeBlocks(currentCodeBlockInTree, actionEntity, sentenceIndex, NLCfunctionName);
 				}
 			}
-
-			*currentCodeBlockInTree = firstCodeBlockInSentence;
-			while((*currentCodeBlockInTree)->next != NULL)
-			{
-				*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
-			}
 		}
 	}
 	return true;
@@ -920,6 +912,8 @@ bool generateCodeBlocksPart3actions(NLCcodeblock ** currentCodeBlockInTree, vect
 
 void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * actionEntity, int sentenceIndex, string NLCfunctionName)
 {
+	NLCcodeblock * firstCodeBlockInSentence = *currentCodeBlockInTree;
+
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	if(!(actionEntity->NLCparsedForlogicalConditionOperations))
 	{
@@ -1065,6 +1059,12 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
 	}
 	#endif
+	
+	*currentCodeBlockInTree = firstCodeBlockInSentence;
+	while((*currentCodeBlockInTree)->next != NULL)
+	{
+		*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
+	}
 }
 
 #ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS

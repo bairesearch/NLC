@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1e 20-November-2013
+ * Project Version: 1e2a 21-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -849,7 +849,7 @@ void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVaria
 				NLPIclassDefinition * functionClassDefinition = *localListIter;
 				//cout << "functionClassDefinition->functionNameSpecial = " << functionClassDefinition->functionNameSpecial << endl;
 				//cout << "functionName = " << functionName << endl;
-				if(functionClassDefinition->functionNameSpecial ==  generateFunctionName(functionName))
+				if(functionClassDefinition->functionNameSpecial == generateFunctionName(functionName))
 				{
 					#ifdef NLPI_DEBUG
 					cout << "reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition() functionName = " << functionName << endl;

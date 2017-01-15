@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l5b 02-November-2014
+ * Project Version: 1l5c 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -559,7 +559,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 								GIAentityNode * logicalConditionOperationObject = NULL;
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
 								if(checkIfPhraseContainsAction(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
-								{//eg "If the sun fights, the dog is happy."
+								{//eg "The sun fights. / If the sun fights, the dog is happy."
 								
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
@@ -567,7 +567,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 									setDummyReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
 									GIAentityNode * actionEntityCompare = logicalConditionOperationObject;	//if statement comparison...
 									GIAentityNode * actionEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(actionEntityCompare);
-									if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject))
+									if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject, false))
 									{
 										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
 										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC: passed logical condition" << endl;
@@ -576,22 +576,22 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 								#endif
 								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
 								if(checkIfPhraseContainsSubstanceConcept(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
-								{//eg If red dogs are pies, eat the cabbage
+								{//eg "Red dogs are pies. / If red dogs are pies, eat the cabbage."
 								
 									//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 									//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 								
-									cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
+									//cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 
 									setDummyReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
 									GIAentityNode * substanceConceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
 									GIAentityNode * substanceConceptEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(substanceConceptEntityCompare);
-									if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject))
+									if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject, true))
 									{
 										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
-										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC: passed logical condition" << endl;
+										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS: passed logical condition" << endl;
 									}
 								} else
 								#endif
@@ -1306,12 +1306,15 @@ bool checkIfPhraseContainsSubstanceConcept(vector<GIAentityNode*> * entityNodesA
 
 void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
 {
+	//cout << "setDummyReferenceSetIDforAllEntitiesInPhrase: " << endl;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * connectedEntity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
 		{			
 			connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
+			//cout << "connectedEntity = " << connectedEntity->entityName << endl;
+			//cout << "connectedEntity->isConcept = " << connectedEntity->isConcept << endl;
 		}
 	}
 }

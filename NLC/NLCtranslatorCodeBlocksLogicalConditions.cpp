@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l5b 02-November-2014
+ * Project Version: 1l5c 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -208,7 +208,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								GIAentityNode * substanceConceptEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(substanceConceptEntityCompare);
 
 								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject))
+								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject, true))
 								{
 									if(!simpleNonConjunctionLogicalConditionNegative)
 									{
@@ -242,7 +242,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								GIAentityNode * actionEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(actionEntityCompare);
 
 								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject))
+								if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject, false))
 								{
 									if(!simpleNonConjunctionLogicalConditionNegative)
 									{
@@ -842,7 +842,7 @@ bool restoreCurrentCodeBlockInTreeToStartOfElseStatement(NLCcodeblock ** current
 #endif
 
 
-bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity)
+bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept, GIAentityNode * entity, bool compareSubstanceConcepts)
 {
 	bool result = false;
 
@@ -853,8 +853,11 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode * entityCompareConcept
 	bool traceModeIsQuery = false;
 	GIAreferenceTraceParameters referenceTraceParameters;
 	referenceTraceParameters.referenceSetID = referenceSetID;
-	referenceTraceParameters.linkSpecificConceptsAndActions = true;
-
+	if(!compareSubstanceConcepts)
+	{
+		referenceTraceParameters.linkSpecificConceptsAndActions = true;
+	}
+	
 	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareConcept->associatedInstanceNodeList->begin(); entityIter != entityCompareConcept->associatedInstanceNodeList->end(); entityIter++)
 	{
 		GIAentityNode * entityCompare = (*entityIter)->entity;

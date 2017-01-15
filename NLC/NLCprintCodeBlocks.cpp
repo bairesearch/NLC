@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l9d 05-November-2014
+ * Project Version: 1l9e 05-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1582,7 +1582,7 @@ string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progL
 	#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS_AND_OBJECTS
 	if(categoryList)
 	{
-		codePropertyTypeText = generateGenericListName(functionArgumentItem->name, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+		codePropertyTypeText = generateGenericListName(functionArgumentItem->instanceName, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
 	}
 	else
 	{

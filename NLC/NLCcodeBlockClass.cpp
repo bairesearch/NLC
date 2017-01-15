@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g13a 15-July-2014
+ * Project Version: 1g14a 15-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,6 +50,9 @@ NLClogicalConditionConjunctionVariables::NLClogicalConditionConjunctionVariables
 	logicalConditionConjunctionIndex = INT_DEFAULT_VALUE;
 	primaryEntityInLogicalConditionConjunctionSubset = NULL;
 	foundLogicalConditionConjunction = NULL;
+	#endif
+	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+	onlyGenerateConditionBlocksIfConnectionsParsedForNLC = false;
 	#endif
 }
 NLClogicalConditionConjunctionVariables::~NLClogicalConditionConjunctionVariables(void)
@@ -569,21 +572,23 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 	{
 		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-		//if(!(propertyConnection->parsedForNLCcodeBlocks))	//removed 1e5b
-		//{
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		if((propertyConnection->parsedForNLCcodeBlocks) || !(logicalConditionConjunctionVariables->onlyGenerateConditionBlocksIfConnectionsParsedForNLC))	//added option 1g13b 15-July-2014
+		{
+		#endif
 			GIAentityNode* propertyEntity = propertyConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{//only write conditions that are explicated in current sentence
 				#ifdef NLC_DEBUG
 				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
 				#endif
-				result = true;
 				propertyConnection->parsedForNLCcodeBlocks = true;
 				#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 				bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(propertyEntity, logicalConditionConjunctionVariables->primaryEntityInLogicalConditionConjunctionSubset, logicalConditionConjunctionVariables->logicalConditionConjunctionIndex, &(logicalConditionConjunctionVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 				if(!conjunctionConditionConnectionFound)
 				{
 				#endif
+					result = true;
 					createCodeBlockForGivenProperty(currentCodeBlockInTree, parentInstanceName, propertyEntity, sentenceIndex, logicalConditionConjunctionVariables);
 					#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 					propertyEntity->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionVariables->logicalConditionConjunctionIndex;
@@ -592,7 +597,9 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 				}
 				#endif
 			}
-		//}
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		}
+		#endif
 	}
 	return result;
 }
@@ -657,8 +664,10 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
 	{
 		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-		//if(!(conditionConnection->parsedForNLCcodeBlocks))	//removed 1e5b
-		//{
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		if((conditionConnection->parsedForNLCcodeBlocks) || !(logicalConditionConjunctionVariables->onlyGenerateConditionBlocksIfConnectionsParsedForNLC))	//added option 1g13b 15-July-2014
+		{
+		#endif
 			GIAentityNode* conditionEntity = conditionConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{
@@ -688,7 +697,9 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 				}
 				#endif
 			}
-		//}
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		}
+		#endif
 	}
 	return result;
 }

@@ -644,13 +644,18 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 2B - for non logical conditions only" << endl;
 			#endif
 			
-			//for NLP parsable phrase;
-			//eg1 "The value" in "The value = 5." 
-			//eg2 "the value" in "X = 74 + the value."
-			//eg3 "the dog's value" in "The dog's value = 4 + the number of chickens."
-			//planned algorithm: find parent entity in sentence entities (do not parse inverseConditionTwoWay conditions, only parse property parent if rcmodIndicatesSameReferenceSet [otherwise it indicates possessive relation eg Tom's boat]
+			/*for NLP parsable phrase;
+			eg1 "The value" in "The value = 5." 
+			eg2 "The value" in "The value = 5.5" 
+			eg3 "the value" in "X = 74 + the value."
+			eg4 "the dog's value" in "The dog's value = 4 + the number of chickens."
+			eg5 "The brown dog = X"
+			eg6 "A brown dog = X"
+			eg7 "Y = the value + the number of chickens"
+			algorithm: find parent entity in sentence entities (do not parse inverseConditionTwoWay conditions, only parse property parent if rcmodIndicatesSameReferenceSet [otherwise it indicates possessive relation eg Tom's boat]
 				//FUTURE NLC - reject all sentences with !sameReferenceSet connections [as these cannot be combined with mathtext]	
-
+			*/
+			
 			*currentCodeBlockInTree = createCodeBlockDeclareNewDecimalPointerVar(*currentCodeBlockInTree, parsablePhraseReferenceName);	//double* thedogsvalue = NULL;
 		
 			foundParsablePhrase = false;
@@ -794,6 +799,9 @@ bool parseParsablePhraseParent(NLCcodeblock** currentCodeBlockInTree, int senten
 		generateContextBlocksVariables->setCodeBlockInTreeAtBaseLevel = true;
 		#endif
 	}
+	
+	cout << "foundChildEntity = " << foundChildEntity << endl;
+	cout << "childEntity = " << (*childEntity)->entityName << endl;
 	
 	bool contextFound = false;
 	bool generatedContextForChild = false;

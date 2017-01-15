@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g2a 01-July-2014
+ * Project Version: 1g3a 01-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -203,10 +203,17 @@ bool generateCodeBlocksPart0(NLCcodeblock ** currentCodeBlockInTree, vector<GIAe
 							#endif
 						}
 						else
-						{//eg If the sun is bright, the dog is happy. / If the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
+						{//eg If/While the sun is bright, the dog is happy. / If/While the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
 							//code copied from [*^]
+							//handle property logical operations; eg "If the sun is bright" in "If the sun is bright, the dog is happy"
 							generateContextBlocksAndInitialiseParentIfNecessary(currentCodeBlockInTree, conditionObject, sentenceIndex, true, logicalOperation, negative);	//NB this will set parsedForNLCcodeBlocks to true, so NLCconditionLogicalOperations can be set to false without causing any problems (ie generateCodeBlocksPart1/generateCodeBlocksPart2 will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
 							tagAllEntitiesInSentenceSubsetAsPertainingToConditionLogicalOperation(conditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+							
+							//handle condition logical operations; eg "If the basket is near the house" in "If the basket is near the house, the dog is happy." //added GIA 1g3a
+							bool objectRequiredTempVar = false;	//not used
+							NLCitem * conditionObjectItem = NULL;
+							*currentCodeBlockInTree = generateConditionBlocks(*currentCodeBlockInTree, conditionObject, &conditionObjectItem, sentenceIndex, &objectRequiredTempVar, NLC_ITEM_TYPE_TEMPVAR);
+							
 							passedConditionObject = true;
 						}
 

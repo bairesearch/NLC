@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v1a 11-October-2016
+ * Project Version: 1v2a 11-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -188,9 +188,8 @@ bool splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(string* l
 	string logicalConditionCommandSubphraseContents = "";
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
-		bool foundImplicitConjunctions = false;	//not used
 		int logicalConditionCommandSubphraseLineIndex = INT_DEFAULT_VALUE;
-		if(!generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(lineContents, detectedLogicalConditionCommand, &foundImplicitConjunctions, &logicalConditionCommandSubphraseContents, &logicalConditionCommandSubphraseLineIndex))
+		if(!generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(lineContents, detectedLogicalConditionCommand, &logicalConditionCommandSubphraseContents, &logicalConditionCommandSubphraseLineIndex))
 		{
 			result = false;
 		}

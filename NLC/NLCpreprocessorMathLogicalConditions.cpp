@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v1a 11-October-2016
+ * Project Version: 1v2a 11-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -467,11 +467,10 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubje
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, bool* foundImplicitConjunctions, string* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex)
+bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, string* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex)
 {
 	bool result = true;
 
-	*foundImplicitConjunctions = false;
 	*detectedLogicalConditionCommand = false;
 
 	#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
@@ -516,7 +515,7 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 		currentNLCsubphraseInList->hasConjunction = conjunctionFoundInSubphrase;
 		if(conjunctionFoundInSubphrase)
 		{
-			currentNLCsubphraseInList->phraseContents = subphraseContents.substr(0, subphraseContents.length()-preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[conjunctionTypeOfConjunction].length());	//sub phrase contents must have conjunction removed to enable replaceLogicalConditionNaturalLanguageMathWithSymbols to be on logicalConditionCommandSubphraseContents in parallel with lineContents, enabling logicalConditionCommandSubphraseContents to be found within the lineContents of splitMathDetectedLineIntoNLPparsablePhrases() and an nlp parsable phrase phrase index to be assigned to the command
+			currentNLCsubphraseInList->phraseContents = subphraseContents.substr(preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[conjunctionTypeOfConjunction].length());	//remove conjunction from subphrase contents (redundant)
 			currentNLCsubphraseInList->conjunctionType = conjunctionTypeOfConjunction;
 		}
 		else
@@ -550,7 +549,7 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 	int numberOfSuperPhrases = commaIndex;
 
 	/*
-	FUTURE support multiple logical condition commands in one one; NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_ON_ONE_LINE eg "if the house is blue, write the letter and read the book"/"else write the letter and read the book."
+	FUTURE support multiple logical condition commands in one line; NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_ON_ONE_LINE eg "if the house is blue, write the letter and read the book"/"else write the letter and read the book."
 	support logical condition mathText commands on same line NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_MATHTEXT_COMMANDS_ON_SAME_LINE eg "if the house is blue, X = 3+5"
 	NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION support implicit conjunctions, eg "if the house is blue, the cat is green, and the bike is tall, ride the bike"
 		algorithm: to determine whether text belongs to the logical condition test or command;
@@ -621,7 +620,6 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 	}
 
 
-
 	//if a phrase without a preceeding conjunction occurs after a phrase with a preceeding conjunction, take this phrase as the start of the logical condition command
 	currentNLCsubphraseInList = firstNLCsubphraseInList;
 	previousPhraseHadConjunction = false;
@@ -645,6 +643,16 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 				#endif
 				*logicalConditionCommandSubphraseContents = currentNLCsubphraseInList->phraseContents;
 				*logicalConditionCommandSubphraseLineIndex = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
+				#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN
+				if(logicalConditionCommandSubphraseContents->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME) == 0)	//ie ", then.."
+				{
+					//eg If the dog is happy, then ride the bike.
+					int thenLength = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME).length();
+					*logicalConditionCommandSubphraseContents = logicalConditionCommandSubphraseContents->substr(thenLength);
+					*logicalConditionCommandSubphraseLineIndex = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
+				}
+				#endif
+				
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: found first phrase in logical condition command" << endl;
 				cout << "logicalConditionCommandSubphraseContents = " <<* logicalConditionCommandSubphraseContents << endl;
@@ -670,6 +678,22 @@ bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* line
 	//cout << "lineContents = " <<* lineContents << endl;
 	#endif
 
+	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN
+	if(!(*detectedLogicalConditionCommand))
+	{
+		int thenIndex = lineContents->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME);
+		if(thenIndex != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			//eg If the dog is happy then ride the bike.
+			int thenLength = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME).length();
+			*detectedLogicalConditionCommand = true;
+			*logicalConditionCommandSubphraseContents = lineContents->substr(thenIndex + thenLength);
+			*logicalConditionCommandSubphraseLineIndex = thenIndex;
+		}		
+	
+	}
+	#endif
+	
 	return result;
 }
 

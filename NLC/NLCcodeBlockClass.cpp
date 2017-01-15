@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h4b 29-July-2014
+ * Project Version: 1h4c 29-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -948,7 +948,7 @@ NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree
 {
 	NLCitem * conditionItem = new NLCitem(whileLogicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(conditionItem);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
+	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h4b 29-July-2014
+ * Project Version: 1h4c 29-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -107,8 +107,8 @@ using namespace std;
 #ifdef NLC_PREPROCESSOR_MATH
 	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (43)
 #endif
+#define NLC_CODEBLOCK_TYPE_WHILE (44)
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
-
 
 /*
 //#define NLC_CODEBLOCK_TYPE_IF_IS_ACTION_SUBJECT (10)

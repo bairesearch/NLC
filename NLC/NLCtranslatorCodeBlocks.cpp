@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g8a 11-July-2014
+ * Project Version: 1g8b 11-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -103,7 +103,7 @@ bool declareLocalPropertyListsForAllNonSpecificIndefiniteEntities(NLCcodeblock *
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = (*entityIter);
-		if(!(entity->isConcept) && !(entity->isAction))
+		if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceQuality))
 		{
 			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{

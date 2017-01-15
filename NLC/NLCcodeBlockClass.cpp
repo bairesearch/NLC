@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g11b 13-July-2014
+ * Project Version: 1g12a 13-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -579,7 +579,7 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 				#endif
 				result = true;
 				propertyConnection->parsedForNLCcodeBlocks = true;
-				#ifdef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
+				#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 				bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(propertyEntity, logicalConditionConjunctionVariables->primaryEntityInLogicalConditionConjunctionSubset, logicalConditionConjunctionVariables->logicalConditionConjunctionIndex, &(logicalConditionConjunctionVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 				if(!conjunctionConditionConnectionFound)
 				{
@@ -588,7 +588,7 @@ bool createCodeBlockForGivenProperties(NLCcodeblock ** currentCodeBlockInTree, s
 					#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 					propertyEntity->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionVariables->logicalConditionConjunctionIndex;
 					#endif
-				#ifdef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
+				#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 				}
 				#endif
 			}
@@ -663,11 +663,9 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 				bool conjunctionConditionFound = textInTextArray(conditionEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 				if(!conjunctionConditionFound)
 				{//do not parse conjunction conditions
-					#ifdef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
 					bool conjunctionConditionConnectionFound = hasConjunctionConditionConnection(conditionEntity, logicalConditionConjunctionVariables->primaryEntityInLogicalConditionConjunctionSubset, logicalConditionConjunctionVariables->logicalConditionConjunctionIndex, &(logicalConditionConjunctionVariables->foundLogicalConditionConjunction));	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 					if(!conjunctionConditionConnectionFound)
 					{
-					#endif
 				#endif
 						#ifdef NLC_DEBUG
 						cout << "createCodeBlockForGivenConditions: " << conditionEntity->entityName << endl;
@@ -678,16 +676,12 @@ bool createCodeBlockForGivenConditions(NLCcodeblock ** currentCodeBlockInTree, s
 						conditionEntity->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionVariables->logicalConditionConjunctionIndex;
 						#endif
 				#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-					#ifdef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
 					}
-					#endif
 				}
-				#ifdef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
 				else
 				{
 					logicalConditionConjunctionVariables->foundLogicalConditionConjunction = conditionEntity;
 				}
-				#endif
 				#endif
 			}
 		//}
@@ -737,7 +731,6 @@ bool createCodeBlockForGivenCondition(NLCcodeblock ** currentCodeBlockInTree, st
 }
 
 #ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
-#ifdef NLC_PARSE_CHILD_PROPERTIES_AND_CONDITIONS_OF_CONTEXT_PARENT
 bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentityNode * primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode ** foundLogicalConditionConjunction)	//dont need to test for mismatched logicalConditionConjunctionIndex; it is just for debugging
 {
 	bool conjunctionConditionConnectionFound = false;
@@ -793,7 +786,6 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 		
 	return conjunctionConditionConnectionFound;	
 }
-#endif
 #endif
 
 

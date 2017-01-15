@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3d 27-October-2013
+ * Project Version: 1c4a 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -62,7 +62,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 	vector<NLPIitem *> implictlyDeclaredFunctionListTopLevel;	//top level function list (used to store implicitly declared functions without subject/context/owner)	
 	#endif
 	
-	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, "main");
+	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, "main", entityNodesActiveListComplete);
 
 	//NLPIcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
 	//for each action (command) in sentence;
@@ -113,8 +113,11 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					{
 						functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						
+						//MOVED 29 October 2013
+						/*
 						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-						functionItem->actionInstance = actionEntity;
+						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(currentCodeBlockInTree->parameters));
+
 						//detect action properties and conditions (and disable these for NLPI generate code block parse: they will become function execution arguments)
 						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
 						{					
@@ -131,6 +134,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							actionProperty->parsedForNLPIcodeBlocks = true;
 						}
 						#endif
+						*/
 					}
 					
 					if(actionHasObject)
@@ -196,6 +200,29 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem);
 					}					
 
+					if(actionHasObject || actionHasSubject)
+					{						
+						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(currentCodeBlockInTree->parameters));
+
+						//detect action properties and conditions (and disable these for NLPI generate code block parse: they will become function execution arguments)
+						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+						{					
+							GIAentityNode * actionCondition = (*entityIter)->entity;
+							(*entityIter)->parsedForNLPIcodeBlocks = true;
+							actionCondition->parsedForNLPIcodeBlocks = true;
+						}
+						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
+						{
+							//string actionProperty = *localListIter2;
+							GIAentityNode * actionProperty = (*entityIter)->entity;
+							(*entityIter)->parsedForNLPIcodeBlocks = true;
+							actionProperty->parsedForNLPIcodeBlocks = true;
+						}
+						#endif
+					}
+					
+					
 					//cout << "h6" << endl;
 					/*		
 					findContextOfObject(objectEntity)
@@ -306,7 +333,6 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							bool alreadyAdded = checkDuplicateCondition(conditionEntity, entity);
 							if(!alreadyAdded)
 							{						
-
 								//cout << "sentenceIndexB = " << sentenceIndex << endl;
 								currentCodeBlockInTree = createCodeBlockAddCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex);
 								entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 
@@ -437,6 +463,9 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							//cout << "propertyList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->propertyList.push_back(targetClassDefinition);
+							
+							NLPIitem * classDeclarationPropertiesListItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);
+							targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
 						}
 					}
 					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
@@ -448,7 +477,14 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->conditionList.push_back(targetClassDefinition);
-							targetClassDefinition->actionOrConditionInstance = targetEntity;
+							
+							NLPIitem * classDeclarationConditionsListItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);	//for special case (as actions and conditions are referenced by instance)
+							if(!(targetEntity->conditionObjectEntity->empty()))
+							{								
+								string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+								classDeclarationConditionsListItem->className2 = conditionObjectClassName;				
+							}				
+							targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
 						}						
 					}	
 					#ifndef NLPI_BAD_IMPLEMENTATION
@@ -481,7 +517,16 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->functionList.push_back(targetClassDefinition);
-							targetClassDefinition->actionOrConditionInstance = targetEntity;
+							
+							if(!(targetEntity->actionObjectEntity->empty()))
+							{							
+								GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
+								NLPIitem * classDeclarationFunctionItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT);	//for special case (as actions and conditions are referenced by instance)
+								targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+							}
+							#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+							generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
+							#endif								
 						}
 					}
 				}
@@ -499,7 +544,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 		{
 			bool localListIterErased = false;
 			NLPIclassDefinition * variableClassDefinition = *localListIter;
-			string variableName = variableClassDefinition->name;
+			string variableName = variableClassDefinition->className;
 			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
 			{
 				if(!localListIterErased)
@@ -524,7 +569,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 			bool localListIterErased = false;
 			NLPIclassDefinition * variableClassDefinition = *localListIter;
 			//string variableName = variableClassDefinition->actionOrConditionInstance->entityName;
-			string variableName = variableClassDefinition->name;
+			string variableName = variableClassDefinition->className;
 			//cout << "classDefinition->name = " << classDefinition->name << endl;		
 			//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;		
 
@@ -551,7 +596,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 			bool localListIterErased = false;
 			NLPIclassDefinition * variableClassDefinition = *localListIter;
 			//string variableName = variableClassDefinition->actionOrConditionInstance->entityName;
-			string variableName = variableClassDefinition->name;
+			string variableName = variableClassDefinition->className;
 			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
 			{
 				if(!localListIterErased)
@@ -583,7 +628,7 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->name;
+			string targetName = targetClassDefinition->className;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -596,7 +641,7 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
-			string targetName = targetClassDefinition->name;
+			string targetName = targetClassDefinition->className;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -609,7 +654,7 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 		{
 			NLPIclassDefinition * targetClassDefinition = *localListIter;
 			//string targetName = targetClassDefinition->actionOrConditionInstance->entityName;
-			string targetName = targetClassDefinition->name;
+			string targetName = targetClassDefinition->className;
 			if(targetName == variableName)
 			{
 				foundVariable = true;
@@ -630,3 +675,111 @@ bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string var
 	return foundVariable;
 }
 #endif
+
+
+
+#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+void generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, vector<NLPIitem*> * parameters)
+{
+	generateFunctionPropertyConditionArguments(actionEntity, parameters, false);
+	
+	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
+	//Part b: generate object initialisations based on action concepts (class inheritance)
+	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+	{
+		GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+		definitionConnection->parsedForNLPIcodeBlocks = true;
+		GIAentityNode* definitionEntity = definitionConnection->entity;
+		if(definitionEntity->isActionConcept)
+		{
+			generateFunctionPropertyConditionArguments(definitionEntity, parameters, true);
+		}
+	}
+	#endif
+}
+
+void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, vector<NLPIitem*> * parameters, bool performChildActionDuplicateCheck)
+{
+	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+	{
+		GIAentityNode * actionCondition = (*entityIter)->entity;
+		bool alreadyAdded = false;
+		if(performChildActionDuplicateCheck)
+		{
+			alreadyAdded = checkDuplicateCondition(actionCondition, parameters);
+		}
+		if(!alreadyAdded)
+		{
+			GIAentityNode * conditionObject = NULL;
+			if(!(actionCondition->conditionObjectEntity->empty()))
+			{
+				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
+			}					
+			string conditionObjectClassName = generateClassName(conditionObject);
+			NLPIitem * argumentConditionItem = new NLPIitem(actionCondition, NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
+			argumentConditionItem->className2 = conditionObjectClassName;
+			parameters->push_back(argumentConditionItem);		
+		}
+	}
+	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
+	{
+		//string actionProperty = *localListIter2;
+		GIAentityNode * actionProperty = (*entityIter)->entity;
+		bool alreadyAdded = false;
+		if(performChildActionDuplicateCheck)
+		{
+			alreadyAdded = checkDuplicateProperty(actionProperty, parameters);
+		}
+		if(!alreadyAdded)
+		{	
+			NLPIitem * argumentPropertyItem = new NLPIitem(actionProperty, NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY);
+			parameters->push_back(argumentPropertyItem);		
+		}
+	}
+}
+
+bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLPIitem*> * parameters)
+{
+	bool alreadyAdded = false;
+	for(vector<NLPIitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+	{
+		NLPIitem * currentItem = *parametersIterator;
+		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_PROPERTY)
+		{
+			if(propertyEntity->entityName == currentItem->className)
+			{
+				alreadyAdded = true;
+			}
+		}
+		
+	}
+	return alreadyAdded;
+}
+
+bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLPIitem*> * parameters)
+{
+	bool alreadyAdded = false;
+	for(vector<NLPIitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+	{
+		NLPIitem * currentItem = *parametersIterator;
+		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION)
+		{
+			string conditionObjectEntityName = "";
+			if(!(conditionEntity->conditionObjectEntity->empty()))
+			{
+				conditionObjectEntityName = (conditionEntity->conditionObjectEntity->back())->entity->entityName;
+			}
+
+			if((conditionEntity->entityName == currentItem->className) && (conditionObjectEntityName == currentItem->className2))
+			{
+				alreadyAdded = true;
+			}
+		}
+	}
+	return alreadyAdded;
+}
+
+#endif
+
+
+

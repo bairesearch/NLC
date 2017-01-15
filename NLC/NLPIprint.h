@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3d 27-October-2013
+ * Project Version: 1c4a 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -46,26 +46,25 @@ using namespace std;
 #include "NLPIclassDefinition.h"
 
 bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
-	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
-		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang);
-			string generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang, bool performChildActionDuplicateCheck, GIAentityNode * childActionEntity);
-		#endif	
+	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);	
+		string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
+		string generateCodePropertyListDefinitionText(string targetClassName, int progLang);
 	bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string * code, int level);
-		void printLine(string command, int level, string * code);
 		#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-		string generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritance(GIAentityNode * actionEntity, string functionArguments, int progLang);			
-			string generateFunctionExecutionPropertyConditionArguments(GIAentityNode * actionEntity, string functionArguments, int progLang, bool performChildActionDuplicateCheck, GIAentityNode * childActionEntity);
-				string generateCodeConditionPairReferenceText(GIAentityNode * conditionEntity, GIAentityNode * conditionObjectEntity, int progLang);
-				//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
-					string generateInstanceNameWithContext(GIAentityNode * entity, int progLang);
+		void generateFunctionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 			string generateCodeConditionPairDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-			string generateCodePropertyDefinitionText(string propertyClassName, int progLang);
+			string generateCodePropertyDefinitionText(string propertyClassName, int progLang);		
+		void generateFunctionExecutionPropertyConditionArgumentsWithActionConceptInheritanceString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+			string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditionItem, int progLang);
+			//string generateCodePropertyReferenceText(GIAentityNode * propertyEntity, int progLang);
+				string generateInstanceNameWithContext(string instanceName, vector<string> * context, int progLang);
 		#endif
+		void printLine(string command, int level, string * code);
 		string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 		string generateConditionPairName(string conditionClassName, string conditionObjectClassName);
+		#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+		string generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
+		#endif
 				
-string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
-string generateCodePropertyListDefinitionText(string targetClassName, int progLang);
 
 #endif

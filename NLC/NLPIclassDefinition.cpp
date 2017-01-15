@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3d 27-October-2013
+ * Project Version: 1c4a 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -34,19 +34,17 @@
 #include "NLPIclassDefinition.h"
 
 
-NLPIclassDefinition::NLPIclassDefinition(string newName)
+NLPIclassDefinition::NLPIclassDefinition(string newClassName)
 {
-	name = newName;	
+	className = newClassName;	
 
 	isActionOrConditionInstanceNotClass = false;
-	actionOrConditionInstance = NULL;
 }
 NLPIclassDefinition::NLPIclassDefinition(void)
 {
-	name = "";	
+	className = "";	
 
 	isActionOrConditionInstanceNotClass = false;
-	actionOrConditionInstance = NULL;
 }
 NLPIclassDefinition::~NLPIclassDefinition(void)
 {
@@ -70,7 +68,7 @@ NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classD
 	for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{	
 		NLPIclassDefinition *  currentClassDef = *classDefinitionIter;
-		if(currentClassDef->name == className)
+		if(currentClassDef->className == className)
 		{
 			classDefinitionFound = currentClassDef;
 			*foundClassDefinition = true;

@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3d 27-October-2013
+ * Project Version: 1c4a 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -45,6 +45,7 @@
 using namespace std;
 
 #include "NLPIglobalDefs.h"
+#include "NLPIitem.h"
 #include "GIAglobalDefs.h"
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
@@ -69,8 +70,6 @@ using namespace std;
 #define NLPI_PROGRAMMING_LANGUAGE_PYTHON (6)
 #define NLPI_PROGRAMMING_LANGUAGE_DEFAULT (NLPI_PROGRAMMING_LANGUAGE_CPP)
 #define NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES (7)	//this needs to be moved to NLPIglobalDefs.h
-
-#define NLPI_ITEM_INSTANCE_ID_UNDEFINED (-1)
 
 static string progLangOpenBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{", "{", "{", "{", "{", "{", "{"};
 static string progLangCloseBlock[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"}", "}", "}", "}", "}", "}", "}"};
@@ -119,39 +118,6 @@ static int codeBlockTypeIfStatementArray[GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_
 
 //shared with GIAtranslatorDefineReferencing.cpp
 
-#define NLPI_ITEM_TYPE_UNDEFINED (-1)
-#define NLPI_ITEM_TYPE_OBJECT (0)
-#define NLPI_ITEM_TYPE_CLASS (1)
-#define NLPI_ITEM_TYPE_FUNCTION (2)
-#define NLPI_ITEM_TYPE_TEMPVAR (3)
-#define NLPI_ITEM_TYPE_TEMPVAR_APPENDITION "Temp"
-#define NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION "PropertyList"
-#define NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION "ConditionList"
-#define NLPI_ITEM_TYPE_DEFINITIONLISTVAR_APPENDITION "DefinitionList"
-#define NLPI_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION "ConditionPair"
-
-#define NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
-
-class NLPIitem
-{
-public:
-
-	NLPIitem(void);
-	NLPIitem(GIAentityNode * entity, int newItemType);
-	NLPIitem(string newName, int newItemType);
-	~NLPIitem(void);
-
-	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-	GIAentityNode * actionInstance;	//only used by NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS at present (to fill in function execution arguments based on action properties and conditions)
-	#endif
-	
-	int itemType;
-	string name;		//eg dog
-	string instanceName;	//eg dog1
-	vector<string> context;	//item context
-};
-
-
 class NLPIcodeblock
 {
 public:
@@ -173,19 +139,15 @@ public:
 	NLPIcodeblock * next;
 };
 
-string generateClassName(GIAentityNode * entity);
-string generateInstanceName(GIAentityNode * entity);
-string generateActionName(GIAentityNode * entity);
-
-//string generateItemName(GIAentityNode * entity, int itemType);
-string convertLongToString(long number);
-
 NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem);
 NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem);
 NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
-NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName);
+NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName, vector<GIAentityNode*> * entityNodesActiveListComplete);
+	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLPIitem*> * parameters);
+	#endif
 NLPIcodeblock * createCodeBlockIfHasProperties(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode * entity, int sentenceIndex);
 	NLPIcodeblock * createCodeBlockIfHasProperty(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, GIAentityNode* propertyEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item,  GIAentityNode * entity, int sentenceIndex);

@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3d 27-October-2013
+ * Project Version: 1c4a 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -52,76 +52,6 @@ NLPIcodeblock::NLPIcodeblock(void)
 NLPIcodeblock::~NLPIcodeblock(void)
 {
 }
-
-NLPIitem::NLPIitem(void)
-{
-	instanceName = "";
-	itemType = NLPI_ITEM_INSTANCE_ID_UNDEFINED;
-	name = "";
-	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-	actionInstance = NULL;
-	#endif	
-}
-NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
-{
-	itemType = newItemType;
-	name = generateClassName(entity);
-	instanceName = generateInstanceName(entity);
-	//entity->parsedForNLPIcodeBlocks = true;
-	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-	actionInstance = NULL;
-	#endif	
-}
-NLPIitem::NLPIitem(string newName, int newItemType)
-{
-	instanceName = "";
-	itemType = newItemType;
-	name = newName;
-	#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-	actionInstance = NULL;
-	#endif	
-}
-NLPIitem::~NLPIitem(void)
-{
-}
-
-string generateClassName(GIAentityNode * entity)
-{
-	string className = "";
-	#ifndef NLPI_BAD_IMPLEMENTATION
-	className = entity->entityName + "Class";
-	#else
-	if(entity->isConcept)
-	{
-		className = entity->entityName + "Class";
-	}
-	else
-	{
-		className = entity->entityName + convertLongToString(entity->idInstance) + "Class";
-	}
-	#endif
-	return className;
-}
-string generateInstanceName(GIAentityNode * entity)
-{
-	string instanceName = entity->entityName + convertLongToString(entity->idInstance);
-	return instanceName;
-}
-string generateActionName(GIAentityNode * entity)
-{
-	string actionName = entity->entityName;
-	return actionName;
-}
-
-string convertLongToString(long number)
-{
-	//return to_string(number);	//C++11
-	
-	char tempString[100];
-	sprintf(tempString, "%ld", number);
-	return string(tempString);
-}
-
 
 
 
@@ -197,13 +127,39 @@ NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIi
 }
 
 
-NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName)
+NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
 {
 	NLPIitem * functionItem = new NLPIitem(functionName, NLPI_ITEM_TYPE_FUNCTION);
 	currentCodeBlockInTree->parameters.push_back(functionItem);
+	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+	generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters));
+	#endif
 	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_NEW_FUNCTION);
 }
 
+#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
+void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLPIitem*> * parameters)
+{
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = *entityIter;
+		if(entity->isUnreferencedDefinite)
+		{
+			//detected "the x" without declaring x (ie implicit declaration)
+			if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
+			{
+				NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
+				parameters->push_back(thisFunctionArgumentInstanceItem);
+			}
+			else
+			{
+				NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE);
+				parameters->push_back(thisFunctionArgumentInstanceItem);			
+			}
+		}
+	}	
+}
+#endif
 
 
 /*
@@ -276,7 +232,7 @@ NLPIcodeblock * createCodeBlockIfHasCondition(NLPIcodeblock * currentCodeBlockIn
 	if(!(conditionEntity->conditionObjectEntity->empty()))
 	{
 		currentCodeBlockInTree->parameters.push_back(item);
-		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_FUNCTION);
+		NLPIitem * conditionItem = new NLPIitem(conditionEntity, NLPI_ITEM_TYPE_FUNCTION);		//NLPI_ITEM_TYPE_FUNCTION??
 		currentCodeBlockInTree->parameters.push_back(conditionItem);
 		
 		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
@@ -448,6 +404,7 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceInd
 	return result;
 }
 
+
 bool checkDuplicateProperty(GIAentityNode * propertyEntity, GIAentityNode * childActionEntity)
 {
 	bool alreadyAdded = false;
@@ -485,6 +442,4 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, GIAentityNode * ch
 	}
 	return alreadyAdded;
 }
-
-
 

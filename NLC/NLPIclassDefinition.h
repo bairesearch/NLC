@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c3d 27-October-2013
+ * Project Version: 1c4a 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -45,6 +45,7 @@
 using namespace std;
 
 #include "NLPIglobalDefs.h"
+#include "NLPIitem.h"
 #include "GIAglobalDefs.h"
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
@@ -82,17 +83,18 @@ class NLPIclassDefinition
 public:
 
 	NLPIclassDefinition(void);
-	NLPIclassDefinition(string newName);
+	NLPIclassDefinition(string newClassName);
 	~NLPIclassDefinition(void);
 	
-	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
+	string className;	//className (or instanceName if isActionOrConditionInstanceNotClass) 
 	vector<NLPIclassDefinition *> propertyList;	//subclass
 	vector<NLPIclassDefinition *> conditionList;	//declared conditions
 	vector<NLPIclassDefinition *> definitionList;	//inherited parents
 	vector<NLPIclassDefinition *> functionList;
 
 	bool isActionOrConditionInstanceNotClass;
-	GIAentityNode * actionOrConditionInstance;
+	//GIAentityNode * actionOrConditionInstance;
+	vector<NLPIitem*> parameters;
 	
 	bool isDisabledChildReplicantDeclaration;
 };

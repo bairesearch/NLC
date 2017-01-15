@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n19b 01-February-2015
+ * Project Version: 1n19c 01-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,6 +38,7 @@
 #endif
 #ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 #include "NLCtranslatorCodeBlocksOperations.h"	//required for getSameReferenceSetUniqueParent()
+#include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
 #endif
 
 bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
@@ -234,13 +235,11 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 											}
 										}
 										#endif
-										bool parentClassIsNotChildOfTheChildClass = true;
-										
-										
+										bool parentClassIsChildOfTheChildClass = isParentClassAChildOfChildClass(entityNode, targetEntity);
 										#ifdef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
-										if(parentClassIsNotChildOfTheChildClass)
+										if(!parentClassIsChildOfTheChildClass)
 										#else
-										if(indefiniteChild || parentClassIsNotChildOfTheChildClass)
+										if(indefiniteChild || !parentClassIsChildOfTheChildClass)
 										#endif
 										{	
 										#endif
@@ -426,6 +425,31 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 
 	return result;
 }
+
+#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
+bool isParentClassAChildOfChildClass(GIAentityNode* childEntity, GIAentityNode* parentEntity)
+{	
+	bool parentClassIsChildOfChildClass = false;
+	GIAentityNode* parentConceptEntity = getPrimaryConceptNodeDefiningInstance(parentEntity);
+
+	for(vector<GIAentityConnection*>::iterator connectionIter = parentConceptEntity->associatedInstanceNodeList->begin(); connectionIter != parentConceptEntity->associatedInstanceNodeList->end(); connectionIter++)
+	{
+		GIAentityNode* parentSubstanceConceptEntity = (*connectionIter)->entity;
+		if(parentSubstanceConceptEntity->isSubstanceConcept || parentSubstanceConceptEntity->isActionConcept)
+		{
+			for(vector<GIAentityConnection*>::iterator connectionIter2 = parentSubstanceConceptEntity->entityNodeDefinitionList->begin(); connectionIter2 != parentSubstanceConceptEntity->entityNodeDefinitionList->end(); connectionIter2++)
+			{
+				GIAentityNode* parentSubstanceConceptParentEntity = (*connectionIter2)->entity;
+				if(parentSubstanceConceptParentEntity->entityName == childEntity->entityName)
+				{
+					parentClassIsChildOfChildClass = true;
+				}
+			}
+		}
+	}
+	return parentClassIsChildOfChildClass;
+}										
+#endif
 
 bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCclassDefinition* targetClassDefinition, GIAentityNode* targetEntity)
 {

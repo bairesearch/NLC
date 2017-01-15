@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j20a 02-October-2014
+ * Project Version: 1j20b 02-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -162,9 +162,6 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 				}
 				else
 				{				
-					#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-					replaceNumericalVariablesWithDummyNameIfNecessary(&lineContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
-					#endif
 				#endif
 					//cout << "at-1" << endl;
 					functionContents = functionContents + indentationContents;
@@ -207,6 +204,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						}
 						#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
 						currentNLCsentenceInList->sentenceContentsOriginal = removePrependingWhiteSpace(sentenceContents);
+						#endif
+						
+						#ifdef NLC_PREPROCESSOR_MATH
+						#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+						replaceNumericalVariablesWithDummyNameIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
+						#endif
 						#endif
 						//cout << "sentenceContents = " << sentenceContents << endl;
 

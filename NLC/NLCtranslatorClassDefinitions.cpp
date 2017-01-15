@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18f 21-July-2014
+ * Project Version: 1h2a 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #include <cmath>
 
 #include "NLCtranslatorClassDefinitions.h"
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 #include "GIAtranslatorDefs.h"
 #endif
 
@@ -51,7 +51,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		//cout << "entityNode = " << entityNode->entityName << endl;
 		//valid class checks added 1g12f 14-July-2014
 		bool validClass = true;
-		#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 		if(entityNode->NLClogicalConditionOperation)
 		{
 			validClass = false;
@@ -63,7 +63,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		}
 		#endif
 		#endif
-		#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 		bool conjunctionConditionFound = textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 		if(conjunctionConditionFound)
 		{
@@ -102,7 +102,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 
 						//valid class contents checks added 1g12f 14-July-2014
 						bool validClassContents = true;
-						#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						if(targetEntity->NLClogicalConditionOperation)
 						{
 							validClassContents = false;
@@ -120,7 +120,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						}
 						#endif
 						#endif
-						#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 						bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 						if(conjunctionConditionFound)
 						{
@@ -128,7 +128,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						}
 						#endif
 
-						#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						if(validClassContents)
 						{
 						#endif
@@ -265,7 +265,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									}
 								}
 							}
-						#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						}
 						/*
 						else

@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18f 21-July-2014
+ * Project Version: 1h2a 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,12 +39,13 @@
 
 #include "NLCtranslator.h"
 #include "NLCtranslatorCodeBlocks.h"
+#include "NLCtranslatorCodeBlocksLogicalConditions.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation
 #include "NLCtranslatorClassDefinitions.h"
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 #include "GIAtranslatorDefs.h"
 #endif
 
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(void)
 {
 	entity = NULL;
@@ -68,7 +69,7 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	initialiseLogicalConditionLevelRecordArray(useNLCpreprocessor);
 	#endif
 
-	#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 	//NLC translator Part prep A.
 	if(!removeRedundantConditionConjunctions(entityNodesActiveListComplete, maxNumberSentences))
 	{
@@ -76,7 +77,7 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	}
 	#endif
 
-	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	//NLC translator Part prep B.
 	if(!identifyAndTagAllLogicalConditionOperations(entityNodesActiveListComplete, maxNumberSentences))
 	{
@@ -98,7 +99,7 @@ bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefini
 	return result;
 }
 
-#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 bool removeRedundantConditionConjunctions(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {
 	bool result = true;
@@ -242,7 +243,7 @@ bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsO
 }
 #endif
 
-#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences)
 {
 	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
@@ -255,7 +256,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 				bool foundLogicalConditionOperation = false;
 				int logicalOperation;
 				bool foundLogicalConditionOperationBasic = textInTextArray(conditionEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
-				if(foundLogicalConditionOperationBasic && (logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR))
+				if(foundLogicalConditionOperationBasic && (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
 				{
 					//FUTURE: NB this implementation must be made compatible with GIAdatabase.cpp and GIAxmlConversion.cpp (eg store entityIndex and sentenceIndexTemp). NB sentenceIndexTemp is necessary for other NLC functions also.
 					#ifdef NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE
@@ -315,7 +316,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 
 							if(conditionObject->isConcept)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "conditionObject = " << conditionObject->entityName;
 							}
 							else
@@ -324,7 +325,7 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 							}
 							if(conditionSubject->isConcept)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations() error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
 								cout << "conditionSubject = " << conditionSubject->entityName;
 							}
 							else

@@ -23,7 +23,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f7a 06-February-2014
+ * Project Version: 1f8a 16-February-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -621,7 +621,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1f7a 06-February-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f8a 16-February-2014" << endl;
 			exit(1);
 		}
 
@@ -952,7 +952,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 		{
 			if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_POSSESSIVE)
 			{
-				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
+				//cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
 
 				bool actionHasObject = false;
 				GIAentityNode * objectEntity = NULL;
@@ -968,13 +968,18 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 					actionHasSubject = true;
 					subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
 				}
-				cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
+				//cout << "transformTheActionOfPossessionEgHavingIntoAproperty(): found and replacing possessive action entity with property" << endl;
 				if(actionHasSubject && actionHasObject)
 				{
 					actionEntity->actionSubjectEntity->clear();
 					actionEntity->actionObjectEntity->clear();
 					actionEntity->isAction = false;
-					actionEntity->disabled = true;
+					actionEntity->disabled = true;	//disable have instance entity
+					if(!(actionEntity->entityNodeDefiningThisInstance->empty()))
+					{
+						(actionEntity->entityNodeDefiningThisInstance->back())->entity->disabled = true;	//disable have concept entity
+					}
+
 					for(vector<GIAentityConnection*>::iterator connectionIter = subjectEntity->actionNodeList->begin(); connectionIter != subjectEntity->actionNodeList->end(); )
 					{
 						GIAentityNode * actionEntity2 = (*connectionIter)->entity;

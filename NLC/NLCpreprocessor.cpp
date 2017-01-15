@@ -25,8 +25,8 @@
  *
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p7a 07-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,8 +68,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 		*detectedFunctions = false;
 		string functionContents = "";
-		string functionName = "";
-		string functionFileName = "";	//with functionName with extension
+		string NLCfunctionName = "";
+		string functionFileName = "";	//with NLCfunctionName with extension
 		int currentLineNumber = 0;
 		
 		while(getline(parseFileObject, currentLine))
@@ -87,19 +87,19 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			}
 			#endif
 			
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(detectFunctionHeader(&currentLine))
 			{
 				//extract functions from file and generate separate files
 				if(*detectedFunctions)
 				{
 					#ifdef NLC_DEBUG_PREPROCESSOR
-					cout << "end function: functionName = " << functionName << endl;
-					cout << "create new function = " << functionName << endl;
+					cout << "end function: NLCfunctionName = " << NLCfunctionName << endl;
+					cout << "create new function = " << NLCfunctionName << endl;
 					cout << "functionContents = " << functionContents << endl;
 					#endif
 					writeStringToFile(&functionFileName, &functionContents);
-					currentNLCfunctionInList->functionName = functionName;
+					currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
 					currentNLCfunctionInList->next = new NLCfunction();
 					currentNLCfunctionInList = currentNLCfunctionInList->next;
 					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
@@ -114,8 +114,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					*detectedFunctions = true;
 				}
 				sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
-				functionName = getFunctionNameFromFunctionHeader(&currentLine);
-				functionFileName = generateNLCfunctionFileName(functionName);
+				NLCfunctionName = getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
+				functionFileName = generateNLCfunctionFileName(NLCfunctionName);
 				inputTextFileNameList->push_back(functionFileName);
 				functionContents = "";
 			}
@@ -190,22 +190,15 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							{	
 								//based on isIntrawordFullStop() code:
 								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
-								bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
-								if(startOfSentenceIndexNew < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"
-								{	
-									char characterImmediatelySucceedingFullStop = lineContents[startOfSentenceIndexNew+1];
-									fullStopImmediatelySucceededByAlphabeticalCharacter = charInCharArray(characterImmediatelySucceedingFullStop, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
-									//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: characterImmediatelySucceedingFullStop = " << characterImmediatelySucceedingFullStop << endl;
-									//cout << "fullStopImmediatelySucceededByAlphabeticalCharacter: fullStopImmediatelySucceededByAlphabeticalCharacter = " << fullStopImmediatelySucceededByAlphabeticalCharacter << endl;
-								}
-								if(!fullStopImmediatelySucceededByAlphabeticalCharacter)
+								if(isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
 								{
-									lineFullStopDetected = true;
-									stillFinding = false;
+									//cout << "isIntrawordPunctuationMark" << endl;
+									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
 								}
 								else
 								{
-									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
+									lineFullStopDetected = true;
+									stillFinding = false;
 								}
 								//cout << "startOfSentenceIndexNew2 = " << startOfSentenceIndexNew << endl;
 							}
@@ -238,6 +231,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							cout << "lineFullStopDetected" << endl;
 							#endif
 							sentenceContents = lineContents.substr(startOfSentenceIndex, startOfSentenceIndexNew-startOfSentenceIndex+1);	//+1 append the full stop
+							//cout << "sentenceContents = " << sentenceContents << endl;
 
 						}
 						else
@@ -307,7 +301,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						int sentenceLogicalConditionOperator;
 						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
-							cout << "preprocessTextForNLC() error: !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
+							cout << "preprocessTextForNLC{} error: !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
 						}
 						#endif	
 						
@@ -347,7 +341,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 									else
 									{
 										//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
-										cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
+										cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
 										exit(0);
 									}
 								}
@@ -372,7 +366,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							#endif
 							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine)
 							{
-								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
+								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
 								exit(0);
 							}
 							else
@@ -423,12 +417,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				}
 				#endif
 				
-			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			}
 			#endif
 		}
 		
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		if(*detectedFunctions)
 		{
 			//create a final function based on the final text..
@@ -447,7 +441,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
 			writeStringToFile(&outputFileName, &functionContents);
-		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif
 	}
@@ -560,7 +554,7 @@ bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
 
 	if(readingQuotation)
 	{
-		cout << "reduceQuotesToSingleWords() error; quotation mark not ended on current line. Multiline quotations are not currently supported by NLC" << endl;
+		cout << "reduceQuotesToSingleWords{} error; quotation mark not ended on current line. Multiline quotations are not currently supported by NLC" << endl;
 		result = false;
 	}
 	
@@ -593,7 +587,7 @@ void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentat
 	*lineContents = currentLine->substr(i, (currentLine->length()-i));
 }
 
-#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
+#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
 bool detectFunctionHeader(string* lineContents)
 {
 	bool functionHeaderFound = false;
@@ -608,14 +602,14 @@ bool detectFunctionHeader(string* lineContents)
 }
 string getFunctionNameFromFunctionHeader(string* lineContents)
 {
-	string functionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
-	//cout << "getFunctionNameFromFunctionHeader{}: functionName = " << functionName << endl; 
-	return functionName;
+	string NLCfunctionName = lineContents->substr(string(NLC_PREPROCESSOR_FUNCTION_HEADER_STRING).length()+1);	//+1 for NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR
+	//cout << "getFunctionNameFromFunctionHeader{}: NLCfunctionName = " << NLCfunctionName << endl; 
+	return NLCfunctionName;
 	
 }
-string generateNLCfunctionFileName(string functionName)
+string generateNLCfunctionFileName(string NLCfunctionName)
 {
-	string functionFileName = functionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
+	string functionFileName = NLCfunctionName + NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION;	//NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION added 1m5a
 	return functionFileName;
 }
 #endif

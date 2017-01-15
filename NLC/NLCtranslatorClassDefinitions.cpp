@@ -25,8 +25,8 @@
  *
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
- * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1p1a 06-June-2015
+ * Project: Natural Language Compiler (Programming Interface)
+ * Project Version: 1p7a 07-July-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 #include "GIAtranslatorOperations.h"	//required for getPrimaryConceptNodeDefiningInstance()
 #endif
 
-bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete)
 {
 	bool result = true;
 	
@@ -131,7 +131,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 									{
 										targetClassDefinition->functionNameSpecial = generateFunctionName(targetEntity);
-										#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+										#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 										targetClassDefinition->actionOrConditionInstance = targetEntity;
 										#endif
 									}
@@ -225,7 +225,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 										bool indefiniteChild = false;
 										if(!isDefiniteEntity(entityNode))
 										{
-											bool parseConditionParents = true;	//default value
+											bool parseConditionParents = NLC_PARSE_CONDITION_PARENTS_DEFAULT_VALUE;
 											bool foundDefiniteParentEntity = false;
 											bool checkIsDefinite = true;
 											GIAentityNode* parentTemp = getSameReferenceSetUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents, checkIsDefinite);
@@ -291,16 +291,16 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 											#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 											//hasActionOwner is true for all actions (targetClassDefinition) with subjects (classDefinition);
 											//added 1l1a for dynamic casting of children
-											NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
+											NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);
 											targetClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
 											#endif
 												
-											NLCitem* classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
+											NLCitem* classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);	//added 1e1c
 											targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
 
 											if(hasActionObject)
 											{
-												NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+												NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
 												targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 											}
 
@@ -362,7 +362,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 											#endif
 											
 											#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-											//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+											//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 											generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
 											//#endif
 											#endif
@@ -476,7 +476,7 @@ bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCcla
 		}
 		else
 		{
-			cout << "generateClassHeirarchy() error: condition has no object" << endl;
+			cout << "generateClassHeirarchy{} error: condition has no object" << endl;
 		}
 
 		targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
@@ -486,7 +486,7 @@ bool generateClassHeirarchyCondition(NLCclassDefinition* classDefinition, NLCcla
 }
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
+bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinition* parentFunctionDependencyClassDefinition)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "generateClassHeirarchyFunctions:" << endl;
@@ -541,13 +541,6 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 						hasActionObject = true;
 						actionObjectName = actionObject->entityName;
 					}
-						
-					#ifndef NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT
-					if(!hasActionSubject)
-					{
-						passSubjectObjectValidClassChecks = false;
-					}
-					#endif
 					
 					//valid class contents checks added 1g12f 14-July-2014
 					if(passSubjectObjectValidClassChecks)
@@ -561,44 +554,59 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 						string functionObjectName = actionObjectName;
 						bool hasFunctionOwnerClass = hasActionSubject;
 						bool hasFunctionObjectClass = hasActionObject;
-
 						bool foundFunctionOwnerExactMatch = false;
 						bool foundFunctionObjectExactMatch = false;
-						NLCclassDefinition* functionDeclaration = NULL;
-						if(findFunctionDeclarationClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
+						bool rearrangeClassList = false;
+						NLCclassDefinition* functionDefinitionClassDefinition = NULL;
+						#ifdef NLC_DEBUG
+						cout << "hasFunctionOwnerClass = " << hasFunctionOwnerClass << endl;
+						cout << "hasFunctionObjectClass = " << hasFunctionObjectClass << endl;
+						cout << "functionName = " << functionName << endl;
+						cout << "functionOwnerName = " << functionOwnerName << endl;
+						cout << "functionObjectName = " << functionObjectName << endl;
+						#endif
+						//look for both exact and non-exact matches here as functionDependencies have already been created for all functions explicitly declared+defined by the user (don't yet reconcile arguments however)
+						if(findFunctionDefinitionClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDefinitionClassDefinition, rearrangeClassList, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 						{
+							#ifdef NLC_DEBUG
+							cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch pass: " << functionName << endl;
+							#endif
 							NLCclassDefinitionFunctionDependency* functionDependenciesInParentTemp = NULL;
-							bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
+							bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependencyClassDefinition, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 							if(!foundFunctionDependencyInParent)
 							{
-								parentFunctionDependency->functionDependencyList.push_back(functionDeclaration->functionDependency);
+								parentFunctionDependencyClassDefinition->functionDependencyList.push_back(functionDefinitionClassDefinition);
 							}
 						}
 						else
 						{
+							#ifdef NLC_DEBUG
+							cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch fail: " << functionName << endl;
+							cout << "findFunctionDependencyInList: " << functionName << endl;
+							#endif
 							//function execution reference does not correspond to a new function definition, so create a function declaration for it
-							//cout << "findFunctionDependencyInList: " << targetName << endl;
 
-							NLCclassDefinitionFunctionDependency* functionDependency = NULL;
-							bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependency);
+							NLCclassDefinition* functionReferenceClassDefinition = NULL;
+							bool foundFunctionDependencyInList = findFunctionDependencyClassDefinitionInList(classDefinitionList, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionReferenceClassDefinition);
 							bool duplicateFunctionDeclarationDetected = false;
 							if(foundFunctionDependencyInList)
 							{
 								//this will be true if an action (function reference) has been declared twice, but the action (function) has not been defined, eg "A chicken ate a pie. The chicken that ate a pie rowed the boat."
 								#ifdef NLC_DEBUG
-								//cout << "generateClassHeirarchyFunctions{}: foundFunctionDependencyInList" << endl;
-								//cout << "functionName: " << functionName << endl;
-								//cout << "functionOwnerName: " << functionOwnerName << endl;
-								//cout << "functionObjectName: " << functionObjectName << endl;
+								cout << "generateClassHeirarchyFunctions{}: foundFunctionDependencyInList" << endl;
+								cout << "functionName: " << functionName << endl;
+								cout << "functionOwnerName: " << functionOwnerName << endl;
+								cout << "functionObjectName: " << functionObjectName << endl;
 								#endif
+								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 								NLCclassDefinitionFunctionDependency* functionDependenciesInParentTemp = NULL;
-								bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependenciesInParentTemp);
+								bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependencyClassDefinition, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 								if(!foundFunctionDependencyInParent)
 								{
 									#ifdef NLC_DEBUG
 									//cout << "generateClassHeirarchyFunctions{}: !foundFunctionDependencyInParent" << endl;	
 									#endif	
-									parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+									parentFunctionDependencyClassDefinition->functionDependencyList.push_back(functionReferenceClassDefinition);
 								}
 								else
 								{
@@ -608,17 +616,26 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 									duplicateFunctionDeclarationDetected = true;
 									//duplicate function declarations will be ignored
 								}
+								#else
+								cout << "generateClassHeirarchyFunctions{} error: !findFunctionDefinitionClassDefinitionExactOrNonExactMatch && findFunctionDependencyClassDefinitionInList" << endl;
+								cout << "functionName: " << functionName << endl;
+								cout << "functionOwnerName: " << functionOwnerName << endl;
+								cout << "functionObjectName: " << functionObjectName << endl;
+								exit(0);
+								#endif
+								
 							}
 							else
 							{
 								#ifdef NLC_DEBUG
-								//cout << "generateClassHeirarchyFunctions{}: !foundFunctionDependencyInList" 
-								//cout << "generateClassHeirarchyFunctions{}: functionName = " << functionName << endl;
-								//cout << "generateClassHeirarchyFunctions{}: functionOwnerName = " << functionOwnerName << endl;
-								//cout << "generateClassHeirarchyFunctions{}: functionObjectName = " << functionObjectName << endl;
+								cout << "generateClassHeirarchyFunctions{}: !foundFunctionDependencyInList" << endl;
+								cout << "generateClassHeirarchyFunctions{}: functionName = " << functionName << endl;
+								cout << "generateClassHeirarchyFunctions{}: functionOwnerName = " << functionOwnerName << endl;
+								cout << "generateClassHeirarchyFunctions{}: functionObjectName = " << functionObjectName << endl;
 								#endif
 
-								functionDependency = new NLCclassDefinitionFunctionDependency();
+								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+								NLCclassDefinitionFunctionDependency* functionDependency = new NLCclassDefinitionFunctionDependency();
 								functionDependency->functionName = functionName;
 								functionDependency->functionOwnerName = functionOwnerName;
 								functionDependency->functionObjectName = functionObjectName;
@@ -628,12 +645,9 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 								functionDependency->hasFunctionOwnerClass = true;
 								#endif
 								functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
-								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-								functionDependency->isReference = true;
+								functionDependency->isReferenceElseFunctionDefinition = true;		//functionReference functionDependency assigned
 								#endif
-								parentFunctionDependency->functionDependencyList.push_back(functionDependency);
-								functionDependencyList->push_back(functionDependency);
-
+								
 								string classDefinitionFunctionOwnerName = "";
 								if(hasActionSubject)
 								{
@@ -674,39 +688,55 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 									#endif
 								}
 								
+								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+								classDefinitionFunction->functionDependency = functionDependency;	//new for 1p4a - functionDependencies are now currently assigned to functionReference classDefinitions (not just functionDefinition classDefinitions)
+								parentFunctionDependencyClassDefinition->functionDependencyList.push_back(classDefinitionFunction);	
+								#endif
+								
 								classDefinitionFunction->functionNameSpecial = generateFunctionName(actionEntity);
-								#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+								#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 								classDefinitionFunction->actionOrConditionInstance = actionEntity;
 								#endif
 								classDefinitionFunction->isActionOrConditionInstanceNotClass = true;
 
 								bool foundLocalClassDefinitionFunction = false;
-								NLCclassDefinition* localClassDefinitionFunction = findClassDefinition(&(classDefinitionFunctionOwner->functionList), classDefinitionFunctionName, &foundLocalClassDefinitionFunction);	//see if class definition already exists	//note this check will not work for functions because they are added by instance 
+								/*
+								cout << "functionName = " << functionName << endl;
+								cout << "functionOwnerName = " << functionOwnerName << endl;
+								cout << "functionObjectName = " << functionObjectName << endl;
+								*/								
+								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
+								NLCclassDefinition* localClassDefinitionFunction = findClassDefinitionFunction(&(classDefinitionFunctionOwner->functionList), functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &foundLocalClassDefinitionFunction);	//see if class definition already exists
+								#else
+								NLCclassDefinition* localClassDefinitionFunction = findClassDefinition(&(classDefinitionFunctionOwner->functionList), classDefinitionFunctionName, &foundLocalClassDefinitionFunction);	//see if class definition already exists	//note this check will not work for functions because they are added by instance (but unique functionDependency check has already been performed above so this unique functionReference in functionList check is not required and will always give !foundLocalClassDefinitionFunction) 
+								#endif
 								if(!foundLocalClassDefinitionFunction)
 								{
 									//declare functions
 									
+									/*
 									#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-									classDefinitionFunction->functionDependency = functionDependency;
+									classDefinitionFunction->functionDependency = functionDependency;	//already set
 									#endif
-
+									*/
+									
 									classDefinitionFunctionOwner->functionList.push_back(classDefinitionFunction);
 									
 									#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 									//added 1l1a for dynamic casting of children
 									if(hasFunctionOwnerClass)
 									{
-										NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
+										NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);	//corrected 1p5a
 										classDefinitionFunction->parameters.push_back(classDeclarationFunctionOwnerItem);
 									}
 									#endif
 																		
-									NLCitem* classDeclarationFunctionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
+									NLCitem* classDeclarationFunctionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);	//added 1e1c
 									classDefinitionFunction->parameters.push_back(classDeclarationFunctionItem);
 									
 									if(hasFunctionObjectClass)
 									{
-										NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+										NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)	//why use actionObject instead of actionObjectName?
 										classDefinitionFunction->parameters.push_back(classDeclarationFunctionObjectItem);
 									}
 
@@ -770,7 +800,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition* >* classDefiniti
 									#endif
 
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-									//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+									//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 									generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(classDefinitionFunction->parameters));
 									//#endif
 									#endif
@@ -856,7 +886,12 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 		validClass = false;
 	}
 	#endif
-	
+
+	if(isStringNumberOrFractional(entityNode->entityName))
+	{
+		validClass = false;
+	}
+		
 	/*
 	cout << "\nentityNode->entityName = " << entityNode->entityName << endl;
 	cout << "entityNode->isSubstance = " << entityNode->isSubstance << endl;
@@ -929,6 +964,11 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 	{
 		validClass = false;
 	}
+
+	if(isStringNumberOrFractional(targetEntity->entityName))
+	{
+		validClass = false;
+	}
 	
 	/*
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
@@ -961,7 +1001,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 	{
 		GIAentityNode* substanceConceptCondition = (*entityIter)->entity;
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-		if(!(substanceConceptCondition->inverseConditionTwoWay) || (*entityIter)->isReference)		//prevent infinite loop for 2 way conditions
+		if(!(substanceConceptCondition->inverseConditionTwoWay) || (*entityIter)->isReferenceElseFunctionDefinition)		//prevent infinite loop for 2 way conditions
 		{
 		#endif
 			if(!(substanceConceptCondition->conditionObjectEntity->empty()))
@@ -972,7 +1012,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 			}
 			else
 			{
-				cout << "generateSubstanceConceptClassNameRecurse() error: condition has no object" << endl;
+				cout << "generateSubstanceConceptClassNameRecurse{} error: condition has no object" << endl;
 			}
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 		}

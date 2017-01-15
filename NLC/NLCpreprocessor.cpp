@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3i 28-July-2014
+ * Project Version: 1h3j 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -795,7 +795,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		if(!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal)
 		{//!legalWordCharacterFound or (legalWordCharacterFound && last character in sentence)
 
-			//cout << "currentWord = " << currentWord << endl;
+			//cout << "!legalWordCharacterFound || finalWordInSentenceFoundAndIsLegal): " << c << endl;
 			
 			//current word checks:
 			if(mandatoryCharacterFoundInCurrentWord)
@@ -844,10 +844,11 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 			{
 				(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariableNames
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-				//cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
+				cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
+				cout << "wordDelimiterCharacterFound = " << wordDelimiterCharacterFound << endl;
+				cout << "wordIndex = " << wordIndex << endl;
 				#endif
 				
-				wordIndex++;
 				if(!wordDelimiterCharacterFound || finalWordInSentenceFoundAndIsLegal)
 				{
 					mandatoryCharacterFoundInCurrentWord = false;
@@ -863,7 +864,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 						
 						//remove all mathTextVariableNames nlp parsable phrase (as an NLP parsable phrase does not contain mathText variable names, or if it does the mathText variable are references to predefined mathText variables and will be detected later)
 						//cout << "wordIndex = " << wordIndex << endl;
-						for(int i=0; i<wordIndex; i++)
+						for(int i=0; i<wordIndex+1; i++)
 						{
 							//cout << "(*currentNLCsentenceInList)->mathTextVariableNames.back() = " << (*currentNLCsentenceInList)->mathTextVariableNames.back() << endl;
 							(*currentNLCsentenceInList)->mathTextVariableNames.pop_back();
@@ -914,8 +915,8 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 						currentPhrase = currentPhrase + currentWord + c;	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText   
 						mathText = mathText + currentPhrase;
 						currentPhrase = "";	//restart phrase (assuming it contains text)
-						wordIndex = 0;
 					}
+					wordIndex = 0;
 				}
 				else
 				{//wordDelimiterCharacterFound
@@ -923,6 +924,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					//cout << "wordDelimiterCharacterFound" << endl;
 					#endif
 					currentPhrase = currentPhrase + currentWord + c;
+					wordIndex++;
 				}
 			}
 			else

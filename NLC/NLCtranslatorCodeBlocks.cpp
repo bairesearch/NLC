@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3f 28-July-2014
+ * Project Version: 1h3g 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,12 +61,13 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	NLCsentence * currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 	//#endif
 
-	//cout << "maxNumberSentences = " << maxNumberSentences << endl;
-	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
+	cout << "maxNumberSentences = " << maxNumberSentences << endl;
+	int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX;
+	while(sentenceIndex <= maxNumberSentences)
 	{
-		#ifdef NLC_DEBUG
+		//#ifdef NLC_DEBUG
 		cout << "*** sentenceIndex = " << sentenceIndex << endl;
-		#endif
+		//#endif
 
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		//Part Prep A - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
@@ -112,9 +113,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			#endif
 			
 			//Part Prep B - generateCodeBlocksFromMathText - added 1h1d;
-			//#ifdef NLC_DEBUG
+			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksFromMathText:" << endl;
-			//#endif
+			#endif
 			cout << "sentenceIndex = " << sentenceIndex << endl;
 			if(!generateCodeBlocksFromMathText(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, currentNLCsentenceInList, NLCfunctionName))
 			{
@@ -169,6 +170,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 				NLCsentence * nextNLCfullSentenceInList = currentNLCsentenceInList->next;
 				bool currentSentenceContainsLogicalCondition = getCurrentSentenceContainsLogicalCondition();
+				int currentLogicalConditionLevel = getCurrentLogicalConditionLevel();
 				#elif defined NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				NLCsentence * nextNLCfullSentenceInList = currentNLCsentenceInList;
 				if(currentNLCsentenceInList->mathTextNLPparsablePhraseTotal > 0)
@@ -185,6 +187,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				cout << "currentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
 				cout << "nextNLCfullSentenceInList->sentenceContents = " << nextNLCfullSentenceInList->sentenceContents << endl;
 				bool currentSentenceContainsLogicalCondition = currentNLCsentenceInList->hasLogicalConditionOperator;
+				int currentLogicalConditionLevel = currentNLCsentenceInList->indentation;
 				#else
 				cout << "preprocessor error: NLC_USE_PREPROCESSOR && !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE" << endl;
 				#endif
@@ -216,7 +219,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				}
 				else if(nextNLCfullSentenceInList->indentation < currentNLCsentenceInList->indentation)
 				{
-					if(getCurrentLogicalConditionLevel() == 0)
+					if(currentLogicalConditionLevel == 0)
 					{
 						cout << "NLC_USE_PREPROCESSOR generateCodeBlocks() error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 						cout << "(currentLogicalConditionLevel == 0) && nextNLCfullSentenceInList->indentation < currentNLCsentenceInList->indentation" << endl;
@@ -226,7 +229,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 					else
 					{
 						currentCodeBlockInTree = getCodeBlockAtPreviousLogicalConditionBaseLevelArray(nextNLCfullSentenceInList->indentation);
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 						setCurrentLogicalConditionLevel(nextNLCfullSentenceInList->indentation);
+						#endif
 					}
 				}
 				else
@@ -236,16 +241,33 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 					cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 					cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
 				}
-				currentNLCsentenceInList = currentNLCsentenceInList->next;
+				
+				if(nextNLCfullSentenceInList->next != NULL)
+				{	
+					sentenceIndex = nextNLCfullSentenceInList->sentenceIndex;
+				}
+				else
+				{
+					sentenceIndex = maxNumberSentences+1;
+				}
+				currentNLCsentenceInList = nextNLCfullSentenceInList;
+				cout << "next sentenceIndex = " << sentenceIndex << endl;
 			}
 			else
 			{
-				cout << "NLC_USE_PREPROCESSOR generateCodeBlocks() error: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
+				sentenceIndex++;
+				//cout << "NLC_USE_PREPROCESSOR generateCodeBlocks() error: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
 			}
 			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 			setCurrentSentenceContainsLogicalCondition(false);
 			#endif
 		}
+		else
+		{
+			sentenceIndex++;
+		}
+		#else
+		sentenceIndex++;
 		#endif
 
 	}
@@ -255,7 +277,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 #ifdef NLC_PREPROCESSOR_MATH
 bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, NLCsentence * firstNLCsentenceInFullSentence, string NLCfunctionName)
 {
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 	cout << "\n generateCodeBlocksFromMathText(): sentenceIndex = " << sentenceIndex << endl;
+	#endif
 	bool result = true;
 
 	NLCcodeblock * currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
@@ -308,9 +332,9 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 				}
 				else if(currentSentence->hasLogicalConditionOperator)
 				{
-					//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					cout << "currentSentence->hasLogicalConditionOperator: " << logicalConditionOperationsArray[currentSentence->logicalConditionOperator] << endl;
-					//#endif
+					#endif
 					if(currentSentence->indentation == firstNLCsentenceInFullSentence->indentation)
 					{
 						if((currentSentence->logicalConditionOperator > firstNLCsentenceInFullSentence->logicalConditionOperator) || (currentSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF))	//allow multiple else if statements
@@ -336,11 +360,11 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 				NLCsentence * parsablePhrase = currentSentence;
 				if(isLogicalConditionOperatorAtCurrentLevel)
 				{
-					//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					cout << "isLogicalConditionOperatorAtCurrentLevel" << endl;
-					//#endif
 					int sentenceIndexOfFullSentence = currentSentence->sentenceIndex;
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+					cout << "isLogicalConditionOperatorAtCurrentLevel: currentSentence->sentenceIndex = " << currentSentence->sentenceIndex << endl;
 					cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
+					#endif
 					if(currentSentence->mathTextNLPparsablePhraseTotal > 0)
 					{
 						for(int phraseIndex=0; phraseIndex<currentSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
@@ -353,7 +377,9 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 							{
 								result = false;
 							}
+							#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 							cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase()" << endl;
+							#endif
 							parsablePhrase = parsablePhrase->next;
 						}
 						caseIndex++;
@@ -420,7 +446,9 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 			firstNLCsentenceInFullSentence->mathText.replace(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_WHILE_STRING).length(), string(NLC_LOGICAL_CONDITION_OPERATIONS_IF_STRING));	//replace "while" with "if" for the purposes of generating final code (while loop has already been defined)
 		}
 
+		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 		cout << "createCodeBlockMathTextWithLogicalOperator: firstNLCsentenceInFullSentence->mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
+		#endif
 		*currentCodeBlockInTree = createCodeBlockMathTextWithLogicalOperator(*currentCodeBlockInTree, firstNLCsentenceInFullSentence->mathText);
 		
 		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
@@ -443,18 +471,24 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 			{
 				nextNLCfullSentenceInList = firstNLCsentenceInFullSentence->next;			
 			}
-				
+			
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	
 			cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
 			cout << "firstNLCsentenceInFullSentence->indentation = " << firstNLCsentenceInFullSentence->indentation << endl;
+			#endif
 			if(nextNLCfullSentenceInList->indentation == (firstNLCsentenceInFullSentence->indentation + 1))
 			{
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				cout << "(nextNLCfullSentenceInList->indentation == (firstNLCsentenceInFullSentence->indentation + 1))" << endl;
+				#endif
 				//do not, just record the in the tree
-				setCodeBlockAtPreviousLogicalConditionBaseLevelArray(firstNLCsentenceInFullSentence->indentation, currentCodeBlockInTreeAtBaseLevel);
-				setCurrentLogicalConditionLevel(getCurrentLogicalConditionLevel() + 1);
+				setCodeBlockAtPreviousLogicalConditionBaseLevelArray(firstNLCsentenceInFullSentence->indentation, currentCodeBlockInTreeAtBaseLevel->next);
 			}
 			else if(nextNLCfullSentenceInList->indentation <= firstNLCsentenceInFullSentence->indentation)
 			{
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				cout << "(nextNLCfullSentenceInList->indentation <= firstNLCsentenceInFullSentence->indentation)" << endl;
+				#endif			
 				*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
 				//NB if(nextNLCfullSentenceInList->indentation < firstNLCsentenceInFullSentence->indentation) will be processed later by generateCodeBlocks()
 			}
@@ -476,7 +510,9 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 	}
 	#endif
 	
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 	cout << "finished generateCodeBlocksFromMathText()" << endl;
+	#endif
 	
 	return result;
 }	
@@ -485,9 +521,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 {
 	bool foundParsablePhrase = false;
 	
-	//#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+	#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 	cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 1" << endl;
-	//#endif
+	#endif
 	//generate NLP parsable phrase eg "the number of chickens" in "if(the number of chickens > the number of apples...)"
 	NLCcodeblock * currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
 	string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, parsablePhrase);	//parsablePhraseGenerateNumberOfElementCounterName
@@ -511,9 +547,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 					}
 					foundParsablePhrase = true;
 
-					//#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 					cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found 'number of' designation, entity: " << entity->entityName << endl;
-					//#endif
+					#endif
 					NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;
 					#ifdef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_NLC_VARIABLES_TO_BE_REFERENCED_BY_MATH
 					if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &logicalConditionConjunctionVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
@@ -530,9 +566,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 
 					*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName);
 
-					/*
-					*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase->next->next;
-					*/
 					*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;
 					while((*currentCodeBlockInTree)->next != NULL)
 					{
@@ -551,7 +584,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 		clearCodeBlock(currentCodeBlockAtStartOfparsablePhrase);
 	
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+		#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 		cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() part 2" << endl;
+		#endif
 		
 		#ifdef NLC_PREPROCESSOR_MATH_USE_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BACKWARDS_COMPATIBLE_VARIABLE_NAMES
 		parsablePhraseReferenceName = generateLogicalConditionConjunctionBooleanName(firstNLCsentenceInFullSentence->indentation, caseIndex, phraseIndex, NLC_LOGICAL_CONDITION_OPERATIONS_IF);
@@ -574,15 +609,15 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 						{
 							if(entity->isQuery)
 							{
-								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: entity->isQuery && !(entity->NLCcontextGenerated): part 1 must have failed" << endl;
+								//cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: entity->isQuery && !(entity->NLCcontextGenerated): part 1 must have failed" << endl;
 							}
 							else
 							{		
 								foundParsablePhrase = true;
 
-								//#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+								#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found entity: " << entity->entityName << endl;
-								//#endif
+								#endif
 
 								NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;
 								#ifdef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_NLC_VARIABLES_TO_BE_REFERENCED_BY_MATH
@@ -598,12 +633,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 								}
 								#endif
 
-								/*
-								//use the same logical condition check naming scheme as NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED;
-								string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(getCurrentLogicalConditionLevel(), caseIndex, parsablePhrase, logicalOperation);
-								*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, logicalConditionConjunctionBooleanName, true);							
-								*/
-								//cout << "qt1" << endl;
 								*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
 
 								*currentCodeBlockInTree = currentCodeBlockAtStartOfparsablePhrase;

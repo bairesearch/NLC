@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3f 28-July-2014
+ * Project Version: 1h3g 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1069,18 +1069,13 @@ NLCcodeblock * createCodeBlockMathTextLine(NLCcodeblock * currentCodeBlockInTree
 
 NLCcodeblock * createCodeBlockMathTextWithLogicalOperator(NLCcodeblock * currentCodeBlockInTree, string mathText)
 {
-	cout << "createCodeBlockMathTextWithLogicalOperator(): mathText = " << mathText << endl;
 	if(!(currentCodeBlockInTree->parameters.empty()))
 	{
 		cout << "error: !(currentCodeBlockInTree->parameters.empty())" << endl;
 	}
 	NLCitem * mathTextItem = new NLCitem(mathText, NLC_ITEM_TYPE_VARIABLE);
 	currentCodeBlockInTree->parameters.push_back(mathTextItem);
-	cout << "mathTextItem->name = " << mathTextItem->name << endl;
-	NLCitem * param1 = currentCodeBlockInTree->parameters.at(0);
-	cout << "param1->name = " << param1->name << endl;
-	cout << "param1->instanceName = " << param1->instanceName << endl;
-	
+		
 	int codeBlockType = NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR;
 	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
 

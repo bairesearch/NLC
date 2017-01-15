@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3f 28-July-2014
+ * Project Version: 1h3g 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -300,12 +300,12 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 	//context property item:
 	if(assumedToAlreadyHaveBeenDeclared(parentEntity))
 	{
-		cout << "1 generateContextBlocks(): parentEntity = " << parentEntity->entityName << endl;
+		//cout << "1 generateContextBlocks(): parentEntity = " << parentEntity->entityName << endl;
 		*currentCodeBlockInTree = createCodeBlockForPropertyListLocal(*currentCodeBlockInTree, propertyItem);
 	}
 	else
 	{
-		cout << "2 generateContextBlocks(): parentEntity = " << parentEntity->entityName << endl;
+		//cout << "2 generateContextBlocks(): parentEntity = " << parentEntity->entityName << endl;
 		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyItem);
 	}
 

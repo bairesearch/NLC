@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h3f 28-July-2014
+ * Project Version: 1h3g 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,9 +44,9 @@
 
 #ifdef NLC_USE_PREPROCESSOR
 static bool useNLCpreprocessor;
-static int currentLogicalConditionLevel;
 static NLCcodeblock * codeBlockAtPreviousLogicalConditionBaseLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+static int currentLogicalConditionLevel;
 static bool currentSentenceContainsLogicalCondition;
 static NLCcodeblock * codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
 static int currentLogicalConditionCase[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
@@ -54,12 +54,12 @@ static int currentLogicalConditionCase[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
 void initialiseLogicalConditionLevelRecordArray(bool newUseNLCpreprocessor)
 {
 	useNLCpreprocessor = newUseNLCpreprocessor;
-	currentLogicalConditionLevel = 0;
 	for(int i=0; i<NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS; i++)
 	{
 		codeBlockAtPreviousLogicalConditionBaseLevelArray[i] = NULL;
 	}
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	currentLogicalConditionLevel = 0;
 	currentSentenceContainsLogicalCondition = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS; i++)
 	{
@@ -72,14 +72,6 @@ bool getUseNLCpreprocessor()
 {
 	return useNLCpreprocessor;
 }
-int getCurrentLogicalConditionLevel()
-{
-	return currentLogicalConditionLevel;
-}
-void setCurrentLogicalConditionLevel(int value)
-{
-	currentLogicalConditionLevel = value;
-}
 NLCcodeblock * getCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index)
 {
 	return codeBlockAtPreviousLogicalConditionBaseLevelArray[index];
@@ -89,6 +81,14 @@ void setCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index, NLCcodebloc
 	codeBlockAtPreviousLogicalConditionBaseLevelArray[index] = codeBlockToSet;
 }
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+int getCurrentLogicalConditionLevel()
+{
+	return currentLogicalConditionLevel;
+}
+void setCurrentLogicalConditionLevel(int value)
+{
+	currentLogicalConditionLevel = value;
+}
 bool getCurrentSentenceContainsLogicalCondition()
 {
 	return currentSentenceContainsLogicalCondition;

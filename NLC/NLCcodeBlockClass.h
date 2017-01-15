@@ -358,7 +358,7 @@ NLCcodeblock* createCodeBlockCreateNewCondition(NLCcodeblock* currentCodeBlockIn
 		NLCcodeblock* createCodeBlockAddNewConditionSimple(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject);
 NLCcodeblock* createCodeBlockAddCondition(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 	NLCcodeblock* createCodeBlockAddConditionSimple(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject);
-	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS	
+	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS	
 	NLCcodeblock* createCodeBlockAddConditionSimpleInverse(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject);
 	#endif
 	

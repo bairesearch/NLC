@@ -540,7 +540,7 @@ NLCcodeblock* createCodeBlockAddConditionSimple(NLCcodeblock* currentCodeBlockIn
 	return currentCodeBlockInTree;
 }
 
-#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS	
+#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS	
 NLCcodeblock* createCodeBlockAddConditionSimpleInverse(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, GIAentityNode* conditionObject)
 {
 	#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS

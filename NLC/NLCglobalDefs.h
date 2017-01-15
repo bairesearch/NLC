@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n10d 26-January-2015
+ * Project Version: 1n10e 26-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,32 +47,33 @@
 //#define NLC_DISABLE_1n_CODE_FOR_DEBUG	//aka NLC_ENABLE_1m_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
-	#define NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
-	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES
+	#define NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS	//1n7a
+	#define NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_DO_NOT_PARSE_DUPLICATE_CLASSES	//1n5e
 	#define NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN	//required for NLC_SUPPORT_REDEFINITIONS and prevents circular definition; eg Chickens are animals. An animal is happy. The animal is a blue chicken.
-	#define NLC_SUPPORT_REDEFINITIONS
+	#define NLC_SUPPORT_REDEFINITIONS		//1n5d
 	#ifdef NLC_SUPPORT_REDEFINITIONS
-		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC	//1n5b
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
 			#define NLC_CLASS_PARENT_CLASS_LIST_NAME "parentClassList"
 			#define NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME "checkParentClassName"
 		#endif
 	#endif
-	#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+	#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER	//1n3b
 	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 		#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES	//not supported by Stanford NLP at present (_num relation is not generated)
 	#endif
-	#define NLC_USE_LIBRARY
+	#define NLC_USE_LIBRARY	//1n2a
 	#ifdef NLC_USE_LIBRARY
 		//must be synced with NLClibraryStandard.h:
 		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"
 		#define NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
-	#define NLC_USE_MATH_OBJECTS	//not yet finished (each entity has a (double) value which can be set by NLC mathText)
+	#define NLC_USE_MATH_OBJECTS	//1n3b - not yet finished (each entity has a (double) value which can be set by NLC mathText)
 	#ifdef NLC_USE_MATH_OBJECTS
 		#define NLC_USE_MATH_OBJECTS_VALUE_NAME "value"
 	#endif
-	//#define NLC_NONOO
+	#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS	//1n2e
+	//#define NLC_NONOO	//1n1a
 	#ifdef NLC_NONOO
 		#define NLC_NONOO_CREATE_REVERSE_LISTS
 		//#define NLC_NONOO_DISABLE_CLASS_HEIRACHY

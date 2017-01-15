@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1c 02-November-2013
+ * Project Version: 1d1d 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -287,7 +287,7 @@ NLPIcodeblock * createCodeBlockIfStatements(NLPIcodeblock * currentCodeBlockInTr
 NLPIcodeblock * createCodeBlock(NLPIcodeblock * currentCodeBlockInTree, int codeBlockType)
 {
 	#ifdef NLPI_DEBUG
-	cout << "createCodeBlock [" << codeBlockType << "] = " << ((currentCodeBlockInTree->parameters).front())->name << endl;
+	cout << "createCodeBlock [" << codeBlockType << "] = " << currentCodeBlockInTree->codeBlockType << endl;
 	#endif
 	currentCodeBlockInTree->codeBlockType = codeBlockType;
 	currentCodeBlockInTree->next = new NLPIcodeblock();
@@ -357,37 +357,6 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 	}
 	return entityHasParent;
 }
-
-string generateStringFromContextVector(vector<string> * context, int progLang)
-{
-	string contextString = "";
-	for(vector<string>::iterator contextIterator = context->begin(); contextIterator < context->end(); contextIterator++)
-	{
-		string currentContext = *contextIterator;
-		/*
-		string delimiter = "":
-		if(progLang == NLPI_PROGRAMMING_LANGUAGE_DEFAULT)
-		{
-			delimiter = progLangObjectReferenceDelimiter[progLang];
-		}
-		else
-		{
-			cout << "error: generateStringFromContextVector() only yet finished for NLPI_PROGRAMMING_LANGUAGE_DEFAULT" << endl; 
-		}
-		*/
-		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
-	}
-	
-	#ifdef NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT
-	if(contextString == "")
-	{
-		contextString = string(NLPI_LOCAL_CONTEXT_NAME) + progLangObjectReferenceDelimiter[progLang];
-	}
-	#endif
-	
-	return contextString;
-}
-
 
 
 bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLPIcodeBlocks)

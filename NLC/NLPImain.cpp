@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1c 02-November-2013
+ * Project Version: 1d1d 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -607,7 +607,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1d1c 02-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1d1d 02-November-2013" << endl;
 			exit(1);
 		}
 
@@ -819,10 +819,17 @@ int main(int argc,char **argv)
 		{
 			cout << "error: NLPI requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl; 
 		}
+		#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 		functionNameList.push_back(NLPIfunctionName);
+		#endif
 		
+		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;	
+
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListActions, maxNumberSentences, NLPIfunctionName);
 	}
+	
+	cout << "q3" << endl;	
+	
 	
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	for(int i=0; i<numberOfInputFilesInList; i++)
@@ -844,7 +851,7 @@ int main(int argc,char **argv)
 			NLPIclassDefinition * currentClassDef = *classDefinitionIter;
 			if((currentClassDef->name == functionOwnerName) || !foundFunctionOwnerClass)
 			{
-				for(vector<NLPIclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end();)
+				for(vector<NLPIclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
 				{
 					NLPIclassDefinition * functionClassDefinition = *localListIter;
 					if(functionClassDefinition->name == functionName)
@@ -861,7 +868,8 @@ int main(int argc,char **argv)
 		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias	
 	}
 	#endif
-
+	cout << "q4" << endl;	
+	
 	for(int i=0; i<numberOfInputFilesInList; i++)
 	{
 		NLPIcodeblock * firstCodeBlockInTree = firstCodeBlockInTreeList.at(i);
@@ -869,6 +877,7 @@ int main(int argc,char **argv)
 		string code = "";
 		int progLang = NLPI_PROGRAMMING_LANGUAGE_DEFAULT;
 		printCode(firstCodeBlockInTree, &classDefinitionList, progLang, &code);
+		cout << "code = " << code << endl;
 	}
 				
 	//print execution time (end)
@@ -890,20 +899,21 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 		NLPIitem * formalFunctionArgument = *parametersIterator;
 
 		NLPIclassDefinition * classDefinitionCorrespondingToExistingFunctionArgument = NULL;	
+		NLPIitem * existingFunctionArgument = NULL;	
 		bool foundFormalFunctionArgumentCorrelateForExistingArgument = false;
 		int foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = NLPI_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING;
 		for(vector<NLPIitem*>::iterator parametersIterator = existingFunctionArgumentList->begin(); parametersIterator < existingFunctionArgumentList->end(); parametersIterator++)
 		{
-			NLPIitem * existingFunctionArgument = *parametersIterator;
+			NLPIitem * currentExistingFunctionArgument = *parametersIterator;
 
 			bool foundClassDefinitionCorrespondingToExistingFunctionArgument = false;
-			for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList.begin(); classDefinitionIter != classDefinitionList.end(); classDefinitionIter++)
+			for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 			{
 				NLPIclassDefinition * currentClassDef = *classDefinitionIter;
-				if(currentClassDef->name == existingFunctionArgument->className)
+				if(currentClassDef->name == currentExistingFunctionArgument->className)
 				{
 					classDefinitionCorrespondingToExistingFunctionArgument = currentClassDef;
-					foundClassDefinitionCorrespondingToExistingFunctionArgument = true;	
+					foundClassDefinitionCorrespondingToExistingFunctionArgument = true;
 				}
 			}
 
@@ -920,6 +930,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 							foundFormalFunctionArgumentCorrelateForExistingArgument = true;
 							foundFormalFunctionArgumentCorrelateForExistingArgumentInheritanceLevel = inheritanceLevel;
 							classDefinitionCorrespondingToExistingFunctionArgument = tempClassDef;
+							existingFunctionArgument = currentExistingFunctionArgument; 
 						}
 					}
 				}
@@ -930,18 +941,18 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 			}
 			else
 			{	
-				cout << "findFormalFunctionArgumentCorrelateInExistingList() error: !foundClassDefinitionCorrespondingToExistingFunctionArgument: " << existingFunctionArgument->className << endl;
+				cout << "findFormalFunctionArgumentCorrelateInExistingList() error: !foundClassDefinitionCorrespondingToExistingFunctionArgument: " << currentExistingFunctionArgument->className << endl;
 			}
 		}
 		if(foundFormalFunctionArgumentCorrelateForExistingArgument)
 		{
-			classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentCertified = true;
+			existingFunctionArgument->functionArgumentCertified = true;
 			
 			//store cast information for more generic class type passed as function argument
-			if(classDefinitionCorrespondingToExistingFunctionArgument->className != formalFunctionArgument->className)
+			if(existingFunctionArgument->className != formalFunctionArgument->className)
 			{
-				classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentPassCastClassName = formalFunctionArgument->className;
-				classDefinitionCorrespondingToExistingFunctionArgument->functionArgumentPassCastRequired = true;
+				existingFunctionArgument->functionArgumentPassCastClassName = formalFunctionArgument->className;
+				existingFunctionArgument->functionArgumentPassCastRequired = true;
 			}
 		}
 		else
@@ -967,7 +978,9 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 				{
 					GIAentityNode * actionProperty = (*entityIter)->entity;
 					if(formalFunctionArgument->className == generateClassName(actionProperty))
-					{
+					{//NB these implicitly declared parameters in the function definition will be referenced as plural (lists) not singular entities 
+							//NO: check this is the case; eg the dog eats the pie; 'the dog' should be extracted from dogList if it was not passed as a parameter
+							//1dXy: all parameters should be passed as lists (temporary lists should be created if specific variables require passing)
 						foundFunctionArgumentInActionSubjectContents = true;
 					}
 				}
@@ -980,7 +993,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * fun
 				cout << "NLPI compiler warning: !foundFormalFunctionArgumentCorrelateForExistingArgument (function arguments will not map)" << endl;
 			#endif
 				//add a new function argument to the existing function argument list
-				NLPIitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLPIitem(formalFunctionArgument);
+				NLPIitem * formalFunctionArgumentToAddExistingFunctionArgumentList = new NLPIitem(formalFunctionArgument);	//NLPI by default uses plural (lists) not singular entities
 				existingFunctionArgumentList->push_back(formalFunctionArgumentToAddExistingFunctionArgumentList);		
 			#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 			}
@@ -1051,34 +1064,6 @@ int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFi
 	//cout << "numberOfInputFilesInList = " << numberOfInputFilesInList << endl;
 	#endif
 	return numberOfInputFilesInList;
-}
-
-string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
-{
-	//gets "fight" from "dog::fight"
-	string functionName = "";
-	bool foundFunctionOwnerClass = false;
-	string functionOwnerName = "";
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
-	return functionName;
-}
-
-void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
-{
-	//gets "fight" from "dog::fight"
-	*foundFunctionOwnerClass = false;
-	*functionOwnerName = "";
-	*functionName = NLPIfunctionName;
-	int indexOfClassContext = NLPIfunctionName.find("::");
-	if(indexOfClassContext != string::npos)
-	{
-		*functionName = NLPIfunctionName.substr(indexOfClassContext, NLPIfunctionName.length()-indexOfClassContext);
-		*functionOwnerName = NLPIfunctionName.substr(0, indexOfClassContext);
-		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
-		cout << "functionName = " << *functionName << endl;
-		cout << "functionOwnerName = " << *functionOwnerName << endl;
-		*foundFunctionOwnerClass = true;
-	}
 }
 
 #endif

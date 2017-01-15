@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1c 02-November-2013
+ * Project Version: 1d1d 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -44,7 +44,7 @@ using namespace std;
 
 #include "NLPIcodeBlock.h"
 #include "NLPIclassDefinition.h"
-
+	
 #define NLPI_PROGRAMMING_LANGUAGE_CPP (0)
 #define NLPI_PROGRAMMING_LANGUAGE_JAVA (1)
 #define NLPI_PROGRAMMING_LANGUAGE_VISUALBASIC (2)
@@ -137,6 +137,7 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 		#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 		void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPIitem*> * parameters, string * functionArguments, int progLang);
 		#endif
-				
+string generateStringFromContextVector(vector<string> * context, int progLang);
+			
 
 #endif

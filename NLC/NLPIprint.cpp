@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1c 02-November-2013
+ * Project Version: 1d1d 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -193,7 +193,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		//cout << "z2" << endl;	
 		if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION)
 		{
-			//cout << "z7" << endl;
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION" << endl;
+			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 			//cout << "z7a" << endl;
 			//cout << "param1->className = " << param1->className << endl;
@@ -218,6 +220,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT" << endl;
+			#endif
 			string functionArguments = "";
 			
 			#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS			
@@ -232,6 +237,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_ADD_PROPERTY)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_ADD_PROPERTY" << endl;
+			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
 			
@@ -242,6 +250,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}	
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_ADD_CONDITION)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_ADD_CONDITION" << endl;
+			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
 			NLPIitem * param3 = currentCodeBlockInLevel->parameters.at(2);	
 			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
@@ -259,6 +270,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}			
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_FOR)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_FOR" << endl;
+			#endif
 			if(progLang == NLPI_PROGRAMMING_LANGUAGE_DEFAULT)
 			{
 				string codeBlockText = progLangFor[progLang] + progLangForVectorIterPart1[progLang] + param1->className + progLangForVectorIterPart2[progLang] + contextParam1 + param1->className + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangForVectorIterPart3[progLang] + contextParam1 + param1->className + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangForVectorIterPart4[progLang];
@@ -274,6 +288,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_NEW_FUNCTION)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_NEW_FUNCTION" << endl;
+			#endif
 			string functionArguments = "";
 			#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
@@ -284,6 +301,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY" << endl;
+			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);	//IS THIS REQUIRED????
 			
@@ -293,6 +313,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION)
 		{
+			#ifdef NLPI_DEBUG
+			cout << "printCodeBlocks: NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION" << endl;
+			#endif
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);		
 			NLPIitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
@@ -379,9 +402,8 @@ string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang)
 	string propertyClassName = currentItem->className;
 	string propertyInstanceName = currentItem->instanceName;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	if(functionArgumentPassCastRequired)
+	if(currentItem->functionArgumentPassCastRequired)
 	{
-		//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastRequired	
 		propertyClassName = currentItem->functionArgumentPassCastClassName;
 	}
 	#endif	
@@ -394,9 +416,8 @@ string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang)
 	string pluralClassName = currentItem->className;
 	string pluralInstanceName = currentItem->instanceName;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	if(functionArgumentPassCastRequired)
+	if(currentItem->functionArgumentPassCastRequired)
 	{
-		//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastRequired
 		pluralClassName = currentItem->functionArgumentPassCastClassName;
 	}
 	#endif	
@@ -465,14 +486,13 @@ string generateCodeConditionPairReferenceText(NLPIitem * functionArgumentConditi
 	return codeConditionPairTypeText;
 }
 
-string generateCodeSingularReferenceText(NLPIitem * functionArgumentPropertyItem, int progLang)
+string generateCodeSingularReferenceText(NLPIitem * functionArgumentItem, int progLang)
 {
-	string codePropertyTypeText = currentItem->instanceName;
+	string codePropertyTypeText = functionArgumentItem->instanceName;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	if(functionArgumentPassCastRequired)
+	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{
-		//do: ADD dynamic_cast<functionArgumentPassCastClassName> if functionArgumentPassCastRequired
-		codePropertyTypeText = progLangDynamicCastStart[progLang] + currentItem->functionArgumentPassCastClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + currentItem->instanceName + progLangCloseParameterSpace[progLang];	//dynamic_cast<parentClass*>(childClassInstance); 
+		codePropertyTypeText = progLangDynamicCastStart[progLang] + functionArgumentItem->functionArgumentPassCastClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + functionArgumentItem->instanceName + progLangCloseParameterSpace[progLang];	//dynamic_cast<parentClass*>(childClassInstance); 
 	}
 	#endif	
 	return codePropertyTypeText;
@@ -544,3 +564,33 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPI
 	}
 }		
 #endif
+
+string generateStringFromContextVector(vector<string> * context, int progLang)
+{
+	string contextString = "";
+	for(vector<string>::iterator contextIterator = context->begin(); contextIterator < context->end(); contextIterator++)
+	{
+		string currentContext = *contextIterator;
+		/*
+		string delimiter = "":
+		if(progLang == NLPI_PROGRAMMING_LANGUAGE_DEFAULT)
+		{
+			delimiter = progLangObjectReferenceDelimiter[progLang];
+		}
+		else
+		{
+			cout << "error: generateStringFromContextVector() only yet finished for NLPI_PROGRAMMING_LANGUAGE_DEFAULT" << endl; 
+		}
+		*/
+		contextString = currentContext + progLangObjectReferenceDelimiter[progLang] + contextString;
+	}
+	
+	#ifdef NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT
+	if(contextString == "")
+	{
+		contextString = string(NLPI_LOCAL_CONTEXT_NAME) + progLangObjectReferenceDelimiter[progLang];
+	}
+	#endif
+	
+	return contextString;
+}

@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1c 02-November-2013
+ * Project Version: 1d1d 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -55,7 +55,7 @@ bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefi
 		NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar, bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
 	bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences);
 		#ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
-		void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition *> classDefinitionSublist, int variableName);
+		void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition*> * classDefinitionSublist, int variableType);
 			bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string variableName, int variableType);
 		#endif
 #ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
@@ -64,5 +64,8 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 	bool checkDuplicateProperty(GIAentityNode * propertyEntity, vector<NLPIitem*> * parameters);
 	bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLPIitem*> * parameters);
 #endif
-	
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass);
+	string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName);
+#endif	
 #endif		

@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1c 02-November-2013
+ * Project Version: 1d1d 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -59,8 +59,12 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 	string functionName = "";
 	bool foundFunctionOwnerClass = false;
 	string functionOwnerName = "";
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);
-		
+	#else
+	functionName = NLPIfunctionName;
+	#endif
+	
 	NLPIcodeblock * currentCodeBlockInTree = firstCodeBlockInTree;
 	
 	#ifdef NLPI_NOT_NECESSARY
@@ -110,11 +114,12 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					{
 						actionHasSubject = true;
 						subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
+						#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 						if(subjectEntity->entityName == functionOwnerName)
 						{
 							formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;
 						}
-						
+						#endif
 					}
 
 					//cout << "h2" << endl;
@@ -445,7 +450,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						{
 							targetClassDefinition->classNameSpecial = generateClassName(targetEntity);
 							#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-							actionOrConditionInstance = targetEntity;
+							targetClassDefinition->actionOrConditionInstance = targetEntity;
 							#endif
 						}
 						
@@ -556,7 +561,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 }	
 
 #ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
-void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition *> classDefinitionSublist, int variableName)
+void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(NLPIclassDefinition * classDefinition, vector<NLPIclassDefinition*> * classDefinitionSublist, int variableType)
 {
 	for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinitionSublist->begin(); localListIter != classDefinitionSublist->end();)
 	{
@@ -568,7 +573,7 @@ void eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSubli
 			if(!localListIterErased)
 			{
 				NLPIclassDefinition * targetClassDefinition = *parentListIter;
-				if(findVariableInParentClass(classDefinition, variableName, variableName))
+				if(findVariableInParentClass(classDefinition, variableName, variableType))
 				{
 					localListIter = classDefinitionSublist->erase(localListIter);	
 					localListIterErased = true;
@@ -744,6 +749,37 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLPIitem*> 
 }
 
 #endif
+
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
+{
+	//gets "fight" from "dog::fight"
+	string functionName = "";
+	bool foundFunctionOwnerClass = false;
+	string functionOwnerName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
+	return functionName;
+}
+
+void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
+{
+	//gets "fight" from "dog::fight"
+	*foundFunctionOwnerClass = false;
+	*functionOwnerName = "";
+	*functionName = NLPIfunctionName;
+	int indexOfClassContext = NLPIfunctionName.find("::");
+	if(indexOfClassContext != string::npos)
+	{
+		*functionName = NLPIfunctionName.substr(indexOfClassContext, NLPIfunctionName.length()-indexOfClassContext);
+		*functionOwnerName = NLPIfunctionName.substr(0, indexOfClassContext);
+		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+		cout << "functionName = " << *functionName << endl;
+		cout << "functionOwnerName = " << *functionOwnerName << endl;
+		*foundFunctionOwnerClass = true;
+	}
+}
+#endif
+
 
 
 

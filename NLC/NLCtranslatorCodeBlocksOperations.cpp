@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2b 15-September-2016
+ * Project Version: 1t3b 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -923,7 +923,7 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 						GIAentityNode definiteEntityArtificial;
 						definiteEntityArtificial.sentenceIndexTemp = subclassEntity->sentenceIndexTemp;
 						#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-						int indentationDifferenceFoundMin = NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS;
+						int indentationDifferenceMin = NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS;
 						#endif
 						int indentationDifferenceFound = 0;
 						//NB don't enforce indefinite condition for subclassParentEntity, just find the nearest legal reference to the subclass entity; definite or indefinite (OLD: isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext)
@@ -932,7 +932,7 @@ bool findNearestSubClassParentEntityCorrespondingToSubclassEntityInSameContext(G
 							if(entityHasPropertyParent(subclassParentEntity, subclassChildEntityName))
 							{
 								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-								if(indentationDifferenceFound < indentationDifferenceFoundMin)
+								if(indentationDifferenceFound < indentationDifferenceMin)
 								{
 									//find the indefinite entity closest to the definite entity, as a subclass reference which has not been explicitly declared previously eg "goal line" (but only more generally declared; ie "line"), should refer to the most recent reference (ie line)
 									indentationDifferenceMin = indentationDifferenceFound;
@@ -1841,7 +1841,7 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 		
 						//eg "If a house is green, do this
 						#ifdef NLC_GENERATE_TYPE_LISTS
-						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, parentEntity);
+						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, *parentEntity);
 						#else
 						(*parentEntity)->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b	//CHECKTHIS
 						#endif

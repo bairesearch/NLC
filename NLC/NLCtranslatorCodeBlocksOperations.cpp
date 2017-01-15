@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l8e 04-November-2014
+ * Project Version: 1l8f 04-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -997,11 +997,11 @@ bool createCodeBlockForGivenAction(NLCcodeblock ** currentCodeBlockInTree, strin
 
 			NLCitem * actionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_OBJECT);
 			hasActionObject = true;
-			actionObjectItem->context.push_back(actionObjectItem->instanceName);
+			actionObjectItem->context.push_back(actionItem->instanceName);
 			*currentCodeBlockInTree = createCodeBlockForActionObjectList(*currentCodeBlockInTree, actionObjectItem);
 
 			actionEntity->NLCcontextGeneratedTemp = true;
-			createCodeBlockForStatements(currentCodeBlockInTree, actionObjectItem->instanceName, actionObject, sentenceIndex, generateContextBlocksVariables);
+			createCodeBlockForStatements(currentCodeBlockInTree, actionItem->instanceName, actionObject, sentenceIndex, generateContextBlocksVariables);
 			actionEntity->NLCcontextGeneratedTemp = false;
 		}
 
@@ -1046,11 +1046,11 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTre
 		
 			NLCitem * actionSubjectItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_OBJECT);
 			hasActionSubject = true;
-			actionSubjectItem->context.push_back(actionSubjectItem->instanceName);
+			actionSubjectItem->context.push_back(actionItem->instanceName);
 			*currentCodeBlockInTree = createCodeBlockForActionSubjectList(*currentCodeBlockInTree, actionSubjectItem);
 
 			actionEntity->NLCcontextGeneratedTemp = true;
-			createCodeBlockForStatements(currentCodeBlockInTree, actionSubjectItem->instanceName, actionSubject, sentenceIndex, generateContextBlocksVariables);
+			createCodeBlockForStatements(currentCodeBlockInTree, actionItem->instanceName, actionSubject, sentenceIndex, generateContextBlocksVariables);
 			actionEntity->NLCcontextGeneratedTemp = false;
 		}
 

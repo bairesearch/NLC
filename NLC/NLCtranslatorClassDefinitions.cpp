@@ -343,7 +343,6 @@ bool addClassDefinitionToList(vector<NLCclassDefinition*>* classDefinitionList, 
 	*classDefinition = findClassDefinition(classDefinitionList, className, &foundClassDefinition);	//see if class definition already exists
 	if(!foundClassDefinition)
 	{
-		cout << "adding: " << className << endl;
 		*classDefinition = new NLCclassDefinition(className);
 		classDefinitionList->push_back(*classDefinition);
 		foundClassDefinition = true;

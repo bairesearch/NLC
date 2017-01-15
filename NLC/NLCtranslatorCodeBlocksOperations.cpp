@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11o 25-August-2014
+ * Project Version: 1i11p 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1182,7 +1182,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != propertyEntity) propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
 					#endif
 
-					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
+					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))		//changed from generateCategories 1i11o
 					{
 						//cout << "\n1c: propertyEntity = " << propertyEntity->entityName << endl;
 						//cout << "1c: parentEntity = " << parentEntity->entityName << endl;
@@ -1202,7 +1202,8 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + propertyEntity->entityName);
 					#endif
 
-					if(generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
+					//if(generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables))
+					if(generateContextBlocksSimple(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables))		//changed 1i11p
 					{
 						generatedContext = true;
 					}
@@ -1383,7 +1384,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						
 						//generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
 						//parse the children (properties and conditions) of an undeclared definite parent
-						createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(propertyEntity), propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
+						createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(propertyEntity), propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);		//added 1i11n
 					}			
 				}
 
@@ -1448,7 +1449,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != conditionObject) conditionObject: ") + conditionObject->entityName + string(", parentEntity: ") + parentEntity->entityName);
 								#endif
 
-								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
+								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))			//changed from generateCategories 1i11o
 								{
 									generatedContext = true;
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
@@ -1465,8 +1466,9 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 								#ifdef NLC_DEBUG_PARSE_CONTEXT4
 								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + conditionObject->entityName);
 								#endif
-
-								if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
+								
+								//if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables))
+								if(generateContextBlocksSimple(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables))	//changed 1i11p
 								{
 									generatedContext = true;
 								}
@@ -1635,7 +1637,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									
 									//generateContextBlocks(currentCodeBlockInTree, propertyEntity, sentenceIndex, &logicalConditionConjunctionVariables);
 									//parse the children (properties and conditions) of an undeclared definite parent
-									createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(conditionObject), conditionObject, sentenceIndex, &logicalConditionConjunctionVariables);
+									createCodeBlockForStatements(currentCodeBlockInTree, generateInstanceName(conditionObject), conditionObject, sentenceIndex, &logicalConditionConjunctionVariables);	//added 1i11n
 								}			
 							}
 

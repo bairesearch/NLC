@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b7b 04-October-2013
+ * Project Version: 1b8a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -474,5 +474,138 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 			}
 		}
 	}
+	
+	#ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+	//disable all double declarations
+	for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
+	{	
+		NLPIclassDefinition * classDefinition = *classDefinitionIter;
+
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end();)
+		{
+			bool localListIterErased = false;
+			NLPIclassDefinition * variableClassDefinition = *localListIter;
+			string variableName = variableClassDefinition->name;
+			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
+			{
+				if(!localListIterErased)
+				{
+					NLPIclassDefinition * targetClassDefinition = *parentListIter;
+					if(findVariableInParentClass(classDefinition, variableName, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
+					{
+						localListIter = classDefinition->propertyList.erase(localListIter);	
+						localListIterErased = true;
+						//cout << "classDefinition->name = " << classDefinition->name << endl;
+						//cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
+					}
+				}
+			}
+			if(!localListIterErased)
+			{
+				localListIter++;
+			}			
+		}
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end();)
+		{
+			bool localListIterErased = false;
+			NLPIclassDefinition * variableClassDefinition = *localListIter;
+			string variableName = variableClassDefinition->name;
+			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
+			{
+				if(!localListIterErased)
+				{			
+					NLPIclassDefinition * targetClassDefinition = *parentListIter;
+					if(findVariableInParentClass(classDefinition, variableName, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
+					{
+						localListIter = classDefinition->propertyList.erase(localListIter);
+						localListIterErased = true;
+					}
+				}
+			}
+			if(!localListIterErased)
+			{
+				localListIter++;
+			}			
+	
+		}
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end();)
+		{//check this implementation; this code will not work when functions are declared using their instance id eg "action1". This code will only work if functions are declared without their instance ids eg "action"/"actionClass"
+			bool localListIterErased = false;
+			NLPIclassDefinition * variableClassDefinition = *localListIter;
+			string variableName = variableClassDefinition->name;
+			for(vector<NLPIclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
+			{
+				if(!localListIterErased)
+				{			
+					NLPIclassDefinition * targetClassDefinition = *parentListIter;
+					if(findVariableInParentClass(classDefinition, variableName, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
+					{
+						localListIter = classDefinition->propertyList.erase(localListIter);
+						localListIterErased = true;
+					}
+				}
+			}
+			if(!localListIterErased)
+			{
+				localListIter++;
+			}
+		}
+	}		
+	
+	#endif
 }	
 
+#ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
+bool findVariableInParentClass(NLPIclassDefinition * classDefinition, string variableName, int variableType)
+{
+	bool foundVariable = false;
+	if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+	{
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
+		{
+			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			string targetName = targetClassDefinition->name;
+			if(targetName == variableName)
+			{
+				foundVariable = true;
+			}
+		}
+	}
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+	{
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
+		{
+			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			string targetName = targetClassDefinition->name;
+			if(targetName == variableName)
+			{
+				foundVariable = true;
+			}	
+		}
+	}
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+	{
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
+		{
+			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			string targetName = targetClassDefinition->name;
+			if(targetName == variableName)
+			{
+				foundVariable = true;
+			}	
+		}
+	}
+	if(!foundVariable)
+	{	
+		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+		{
+			NLPIclassDefinition * targetClassDefinition = *localListIter;
+			if(findVariableInParentClass(targetClassDefinition, variableName, variableType))
+			{
+				foundVariable = true;
+			}
+		}
+	}
+	return foundVariable;
+}
+#endif

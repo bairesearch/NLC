@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b7b 04-October-2013
+ * Project Version: 1b8a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -119,7 +119,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 
 			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 			{
-				NLPIclassDefinition * targetClassDefinition = *localListIter;
+				NLPIclassDefinition * targetClassDefinition = *localListIter;			
 				string targetName = targetClassDefinition->name;
 				string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangEndLine[progLang];
 				printLine(localListDeclarationText, 1, code);	
@@ -148,7 +148,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 					functionArguments = targetClassDefinition->actionObjectClassName + progLangPointer[progLang] + " " + targetClassDefinition->actionObjectInstanceName;
 				}
 				string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-				printLine(localListDeclarationText, 1, code);	
+				printLine(localListDeclarationText, 1, code);
 			}
 
 			printLine(progLangCloseClass[progLang], 0, code);

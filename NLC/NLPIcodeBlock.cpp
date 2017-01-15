@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b7b 04-October-2013
+ * Project Version: 1b8a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -427,7 +427,11 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceInd
 	bool result = false;
 	if(!checkIfEntityHasBeenParsedForNLPIcodeBlocks || !(entity->parsedForNLPIcodeBlocks))
 	{
+		#ifdef GIA_DRAW_PRINT_ENTITY_NODES_IN_ORDER_OF_SENTENCE_INDEX
 		if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference))
+		#else
+		if(entity->sentenceIndexTemp == sentenceIndex)		
+		#endif
 		{
 			result = true;
 		}

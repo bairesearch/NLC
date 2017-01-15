@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i13b 01-September-2014
+ * Project Version: 1j1a 02-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1167,6 +1167,7 @@ NLCcodeblock * createCodeBlockCommentSingleLine(NLCcodeblock * currentCodeBlockI
 
 
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
+
 NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {	
 	NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -1177,6 +1178,28 @@ NLCcodeblock * createCodeBlockReassignIter(NLCcodeblock * currentCodeBlockInTree
 
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+
+NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{
+	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+}
+
+NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+{
+	return createCodeBlockAddPropertyToGenericList(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, propertyEntity);
+}
+
+NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{
+	return createCodeBlockForPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+}
+
+#ifdef NLC_CATEGORIES_TEST_PLURALITY
+NLCcodeblock * createCodeBlockIfHasCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative)
+{
+	return createCodeBlockIfHasPropertyGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, negative);
+}
+#endif
 
 NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
 {
@@ -1224,18 +1247,35 @@ NLCcodeblock * createCodeBlockForPropertyListGeneric(NLCcodeblock * currentCodeB
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 
-NLCcodeblock * createCodeBlocksDeclareNewCategoryListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+#ifdef NLC_CATEGORIES_TEST_PLURALITY
+NLCcodeblock * createCodeBlockIfHasPropertyGeneric(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative)
 {
-	return createCodeBlocksDeclareNewGenericListVariable(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	entityItem->genericObjectName = genericObjectName;
+	
+	NLCitem * genericListAppendItem = new NLCitem(genericListAppendName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(genericListAppendItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY_GENERIC;
+	if(negative)
+	{
+		entityItem->negative = true;
+	}
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
-NLCcodeblock * createCodeBlockAddPropertyToCategoryList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+
+NLCcodeblock * createCodeBlockPrintWarning(NLCcodeblock * currentCodeBlockInTree, string warning)
 {
-	return createCodeBlockAddPropertyToGenericList(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2, propertyEntity);
+	NLCitem * printWarningItem = new NLCitem(warning, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(printWarningItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_PRINT_WARNING;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
 }
-NLCcodeblock * createCodeBlockForPropertyListCategory(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
-{
-	return createCodeBlockForPropertyListGeneric(currentCodeBlockInTree, entity, generateInstanceName(entity), NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION2);
-}
+#endif
 #endif
 
 #ifdef NLC_GENERATE_TYPE_LISTS

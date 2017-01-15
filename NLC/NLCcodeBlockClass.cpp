@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l10d 06-November-2014
+ * Project Version: 1l11a 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1537,6 +1537,7 @@ NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferenced
 {
 	return createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(currentCodeBlockInTree, genericListAppendName);
 }
+#endif
 NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName)
 {
 	return createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(currentCodeBlockInTree, entity, generateInstanceName(entity), genericListAppendName, propertyEntity);
@@ -1545,7 +1546,7 @@ NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferenced
 {
 	return createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralNewFunction(currentCodeBlockInTree, genericListAppendName);
 }
-#endif
+
 
 NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)
 {
@@ -1711,6 +1712,22 @@ NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedS
 	return currentCodeBlockInTree;
 }
 
+NLCcodeblock * createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
+{
+	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	string sentenceIndexString = convertIntToString(sentenceIndex);
+	NLCitem * sentenceIndexItem = new NLCitem(sentenceIndexString, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(sentenceIndexItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED;
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+#endif
+#endif
+
+#ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
 NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity)
 {
 	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
@@ -1749,23 +1766,8 @@ NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedP
 
 	return currentCodeBlockInTree;
 }
-
-
-
-NLCcodeblock * createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
-{
-	NLCitem * entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	currentCodeBlockInTree->parameters.push_back(entityItem);
-	
-	string sentenceIndexString = convertIntToString(sentenceIndex);
-	NLCitem * sentenceIndexItem = new NLCitem(sentenceIndexString, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(sentenceIndexItem);
-	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED;
-	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
 #endif
-#endif
+
 
 #ifdef NLC_GENERATE_TYPE_LISTS
 NLCcodeblock * createCodeBlocksDeclareNewGenericListVariable2(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName)

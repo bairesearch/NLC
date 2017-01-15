@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l10d 06-November-2014
+ * Project Version: 1l11a 07-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -102,10 +102,12 @@ using namespace std;
 	#ifdef NLC_USE_ADVANCED_REFERENCING
 		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION (34)
 		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION (35)		
-		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION (36)
-		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION (37)	
-		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (38)	//execute for all new/undeclared/indefinite entities and accessed category items
+		#define NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED (36)	//execute for all new/undeclared/indefinite entities and accessed category items
 	#endif
+#endif
+#ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION (37)
+	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_NEW_FUNCTION (38)	
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (39)
@@ -400,6 +402,8 @@ NLCcodeblock * createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodebl
 NLCcodeblock * createCodeBlockIfHasCategoryItem(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName);
 NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
 NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+#endif
+#ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
 NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName);
 NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
 #endif
@@ -418,9 +422,11 @@ NLCcodeblock * createCodeBlockAddEntityToCategoryListCheckLastSentenceReferenced
 	NLCcodeblock * createCodeBlockIfHasGenericEntity(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
 	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
 	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
+	NLCcodeblock * createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
+	#endif
+	#ifdef NLC_PERFORM_PLURAL_DEFINITE_REFERENCING_TESTS
 	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralExecuteFunction(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity);
 	NLCcodeblock * createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedPluralNewFunction(NLCcodeblock * currentCodeBlockInTree, string genericListAppendName);
-	NLCcodeblock * createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 	#endif
 #endif
 

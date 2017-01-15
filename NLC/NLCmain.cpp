@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w1b 08-December-2016
+ * Project Version: 1w2a 12-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,6 +47,7 @@
 #ifdef NLC_API
 #include "NLCapi.h"
 #endif
+#include "NLCtranslatorCodeBlocksOperations.h"
 #include "GIAmain.h"
 #include "GIAdatabase.h"
 #ifdef USE_WORDNET
@@ -658,7 +659,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1w1b 08-December-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1w2a 12-December-2016" << endl;
 			exit(1);
 		}
 
@@ -927,8 +928,9 @@ int main(int argc, char** argv)
 		}
 		#endif
 
-		#ifdef GIA_NLC_INTEGRATION
 		setFirstNLCsentenceInList(currentNLCfunctionInList->firstNLCsentenceInFunction);
+		#ifdef GIA_NLC_INTEGRATION
+		setFirstNLCsentenceInListGIA(currentNLCfunctionInList->firstNLCsentenceInFunction);
 		#endif
 
 		#ifdef USE_CS_WORKAROUND

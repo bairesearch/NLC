@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w1b 08-December-2016
+ * Project Version: 1w2a 12-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,7 +37,7 @@
 #include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 
 
-
+NLCsentence* firstNLCsentenceInListLocal;
 
 
 
@@ -4279,6 +4279,101 @@ void secondaryComparisonRestoreIDinstance(GIAentityNode* entity)
 	entity->idInstance = entity->NLCidInstanceBackup;
 }
 #endif
+
+
+
+//based on checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContextGIA from GIAtranslatorOperations.cpp
+NLCsentence* getFirstNLCsentenceInList()
+{
+	return firstNLCsentenceInListLocal;
+}
+void setFirstNLCsentenceInList(NLCsentence* firstNLCsentenceInListNew)
+{
+	firstNLCsentenceInListLocal = firstNLCsentenceInListNew;
+}
+bool checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode* indefiniteEntity, GIAentityNode* definiteEntity, int* indentationDifferenceFound)
+{
+	bool foundIndefiniteEntity = false;
+
+	if(indefiniteEntity->sentenceIndexTemp < definiteEntity->sentenceIndexTemp)
+	{
+		NLCsentence* currentNLCsentenceInList = getFirstNLCsentenceInList();
+		bool foundIndefiniteEntitySentence = false;
+		while((currentNLCsentenceInList->next != NULL) && !foundIndefiniteEntitySentence)
+		{
+			if(currentNLCsentenceInList->sentenceIndex == indefiniteEntity->sentenceIndexTemp)
+			{
+			       foundIndefiniteEntitySentence = true;
+			}
+			else
+			{
+			       currentNLCsentenceInList = currentNLCsentenceInList->next;
+			}
+		}
+		NLCsentence* indefiniteEntityNLCsentenceInList = currentNLCsentenceInList;
+		
+		if(foundIndefiniteEntitySentence)
+		{
+			bool foundDefiniteEntitySentence = false;
+			int minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
+			while((currentNLCsentenceInList->next != NULL) && !foundDefiniteEntitySentence)
+			{
+				if(currentNLCsentenceInList->indentation < minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence)
+				{
+				       minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
+				}
+
+				if(currentNLCsentenceInList->sentenceIndex == definiteEntity->sentenceIndexTemp)
+				{
+				       foundDefiniteEntitySentence = true;
+				}
+				else
+				{
+				       currentNLCsentenceInList = currentNLCsentenceInList->next;
+				}
+			}
+			NLCsentence* definiteEntityNLCsentenceInList = currentNLCsentenceInList;
+
+			#ifdef GIA_DEBUG
+			cout << "definiteEntity = " << definiteEntity->entityName << endl;
+			cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
+			#endif
+			
+			if(foundDefiniteEntitySentence)
+			{
+				if(minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence < indefiniteEntityNLCsentenceInList->indentation)
+				{
+				       #ifdef GIA_DEBUG
+				       //cout << "checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{}: no reference found" << endl;
+				       #endif
+				}
+				else
+				{
+				       #ifdef GIA_DEBUG
+				       //cout << "checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{}: entity declared in this function" << endl;
+				       #endif
+				       foundIndefiniteEntity = true;
+				       *indentationDifferenceFound = definiteEntityNLCsentenceInList->indentation - indefiniteEntityNLCsentenceInList->indentation;
+				}
+			}
+			else
+			{
+			       #ifdef GIA_DEBUG
+			       //cout << "checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{} error: !foundDefiniteEntitySentence" << endl;
+			       #endif
+			}
+		}
+		else
+		{
+			#ifdef GIA_DEBUG
+			//cout << "checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{} error: !foundIndefiniteEntitySentence" << endl;
+			#endif
+		}
+	}
+
+	return foundIndefiniteEntity;
+}
+
 
 
 

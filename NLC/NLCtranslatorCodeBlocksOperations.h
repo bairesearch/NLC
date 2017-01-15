@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w1b 08-December-2016
+ * Project Version: 1w2a 12-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -163,5 +163,9 @@ bool checkParentExists(GIAentityNode* object, string parentName);
 void secondaryComparisonSetIDinstance(GIAentityNode* entity);
 void secondaryComparisonRestoreIDinstance(GIAentityNode* entity);
 #endif
+
+NLCsentence* getFirstNLCsentenceInList();
+void setFirstNLCsentenceInList(NLCsentence* firstNLCsentenceInListNew);
+bool checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(GIAentityNode* indefiniteEntity, GIAentityNode* definiteEntity, int* indentationDifferenceFound);
 
 #endif

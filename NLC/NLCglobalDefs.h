@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w1b 08-December-2016
+ * Project Version: 1w2a 12-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1137,11 +1137,6 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 			#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 				#ifdef NLC_PREPROCESSOR
 					#define NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES	//added 1k10a/1k12a
-					#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
-						#ifndef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES
-							//#define NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED	//added 1k12b, disabled 1s8a (because the algorithm implemented behind this function fails in certain cases)
-						#endif
-					#endif
 				#endif
 			#endif
 		#endif

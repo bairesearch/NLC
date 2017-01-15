@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w1b 08-December-2016
+ * Project Version: 1w2a 12-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -939,112 +939,22 @@ bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAen
 {
 	bool foundIndefiniteEntity = false;
 
-	#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED
-
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 	/*
-	NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED:
-	Is designed for the following scenario;
+	NB the following scenario;
 		A red car.
 		The green car...
-	But fails in this scenario;
+	or this scenario;
 		A car is next to the house.
 		The car is red.
-		The green/red car...
-
-	PLANNED SOLUTION (TEMPORARY WORKAROUND): disable NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES_ADVANCED and do not support this scenario.
-	If it must either be passed to the function as the function object, or referenced first within the function (or block), ie;
+		The green car...
+	or this scenario;
 		The green car...
 		A car is next to the house.
 		The car is red.
+	the red car will be advanced referenced to its indefinite originator (assume GIA_NLC_INTEGRATION:GIA_NLC_INTEGRATION_DEFINE_REFERENCE_CONTEXT_BY_TEXT_INDENTATION)
 	*/
-
-	int referenceSetID = 0;
-	//see identifyReferenceSetsSpecificConceptsAndLinkWithConcepts()
-
-	int minimumEntityIndexOfReferenceSet = definiteEntity->entityIndexTemp;
-
-	if(identifyReferenceSetDetermineNextCourseOfAction(definiteEntity, true, referenceSetID, minimumEntityIndexOfReferenceSet, false))
-	{
-		bool traceModeIsQuery = false;
-
-		#ifdef NLC_DEBUG
-		//cout << "findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{}: identifyReferenceSetDetermineNextCourseOfAction passed" << endl;
-		//cout << "definiteEntity = " << definiteEntity->entityName << endl;
-		#endif
-
-		GIAreferenceTraceParameters referenceTraceParameters;
-		referenceTraceParameters.referenceSetID = referenceSetID;
-		#ifdef GIA_NLC_INTEGRATION_DEFINE_REFERENCE_CONTEXT_BY_TEXT_INDENTATION
-		referenceTraceParameters.referenceSetDefiniteEntity = true;	//referenceSetDefiniteEntity
-		#endif
-		referenceTraceParameters.ensureSameReferenceSetQueryConnections = true;	//added 1n28b
-
-		#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
-		int irrelevant;
-		string printEntityNodeString = "";
-		int maxNumberOfMatchedNodesPossible = 0;
-		bool traceInstantiations = GIA_QUERY_TRACE_NETWORK_INDEX_NODES_DEFINING_INSTANTIATIONS_VALUE;
-		traceEntityNode(firstNodeNetworkIndexEntityNodesListQuery, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_DETERMINE_MAX_NUMBER_MATCHED_NODES_SAME_SET_ONLY, &maxNumberOfMatchedNodesPossible, NULL, false, referenceSetID, traceInstantiations);
-		traceEntityNode(currentQueryEntityNode, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
-		#endif
-
-		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-		{
-			GIAentityNode* indefiniteEntity = *entityIter;
-
-			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
-			if(!assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
-			#else
-			if(!assumedToAlreadyHaveBeenDeclared(indefiniteEntity))
-			#endif
-			{//indefiniteEntityFound
-
-				#ifdef NLC_DEBUG
-				//cout << "indefiniteEntity = " << indefiniteEntity->entityName << endl;
-				#endif
-
-				GIAqueryTraceParameters queryTraceParameters;		//not used
-				int numberOfMatchedNodesTemp = 0;
-				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
-				//bool exactMatch = testEntityNodeForQueryOrReferenceSet2(definiteEntity, indefiniteEntity, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
-				bool exactMatch = testReferencedEntityNodeForExactNameMatch2(definiteEntity, indefiniteEntity, &numberOfMatchedNodesTemp, false, &numberOfMatchedNodesRequiredSynonymnDetectionTemp, traceModeIsQuery, &queryTraceParameters, &referenceTraceParameters);
-
-				if(exactMatch)
-				{
-					if(numberOfMatchedNodesTemp > 0)
-					{
-						#ifdef NLC_DEBUG
-						//cout << "\texactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
-						#endif
-
-						#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
-						if(numberOfMatchedNodesTemp == maxNumberOfMatchedNodesPossible)
-						{
-						#endif
-							foundIndefiniteEntity = true;
-						#ifdef GIA_QUERY_SIMPLIFIED_SEARCH_ENFORCE_EXACT_MATCH
-						}
-						#endif
-					}
-				}
-				else
-				{
-					#ifdef NLC_DEBUG
-					//cout << "\t!exactMatch" << endl;
-					#endif
-				}
-
-				//now reset the matched nodes as unpassed (required such that they are retracable using a the different path)
-				int irrelevant;
-				string printEntityNodeString = "";
-				bool traceInstantiations = GIA_QUERY_TRACE_NETWORK_INDEX_NODES_DEFINING_INSTANTIATIONS_VALUE;
-				traceEntityNode(definiteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
-				traceEntityNode(indefiniteEntity, GIA_QUERY_TRACE_ENTITY_NODES_FUNCTION_RESET_TESTEDFORQUERYCOMPARISONTEMP, &irrelevant, &printEntityNodeString, false, NULL, traceInstantiations);
-
-			}
-		}
-		referenceSetID	= referenceSetID + 1;
-	}
+	foundIndefiniteEntity = false;
 	#else
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{

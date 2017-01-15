@@ -23,7 +23,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f6a 29-January-2014
+ * Project Version: 1f7a 06-February-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -435,12 +435,7 @@ int main(int argc,char **argv)
 		rasterImageHeight=getFloatArgument(argc,argv,"-height");
 
 		char currentFolder[EXE_FOLDER_PATH_MAX_LENGTH];
-		#ifdef LINUX
-		getcwd(currentFolder, EXE_FOLDER_PATH_MAX_LENGTH);
-		#else
-		::GetCurrentDirectory(EXE_FOLDER_PATH_MAX_LENGTH, currentFolder);
-		#endif
-
+		getCurrentDirectory(currentFolder);
 
 		if(argumentExists(argc,argv,"-nlprelation"))
 		{
@@ -622,15 +617,11 @@ int main(int argc,char **argv)
 			tempFolderCharStar = currentFolder;
 		}
 
-		#ifdef LINUX
-		chdir(workingFolderCharStar);
-		#else
-		::SetCurrentDirectory(workingFolderCharStar);
-		#endif
+		setCurrentDirectory(workingFolderCharStar);
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1f6a 29-January-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1f7a 06-February-2014" << endl;
 			exit(1);
 		}
 
@@ -867,7 +858,7 @@ int main(int argc,char **argv)
 		#ifdef NLC_DEBUG
 		cout << "translateNetwork(): NLCfunctionName = " << NLCfunctionName << endl;	
 		#endif
-
+		
 		#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 		transformTheActionOfPossessionEgHavingIntoAproperty(entityNodesActiveListComplete);
 		#endif
@@ -1016,3 +1007,4 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*> 
 }
 #endif
 		
+

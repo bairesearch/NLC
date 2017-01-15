@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j12a 12-September-2014
+ * Project Version: 1j12b 12-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -311,22 +311,13 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 		contextFound = true;
 	}
 
-	#ifdef NLC_USE_ADVANCED_REFERENCING
-	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
-	{
-		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
-		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(*currentCodeBlockInTree, parentEntity, parentEntity);
-	}
-	else
-	{
-		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
-		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);	
-	}
-	#else
-	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentEntity, parentEntity);
-	#endif
+	addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity);
 
-	*currentCodeBlockInTree = lastCodeBlockInTree->next;
+	if(contextFound)
+	{
+		*currentCodeBlockInTree = lastCodeBlockInTree->next;
+	}
+
 	lastCodeBlockInTree = *currentCodeBlockInTree;
 	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN
 	cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
@@ -351,12 +342,16 @@ bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIA
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
 	if(parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
 	{
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
 		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
-
+		#endif
+		
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
 		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
 		*currentCodeBlockInTree = createCodeBlockIfHasMoreThanOneCategoryItem(*currentCodeBlockInTree, parentEntity);
 		*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
 		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+		#endif
 		
 		#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
 		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false);	//added 1j5a
@@ -492,20 +487,8 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 					contextFound = true;
 				}
 				
-				#ifdef NLC_USE_ADVANCED_REFERENCING
-				if(parentInstance->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
-				{
-					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
-					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(*currentCodeBlockInTree, parentInstance, childSubstance);
-				}
-				else
-				{
-					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
-					*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);	
-				}
-				#else
-				*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, parentInstance, childSubstance);
-				#endif
+				addPropertyToCategoryList(currentCodeBlockInTree, parentInstance, childSubstance);
+				
 				*currentCodeBlockInTree = (*lastCodeBlockInTree);
 				while((*currentCodeBlockInTree)->next != NULL)
 				{
@@ -520,6 +503,32 @@ bool createCodeBlockForStatementsForDefinitionChildren(NLCcodeblock ** currentCo
 	}
 	return contextFound;
 }
+
+bool addPropertyToCategoryList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)
+{
+	bool result = true;
+	
+	#ifdef NLC_USE_ADVANCED_REFERENCING
+	if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR)
+	{
+		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
+		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite referencing tests");
+		#endif
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryListCheckLastSentenceReferencedExecuteFunction(*currentCodeBlockInTree, entity, propertyEntity);
+	}
+	else
+	{
+		#ifdef NLC_USE_ADVANCED_REFERENCING_COMMENT
+		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Plural definite referencing tests");
+		#endif
+		*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, entity, propertyEntity);	
+	}
+	#else
+	*currentCodeBlockInTree = createCodeBlockAddPropertyToCategoryList(*currentCodeBlockInTree, entity, propertyEntity);
+	#endif
+	
+	return result;
+}	
 #endif
 
 bool createCodeBlockForStatements(NLCcodeblock ** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* entity, int sentenceIndex, NLClogicalConditionConjunctionVariables * logicalConditionConjunctionVariables)
@@ -1203,8 +1212,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
 						propertyEntityClass->context.push_back(generateInstanceName(parentEntity));
 						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);	
-						#endif				
-						//*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);	//removed 1j10a
+						#endif		
+						#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
+						*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);	//removed 1j10a
+						#endif
 						propertyEntity->NLClocalListVariableHasBeenInitialised = true;
 					}
 				}
@@ -1497,8 +1508,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
 									conditionObjectEntityClass->context.push_back(generateInstanceName(parentEntity));
 									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);	
-									#endif									
-									//*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);	//removed 1j10a
+									#endif	
+									#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION								
+									*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);	//removed 1j10a
+									#endif
 									conditionObject->NLClocalListVariableHasBeenInitialised = true;
 								}
 							}								
@@ -1514,7 +1527,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 									*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + conditionObject->entityName);
 									#endif
 
-									if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables, generatedContext))	//pass generatedContext 1j10a
+									if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables, generatedContext))	//pass generatedContext 1j10a		
 									{
 										generatedContext = true;
 									}

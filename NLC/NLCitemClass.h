@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -71,8 +71,8 @@
 
 #define NLC_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS CHAR_INVERTED_COMMAS
 
-#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME "this"
-#define NLC_SUPPORT_INPUT_FUNCTION_LISTS_ACTION_SUBJECT_CLASS_REPLACEMENT_NAME "thisClassYetToCodeThis"
+#define NLC_INPUT_FUNCTION_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME "this"
+#define NLC_INPUT_FUNCTION_LISTS_ACTION_SUBJECT_CLASS_REPLACEMENT_NAME "thisClassYetToCodeThis"
 
 class NLCitem
 {
@@ -105,7 +105,7 @@ public:
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION/NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST only
 
 	bool negative;
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	int conjunctionType;
 	#endif
 
@@ -128,11 +128,11 @@ string generateTypeName(string entityName);
 
 string removeClassTextFromClassDefinitionName(string className);
 
-#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
+#ifdef NLC_INPUT_FUNCTION_LISTS
 string parseFunctionNameFromNLCfunctionName(string NLCfunctionName);
 void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass);
 void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass);
-#ifdef NLC_USE_LIBRARY
+#ifdef NLC_LIBRARY
 void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
 #endif
 void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);

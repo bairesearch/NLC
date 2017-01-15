@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -63,7 +63,7 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	isActionOrConditionInstanceNotClass = false;
 	isConditionInstance = false;
 
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+	#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
 
@@ -73,7 +73,7 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	functionDependency = NULL;	//for function class definitions only
 	#endif
 
-	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+	#ifdef NLC_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
 
@@ -93,7 +93,7 @@ NLCclassDefinition::NLCclassDefinition(void)
 
 	isActionOrConditionInstanceNotClass = false;
 	isConditionInstance = false;
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+	#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
 
@@ -103,7 +103,7 @@ NLCclassDefinition::NLCclassDefinition(void)
 	functionDependency = NULL;	//for function class definitions only
 	#endif
 
-	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+	#ifdef NLC_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
 
@@ -842,7 +842,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, string itemName, int ite
 			#ifdef NLC_DEBUG
 			//cout << "(currentItem->itemType == itemType)" << endl;
 			#endif
-			#ifdef NLC_USE_ADVANCED_REFERENCING
+			#ifdef NLC_ADVANCED_REFERENCING
 			if(currentItem->name == itemName)
 			#else
 			if(currentItem->name == itemName)

@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,7 +42,7 @@
 
 	//progLangEndLine
 
-#ifdef NLC_USE_LIBRARY
+#ifdef NLC_LIBRARY
 	#define FUNCTION_INDEX_LIBRARY_FUNCTION (INT_DEFAULT_VALUE)	//library functions do not have a function index assigned to them	//OLD: 999999999
 #endif
 
@@ -94,7 +94,7 @@ public:
 	bool isActionOrConditionInstanceNotClass;
 	bool isConditionInstance;	//added 1m3a
 
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+	#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	GIAentityNode* actionOrConditionInstance;
 	#endif
 	vector<NLCitem*> parameters;
@@ -108,7 +108,7 @@ public:
 	vector<NLCclassDefinition*> functionDependencyList;		//for function classDefinitions only (not for non-function classDefinitions) - excludes library function classDefinitions
 	#endif
 
-	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+	#ifdef NLC_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	bool isLibraryFunctionDefinition;	//not used often
 	#endif
 

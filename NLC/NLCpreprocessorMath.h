@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #include "NLCglobalDefs.h"
 #include "NLCpreprocessorSentenceClass.h"
 
-#ifdef NLC_USE_PREPROCESSOR
+#ifdef NLC_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH
 
 bool detectMathSymbolsInLine(string* lineContents);
@@ -69,7 +69,7 @@ bool findPredefinedMathtextVariable(string* currentWord, NLCfunction* currentNLC
 	#endif
 		bool findPredefinedMathtextVariableInFunction(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching, int* variableType);
 
-#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
+#ifdef NLC_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
 bool findMathTextVariableWithinMathText(string mathTextVariableName, string mathText);
 #endif
 

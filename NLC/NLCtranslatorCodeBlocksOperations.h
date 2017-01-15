@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 #include "GIAentityConnectionClass.h"
 #include "NLCcodeBlockClass.h"
 #include "NLCclassDefinitionClass.h"
-//#ifdef NLC_USE_PREPROCESSOR
+//#ifdef NLC_PREPROCESSOR
 #include "NLCpreprocessorSentenceClass.h"	//required for
 //#endif
 
@@ -72,11 +72,11 @@ bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode*
 					#endif
 					#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
 					bool createCodeBlockForGivenDefinition(NLCcodeblock** currentCodeBlockInTree, string parentInstanceName, GIAentityNode* definitionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject);
-					#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+					#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 					bool createCodeBlockForGivenAlias(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* definitionEntity, int sentenceIndex, NLCgenerateContextBlocksVariables* generateContextBlocksVariables, GIAentityNode** objectEntity, bool* generateContextForObject);
 					#endif
 					#endif
-					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+					#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 					bool hasConjunctionConditionConnection(GIAentityNode* conditionEntity, GIAentityNode* primaryEntityInLogicalConditionConjunctionSubset, int logicalConditionConjunctionIndex, GIAentityNode** foundLogicalConditionConjunction);
 					#endif
 					#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
@@ -134,7 +134,7 @@ void generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, G
 	void generateObjectInitialisationsBasedOnConceptsRecurse(GIAentityNode* targetEntity, GIAentityNode* definitionEntity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* parentEntity, string parentConditionName, bool newlyDeclaredEntityInCategoryList);
 #endif
 
-#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 void fillFunctionAliasClassList(vector<GIAentityNode*>* entityNodesActiveListComplete);
 #endif
 
@@ -149,7 +149,7 @@ bool generateContextBasedOnDeclaredParent(GIAentityNode* entity, NLCcodeblock** 
 void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* childEntity, int sentenceIndex);
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool checkConditionLogicalConditionAdvancedTests(GIAentityNode* conditionEntity);
 #endif
 

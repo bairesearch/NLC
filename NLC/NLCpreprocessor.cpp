@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,7 +42,7 @@
 #include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
 #include "GIAlrp.h"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_TRANSLATOR_UNIQUE_CONCATENATION_TYPES_QUOTES_DELIMITER
 
-#ifdef NLC_USE_PREPROCESSOR
+#ifdef NLC_PREPROCESSOR
 
 bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName)
 {
@@ -77,7 +77,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << currentLineNumber << ": " << currentLine << endl;
 			#endif
 
-			#ifndef NLC_USE_MATH_OBJECTS_ADVANCED
+			#ifndef NLC_MATH_OBJECTS_ADVANCED
 			#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 			string updatedLineTextWithQuotationsReducedToSingleWords = "";
 			if(reduceQuotesToSingleWords(currentLine, &updatedLineTextWithQuotationsReducedToSingleWords))
@@ -87,7 +87,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			#endif
 			#endif
 
-			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
+			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(detectFunctionHeader(&currentLine))
 			{
 				//extract functions from file and generate separate files
@@ -289,7 +289,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						currentNLCsentenceInList->sentenceContentsOriginal = removePrependingWhiteSpace(sentenceContents);
 						#endif
 
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 
 						#ifdef NLC_PREPROCESSOR_MATH
 						#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -300,7 +300,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						//cout << "sentenceContents = " << sentenceContents << endl;
 						#endif
 
-						#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+						#ifdef NLC_MATH_OBJECTS_ADVANCED
 						if(detectMathObjectStringDelimiter(&sentenceContents))
 						{
 							cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
@@ -354,7 +354,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						int sentenceLogicalConditionOperator;
 						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
-							cout << "preprocessTextForNLC{} error: !NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
+							cout << "preprocessTextForNLC{} error: !NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
 						}
 						#endif
 
@@ -374,7 +374,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 									#endif
 								}
 							}
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+							#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine && sentenceIsLogicalCondition)
 							{
 								#ifdef NLC_DEBUG_PREPROCESSOR
@@ -396,7 +396,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 									else
 									{
 										//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
-										cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
+										cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
 										exit(0);
 									}
 								}
@@ -421,7 +421,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 							#endif
 							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine)
 							{
-								cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
+								cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
 								cout << "sentenceContents = " << sentenceContents << endl;
 								exit(0);
 							}
@@ -452,12 +452,12 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				}
 				#endif
 
-			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
+			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			}
 			#endif
 		}
 
-		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
+		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		if(*detectedFunctions)
 		{
 			//create a final function based on the final text..
@@ -481,7 +481,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			#endif
 			writeStringToFile(outputFileName, &functionContents);
 			*numberOfInputFilesInList = *numberOfInputFilesInList+1;
-		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
+		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif
 
@@ -550,7 +550,7 @@ void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence*
 	//cout << "sentenceContents = " << sentenceContents << endl;
 	#endif
 
-	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
 	if(detectMathObjectStringDelimiter(sentenceContents))
 	{
 		cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
@@ -676,7 +676,7 @@ void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentat
 	*lineContents = currentLine->substr(i, (currentLine->length()-i));
 }
 
-#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
+#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 bool detectFunctionHeader(string* lineContents)
 {
 	bool functionHeaderFound = false;
@@ -746,11 +746,11 @@ string removePrependingWhiteSpace(string sentenceContents)
 	return sentenceContents;
 }
 
-#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+#ifdef NLC_MATH_OBJECTS_ADVANCED
 bool detectMathObjectStringDelimiter(string* lineContents)
 {
 	bool result = false;
-	if(lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+	if(lineContents->find(NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 	{
 		result = true;
 	}

@@ -26,7 +26,7 @@
  * File Name: NLCmain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,7 +41,7 @@
 
 int main(int argc, char** argv);
 	string removeFileNameExtensions(string NLCfunctionName);
-	#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
+	#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
 	string removeNLCfileNameExtension(string NLCfunctionName);
 	#endif
 	#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
@@ -50,7 +50,7 @@ int main(int argc, char** argv);
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 	bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList);
 	#endif
-	#ifndef NLC_USE_LIBRARY
+	#ifndef NLC_LIBRARY
 	void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
 	#endif
 

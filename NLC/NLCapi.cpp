@@ -26,7 +26,7 @@
  * File Name: NLCapi.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -173,8 +173,8 @@ bool parseDoxygenClassXMLfile(string APIclassName, string APIsourceFolder, vecto
 					APIwrapperHeaderText = APIwrapperHeaderText + APIwrapperHeaderWrapFunctionFunctionsText;
 
 					#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
-					string printedClassDefinitionAPIwrapperHeaderFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgeneratedInterfaceXClass.hpp
-					string printedClassDefinitionAPIwrapperSourceFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgeneratedInterfaceXClass.cpp
+					string printedClassDefinitionAPIwrapperHeaderFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgeneratedInterfaceXClass.hpp
+					string printedClassDefinitionAPIwrapperSourceFileName = string(NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS_NAME_PREPEND) + className + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgeneratedInterfaceXClass.cpp
 					writeStringToFile(printedClassDefinitionAPIwrapperSourceFileName, &APIwrapperSourceText);
 					writeStringToFile(printedClassDefinitionAPIwrapperHeaderFileName, &APIwrapperHeaderText);
 					#else
@@ -238,7 +238,7 @@ void generatePropertyClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 					string variableType2 = "";
 					bool variableTypeList = false;
 					bool variableTypeStandard = false;
-					int mathtextVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+					int mathtextVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 					detectVariableTypeDetails(classDefinitionList, classDefinition, variableName, variableType, &variableType1, &variableType1ClassName, &variableType2, &variableTypeList, &variableTypeStandard, &mathtextVariableType);
 
 					int level = 1;
@@ -349,7 +349,7 @@ void generateFunctionClassLists(XMLparserTag* currentTagUpdated, vector<NLCclass
 							string variableType2 = "";
 							bool variableTypeList = false;
 							bool variableTypeStandard = false;
-							int mathtextVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+							int mathtextVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 							detectVariableTypeDetails(classDefinitionList, classDefinition, variableName, variableType, &variableType1, &variableType1ClassName, &variableType2, &variableTypeList, &variableTypeStandard, &mathtextVariableType);
 
 							string createNewEntityText = generateCodeNewEntity(variableType, variableName, progLang);	//variableType variableName = new variableType();
@@ -413,7 +413,7 @@ void detectVariableTypeDetails(vector<NLCclassDefinition*>* classDefinitionList,
 {
 	string targetClassName = "";
 	string variableTypeFinal = "";
-	int variableTypeStandardType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+	int variableTypeStandardType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 	bool createSecondLayer = false;
 
 	*variableType1 = variableName;

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,10 +37,10 @@
 #include "GIAquery.h"	//required for testReferencedEntityNodeForExactNameMatch2/traceEntityNode
 #include "GIAtranslatorDefs.h"
 
-#ifdef NLC_USE_PREPROCESSOR
+#ifdef NLC_PREPROCESSOR
 static bool useNLCpreprocessor;
 static NLCcodeblock* codeBlockAtPreviousLogicalConditionBaseLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 static bool currentSentenceContainsLogicalCondition;
 static NLCcodeblock* codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
 static int currentLogicalConditionCase[NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS];
@@ -52,7 +52,7 @@ void initialiseLogicalConditionLevelRecordArray(bool newUseNLCpreprocessor)
 	{
 		codeBlockAtPreviousLogicalConditionBaseLevelArray[i] = NULL;
 	}
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	setCurrentLogicalConditionLevel(0);
 	currentSentenceContainsLogicalCondition = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS; i++)
@@ -74,7 +74,7 @@ void setCodeBlockAtPreviousLogicalConditionBaseLevelArray(int index, NLCcodebloc
 {
 	codeBlockAtPreviousLogicalConditionBaseLevelArray[index] = codeBlockToSet;
 }
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool getCurrentSentenceContainsLogicalCondition()
 {
 	return currentSentenceContainsLogicalCondition;
@@ -90,7 +90,7 @@ int getCurrentLogicalConditionCase(int level)
 #endif
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
@@ -134,7 +134,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							simpleNonConjunctionLogicalConditionNegative = true;
 						}
 
-						#ifdef NLC_USE_PREPROCESSOR
+						#ifdef NLC_PREPROCESSOR
 						bool elseIfDetected = false;
 						bool elseDetected = false;
 						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
@@ -190,13 +190,13 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							#ifdef NLC_DEBUG
 							//cout << "logicalConditionOperationObject->isConcept = " << logicalConditionOperationObject->isConcept << endl;
 							#endif
-							#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
+							#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
 							//isConcept case not yet coded
 							//logical operations on networkIndexes are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
 							if(logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+								cout << "generateCodeBlocks{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
 							}
 							else if(logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
@@ -219,7 +219,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 						}
 						else if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && (logicalConditionOperationObject->entityType == GIA_ENTITY_TYPE_TYPE_ACTION))	//removed || (logicalConditionOperationObject->isActionConcept) 1u15a
 						{
-							#ifdef NLC_USE_PREPROCESSOR
+							#ifdef NLC_PREPROCESSOR
 							if(elseDetected)
 							{
 								*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
@@ -233,7 +233,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								#ifdef NLC_DEBUG
 								//cout << "logicalConditionOperationObject->isAction" << endl;
 								#endif
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
+								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
 								//verify the truth of the if statement now
 								//NO: get class and see if it has the relevant action (function) defined with the relevant action object
 								//perform an exact trace of logicalConditionOperationObject (actionEntityCompare) with every actionEntity that matches actionEntityCompare->entityName to verify that such a specific action already [ie sentence <= currentSentence] exists (actionEntityCompare)
@@ -254,14 +254,14 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 								}
 								logicalConditionOperationSubject->disabled = false;
 								#endif
-							#ifdef NLC_USE_PREPROCESSOR
+							#ifdef NLC_PREPROCESSOR
 							}
 							#endif
 						}
 						else
 						{//eg If/While the sun is bright, the dog is happy. / If/While the sun is bright, eat the cabbage.	[OLD:if the red dog is the/a pie, eat the cabbage]
 
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 							/*
 							eg; for all the reds dog near the park, and the blue tea trees, eat the pie
 							for(all the red dog near the park)
@@ -310,7 +310,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							}
 							*/
 
-							#ifdef NLC_USE_PREPROCESSOR
+							#ifdef NLC_PREPROCESSOR
 							NLCcodeblock* firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
 							NLCcodeblock* firstCodeBlockAtStartOfIfStatement = NULL;
 							NLCcodeblock* previousCodeBlockInTree = NULL;
@@ -328,7 +328,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							}
 							#endif
 
-							#ifndef NLC_USE_PREPROCESSOR
+							#ifndef NLC_PREPROCESSOR
 							int currentLogicalConditionCase[1] = {0};	//multiple cases not supported (ie else if, else)
 							#endif
 							string whileLogicalConditionConjunctionBooleanName = generateWhileLogicalConditionConjunctionBooleanName(getCurrentLogicalConditionLevel());
@@ -365,7 +365,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							{
 								previousCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 							}
-							#ifdef NLC_USE_PREPROCESSOR
+							#ifdef NLC_PREPROCESSOR
 							previousCodeBlockInTree = *currentCodeBlockInTree;
 							#endif
 
@@ -375,8 +375,8 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							addNewLogicalCondition(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionOperationObject);
 
 
-							#ifdef NLC_USE_PREPROCESSOR
-							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+							#ifdef NLC_PREPROCESSOR
+							#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 							//CHECKTHIS
 							if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) || (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE) || (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
 							{
@@ -394,7 +394,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 
 							if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 							{
-								#ifdef NLC_USE_PREPROCESSOR
+								#ifdef NLC_PREPROCESSOR
 								if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
 								{
 									restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, elseIfDetected, elseDetected, &previousCodeBlockInTree);
@@ -421,7 +421,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 								}
 
-								#ifndef NLC_USE_PREPROCESSOR
+								#ifndef NLC_PREPROCESSOR
 								bool elseIfDetected = false;
 								#endif
 								int logicalOperation2 = logicalOperation;
@@ -484,10 +484,10 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 
 							if(logicalConditionOperationSubject->isNetworkIndex || logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
+								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
 								if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 								{
-									cout << "generateCodeBlocks{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+									cout << "generateCodeBlocks{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
 								}
 								else if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
@@ -500,7 +500,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 							{
 								if(logicalConditionOperationSubject->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)
 								{
-									#ifdef NLC_USE_PREPROCESSOR
+									#ifdef NLC_PREPROCESSOR
 									if(logicalConditionOperationSubject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION)
 									{
 										//eg If the sun is bright, do this.
@@ -514,7 +514,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 										generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex, NLCfunctionName);
-									#ifdef NLC_USE_PREPROCESSOR
+									#ifdef NLC_PREPROCESSOR
 									}
 									#endif
 								}
@@ -534,7 +534,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									#endif
 								}
 
-								#ifdef NLC_USE_PREPROCESSOR
+								#ifdef NLC_PREPROCESSOR
 								if(useNLCpreprocessor)
 								{
 									if((logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF) && !elseIfDetected && !elseDetected)
@@ -559,7 +559,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 									}
 									else
 									{
-										cout << "NLC_USE_PREPROCESSOR generateCodeBlocksPart2logicalConditions{} error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
+										cout << "NLC_PREPROCESSOR generateCodeBlocksPart2logicalConditions{} error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
 										cout << "currentNLCsentenceInList->next->indentation <= currentNLCsentenceInList->indentation + 1" << endl;
 										cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 										cout << "currentNLCsentenceInList->next->indentation = " << currentNLCsentenceInList->next->indentation << endl;
@@ -585,7 +585,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock** currentCodeBlockInT
 	return true;
 }
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* currentLogicalConditionObject, int sentenceIndex, int logicalOperation, int* logicalConditionConjunctionIndex, NLClogicalConditionConjunction* logicalConditionConjunctionArray, GIAentityNode* previousLogicalConditionConjunction)
 {
 	NLCcodeblock* currentCodeBlockInTreeAtCurrentLevel1 = *currentCodeBlockInTree;
@@ -628,7 +628,7 @@ void addNewLogicalCondition(NLCcodeblock** currentCodeBlockInTree, GIAentityNode
 
 		if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 		{
-			#ifndef NLC_USE_PREPROCESSOR
+			#ifndef NLC_PREPROCESSOR
 			int currentLogicalConditionCase[1] = {0};	//multiple cases not supported
 			#endif
 			string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(getCurrentLogicalConditionLevel(), currentLogicalConditionCase[getCurrentLogicalConditionLevel()],* logicalConditionConjunctionIndex, logicalOperation);
@@ -767,13 +767,13 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 						{
 							if(connectedEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+								cout << "tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "connectedEntity = " << connectedEntity->entityName;
 							}
 							else
 							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
-								connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
+								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS
+								connectedEntity->referenceSetID = NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
 								#endif
 								if(tagOrUntag)
 								{
@@ -802,7 +802,7 @@ void tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanc
 }
 
 
-#ifdef NLC_USE_PREPROCESSOR
+#ifdef NLC_PREPROCESSOR
 bool setCurrentCodeBlockInTreeToStartOfIfStatement(NLCcodeblock** currentCodeBlockInTree, NLCcodeblock** firstCodeBlockAtStartOfIfStatement, NLCcodeblock* firstCodeBlockAtStartOfElseStatement, bool elseIfDetected, bool elseDetected)
 {
 	bool result = false;
@@ -860,7 +860,7 @@ bool searchForEquivalentSubnetToIfStatement(GIAentityNode* entityCompareNetworkI
 
 	//code copied from identifyReferenceSetsSpecificConceptsAndLinkWithConcepts() in GIAtranslatorDefineReferencing.cpp
 
-	int referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
+	int referenceSetID = NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_NETWORK_INDEXES_DUMMY_REFERENCE_SET_ID;
 
 	bool traceModeIsQuery = false;
 	GIAreferenceTraceParameters referenceTraceParameters;

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,21 +39,21 @@
 #include "NLCpreprocessorSentenceClass.h"
 
 
-#ifdef NLC_USE_PREPROCESSOR
+#ifdef NLC_PREPROCESSOR
 bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, string outputFileName);
 	#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 	bool reduceQuotesToSingleWords(string lineText, string* updatedLineText);
 	#endif
 	void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
 	void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents);
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
+	#ifdef NLC_INPUT_FUNCTION_LISTS
 	bool detectFunctionHeader(string* lineContents);
 	string getFunctionNameFromFunctionHeader(string* lineContents);
 	string generateNLCfunctionFileName(string NLCfunctionName);
 	#endif
 	bool detectLogicalConditionOperatorAtStartOfLine(string* lineContents, int* logicalConditionOperator);
 	string removePrependingWhiteSpace(string sentenceContents);
-	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
 	bool detectMathObjectStringDelimiter(string* lineContents);
 	#endif
 #endif

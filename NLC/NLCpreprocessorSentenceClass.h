@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -80,7 +80,7 @@ public:
 	vector<NLCvariable*> mathTextVariables;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
 	vector<string> variableNamesDetected;	//record of original variable name that has been replaced by dummy number for NLP/GIA to parse
 	#endif
-	#ifdef NLC_USE_MATH_OBJECTS
+	#ifdef NLC_MATH_OBJECTS
 	bool mathTextIdentifiesMathValue;
 	//bool mathTextNLPparsablePhraseIdentifiesMathValue;
 	#endif

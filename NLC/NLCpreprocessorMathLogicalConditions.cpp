@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 {
 	bool result = true;
 
-	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
 	//ignore string quotations during replacement
 	bool stillFindingLineContentsSub = true;
 	int lineContentsSubIndex = 0;
@@ -64,7 +64,7 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 	string lineContentsNew = "";
 	while(stillFindingLineContentsSub) 
 	{
-		int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
+		int indexOfStringDelimiter = lineContents->find(NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
 		if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			lineContentsSubIndexEnd = indexOfStringDelimiter+1;
@@ -131,12 +131,12 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents,
 		lineContentsSub = replaceAllOccurancesOfString(&lineContentsSub, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_WITH_PADDING, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING);
 		#endif
 		
-	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
 		lineContentsNew = lineContentsNew + lineContentsSub;
 		if(stillFindingLineContentsSub)
 		{	
 			//add the string quotation text
-			int indexOfStringDelimiter = lineContents->find(NLC_USE_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd);
+			int indexOfStringDelimiter = lineContents->find(NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd);
 			if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
 				lineContentsSubIndex = indexOfStringDelimiter + 1;

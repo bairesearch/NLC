@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,10 +42,10 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 	bool result = true;
 
 	string printedCodeBlocksSourceText = "";
-	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+	#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 	string printedClassDefinitionSourceFileName = "";
 	#endif
-	#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+	#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
 	string printedCodeBlocksSourceMainFunctionText = "";
 	#endif
 
@@ -147,11 +147,11 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
 
-			#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
-			printedClassDefinitionSourceFileName = NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + functionDeclarationOwnerName + NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
+			#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+			printedClassDefinitionSourceFileName = NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND + functionDeclarationOwnerName + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;		//eg NLCgeneratedmoveClass.cpp
 			#endif
 
-			#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+			#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
 			printedCodeBlocksSourceMainFunctionText = generateMainFunctionText(&(currentCodeBlockInLevel->parameters), progLang);
 			#endif
 		}
@@ -393,8 +393,8 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string localListDeclarationText = generateCodeEntityListDefinitionTypeText(param1->className, progLang) + generateLocalListName(param1) + progLangEndLine[progLang];	//vector<param1Class*> param1instanceList;
 			printLine(localListDeclarationText, level, &printedCodeBlocksSourceText);
 		}
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS)
 		{
 			#ifdef NLC_DEBUG
@@ -753,7 +753,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 
 			printLine(tempVarDeclarationText, level, &printedCodeBlocksSourceText);
 		}
-		#ifdef NLC_USE_ADVANCED_REFERENCING		
+		#ifdef NLC_ADVANCED_REFERENCING		
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION)
 		{
 			#ifdef NLC_DEBUG
@@ -792,10 +792,10 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
 			string lastSentenceReferenced = param2->name;
 
-			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-			string codeBlockText = param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangEquals[progLang] + lastSentenceReferenced + progLangEndLine[progLang];		//param1->lastSentenceReferenced.top() = x;
+			#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
+			string codeBlockText = param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangEquals[progLang] + lastSentenceReferenced + progLangEndLine[progLang];		//param1->lastSentenceReferenced.top() = x;
 			#else
-			string codeBlockText = param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangEquals[progLang] + lastSentenceReferenced + progLangEndLine[progLang];		//param1->lastSentenceReferenced = x;
+			string codeBlockText = param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangEquals[progLang] + lastSentenceReferenced + progLangEndLine[progLang];		//param1->lastSentenceReferenced = x;
 			#endif
 			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
 		}
@@ -957,7 +957,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		#endif
 		*/
 		#endif
-		#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+		#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_CONTEXT_LIST)
 		{
 			#ifdef NLC_DEBUG
@@ -1030,7 +1030,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			generateCodeCastVectorNewFunction(progLang, &printedCodeBlocksSourceText, level);
 		}
 		#endif
-		#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+		#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST)
 		{
 			#ifdef NLC_DEBUG
@@ -1043,7 +1043,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(codeBlockTextAddAliasToEntityAliasList, level, &printedCodeBlocksSourceText);
 
 			/*
-			string codeBlockTextAddEntityToAliasList = generateEntityStringMapListName(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateEntityStringPairTexts(param1->name, genericEntityClassName, generateStaticCastOfEntity(param2->instanceName, genericEntityClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//AliasList.insert(pair<string, param2className*>(param1, static_cast<NLCgenericEntityClass*>param2));
+			string codeBlockTextAddEntityToAliasList = generateEntityStringMapListName(NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLIST_VAR_APPENDITION) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateEntityStringPairTexts(param1->name, genericEntityClassName, generateStaticCastOfEntity(param2->instanceName, genericEntityClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//AliasList.insert(pair<string, param2className*>(param1, static_cast<NLCgenericEntityClass*>param2));
 			*/
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION)
@@ -1084,7 +1084,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			generateCodeFindAliasExecuteFunction(param1, param2, progLang, &printedCodeBlocksSourceText, level);
 		}
 		#endif
-		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+		#ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST)
 		{
 			string iterIndexString = convertIntToString(level);
@@ -1114,7 +1114,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(tempVarDeclarationText, (level+1), &printedCodeBlocksSourceText);
 		}
 		#endif
-		#ifdef NLC_SUPPORT_REDEFINITIONS
+		#ifdef NLC_REDEFINITIONS
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1)
 		{
 			string iterIndexString = convertIntToString(level);
@@ -1193,7 +1193,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(tempVarCheckText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
 		}
-		#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
+		#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_PROPERTY_NEW_FUNCTION)
 		{
 			#ifdef NLC_DEBUG
@@ -1218,7 +1218,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		}
 		#endif
 		#endif
-		#ifdef NLC_USE_MATH_OBJECTS
+		#ifdef NLC_MATH_OBJECTS
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_TEST_MATH_OBJECT_NUMERICAL_VALUE)
 		{
 			#ifdef NLC_DEBUG
@@ -1259,10 +1259,10 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_NUMERICAL" << endl;
 			#endif
-			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
 			printLine(setMathTypeText, level, &printedCodeBlocksSourceText);
 		}
-		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+		#ifdef NLC_MATH_OBJECTS_ADVANCED
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE)
 		{
 			#ifdef NLC_DEBUG
@@ -1280,7 +1280,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			string setGenericEntityPointerToEntityText = generateCodeSetGenericEntityPointerToEntityText(param1, param2, progLang);	 //param1 = param2;
 			printLine(setGenericEntityPointerToEntityText, level, &printedCodeBlocksSourceText);
 		}
-		#ifdef NLC_USE_MATH_OBJECTS_STRING
+		#ifdef NLC_MATH_OBJECTS_STRING
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_STRING_VALUE)
 		{
 			#ifdef NLC_DEBUG
@@ -1312,11 +1312,11 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_STRING" << endl;
 			#endif
-			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
+			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING;
 			printLine(setMathTypeText, level, &printedCodeBlocksSourceText);
 		}
 		#endif
-		#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+		#ifdef NLC_MATH_OBJECTS_BOOLEAN
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_BOOLEAN_VALUE)
 		{
 			#ifdef NLC_DEBUG
@@ -1348,7 +1348,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_BOOLEAN" << endl;
 			#endif
-			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			string setMathTypeText = generateCodeEntityMathObjectTypeText(param1, progLang) + progLangEquals[progLang] + NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_DEFNAME + progLangEndLine[progLang];	 //param1->mathObjectType = NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
 			printLine(setMathTypeText, level, &printedCodeBlocksSourceText);
 		}
 		#endif
@@ -1425,7 +1425,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		if(currentCodeBlockInLevel->lowerLevel != NULL)
 		{
 			printCodeBlocks(currentCodeBlockInLevel->lowerLevel, classDefinitionList, progLang, &printedCodeBlocksSourceText, (level+1));
-			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+			#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 			if(currentCodeBlockInLevel->isLogicalCondition)
 			{				
 				//createCodeBlocksClearContextListVariableExecuteFunction:
@@ -1444,11 +1444,11 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 		currentCodeBlockInLevel = currentCodeBlockInLevel->next;
 	}
 
-	#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+	#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
 	printedCodeBlocksSourceText = printedCodeBlocksSourceText + printedCodeBlocksSourceMainFunctionText;
 	#endif
 
-	#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+	#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 	#ifdef NLC_DEBUG
 	//cout << "printedClassDefinitionSourceFileName = " << printedClassDefinitionSourceFileName << endl;
 	//cout << "printedCodeBlocksSourceText = " << printedCodeBlocksSourceText << endl;
@@ -1616,7 +1616,7 @@ void generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(v
 		#endif
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
 		{
-			#ifdef NLC_USE_LIBRARY_ASSUME_STANDARD_AND_USER_LIBRARY_FUNCTIONS_ACTION_ARGUMENT_TYPE_IS_NLC_GENERIC_ENTITY_CLASS
+			#ifdef NLC_LIBRARY_ASSUME_STANDARD_AND_USER_LIBRARY_FUNCTIONS_ACTION_ARGUMENT_TYPE_IS_NLC_GENERIC_ENTITY_CLASS
 			if(functionDefinitionClassDefinition != NULL)
 			{
 				if(functionDefinitionClassDefinition->isLibraryFunctionDefinition)
@@ -1825,8 +1825,8 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 		#endif
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 		{
-			#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
-			if(currentItem->className != generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
+			#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
+			if(currentItem->className != generateClassName(NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
 			{
 			#endif
 				#ifdef NLC_DEBUG
@@ -1841,7 +1841,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 				#else
 				*functionArguments = *functionArguments + generateCodeEntityDefinitionText(currentItem, progLang);
 				#endif
-			#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
+			#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
 			}
 			#endif
 		}
@@ -1876,7 +1876,7 @@ string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang, 
 {
 	bool foundFunctionOwner = false;
 	string functionOwnerContext = "";
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
+	#ifdef NLC_INPUT_FUNCTION_LISTS
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem* currentItem = *parametersIterator;
@@ -1891,7 +1891,7 @@ string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang, 
 	if(!foundFunctionOwner)
 	{
 		functionOwnerContext = progLangClassMemberFunctionTypeDefault[progLang];	//void
-		#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+		#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 		functionOwnerContext = functionOwnerContext + generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME) + progLangFunctionOwnerClassDelimiter[progLang];	//void functionsWithNoSubjectArtificialClass::
 		*functionOwnerName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
 		#endif
@@ -1899,7 +1899,7 @@ string generateFunctionOwnerContext(vector<NLCitem*>* parameters, int progLang, 
 	return functionOwnerContext;
 }
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int progLang)
 {
 	string logicalConjunctionOfBoolsText = "";
@@ -1927,7 +1927,7 @@ string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, int p
 #endif
 
 
-#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
+#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
 string generateMainFunctionText(vector<NLCitem*>* parameters, int progLang)
 {
 	string printedCodeBlocksSourceMainFunctionText = "";
@@ -1938,13 +1938,13 @@ string generateMainFunctionText(vector<NLCitem*>* parameters, int progLang)
 	NLCitem* functionArgument = NULL;
 	if(findFunctionArgument(parameters, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION, &functionArgument))
 	{
-		if(functionArgument->className == generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
+		if(functionArgument->className == generateClassName(NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
 		{
 			implicitlyDeclaredFunctionDetected = true;
 			functionName = functionArgument->functionName;
 		}
-		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN
-		if(functionArgument->className == generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN_FUNCTION_NAME))
+		#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN
+		if(functionArgument->className == generateClassName(NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN_DETECT_USER_DECLARED_MAIN_FUNCTION_NAME))
 		{
 			implicitlyDeclaredFunctionDetected = true;
 			functionName = functionArgument->functionName;

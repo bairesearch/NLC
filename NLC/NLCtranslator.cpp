@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,14 +36,14 @@
 #include "NLCtranslatorCodeBlocks.h"
 #include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced
 #include "NLCtranslatorClassDefinitions.h"
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 #include "GIAtranslatorDefs.h"
 #endif
-#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 #include "NLCtranslatorCodeBlocksOperations.h"	//required for initialiseFunctionAliasClassList()
 #endif
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(void)
 {
 	entity = NULL;
@@ -63,13 +63,13 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 {
 	bool result = true;
 
-	#ifdef NLC_USE_PREPROCESSOR
+	#ifdef NLC_PREPROCESSOR
 	initialiseLogicalConditionLevelRecordArray(useNLCpreprocessor);
 	#endif
 
 	/*//this is done by GIA
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
-	#ifdef NLC_USE_PREPROCESSOR
+	#ifdef NLC_PREPROCESSOR
 	//NLC translator Part prep A.
 	if(!identifyImplicitPluralLogicalConditionOperationsObjects(entityNodesActiveListComplete, maxNumberSentences))
 	{
@@ -79,8 +79,8 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 	#endif
 	*/
 
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	//NLC translator Part prep B.
 	if(!removeRedundantConditionConjunctions(entityNodesActiveListSentences, maxNumberSentences))
 	{
@@ -131,7 +131,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 
 /*
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
-#ifdef NLC_USE_PREPROCESSOR
+#ifdef NLC_PREPROCESSOR
 bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences)
 {
 	bool result = true;
@@ -151,7 +151,7 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 					{
 						if(entity2->entityIndexTemp = conditionEntity->entityIndexTemp+1)
 						{
-							#ifdef NLC_USE_PREPROCESSOR
+							#ifdef NLC_PREPROCESSOR
 							if(entity2->entityIndexTemp == 1)	//NLP parsable phrase: "every chicken..."
 							#else
 							if(entity2->entityIndexTemp == 2)	//GIAsentence: "For every chicken..."
@@ -177,8 +177,8 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 #endif
 */
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences)
 {
 	bool result = true;
@@ -408,7 +408,7 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 
 							if(conditionObject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "conditionObject = " << conditionObject->entityName;
 							}
 							else
@@ -417,7 +417,7 @@ bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>
 							}
 							if(conditionSubject->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)
 							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
+								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
 								cout << "conditionSubject = " << conditionSubject->entityName;
 							}
 							else
@@ -471,7 +471,7 @@ void disableInstanceAndNetworkIndexEntityNLC(GIAentityNode* entity)
 
 #endif
 
-#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
+#ifdef NLC_INPUT_FUNCTION_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 //NB firstCodeBlockInTree contains the new function codeblock (NLC_CODEBLOCK_TYPE_NEW_FUNCTION) parameters: NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST
 void reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* functionDefinitionClassDefinition)
@@ -637,7 +637,7 @@ bool getFilesFromFileList(string inputListFileName, vector<string>* inputTextFil
 	if(!parseFileObject.rdbuf()->is_open())
 	{
 		//txt file does not exist in current directory.
-		#ifndef NLC_USE_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
+		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "Error: input list file does not exist in current directory: " << inputListFileName << endl;
 		#endif
 		result = false;
@@ -709,7 +709,7 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 	string functionObjectName = "";
 	bool hasFunctionOwnerClass = false;
 	bool hasFunctionObjectClass = false;
-	#ifdef NLC_USE_LIBRARY
+	#ifdef NLC_LIBRARY
 	vector<NLCitem*> parameters;
 	if(libraryFunctionDeclaration)
 	{
@@ -719,7 +719,7 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 	{
 	#endif
 		parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog#fight+box"
-	#ifdef NLC_USE_LIBRARY
+	#ifdef NLC_LIBRARY
 	}
 	#endif
 
@@ -742,12 +742,12 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 		#endif
 		bool isReferenceElseFunctionDefinition = false;		//ie isFunctionDefinition
 		NLCclassDefinition* functionClassDefinition = createFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, functionDefinitionIndex, isReferenceElseFunctionDefinition);
-		#ifdef NLC_USE_LIBRARY
+		#ifdef NLC_LIBRARY
 		if(functionClassDefinition != NULL)
 		{
 			addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(&parameters, functionClassDefinition);
 		}
-		#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
+		#ifdef NLC_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 		if(libraryFunctionDeclaration)
 		{
 			functionClassDefinition->isLibraryFunctionDefinition = true;

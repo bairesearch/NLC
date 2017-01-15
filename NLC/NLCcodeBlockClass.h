@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,7 +39,7 @@
 #include "NLCitemClass.h"
 #include "GIAentityNodeClass.h"
 #include "GIAentityConnectionClass.h"
-//#ifdef NLC_USE_PREPROCESSOR
+//#ifdef NLC_PREPROCESSOR
 #include "NLCpreprocessorSentenceClass.h"	//required for findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext()
 //#endif
 
@@ -85,7 +85,7 @@
 		#define NLC_CODEBLOCK_TYPE_PRINT_WARNING (32)
 		#define NLC_CODEBLOCK_TYPE_GET_BACK_GENERIC_ENTITY_LIST (33)
 	#endif
-	#ifdef NLC_USE_ADVANCED_REFERENCING
+	#ifdef NLC_ADVANCED_REFERENCING
 		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_EXECUTE_FUNCTION (34)
 		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_WITH_CAST_EXECUTE_FUNCTION (35)
 		#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_SINGULAR_NEW_FUNCTION (36)
@@ -101,7 +101,7 @@
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_LIST_VARIABLE2 (41)
 	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST2 (42)
 #endif
-#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 	#define NLC_CODEBLOCK_TYPE_DECLARE_CONTEXT_LIST (43)
 	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_NEW_FUNCTION (44)
 	#define NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_CONTEXT_LIST_EXECUTE_FUNCTION (45)
@@ -112,7 +112,7 @@
 	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_NEW_FUNCTION (48)
 	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION (49)
 #endif
-#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	#define NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST (50)
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION (51)
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION (52)
@@ -122,20 +122,20 @@
 	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_SUBJECT (54)
 	#define NLC_CODEBLOCK_TYPE_RECORD_HISTORY_ACTION_OBJECT (55)
 #endif
-#ifdef NLC_SUPPORT_REDEFINITIONS
+#ifdef NLC_REDEFINITIONS
 	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (56)
 #endif
 #define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (57)			//param1class* param1 = NULL;
 #define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (58)			//param1 = param2;
 #define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY (59)			//param1class* param1 = param2;
-#ifdef NLC_SUPPORT_REDEFINITIONS
+#ifdef NLC_REDEFINITIONS
 	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_NEW_FUNCTION (60)
 #endif
-#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
+#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
 	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_NEW_FUNCTION (61)
 	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_NEW_FUNCTION (62)
 #endif
-#ifdef NLC_USE_LIBRARY_BASE_EXTENDED
+#ifdef NLC_LIBRARY_BASE_EXTENDED
 	#define NLC_CODEBLOCK_TYPE_ADD_PROPERTY_EXECUTE_FUNCTION (63)
 	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_EXECUTE_FUNCTION (64)
 #endif
@@ -144,21 +144,21 @@
 	#define NLC_CODEBLOCK_TYPE_REMOVE_PROPERTY (65)
 	#define NLC_CODEBLOCK_TYPE_REMOVE_CONDITION (66)
 #endif
-#ifdef NLC_USE_MATH_OBJECTS
+#ifdef NLC_MATH_OBJECTS
 	#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_NUMERICAL_VALUE (67)
 	#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_DECIMAL_POINTER_VARIABLE (68)
 	#define NLC_CODEBLOCK_TYPE_SET_DECIMAL_POINTER_TO_ENTITY_MATH_OBJECT_NUMERICAL_VALUE (69)
 	#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_NUMERICAL (70)
-	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
 		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_GENERIC_ENTITY_POINTER_VARIABLE (71)
 		#define NLC_CODEBLOCK_TYPE_SET_GENERIC_ENTITY_POINTER_TO_ENTITY (72)
-		#ifdef NLC_USE_MATH_OBJECTS_STRING
+		#ifdef NLC_MATH_OBJECTS_STRING
 		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_STRING_VALUE (73)
 		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_STRING_POINTER_VARIABLE (74)
 		#define NLC_CODEBLOCK_TYPE_SET_STRING_POINTER_TO_ENTITY_MATH_OBJECT_STRING_VALUE (75)
 		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_TYPE_AS_STRING (76)
 		#endif
-		#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+		#ifdef NLC_MATH_OBJECTS_BOOLEAN
 		#define NLC_CODEBLOCK_TYPE_SET_MATH_OBJECT_BOOLEAN_VALUE (77)
 		#define NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOLEAN_POINTER_VARIABLE (78)
 		#define NLC_CODEBLOCK_TYPE_SET_BOOLEAN_POINTER_TO_ENTITY_MATH_OBJECT_BOOLEAN_VALUE (79)
@@ -171,7 +171,7 @@
 #endif
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
 	#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE (82)
-	#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
+	#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
 		#define NLC_CODEBLOCK_TYPE_ADD_CONDITION_INVERSE_NEW_FUNCTION (83)
 	#endif
 #endif
@@ -186,8 +186,8 @@
 #define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (102)		//forall(context1.param1param2ConditionList){
 #define NLC_CODEBLOCK_TYPE_FOR_INTEGER (103)
 #define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (104)			//main(){
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifndef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (105)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
 	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (106)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (107)		//while(!(context1->param1PropertyList.empty())){
@@ -233,19 +233,19 @@
 	#define NLC_CODEBLOCK_TYPE_IF_ACTION_NAME (130)
 	#endif
 #endif
-#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+#ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	#define NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST (131)
 	#define NLC_CODEBLOCK_TYPE_IN_LOCAL_LIST (132)
 #endif
-#ifdef NLC_SUPPORT_REDEFINITIONS
+#ifdef NLC_REDEFINITIONS
 	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1 (133)
 	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2 (134)
 #endif
 #define NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY (135)			//if(param1 == param2){
-#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_EXECUTE_FUNCTION (136)
 #endif
-#ifdef NLC_USE_MATH_OBJECTS
+#ifdef NLC_MATH_OBJECTS
 	#ifndef NLC_MATH_OBJECTS_TEST_NULL_POINTER_MAINTAIN_CONTEXT
 		#define NLC_CODEBLOCK_TYPE_CHECK_POINTER_VALUE (137)
 	#endif
@@ -292,7 +292,7 @@ public:
 	NLCcodeblock* lowerLevel;
 	NLCcodeblock* next;
 
-	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 	bool isLogicalCondition;
 	int contextLevel;
 	#endif
@@ -307,10 +307,10 @@ public:
 	~NLCgenerateContextBlocksVariables(void);
 
 	int logicalOperation;
-	//#ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	//#ifndef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	bool negative;
 	//#endif
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	int logicalConditionConjunctionIndex;
 	GIAentityNode* primaryEntityInLogicalConditionConjunctionSubset;
 	GIAentityNode* foundLogicalConditionConjunction;
@@ -359,7 +359,7 @@ public:
 	#endif
 };
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 class NLClogicalConditionConjunction
 {
 public:
@@ -413,13 +413,13 @@ NLCcodeblock* createCodeBlockForOrInPropertyList(NLCcodeblock* currentCodeBlockI
 		NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context);
 			NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 				NLCcodeblock* createCodeBlockForPropertyList(NLCcodeblock* currentCodeBlockInTree, NLCitem* item);
-	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+	#ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int index);
 	NLCcodeblock* createCodeBlockInPropertyList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context, int index);
 	#endif
 NLCcodeblock* createCodeBlockForOrInLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 	NLCcodeblock* createCodeBlockForLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
-	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+	#ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	NLCcodeblock* createCodeBlockInLocalList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int index);
 	#endif
 NLCcodeblock* createCodeBlockForConditionList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* condition, GIAentityNode* conditionObject, GIAentityNode* conditionSubject);
@@ -443,7 +443,7 @@ NLCcodeblock* createCodeBlockForActionObjectList(NLCcodeblock* currentCodeBlockI
 NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* actionSubject, GIAentityNode* actionEntity);
 	NLCcodeblock* createCodeBlockForActionSubjectList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string context);
 #endif
-#ifdef NLC_SUPPORT_QUANTITIES
+#ifdef NLC_QUANTITIES
 NLCcodeblock* createCodeBlockForInteger(NLCcodeblock* currentCodeBlockInTree, string numberIterationsOrVariable);
 #endif
 NLCcodeblock* createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* functionOwner);
@@ -465,8 +465,8 @@ bool checkSentenceIndexParsingCodeBlocks(GIAentityNode* entity, GIAentityConnect
 bool checkDuplicateProperty(GIAentityNode* propertyEntity, GIAentityNode* childActionEntity);
 bool checkDuplicateCondition(GIAentityNode* conditionEntity, GIAentityNode* childActionEntity);
 
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction* logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel, int logicalConditionCase, bool elseIfDetected);
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalOperation);
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionCase, int logicalConditionConjunctionIndex, int logicalOperation);
@@ -518,7 +518,7 @@ NLCcodeblock* createCodeBlockIfHasGreaterThanNumCategoryItem(NLCcodeblock* curre
 NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericListAppendName, int value, int sentenceIndex);
 #endif
 NLCcodeblock* createCodeBlockIfHasCategoryItem(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, bool negative, string genericListAppendName, int sentenceIndex);
-#ifdef NLC_USE_ADVANCED_REFERENCING
+#ifdef NLC_ADVANCED_REFERENCING
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, string genericListAppendName, int sentenceIndex, bool castToCategoryType);
 NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree);
 #endif
@@ -538,7 +538,7 @@ NLCcodeblock* createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedP
 	NLCcodeblock* createCodeBlockIfHasGreaterThanOrEqualToNumGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, int value);
 	#endif
 	NLCcodeblock* createCodeBlockIfHasGenericEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, bool negative);
-	#ifdef NLC_USE_ADVANCED_REFERENCING
+	#ifdef NLC_ADVANCED_REFERENCING
 	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularExecuteFunction(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string genericObjectName, string genericListAppendName, GIAentityNode* propertyEntity, bool castToCategoryType);
 	NLCcodeblock* createCodeBlockAddEntityToGenericListCheckLastSentenceReferencedSingularNewFunction(NLCcodeblock* currentCodeBlockInTree);
 	NLCcodeblock* createCodeBlockUpdateLastSentenceReferenced(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
@@ -567,7 +567,7 @@ NLCcodeblock* createCodeBlockIfHasMoreThanNumCondition(NLCcodeblock* currentCode
 */
 #endif
 
-#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 NLCcodeblock* createCodeBlocksDeclareContextList(NLCcodeblock* currentCodeBlockInTree, int contextLevel);
 NLCcodeblock* createCodeBlocksAddEntityToContextLevelListNewFunction(NLCcodeblock* currentCodeBlockInTree);
 NLCcodeblock* createCodeBlocksClearContextListNewFunction(NLCcodeblock* currentCodeBlockInTree);
@@ -581,14 +581,14 @@ NLCcodeblock* createCodeBlocksCastVectorNewFunction(NLCcodeblock* currentCodeBlo
 NLCcodeblock* createCodeBlocksCastVectorExecuteFunction(NLCcodeblock* currentCodeBlockInTree, NLCitem* item, NLCitem* itemPassCastClassName);
 #endif
 
-#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 NLCcodeblock* createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string aliasName);
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock* currentCodeBlockInTree);
 NLCcodeblock* createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity, string genericListAppendName, int sentenceIndex);
 NLCcodeblock* createCodeBlocksFindAliasNewFunction(NLCcodeblock* currentCodeBlockInTree);
 NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, string aliasName, GIAentityNode* entity);
 bool findAliasInEntity(GIAentityNode* entity, string* aliasName);
-#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
 unordered_map<string, string>* getFunctionAliasClassList();
 void initialiseFunctionAliasClassList();
 bool findEntityNameInFunctionAliasList(string aliasName, string* aliasClassName);
@@ -609,7 +609,7 @@ NLCcodeblock* getLastSetCodeBlockInLevel(NLCcodeblock* currentCodeBlockInTree);
 GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity);
 #endif
 
-#ifdef NLC_SUPPORT_REDEFINITIONS
+#ifdef NLC_REDEFINITIONS
 NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, string objectInstanceName, string classNameToFind);
 NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
 NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* object, string classNameToFind);
@@ -624,7 +624,7 @@ NLCcodeblock* createCodeBlockDeclareTempVariableAndSetToEntity(NLCcodeblock* cur
 NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity1, GIAentityNode* entity2);
 NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity);
 
-#ifdef NLC_USE_NON_LIBRARY_FUNCTIONS_EXTENDED
+#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
 NLCcodeblock* createCodeBlockAddPropertyNewFunction(NLCcodeblock* currentCodeBlockInTree);
 NLCcodeblock* createCodeBlockAddConditionNewFunction(NLCcodeblock* currentCodeBlockInTree);
 #ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_MARK_INVERSE_CONDITIONS
@@ -632,22 +632,22 @@ NLCcodeblock* createCodeBlockAddConditionInverseNewFunction(NLCcodeblock* curren
 #endif
 #endif
 
-#ifdef NLC_USE_MATH_OBJECTS
+#ifdef NLC_MATH_OBJECTS
 NLCcodeblock* createCodeBlockTestMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockSetMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewDecimalPointerVar(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName);
 NLCcodeblock* createCodeBlockSetDecimalPointerToEntityMathObjectNumericalValue(NLCcodeblock* currentCodeBlockInTree, string decimalPointerVariableName, GIAentityNode* entity);
 NLCcodeblock* createCodeBlockSetMathObjectTypeAsNumerical(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
-#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+#ifdef NLC_MATH_OBJECTS_ADVANCED
 NLCcodeblock* createCodeBlockDeclareNewGenericEntityPointerVar(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName);
 NLCcodeblock* createCodeBlockSetGenericEntityPointerToEntity(NLCcodeblock* currentCodeBlockInTree, string genericEntityPointerVariableName, GIAentityNode* entity);
-#ifdef NLC_USE_MATH_OBJECTS_STRING
+#ifdef NLC_MATH_OBJECTS_STRING
 NLCcodeblock* createCodeBlockSetMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewStringPointerVar(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName);
 NLCcodeblock* createCodeBlockSetStringPointerToEntityMathObjectStringValue(NLCcodeblock* currentCodeBlockInTree, string stringPointerVariableName, GIAentityNode* entity);
 NLCcodeblock* createCodeBlockSetMathObjectTypeAsString(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity);
 #endif
-#ifdef NLC_USE_MATH_OBJECTS_BOOLEAN
+#ifdef NLC_MATH_OBJECTS_BOOLEAN
 NLCcodeblock* createCodeBlockSetMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* valueEntity);
 NLCcodeblock* createCodeBlockDeclareNewBooleanPointerVar(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName);
 NLCcodeblock* createCodeBlockSetBooleanPointerToEntityMathObjectBooleanValue(NLCcodeblock* currentCodeBlockInTree, string booleanPointerVariableName, GIAentityNode* entity);
@@ -664,7 +664,7 @@ NLCcodeblock* createCodeBlockCheckDecimalPointerValue(NLCcodeblock* currentCodeB
 NLCcodeblock* createCodeBlockIfTempVariableNameEqualsClassName(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, string className);
 
 
-#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+#ifdef NLC_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 bool checkNumericalReferenceToEntity(GIAentityNode* entity);
 #endif
 

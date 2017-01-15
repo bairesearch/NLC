@@ -26,14 +26,14 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCtranslatorClassDefinitions.h"
-#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 #include "GIAtranslatorDefs.h"
 #endif
 #ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
@@ -81,7 +81,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 							GIAentityConnection* connection = *connectionIter;
 							GIAentityNode* targetEntity = connection->entity;
 
-							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+							#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 							if(!(connection->isAlias))
 							{
 							#endif
@@ -131,7 +131,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 										{
 											targetClassDefinition->functionNameSpecial = generateFunctionName(targetEntity);
-											#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+											#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 											targetClassDefinition->actionOrConditionInstance = targetEntity;
 											#endif
 										}
@@ -211,7 +211,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 										{//declare inheritance
 											#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
-											#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+											#ifndef NLC_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
 											//chickens are animals. an animal is a chicken. In practice this will not be implemented because GIA interprets indefinite-indefinite definitions as concepts. redefinitions are generally not implied for indefinite children (eg "an animal" in "an animal is a chicken") because they are ambiguous; this example either means a) animals are chickens (ie is a concept-concept definition; not a redefinition - and happens to be an incorrect statement based on aprior knowledge about the animal kingdom because we know chickens are animals not vice versa), or b) a newly declared animal is cast to a chicken (a specific version of animal, assuming "chickens are animals" has been declared)
 											bool indefiniteChild = false;
 											if(!isDefiniteEntity(entityNode))
@@ -227,7 +227,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 											}
 											#endif
 											bool substanceEntityDefinitionIsAChildOfTheSubstanceEntity = isSubstanceEntityDefinitionAChildOfTheSubstanceEntity(entityNode, targetEntity, connection);
-											#ifdef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
+											#ifdef NLC_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
 											if(!substanceEntityDefinitionIsAChildOfTheSubstanceEntity)
 											#else
 											if(indefiniteChild || !substanceEntityDefinitionIsAChildOfTheSubstanceEntity)
@@ -291,7 +291,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 												#endif
 
 												#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-												//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
+												//#ifdef NLC_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 												generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(targetEntity, &(targetClassDefinition->parameters));
 												//#endif
 												#endif
@@ -300,7 +300,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition*>* classDefinitionList, ve
 										#endif
 									}
 								}
-							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+							#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 							}
 							#endif
 						}
@@ -435,7 +435,7 @@ bool isSubstanceEntityDefinitionAChildOfTheSubstanceEntity(GIAentityNode* substa
 	#endif
 	else if(parentEntity->entityType != GIA_ENTITY_TYPE_TYPE_CONCEPT)
 	{
-		#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+		#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 		if(!(connection->isAlias))
 		{
 			cout << "isSubstanceEntityDefinitionAChildOfTheSubstanceEntity{} error: a substance has a non-alias definition connection to a substance" << endl;
@@ -717,7 +717,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 								#endif
 
 								classDefinitionFunction->functionNameSpecial = generateFunctionName(actionEntity);
-								#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+								#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 								classDefinitionFunction->actionOrConditionInstance = actionEntity;
 								#endif
 								classDefinitionFunction->isActionOrConditionInstanceNotClass = true;
@@ -768,7 +768,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 									#endif
 
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-									//#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
+									//#ifdef NLC_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
 									generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(actionEntity, &(classDefinitionFunction->parameters));
 									//#endif
 									#endif
@@ -864,19 +864,19 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 {
 	bool validClass = true;
 
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 	if(entityNode->NLClogicalConditionOperation)
 	{
 		validClass = false;
 	}
-	#ifdef NLC_USE_PREPROCESSOR
+	#ifdef NLC_PREPROCESSOR
 	if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
 	{
 		validClass = false;
 	}
 	#endif
 	#endif
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
+	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	bool conjunctionConditionFound = textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
 	if(conjunctionConditionFound)
 	{
@@ -912,7 +912,7 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 		validClass = false;
 	}
 	#endif
-	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	if(entityNode->NLCisAlias)
 	{
 		validClass = false;
@@ -932,7 +932,7 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	*/
 
 	/*
-	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	string aliasClassName = "";
 	if(findEntityNameInFunctionAliasList(entityNode->entityName, &aliasClassName))
 	{

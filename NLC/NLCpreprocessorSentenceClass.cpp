@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v13a 25-October-2016
+ * Project Version: 1w1a 08-December-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -68,7 +68,7 @@ NLCsentence::NLCsentence(void)
 	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
 	mathTextNLPparsablePhrasePositionApproximate = INT_DEFAULT_VALUE;
 	#endif
-	#ifdef NLC_USE_MATH_OBJECTS
+	#ifdef NLC_MATH_OBJECTS
 	mathTextIdentifiesMathValue = false;
 	//mathTextNLPparsablePhraseIdentifiesMathValue = false;
 	#endif

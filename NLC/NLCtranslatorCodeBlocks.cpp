@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g5e 07-July-2014
+ * Project Version: 1g5f 08-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -433,6 +433,17 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 			checkConditionForLogicalCondition(currentCodeBlockInTree, conditionEntity, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
 		}
 	}
+	
+	//d) look for conjunction conditions connected to the parent of the logical condition ("if/while") object
+	for(vector<GIAentityConnection*>::iterator connectionIter = currentLogicalConditionObject->propertyNodeReverseList->begin(); connectionIter != currentLogicalConditionObject->propertyNodeReverseList->end(); connectionIter++)
+	{
+		GIAentityNode * parentEntity = (*connectionIter)->entity;
+		for(vector<GIAentityConnection*>::iterator connectionIter2 = parentEntity->conditionNodeList->begin(); connectionIter2 != parentEntity->conditionNodeList->end(); connectionIter2++)
+		{
+			GIAentityNode * conditionEntity = (*connectionIter)->entity;
+			checkConditionForLogicalCondition(currentCodeBlockInTree, conditionEntity, sentenceIndex, logicalOperation, logicalConditionConjunctionIndex, logicalConditionConjunctionArray);
+		}
+	}	
 	
 }
 
@@ -915,7 +926,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLCcodeblock ** current
 				//cout << "!assumedToAlreadyHaveBeenDeclared" << endl;
 				if(!(currentEntity->parsedForNLCcodeBlocks))
 				{
-					//cout << "createCodeBlocksCreateNewLocalListVariable: " << currentEntity->entityName << endl;
+					cout << "createCodeBlocksCreateNewLocalListVariable: " << currentEntity->entityName << endl;
 					*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, currentEntity);
 					currentEntity->parsedForNLCcodeBlocks = true;
 					currentEntity->NLClocalListVariableHasBeenDeclared = true;

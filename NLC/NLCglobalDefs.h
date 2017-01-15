@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1e 11-August-2015
+ * Project Version: 1q2a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,6 +50,11 @@
 
 #ifndef NLC_DISABLE_1q_CODE_FOR_DEBUG
 	//#ifdef NLC_USE_LIBRARY	//has not been defined yet
+		#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED	//1q1f	//new implementation: requires all functions specified in explicit input list (NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE) to have .nlc extension
+		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
+			#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME "NLCimplicitlyDeclared"
+			#define NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
+		#endif
 		#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES	//1q1a
 		#ifdef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 			#define NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND "NLCgenerated"	//1q1a
@@ -629,7 +634,7 @@
 #define NLC_SUPPORT_QUANTITIES	//1f3a
 
 #ifndef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED		//1f1a+ if statement support
+	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED		//1f1a+ if statement support	//not currently maintained (with introduction of NLC preprocessor logical condition detection)
 #endif
 
 #define NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION	//assumes #ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
@@ -662,7 +667,7 @@
 #define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)
 static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml (should sync with GIArules.xml redistributeStanfordRelationsSetPluralBasedOnPredeterminers)
 
-//#define NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
+//#define NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT	//depreciated 1q1a
 //#define NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS	//BAD
 
 //#define NLC_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES	//1e3a	//no longer used

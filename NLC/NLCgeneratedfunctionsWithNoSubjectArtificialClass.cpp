@@ -7,7 +7,7 @@ functionsWithNoSubjectArtificialClass::functionsWithNoSubjectArtificialClass(voi
 	parentClassList.push_back(static_cast<NLCgenericEntityClass*>(new NLCgenericEntityClass));
 }
 
-void functionsWithNoSubjectArtificialClass::inputTextFunction(vector<inputTextClass*>& inputTextClassList, vector<fileClass*>& fileClassList, vector<landClass*>& landClassList)
+void functionsWithNoSubjectArtificialClass::NLCimplicitlyDeclaredFunction(vector<fileClass*>& fileClassList, vector<landClass*>& landClassList)
 {
 	vector<NLCgenericEntityClass*> referenceContextList0;
 	//move the file to the land.

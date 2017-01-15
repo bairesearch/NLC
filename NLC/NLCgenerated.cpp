@@ -18,10 +18,10 @@ NLCgenericEntityClass* generateObjectByName(string name)
 		NLCgenericEntityClass* newNLCgenericEntityClass = new NLCgenericEntityClass();
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCgenericEntityClass);
 	}
-	if(name == "inputText")
+	if(name == "NLCimplicitlyDeclared")
 	{
-		inputTextClass* newinputTextClass = new inputTextClass();
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newinputTextClass);
+		NLCimplicitlyDeclaredClass* newNLCimplicitlyDeclaredClass = new NLCimplicitlyDeclaredClass();
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredClass);
 	}
 	if(name == "file")
 	{
@@ -59,10 +59,10 @@ NLCgenericEntityClass* copyObjectByName(string name, NLCgenericEntityClass* enti
 		NLCgenericEntityClass* newNLCgenericEntityClass = new NLCgenericEntityClass(*(static_cast<NLCgenericEntityClass*>(entityToCopy)));
 		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCgenericEntityClass);
 	}
-	if(name == "inputText")
+	if(name == "NLCimplicitlyDeclared")
 	{
-		inputTextClass* newinputTextClass = new inputTextClass(*(static_cast<inputTextClass*>(entityToCopy)));
-		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newinputTextClass);
+		NLCimplicitlyDeclaredClass* newNLCimplicitlyDeclaredClass = new NLCimplicitlyDeclaredClass(*(static_cast<NLCimplicitlyDeclaredClass*>(entityToCopy)));
+		newGenericObject = reinterpret_cast<NLCgenericEntityClass*>(newNLCimplicitlyDeclaredClass);
 	}
 	if(name == "file")
 	{

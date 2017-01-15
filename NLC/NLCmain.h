@@ -26,7 +26,7 @@
  * File Name: NLCmain.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1e 11-August-2015
+ * Project Version: 1q2a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,6 +41,9 @@
 
 int main(int argc, char** argv);
 	string removeFileNameExtensions(string NLCfunctionName);
+	#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
+	string removeNLCfileNameExtension(string NLCfunctionName);
+	#endif
 	//#ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 	void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete);
 	//#endif

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1e 11-August-2015
+ * Project Version: 1q2a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1624,17 +1624,24 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>*
 		#endif
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION)
 		{
-			#ifdef NLC_DEBUG
-			//cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION" << endl;
-			#endif
-			if(*functionArguments != "")
+			#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
+			if(currentItem->className != generateClassName(NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME))
 			{
-				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+			#endif
+				#ifdef NLC_DEBUG
+				//cout << "NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION" << endl;
+				#endif
+				if(*functionArguments != "")
+				{
+					*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
+				}
+				#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
+				*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
+				#else
+				*functionArguments = *functionArguments + generateCodeEntityDefinitionText(currentItem, progLang);
+				#endif
+			#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_DO_NOT_PRINT_ACTION_ARGUMENT
 			}
-			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
-			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
-			#else
-			*functionArguments = *functionArguments + generateCodeEntityDefinitionText(currentItem, progLang);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)

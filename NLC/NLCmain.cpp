@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q1e 11-August-2015
+ * Project Version: 1q2a 18-August-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -639,7 +639,7 @@ int main(int argc, char** argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1q1e 11-August-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1q2a 18-August-2015" << endl;
 			exit(1);
 		}
 
@@ -967,6 +967,17 @@ int main(int argc, char** argv)
 		);
 
 		string NLCfunctionName = "";
+		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
+		if(NLCinputFileList)
+		{
+			NLCfunctionName = inputTextPlainTXTfileName;
+			NLCfunctionName = removeNLCfileNameExtension(NLCfunctionName);
+		}
+		else
+		{
+			NLCfunctionName = NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME;
+		}
+		#else
 		if(useInputTextPlainTXTFile)
 		{
 			#ifdef NLC_USE_PREPROCESSOR
@@ -1004,6 +1015,7 @@ int main(int argc, char** argv)
 		NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
 		#else
 		NLCfunctionName = removeFileNameExtensions(NLCfunctionName);
+		#endif
 		#endif
 
 		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
@@ -1099,6 +1111,19 @@ string removeFileNameExtensions(string NLCfunctionName)
 	}
 	return NLCfunctionNameCleaned;
 }
+
+string removeNLCfileNameExtension(string NLCfunctionName)
+{
+	string NLCfunctionNameCleaned = NLCfunctionName;
+	int indexOfFirstFileExtension = NLCfunctionName.find(NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION);
+	if(indexOfFirstFileExtension != string::npos)
+	{
+		NLCfunctionNameCleaned = NLCfunctionName.substr(0, indexOfFirstFileExtension);
+	}
+	return NLCfunctionNameCleaned;
+}
+
+
 
 #ifndef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC
 //this is required for NLC as NLC assumes GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC

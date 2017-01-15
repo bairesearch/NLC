@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s6a 08-September-2016
+ * Project Version: 1s7a 08-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,10 +57,13 @@
 //#define NLC_DISABLE_1s_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1s_CODE_FOR_DEBUG
+	//#ifdef NLC_SUPPORT_REDEFINITIONS	//has not yet been defined
+		#define NLC_SUPPORT_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY	//1r7a
+	//#endif
 	#ifdef GIA_TRANSLATOR_INTERPRET_PRENOMINAL_MODIFIER_DEFINITIONS_ENABLE_INCONSISTENT_REFERENCING
 		#define NLC_SUPPORT_SENTENCES_WITH_MULTIPLE_NON_SAME_REFERENCE_SET_CONNECTIONS	//1r6a
 	#endif
-	//#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS	//declared out of scope
+	//#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS	//has not yet been defined
 		#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_DEFINITIONS	//1r3a
 		#define NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_REMOVE_REDUNDANT_CODE	//1r3b	//is this code required for non-category lists (!NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN)? is it required for instance lists (ie !NLC_USE_ADVANCED_REFERENCING)?
 	//#endif

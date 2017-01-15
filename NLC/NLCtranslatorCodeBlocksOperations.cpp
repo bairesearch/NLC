@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1s6a 08-September-2016
+ * Project Version: 1s7a 08-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1463,12 +1463,11 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						#ifdef NLC_DEBUG
 						//cout << "addObject; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
 						#endif
-
-						result = true;
+						
 						bool isPrimary = false;
-						if(!generateCodeBlocksAddConnection(currentCodeBlockInTree, connectionType, targetConnection, subjectEntity, objectEntity, actionOrConditionEntity, foundSubject, foundObject, sentenceIndex, NULL, isPrimary))
+						if(generateCodeBlocksAddConnection(currentCodeBlockInTree, connectionType, targetConnection, subjectEntity, objectEntity, actionOrConditionEntity, foundSubject, foundObject, sentenceIndex, NULL, isPrimary))
 						{
-
+							result = true;
 						}
 					}
 				}
@@ -1741,8 +1740,8 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 					#endif
 							if(subjectEntity->entityName != definitionEntity->entityName)
 							{//ignore substanceConcept definitions for for entities of same name
-
-								result = true;
+								
+								
 								#ifdef NLC_DEBUG
 								cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
 								cout << "sentenceIndex = " << sentenceIndex << endl;
@@ -1756,34 +1755,44 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 
 								//1. and 2. get parent of the dog (eg pound) and generate context of the dog (already done)
 								//generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
-
+	
 								//3. verify that alsations are dogs
-								*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, subjectEntity->entityName);
-
-								//4. cast the dog to alsation
-								*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, subjectEntity, definitionEntity);
-
-								//5. add alsation to alsation property list of pound 
-									//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
-									//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
-								if(subjectParentEntity != subjectEntity)
+								#ifdef NLC_SUPPORT_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY
+								//FUTURE NLC - could use classDefinitionList instead of GIAentityNode substance concepts; but generateClassHeirarchy needs to be called before generateCodeBlocks
+								if(checkParentExists(definitionEntity, subjectEntity->entityName))
 								{
-									*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, subjectParentEntity, definitionEntity, sentenceIndex);
-								}
-
-								//6. add alsation to alsation local list
-								GIAentityNode* definitionEntityConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
-								if(assumedToAlreadyHaveBeenDeclared(definitionEntity) || definitionEntityConceptEntity->NLClocalListVariableHasBeenDeclared)	//added 1q5b, changed 1q8a
-								{								
-									*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
-								}
-								
-								/*
-								#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS
-								//7. generate object initialisations based on substance concepts (class inheritance)
-								generateObjectInitialisationsBasedOnSubstanceConcepts(definitionEntity, definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
+								#else
+									*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, subjectEntity->entityName);
 								#endif
-								*/							
+									result = true;
+									
+									//4. cast the dog to alsation
+									*currentCodeBlockInTree = createCodeConvertParentToChildClass(*currentCodeBlockInTree, subjectEntity, definitionEntity);
+
+									//5. add alsation to alsation property list of pound 
+										//LIMITATION: NB the dog will still be added to the dog property list of pound; therefore these must remain synced; ie the dog or the alsation cannot be deleted from the pound...
+										//to avoid this limitation at present the user must define an object by its most specific class initially (avoiding redefinitions). NLC will automatically search for references to the child based on substance concept definition link to its parent [dream mode has connected substance concept definiton links to all instantations thereof]
+									if(subjectParentEntity != subjectEntity)
+									{
+										*currentCodeBlockInTree =  createCodeBlockAddProperty(*currentCodeBlockInTree, subjectParentEntity, definitionEntity, sentenceIndex);
+									}
+
+									//6. add alsation to alsation local list
+									GIAentityNode* definitionEntityConceptEntity = getPrimaryConceptNodeDefiningInstance(definitionEntity);
+									if(assumedToAlreadyHaveBeenDeclared(definitionEntity) || definitionEntityConceptEntity->NLClocalListVariableHasBeenDeclared)	//added 1q5b, changed 1q8a
+									{								
+										*currentCodeBlockInTree =  createCodeBlockAddEntityToLocalList(*currentCodeBlockInTree, definitionEntity, definitionEntity);
+									}
+
+									/*
+									#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS
+									//7. generate object initialisations based on substance concepts (class inheritance)
+									generateObjectInitialisationsBasedOnSubstanceConcepts(definitionEntity, definitionEntity, currentCodeBlockInTree, sentenceIndex, true);
+									#endif
+									*/	
+								#ifdef NLC_SUPPORT_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY
+								}
+								#endif						
 
 							}
 					#ifndef NLC_SUPPORT_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
@@ -1808,7 +1817,6 @@ bool generateCodeBlocksAddConnection(NLCcodeblock** currentCodeBlockInTree, int 
 	}
 	return result;
 }
-
 
 #ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS
 bool isNonImmediateAction(GIAentityNode* actionEntity)
@@ -2859,4 +2867,20 @@ bool generateObjectInitialisationsAction(NLCcodeblock** currentCodeBlockInTree, 
 	return result;
 }
 
-
+bool checkParentExists(GIAentityNode* object, string parentName)
+{
+	bool result = false;
+	if(object->entityName == parentName)
+	{
+		result = true;
+	}
+	for(vector<GIAentityConnection*>::iterator iter1 = object->entityNodeDefinitionList->begin(); iter1 < object->entityNodeDefinitionList->end(); iter1++) 
+	{
+		GIAentityNode* parent = (*iter1)->entity;
+		if(checkParentExists(parent, parentName))
+		{
+			result = true;
+		}
+	}
+	return result;
+}

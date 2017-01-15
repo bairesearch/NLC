@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1e 02-November-2013
+ * Project Version: 1d1f 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -297,8 +297,9 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefi
 			string functionArguments = "";
 			#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
-			#endif			
-			string codeBlockText = param1->className + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
+			#endif	
+			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang);
+			string codeBlockText = functionOwnerContext + param1->className + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang];	//main(){
 			printLine(codeBlockText, level, code);		
 			printLine(progLangOpenBlock[progLang], level, code);
 		}
@@ -567,6 +568,30 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(vector<NLPI
 	}
 }		
 #endif
+
+
+string generateFunctionOwnerContext(vector<NLPIitem*> * parameters, int progLang)
+{
+	bool foundFunctionOwner = false;
+	string functionOwnerContext = "";
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	for(vector<NLPIitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
+	{
+		NLPIitem * currentItem = *parametersIterator;
+		if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_OWNER)
+		{
+			functionOwnerContext = currentItem->className + progLangFunctionOwnerClassDelimiter[progLang];
+			foundFunctionOwner = true;
+		}
+	}
+	#endif
+	if(!foundFunctionOwner)
+	{
+		functionOwnerContext = progLangClassMemberFunctionType[progLang];
+	}
+	return functionOwnerContext;
+}
+
 
 string generateStringFromContextVector(vector<string> * context, int progLang)
 {

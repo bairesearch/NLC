@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1e 02-November-2013
+ * Project Version: 1d1f 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -127,10 +127,36 @@ NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIi
 }
 
 
-NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string functionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
+NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string NLPIfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete)
 {
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	//gets "fight" from "dog::fight"
+	string functionName = "";
+	bool foundFunctionOwnerClass = false;
+	string functionOwnerName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * entity = *entityIter;
+		if(entity->entityName == functionOwnerName)
+		{
+			entity->NLPIuseThisAlias = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+		}
+	}	
+	#else
+	string functionName = NLPIfunctionName;
+	#endif
+	
 	NLPIitem * functionItem = new NLPIitem(functionName, NLPI_ITEM_TYPE_FUNCTION);
 	currentCodeBlockInTree->parameters.push_back(functionItem);
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	if(foundFunctionOwnerClass)
+	{
+		NLPIitem * functionOwnerItem = new NLPIitem(functionOwnerName, NLPI_ITEM_TYPE_FUNCTION_OWNER);
+		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);	
+	}
+	#endif
+	
 	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 	generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters));
 	#endif
@@ -146,18 +172,25 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 		if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
 		{
 			if(!(entity->isConcept))
-			{		
-				//detected "the x" without declaring x (ie implicit declaration)
-				if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
+			{	
+				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+				if(!entity->NLPIuseThisAlias)
 				{
-					NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
-					parameters->push_back(thisFunctionArgumentInstanceItem);
+				#endif
+					//detected "the x" without declaring x (ie implicit declaration)
+					if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
+					{
+						NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
+						parameters->push_back(thisFunctionArgumentInstanceItem);
+					}
+					else
+					{
+						NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE);
+						parameters->push_back(thisFunctionArgumentInstanceItem);			
+					}
+				#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 				}
-				else
-				{
-					NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE);
-					parameters->push_back(thisFunctionArgumentInstanceItem);			
-				}
+				#endif
 			}
 		}
 	}	
@@ -330,7 +363,7 @@ bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool inc
 			entityHasParent = true;
 			GIAentityNode * parentEntity = currentEntity;
 			currentEntity = (currentEntity->propertyNodeReverseList->back())->entity;
-			string itemName = currentEntity->entityName + convertLongToString(currentEntity->idInstance);
+			string itemName = generateInstanceName(currentEntity);
 			if(markSameSentenceParentsAsParsed)
 			{
 				if(currentEntity->sentenceIndexTemp == sentenceIndex)
@@ -414,4 +447,37 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, GIAentityNode * ch
 	}
 	return alreadyAdded;
 }
+
+#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
+{
+	//gets "fight" from "dog::fight"
+	string functionName = "";
+	bool foundFunctionOwnerClass = false;
+	string functionOwnerName = "";
+	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
+	return functionName;
+}
+
+void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
+{
+	//gets "fight" from "dog::fight"
+	*foundFunctionOwnerClass = false;
+	*functionOwnerName = "";
+	*functionName = NLPIfunctionName;
+	int indexOfClassContext = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER);
+	if(indexOfClassContext != string::npos)
+	{
+		*functionName = NLPIfunctionName.substr(indexOfClassContext+NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfClassContext);
+		*functionOwnerName = NLPIfunctionName.substr(0, indexOfClassContext);
+		*foundFunctionOwnerClass = true;
+		/*
+		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
+		cout << "functionName = " << *functionName << endl;
+		cout << "functionOwnerName = " << *functionOwnerName << endl;
+		*/
+	}
+}
+#endif
+
 

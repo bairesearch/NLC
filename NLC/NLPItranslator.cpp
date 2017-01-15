@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1e 02-November-2013
+ * Project Version: 1d1f 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -55,16 +55,6 @@ bool translateNetwork(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefi
 
 bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, vector<GIAentityNode*> * entityNodesActiveListActions, int maxNumberSentences, string NLPIfunctionName)
 {
-	//gets "fight" from "dog::fight"
-	string functionName = "";
-	bool foundFunctionOwnerClass = false;
-	string functionOwnerName = "";
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);
-	#else
-	functionName = NLPIfunctionName;
-	#endif
-	
 	NLPIcodeblock * currentCodeBlockInTree = firstCodeBlockInTree;
 	
 	#ifdef NLPI_NOT_NECESSARY
@@ -72,7 +62,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 	vector<NLPIitem *> implictlyDeclaredFunctionListTopLevel;	//top level function list (used to store implicitly declared functions without subject/context/owner)	
 	#endif
 	
-	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, functionName, entityNodesActiveListComplete);
+	currentCodeBlockInTree = createCodeBlockNewFunction(currentCodeBlockInTree, NLPIfunctionName, entityNodesActiveListComplete);
 
 	//NLPIcodeblock * nextCodeBlockInTree = NULL;	//not used now; assume only 1 command in text
 	//for each action (command) in sentence;
@@ -99,7 +89,6 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					//cout << "sentenceIndexC = " << sentenceIndex << endl;
 					//cout << "h1" << endl;
 					
-					bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 					bool actionHasObject = false;
 					GIAentityNode * objectEntity = NULL;
 					if(!(actionEntity->actionObjectEntity->empty()))
@@ -114,12 +103,6 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 					{
 						actionHasSubject = true;
 						subjectEntity = (actionEntity->actionSubjectEntity->back())->entity;
-						#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-						if(subjectEntity->entityName == functionOwnerName)
-						{
-							formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = true;
-						}
-						#endif
 					}
 
 					//cout << "h2" << endl;
@@ -132,14 +115,14 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						bool objectRequiredTempVar = false;	//not used
 						NLPIitem * objectItem = NULL;
-						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar, false);
+						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar);
 
 						//cout << "h3" << endl;
 						if(actionHasSubject)
 						{
 							bool subjectRequiredTempVar = false;
 							NLPIitem * subjectItem = NULL;
-							currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
+							currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
 							//cout << "h4" << endl;
 							if(subjectRequiredTempVar)
 							{	
@@ -177,7 +160,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						bool subjectRequiredTempVar = false;	//not used
 						NLPIitem * subjectItem = NULL;
-						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
+						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
 
 						//cout << "h3" << endl;
 						if(subjectRequiredTempVar)
@@ -250,7 +233,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 		//Part 2: generate object initialisations (eg Tom has a boat) [without actions]
 		//cout << "*** sentenceIndex = " << sentenceIndex << endl;
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-		{
+		{			
 			GIAentityNode * entity = *entityIter;
 			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{	
@@ -348,7 +331,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 }
 
 													
-NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar, bool formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias)
+NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode * objectOrSubjectEntity, NLPIitem ** objectOrSubjectItem, int sentenceIndex, bool * requiredTempVar)
 {
 	*requiredTempVar = false;
 
@@ -376,7 +359,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		*requiredTempVar = true;
 		
 		//for(all items in context){
-		NLPIitem * objectOrSubjectClass = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_CLASS, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
+		NLPIitem * objectOrSubjectClass = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_CLASS);
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &(objectOrSubjectClass->context), false, sentenceIndex, true);
 		currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectOrSubjectClass);
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_TEMPVAR);
@@ -385,7 +368,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	}
 	else
 	{
-		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_OBJECT, formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias);
+		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, NLPI_ITEM_TYPE_OBJECT);
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &((*objectOrSubjectItem)->context), false, sentenceIndex, true);
 	}
 	return currentCodeBlockInTree;
@@ -753,36 +736,6 @@ bool checkDuplicateCondition(GIAentityNode * conditionEntity, vector<NLPIitem*> 
 
 
 #ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-
-string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName)
-{
-	//gets "fight" from "dog::fight"
-	string functionName = "";
-	bool foundFunctionOwnerClass = false;
-	string functionOwnerName = "";
-	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass);	
-	return functionName;
-}
-
-void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass)
-{
-	//gets "fight" from "dog::fight"
-	*foundFunctionOwnerClass = false;
-	*functionOwnerName = "";
-	*functionName = NLPIfunctionName;
-	int indexOfClassContext = NLPIfunctionName.find(NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER);
-	if(indexOfClassContext != string::npos)
-	{
-		*functionName = NLPIfunctionName.substr(indexOfClassContext+NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfClassContext);
-		*functionOwnerName = NLPIfunctionName.substr(0, indexOfClassContext);
-		*foundFunctionOwnerClass = true;
-		/*
-		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;
-		cout << "functionName = " << *functionName << endl;
-		cout << "functionOwnerName = " << *functionOwnerName << endl;
-		*/
-	}
-}
 
 void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, string NLPIfunctionName)
 {		

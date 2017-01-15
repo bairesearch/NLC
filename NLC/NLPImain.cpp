@@ -23,7 +23,7 @@
  * File Name: NLPImain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1e 02-November-2013
+ * Project Version: 1d1f 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -607,7 +607,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLPI.exe - Project Version: 1d1e 02-November-2013" << endl;
+			cout << "OpenNLPI.exe - Project Version: 1d1f 02-November-2013" << endl;
 			exit(1);
 		}
 
@@ -840,17 +840,17 @@ int main(int argc,char **argv)
 
 		string NLPIfunctionName = functionNameList.at(i);
 		
-		//cout << "start reconcile: NLPIfunctionName = " << NLPIfunctionName << endl;
-		/*
+		cout << "start reconcile: NLPIfunctionName = " << NLPIfunctionName << endl;
+		
 		for(vector<NLPIitem*>::iterator parametersIterator = firstCodeBlockInTree->parameters.begin(); parametersIterator < firstCodeBlockInTree->parameters.end(); parametersIterator++)
 		{
 			NLPIitem * formalFunctionArgument = *parametersIterator;
 			cout << "formalFunctionArgument->className = " << formalFunctionArgument->className << endl;
 			cout << "formalFunctionArgument->itemType = " << formalFunctionArgument->itemType << endl;
 		}
-		*/
+		
 		reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(firstCodeBlockInTree, &classDefinitionList, NLPIfunctionName);
-		cout << "end reconcile" << endl;
+		//cout << "end reconcile" << endl;
 		
 		//update variable names in function to 'this' if necessary based on formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias	
 	}

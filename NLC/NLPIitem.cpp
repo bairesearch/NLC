@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1e 02-November-2013
+ * Project Version: 1d1f 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -62,34 +62,17 @@ NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType)
 	functionArgumentPassCastRequired = false;
 	functionArgumentPassCastClassName = "";
 	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
-	#endif
-}
-NLPIitem::NLPIitem(GIAentityNode * entity, int newItemType, bool newFormalFunctionArgumentCorrespondsToActionSubjectUseThisAlias)
-{
-	itemType = newItemType;
-	if(newFormalFunctionArgumentCorrespondsToActionSubjectUseThisAlias)
+	if(entity->NLPIuseThisAlias)
 	{
 		className = NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_CLASS_REPLACEMENT_NAME;
 		instanceName = NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME;	
 	}
-	else
-	{
-		className = generateClassName(entity);
-		instanceName = generateInstanceName(entity);
-	}
-	className2 = "";
-	instanceName2 = "";
-	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
-	functionArgumentCertified = false;
-	functionArgumentPassCastRequired = false;
-	functionArgumentPassCastClassName = "";
-	formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 }
 NLPIitem::NLPIitem(string newName, int newItemType)
 {
 	itemType = newItemType;
-	className = newName;
+	className = generateClassName(newName);	//changed 9 November 2013
 	instanceName = "";
 	className2 = "";
 	instanceName2 = "";
@@ -143,6 +126,12 @@ string generateClassName(string entityName)
 string generateInstanceName(GIAentityNode * entity)
 {
 	string instanceName = entity->entityName + convertLongToString(entity->idInstance);
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	if(entity->NLPIuseThisAlias)
+	{
+		instanceName = NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME;
+	}
+	#endif
 	return instanceName;
 }
 string generateActionName(GIAentityNode * entity)

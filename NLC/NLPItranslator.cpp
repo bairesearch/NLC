@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b6c 04-October-2013
+ * Project Version: 1b6d 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -368,22 +368,10 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 				{
 					GIAentityConnection * connection = *connectionIter;
 					GIAentityNode * targetEntity = connection->entity;
-
-					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
-					{
-						if(!(targetEntity->conditionObjectEntity->empty()))
-						{					
-							targetEntity = (targetEntity->conditionObjectEntity->back())->entity;
-						}
-						else
-						{
-							cout << "error generateClassHeirarchy(): condition does not have object" << endl;
-						}
-					}
 					
 					string targetName = "";
 
-					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+					if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//in GIA actions and conditions are treated as special connections with intermediary nodes
 					{
 						#ifndef NLPI_BAD_IMPLEMENTATION
 						targetName = generateInstanceName(targetEntity);
@@ -405,10 +393,10 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						classDefinitionList->push_back(targetClassDefinition);
 					}
 					#ifndef NLPI_BAD_IMPLEMENTATION
-					if(targetEntity->isAction)
+					if((targetEntity->isAction) || (targetEntity->isCondition) && !(targetEntity->isConcept))
 					{
-						targetClassDefinition->actionInstanceNotClassButFunction = true;
-						//cout << "classDefinition->actionInstanceNotClassButFunction" << endl;
+						targetClassDefinition->actionOrConditionInstanceNotClass = true;
+						//cout << "classDefinition->actionOrConditionInstanceNotClass" << endl;
 					}
 					#endif					
 
@@ -430,8 +418,16 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
 						if(!foundLocalClassDefinition)
 						{
-							//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
+							cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
 							classDefinition->conditionList.push_back(targetClassDefinition);
+							
+							if(!(targetEntity->conditionObjectEntity->empty()))
+							{
+								GIAentityNode * conditionObject = (targetEntity->conditionObjectEntity->back())->entity;
+								targetClassDefinition->conditionObjectClassName = generateClassName(conditionObject);
+								targetClassDefinition->conditionObjectInstanceName = generateInstanceName(conditionObject);
+								targetClassDefinition->className = generateClassName(targetEntity);	//used a generic condition class is used for all conditions of name x 
+							}
 						}						
 					}	
 					#ifndef NLPI_BAD_IMPLEMENTATION
@@ -470,6 +466,7 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 								GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
 								targetClassDefinition->actionObjectClassName = generateClassName(actionObject);
 								targetClassDefinition->actionObjectInstanceName = generateInstanceName(actionObject);
+								targetClassDefinition->className = generateClassName(targetEntity);	//not used as a specific function is created per action instance
 							}
 						}
 					}

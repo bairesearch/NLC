@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b6c 04-October-2013
+ * Project Version: 1b6d 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -85,9 +85,12 @@ public:
 	vector<NLPIclassDefinition *> definitionList;	//inherited parents
 	vector<NLPIclassDefinition *> functionList;
 
-	bool actionInstanceNotClassButFunction;
+	bool actionOrConditionInstanceNotClass;
 	string actionObjectClassName;		//only used for NLPIclassDefinitions in functionList that are actions and have action objects
 	string actionObjectInstanceName;	//only used for NLPIclassDefinitions in functionList that are actions and have action objects
+	string conditionObjectClassName;	//only used for NLPIclassDefinitions in conditionList that are conditions and have condition objects
+	string conditionObjectInstanceName;	//only used for NLPIclassDefinitions in conditionList that are conditions and have condition objects
+	string className;			//only used for NLPIclassDefinitions in functionList/conditionList that are actions/conditions
 };
 
 NLPIclassDefinition * findClassDefinition(vector<NLPIclassDefinition *> * classDefinitionList, string className, bool * foundClassDefinition);

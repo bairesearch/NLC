@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5m 15-August-2016
+ * Project Version: 1r5n 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,6 +43,10 @@
 
 bool detectMathSymbolsInLine(string* lineContents);
 bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, bool hasLogicalConditionOperator, bool isMathText);
+
+#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+bool splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(string* lineContents, int currentIndentation, NLCsentence* firstNLCsentenceInFullSentence, NLCsentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand);
+#endif
 
 bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
 	bool findCharacterAtIndexOrAfterSpace(string* lineContents, int i, char characterToFind, int* indexOfCharacterFound);

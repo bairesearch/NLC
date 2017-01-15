@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5m 15-August-2016
+ * Project Version: 1r5n 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,6 +44,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 	bool reduceQuotesToSingleWords(string lineText, string* updatedLineText);
 	#endif
+	void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList);
 	void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents);
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 	bool detectFunctionHeader(string* lineContents);

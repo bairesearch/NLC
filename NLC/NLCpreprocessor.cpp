@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5m 15-August-2016
+ * Project Version: 1r5n 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -135,10 +135,6 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				#endif
 				
 				#ifdef NLC_PREPROCESSOR_MATH
-				if(detectMathSymbolsInLine(&lineContents))
-				{
-					currentNLCsentenceInList->isMath = true;
-				}
 				
 				int lineLogicalConditionOperator;
 				if(detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
@@ -154,6 +150,11 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 				}
 				else
 				{
+					if(detectMathSymbolsInLine(&lineContents))
+					{
+						currentNLCsentenceInList->isMath = true;
+					}
+				
 					//#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 					if(detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
 					{
@@ -167,17 +168,40 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 					cout << "splitMathDetectedLineIntoNLPparsablePhrases{}:" << endl;
 					#endif
+					#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION	
+					bool detectedLogicalConditionCommand = false;
+					NLCsentence* firstSentenceInLogicalConditionCommandTemp = new NLCsentence();
+					if(currentNLCsentenceInList->hasLogicalConditionOperator)
+					{
+						splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(&lineContents, currentIndentation, currentNLCsentenceInList, firstSentenceInLogicalConditionCommandTemp, &detectedLogicalConditionCommand);
+					}
+					#endif
+					
 					splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+					
+					#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION	
+					if(detectedLogicalConditionCommand)
+					{
+						NLCsentence* currentSentenceInLogicalConditionCommandTemp = firstSentenceInLogicalConditionCommandTemp;
+						while(currentSentenceInLogicalConditionCommandTemp->next != NULL)
+						{
+							if(detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents)))
+							{
+								splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+							}
+							else
+							{
+								addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex,  currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
+								functionContents = functionContents + (currentSentenceInLogicalConditionCommandTemp->sentenceContents) + CHAR_NEWLINE;
+							}
+							currentSentenceInLogicalConditionCommandTemp = currentSentenceInLogicalConditionCommandTemp->next;
+						}
+					}
+					#endif
 				}
 				else
 				{				
 				#endif
-					#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
-					if(detectMathObjectStringDelimiter(&lineContents))
-					{
-						cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
-					}
-					#endif
 					
 					functionContents = functionContents + indentationContents;
 				
@@ -265,6 +289,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						currentNLCsentenceInList->sentenceContentsOriginal = removePrependingWhiteSpace(sentenceContents);
 						#endif
 						
+						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+						
 						#ifdef NLC_PREPROCESSOR_MATH
 						#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 						replaceNumericalVariablesWithDummyNumberIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
@@ -273,8 +299,14 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						#ifdef NLC_DEBUG
 						//cout << "sentenceContents = " << sentenceContents << endl;
 						#endif
-
-						#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+						
+						#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+						if(detectMathObjectStringDelimiter(&sentenceContents))
+						{
+							cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
+						}
+						#endif
+						
 						bool sentenceIsLogicalCondition = false;
 						int sentenceLogicalConditionOperator;
 						if(detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
@@ -400,32 +432,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						}
 						else
 						{
-							#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-							if(isStringValidVariableName(sentenceContents, true))
-							{
-								#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
-								string actionName = sentenceContents.substr(0, sentenceContents.length()-1);
-								currentNLCsentenceInList->singleWordSentenceActionName = actionName;
-								sentenceContents = "" + NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_FULL + STRING_FULLSTOP;
-								#else
-								sentenceContents = "" + actionName + NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL + STRING_FULLSTOP; //sentenceContents = sentenceContents.insert((sentenceContents.length()-1), NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL);
-								#endif
-								#ifdef NLC_DEBUG
-								//cout << "sentenceContents = " << sentenceContents << endl;
-								#endif
-							}
-							#endif
-							
-							#ifdef NLC_DEBUG_PREPROCESSOR
-							cout << "create new sentence" << endl;
-							cout << sentenceIndex << ": sentenceContents = " << sentenceContents << endl;
-							#endif
-							currentNLCsentenceInList->sentenceContents = sentenceContents;	//full stop should already be appended
-							currentNLCsentenceInList->sentenceIndex = sentenceIndex;
-							currentNLCsentenceInList->indentation = currentIndentation;
-							currentNLCsentenceInList->next = new NLCsentence();
-							currentNLCsentenceInList = currentNLCsentenceInList->next;
-							sentenceIndex++;
+							addNonLogicalConditionSentenceToList(&sentenceContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, currentNLCfunctionInList, firstNLCfunctionInList);
 							
 							if(startOfSentenceIndexNew == lineContents.length()-1)
 							{
@@ -484,6 +491,7 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 			cout << "\t";
 		}
 		cout << currentNLCsentenceInList->sentenceContents;
+		cout << "(sentenceIndex: " << currentNLCsentenceInList->sentenceIndex << ") ";
 		if(currentNLCsentenceInList->isMath)
 		{
 			cout << " (mathText: " << currentNLCsentenceInList->mathText << ")" << endl;
@@ -525,6 +533,52 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 	return result;
 }
 
+void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, int currentIndentation, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList)
+{
+	#ifdef NLC_PREPROCESSOR_MATH
+	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+	replaceNumericalVariablesWithDummyNumberIfNecessary(sentenceContents, *currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
+	#endif
+	#endif
+	#ifdef NLC_DEBUG
+	//cout << "sentenceContents = " << sentenceContents << endl;
+	#endif
+
+	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+	if(detectMathObjectStringDelimiter(sentenceContents))
+	{
+		cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
+	}
+	#endif
+
+	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+	if(isStringValidVariableName(*sentenceContents, true))
+	{
+		#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
+		string actionName = sentenceContents->substr(0, sentenceContents->length()-1);
+		(*currentNLCsentenceInList)->singleWordSentenceActionName = actionName;
+		*sentenceContents = "" + NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_FULL + STRING_FULLSTOP;
+		#else
+		*sentenceContents = "" + actionName + NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL + STRING_FULLSTOP; //sentenceContents = sentenceContents.insert((sentenceContents.length()-1), NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL);
+		#endif
+		#ifdef NLC_DEBUG
+		//cout << "sentenceContents = " << sentenceContents << endl;
+		#endif
+	}
+	#endif
+
+	#ifdef NLC_DEBUG_PREPROCESSOR
+	cout << "create new sentence" << endl;
+	cout << sentenceIndex << ": sentenceContents = " << sentenceContents << endl;
+	#endif
+	(*currentNLCsentenceInList)->sentenceContents = *sentenceContents;	//full stop should already be appended
+	(*currentNLCsentenceInList)->sentenceIndex = (*sentenceIndex);
+	(*currentNLCsentenceInList)->indentation = currentIndentation;
+	(*currentNLCsentenceInList)->next = new NLCsentence();
+	(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
+	(*sentenceIndex)++;
+}						
+							
 #ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
 bool reduceQuotesToSingleWords(string lineText, string* updatedLineText)
 {

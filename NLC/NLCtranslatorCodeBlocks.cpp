@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o2a 12-February-2015
+ * Project Version: 1o2b 12-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -572,40 +572,27 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 						{
 						#endif
 							bool actionIsSingleWord = false;
-
-							//GIAentityConnection* actionSubjectConnection = NULL;
-							//if(getActionSubjectEntityConnection(entity, sentenceIndex, &actionSubjectConnection))		//NOT REQUIRED because actions should not be connected to multiple entities based on current GIA implementation
-							if(!(entity->actionSubjectEntity->empty()))
-							{		
-								if(!((entity->actionSubjectEntity->back())->sameReferenceSet))
+							if(getActionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, sentenceIndex, false))
+							{
+								if(!checkConceptTypeEntity(subjectEntity))	//redundant
 								{
-									subjectEntity = (entity->actionSubjectEntity->back())->entity;
-									if(!checkConceptTypeEntity(subjectEntity))	//redundant
-									{
-										foundSubject = true;	
-									}
+									foundSubject = true;	
 								}
 							}
-							//GIAentityConnection* actionObjectConnection = NULL;
-							//if(getActionObjectEntityConnection(entity, sentenceIndex, &actionObjectConnection))	//NOT REQUIRED because actions should not be connected to multiple entities based on current GIA implementation
-							if(!(entity->actionObjectEntity->empty()))
+							if(getActionObjectCheckSameReferenceSetAndSentence(entity, &objectEntity, sentenceIndex, false))
 							{
-								if(!((entity->actionObjectEntity->back())->sameReferenceSet))
-								{		
-									objectEntity = (entity->actionObjectEntity->back())->entity;
-									if(!checkConceptTypeEntity(objectEntity))	//redundant
+								if(!checkConceptTypeEntity(objectEntity))	//redundant
+								{
+									foundObject = true;
+									#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
+									if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
 									{
-										foundObject = true;
-										#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
-										if(objectEntity->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
-										{
-											actionIsSingleWord = true;
-											foundObject = false;
-											objectEntity->disabled = true;	//prevent parsing of dummyActionObject
-											actionIsSingleWord = true;
-										}
-										#endif	
+										actionIsSingleWord = true;
+										foundObject = false;
+										objectEntity->disabled = true;	//prevent parsing of dummyActionObject
+										actionIsSingleWord = true;
 									}
+									#endif	
 								}
 							}
 							if(foundSubject || foundObject || actionIsSingleWord)
@@ -613,6 +600,7 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 								foundSubjectObjectConnection = true;	
 								connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS;
 								
+								//cout << "sentenceIndex = " << sentenceIndex << endl;
 								if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
 								{
 
@@ -628,40 +616,23 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 					}
 					else if(entity->isCondition)
 					{
-						GIAentityConnection* connectionTemp = NULL;
-						if(!(entity->conditionSubjectEntity->empty()))
-						{		
-							if(!((entity->conditionSubjectEntity->back())->sameReferenceSet))
-							{
-								connectionTemp = entity->conditionSubjectEntity->back();
-								subjectEntity = (entity->conditionSubjectEntity->back())->entity;
-								foundSubject = true;	
-							}
-						}
-						if(!(entity->conditionObjectEntity->empty()))
+						if(getConditionSubjectCheckSameReferenceSetAndSentence(entity, &subjectEntity, sentenceIndex, false))
 						{
-							if(!((entity->conditionObjectEntity->back())->sameReferenceSet))
-							{		
-								objectEntity = (entity->conditionObjectEntity->back())->entity;
-								foundObject = true;
-							}
+							foundSubject = true;
+						}
+						if(getConditionObjectCheckSameReferenceSetAndSentence(entity, &objectEntity, sentenceIndex, false))
+						{
+							foundObject = true;
 						}
 						if(foundSubject && foundObject)
 						{
-							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-							if(!(entity->inverseConditionTwoWay) || connectionTemp->isReference)	//prevent infinite loop for 2 way conditions 
+							foundSubjectObjectConnection = true;	
+							connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
+
+							if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
 							{
-							#endif
-								foundSubjectObjectConnection = true;	
-								connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
 
-								if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType))
-								{
-
-								}
-							#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 							}
-							#endif
 						}
 					}
 					else
@@ -759,7 +730,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 	{
 		#ifdef NLC_DEBUG
 		cout << "subjectEntity = " << subjectEntity->entityName << endl;
-		cout << "\tobjectEntity = " << objectEntity->entityName << endl;
+		//cout << "\tobjectEntity = " << objectEntity->entityName << endl;
 		#endif
 		generateContextBlocksVariables.getParentCheckLastParent = true;
 		generateContextBlocksVariables.lastParent = objectEntity;	//is this required? (designed for dual/two-way condition connections only)

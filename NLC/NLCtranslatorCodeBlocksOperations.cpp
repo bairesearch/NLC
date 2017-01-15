@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o2a 12-February-2015
+ * Project Version: 1o2b 12-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1295,24 +1295,18 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 					}
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 					{
-						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-						if(!(targetEntity->inverseConditionTwoWay) || targetConnection->isReference)	//prevent infinite loop for 2 way conditions 
+						if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity, sentenceIndex, true))
 						{
-						#endif
-							//foundSubject = true;
+							foundSubject = true;
 							subjectEntity = entity;
 							actionOrConditionEntity = targetEntity;
-							if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
-							{
-								foundObject = true;
-								recurse = true;
-								recurseEntity = objectEntity;
-							}
-							addObject = true;
-						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-						}
-						#endif
 
+							foundObject = true;
+							recurse = true;
+							recurseEntity = objectEntity;
+
+							addObject = true;
+						}
 					}
 					#ifdef NLC_RECORD_ACTION_HISTORY
 					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
@@ -1320,7 +1314,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						//foundSubject = true;
 						subjectEntity = entity;
 						actionOrConditionEntity = targetEntity;
-						if(getActionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+						if(getActionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity, sentenceIndex, true))
 						{
 							foundObject = true;
 							recurse = true;
@@ -1333,7 +1327,7 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 						//foundObject = true;
 						objectEntity = entity;
 						actionOrConditionEntity = targetEntity;
-						if(getActionSubjectCheckSameReferenceSetAndSentence(targetEntity, &subjectEntity))
+						if(getActionSubjectCheckSameReferenceSetAndSentence(targetEntity, &subjectEntity, sentenceIndex, true))
 						{
 							foundSubject = true;
 							recurse = true;
@@ -1742,13 +1736,58 @@ bool isPotentialAction(GIAentityNode* actionEntity)
 }
 #endif
 
-bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** objectEntity)
+bool getActionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** subjectEntity, int sentenceIndex, bool sameReferenceSet)
+{
+	bool foundSubject = false;
+	GIAentityConnection* actionSubjectConnection = NULL;
+	if(getActionSubjectEntityConnection(actionEntity, sentenceIndex, &actionSubjectConnection))
+	{
+		if(actionSubjectConnection->sameReferenceSet == sameReferenceSet)
+		{		
+			*subjectEntity = actionSubjectConnection->entity;
+			if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, actionSubjectConnection, sentenceIndex, false))
+			{
+				foundSubject = true;	
+			}
+		}
+	}
+	return foundSubject;
+}
+
+bool getActionSubjectEntityConnection(GIAentityNode* actionEntity, int sentenceIndex, GIAentityConnection** actionSubjectConnection)
+{
+	bool actionHasSubject = false;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+	//required because GIA advanced referencing may connect a given action to multiple subjects/objects (ie across multiple sentences)
+	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
+	{
+		GIAentityConnection* actionSubjectConnectionTemp = *iter;
+		if(actionSubjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		{
+			#ifdef NLC_DEBUG
+			//cout << "getActionSubjectEntityConnection(): actionSubjectConnectionTemp->sentenceIndexTemp = " << actionSubjectConnectionTemp->sentenceIndexTemp << endl;
+			#endif
+			*actionSubjectConnection = actionSubjectConnectionTemp;
+			actionHasSubject = true;	
+		}
+	}
+	#else
+	if(!(actionEntity->actionSubjectEntity->empty()))
+	{
+		*actionSubjectConnection = (actionEntity->actionSubjectEntity->back());
+		actionHasSubject = true;
+	}	
+	#endif
+	return actionHasSubject;
+}	
+
+bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** objectEntity, int sentenceIndex, bool sameReferenceSet)
 {	
 	bool foundObject = false;
-	if(!(actionEntity->actionObjectEntity->empty()))
+	GIAentityConnection* actionObjectConnection = NULL;
+	if(getActionObjectEntityConnection(actionEntity, sentenceIndex, &actionObjectConnection))
 	{
-		GIAentityConnection* actionObjectConnection = actionEntity->actionObjectEntity->back();
-		if(actionObjectConnection->sameReferenceSet)
+		if(actionObjectConnection->sameReferenceSet == sameReferenceSet)
 		{		
 			*objectEntity = actionObjectConnection->entity;
 			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, actionObjectConnection, actionEntity->sentenceIndexTemp, false))
@@ -1760,42 +1799,137 @@ bool getActionObjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity
 	return foundObject;
 }
 
-bool getActionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* actionEntity, GIAentityNode** subjectEntity)
+bool getActionObjectEntityConnection(GIAentityNode* actionEntity, int sentenceIndex, GIAentityConnection** actionObjectConnection)
 {
-	bool foundSubject = false;
-	if(!(actionEntity->actionSubjectEntity->empty()))
+	bool actionHasObject = false;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+	//required because GIA advanced referencing may connect a given action to multiple subjects/objects across sentences (ie across multiple sentences)
+	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
 	{
-		GIAentityConnection* actionSubjectConnection = actionEntity->actionSubjectEntity->back();
-		if(actionSubjectConnection->sameReferenceSet)
-		{		
-			*subjectEntity = actionSubjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, actionSubjectConnection, actionEntity->sentenceIndexTemp, false))
-			{
-				foundSubject = true;	
-			}
+		GIAentityConnection* actionObjectConnectionTemp = *iter;
+		if(actionObjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		{	
+			#ifdef NLC_DEBUG
+			//cout << "getActionObjectEntityConnection(): actionObjectConnectionTemp->sentenceIndexTemp = " << actionObjectConnectionTemp->sentenceIndexTemp << endl;
+			#endif
+			*actionObjectConnection = actionObjectConnectionTemp;
+			actionHasObject = true;	
 		}
 	}
-	return foundSubject;
+	#else
+	if(!(actionEntity->actionObjectEntity->empty()))
+	{
+		*actionObjectConnection = (actionEntity->actionObjectEntity->back());
+		actionHasObject = true;
+	}	
+	#endif
+	return actionHasObject;
 }
 
-bool getConditionObjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** objectEntity)
+
+bool getConditionSubjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** subjectEntity, int sentenceIndex, bool sameReferenceSet)
 {
 	bool foundObject = false;
-	if(!(conditionEntity->conditionObjectEntity->empty()))
+	GIAentityConnection* conditionSubjectConnection = NULL;
+	if(getConditionSubjectEntityConnection(conditionEntity, sentenceIndex, &conditionSubjectConnection))
 	{
-		GIAentityConnection* conditionObjectConnection = conditionEntity->conditionObjectEntity->back();
-		if(conditionObjectConnection->sameReferenceSet)
+		if(conditionSubjectConnection->sameReferenceSet == sameReferenceSet)
 		{		
-			*objectEntity = conditionObjectConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(*objectEntity, conditionObjectConnection, conditionEntity->sentenceIndexTemp, false))
+			*subjectEntity = conditionSubjectConnection->entity;
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+			if(!(conditionEntity->inverseConditionTwoWay) || conditionSubjectConnection->isReference)	//prevent infinite loop for 2 way conditions 
 			{
-				foundObject = true;	
+			#endif
+				if(checkSentenceIndexParsingCodeBlocks(*subjectEntity, conditionSubjectConnection, sentenceIndex, false))
+				{
+					foundObject = true;	
+				}
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			}
+			#endif
 		}
 	}
 	return foundObject;
 }
 
+bool getConditionSubjectEntityConnection(GIAentityNode* conditionEntity, int sentenceIndex, GIAentityConnection** conditionSubjectConnection)
+{
+	bool conditionHasSubject = false;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+	//required because GIA advanced referencing may connect a given action to multiple subjects/objects across sentences (ie across multiple sentences)
+	for(vector<GIAentityConnection*>::iterator iter = conditionEntity->conditionSubjectEntity->begin(); iter < conditionEntity->conditionSubjectEntity->end(); iter++)
+	{
+		GIAentityConnection* conditionSubjectConnectionTemp = *iter;
+		if(conditionSubjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		{	
+			#ifdef NLC_DEBUG
+			//cout << "getActionSubjectEntityConnection(): conditionSubjectConnectionTemp->sentenceIndexTemp = " << conditionSubjectConnectionTemp->sentenceIndexTemp << endl;
+			#endif
+			*conditionSubjectConnection = conditionSubjectConnectionTemp;
+			conditionHasSubject = true;	
+		}
+	}
+	#else
+	if(!(conditionEntity->conditionSubjectEntity->empty()))
+	{
+		*conditionSubjectConnection = (conditionEntity->conditionSubjectEntity->back());
+		conditionHasSubject = true;
+	}	
+	#endif
+	return conditionHasSubject;
+}
+
+bool getConditionObjectCheckSameReferenceSetAndSentence(GIAentityNode* conditionEntity, GIAentityNode** objectEntity, int sentenceIndex, bool sameReferenceSet)
+{
+	bool foundObject = false;
+	GIAentityConnection* conditionObjectConnection = NULL;
+	if(getConditionObjectEntityConnection(conditionEntity, sentenceIndex, &conditionObjectConnection))
+	{
+		if(conditionObjectConnection->sameReferenceSet == sameReferenceSet)
+		{		
+			*objectEntity = conditionObjectConnection->entity;
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+			if(!(conditionEntity->inverseConditionTwoWay) || conditionObjectConnection->isReference)	//prevent infinite loop for 2 way conditions 
+			{
+			#endif
+				if(checkSentenceIndexParsingCodeBlocks(*objectEntity, conditionObjectConnection, sentenceIndex, false))
+				{
+					foundObject = true;	
+				}
+			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+			}
+			#endif
+		}
+	}
+	return foundObject;
+}
+
+bool getConditionObjectEntityConnection(GIAentityNode* conditionEntity, int sentenceIndex, GIAentityConnection** conditionObjectConnection)
+{
+	bool conditionHasObject = false;
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
+	//required because GIA advanced referencing may connect a given action to multiple subjects/objects across sentences (ie across multiple sentences)
+	for(vector<GIAentityConnection*>::iterator iter = conditionEntity->conditionObjectEntity->begin(); iter < conditionEntity->conditionObjectEntity->end(); iter++)
+	{
+		GIAentityConnection* conditionObjectConnectionTemp = *iter;
+		if(conditionObjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
+		{	
+			#ifdef NLC_DEBUG
+			//cout << "getActionObjectEntityConnection(): conditionObjectConnectionTemp->sentenceIndexTemp = " << conditionObjectConnectionTemp->sentenceIndexTemp << endl;
+			#endif
+			*conditionObjectConnection = conditionObjectConnectionTemp;
+			conditionHasObject = true;	
+		}
+	}
+	#else
+	if(!(conditionEntity->conditionObjectEntity->empty()))
+	{
+		*conditionObjectConnection = (conditionEntity->conditionObjectEntity->back());
+		conditionHasObject = true;
+	}	
+	#endif
+	return conditionHasObject;
+}
 
 
 
@@ -2511,60 +2645,4 @@ bool checkNumerosity(GIAentityNode* entity)
 #endif
 					
 
-//NOT REQUIRED because actions should not be connected to multiple entities based on current GIA implementation
-/*	
-bool getActionSubjectEntityConnection(GIAentityNode* actionEntity, int sentenceIndex, GIAentityConnection** actionSubjectConnection)
-{
-	bool actionHasSubject = false;
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-	//required because GIA advanced referencing may connect a given action to multiple subjects/objects (ie across multiple sentences)
-	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionSubjectEntity->begin(); iter < actionEntity->actionSubjectEntity->end(); iter++)
-	{
-		GIAentityConnection* actionSubjectConnectionTemp = *iter;
-		if(actionSubjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
-		{
-			#ifdef NLC_DEBUG
-			//cout << "getActionSubjectEntityConnection(): actionSubjectConnectionTemp->sentenceIndexTemp = " << actionSubjectConnectionTemp->sentenceIndexTemp << endl;
-			#endif
-			*actionSubjectConnection = actionSubjectConnectionTemp;
-			actionHasSubject = true;	
-		}
-	}
-	#else
-	if(!(actionEntity->actionSubjectEntity->empty()))
-	{
-		*actionSubjectConnection = (actionEntity->actionSubjectEntity->back());
-		actionHasSubject = true;
-	}	
-	#endif
-	return actionHasSubject;
-}	
-
-bool getActionObjectEntityConnection(GIAentityNode* actionEntity, int sentenceIndex, GIAentityConnection** actionObjectConnection)
-{
-	bool actionHasObject = false;
-	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//&& #defined NLC_RECORD_ACTION_HISTORY_GENERALISABLE
-	//required because GIA advanced referencing may connect a given action to multiple subjects/objects across sentences (ie across multiple sentences)
-	for(vector<GIAentityConnection*>::iterator iter = actionEntity->actionObjectEntity->begin(); iter < actionEntity->actionObjectEntity->end(); iter++)
-	{
-		GIAentityConnection* actionObjectConnectionTemp = *iter;
-		if(actionObjectConnectionTemp->sentenceIndexTemp == sentenceIndex)
-		{	
-			#ifdef NLC_DEBUG
-			//cout << "getActionObjectEntityConnection(): actionObjectConnectionTemp->sentenceIndexTemp = " << actionObjectConnectionTemp->sentenceIndexTemp << endl;
-			#endif
-			*actionObjectConnection = actionObjectConnectionTemp;
-			actionHasObject = true;	
-		}
-	}
-	#else
-	if(!(actionEntity->actionObjectEntity->empty()))
-	{
-		*actionObjectConnection = (actionEntity->actionObjectEntity->back());
-		actionHasObject = true;
-	}	
-	#endif
-	return actionHasObject;
-}
-*/
 

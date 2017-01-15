@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e5a 23-November-2013
+ * Project Version: 1e5b 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -366,15 +366,16 @@ NLPIcodeblock * createCodeBlockForGivenProperties(NLPIcodeblock * currentCodeBlo
 	for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 	{
 		GIAentityConnection * propertyConnection = (*propertyNodeListIterator);
-		if(!(propertyConnection->parsedForNLPIcodeBlocks))
-		{
+		//if(!(propertyConnection->parsedForNLPIcodeBlocks))	//removed 1e5b
+		//{			
 			GIAentityNode* propertyEntity = propertyConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, true))
+			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{//only write conditions that are explicated in current sentence
+				cout << "createCodeBlockForGivenProperties: " << propertyEntity->entityName << endl;
 				currentCodeBlockInTree = createCodeBlockForGivenProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
 				propertyConnection->parsedForNLPIcodeBlocks = true;
 			}
-		}
+		//}
 	}
 	return currentCodeBlockInTree;
 }
@@ -393,15 +394,15 @@ NLPIcodeblock * createCodeBlockForGivenConditions(NLPIcodeblock * currentCodeBlo
 	for(vector<GIAentityConnection*>::iterator conditionNodeListIterator = entity->conditionNodeList->begin(); conditionNodeListIterator < entity->conditionNodeList->end(); conditionNodeListIterator++)
 	{
 		GIAentityConnection * conditionConnection = (*conditionNodeListIterator);
-		if(!(conditionConnection->parsedForNLPIcodeBlocks))
-		{
+		//if(!(conditionConnection->parsedForNLPIcodeBlocks))	//removed 1e5b
+		//{
 			GIAentityNode* conditionEntity = conditionConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, true))
+			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, false))	//changed from true to false 1e5b
 			{	
 				currentCodeBlockInTree = createCodeBlockForGivenCondition(currentCodeBlockInTree, item, conditionEntity, sentenceIndex);
 				conditionConnection->parsedForNLPIcodeBlocks = true;
 			}
-		}			
+		//}			
 	}
 	return currentCodeBlockInTree;
 }

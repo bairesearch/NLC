@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e5a 23-November-2013
+ * Project Version: 1e5b 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -365,7 +365,13 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 					#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 					}
 					#endif
-							
+					
+					/*
+					cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions():" << endl;		
+					cout << "entity->entityName = " << entity->entityName << endl;
+					cout << "propertyEntity->entityName = " << propertyEntity->entityName << endl;
+					*/
+					
 					propertyConnection->parsedForNLPIcodeBlocks = true;
 					propertyEntity->parsedForNLPIcodeBlocks = true;		//added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 					entity->parsedForNLPIcodeBlocks = true;			//added 4 October 2013 NLPI1b6b  - used for quick access of instances already declared in current context 

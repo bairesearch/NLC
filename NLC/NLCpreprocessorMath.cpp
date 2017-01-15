@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15g 28-January-2015
+ * Project Version: 1n16a 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -171,7 +171,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 			bool tempNotUsed = false;
 			if(!replaceLogicalConditionNaturalLanguageMathWithSymbols(&logicalConditionCommandSuperphraseContents, firstNLCsentenceInFullSentence->logicalConditionOperator, &tempNotUsed, true))
 			{
-					result = false;
+				result = false;
 			}
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 			cout << "\n lineContents = " <<* lineContents << endl;
@@ -390,7 +390,19 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 							currentPhrase = currentPhrase.substr(0, currentPhrase.length()-1);
 						}
 						#endif
-						(*currentNLCsentenceInList)->sentenceContents = currentPhrase + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;	//append a fullstop to the NLP parsable phrase to make it readable by NLP
+						//cout << "currentPhrase = " << currentPhrase << endl;
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						if(currentPhrase[currentPhrase.length()-1] != NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR)
+						{
+						#endif
+							(*currentNLCsentenceInList)->sentenceContents = currentPhrase + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;	//append a fullstop to the NLP parsable phrase to make it readable by NLP
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						}
+						else
+						{
+							(*currentNLCsentenceInList)->sentenceContents = currentPhrase;
+						}
+						#endif
 						(*currentNLCsentenceInList)->sentenceIndex = *sentenceIndex;
 						//(*currentNLCsentenceInList)->indentation = currentIndentation;	//indentation not recorded for NLC parsable phrases
 						mathText = mathText + generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, (*currentNLCsentenceInList));
@@ -408,10 +420,14 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 
 						//restart phrase
 						currentPhrase = "";
+						#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
 						if(!finalWordInSentenceFoundAndIsLegal)
 						{
+						#endif
 							mathText = mathText + c;
+						#ifndef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
 						}
+						#endif
 						#ifdef NLC_DEBUG_PREPROCESSOR_MATH	
 						cout << "mathText = " << mathText << endl;
 						#endif			
@@ -461,6 +477,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	}
 	if(!finalWordInSentenceFoundAndIsLegal)
 	{
+		//cout << "!finalWordInSentenceFoundAndIsLegal" << endl;
 		//insufficient number of words in final phrase detected to create an NLP parsable phrase; add words to mathText instead
 		//currentWord is [assumed to be] a mathText variable name
 		currentPhrase = currentPhrase + currentWord;	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText   
@@ -616,6 +633,19 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 	NLCsentence* currentSentence = firstNLCsentenceInFullSentence;
 	while(currentSentence->next != NULL)
 	{
+		/*
+		cout << "\ncurrentSentence->sentenceContents = " << currentSentence->sentenceContents << endl;
+		cout << "currentSentence->sentenceIndex = " << currentSentence->sentenceIndex << endl;
+		cout << "currentSentence->indentation = " << currentSentence->indentation << endl;
+		cout << "currentSentence->hasLogicalConditionOperator = " << currentSentence->hasLogicalConditionOperator << endl;
+		cout << "currentSentence->logicalConditionOperator = " << currentSentence->logicalConditionOperator << endl;
+		cout << "currentSentence->mathText = " << currentSentence->mathText << endl;
+		cout << "currentSentence->isMath = " << currentSentence->isMath << endl;
+		cout << "currentSentence->mathTextNLPparsablePhraseIndex = " << currentSentence->mathTextNLPparsablePhraseIndex << endl;
+		cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
+		cout << "currentSentence->sentenceOriginal = " << currentSentence->sentenceOriginal << endl;
+		cout << "currentSentence->sentenceContentsOriginal = " << currentSentence->sentenceContentsOriginal << endl;
+		*/
 		*functionContents = *functionContents + currentSentence->sentenceContents + CHAR_NEWLINE;
 		currentSentence = currentSentence->next;
 	}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15g 28-January-2015
+ * Project Version: 1n16a 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1022,7 +1022,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 								
 								if(verifyObject)
 								{
-									cout << "verifyObject = " << verifyObject << endl;
+									//cout << "verifyObject = " << verifyObject << endl;
 									//save objectEntity as tempVariable objectEntityCandidate
 									string candidateObjectClassName = generateClassName(objectEntity);
 									string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);

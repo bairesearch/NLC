@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n15g 28-January-2015
+ * Project Version: 1n16a 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -307,11 +307,11 @@ bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(NLCsent
 				#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 				bool logicalConditionCommandIsValidVariableName = false; 
 				string logicalConditionCommandWithoutFullStop = "";
-				if(mathTextOfLogicalConditionCommand[mathTextOfLogicalConditionCommand.length()-1] == CHAR_FULLSTOP)	//only process logical condition commands with fullstop as potential single word actions (ie non mathtext)
+				if(mathTextOfLogicalConditionCommand[mathTextOfLogicalConditionCommand.length()-1] == NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR)	//only process logical condition commands with fullstop as potential single word actions (ie non mathtext)
 				{
 					logicalConditionCommandWithoutFullStop = mathTextOfLogicalConditionCommand.substr(0, mathTextOfLogicalConditionCommand.length()-1);
 					logicalConditionCommandIsValidVariableName = isStringValidVariableName(logicalConditionCommandWithoutFullStop, true);
-					//cout << "splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(): logical condition command CHAR_FULLSTOP detected" << endl;
+					//cout << "splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionCommands(): logical condition command NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR detected" << endl;
 					//cout << "logicalConditionCommandWithoutFullStop = " << logicalConditionCommandWithoutFullStop << endl;
 				}
 				if(logicalConditionCommandIsValidVariableName)

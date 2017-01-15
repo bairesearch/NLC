@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b6d 04-October-2013
+ * Project Version: 1b7a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -193,6 +193,6 @@ NLPIcodeblock * createLowerLevel(NLPIcodeblock * currentCodeBlockInTree);
 bool getEntityContext(GIAentityNode * entity, vector<string> * context, bool includePresentObject, int sentenceIndex, bool markSameSentenceParentsAsParsed);
 string generateStringFromContextVector(vector<string> * context, int progLang);
 
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex);
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLPIcodeBlocks);
 
 #endif

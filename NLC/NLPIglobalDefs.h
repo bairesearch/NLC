@@ -23,7 +23,7 @@
  * File Name: NLPIglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b6d 04-October-2013
+ * Project Version: 1b7a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,6 +36,7 @@
 #include "SHAREDglobalDefs.h"
 
 //#define NLPI_BAD_IMPLEMENTATION
+//#define NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
 
 //#define NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT
 #ifdef NLPI_PRINT_EXPLICIT_LOCAL_CONTEXT

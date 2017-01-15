@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b6d 04-October-2013
+ * Project Version: 1b7a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -130,8 +130,11 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 				NLPIclassDefinition * targetClassDefinition = *localListIter;
 				string targetName = targetClassDefinition->name;
 				string targetClassName = targetClassDefinition->className;	//special case (as actions and conditions are referenced by instance)
+				#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+				string localListDeclarationText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + targetName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangEndLine[progLang];
+				#else
 				string localListDeclarationText = progLangClassList2DTypeStart[progLang] + targetClassName + progLangPointer[progLang] + progLangClassList2DTypeMiddle[progLang] + targetClassDefinition->conditionObjectClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + targetClassName + targetClassDefinition->conditionObjectClassName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangEndLine[progLang];				
-				//OLD3: string localListDeclarationText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + targetName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangEndLine[progLang];
+				#endif
 				printLine(localListDeclarationText, 1, code);
 			}
 
@@ -206,11 +209,14 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			NLPIitem * param3 = currentCodeBlockInLevel->parameters.at(2);	
 			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
 			string codeBlockTextCreate = param3->name + progLangPointer[progLang] + " " + param3->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param3->name + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
+			printLine(codeBlockTextCreate, level, code);
+			#ifdef NLPI_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param3->name + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangParameterSpaceNextParam[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		
+			#else
 			string codeBlockTextCreate2 = param2->name + progLangPointer[progLang] + " " + param2->instanceName + progLangEquals[progLang] + progLangNewObject[progLang] + param2->name + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
 			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param3->name + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangParameterSpaceNextParam[progLang] + " " + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		
-			//OLD3: string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param3->name + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + progLangStringOpenClose[progLang] + param2->name + progLangStringOpenClose[progLang] + progLangParameterSpaceNextParam[progLang] + param3->instanceName + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		
-			printLine(codeBlockTextCreate, level, code);
 			printLine(codeBlockTextCreate2, level, code);
+			#endif
 			printLine(codeBlockText, level, code);
 
 		}			

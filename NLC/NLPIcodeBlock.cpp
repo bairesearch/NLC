@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b6d 04-October-2013
+ * Project Version: 1b7a 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -222,7 +222,7 @@ NLPIcodeblock * createCodeBlockIfHasProperties(NLPIcodeblock * currentCodeBlockI
 		if(!(propertyConnection->parsedForNLPIcodeBlocks))
 		{
 			GIAentityNode* propertyEntity = propertyConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex))
+			if(checkSentenceIndexParsingCodeBlocks(propertyEntity,  sentenceIndex, true))
 			{//only write conditions that are explicated in current sentence
 				currentCodeBlockInTree = createCodeBlockIfHasProperty(currentCodeBlockInTree, item, propertyEntity, sentenceIndex);
 				propertyConnection->parsedForNLPIcodeBlocks = true;
@@ -253,7 +253,7 @@ NLPIcodeblock * createCodeBlockIfHasConditions(NLPIcodeblock * currentCodeBlockI
 		if(!(conditionConnection->parsedForNLPIcodeBlocks))
 		{
 			GIAentityNode* conditionEntity = conditionConnection->entity;
-			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex))
+			if(checkSentenceIndexParsingCodeBlocks(conditionEntity,  sentenceIndex, true))
 			{	
 				currentCodeBlockInTree = createCodeBlockIfHasCondition(currentCodeBlockInTree, item, conditionEntity, sentenceIndex);
 				conditionConnection->parsedForNLPIcodeBlocks = true;
@@ -422,12 +422,15 @@ string generateStringFromContextVector(vector<string> * context, int progLang)
 
 
 
-bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex)
+bool checkSentenceIndexParsingCodeBlocks(GIAentityNode * entity, int sentenceIndex, bool checkIfEntityHasBeenParsedForNLPIcodeBlocks)
 {
 	bool result = false;
-	if(((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference)) && !(entity->parsedForNLPIcodeBlocks))
+	if(!checkIfEntityHasBeenParsedForNLPIcodeBlocks || !(entity->parsedForNLPIcodeBlocks))
 	{
-		result = true;
+		if((entity->sentenceIndexTemp == sentenceIndex) || (entity->wasReference))
+		{
+			result = true;
+		}
 	}
 	return result;
 }

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1g 14-November-2014
+ * Project Version: 1m1h 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -812,7 +812,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock ** curren
 		#endif
 			GIAentityNode* targetEntity = targetConnection->entity;
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			if(!(targetEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions
+			if(!(targetEntity->inverseConditionTwoWay) || targetConnection->isReference)	//prevent infinite loop for 2 way conditions
 			{
 			#endif
 				if(checkSentenceIndexParsingCodeBlocks(targetEntity, targetConnection, sentenceIndex, false))	//changed from true to false 1e5b	//generateContextBlocksVariables->checkSameSentenceConnection
@@ -1438,7 +1438,7 @@ GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool
 			//cout << "conditionEntity = " << conditionEntity->entityName << endl;
 			
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
+			if(!(conditionEntity->inverseConditionTwoWay) || conditionConnection->isReference)	//prevent infinite loop for 2 way conditions 
 			{
 			#endif
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -1815,7 +1815,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				GIAentityNode* conditionEntity = conditionConnection->entity;
 
 				#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-				if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
+				if(!(conditionEntity->inverseConditionTwoWay) || conditionConnection->isReference)	//prevent infinite loop for 2 way conditions 
 				{
 				#endif
 					#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -2144,7 +2144,7 @@ GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentE
 			GIAentityConnection * conditionConnection = *conditionNodeListIterator;
 			GIAentityNode * conditionEntity = conditionConnection->entity;
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions 
+			if(!(conditionEntity->inverseConditionTwoWay) || conditionConnection->isReference)	//prevent infinite loop for 2 way conditions 
 			{
 			#endif
 				#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -2310,7 +2310,7 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 			GIAentityNode* conditionEntity = conditionConnection->entity;
 
 			#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-			if(!(conditionEntity->inverseConditionTwoWay))	//prevent infinite loop for 2 way conditions
+			if(!(conditionEntity->inverseConditionTwoWay) || conditionConnection->isReference)	//prevent infinite loop for 2 way conditions
 			{
 			#endif		
 				bool alreadyAdded = checkDuplicateCondition(conditionEntity, entity);

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1g 14-November-2014
+ * Project Version: 1m1h 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -838,7 +838,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode * substanceConceptEn
 	{
 		GIAentityNode * substanceConceptCondition = (*entityIter)->entity;
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-		if(!(substanceConceptCondition->inverseConditionTwoWay))		//prevent infinite loop for 2 way conditions
+		if(!(substanceConceptCondition->inverseConditionTwoWay) || (*entityIter)->isReference)		//prevent infinite loop for 2 way conditions
 		{
 		#endif
 			if(!(substanceConceptCondition->conditionObjectEntity->empty()))

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -394,10 +394,10 @@ string generateCodeNewTempEntity(string className, string instanceName, int prog
 		string generateTempEntityDeclaration(string className, string instanceName, int progLang);	//not used
 
 
-/*
-string generateCodeSetTempEntity(NLCitem* param, NLCitem* param2, int progLang);
-string generateTempEntityDeclarationSetToNull(NLCitem* param, NLCitem* param2, int progLang);
-*/
+
+string generateTempEntityDeclarationSetToNull(NLCitem* param1, int progLang);
+string generateCodeSetTempEntity(NLCitem* param1, NLCitem* param2, int progLang);
+string generateTempEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2, int progLang);
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang);

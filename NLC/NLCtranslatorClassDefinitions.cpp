@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,7 +37,7 @@
 #include "GIAtranslatorDefs.h"
 #endif
 #ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
-#include "NLCtranslatorCodeBlocksOperations.h"	//required for getSameReferenceSetDefiniteUniqueParent()
+#include "NLCtranslatorCodeBlocksOperations.h"	//required for getSameReferenceSetUniqueParent()
 #endif
 
 bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinitionFunctionDependency* parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList)
@@ -223,7 +223,8 @@ bool generateClassHeirarchy(vector<NLCclassDefinition* >* classDefinitionList, v
 										{
 											bool parseConditionParents = true;	//default value
 											bool foundDefiniteParentEntity = false;
-											GIAentityNode* parentTemp = getSameReferenceSetDefiniteUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents);
+											bool checkIsDefinite = true;
+											GIAentityNode* parentTemp = getSameReferenceSetUniqueParent(entityNode, connection->sentenceIndexTemp, NULL, &foundDefiniteParentEntity, parseConditionParents, checkIsDefinite);
 											if(!foundDefiniteParentEntity)
 											{
 										#endif

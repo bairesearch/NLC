@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -699,7 +699,7 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBloc
 				generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, entity, sentenceIndex);
 				#else
 				//This code is effectively identical to generateCodeBlocksObjectInitialisationsForEntity(), without the generateParentContext argument;
-				GIAentityNode* parentEntity = getParent(entity, sentenceIndex, true);
+				GIAentityNode* parentEntity = getParent(entity, sentenceIndex);
 				if(!checkSpecialCaseEntity(parentEntity, true))
 				{
 					if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity , sentenceIndex, false))
@@ -732,7 +732,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 			//1. and 2. get parent of the dog (eg pound) and generate context of the dog
 			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 			generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
-			bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, false, &parentEntity, false);
+			bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
 			
 			//3. verify that alsations are dogs
 			*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);

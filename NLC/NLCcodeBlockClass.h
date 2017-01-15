@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -127,10 +127,9 @@
 #ifdef NLC_SUPPORT_REDEFINITIONS
 	#define NLC_CODEBLOCK_TYPE_CONVERT_PARENT_TO_CHILD_CLASS (54)
 #endif
-/*
-#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (54)			//param1class* param1 = NULL;
-#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (55)			//param1 = param2;
-*/
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE (55)			//param1class* param1 = NULL;
+#define NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE (56)			//param1 = param2;
+#define NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY (57)			//param1class* param1 = param2;
 
 
 //containers:
@@ -199,6 +198,7 @@
 	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION1 (133)
 	#define NLC_CODEBLOCK_TYPE_CHECK_PARENT_CLASS_NAME_EXECUTE_FUNCTION2 (134)
 #endif
+#define NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY (135)			//if(param1 == param2){
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 /*
@@ -259,7 +259,7 @@ public:
 	GIAentityNode* foundLogicalConditionConjunction;
 	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	bool onlyGenerateContextBlocksIfConnectionsParsedForNLC;
+	bool onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet;
 	bool generateContextBlocksIfSameReferenceSet;	//added 1i3d
 	#endif
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -276,6 +276,16 @@ public:
 	#endif
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	bool searchSubstanceConceptsForChildren;
+	#endif
+	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
+	bool crossRcmodBreaks;
+	#endif
+	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	bool parseConditionParents;
+	#endif
+	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
+	bool parseParentEfficient;
+	GIAentityNode* childEntityNotToParse;
 	#endif
 };
 
@@ -537,9 +547,11 @@ NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction2(NLCcodeblock* 
 NLCcodeblock* createCodeConvertParentToChildClass(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* parentEntity, GIAentityNode* childEntity);
 #endif
 
-/*
+
 NLCcodeblock* createCodeBlockDeclareTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName);
 NLCcodeblock* createCodeBlockSetTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableInstanceName, GIAentityNode* entity);
-*/
+NLCcodeblock* createCodeBlockDeclareTempVariableAndSetToEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity);
+NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity);
+
 
 #endif

@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1421,32 +1421,6 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 
 		}
 		#endif
-		/*
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE" << endl;
-			#endif
-			string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + progLangNullPointer + progLangEndLine[progLang];	//param1Class* param1 = NULL;
-			printLine(tempEntityDeclarationText, level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE" << endl;
-			#endif
-			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string tempEntitySetText = generateTempEntityDeclarationSetToNull(param1, param2, progLang);	//param1 = param2;
-			printLine(tempEntitySetText, level, code);
-		}
-		*/
-		/*
-		else if(currentCodeBlockInLevel->codeBlockType == ...)
-		{
-
-		}
-		...
-		*/
 		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IN_PROPERTY_LIST)
 		{
@@ -1522,6 +1496,49 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			printLine(codeBlockRenameChildClassObjectToChildClassText, level, code);
 		}	
 		#endif
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE" << endl;
+			#endif
+			string tempEntityDeclarationText = generateTempEntityDeclarationSetToNull(param1, progLang);	//param1Class* param1 = NULL;
+			printLine(tempEntityDeclarationText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			string tempEntitySetText = generateCodeSetTempEntity(param1, param2, progLang);	//param1 = param2;
+			printLine(tempEntitySetText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			string tempEntityDeclarationText = generateTempEntityDeclarationSetToEntity(param1, param2, progLang);	//param1Class* param1 = param2;
+			printLine(tempEntityDeclarationText, level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY" << endl;
+			#endif
+			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
+			string tempVarCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateTempEntityName(param1) + progLangStringEqualsTest[progLang] + generateTempEntityName(param2) + progLangCloseParameterSpace[progLang];	 //if(param1 == param2) {
+			printLine(tempVarCheckText, level, code);	
+			printLine(progLangOpenBlock[progLang], level, code);	//{
+		}
+		/*
+		else if(currentCodeBlockInLevel->codeBlockType == ...)
+		{
+
+		}
+		...
+		*/
 		else
 		{
 			cout << "printCodeBlocks: error: currentCodeBlockInLevel->codeBlockType = " << currentCodeBlockInLevel->codeBlockType << endl;

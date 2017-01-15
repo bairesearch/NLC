@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -499,20 +499,6 @@ string generateTempEntityDeclaration(string className, string instanceName, int 
 	return tempVariableName;
 }
 
-/*
-string generateCodeSetTempEntity(NLCitem* param, NLCitem* param2, int progLang)
-{
-	string tempVariableName = generateTempEntityName(param) + progLangEquals[progLang], generateTempEntityName(param2), progLang);	//param1 = param2;
-	return tempVariableName;
-	
-}
-string generateTempEntityDeclarationSetToNull(NLCitem* param, NLCitem* param2, int progLang)
-{
-	string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + progLangNullPointer + progLangEndLine[progLang];	//param1Class* param1 = NULL;
-	return tempEntityDeclarationText;
-}
-*/
-
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang)
 {
@@ -731,4 +717,21 @@ string generateAllActionObjectListName()
 }
 
 #endif
+
+
+string generateTempEntityDeclarationSetToNull(NLCitem* param1, int progLang)
+{
+	string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//param1Class* param1 = NULL;
+	return tempEntityDeclarationText;
+}
+string generateCodeSetTempEntity(NLCitem* param1, NLCitem* param2, int progLang)
+{
+	string tempVariableName = generateTempEntityName(param1) + progLangEquals[progLang] + generateTempEntityName(param2) + progLangEndLine[progLang];	//param1 = param2;
+	return tempVariableName;	
+}
+string generateTempEntityDeclarationSetToEntity(NLCitem* param1, NLCitem* param2, int progLang)
+{
+	string tempEntityDeclarationText = generateTempEntityDeclaration(param1, progLang) + progLangEquals[progLang] + generateTempEntityName(param2) + progLangEndLine[progLang];	//param1Class* param1 = param2;
+	return tempEntityDeclarationText;
+}
 

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -85,7 +85,7 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	foundLogicalConditionConjunction = NULL;
 	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-	onlyGenerateContextBlocksIfConnectionsParsedForNLC = false;
+	onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
 	generateContextBlocksIfSameReferenceSet = true;
 	#endif
@@ -104,6 +104,16 @@ NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 	#endif
 	#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 	searchSubstanceConceptsForChildren = true;
+	#endif
+	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
+	crossRcmodBreaks = true;
+	#endif
+	#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
+	parseConditionParents = true;
+	#endif
+	#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_EFFICIENT
+	parseParentEfficient = false;
+	childEntityNotToParse = NULL;
 	#endif
 }
 NLCgenerateContextBlocksVariables::~NLCgenerateContextBlocksVariables(void)
@@ -2467,37 +2477,7 @@ GIAentityNode* generateInverseConditionEntity(GIAentityNode* conditionEntity)
 }
 #endif
 
-/*
-#ifdef NLC_USE_LIBRARY
-NLCcodeblock* createCodeBlockDeclareTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName)
-{
-	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
-	tempVariableItem->className = tempVariableClassName;
-	tempVariableItem->instanceName = tempVariableInstanceName;
-	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
 
-	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
-	return currentCodeBlockInTree;
-}
-
-NLCcodeblock* createCodeBlockSetTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableInstanceName, GIAentityNode* entity)
-{
-	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
-	tempVariableItem->instanceName = tempVariableInstanceName;
-	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
-
-	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
-	currentCodeBlockInTree->parameters.push_back(entityItem);
-	
-	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE;
-	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
-	
-	return currentCodeBlockInTree;
-}
-#endif
-*/
 #ifdef NLC_SUPPORT_REDEFINITIONS
 NLCcodeblock* createCodeBlockCheckParentClassNameExecuteFunction1(NLCcodeblock* currentCodeBlockInTree, string objectInstanceName, string classNameToFind)
 {
@@ -2547,4 +2527,63 @@ NLCcodeblock* createCodeConvertParentToChildClass(NLCcodeblock* currentCodeBlock
 }
 #endif
 
+NLCcodeblock* createCodeBlockDeclareTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName)
+{
+	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
+	tempVariableItem->className = tempVariableClassName;
+	tempVariableItem->instanceName = tempVariableInstanceName;
+	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock* createCodeBlockSetTempVariable(NLCcodeblock* currentCodeBlockInTree, string tempVariableInstanceName, GIAentityNode* entity)
+{
+	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
+	tempVariableItem->instanceName = tempVariableInstanceName;
+	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
+
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_SET_TEMP_VARIABLE;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock* createCodeBlockDeclareTempVariableAndSetToEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity)
+{
+	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
+	tempVariableItem->className = tempVariableClassName;
+	tempVariableItem->instanceName = tempVariableInstanceName;
+	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
+
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_TEMP_VARIABLE_AND_SET_TO_ENTITY;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock* createCodeBlockIfTempVariableEqualsEntity(NLCcodeblock* currentCodeBlockInTree, string tempVariableClassName, string tempVariableInstanceName, GIAentityNode* entity)
+{
+	NLCitem* tempVariableItem = new NLCitem(tempVariableInstanceName, NLC_ITEM_TYPE_OBJECT);
+	tempVariableItem->className = tempVariableClassName;
+	tempVariableItem->instanceName = tempVariableInstanceName;
+	currentCodeBlockInTree->parameters.push_back(tempVariableItem);
+
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+	
+	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY;
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, codeBlockType);
+	
+	return currentCodeBlockInTree;
+}
 

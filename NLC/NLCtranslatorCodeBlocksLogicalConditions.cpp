@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n14b 27-January-2015
+ * Project Version: 1n15a 28-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -216,8 +216,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<i
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 	
-									bool parseConditionParents = true;	//use default value here
-									GIAentityNode* parentEntity = getParent(logicalConditionOperationObject, sentenceIndex, parseConditionParents);
+									GIAentityNode* parentEntity = getParent(logicalConditionOperationObject, sentenceIndex);
 									NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 									generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition)
 									bool generatedContextBlocks = generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
@@ -461,7 +460,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 						#endif					
 					//}
 					#endif
-					if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+					if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables))
 					{
 						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 						cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: " << entity->entityName << endl;
@@ -525,17 +524,19 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found entity: " << entity->entityName << endl;
 								#endif
 
-								GIAentityNode* parentEntity = getParent(entity, sentenceIndex, true);	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
-
-								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-								NLCcodeblock* NLCcodeBlockBeforeGenerateContext =* currentCodeBlockInTree; 
-								bool contextFound = false;
-
+								GIAentityNode* parentEntity = getParent(entity, sentenceIndex);
+								bool foundChildEntity = false;
+								GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
+								
 								#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
 								//if/while statements can be expressed using either definite or indefinate variables, but if they indefinite they will not be advanced referenced by GIA (and so must be located in the typeList)
 								if(!assumedToAlreadyHaveBeenDeclared(parentEntity))
 								{
+									if(foundChildEntity)
+									{
+										cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !assumedToAlreadyHaveBeenDeclared(parentEntity) && foundChildEntity" << endl;
+									}
 									#ifdef NLC_GENERATE_TYPE_LISTS
 									//1i implementation
 									*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, parentEntity);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
@@ -547,20 +548,49 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									#endif
 								}
 								#endif
-								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
-								{
-									contextFound = true;
-								}
-								#else
+								#endif
+								
 								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);
 								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
 								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
-								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
+								
+								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
+								NLCcodeblock* NLCcodeBlockBeforeGenerateContext =* currentCodeBlockInTree; 
+								bool contextFound = false;
+								bool generatedContextForChild = false;
+								if(foundChildEntity)
+								{
+									if(generateContextBlocksForParentEntity(currentCodeBlockInTree, childEntity, parentEntity, sentenceIndex, &generateContextBlocksVariables))
+									{
+										generatedContextForChild = true;
+										contextFound = true;	//this is required for cases in which the entity (ball) has no children, eg "Jack's ball"
+									}
+									else
+									{
+										cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+									}
+								}
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
+								#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+								generateContextBlocksVariables.testNumerosity = true;
+								#endif
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  2 generateContextBlocks: ") + parentEntity->entityName);
+								if(generateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+								{
+									contextFound = true;
+								}
+									
+								/*
+								//*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateCodeBlocksFromMathTextNLPparsablePhrase():  1 generateContextBlocks: ") + parentEntity->entityName);
+								//NB logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_FOR (if so generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor is executed instead)
+								//therefore logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF/NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_WHILE
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
 								{
 									contextFound = true;
 								}
-								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = false;
+								generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
 								#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 								generateContextBlocksVariables.testNumerosity = true;
 								#endif
@@ -568,8 +598,8 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, true, NLC_ITEM_TYPE_LOGICALCONDITION_VAR_APPENDITION))
 								{
 									contextFound = true;
-								}	
-								#endif
+								}
+								*/
 	
 								if(!contextFound)
 								{
@@ -642,12 +672,15 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 				if(!(entity->isConcept) && !(entity->isCondition))
 				{//required
 					if(!foundParsablePhrase)
-					{
-						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-						#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-						generateContextBlocksVariables.setCodeBlockInTreeAtBaseLevel = true;
-						#endif
-						NLCcodeblock* NLCcodeBlockBeforeGenerateContext =* currentCodeBlockInTree; 
+					{						
+						bool foundDefiniteParentEntity = false;
+						bool parseConditionParents = true;	//default value
+						bool checkIsDefinite = true;
+						GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentEntity, parseConditionParents, checkIsDefinite);	//GIAentityNode* parentEntity = getParent(entity, sentenceIndex);
+						
+						bool foundChildEntity = false;
+						GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
+								
 						/*//for statements must be expressed using definite variables, and they will be advanced referenced by GIA (ie "for all the chickens...", not "for a chicken..")
 						if(!assumedToAlreadyHaveBeenDeclared(entity))
 						{
@@ -656,45 +689,40 @@ bool generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(NLCcodeb
 						      //if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
 						}
 						*/
-						//cout << "getParentAndGenerateContextBlocks:" << endl;
+					
+						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+						#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						generateContextBlocksVariables.setCodeBlockInTreeAtBaseLevel = true;
+						#endif
+						generateContextBlocksVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
+						NLCcodeblock* NLCcodeBlockBeforeGenerateContext =* currentCodeBlockInTree; 
+						bool contextFound = false;
+						bool generatedContextForChild = false;
+						if(foundChildEntity)
+						{
+							if(generateContextBlocksForParentEntity(currentCodeBlockInTree, childEntity, parentEntity, sentenceIndex, &generateContextBlocksVariables))
+							{
+								generatedContextForChild = true;
+								contextFound = true;	//this is required for cases in which the entity (ball) has no children, eg "Jack's ball"
+							}
+							else
+							{
+								cout << "generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor(): generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+							}
+						}
+						if(generateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, generatedContextForChild, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))
+						{
+							contextFound = true;
+						}
 						
-						/*DO THIS;
-						bool foundDefiniteParentEntity = false;
-						bool parseConditionParents = true;	//default value
-						GIAentityNode* parentEntity = getSameReferenceSetDefiniteUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentEntity, parseConditionParents);
-						if(!foundDefiniteParentEntity)
-						{
-							parentEntity = entity;
-						}
-						~GIAentityNode* parentEntity = getSameReferenceSetDefiniteChild(entity, sentenceIndex, &foundDefiniteParentEntity, parseConditionParents);
-						*/
-						
-						if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, true))	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
-						{
-							#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-							cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: sentenceIndex = " << sentenceIndex << endl;
-							#endif
-							
-							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-							*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
-							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-							(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
-							(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
-							#endif
-							#endif
-							foundParsablePhrase = true;						
-						}
-						else
-						{
-							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-							*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
-							#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-							(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
-							(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
-							#endif
-							#endif
-							foundParsablePhrase = true;
-						}
+						#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						*currentCodeBlockInTreeAtBaseLevel = generateContextBlocksVariables.currentCodeBlockInTreeAtBaseLevel;
+						#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+						(*currentCodeBlockInTreeAtBaseLevel)->isLogicalCondition = true;
+						(*currentCodeBlockInTreeAtBaseLevel)->contextLevel = firstNLCsentenceInFullSentence->indentation+1;
+						#endif
+						#endif
+						foundParsablePhrase = true;	
 					}	
 				}
 			}
@@ -819,7 +847,8 @@ bool checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* en
 							{
 								bool foundDefiniteParentOfEntity = false;
 								bool parseConditionParents = true;	//use default value here
-								GIAentityNode* parentEntity = getSameReferenceSetDefiniteUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents);
+								bool checkIsDefinite = true;
+								GIAentityNode* parentEntity = getSameReferenceSetUniqueParent(entity, sentenceIndex, NULL, &foundDefiniteParentOfEntity, parseConditionParents, checkIsDefinite);
 								if(isDefiniteEntity(entity) || foundDefiniteParentOfEntity)
 								{
 									if(entity->entityName != definitionEntityTemp->entityName)

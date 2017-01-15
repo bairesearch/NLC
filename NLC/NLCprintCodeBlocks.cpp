@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k3a 12-October-2014
+ * Project Version: 1k4a 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -921,7 +921,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string contextLevelString = param1->name;
 			
 			string  genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
+			string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
 			string contextListDeclarationText = generateCodePropertyListDefinitionTypeText(genericEntityClassName, progLang) + contextListName + progLangEndLine[progLang];	//vector<genericEntityClass*> contextListX;
 			printLine(contextListDeclarationText, level, code);
 		}
@@ -932,7 +932,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 
 			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION);
+			string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION);
 			string entityToAddName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
 			
 			string codeBlockTextFunctionHeader = progLangClassMemberFunctionType[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_ADD_ENTITY_TO_CONTEXT_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodePropertyListDefinitionTypeText(genericEntityClassName, progLang) + contextListName + progLangClassMemberFunctionParametersNext[progLang] + generateTempVariableDeclaration(genericEntityClassName, entityToAddName, progLang) + progLangClassMemberFunctionParametersNext[progLang] + progLangClassLastSentenceIndexVariableType[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_SENTENCE_INDEX_VARIABLE_NAME + progLangCloseParameterSpace[progLang];	//void addVariableToContextList(vector<genericEntityClass*> contextList, genericEntityClass* genericEntity, int sentenceIndex)
@@ -963,7 +963,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string sentenceIndexString = param3->name;
 
 			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
+			string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
 			string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 			
 			string codeBlockText = "";
@@ -978,7 +978,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			
 			string iterIndexString = convertIntToString(level);
 			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION);
+			string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION);
 			string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 				
 			string codeBlockTextFunctionHeader = progLangClassMemberFunctionType[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodePropertyListDefinitionTypeText(genericEntityClassName, progLang) + contextListName + progLangCloseParameterSpace[progLang];	//void clearContextList(vector<genericEntityClass*> contextList)
@@ -1010,7 +1010,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string contextLevelString = param1->name;
 			#endif
 
-			string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
+			string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
 
 			string codeBlockExecuteFunctionText = "";
 			codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME +  progLangOpenParameterSpace[progLang] + contextListName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//clearContextLevelList(contextListX);
@@ -1051,7 +1051,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				#else
 				string contextLevelString = convertIntToString(currentCodeBlockInLevel->contextLevel);
 				#endif
-				string contextListName = string(NLC_ITEM_TYPE_CONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
+				string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION) + contextLevelString;
 			
 				string codeBlockExecuteFunctionText = "";
 				codeBlockExecuteFunctionText = codeBlockExecuteFunctionText + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_CLEAR_CONTEXT_LIST_FUNCTION_NAME +  progLangOpenParameterSpace[progLang] + contextListName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//clearContextLevelList(contextListX);

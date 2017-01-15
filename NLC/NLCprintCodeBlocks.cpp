@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10b 14-October-2014
+ * Project Version: 1k10c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1155,7 +1155,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	parameters = codeBlockParameters;
 	NLCitem * param1 = codeBlockParameters->at(0);
-	NLCclassDefinition * functionClassDeclaration = NULL;	//NB "functionClassDeclaration" should be "functionDeclaration"
+	NLCclassDefinition * functionDeclaration = NULL;	//NB "functionDeclaration" should be "functionDeclaration"
 	string functionName = param1->name;	//not param1->functionName
 	string functionOwnerName = "";
 	NLCitem * functionOwnerArgument = NULL;
@@ -1181,7 +1181,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	cout << "functionOwnerName = " << functionOwnerName << endl;
 	cout << "functionObjectName = " << functionObjectName << endl;
 	#endif
-	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionClassDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
+	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, false, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 		cout << "findFunctionDeclarationClassDefinition" << endl;
@@ -1192,7 +1192,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			cout << "(hasFunctionObjectClass && !foundFunctionObjectExactMatch)" << endl;
 			#endif
 			NLCitem * functionObjectArgumentDeclaration = NULL;
-			if(findFunctionArgument(&(functionClassDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgumentDeclaration))
+			if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgumentDeclaration))
 			{
 				functionObjectArgument->functionArgumentPassCastRequired = true;
 				functionObjectArgument->functionArgumentPassCastClassName = functionObjectArgumentDeclaration->name;
@@ -1203,7 +1203,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 			}
 		}
 		
-		for(vector<NLCitem*>::iterator parametersIterator = functionClassDeclaration->parameters.begin(); parametersIterator < functionClassDeclaration->parameters.end(); parametersIterator++)
+		for(vector<NLCitem*>::iterator parametersIterator = functionDeclaration->parameters.begin(); parametersIterator < functionDeclaration->parameters.end(); parametersIterator++)
 		{
 			NLCitem * currentItem = *parametersIterator;
 			//cout << "1 currentItem->itemType = " << currentItem->itemType << endl;
@@ -1218,11 +1218,11 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	#else
 	//get function arguments from class definition list (in case they have been dynamically updated based on implicit declarations within the function definition)
 	bool foundFunctionDeclaration = false;
-	NLCclassDefinition * functionClassDeclaration = findClassDefinition(classDefinitionList, param1->instanceName, &foundFunctionDeclaration);	//see if class definition already exists
+	NLCclassDefinition * functionDeclaration = findClassDefinition(classDefinitionList, param1->instanceName, &foundFunctionDeclaration);	//see if class definition already exists
 	if(foundFunctionDeclaration)
 	{
 		//cout << "foundFunctionDeclaration: " << param1->instanceName << endl;
-		parameters = &(functionClassDeclaration->parameters);
+		parameters = &(functionDeclaration->parameters);
 	}
 	else
 	{

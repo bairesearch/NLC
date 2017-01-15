@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k10b 14-October-2014
+ * Project Version: 1k10c 14-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -442,13 +442,13 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 	bool foundFunctionOwnerExactMatch = false;
 	bool foundFunctionObjectExactMatch = false;
-	NLCclassDefinition * functionClassDeclaration = NULL;
-	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionClassDeclaration, true, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
+	NLCclassDefinition * functionDeclaration = NULL;
+	if(findFunctionDeclarationClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDeclaration, true, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 	{
 		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 		cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition" << endl;
 		#endif
-		addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(functionClassDeclaration, &(firstCodeBlockInTree->parameters));
+		addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(functionDeclaration, &(firstCodeBlockInTree->parameters));
 	}
 	#else
 	NLCclassDefinition * classDefinitionFound = NULL;
@@ -458,10 +458,10 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 		//cout << "currentClassDef->name = " << currentClassDef->name << endl;
 		for(vector<NLCclassDefinition*>::iterator localListIter = currentClassDef->functionList.begin(); localListIter != currentClassDef->functionList.end(); localListIter++)
 		{
-			NLCclassDefinition * functionClassDeclaration = *localListIter;
-			//cout << "functionClassDeclaration->functionNameSpecial = " << functionClassDeclaration->functionNameSpecial << endl;
+			NLCclassDefinition * functionDeclaration = *localListIter;
+			//cout << "functionDeclaration->functionNameSpecial = " << functionDeclaration->functionNameSpecial << endl;
 			//cout << "functionName = " << functionName << endl;
-			if(functionClassDeclaration->functionNameSpecial == generateFunctionName(functionName))
+			if(functionDeclaration->functionNameSpecial == generateFunctionName(functionName))
 			{
 				if((currentClassDef->name == generateClassName(functionOwnerName)) || !hasFunctionOwnerClass)
 				{
@@ -470,7 +470,7 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 					#endif
 					//contrast and compare function class arguments vs
 
-					findFormalFunctionArgumentCorrelateInExistingList(functionClassDeclaration, &(firstCodeBlockInTree->parameters), classDefinitionList);
+					findFormalFunctionArgumentCorrelateInExistingList(functionDeclaration, &(firstCodeBlockInTree->parameters), classDefinitionList);
 				}
 			}
 		}
@@ -480,10 +480,10 @@ void reconcileClassDefinitionListFunctionDeclarationArgumentsBasedOnImplicitlyDe
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION_ADVANCED
 
-void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(NLCclassDefinition * functionClassDeclaration, vector<NLCitem*> * formalFunctionArgumentList)
+void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(NLCclassDefinition * functionDeclaration, vector<NLCitem*> * formalFunctionArgumentList)
 {
-	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(): functionClassDeclaration->name = " << functionClassDeclaration->name << endl;
-	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDeclaration->parameters);
+	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(): functionDeclaration->name = " << functionDeclaration->name << endl;
+	vector<NLCitem*> * existingFunctionArgumentList = &(functionDeclaration->parameters);
 	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
 	{
 		NLCitem * formalFunctionArgument = *parametersIterator;
@@ -502,10 +502,10 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToClassDefinition(
 
 
 #else
-bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionClassDeclaration, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
+bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * functionDeclaration, vector<NLCitem*> * formalFunctionArgumentList, vector<NLCclassDefinition *> * classDefinitionList)
 {
 	bool result = true;
-	vector<NLCitem*> * existingFunctionArgumentList = &(functionClassDeclaration->parameters);
+	vector<NLCitem*> * existingFunctionArgumentList = &(functionDeclaration->parameters);
 
 	for(vector<NLCitem*>::iterator parametersIterator = formalFunctionArgumentList->begin(); parametersIterator < formalFunctionArgumentList->end(); parametersIterator++)
 	{
@@ -577,7 +577,7 @@ bool findFormalFunctionArgumentCorrelateInExistingList(NLCclassDefinition * func
 		{
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 			bool foundFunctionArgumentInActionSubjectContents = false;
-			GIAentityNode * actionEntity = functionClassDeclaration->actionOrConditionInstance;
+			GIAentityNode * actionEntity = functionDeclaration->actionOrConditionInstance;
 			if(!(actionEntity->actionSubjectEntity->empty()))
 			{
 				GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;

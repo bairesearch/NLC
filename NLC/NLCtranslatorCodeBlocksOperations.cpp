@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n16a 29-January-2015
+ * Project Version: 1n16b 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -899,7 +899,7 @@ bool createCodeBlockForStatements(NLCcodeblock** currentCodeBlockInTree, string 
 bool sameReferenceSetReferencingConnectionCheck(GIAentityConnection* targetConnection, NLCgenerateContextBlocksVariables* generateContextBlocksVariables)
 {
 	bool sameReferenceSetReferencing = false;
-	#ifndef NLC_USE_ADVANCED_REFERENCING	//#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 	if((targetConnection->isReference) || ((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (targetConnection->sameReferenceSet)))	//NB isReference check is probably redundant given sameReferenceSet check
 	#else
 	if((generateContextBlocksVariables->generateContextBlocksIfSameReferenceSet) && (targetConnection->sameReferenceSet))
@@ -918,6 +918,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 	{
 		GIAentityConnection* targetConnection = (*targetNodeListIterator);
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+		//cout << "targetConnection->NLCparsedForCodeBlocks = " << targetConnection->NLCparsedForCodeBlocks << endl;
 		if((targetConnection->NLCparsedForCodeBlocks) || sameReferenceSetReferencingConnectionCheck(targetConnection, generateContextBlocksVariables) || !(generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet))	//added option 1g13b/15-July-2014	//added option 1i2a 20-August-2014	//added option 1i3d 21-August-2014	//NB isReference check is probably redundant given sameReferenceSet check
 		{
 		#endif
@@ -994,7 +995,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 							#endif
 							#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
 							else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
-							{
+							{	
 								if(createCodeBlockForGivenDefinition(currentCodeBlockInTree, parentInstanceName, targetEntity, sentenceIndex, generateContextBlocksVariables, &objectEntity))
 								{
 									//cout << "createCodeBlockForGivenDefinition: parentInstanceName = " << parentInstanceName << ", targetEntity = " << targetEntity->entityName << endl;
@@ -1537,7 +1538,7 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock** currentCodeB
 	#endif
 		//moved here 1e8a (out of generateObjectInitialisationsBasedOnPropertiesAndConditions)
 		//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
-		if(!(parentEntity->isConcept) && !(parentEntity->isAction) && !(parentEntity->isSubstanceConcept) && !(parentEntity->isActionConcept))
+		if(!checkSpecialCaseEntity(parentEntity, true))
 		{
 			if(!(parentEntity->NLCparsedForCodeBlocks))	// && !(entity->parsedForNLCcodeBlocksActionRound)
 			{
@@ -2507,8 +2508,10 @@ void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode* entity
 		//check the definition is a substance concept
 		if((definitionEntity->isSubstanceConcept) || (definitionEntity->isActionConcept))	//added (definitionEntity->isActionConcept)  changed 1e2e
 		{
+			#ifndef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
 			definitionConnection->NLCparsedForCodeBlocks = true;
-
+			#endif
+			
 			generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(entity, definitionEntity, currentCodeBlockInTree, sentenceIndex, NULL, "", newlyDeclaredEntityInCategoryList);
 		}
 		//}

@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n16a 29-January-2015
+ * Project Version: 1n16b 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -435,7 +435,7 @@ string generateReinterpretCastOfMap(string vectorName, string castClassName1, st
 string generateCodeAllActionListAddText(string actionClassName, int progLang);
 string generateCodeAllActionListDefinitionText(int progLang);
 string generateAllActionListName();
-string generateCodeAllActionIncomingListAddText(string incomingActionClassName, int progLang);
+string generateCodeAllActionIncomingListAddText(string actionIncomingClassName, int progLang);
 string generateCodeAllActionIncomingListDefinitionText(int progLang);
 string generateAllActionIncomingListName();
 string generateCodeAllActionSubjectListAddText(string actionSubjectClassName, int progLang);

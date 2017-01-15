@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n16a 29-January-2015
+ * Project Version: 1n16b 29-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -733,7 +733,7 @@ bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree,
 			NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 			generateContextBlocksVariables.searchSubstanceConceptsForChildren = false;	//added 1n5g (only check the explicit variable for definition; do not parse categories) - CHECKTHIS
 			bool generatedContextBlocks = getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntity, false);
-			
+		
 			//3. verify that alsations are dogs
 			*currentCodeBlockInTree = createCodeBlockCheckParentClassNameExecuteFunction2(*currentCodeBlockInTree, definitionEntity, entity->entityName);
 									
@@ -782,7 +782,7 @@ bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
-		if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceQuality) && !(entity->isSubstanceConcept) && !(entity->isCondition) && !(entity->isActionConcept))
+		if(!checkSpecialCaseEntity(entity, true) && !(entity->isSubstanceQuality))
 		{
 			if(entity->sentenceIndexTemp == sentenceIndex)	//changed 1l15a
 			//if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))

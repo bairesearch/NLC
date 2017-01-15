@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n28c 05-February-2015
+ * Project Version: 1n29a 06-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -444,19 +444,8 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 					#else
 					*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, *parentEntity);
 					#endif
-					#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-					if(checkNumericalReferenceToEntity(currentEntity))
-					{
-						*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, currentEntity, generateInstanceName(*parentEntity), currentEntity->quantityNumber);	
-					}
-					else
-					{
-					#endif
-						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, currentEntity, generateInstanceName(*parentEntity));	
-					#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-					}
-					#endif
-						
+					*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, currentEntity, generateInstanceName(*parentEntity));	
+	
 					/*Alternate implementation;
 					bool generatedContextForChild = false;
 					generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
@@ -710,44 +699,16 @@ bool generateContextBlocks(NLCcodeblock** currentCodeBlockInTree, GIAentityNode*
 		//context property item:
 		if(assumedToAlreadyHaveBeenDeclared(parentEntity))
 		{
-			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			if(checkNumericalReferenceToEntity(parentEntity))
-			{
-				*currentCodeBlockInTree = createCodeBlockInLocalList(*currentCodeBlockInTree, parentEntity, parentEntity->quantityNumber);
-				#ifdef NLC_DEBUG_PARSE_CONTEXT3
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 1createCodeBlockInLocalList: ") + parentEntity->entityName);
-				#endif
-			}
-			else
-			{
-			#endif
-				*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, parentEntity);
-				#ifdef NLC_DEBUG_PARSE_CONTEXT3
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 1createCodeBlockForPropertyListLocal: ") + parentEntity->entityName);
-				#endif
-			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			}
+			*currentCodeBlockInTree = createCodeBlockForOrInLocalList(*currentCodeBlockInTree, parentEntity);	
+			#ifdef NLC_DEBUG_PARSE_CONTEXT3
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 1createCodeBlockForOrInLocalList: ") + parentEntity->entityName);
 			#endif
 		}
 		else
 		{
-			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			if(checkNumericalReferenceToEntity(parentEntity))
-			{
-				*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, parentEntity, parentEntity->quantityNumber);
-				#ifdef NLC_DEBUG_PARSE_CONTEXT3
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 2createCodeBlockInPropertyList: ") + parentEntity->entityName);
-				#endif
-			}
-			else
-			{
-			#endif
-				*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, parentEntity);
-				#ifdef NLC_DEBUG_PARSE_CONTEXT3
-				*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 2createCodeBlockForPropertyList: ") + parentEntity->entityName);
-				#endif
-			#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-			}
+			*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, parentEntity);	
+			#ifdef NLC_DEBUG_PARSE_CONTEXT3
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("finished generateContextBlocksSimple(): 2createCodeBlockForOrInPropertyList: ") + parentEntity->entityName);
 			#endif
 		}
 	}
@@ -1014,6 +975,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 									#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 									if(targetConnection->negative)
 									{
+										cout << "if(targetConnection->negative)" << endl;
 										generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
 									}
 									#endif
@@ -1109,7 +1071,6 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 										*currentCodeBlockInTree = createCodeBlockDeclareTempVariableAndSetToEntity(*currentCodeBlockInTree, candidateObjectClassName, candidateObjectInstanceName, objectEntity);
 
 										//NB this code is based on generateContextForChildEntity(): it requires NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN, NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD and NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-										NLCgenerateContextBlocksVariables generateContextBlocksVariablesSubset;
 										bool generatedContextForChild = false;
 										if(foundParentEntityNew)
 										{
@@ -1199,18 +1160,7 @@ bool createCodeBlockForGivenProperty(NLCcodeblock** currentCodeBlockInTree, stri
 		*currentCodeBlockInTree = createCodeBlockWhileHasProperty(*currentCodeBlockInTree, propertyEntity, parentInstanceName, generateContextBlocksVariables->negative);
 	}
 	#else
-	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES
-	if(checkNumericalReferenceToEntity(propertyEntity))
-	{
-		*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, propertyEntity, propertyEntity->quantityNumber);
-	}
-	else
-	{
-	#endif
-		*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntity, parentInstanceName);	
-	#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER_FOR_PROPERTIES
-	}
-	#endif
+	*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, propertyEntity, parentInstanceName);
 	#endif
 
 	#ifdef NLC_DEBUG
@@ -1926,18 +1876,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode* 
 		cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions(): b) createCodeBlockForPropertyList: " << entity->entityName << endl;
 		#endif
 		
-		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-		if(checkNumericalReferenceToEntity(entity))
-		{
-			*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, entity, parentName, entity->quantityNumber);
-		}
-		else
-		{
-		#endif
-			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entity, parentName);
-		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-		}
-		#endif
+		*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, entity, parentName);
 
 		//eg Tom's bright apple is blue.
 		//generateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables);
@@ -2445,21 +2384,10 @@ bool generateContextBlocksForParentEntity(NLCcodeblock** currentCodeBlockInTree,
 		
 	if(result)
 	{
-		
 		#ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-		if(checkNumericalReferenceToEntity(childEntity))
-		{
-			*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntity), childEntity->quantityNumber);	
-		}
-		else
-		{
+		*currentCodeBlockInTree = createCodeBlockForOrInPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntity));	
 		#endif
-			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, childEntity, generateInstanceName(parentEntity));	
-		#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-		}
-		#endif
-		#endif
+
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
 		addIntermediaryImplicitlyDeclaredEntityToLocalList(currentCodeBlockInTree, childEntity);
 		#endif
@@ -3003,15 +2931,4 @@ bool checkNumerosity(GIAentityNode* entity)
 }
 #endif
 					
-#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-bool checkNumericalReferenceToEntity(GIAentityNode* entity)
-{
-	bool numericalReference = false;
-	if((entity->hasQuantity) && (entity->grammaticalNumber != GRAMMATICAL_NUMBER_PLURAL))
-	{
-		numericalReference = true;
-	}
-	return numericalReference;
-}
-#endif
 

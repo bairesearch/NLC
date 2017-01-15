@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n28c 05-February-2015
+ * Project Version: 1n29a 06-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -638,7 +638,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1n28c 05-February-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1n29a 06-February-2015" << endl;
 			exit(1);
 		}
 
@@ -1461,6 +1461,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 						if(actionEntity->negative)
 						{
+							cout << "1propertyConnection->negative" << endl;
 							propertyConnection->negative = true;	//this is required for the 1g16a 16-July-2014 "remove properties/conditions" implementation
 							propertyConnectionReverse->negative = true;	//not used
 						}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n28c 05-February-2015
+ * Project Version: 1n29a 06-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -134,10 +134,6 @@ bool checkConditionLogicalConditionAdvancedTests(GIAentityNode* conditionEntity)
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 bool checkNumerosity(GIAentityNode* entity);
-#endif
-
-#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
-bool checkNumericalReferenceToEntity(GIAentityNode* entity);
 #endif
 
 #endif

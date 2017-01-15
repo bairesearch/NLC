@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n28c 05-February-2015
+ * Project Version: 1n29a 06-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -451,19 +451,23 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 					#endif
 					NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 					#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
+					#ifdef NLC_GENERATE_TYPE_LISTS
 					//number of statements must be expressed using definite variables, but they will not be advanced referenced by GIA (and so must be located in the typeList)
-					//if(!assumedToAlreadyHaveBeenDeclared(entity))	//"the number of x" will have already been declared, but is not advanced referenced, so much search the typeList
-					//{
-						#ifdef NLC_GENERATE_TYPE_LISTS
-						//1i implementation
+						//"the number of x" will have already been declared, but is not advanced referenced, so much search the typeList
+					entity->grammaticalDefiniteTemp = false;	//this triggers generateContextBlocks() to execute createCodeBlockForOrInPropertyList() on parent rather than createCodeBlockForOrInLocalList()					
+					if(!assumedToAlreadyHaveBeenDeclared(entity))	
+					{
 						*currentCodeBlockInTree = createCodeBlockForPropertyTypeClass(*currentCodeBlockInTree, entity);	//eg "If a house is green, do this", an instanceList (OLD: localList) for "a house" is assumed to have already been declared, one of which may be green, so search all house instanceLists within house typeList...
 						//if at least one instanceList of type currentLogicalConditionObject has not previously been declared, then the code will result in a compilation error
 						//if at least one instanceList of type currentLogicalConditionObject has previously been declared, but does not have the required properties (eg green), then the code will compile but the if statement will fail
-						#else
+					}
+					#else
+					if(!assumedToAlreadyHaveBeenDeclared(entity))	
+					{
 						//entity->grammaticalDefiniteTemp = true;		//removed 1j15a, readded 1j15c, removed 1n22b
-						entity->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b
-						#endif					
-					//}
+						entity->NLClocalListVariableHasBeenInitialised = true;		//added 1n22b	
+					}	
+					#endif
 					#endif
 					if(!getParentAndGenerateContextBlocks(currentCodeBlockInTree, entity, sentenceIndex, &generateContextBlocksVariables))
 					{
@@ -471,6 +475,9 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 						cout << "generateCodeBlocksFromMathTextNLPparsablePhrase() error: !getParentAndGenerateContextBlocks: " << entity->entityName << endl;
 						#endif
 					}
+					#ifdef NLC_GENERATE_TYPE_LISTS
+					entity->grammaticalDefiniteTemp = true;
+					#endif
 
 					*currentCodeBlockInTree = createCodeBlockIncrementIntVar(*currentCodeBlockInTree, parsablePhraseReferenceName);
 
@@ -626,13 +633,14 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									
 									if(generateContextBlocksVariables.negativeDetectedInContextBlocks)
 									{
+										cout << "if(generateContextBlocksVariables.negativeDetectedInContextBlocks)" << endl;
 										int parsablePhraseReferenceNamePosInMathText = currentFullSentence->mathText.find(parsablePhraseReferenceName);
 										if(parsablePhraseReferenceNamePosInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)	//&& (parsablePhraseReferenceNamePosInMathText > 0
 										{
 											currentFullSentence->mathText.insert(parsablePhraseReferenceNamePosInMathText, 1, NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR);
-											#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+											//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 											cout << "negativeDetectedInContextBlocks detected; inserting NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR into mathText logical condition" << endl;
-											#endif
+											//#endif
 										}
 									}
 									

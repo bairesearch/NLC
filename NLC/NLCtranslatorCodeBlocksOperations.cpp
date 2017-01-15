@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n24b 03-February-2015
+ * Project Version: 1n25a 03-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -427,11 +427,51 @@ bool getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(NLCcodeblock
 				only indefinite children of indefinite parents are legal eg "A chicken's barrel eats the bike"
 				This means that if the parent is indefinite, the child is also, and as such the child's full context does not have to be generated (ie can use createCodeBlockForCategoryList/createCodeBlockForLocalList instead of generateContextForChildEntity)
 				*/
-				#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-				*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
-				#else
-				*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, currentEntity);
-				#endif
+				
+				if(*parentEntity == currentEntity)
+				{
+					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+					*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, currentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+					#else
+					*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, currentEntity);
+					#endif
+				}
+				else
+				{//case added 1n25a
+				
+					#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
+					*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, *parentEntity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+					#else
+					*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, *parentEntity);
+					#endif
+					#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+					if(checkNumericalReferenceToEntity(currentEntity))
+					{
+						*currentCodeBlockInTree = createCodeBlockInPropertyList(*currentCodeBlockInTree, currentEntity, generateInstanceName(*parentEntity), currentEntity->quantityNumber);	
+					}
+					else
+					{
+					#endif
+						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, currentEntity, generateInstanceName(*parentEntity));	
+					#ifdef NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
+					}
+					#endif
+						
+					/*Alternate implementation;
+					bool generatedContextForChild = false;
+					generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
+					if(generateContextBlocksForParentEntity(currentCodeBlockInTree, currentEntity, *parentEntity, sentenceIndex, generateContextBlocksVariables))
+					{
+						generatedContextForChild = true;
+					}
+					else
+					{
+						cout << "getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(): generateContextBlocksForParentEntity() error: !generatedContextForChild" << endl;
+					}
+					generateContextBlocksVariables->onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = false;
+					*/
+				}
+
 				#ifdef NLC_ACTION_CATEGORY_LISTS_USE_FOR_PLURAL_ACTION_SUBJECTSOBJECTS_IN_MULTIACTION_INITIALISATION_SENTENCES
 				if(parseAction)
 				{
@@ -2376,7 +2416,7 @@ bool generateContextBlocksForParentEntity(NLCcodeblock** currentCodeBlockInTree,
 	#endif
 	
 	#ifdef NLC_DEBUG_PARSE_CONTEXT4
-	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextForChildEntity(): (foundParentEntityNew) childEntity: ") + childEntity->entityName + string(", parentEntityNew: ") + parentEntityNew->entityName);
+	*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateContextBlocksForParentEntity(): childEntity: ") + childEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
 	#endif
 	if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION))		//changed from generateCategories 1i11o
 	{

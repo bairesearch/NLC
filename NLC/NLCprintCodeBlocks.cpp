@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k2a 12-October-2014
+ * Project Version: 1k2b 12-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -609,13 +609,15 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
 			string codeBlockTextFunctionHeader = progLangClassMemberFunctionType[progLang] + NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodePropertyListDefinitionTypeText(templateName1, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + templateName2 + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangCloseParameterSpace[progLang];	//void addToCategoryIfPassSingularDefinitePluralityTests(vector<E1*> param1instanceCategoryList, E2* param2instanceName)
 
+			string codeBlockText6 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangFindProperty[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(param2->lastSentenceReferenced.empty())){
+			
 			string codeBlockText4 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangFindProperty[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(param1instanceCategoryList.empty())){
 				//NB this code could be generated using existing codeblock (NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY)
 			string codeBlockText5 = progLangElse[progLang];
 			 
 			#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-			string codeBlockText1 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangGreaterThan[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangCloseParameterSpace[progLang];		//if(param2->lastSentenceReferenced > param1instanceCategoryList.back()->lastSentenceReferenced.top())
-			string codeBlockText2 = progLangElseIf[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangEqualsTest[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangCloseParameterSpace[progLang];		//if(param2->lastSentenceReferenced == param1instanceCategoryList.back()->lastSentenceReferenced.top())
+			string codeBlockText1 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangGreaterThan[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangCloseParameterSpace[progLang];		//if(param2->lastSentenceReferenced.top() > param1instanceCategoryList.back()->lastSentenceReferenced.top())
+			string codeBlockText2 = progLangElseIf[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangEqualsTest[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackGetLast[progLang] + progLangCloseParameterSpace[progLang];		//if(param2->lastSentenceReferenced.top() == param1instanceCategoryList.back()->lastSentenceReferenced.top())
 			#else
 			string codeBlockText1 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangGreaterThan[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangCloseParameterSpace[progLang];		//if(param2->lastSentenceReferenced > param1instanceCategoryList.back()->lastSentenceReferenced)
 			string codeBlockText2 = progLangElseIf[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangEqualsTest[progLang] + progLangOpenParameterSpace[progLang] + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangGetLast[progLang] + progLangCloseParameterSpace[progLang] + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangCloseParameterSpace[progLang];		//if(param2->lastSentenceReferenced == param1instanceCategoryList.back()->lastSentenceReferenced)			
@@ -634,69 +636,85 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				//NB this code could be moved to a new codeblock  (NLC_CODEBLOCK_TYPE_FIND_PROPERTY_IN_GENERIC_LIST)
 			#endif
 			
+			int q = 0;
 			printLine("", level, code);
 			printLine(codeBlockTextTemplateHeader, level, code);
 			printLine(codeBlockTextFunctionHeader, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
-						
-				printLine(codeBlockText4, level+1, code);
-				printLine(progLangOpenBlock[progLang], level+1, code);
-				printLine(addCategoryItemText, level+2, code);
-				printLine(progLangCloseBlock[progLang], level+1, code);
-				printLine(codeBlockText5, level+1, code);
-				printLine(progLangOpenBlock[progLang], level+1, code);
 
-					printLine(codeBlockText1, level+2, code);
-					printLine(progLangOpenBlock[progLang], level+2, code);
-					printLine(removeCategoryListItemsText, level+3, code);
-					printLine(addCategoryItemText, level+3, code);
-					printLine(progLangCloseBlock[progLang], level+2, code);
+				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+				q++;
+				printLine(codeBlockText6, level+q, code);
+				printLine(progLangOpenBlock[progLang], level+q, code);
+				#endif
+							
+					q++;
+					printLine(codeBlockText4, level+q, code);
+					printLine(progLangOpenBlock[progLang], level+q, code);
+					printLine(addCategoryItemText, level+q+1, code);
+					printLine(progLangCloseBlock[progLang], level+q, code);
+					printLine(codeBlockText5, level+q, code);
+					printLine(progLangOpenBlock[progLang], level+q, code);
 
-					printLine(codeBlockText2, level+2, code);
-					printLine(progLangOpenBlock[progLang], level+2, code);
-					#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
-					printLine(findCategoryItemText, level+3, code);
-					printLine(progLangOpenBlock[progLang], level+3, code);
-					printLine(addCategoryItemText, level+4, code);
-					printLine(progLangCloseBlock[progLang], level+3, code);
-					#else
-					printLine(addCategoryItemText, level+3, code);
-					#endif
-					printLine(progLangCloseBlock[progLang], level+2, code);
+						q++;
+						printLine(codeBlockText1, level+q, code);
+						printLine(progLangOpenBlock[progLang], level+q, code);
+						printLine(removeCategoryListItemsText, level+q+1, code);
+						printLine(addCategoryItemText, level+q+1, code);
+						printLine(progLangCloseBlock[progLang], level+q, code);
 
-					printLine(codeBlockText3, level+2, code);
-					printLine(progLangOpenBlock[progLang], level+2, code);
-					printLine(progLangCloseBlock[progLang], level+2, code);		
+						printLine(codeBlockText2, level+q, code);
+						printLine(progLangOpenBlock[progLang], level+q, code);
+						#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
+						printLine(findCategoryItemText, level+q+1, code);
+						printLine(progLangOpenBlock[progLang], level+q+1, code);
+						printLine(addCategoryItemText, level+q+2, code);
+						printLine(progLangCloseBlock[progLang], level+q+1, code);
+						#else
+						printLine(addCategoryItemText, level+q+1, code);
+						#endif
+						printLine(progLangCloseBlock[progLang], level+q, code);
 
-				printLine(progLangCloseBlock[progLang], level+1, code);
+						printLine(codeBlockText3, level+q, code);
+						printLine(progLangOpenBlock[progLang], level+q, code);
+						printLine(progLangCloseBlock[progLang], level+q, code);		
 
-				/*
-				if(!(param1instanceCategoryList.empty()))
-				{
-					param1instanceCategoryList.push_back(param2);
-				}
-				else
-				{	
-					if(param1->lastSentenceReferenced > param1instanceCategoryList.back()->lastSentenceReferenced)
+					q--;
+					printLine(progLangCloseBlock[progLang], level+q, code);
+
+					/*
+					if(!(param1instanceCategoryList.empty()))
 					{
-						param1instanceCategoryList.clear();
 						param1instanceCategoryList.push_back(param2);
-					}
-					else if(param1->lastSentenceReferenced == param1instanceCategoryList.back()->lastSentenceReferenced)
-					{
-						if(!find(param1instanceCategoryList.begin(), param1instanceCategoryList.end(), param2) != param1instanceCategoryList.end()) 
-						{
-							param1instanceCategoryList.push_back(param2);
-						}
 					}
 					else
 					{	
+						if(param1->lastSentenceReferenced > param1instanceCategoryList.back()->lastSentenceReferenced)
+						{
+							param1instanceCategoryList.clear();
+							param1instanceCategoryList.push_back(param2);
+						}
+						else if(param1->lastSentenceReferenced == param1instanceCategoryList.back()->lastSentenceReferenced)
+						{
+							if(!find(param1instanceCategoryList.begin(), param1instanceCategoryList.end(), param2) != param1instanceCategoryList.end()) 
+							{
+								param1instanceCategoryList.push_back(param2);
+							}
+						}
+						else
+						{	
 
+						}
 					}
-				}
-				*/
-										
-			printLine(progLangCloseBlock[progLang], level, code);						
+					*/
+					
+				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+				q--;							
+				printLine(progLangCloseBlock[progLang], level+q, code);
+				#endif	
+			
+			q--;							
+			printLine(progLangCloseBlock[progLang], level+q, code);						
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST_CHECK_LAST_SENTENCE_REFERENCED_PLURAL_EXECUTE_FUNCTION)
 		{//finish coding this
@@ -727,6 +745,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
 			string codeBlockTextFunctionHeader = progLangClassMemberFunctionType[progLang] + NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodePropertyListDefinitionTypeText(templateName1, progLang) + generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangClassMemberFunctionParametersNext[progLang] + templateName2 + progLangPointer[progLang] + STRING_SPACE + param2->instanceName + progLangCloseParameterSpace[progLang];	//void addToCategoryIfPassSingularDefinitePluralityTests(vector<E1*> param1instanceCategoryList, E2* param2instanceName)
 
+			string codeBlockText6 = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangFindProperty[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(param2->lastSentenceReferenced.empty())){
+
 			string addCategoryItemText = generateGenericListName(param1->genericObjectName, genericListAppendName) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceCategoryList.push_back(param2);
 				//NB this code could be generated using existing codeblock (NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_GENERIC_LIST)
 
@@ -736,28 +756,42 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 				//NB this code could be moved to a new codeblock  (NLC_CODEBLOCK_TYPE_FIND_PROPERTY_IN_GENERIC_LIST)
 			#endif
 
-			printLine("", level, code);
-			printLine(codeBlockTextTemplateHeader, level, code);
-			printLine(codeBlockTextFunctionHeader, level, code);
-			printLine(progLangOpenBlock[progLang], level, code);
-						
-			#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
-			printLine(findCategoryItemText, level+1, code);
-			printLine(progLangOpenBlock[progLang], level+1, code);
-			printLine(addCategoryItemText, level+2, code);
-			printLine(progLangCloseBlock[progLang], level+1, code);
-			#else
-			printLine(addCategoryItemText, level+1, code);
-			#endif	
+			int q = 0;
+			printLine("", level+q, code);
+			printLine(codeBlockTextTemplateHeader, level+q, code);
+			printLine(codeBlockTextFunctionHeader, level+q, code);
+			printLine(progLangOpenBlock[progLang], level+q, code);
+				
+				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+				q++;
+				printLine(codeBlockText6, level+q, code);
+				printLine(progLangOpenBlock[progLang], level+q, code);
+				#endif
+				
+					q++;		
+					#ifdef NLC_USE_ADVANCED_REFERENCING_DO_NOT_ADD_DUPLICATES
+					printLine(findCategoryItemText, level+q, code);
+					printLine(progLangOpenBlock[progLang], level+q, code);
+					printLine(addCategoryItemText, level+q+1, code);
+					printLine(progLangCloseBlock[progLang], level+q, code);
+					#else
+					printLine(addCategoryItemText, level+q, code);
+					#endif	
 
-			/*
-			if(!find(param1instanceCategoryList.begin(), param1instanceCategoryList.end(), param2) != param1instanceCategoryList.end()) 
-			{
-				param1instanceCategoryList.push_back(param2);
-			}
-			*/
+					/*
+					if(!find(param1instanceCategoryList.begin(), param1instanceCategoryList.end(), param2) != param1instanceCategoryList.end()) 
+					{
+						param1instanceCategoryList.push_back(param2);
+					}
+					*/
+					
+				#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
+				q--;							
+				printLine(progLangCloseBlock[progLang], level+q, code);	
+				#endif
 			
-			printLine(progLangCloseBlock[progLang], level, code);	
+			q--;
+			printLine(progLangCloseBlock[progLang], level+q, code);	
 		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_UPDATE_LAST_SENTENCE_REFERENCED)	//execute for all new/undeclared/indefinite entities and accessed category items
 		{

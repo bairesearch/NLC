@@ -23,7 +23,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f12a 16-April-2014
+ * Project Version: 1f13a 17-April-2014
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -352,8 +352,10 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	}
 	else
 	{
+		#ifdef NLC_DEBUG5
 		cout << "warning: !foundLocalClassDefinition: param1->instanceName = " << param1->instanceName << endl;
 		cout << "(action probably has no subject)." << endl;
+		#endif
 		parameters = codeBlockParameters;
 	}
 	#else		
@@ -512,7 +514,7 @@ string generateFunctionOwnerContext(vector<NLCitem*> * parameters, int progLang)
 		NLCitem * currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_OWNER)
 		{
-			functionOwnerContext = currentItem->className + progLangFunctionOwnerClassDelimiter[progLang];
+			functionOwnerContext = progLangClassMemberFunctionType[progLang] + currentItem->className + progLangFunctionOwnerClassDelimiter[progLang];
 			foundFunctionOwner = true;
 		}
 	}

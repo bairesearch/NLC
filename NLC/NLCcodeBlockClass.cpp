@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j13a 12-September-2014
+ * Project Version: 1j13b 12-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -121,9 +121,6 @@ NLCcodeblock * createCodeBlockCreateNewProperty(NLCcodeblock * currentCodeBlockI
 	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, propertyEntity);	//create new category list
 	#endif
 	currentCodeBlockInTree = createCodeBlockAddNewProperty(currentCodeBlockInTree, entity, propertyEntity, sentenceIndex, copyNewItemsToLocalList);
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	currentCodeBlockInTree = createCodeBlockForPropertyListCategory(currentCodeBlockInTree, propertyEntity);	
-	#endif
 	return currentCodeBlockInTree;
 }
 
@@ -275,13 +272,6 @@ NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlock
 	}
 	#endif
 	currentCodeBlockInTree = createCodeBlockAddNewCondition(currentCodeBlockInTree, entity, conditionEntity, sentenceIndex, copyNewItemsToLocalList);
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	if(!(conditionEntity->conditionObjectEntity->empty()))
-	{
-		GIAentityNode * conditionObject = (conditionEntity->conditionObjectEntity->back())->entity;
-		currentCodeBlockInTree = createCodeBlockForPropertyListCategory(currentCodeBlockInTree, conditionObject);	//create new category list
-	}
-	#endif
 	return currentCodeBlockInTree;
 }
 
@@ -393,9 +383,6 @@ NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * current
 	currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(currentCodeBlockInTree, entity);	//create new category list
 	#endif
 	currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(currentCodeBlockInTree, entity, sentenceIndex);
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	currentCodeBlockInTree = createCodeBlockForPropertyListCategory(currentCodeBlockInTree, entity);	
-	#endif
 	return currentCodeBlockInTree;
 }
 

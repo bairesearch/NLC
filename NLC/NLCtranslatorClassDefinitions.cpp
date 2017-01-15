@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17g 18-July-2014
+ * Project Version: 1g18a 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,7 +57,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 			validClass = false;
 		}
 		#ifdef NLC_USE_PREPROCESSOR
-		if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION_OBJECT))
+		if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
 		{
 			validClass = false;
 		}
@@ -114,7 +114,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						}
 						*/
 						#ifdef NLC_USE_PREPROCESSOR
-						if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION_OBJECT))
+						if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
 						{
 							validClassContents = false;
 						}

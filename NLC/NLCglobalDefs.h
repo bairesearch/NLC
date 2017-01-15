@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17g 18-July-2014
+ * Project Version: 1g18a 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,9 +46,13 @@
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_STRING "function"
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR (CHAR_SPACE)
 	#define NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS (100)
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT ", do this."
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION "do"
-	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION_OBJECT "this"
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND ", do this."	//appending to "If" statments without a command (in which it is assumed the following indented lines constitute the command)
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION "do"
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT "this"
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSE "If this is done,"	//replaces "Else"
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSEIF "If"		//replaces "Else if"
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND_ELSE " do this."	//appending to "Else" statments without a command (in which it is assumed the following indented lines constitute the command)
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 #endif
 
 #define NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS	//1g16a 16-July-2014
@@ -79,15 +83,19 @@
 		#define NLC_WHILE_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME "whileLogicalCondition"	//eg whileLogicalCondition1
 	#endif
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES (7)
+	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE "else"
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF "else if"
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)
+	static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml
 	#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 	#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
 		#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID (99)
-	#endif
-	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when"};	//should be dynamically defined in NLCrules.xml
-	#define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)
-	static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml
+	#endif	
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_FOR (0)	//default
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_IF (1)
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_ELSE_IF (2)
+	#define NLC_CONDITION_LOGICAL_OPERATIONS_ELSE (3)	//not used
 	#define NLC_CONDITION_LOGICAL_OPERATIONS_WHILE (5)
 	#ifdef GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS	//hasnt been coded [always use substance concept nodes rather than raw concept nodes to store concept relationships]
 		#define NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
@@ -98,7 +106,7 @@
 	#endif
 #endif
 
-//#define NLC_DEBUG_PREPROCESSOR
+#define NLC_DEBUG_PREPROCESSOR
 //#define NLC_DEBUG_PARSE_CONTEXT
 //#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 //#define NLC_DEBUG

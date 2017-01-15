@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17g 18-July-2014
+ * Project Version: 1g18a 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -254,16 +254,16 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode * logicalConditionEntity = (*entityIter);
-		if(logicalConditionEntity->isCondition)
+		GIAentityNode * logicalConditionOperationEntity = (*entityIter);
+		if(logicalConditionOperationEntity->isCondition)
 		{
-			if(checkSentenceIndexParsingCodeBlocks(logicalConditionEntity, sentenceIndex, true))	//could be set to false instead
+			if(checkSentenceIndexParsingCodeBlocks(logicalConditionOperationEntity, sentenceIndex, true))	//could be set to false instead
 			{
 				bool foundLogicalConditionOperation = false;
 				int logicalOperation = INT_DEFAULT_VALUE;
-				if(logicalConditionEntity->NLClogicalConditionOperation)	//used to test more complex sentence context requirements of some logical condition operations eg "for" is required to be immediately succeeded by "each", "all", or every
+				if(logicalConditionOperationEntity->NLClogicalConditionOperation)	//used to test more complex sentence context requirements of some logical condition operations eg "for" is required to be immediately succeeded by "each", "all", or every
 				{
-					bool foundLogicalConditionOperationBasic = textInTextArray(logicalConditionEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
+					bool foundLogicalConditionOperationBasic = textInTextArray(logicalConditionOperationEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
 					if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_FOR) || (logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) || (logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE))
 					{//these are the only logical condition operations supported by NLC at this time
 						foundLogicalConditionOperation = true;
@@ -271,87 +271,122 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 				}
 				if(foundLogicalConditionOperation)
 				{
-					GIAentityNode * logicalConditionSubject = NULL;
-					GIAentityNode * logicalConditionObject = NULL;
+					GIAentityNode * logicalConditionOperationSubject = NULL;
+					GIAentityNode * logicalConditionOperationObject = NULL;
 					bool foundConditionSubject = false;
 					bool foundConditionObject = false;
-					if(!(logicalConditionEntity->conditionSubjectEntity->empty()))
+					if(!(logicalConditionOperationEntity->conditionSubjectEntity->empty()))
 					{
-						logicalConditionSubject = (logicalConditionEntity->conditionSubjectEntity->back())->entity;
+						logicalConditionOperationSubject = (logicalConditionOperationEntity->conditionSubjectEntity->back())->entity;
 						foundConditionSubject = true;
 					}
-					if(!(logicalConditionEntity->conditionObjectEntity->empty()))
+					if(!(logicalConditionOperationEntity->conditionObjectEntity->empty()))
 					{
-						logicalConditionObject = (logicalConditionEntity->conditionObjectEntity->back())->entity;
+						logicalConditionOperationObject = (logicalConditionOperationEntity->conditionObjectEntity->back())->entity;
 						foundConditionObject = true;
 					}
 					if(foundConditionSubject && foundConditionObject)
 					{
 						bool simpleNonConjunctionLogicalConditionNegative = false;
-						if(logicalConditionObject->negative)
+						if(logicalConditionOperationObject->negative)
 						{
 							simpleNonConjunctionLogicalConditionNegative = true;
 						}
+						
+						#ifdef NLC_USE_PREPROCESSOR
+						bool elseIfDetected = false;		
+						#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+						if(currentNLCsentenceInList->elseIfDetected)
+						{
+							elseIfDetected = true;
+						}
+						#else
+						for(vector<GIAentityConnection*>::iterator propertyIter = logicalConditionOperationObject->propertyNodeList->begin(); propertyIter != logicalConditionOperationObject->propertyNodeList->end(); propertyIter++)
+						{
+							GIAentityNode propertyEntity = (*propertyIter)->entity;
+							if(propertyEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_ELSE)
+							{
+								elseIfDetected = true;
+							}
+						}
+						#endif
+						#endif
 
 						//cout << "foundConditionSubject && foundConditionObject" << endl;
 						//1. disable all classStructure formation based on condition object subset
 
 						NLCcodeblock * currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 
-						bool passedConditionObject = false;
-						if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) && (logicalConditionObject->isConcept || logicalConditionObject->isSubstanceConcept))
+						bool passedLogicalConditionObject = false;
+						if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) && (logicalConditionOperationObject->isConcept || logicalConditionOperationObject->isSubstanceConcept))
 						{//eg If red dogs are pies, eat the cabbage
-							//cout << "logicalConditionObject->isSubstanceConcept = " << logicalConditionObject->isSubstanceConcept << endl;
+							//cout << "logicalConditionOperationObject->isSubstanceConcept = " << logicalConditionOperationObject->isSubstanceConcept << endl;
 							#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
 							//isSubstanceConcept case not yet coded
 							//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
 							//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
-							if(logicalConditionObject->isConcept)
+							if(logicalConditionOperationObject->isConcept)
 							{
 								cout << "generateCodeBlocks() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
-								cout << "logicalConditionObject = " << logicalConditionObject->entityName;
+								cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName;
 							}
-							else if(logicalConditionObject->isSubstanceConcept)
+							else if(logicalConditionOperationObject->isSubstanceConcept)
 							{
-								cout << "logicalConditionObject->isSubstanceConcept" << endl;
-								GIAentityNode * substanceConceptEntityCompare = logicalConditionObject;	//if statement comparison...
+								cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
+								GIAentityNode * substanceConceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
 								GIAentityNode * substanceConceptEntityCompareConcept = (substanceConceptEntityCompare->entityNodeDefiningThisInstance->back())->entity;
 
-								logicalConditionSubject->disabled = true;	//temporarily disable logicalConditionSubject to prevent it from being parsed
-								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionObject))
+								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
+								if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject))
 								{
 									if(!simpleNonConjunctionLogicalConditionNegative)
 									{
-										passedConditionObject = true;
+										passedLogicalConditionObject = true;
 									}
 								}
-								logicalConditionSubject->disabled = false;
+								logicalConditionOperationSubject->disabled = false;
 							}
 							#endif
 						}
-						else if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) && (logicalConditionObject->isAction || logicalConditionObject->isActionConcept))
+						else if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) && (logicalConditionOperationObject->isAction || logicalConditionOperationObject->isActionConcept))
 						{
-							//eg The sun fights. If the sun fights, the dog is happy. / If the sun fights, eat the cabbage.
-
-							//cout << "logicalConditionObject->isAction" << endl;
-							#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
-							//verify the truth of the if statement now
-							//NO: get class and see if it has the relevant action (function) defined with the relevant action object
-							//perform an exact trace of logicalConditionObject (actionEntityCompare) with every actionEntity that matches actionEntityCompare->entityName to verify that such a specific action already [ie sentence <= currentSentence] exists (actionEntityCompare)
-
-							GIAentityNode * actionEntityCompare = logicalConditionObject;	//if statement comparison...
-							GIAentityNode * actionEntityCompareConcept = (actionEntityCompare->entityNodeDefiningThisInstance->back())->entity;
-
-							logicalConditionSubject->disabled = true;	//temporarily disable logicalConditionSubject to prevent it from being parsed
-							if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionObject))
+							#ifdef NLC_USE_PREPROCESSOR
+							#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+							if((logicalConditionOperationObject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) && (currentNLCsentenceInList->elseDetected))
+							#else
+							if(logicalConditionOperationObject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION)
+							#endif
 							{
-								if(!simpleNonConjunctionLogicalConditionNegative)
-								{
-									passedConditionObject = true;
-								}
-								//cout << "passedConditionObject" << endl;
+								*currentCodeBlockInTree = createCodeBlockElse(*currentCodeBlockInTree);
+								passedLogicalConditionObject = true;
 							}
-							logicalConditionSubject->disabled = false;
+							else
+							{
+							#endif
+								//eg The sun fights. If the sun fights, the dog is happy. / If the sun fights, eat the cabbage.
+
+								//cout << "logicalConditionOperationObject->isAction" << endl;
+								#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_ACTIONS
+								//verify the truth of the if statement now
+								//NO: get class and see if it has the relevant action (function) defined with the relevant action object
+								//perform an exact trace of logicalConditionOperationObject (actionEntityCompare) with every actionEntity that matches actionEntityCompare->entityName to verify that such a specific action already [ie sentence <= currentSentence] exists (actionEntityCompare)
+
+								GIAentityNode * actionEntityCompare = logicalConditionOperationObject;	//if statement comparison...
+								GIAentityNode * actionEntityCompareConcept = (actionEntityCompare->entityNodeDefiningThisInstance->back())->entity;
+
+								logicalConditionOperationSubject->disabled = true;	//temporarily disable logicalConditionOperationSubject to prevent it from being parsed
+								if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject))
+								{
+									if(!simpleNonConjunctionLogicalConditionNegative)
+									{
+										passedLogicalConditionObject = true;
+									}
+									//cout << "passedLogicalConditionObject" << endl;
+								}
+								logicalConditionOperationSubject->disabled = false;
+								#endif
+							#ifdef NLC_USE_PREPROCESSOR
+							}
 							#endif
 						}
 						else
@@ -429,16 +464,16 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								string logicalConditionConjunctionBooleanName = generateLogicalConditionConjunctionBooleanName(currentLogicalConditionLevel);
 								*currentCodeBlockInTree = createCodeBlockDeclareNewBoolArray(*currentCodeBlockInTree, logicalConditionConjunctionBooleanName, false);
 
-								//logicalConditionObject->NLCparsedForCodeBlocks = true;	//is this required?????? [NB only connections are being parsed...]
-								if(logicalConditionObject->negative)
+								//logicalConditionOperationObject->NLCparsedForCodeBlocks = true;	//is this required?????? [NB only connections are being parsed...]
+								if(logicalConditionOperationObject->negative)
 								{//added 1g6i
 									logicalConditionConjunctionArray[logicalConditionConjunctionIndex].negative = true;
 								}
 							}
-							logicalConditionObject->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value
+							logicalConditionOperationObject->NLClogicalConditionConjunctionIndex = logicalConditionConjunctionIndex;	//set initial logicalConditionConjunctionIndex value
 
-							//cout << "logicalConditionObject = " << logicalConditionObject->entityName << endl;
-							addNewLogicalCondition(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionObject);
+							//cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName << endl;
+							addNewLogicalCondition(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionOperationObject);
 
 							if(logicalOperation != NLC_CONDITION_LOGICAL_OPERATIONS_FOR)
 							{
@@ -461,7 +496,14 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								{
 									currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 								}
-								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, NLC_CONDITION_LOGICAL_OPERATIONS_IF, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax, currentLogicalConditionLevel);
+								int logicalCondition2 = NLC_CONDITION_LOGICAL_OPERATIONS_IF;
+								#ifdef NLC_USE_PREPROCESSOR
+								if(elseIfDetected)
+								{
+									logicalCondition2 = NLC_CONDITION_LOGICAL_OPERATIONS_ELSE_IF;
+								}
+								#endif
+								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, logicalCondition2, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax, currentLogicalConditionLevel);
 								if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
@@ -480,42 +522,43 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 							logicalConditionConjunctionVariables.logicalOperation = logicalOperation;
 							logicalConditionConjunctionVariables.negative = simpleNonConjunctionLogicalConditionNegative;
 								//NB this will set NLCparsedForCodeBlocks to true, so NLCparsedForlogicalConditionOperations can be set to false without causing any problems (ie generateCodeBlocksPart3actions/generateCodeBlocksPart4objectInitialisations will not reparse the if statement)	//CHECKTHIS; AndInitialiseParentIfNecessary component
-							getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionObject, sentenceIndex, &logicalConditionConjunctionVariables, false, true);		//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
-							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+							getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, &logicalConditionConjunctionVariables, false, true);		//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
+							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 						#endif
 
-							passedConditionObject = true;
+							passedLogicalConditionObject = true;
 						}
 
-						if(passedConditionObject)
+						if(passedLogicalConditionObject)
 						{
 							#ifdef NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 							cout << "conj: 4" << endl;
 							#endif
-							//check if logicalConditionSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
+							//check if logicalConditionOperationSubject is special "do" action with "this" action; if so ignore it and look for following indented sentences
 
-							if(logicalConditionSubject->isConcept || logicalConditionSubject->isSubstanceConcept)
+							if(logicalConditionOperationSubject->isConcept || logicalConditionOperationSubject->isSubstanceConcept)
 							{
 								#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS
-								if(logicalConditionSubject->isConcept)
+								if(logicalConditionOperationSubject->isConcept)
 								{
 									cout << "generateCodeBlocks() error: NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS_BASED_ON_CONCEPTS only handles substance concepts. GIA_CREATE_SUBSTANCE_CONCEPTS_FOR_ALL_SENTENCES_WITH_CONCEPTS must be enabled." << endl;
-									cout << "logicalConditionSubject = " << logicalConditionSubject->entityName;
+									cout << "logicalConditionOperationSubject = " << logicalConditionOperationSubject->entityName;
 								}
-								else if(logicalConditionSubject->isSubstanceConcept)
+								else if(logicalConditionOperationSubject->isSubstanceConcept)
 								{
-									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);
+									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationSubject, sentenceIndex, false);
 								}
 								#endif
 							}
 							else
 							{
-								if(logicalConditionSubject->isAction)
+								if(logicalConditionOperationSubject->isAction)
 								{
 									#ifdef NLC_USE_PREPROCESSOR
-									if(logicalConditionSubject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION)
+									if(logicalConditionOperationSubject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION)
 									{
+										//eg If the sun is bright, do this.
 										//leave action entity as tagged NLCparsedForlogicalConditionOperations (such that it is not processed by generateActionCodeBlocks)
 										//assume the next line(s) is indented and contains the real logical condition command
 									}
@@ -523,9 +566,9 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 									{
 									#endif
 										//eg If the sun is bright, eat the cabbage.
-										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
-										generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex, NLCfunctionName);
+										generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex, NLCfunctionName);
 									#ifdef NLC_USE_PREPROCESSOR
 									}
 									#endif
@@ -533,12 +576,12 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								else
 								{
 									//eg If the sun is bright, the dog is happy.
-									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionOperationSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
 									#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-									generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex);
+									generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, logicalConditionOperationSubject, sentenceIndex);
 									#else
-									GIAentityNode * parentEntity = getParent(logicalConditionSubject, sentenceIndex, true);		//CHECKTHIS check parseConditionParents value here
+									GIAentityNode * parentEntity = getParent(logicalConditionOperationSubject, sentenceIndex, true);		//CHECKTHIS check parseConditionParents value here
 									if(!generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
 									{
 										generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", false);

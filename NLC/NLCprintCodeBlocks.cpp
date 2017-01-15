@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17g 18-July-2014
+ * Project Version: 1g18a 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -257,6 +257,24 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS" << endl;
 			#endif
 			string codeBlockText =  progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateLogicalConjunctionOfBoolsText(&(currentCodeBlockInLevel->parameters), progLang) + progLangCloseParameterSpace[progLang];
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS" << endl;
+			#endif
+			string codeBlockText = progLangElseIf[progLang] + progLangOpenParameterSpace[progLang] + generateLogicalConjunctionOfBoolsText(&(currentCodeBlockInLevel->parameters), progLang) + progLangCloseParameterSpace[progLang];
+			printLine(codeBlockText, level, code);
+			printLine(progLangOpenBlock[progLang], level, code);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ELSE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ELSE" << endl;
+			#endif
+			string codeBlockText = progLangElse[progLang];
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}

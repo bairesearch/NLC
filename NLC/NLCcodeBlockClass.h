@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17g 18-July-2014
+ * Project Version: 1g18a 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -95,8 +95,10 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (37)		//while(!(context1->param1param2ConditionList.empty())){
 #endif
 #define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (38)
-#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (39)
-#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (40)
+#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (39)
+#define NLC_CODEBLOCK_TYPE_ELSE (40)
+#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (41)
+#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (42)
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 
@@ -214,6 +216,7 @@ void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string * funct
 #ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 NLCcodeblock * createCodeBlockWhileHasBool(NLCcodeblock * currentCodeBlockInTree, string whileLogicalConditionConjunctionBooleanName);
 NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * currentCodeBlockInTree, int logicalOperation, NLClogicalConditionConjunction * logicalConditionConjunctionArray, int logicalConditionConjunctionIndexMax, int logicalConditionLevel);
+NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree);
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel);
 string generateLogicalConditionConjunctionBooleanName(int logicalConditionLevel, int logicalConditionConjunctionIndex);
 string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel);

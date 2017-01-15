@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17g 18-July-2014
+ * Project Version: 1g18a 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -799,6 +799,10 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 	{
 		codeBlockType = NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
 	}
+	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_ELSE_IF)
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
+	}
 	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 	{
 		codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
@@ -808,6 +812,14 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 		cout << "createCodeBlockLogicalConditionHasBools() error: invalid logicalOperation: " << logicalOperation << endl;
 	}
 
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+NLCcodeblock * createCodeBlockElse(NLCcodeblock * currentCodeBlockInTree)
+{
+	NLCitem * tempItem = new NLCitem("notUsedButNLCprintCodeBlocksRequiresAtLeastOneItem", NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(tempItem);
+	int codeBlockType = NLC_CODEBLOCK_TYPE_ELSE;
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
 

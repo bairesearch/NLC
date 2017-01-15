@@ -58,6 +58,10 @@ public:
 	string sentenceContents;
 	int sentenceIndex;
 	int indentation;
+	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
+	bool elseDetected;
+	bool elseIfDetected;
+	#endif
 	NLCsentence* next;
 };
 

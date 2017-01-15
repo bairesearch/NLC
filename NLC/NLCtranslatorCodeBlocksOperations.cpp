@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1v4a 12-October-2016
+ * Project Version: 1v4b 12-October-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -151,33 +151,40 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 					}
 					else if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION)
 					{
-						GIAentityConnection* conditionSubjectConnection = NULL;
-						if(getEntityCheckSameReferenceSetAndSentence(entity, &subjectEntity, &conditionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION_SUBJECT))
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+						if(!(entity->inverseConditionTwoWay))	//prevent double up creation of 2 way conditions
 						{
-							if(!(conditionSubjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
+						#endif
+							GIAentityConnection* conditionSubjectConnection = NULL;
+							if(getEntityCheckSameReferenceSetAndSentence(entity, &subjectEntity, &conditionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION_SUBJECT))
 							{
-								foundSubject = true;
+								if(!(conditionSubjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
+								{
+									foundSubject = true;
+								}
 							}
-						}
-						GIAentityConnection* conditionObjectConnection = NULL;
-						if(getEntityCheckSameReferenceSetAndSentence(entity, &objectEntity, &conditionObjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION_OBJECT))
-						{
-							if(!(conditionObjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
+							GIAentityConnection* conditionObjectConnection = NULL;
+							if(getEntityCheckSameReferenceSetAndSentence(entity, &objectEntity, &conditionObjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION_OBJECT))
 							{
-								foundObject = true;
+								if(!(conditionObjectConnection->NLCparsedForCodeBlocks))	//added 1o3a (required if GIA adds identical entities to entityNodesActiveListSentence for a given sentenceIndex; eg during GIA_USE_ADVANCED_REFERENCING aliasing)
+								{
+									foundObject = true;
+								}
 							}
-						}
-						if(foundSubject && foundObject)
-						{
-							foundSubjectObjectConnection = true;	
-							connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
+							if(foundSubject && foundObject)
+							{
+								foundSubjectObjectConnection = true;	
+								connectionType = GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS;
 
-							if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType, generateContextBlocksVariablesLogicalConditionStatement))
-							{
-								conditionSubjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
-								conditionObjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+								if(generateCodeBlocksPart3subjectObjectConnection(currentCodeBlockInTree, sentenceIndex, entity, subjectEntity, objectEntity, connection, foundSubject, foundObject, connectionType, generateContextBlocksVariablesLogicalConditionStatement))
+								{
+									conditionSubjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+									conditionObjectConnection->NLCparsedForCodeBlocks = true;	//added 1o3a
+								}
 							}
+						#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 						}
+						#endif
 					}
 					else
 					{

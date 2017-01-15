@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n21a 02-February-2015
+ * Project Version: 1n22a 02-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -251,8 +251,13 @@
 				#define NLC_ITEM_TYPE_ACTIONSUBJECT_VAR_APPENDITION "ActionSubject"
 				#define NLC_ITEM_TYPE_ACTIONOBJECT_VAR_APPENDITION "ActionObject"
 				#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-					#define NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION1	//"a pie" in "The chicken that ate a pie rowed the boat."
-					//#define NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION2	//"a pie" in "The chicken that ate a pie rowed the boat."
+					#ifndef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
+						#define NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION
+					#endif
+					#ifdef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION
+						#define NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION1	//"a pie" in "The chicken that ate a pie rowed the boat."
+						//#define NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION2	//"a pie" in "The chicken that ate a pie rowed the boat."
+					#endif
 				#endif
 			#else
 				#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES

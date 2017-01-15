@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n21a 02-February-2015
+ * Project Version: 1n22a 02-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1041,7 +1041,6 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 									#endif	
 
 									#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
-									//FINISH THIS;
 									bool verifyObject = false;
 									bool foundParentEntityNew = false;
 									GIAentityNode* parentEntityNew = NULL;
@@ -1057,6 +1056,7 @@ bool createCodeBlockForConnectionType(int connectionType, NLCcodeblock** current
 									if(verifyObject)
 									{
 										//cout << "verifyObject = " << verifyObject << endl;
+										//cout << "isDefiniteEntity(objectEntity) = " << isDefiniteEntity(objectEntity) << endl;
 										//save objectEntity as tempVariable objectEntityCandidate
 										string candidateObjectClassName = generateClassName(objectEntity);
 										string candidateObjectInstanceName = generateCandidateObjectName(objectEntity);
@@ -1841,6 +1841,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode* 
 			{
 				//cout << "generateContextForChildEntity pass: entity = " << entity->entityName << endl;
 			}
+			#ifdef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION	//CHECKTHIS
 			#ifndef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION2
 			else
 			{
@@ -1855,6 +1856,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode* 
 				}
 				#endif
 			}
+			#endif
 			#endif
 		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//ie #ifndef NLC_USE_ADVANCED_REFERENCING
 		}

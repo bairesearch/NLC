@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12a 30-September-2016
+ * Project Version: 1u12b 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -537,6 +537,24 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			#endif
 			string codeBlockText = param1->name + progLangEquals[progLang] + progLangFalse[progLang] + progLangEndLine[progLang];
 			printLine(codeBlockText, level, &printedCodeBlocksSourceText);
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_TRUE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_TRUE" << endl;
+			#endif
+			string tempVarCheckText = generateCodeIfVarAequalsVarB(param1->name, progLangTrue[progLang], progLang);	 //if(param1 == param2) {
+			printLine(tempVarCheckText, level, &printedCodeBlocksSourceText);
+			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
+		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_FALSE)
+		{
+			#ifdef NLC_DEBUG
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_FALSE" << endl;
+			#endif
+			string tempVarCheckText = generateCodeIfVarAequalsVarB(param1->name, progLangFalse[progLang], progLang);	 //if(param1 == param2) {
+			printLine(tempVarCheckText, level, &printedCodeBlocksSourceText);
+			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DEBUG)
 		{
@@ -1155,7 +1173,7 @@ bool printCodeBlocks(NLCcodeblock* firstCodeBlockInLevel, vector<NLCclassDefinit
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_EQUALS_ENTITY" << endl;
 			#endif
 			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string tempVarCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + generateEntityName(param1) + progLangStringEqualsTest[progLang] + generateEntityName(param2) + progLangCloseParameterSpace[progLang];	 //if(param1 == param2) {
+			string tempVarCheckText = generateCodeIfVarAequalsVarB(generateEntityName(param1), generateEntityName(param2), progLang);	 //if(param1 == param2) {
 			printLine(tempVarCheckText, level, &printedCodeBlocksSourceText);
 			printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);	//{
 		}

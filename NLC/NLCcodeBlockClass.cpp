@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12a 30-September-2016
+ * Project Version: 1u12b 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1379,6 +1379,24 @@ NLCcodeblock* createCodeBlockSetBoolVar(NLCcodeblock* currentCodeBlockInTree, st
 	}
 	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
 }
+
+NLCcodeblock* createCodeBlockCheckBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value)
+{
+	NLCitem* itemCheckBoolVariable = new NLCitem(boolVariableName, NLC_ITEM_TYPE_VARIABLE);
+	currentCodeBlockInTree->parameters.push_back(itemCheckBoolVariable);
+	int codeBlockType;
+	if(value)
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_TRUE;
+	}
+	else
+	{
+		codeBlockType = NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_FALSE;
+	}
+	return createCodeBlock(currentCodeBlockInTree, codeBlockType);
+}
+
+
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 NLCcodeblock* createCodeBlockRemoveProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity)

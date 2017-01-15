@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12a 30-September-2016
+ * Project Version: 1u12b 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -809,6 +809,9 @@ bool isDefiniteEntityInitialisation(GIAentityNode* entity, NLCfunction* currentN
 					if(entityIsEffectiveSubject)
 					{
 						isLogicalConditionIndefiniteSubjectEntity = true;
+						#ifdef NLC_DEBUG
+						cout << "isLogicalConditionIndefiniteSubjectEntity" << endl;
+						#endif
 					}
 				}
 			}

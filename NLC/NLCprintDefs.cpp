@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12a 30-September-2016
+ * Project Version: 1u12b 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1049,6 +1049,12 @@ string generateCodeReferenceText(string variableName, string component, int prog
 {
 	string referenceText = variableName + progLangObjectReferenceDelimiter[progLang] + component;	//variableName->component
 	return referenceText;
+}
+
+string generateCodeIfVarAequalsVarB(string varA, string varB, int progLang)
+{
+	string tempVarCheckText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + varA + progLangStringEqualsTest[progLang] + varB + progLangCloseParameterSpace[progLang];	 //if(varA == varB) {
+	return tempVarCheckText;
 }
 
 

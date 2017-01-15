@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12a 30-September-2016
+ * Project Version: 1u12b 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -253,8 +253,11 @@
 	#define NLC_CODEBLOCK_TYPE_TEST_MATH_OBJECT_NUMERICAL_VALUE (138)
 #endif
 #define NLC_CODEBLOCK_TYPE_IF_TEMP_VARIABLE_NAME_EQUALS_CLASS_NAME (139)
+#define NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_TRUE (140)
+#define NLC_CODEBLOCK_TYPE_CHECK_BOOL_VARIABLE_FALSE (141)
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
+
 
 /*
 //#define NLC_CODEBLOCK_TYPE_IF_IS_ACTION_SUBJECT (10)
@@ -473,7 +476,7 @@ NLCcodeblock* createCodeBlockWhileHasBool(NLCcodeblock* currentCodeBlockInTree, 
 string generateWhileLogicalConditionConjunctionBooleanName(int logicalConditionLevel);
 NLCcodeblock* createCodeBlockDeclareNewBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value);
 NLCcodeblock* createCodeBlockSetBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value);
-
+NLCcodeblock* createCodeBlockCheckBoolVar(NLCcodeblock* currentCodeBlockInTree, string boolVariableName, bool value);
 
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 NLCcodeblock* createCodeBlockRemoveProperty(NLCcodeblock* currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);

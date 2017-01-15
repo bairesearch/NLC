@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u12a 30-September-2016
+ * Project Version: 1u12b 30-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -255,6 +255,11 @@ bool generateCodeBlocksPart3subjectObjectConnections(NLCcodeblock** currentCodeB
 bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, GIAentityNode* entity, GIAentityNode* subjectEntity, GIAentityNode* objectEntity, GIAentityConnection* connection, bool foundSubject, bool foundObject, int connectionType, NLCgenerateContextBlocksVariables* generateContextBlocksVariablesLogicalConditionStatement)
 {
 	bool result = true;
+
+	#ifdef NLC_DEBUG
+	//cout << "subjectEntity->grammaticalPredeterminerTemp = " << subjectEntity->grammaticalPredeterminerTemp << endl;
+	//cout << "subjectEntity->entityName = " << subjectEntity->entityName << endl;
+	#endif
 	
 	NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
 	
@@ -303,7 +308,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			entity->NLCcontextGeneratedTemp = true;
 		}
 	}
-
+	
 	#ifdef NLC_DEBUG
 	cout << "entity = " << entity->entityName << endl;
 	cout << "entity->sentenceIndexTemp = " << entity->sentenceIndexTemp << endl;
@@ -359,6 +364,18 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 			}
 		}
 	}
+
+	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH
+	if(addNewObjectForEachSubject)
+	{
+		if(generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement)
+		{
+			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH_VAR_SUBJECT_CHECK, true);	//bool eachSubjectCheck = true;
+		}
+	}
+	NLCcodeblock* codeBlockInTreeBeforeParseSubject = *currentCodeBlockInTree;
+	#endif
+	
 	
 	bool newInitialisationSubject = false;	
 	if(foundSubject)
@@ -453,6 +470,16 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 		}
 	}
 	#endif
+	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH
+	if(addNewObjectForEachSubject)
+	{
+		if(generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement)
+		{
+			*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH_VAR_OBJECT_CHECK, false);	//bool eachObjectCheck = false;
+		}
+	}
+	NLCcodeblock* codeBlockInTreeBeforeParseObject = *currentCodeBlockInTree;
+	#endif
 	
 	bool newInitialisationObject = false;
 	if(foundObject)
@@ -490,7 +517,7 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 
 	bool isPrimary = !addNewObjectForEachSubject;
-		
+	
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY
 	if((generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement))
 	{
@@ -527,8 +554,31 @@ bool generateCodeBlocksPart3subjectObjectConnection(NLCcodeblock** currentCodeBl
 
 	if(addNewObjectForEachSubject)
 	{
-		#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
-		generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement, true);
+		#ifdef NLC_DEBUG
+		//cout << "addNewObjectForEachSubject" << endl;
+		#endif
+		
+		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH
+		if(generateContextBlocksVariablesLogicalConditionStatement->logicalConditionStatement)
+		{
+			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH_VAR_OBJECT_CHECK, true);		//eg eachObjectCheck = true;
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseObject);
+			
+			*currentCodeBlockInTree = createCodeBlockCheckBoolVar(*currentCodeBlockInTree, NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH_VAR_OBJECT_CHECK, false);		//if(eachObjectCheck == false) {
+			*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH_VAR_SUBJECT_CHECK, false);		//eachSubjectCheck = false;
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseObject);
+			
+			*currentCodeBlockInTree = getLastCodeBlockInLevel(codeBlockInTreeBeforeParseSubject);
+			*currentCodeBlockInTree = createCodeBlockCheckBoolVar(*currentCodeBlockInTree, NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH_VAR_SUBJECT_CHECK, true);		//if(eachSubjectCheck == true) {
+		}
+		else
+		{
+		#endif
+			#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
+			generateDefiniteEntityExistenceTest(currentCodeBlockInTree, subjectEntity, sentenceIndex, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION, generateContextBlocksVariablesLogicalConditionStatement, true);
+			#endif		
+		#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_SUPPORT_EACH
+		}
 		#endif
 	}
 			

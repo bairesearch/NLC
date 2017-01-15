@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5b 17-January-2015
+ * Project Version: 1n5c 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -220,22 +220,29 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									}
 									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
 									{//declare inheritance
-										#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-										if(targetName != className)	//eg do not create a separate class for substance concept definitions
+										#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
+										if(!((entityNode->grammaticalDefiniteTemp) || (entityNode->grammaticalProperNounTemp)))
 										{
 										#endif
-											//definitionList
-											bool foundLocalClassDefinition = false;
-											NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-											if(!foundLocalClassDefinition)
+											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+											if(targetName != className)	//eg do not create a separate class for substance concept definitions
 											{
-												#ifdef NLC_DEBUG
-												//cout << "generateClassHeirarchy(): classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
-												#endif
-												
-												classDefinition->definitionList.push_back(targetClassDefinition);
+											#endif
+												//definitionList
+												bool foundLocalClassDefinition = false;
+												NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+												if(!foundLocalClassDefinition)
+												{
+													#ifdef NLC_DEBUG
+													//cout << "generateClassHeirarchy(): classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
+													#endif
+
+													classDefinition->definitionList.push_back(targetClassDefinition);
+												}
+											#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
 											}
-										#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+											#endif
+										#ifdef NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN
 										}
 										#endif
 									}

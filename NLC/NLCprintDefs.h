@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5b 17-January-2015
+ * Project Version: 1n5c 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -396,11 +396,11 @@ string generateCodeEntityNameTestText(NLCitem * param, int progLang);
 #endif
 
 string generateCodeNewTempEntity(NLCitem * param, int progLang);
-string generateCodeNewTempEntity(string className, string instanceName, int progLang);
+string generateCodeNewTempEntity(string className, string instanceName, int progLang);	//not used
 	string generateTempEntityDeclaration(NLCitem * param, int progLang);
 		string generateTempEntityName(NLCitem * param);
 		string generateTempEntityClassName(NLCitem * param);
-		string generateTempEntityDeclaration(string className, string instanceName, int progLang);
+		string generateTempEntityDeclaration(string className, string instanceName, int progLang);	//not used
 
 
 /*
@@ -409,6 +409,7 @@ string generateTempEntityDeclarationSetToNull(NLCitem * param, NLCitem * param2,
 */
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
+string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang);
 
 string generateCodeEntityStringMapListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
 string generateCodeEntityStringMapListDefinitionTypeText(string entityClassName, int progLang);

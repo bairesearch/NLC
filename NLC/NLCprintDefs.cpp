@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5b 17-January-2015
+ * Project Version: 1n5c 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -454,7 +454,6 @@ string generateCodeNewTempEntity(NLCitem * param, int progLang)
 	return newTempEntityText;
 }
 
-
 string generateCodeNewTempEntity(string className, string instanceName, int progLang)
 {
 	#ifdef NLC_NONOO
@@ -462,6 +461,7 @@ string generateCodeNewTempEntity(string className, string instanceName, int prog
 	#else
 	string newTempEntityText = generateTempEntityDeclaration(className, instanceName, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
 	#endif
+	return newTempEntityText;
 }
 
 string generateTempEntityDeclaration(NLCitem * param, int progLang)
@@ -512,6 +512,11 @@ string generateTempEntityDeclarationSetToNull(NLCitem * param, NLCitem * param2,
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang)
 {
 	string castText = progLangDynamicCastStart[progLang] + castClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + entityName + progLangCloseParameterSpace[progLang];	//dynamic_cast<castClassName*>(entityName)
+	return castText;
+}
+string generateDynamicCastOfNewEntity(string entityClassName, string castClassName, int progLang)
+{
+	string castText = progLangDynamicCastStart[progLang] + castClassName + progLangDynamicCastEnd[progLang] + progLangOpenParameterSpace[progLang] + progLangNewObject[progLang] + entityClassName + progLangCloseParameterSpace[progLang];	//dynamic_cast<castClassName*>(new entityClassName)
 	return castText;
 }
 

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5b 17-January-2015
+ * Project Version: 1n5c 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,17 +47,21 @@
 //#define NLC_DISABLE_1n_CODE_FOR_DEBUG	//aka NLC_ENABLE_1m_CODE_FOR_DEBUG
 
 #ifndef NLC_DISABLE_1n_CODE_FOR_DEBUG
-	#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
-		#define NLC_CLASS_PARENT_CLASS_LIST_NAME "parentClassList"
-		#define NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME "checkParentClassName"
+	#define NLC_CLASS_DEFINITIONS_ONLY_DEFINE_INHERITANCE_FOR_INDEFINITE_CHILDREN	//required for NLC_SUPPORT_REDEFINITIONS and prevents circular definition; eg Chickens are animals. An animal is happy. The animal is a blue chicken.
+	#define NLC_SUPPORT_REDEFINITIONS
+	#ifdef NLC_SUPPORT_REDEFINITIONS
+		#define NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_DYNAMIC
+			#define NLC_CLASS_PARENT_CLASS_LIST_NAME "parentClassList"
+			#define NLC_CLASS_PARENT_CHECK_PARENT_CLASS_NAME_FUNCTION_NAME "checkParentClassName"
+		#endif
 	#endif
 	#define NLC_USE_SUPPORT_REFERENCING_OBJECTS_IN_PLURAL_LIST_BY_NUMBER
 	#define NLC_USE_LIBRARY
+	#ifdef NLC_USE_LIBRARY
 		//must be synced with NLClibraryStandard.h:
 		#define NLC_USE_LIBRARY_MOVE_FUNCTION_ACTION_CONDITION_FROM_NAME "from"
-		#define NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"		
-	#ifdef NLC_USE_LIBRARY
+		#define NLC_USE_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
 	#define NLC_USE_MATH_OBJECTS	//not yet finished (each entity has a (double) value which can be set by NLC mathText)
 	#ifdef NLC_USE_MATH_OBJECTS
@@ -625,7 +629,6 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 	#define NLC_LOCAL_CONTEXT_NAME "locaL"
 #endif
 
-#define NLC_DEBUG_LIBRARY
 //#define NLC_DEBUG_PARSE_CONTEXT4
 //#define NLC_DEBUG_PARSE_CONTEXT3
 //#define NLC_DEBUG_PARSE_CONTEXT2

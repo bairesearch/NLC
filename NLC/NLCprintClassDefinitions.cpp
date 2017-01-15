@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5b 17-January-2015
+ * Project Version: 1n5c 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -431,11 +431,13 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 								NLCclassDefinition * targetClassDefinition = *localListIter;
 								string parentClassName = targetClassDefinition->name;
 								string parentEntityName = removeClassTextFromClassDefinitionName(targetClassDefinition->name);
+								/*
 								string parentEntityDefinitionText = generateCodeNewTempEntity(parentClassName, parentEntityName, progLang);	//parentClassDefinitionClass * parentClassDefinition = new parentClassDefinitionClass();
 								printLine(parentEntityDefinitionText, 1, code);
+								*/
 								string parentClassListName = string(NLC_CLASS_PARENT_CLASS_LIST_NAME);
 								string parentClassListClassName = NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE;
-								string addParentEntityToParentClassListText = parentClassListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(parentEntityName, parentClassListClassName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//parentClassList.push_back(dynamic_cast<E2*>(parentClassDefinition));
+								string addParentEntityToParentClassListText = parentClassListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfNewEntity(classDefinition->name, parentClassListClassName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//parentClassList.push_back(dynamic_cast<E2*>(new parentClassDefinition));
 								printLine(addParentEntityToParentClassListText, 1, code);
 							}
 							#endif

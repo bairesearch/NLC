@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n5b 17-January-2015
+ * Project Version: 1n5c 17-January-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -203,7 +203,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			cout << "generateCodeBlocksFromMathText(): currentNLCsentenceInList->mathText = " << currentNLCsentenceInList->mathText << endl;
 			#endif
 			
-			//Part Prep B - generateCodeBlocksFromMathText - added 1h1d;
+			//generateCodeBlocksFromMathText (including logical conditions) - added 1h1d;
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksFromMathText:" << endl;
 			#endif
@@ -216,7 +216,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		{
 		#endif	
 			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-			//Part 1 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
+			//Part 2 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart2logicalConditions:" << endl;
 			#endif
@@ -226,7 +226,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			}
 			#endif
 
-			//Part 2; actions (eg Tom rides the boat)
+			//Part 3; actions (eg Tom rides the boat)
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart3actions:" << endl;
 			#endif
@@ -235,7 +235,7 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 				result = false;
 			}
 
-			//Part 3: object initialisations (eg Tom has a boat) [without actions]
+			//Part 4: object initialisations (eg Tom has a boat) [without actions]
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart4objectInitialisations:" << endl;
 			#endif
@@ -243,6 +243,19 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 			{
 				result = false;
 			}
+			
+			/*
+			#ifdef NLC_SUPPORT_REDEFINITIONS
+			//Part 4: redefinitions (eg The dog is an Alsation)
+			#ifdef NLC_DEBUG
+			cout << "generateCodeBlocksPart5redefinitions:" << endl;
+			#endif
+			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			{
+				result = false;
+			}
+			#endif
+			*/
 		#ifdef NLC_PREPROCESSOR_MATH
 		}
 		#endif

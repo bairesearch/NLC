@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1g 15-September-2013
+ * Project Version: 1a2a 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -79,10 +79,6 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			//cout << "contextParam1 = " << contextParam1 << endl;						
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
 			//cout << "contextParam2 = " << contextParam2 << endl;
-
-			//cout << "z7b" << endl;
-
-			//cout << "z8" << endl;
 			
 			string codeBlockText = contextParam1 + param1->name + progLangOpenParameterSpace[progLang] + contextParam2 + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 			//cout << "z7c" << endl;
@@ -90,6 +86,13 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			
 			//cout << "z9" << endl;
 		}
+		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT)
+		{
+			string codeBlockText = contextParam1 + param1->name + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1.param1(); 	[param1 = function, context1 = subject]
+			printLine(codeBlockText, level, code);
+			
+			//cout << "z9b" << endl;
+		}		
 		else if(currentCodeBlockInLevel->codeBlockType == NLPI_CODEBLOCK_TYPE_ADD_PROPERTY)
 		{
 			NLPIitem * param2 = currentCodeBlockInLevel->parameters.at(1);	

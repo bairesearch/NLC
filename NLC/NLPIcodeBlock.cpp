@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1g 15-September-2013
+ * Project Version: 1a2a 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -95,6 +95,13 @@ NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, N
 	currentCodeBlockInTree->parameters.push_back(objectItem);
 
 	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION);
+}
+
+NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem)
+{
+	currentCodeBlockInTree->parameters.push_back(functionItem);
+
+	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT);
 }
 
 //add property

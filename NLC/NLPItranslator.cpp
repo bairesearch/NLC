@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1g 15-September-2013
+ * Project Version: 1a2a 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -147,8 +147,27 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						}
 						#endif
 						//cout << "h5" << endl;
-
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem, objectItem);
+					}
+					else if(actionHasSubject)
+					{
+						bool subjectRequiredTempVar = false;	//not used
+						NLPIitem * subjectItem = NULL;
+						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
+
+						//cout << "h3" << endl;
+						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
+						if(subjectRequiredTempVar)
+						{	
+							cout << "subjectRequiredTempVar" << endl;						
+							functionItem->context.push_back(subjectItem->instanceName);
+						}
+						else
+						{
+							getEntityContext(subjectEntity, &(functionItem->context), true, sentenceIndex, true);
+						}
+						//cout << "h5" << endl;
+						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem);
 					}
 
 					//cout << "h6" << endl;

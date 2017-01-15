@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1a1g 15-September-2013
+ * Project Version: 1a2a 15-September-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -49,13 +49,14 @@ using namespace std;
 #include "GIAentityConnectionClass.h"
 
 #define NLPI_CODEBLOCK_TYPE_UNDEFINED (-1)
-#define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (2)	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
-#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)		//context1.param1.param2PropertyList.addProperty(context2.param2);
-#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)		//context1.param1.param3ConditionList.addCondition(context3.param3, param2);
-#define NLPI_CODEBLOCK_TYPE_FOR (5)			//forall(context.param1){
-#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (6)		//main(){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)	//if(context1.param1.param2PropertyList.findProperty(context2.param2)){			//OLD: if(context.param1->has(param2)){
-#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)	//if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+#define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION (1)		//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
+#define NLPI_CODEBLOCK_TYPE_EXECUTE_FUNCTION_NO_OBJECT (2)	//context1.param1(); 	[param1 = function, context1 = subject]
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (3)			//context1.param1.param2PropertyList.addProperty(context2.param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (4)			//context1.param1.param3ConditionList.addCondition(context3.param3, param2);
+#define NLPI_CODEBLOCK_TYPE_FOR (5)				//forall(context.param1){
+#define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (6)			//main(){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (12)		//if(context1.param1.param2PropertyList.findProperty(context2.param2)){			//OLD: if(context.param1->has(param2)){
+#define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (13)		//if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR)
 
 #define NLPI_PROGRAMMING_LANGUAGE_CPP (0)
@@ -155,6 +156,7 @@ public:
 string convertLongToString(long number);
 
 NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem);
+NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem);
 NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockFor(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);

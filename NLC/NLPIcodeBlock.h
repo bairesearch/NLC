@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e8b 24-November-2013
+ * Project Version: 1e8c 24-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -57,20 +57,20 @@ using namespace std;
 #define NLPI_CODEBLOCK_TYPE_ADD_NEW_CONDITION (4)			//context1->param1->param2param3ConditionList.insert(param2, param3);	//OLD2: context1.param1.param3ConditionList.addCondition(context3.param3, param2);
 #define NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE (5)
 #define NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE (6)	
-#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (7)
-#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY_LOCAL (17)
-#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (8)
-#define NLPI_CODEBLOCK_TYPE_CREATE_AND_ADD_TO_NEW_LIST_VARIABLE_LOCAL (9)
-#define NLPI_CODEBLOCK_TYPE_SET_LIST_VARIABLE_LOCAL (10)
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (7)				//context1->param1->param2PropertyList.push_back(param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (8)				//context1->param1->param2param3ConditionList.insert(param2, param3);	
+#define NLPI_CODEBLOCK_TYPE_CREATE_NEW_LOCAL_LIST_VARIABLE (9)
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY_TO_LOCAL_LIST (10)		//param1instancePropertyList.push_back(param2);
+#define NLPI_CODEBLOCK_TYPE_ADD_PROPERTY (11)
+#define NLPI_CODEBLOCK_TYPE_ADD_CONDITION (13)
 
 //containers:
 #define NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (20)		//forall(context.param1){
-#define NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (30)	//forall(param1){
 #define NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST (21)		//forall(context.param1){
-#define NLPI_CODEBLOCK_TYPE_FOR_CONDITION_LIST_LOCAL (31)	//forall(param1){
 #define NLPI_CODEBLOCK_TYPE_NEW_FUNCTION (22)			//main(){
 #define NLPI_CODEBLOCK_TYPE_IF_HAS_PROPERTY (23)		//if(!(context1->param1->param2PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
 #define NLPI_CODEBLOCK_TYPE_IF_HAS_CONDITION (24)		//if(!(context1->param1->param2param3ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+#define NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST_LOCAL (25)	//forall(param1instance){
 #define NLPI_CODEBLOCK_TYPE_CONTAINERS (NLPI_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
 
 
@@ -113,18 +113,17 @@ public:
 NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem, NLPIitem* objectItem);
 NLPIcodeblock * createCodeBlockExecute(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * functionItem);
 NLPIcodeblock * createCodeBlockAddNewProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
-NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
-NLPIcodeblock * createCodeBlockAddPropertyLocal(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
+	NLPIcodeblock * createCodeBlockAddPropertyToLocalList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
+	NLPIcodeblock * createCodeBlockAddProperty(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity, int sentenceIndex);
 NLPIcodeblock * createCodeBlockAddNewCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
-NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
-NLPIcodeblock * createCodeBlockCreateNewListVariableLocal(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
+	NLPIcodeblock * createCodeBlockAddCondition(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* conditionEntity, int sentenceIndex);
+NLPIcodeblock * createCodeBlocksCreateNewLocalListVariable(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 NLPIcodeblock * createCodeBlockForPropertyList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
-NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem);
 NLPIcodeblock * createCodeBlockForPropertyListLocal(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item);
-NLPIcodeblock * createCodeBlockForConditionListLocal(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem);
+NLPIcodeblock * createCodeBlockForConditionList(NLPIcodeblock * currentCodeBlockInTree, NLPIitem * item, NLPIitem * objectItem);
 NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTree, string NLPIfunctionName, vector<GIAentityNode*> * entityNodesActiveListComplete);
-	NLPIcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner, int sentenceIndex);
-	NLPIcodeblock * createCodeBlocksAddVariableToNewList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
+	NLPIcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* functionOwner);
+	NLPIcodeblock * createCodeBlocksAddVariableToNewList(NLPIcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 	void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*> * entityNodesActiveListComplete, vector<NLPIitem*> * parameters);
 		bool assumedToAlreadyHaveBeenDeclared(GIAentityNode* entity);

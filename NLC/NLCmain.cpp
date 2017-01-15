@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2k 15-September-2016
+ * Project Version: 1t3a 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -144,7 +144,7 @@ int main(int argc, char** argv)
 {
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
 	setProgLang(progLang);
-							
+
 	//print execution time
 	struct tm* current;
 	time_t now;
@@ -225,7 +225,7 @@ int main(int argc, char** argv)
 //#endif
 #ifdef NLC_API
 	bool NLCapi = false;
-	string APIsourceFolder = NLC_API_DEFAULT_SOURCE_FOLDER_NAME;	
+	string APIsourceFolder = NLC_API_DEFAULT_SOURCE_FOLDER_NAME;
 	string APIclassListFileName = NLC_API_DEFAULT_CLASS_LIST_FILE_NAME;
 #endif
 	bool printOutput = false;
@@ -267,7 +267,7 @@ int main(int argc, char** argv)
 	int synonymnDetectionStatus = SYNONYMN_DETECTION_STATUS_QUERIES_ONLY;
 	#endif
 #endif
-	
+
 	//bool train = false;
 	//bool form = true;
 
@@ -466,12 +466,12 @@ int main(int argc, char** argv)
 		{
 			rasterImageWidth = getFloatArgument(argc, argv, "-width");
 		}
-		
+
 		if(argumentExists(argc, argv, "-height"))
 		{
 			rasterImageHeight = getFloatArgument(argc, argv, "-height");
 		}
-		
+
 		string currentFolder = getCurrentDirectory();
 
 		if(argumentExists(argc, argv, "-nlprelation"))
@@ -658,7 +658,7 @@ int main(int argc, char** argv)
 
 		if(argumentExists(argc, argv, "-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1t2k 15-September-2016" << endl;
+			cout << "OpenNLC.exe - Project Version: 1t3a 21-September-2016" << endl;
 			exit(1);
 		}
 
@@ -682,9 +682,9 @@ int main(int argc, char** argv)
 	if(!useInputTextPlainTXTFile)
 	{
 		cout << "NLC requires useInputTextPlainTXTFile (itxt)" << endl;
-	}	
+	}
 	#endif
-	
+
 	int numberOfInputFilesInList = 1;
 	vector<string> inputTextPlainTXTFileNameList;
 	#ifdef NLC_SUPPORT_GIA_NLP_OR_XML_INPUT
@@ -693,7 +693,7 @@ int main(int argc, char** argv)
 	vector<string> inputTextXMLFileNameList;
 	#endif
 	vector<string> functionNameList;
-	
+
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 	if(NLCinputFileList)
 	{
@@ -768,7 +768,7 @@ int main(int argc, char** argv)
 		#endif
 	}
 	#endif
-	
+
 	//#ifdef NLC_USE_PREPROCESSOR
 	NLCfunction* firstNLCfunctionInList = new NLCfunction();
 	//#endif
@@ -795,7 +795,7 @@ int main(int argc, char** argv)
 			cout << "useNLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
 		}
 		#endif
-		
+
 		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS_PREPROCESSOR
@@ -828,7 +828,7 @@ int main(int argc, char** argv)
 	vector<NLCcodeblock*> firstCodeBlockInTreeList;
 	vector<vector<GIAentityNode*>*> entityNodesActiveListCompleteFunctions;
 	vector<map<int, vector<GIAentityNode*>*>*> entityNodesActiveListSentencesFunctions;
-		
+
 	//#ifdef NLC_USE_PREPROCESSOR
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 	//#endif
@@ -856,7 +856,7 @@ int main(int argc, char** argv)
 	if(!getFilesFromFileList(NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_USE_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
-		cout << "main{} warning: " << NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;		
+		cout << "main{} warning: " << NLC_USE_LIBRARY_USER_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
 		#endif
 	}
 	#endif
@@ -876,10 +876,10 @@ int main(int argc, char** argv)
 		{
 			cout << "main{} error: !detectFunctionHeader: nlcLibraryFunctionName = " << nlcLibraryFunctionName << endl;
 		}
-	}	
+	}
 	#endif
 	#endif
-		
+
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		int maxNumberSentences;
@@ -917,7 +917,7 @@ int main(int argc, char** argv)
 			#endif
 		}
 		#endif
-		
+
 		setCurrentDirectory(workingFolder);	//NB executeGIA must be executed with current directory set to the original workingFolder (such that GIArules.xml can be read)
 		string workingFolderOrig = workingFolder;
 		#ifdef NLC_USE_PREPROCESSOR
@@ -926,11 +926,11 @@ int main(int argc, char** argv)
 			workingFolder = tempFolder;	//this is required such that GIA uses the temp folder as its input folder (ie workingFolder), considering NLP has already written its output to this folder
 		}
 		#endif
-		
+
 		#ifdef GIA_SUPPORT_NLC_INTEGRATION
 		setFirstNLCsentenceInList(currentNLCfunctionInList->firstNLCsentenceInFunction);
 		#endif
-		
+
 		#ifdef USE_CS_WORKAROUND
 		executeGIA2();
 		#endif
@@ -1049,7 +1049,7 @@ int main(int argc, char** argv)
 
 		setCurrentDirectory(tempFolder);	//redundant	//NB executeGIA will change the current directory to the tempFolder, meaning NLC does not have to set the current directory to the tempFolder after executing GIA
 		workingFolder = workingFolderOrig;
-		
+
 		string NLCfunctionName = "";
 		#ifdef NLC_USE_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
 		if(NLCinputFileList)
@@ -1098,7 +1098,7 @@ int main(int argc, char** argv)
 		else
 		{
 			cout << "error: NLC requires useInputTextPlainTXTFile" << endl;
-		}		
+		}
 		#endif
 
 
@@ -1130,9 +1130,9 @@ int main(int argc, char** argv)
 
 		//generate class definition function declaration for new function definition (creates both functionDependency object and classDefinition object)
 		createFunctionDefinitionClassDefinition(&classDefinitionList, NLCfunctionName, functionDefinitionIndex, false);
-		
+
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
-		
+
 		#ifdef NLC_USE_PREPROCESSOR
 		if(useNLCpreprocessor)
 		{
@@ -1152,9 +1152,9 @@ int main(int argc, char** argv)
 	#ifdef NLC_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	preventDoubleDeclarationsOfClassDefinitionVariablesInHeirachy(&classDefinitionList);	//moved 1q9a
 	#endif
-	
+
 	string code = "";
-	
+
 	#ifdef NLC_API
 	vector<string> APIclassList;
 	int numberOfFilesInAPIclassList = 0;
@@ -1168,7 +1168,7 @@ int main(int argc, char** argv)
 		if(!getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
 		{
 			cout << "main{} error: !getFilesFromFileList: " << APIclassListFileName << endl;
-		}	
+		}
 		for(vector<string>::iterator iter = APIclassList.begin(); iter != APIclassList.end(); iter++)
 		{
 			string APIclassName = *iter;
@@ -1177,17 +1177,17 @@ int main(int argc, char** argv)
 				cout << "main{} error: !parseDoxygenClassXMLfile(: " << APIsourceFolder + "..." + APIclassName + "..." << endl;
 			}
 		}
-		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS	
+		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 		#else
 		if(printClassDefinitions(classDefinitionListAPI, progLang, &code, true))
 		{
-		
+
 		}
 		#endif
 	}
 	#endif
-		
-	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS	
+
+	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 	#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 	if(!printClassDefinitions(&classDefinitionList, progLang, &code, false))
 	{
@@ -1201,7 +1201,7 @@ int main(int argc, char** argv)
 	NLCcodeblock* currentCodeBlockInTree = firstCodeBlockInTreeList.at(numberOfInputFilesInList-1);	//get firstCodeBlockInTreeList in last function
 	printPredefinedNLCfunctions(currentCodeBlockInTree);
 	#endif
-	
+
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDefinitionIndex);
@@ -1221,7 +1221,7 @@ int main(int argc, char** argv)
 	#ifndef NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
 	cout << "code = \n" << code << endl;
 	#endif
-	
+
 	//print execution time (end)
 	time(&now);
 	current = localtime(&now);
@@ -1295,7 +1295,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 					cout << "actionSubjectEntity->entityName = " << actionSubjectEntity->entityName << endl;
 					cout << "actionObjectEntity->entityName = " << actionObjectEntity->entityName << endl;
 					#endif
-				
+
 					#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
 					/*
 					eg case A:
@@ -1335,7 +1335,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						connectionIter = actionEntity->incomingConditionNodeList->erase(connectionIter);
 					}
 					#endif
-					
+
 					#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 					int numberOfDuplicateConnections = actionEntity->actionSubjectEntity->size();
 					if(numberOfDuplicateConnections != actionEntity->actionObjectEntity->size())
@@ -1349,7 +1349,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						//cout << "i = " << i << endl;
 						#endif
 					#endif
-						
+
 						int sentenceIndex = (actionEntity->actionSubjectEntity->back())->sentenceIndexTemp;
 						#ifdef NLC_DEBUG
 						//cout << "sentenceIndex = " << sentenceIndex << endl;
@@ -1359,7 +1359,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sentenceIndex inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
-						
+
 						//added 1i8g
 						bool sameReferenceSet = (actionEntity->actionSubjectEntity->back())->sameReferenceSet;
 						#ifdef NLC_DEBUG
@@ -1370,7 +1370,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sameReferenceSet inconsistent between action object and action subject" << endl;
 							exit(0);
 						}
-						
+
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
 						bool isReference = (actionEntity->actionSubjectEntity->back())->isReference;
 						#ifdef NLC_DEBUG
@@ -1382,7 +1382,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							exit(0);
 						}
 						#endif
-						
+
 						bool foundConnection = false;
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionSubjectEntity->begin(); connectionIter != actionEntity->actionSubjectEntity->end(); )
@@ -1503,7 +1503,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
 							exit(0);
-						}			
+						}
 
 						#ifdef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC_HYBRID
 						bool artificialHaveEntityDetected = false;
@@ -1553,7 +1553,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 						else
 						{
 						#endif
-						
+
 							#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 							/*not required:
 							#ifndef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//#ifdef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
@@ -1589,7 +1589,7 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 							}
 							#endif
 							#ifdef NLC_APPLY_GET_SAME_REFERENCE_SET_NON_QUALITY_CHILD_FIX_TO_VERIFY_NOT_POSSESSION_AUXILIARY_HAVE
-							if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES)		//GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION: this should more precisely be set to RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES_HAVE  
+							if(actionEntity->entityName == RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES)		//GIA_RECORD_POSSESSION_AUXILIARY_HAS_INFORMATION_GENERAL_IMPLEMENTATION: this should more precisely be set to RELATION_ENTITY_SPECIAL_ACTION_NAME_FOR_EFFECTIVE_PROPERTIES_HAVE
 							{
 								propertyConnection->possessionAuxiliaryHave = true;	//added 1p10a
 								propertyConnectionReverse->possessionAuxiliaryHave = true;	//added 1p10a
@@ -1621,16 +1621,16 @@ void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>*
 bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList)
 {
 	bool result = true;
-	
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	//added 1k13g - generate class definition function declarations for all function execution references (generateClassHeirarchyFunctions has been separated from generateClassHeirarchy since non-exact function reconciliation can only occur once class definition heirachy has been established)
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinition* functionDefinitionClassDefinition = NULL;
 		if(findFunctionDependencyClassDefinitionInListByIndex(classDefinitionList, functionDefinitionIndex, &functionDefinitionClassDefinition))
-		{	
+		{
 			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions->at(functionDefinitionIndex);
-			
+
 			//NLC translator Part 2b.
 			if(!generateClassHeirarchyFunctions(classDefinitionList, entityNodesActiveListComplete, functionDefinitionClassDefinition))
 			{
@@ -1639,11 +1639,11 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 		}
 	}
 	#endif
-	
+
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)
 	{
-		NLCclassDefinition* classDefinition = *classDefinitionListIter;	
+		NLCclassDefinition* classDefinition = *classDefinitionListIter;
 		if(classDefinition->functionDependency != NULL)
 		{
 			NLCclassDefinitionFunctionDependency* functionDependencyTemp = classDefinition->functionDependency;
@@ -1653,7 +1653,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 			cout << "functionDependency->functionObject = " << functionDependencyTemp->functionObjectName << endl;
 			cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
 			for(vector<NLCclassDefinition*>::iterator classDefinitionListIter2 = classDefinition->functionDependencyList.begin(); classDefinitionListIter2 != classDefinition->functionDependencyList.end(); classDefinitionListIter2++)
-			{	
+			{
 				NLCclassDefinitionFunctionDependency* functionDependencyTemp2 = (*classDefinitionListIter2)->functionDependency;
 				cout << "  2. ---------------------------------------------------" << endl;
 				cout << "  functionDependencyTemp2->functionDefinitionListIndex = " << functionDependencyTemp2->functionDefinitionListIndex << endl;
@@ -1664,8 +1664,8 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 		}
 	}
 	#endif
-			
-		
+
+
 	#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
 	bool stillUnreconciledFunctionDeclarationArguments = true;
@@ -1674,7 +1674,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 		stillUnreconciledFunctionDeclarationArguments = false;
 		for(vector<NLCclassDefinition*>::iterator classDefinitionListIter = classDefinitionList->begin(); classDefinitionListIter != classDefinitionList->end(); classDefinitionListIter++)
 		{
-			NLCclassDefinition* classDefinition = *classDefinitionListIter;	
+			NLCclassDefinition* classDefinition = *classDefinitionListIter;
 			if(classDefinition->functionDependency != NULL)
 			{
 				NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = classDefinition->functionDependency;
@@ -1721,7 +1721,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 									{
 										cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition" << endl;
 										exit(0);
-									}									
+									}
 								}
 								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 								#ifndef NLC_USE_LIBRARY
@@ -1738,7 +1738,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 								//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDefinitionFunctionDependency->functionDefinitionListIndex)
 
 								NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDefinitionFunctionDependency->functionDefinitionListIndex);
-								
+
 								#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 								cout << "************" << endl;
 								cout << "start reconcile: functionName = " << functionDefinitionFunctionDependency->functionName << endl;
@@ -1768,7 +1768,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 				#endif
 				#endif
 			}
-		}	
+		}
 	}
 	#else
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
@@ -1812,7 +1812,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(int number
 	}
 	#endif
 	#endif
-	
+
 	return result;
 }
 #endif
@@ -1833,7 +1833,7 @@ void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
 	#endif
 	#ifndef NLC_NONOO
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
-	currentCodeBlockInTree = createCodeBlocksCastVectorNewFunction(currentCodeBlockInTree);	
+	currentCodeBlockInTree = createCodeBlocksCastVectorNewFunction(currentCodeBlockInTree);
 	#endif
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES

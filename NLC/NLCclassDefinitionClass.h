@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2k 15-September-2016
+ * Project Version: 1t3a 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -60,10 +60,10 @@ public:
 	string functionObjectName;
 	bool hasFunctionOwnerClass;
 	bool hasFunctionObjectClass;
-	
+
 	int functionDefinitionListIndex;
 	bool reconciledFunctionDeclarationArguments;
-	
+
 	bool isReferenceElseFunctionDefinition;
 };
 #endif
@@ -78,7 +78,7 @@ public:
 
 	string name;	//className (or instanceName if isActionOrConditionInstanceNotClass)
 	string functionNameSpecial;
-	
+
 	//classdefinition sublists;
 	vector<NLCclassDefinition*> propertyList;      //subclass
 	vector<NLCclassDefinition*> conditionList;     //declared conditions
@@ -100,18 +100,18 @@ public:
 	vector<NLCitem*> parameters;
 
 	bool isDisabledChildReplicantDeclaration;
-	
+
 	bool printed;
-	
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	NLCclassDefinitionFunctionDependency* functionDependency;	//for function classDefinitions only (not for non-function classDefinitions) - includes library function classDefinitions
 	vector<NLCclassDefinition*> functionDependencyList;		//for function classDefinitions only (not for non-function classDefinitions) - excludes library function classDefinitions
 	#endif
-	
+
 	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	bool isLibraryFunctionDefinition;	//not used often
 	#endif
-	
+
 	#ifdef NLC_API
 	#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 	bool APIclass;
@@ -144,7 +144,7 @@ bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDe
 	bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, bool findFunctionOwnerExactMatch, bool findFunctionObjectExactMatch, NLCclassDefinition** functionDefinitionClassDefinitionFound, bool rearrangeClassList);
 		bool eraseFunctionDependencyFromFunctionDependencyList(vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList, NLCclassDefinitionFunctionDependency* functionDependencyToErase);
 #endif
-bool findParentClass(NLCclassDefinition* classDefinition, string variableName, int inheritanceLevel, int* maxInheritanceLevel, NLCclassDefinition** parentClass);	
+bool findParentClass(NLCclassDefinition* classDefinition, string variableName, int inheritanceLevel, int* maxInheritanceLevel, NLCclassDefinition** parentClass);
 #endif
 //see NLCcodeBlocks.cpp for other versions of this function;
 bool findFunctionArgument(vector<NLCitem*>* parameters, string itemName, int itemType, NLCitem** functionArgument);

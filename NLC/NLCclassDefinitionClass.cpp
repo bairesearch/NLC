@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2k 15-September-2016
+ * Project Version: 1t3a 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,16 +37,16 @@
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 NLCclassDefinitionFunctionDependency::NLCclassDefinitionFunctionDependency(void)
-{	
+{
 	functionName = "";
 	functionOwnerName = "";
 	functionObjectName = "";
 	hasFunctionOwnerClass = false;
 	hasFunctionObjectClass = false;
-	
+
 	functionDefinitionListIndex = INT_DEFAULT_VALUE;
 	reconciledFunctionDeclarationArguments = false;
-	
+
 	isReferenceElseFunctionDefinition = false;
 }
 NLCclassDefinitionFunctionDependency::~NLCclassDefinitionFunctionDependency(void)
@@ -59,7 +59,7 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 {
 	name = newName;
 	functionNameSpecial = "";
-	
+
 	isActionOrConditionInstanceNotClass = false;
 	isConditionInstance = false;
 
@@ -68,15 +68,15 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	#endif
 
 	printed = false;
-		
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	functionDependency = NULL;	//for function class definitions only
 	#endif
-	
+
 	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
-	
+
 	#ifdef NLC_API
 	#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 	APIclass = false;
@@ -98,15 +98,15 @@ NLCclassDefinition::NLCclassDefinition(void)
 	#endif
 
 	printed = false;
-	
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	functionDependency = NULL;	//for function class definitions only
 	#endif
-	
+
 	#ifdef NLC_USE_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 	isLibraryFunctionDefinition = false;
 	#endif
-	
+
 	#ifdef NLC_API
 	#ifndef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
 	APIclass = false;
@@ -176,7 +176,7 @@ NLCclassDefinition* findClassDefinitionFunction(vector<NLCclassDefinition*>* fun
 				//cout << "findClassDefinitionFunction: className = " << currentClassDef->name << endl;
 				#endif
 				classDefinitionFound = currentClassDef;
-				*foundClassDefinition = true;					
+				*foundClassDefinition = true;
 			}
 		}
 	}
@@ -194,7 +194,7 @@ bool findItemInList(vector<NLCitem*>* parameters, int itemType, string itemName)
 			if(currentItem->name == itemName)
 			{
 				foundItem = true;
-			}			
+			}
 		}
 	}
 	return foundItem;
@@ -229,7 +229,7 @@ NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition*>* cl
 	if(!(targetEntity->conditionObjectEntity->empty()))
 	{
 		string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
-			
+
 		for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 		{
 			NLCclassDefinition* currentClassDef = *classDefinitionIter;
@@ -237,7 +237,7 @@ NLCclassDefinition* findClassDefinitionCondition(vector<NLCclassDefinition*>* cl
 			{
 				if(!(currentClassDef->parameters.empty()))
 				{
-					NLCitem* classDeclarationConditionsListItem = currentClassDef->parameters.back(); 
+					NLCitem* classDeclarationConditionsListItem = currentClassDef->parameters.back();
 					if(classDeclarationConditionsListItem->className2 == conditionObjectClassName)
 					{
 						#ifdef NLC_DEBUG
@@ -315,7 +315,7 @@ bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDep
 			if(!(functionDependency->hasFunctionOwnerClass))
 			{
 				passFunctionOwnerRequirements = true;
-			}	
+			}
 		}
 		bool passFunctionObjectRequirements = false;
 		if(hasFunctionObjectClass)
@@ -336,8 +336,8 @@ bool compareFunctionDependency(NLCclassDefinitionFunctionDependency* functionDep
 			}
 		}
 		if(passFunctionObjectRequirements && passFunctionOwnerRequirements)
-		{		
-			result = true;	
+		{
+			result = true;
 		}
 	}
 	return result;
@@ -368,7 +368,7 @@ bool findFunctionDependencyClassDefinitionInListByIndex(vector<NLCclassDefinitio
 		{
 			NLCclassDefinitionFunctionDependency* functionDependency = classDefinition->functionDependency;
 			if(functionDependency->functionDefinitionListIndex == functionIndex)
-			{ 
+			{
 				#ifdef NLC_DEBUG
 				//cout << "foundFunctionDependency: functionName = " << functionName << endl;
 				#endif
@@ -379,7 +379,7 @@ bool findFunctionDependencyClassDefinitionInListByIndex(vector<NLCclassDefinitio
 	}
 	return foundFunctionDefinitionClassDefinition;
 }
-		
+
 
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 
@@ -445,11 +445,11 @@ bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDe
 	cout << "functionObjectName = " << functionObjectName << endl;
 	#endif
 	bool foundFunctionDefinitionClassDefinition = false;
-	
+
 	bool findFunctionOwnerExactMatch;
 	bool findFunctionObjectExactMatch;
-		
-	//reconcile function execution "The animal eats the object."/animal->eat(vector object) with function definition "animal#eat+object"/animal::eat(vector object)	
+
+	//reconcile function execution "The animal eats the object."/animal->eat(vector object) with function definition "animal#eat+object"/animal::eat(vector object)
 	findFunctionOwnerExactMatch = true;
 	findFunctionObjectExactMatch = true;
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -515,8 +515,8 @@ bool findFunctionDefinitionClassDefinitionExactOrNonExactMatch(vector<NLCclassDe
 					cout << "passed !findFunctionOwnerExactMatch && !findFunctionObjectExactMatch" << endl;
 					#endif
 				}
-			}		
-		}		
+			}
+		}
 	}
 	return foundFunctionDefinitionClassDefinition;
 }
@@ -554,9 +554,9 @@ bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDef
 				#endif
 					if(!(functionDefinitionClassDefinition->functionDependency->isReferenceElseFunctionDefinition))
 					{
-						passFunctionDependencyChecks = true;	//functionReference classDefinition found  
+						passFunctionDependencyChecks = true;	//functionReference classDefinition found
 					}
-				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES	
+				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 				}
 				#endif
 				if(passFunctionDependencyChecks)
@@ -750,7 +750,7 @@ bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDef
 								}
 							}
 							#endif
-						}					
+						}
 					}
 					#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_ARGUMENTS_NO_OBJECT
 					else
@@ -759,7 +759,7 @@ bool findFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDef
 						{
 							passFunctionDefinitionRequirements = false;
 							cout << "NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_ARGUMENTS_NO_OBJECT: passFunctionDefinitionRequirements = false;" << endl;
-						}	
+						}
 					}
 					#endif
 					if(passFunctionDefinitionRequirements)
@@ -799,7 +799,7 @@ bool eraseFunctionDependencyFromFunctionDependencyList(vector<NLCclassDefinition
 	}
 	return result;
 }
-		
+
 bool findParentClass(NLCclassDefinition* classDefinition, string variableName, int inheritanceLevel, int* maxInheritanceLevel, NLCclassDefinition** parentClass)
 {
 	#ifdef NLC_DEBUG
@@ -852,7 +852,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, string itemName, int ite
 				//cout << "(currentItem->name)" << endl;
 				#endif
 				*functionArgument = currentItem;
-				foundFunctionArgument = true;	
+				foundFunctionArgument = true;
 			}
 		}
 	}
@@ -883,7 +883,7 @@ bool findFunctionArgument(vector<NLCitem*>* parameters, NLCitem* item, int itemT
 				//cout << "(currentItem->name)" << endl;
 				#endif
 				*functionArgument = currentItem;
-				foundFunctionArgument = true;	
+				foundFunctionArgument = true;
 			}
 		}
 	}

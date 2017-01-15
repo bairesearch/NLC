@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocksFunctions.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2k 15-September-2016
+ * Project Version: 1t3a 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -98,7 +98,7 @@ void generateCodeRemoveConditions(NLCitem* param1, NLCitem* param2, NLCitem* par
 void generateCodeRemoveConditionExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
 void generateCodeRemoveConditionsExecuteFunction(NLCitem* param1, NLCitem* param2, NLCitem* param3, int progLang, string* code, int level);
 #endif
-	
+
 void generateCodeAddActionSubject(NLCitem* functionArgument, NLCitem* functionOwnerArgument, int progLang, string* code, int level);
 #ifdef NLC_USE_LIBRARY_BASE_EXTENDED
 void generateCodeAddActionSubjectExecuteFunction(NLCitem* functionArgument, NLCitem* functionOwnerArgument, int progLang, string* code, int level);

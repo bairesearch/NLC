@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2k 15-September-2016
+ * Project Version: 1t3a 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,7 +58,7 @@ NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContaine
 {
 }
 #endif
-		
+
 bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, bool useNLCpreprocessor)
 {
 	bool result = true;
@@ -76,7 +76,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 		result = false;
 	}
 	#endif
-	#endif	
+	#endif
 	*/
 
 	#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -96,22 +96,22 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 	if(!disableAllForLoopPredeterminers(entityNodesActiveListSentences, maxNumberSentences))
 	{
 		result = false;
-	}	
+	}
 	#endif
-	
+
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
 	if(!checkAlphaNumericEntityNames(entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
-	}	
+	}
 	#endif
-	
+
 	//NLC translator Part 1.
 	if(!generateCodeBlocks(firstCodeBlockInTree, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList))
 	{
 		result = false;
 	}
-	
+
 	#ifdef NLC_DEBUG
 	//cout << "finished generateCodeBlocks{}" << endl;
 	#endif
@@ -121,11 +121,11 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 	{
 		result = false;
 	}
-	
+
 	#ifdef NLC_DEBUG
 	//cout << "finished generateClassHeirarchy{}" << endl;
 	#endif
-		
+
 	return result;
 }
 
@@ -135,7 +135,7 @@ bool translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinit
 bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences)
 {
 	bool result = true;
-	
+
 	for(int sentenceIndex=GIA_NLP_START_SENTENCE_INDEX; sentenceIndex <= maxNumberSentences; sentenceIndex++)
 	{
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -150,7 +150,7 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 					if(entity2->sentenceIndexTemp == sentenceIndex)
 					{
 						if(entity2->entityIndexTemp = conditionEntity->entityIndexTemp+1)
-						{	
+						{
 							#ifdef NLC_USE_PREPROCESSOR
 							if(entity2->entityIndexTemp == 1)	//NLP parsable phrase: "every chicken..."
 							#else
@@ -186,7 +186,7 @@ bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* ent
 	{
 		int sentenceIndex = sentenceIter->first;
 		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
-	
+
 		NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainerFirstInOptimumPath = NULL;
 		int maximumNumberOfConjunctions = 0;
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
@@ -280,7 +280,7 @@ int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode* conditio
 					if(conjunctionConditionFound)
 					{
 						//NB #ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS checks are not required because ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES are not defined to be two way
-						
+
 						NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer2 = new NLClogicalConditionConjunctionContainer(conditionEntity2);
 						logicalConditionConjunctionContainer->nextConditionConjunctions.push_back(logicalConditionConjunctionContainer2);
 						int numberOfConjunctions = addConjunctionsConnectedToConditionConjunctionObject(conditionEntity2, logicalConditionConjunctionContainer2, sentenceIndex);
@@ -332,12 +332,12 @@ bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsO
 bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, int maxNumberSentences)
 {
 	bool result = true;
-	
+
 	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
 	{
 		int sentenceIndex = sentenceIter->first;
 		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
-	
+
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 		{
 			GIAentityNode* conditionEntity = (*entityIter);
@@ -439,12 +439,12 @@ bool disableAllForLoopPredeterminers(map<int, vector<GIAentityNode*>*>* entityNo
 {
 	//this function prevents predeterminers from being parsed by generateCodeBlocksFromMathTextNLPparsablePhrase/generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor (which prevents all entities from being parsed by generateCodeBlocksFromMathTextNLPparsablePhrase/generateCodeBlocksFromMathTextNLPparsablePhraseLogicalConditionFor)
 	bool result = true;
-	
+
 	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
 	{
 		int sentenceIndex = sentenceIter->first;
 		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
-	
+
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 		{
 			GIAentityNode* entity = (*entityIter);
@@ -476,10 +476,10 @@ void disableInstanceAndNetworkIndexEntityNLC(GIAentityNode* entity)
 //NB firstCodeBlockInTree contains the new function codeblock (NLC_CODEBLOCK_TYPE_NEW_FUNCTION) parameters: NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST
 void reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, NLCclassDefinition* functionDefinitionClassDefinition)
 {
-	//reconcile functionDefinition classDefinition arguments (ie class function header) - NB functionReference [classDefinition?] arguments are reconciled in printCodeBlocks()  
+	//reconcile functionDefinition classDefinition arguments (ie class function header) - NB functionReference [classDefinition?] arguments are reconciled in printCodeBlocks()
 
 	NLCclassDefinitionFunctionDependency* functionDefinitionFunctionDependency = functionDefinitionClassDefinition->functionDependency;
-	
+
 	string functionName = functionDefinitionFunctionDependency->functionName;
 	string functionOwnerName = functionDefinitionFunctionDependency->functionOwnerName;
 	string functionObjectName = functionDefinitionFunctionDependency->functionObjectName;
@@ -491,7 +491,7 @@ void reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclare
 	bool findFunctionObjectExactMatch = true;
 	bool rearrangeClassList = false;	//irrelevant
 	//NB findFunctionDefinitionClassDefinition parses (reconcile/rearranges) functionDefinition classDefinitions only (isReferenceElseFunctionDefinition==false)
-		
+
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition" << endl;
 	#endif
@@ -532,7 +532,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctio
 	//cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
 	#endif
 	vector<NLCitem*>* functionDefinitionArgumentList = &(functionDefinition->parameters);
-	
+
 	/*
 	#ifdef NLC_DEBUG
 	cout << "addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition{}: functionDefinition->name = " << functionDefinition->name << endl;
@@ -543,7 +543,7 @@ void addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctio
 		cout << "temp->name = " << temp->name << endl;
 	}
 	*/
-	
+
 	for(vector<NLCitem*>::iterator parametersIterator = functionDefinitionSourceArgumentList->begin(); parametersIterator < functionDefinitionSourceArgumentList->end(); parametersIterator++)
 	{
 		NLCitem* functionDefinitionSourceArgument = *parametersIterator;
@@ -703,7 +703,7 @@ bool checkAlphaNumericEntityNames(vector<GIAentityNode*>* entityNodesActiveListC
 bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classDefinitionList, string NLCfunctionName, int functionDefinitionIndex, bool libraryFunctionDeclaration)
 {
 	NLCclassDefinitionFunctionDependency* functionDependency = NULL;
-	 
+
 	string functionName = "";
 	string functionOwnerName = "";
 	string functionObjectName = "";
@@ -713,7 +713,7 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 	vector<NLCitem*> parameters;
 	if(libraryFunctionDeclaration)
 	{
-		parseFunctionNameFromNLClibFunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass, &parameters);	//gets "fight" from "dog#fight+box!argument1!argument2"	
+		parseFunctionNameFromNLClibFunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass, &parameters);	//gets "fight" from "dog#fight+box!argument1!argument2"
 	}
 	else
 	{
@@ -722,9 +722,9 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 	#ifdef NLC_USE_LIBRARY
 	}
 	#endif
-	
+
 	string functionClassDefinitionName = functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
-	
+
 	string functionOwnerClassDefinitionName = "";
 	bool passNewFunctionDefinitionChecks = true;
 	if(hasFunctionOwnerClass)
@@ -736,8 +736,8 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 		functionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
 	}
 	if(passNewFunctionDefinitionChecks)
-	{	
-		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED	
+	{
+		#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 		cout << "createNewClassDefinitionFunctionDeclaration (!isReferenceElseFunctionDefinition): functionName  = " << functionName << endl;
 		#endif
 		bool isReferenceElseFunctionDefinition = false;		//ie isFunctionDefinition
@@ -751,7 +751,7 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 		if(libraryFunctionDeclaration)
 		{
 			functionClassDefinition->isLibraryFunctionDefinition = true;
-			
+
 			/*//OLD: 1q6aTEMP1
 			//create an ordinary (non-function definition) class definition for the function action object and set isLibraryFunctionDefinition (this is required to prevent printClassDefinitions from printing this class)
 			bool foundClassDefinitionAction = false;
@@ -768,7 +768,7 @@ bool createFunctionDefinitionClassDefinition(vector<NLCclassDefinition*>* classD
 		#endif
 		#endif
 	}
-		
+
 	return functionDependency;
 }
 
@@ -776,7 +776,7 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 {
 	NLCclassDefinitionFunctionDependency* functionDependency = NULL;
 	NLCclassDefinition* functionClassDefinition = NULL;
-	
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	bool duplicateFunctionDeclarationDetected = false;
 	bool foundFunctionDependencyInList = findFunctionDefinitionFunctionDependencyInList(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependency);	//note at this stage only functionDefinition functionDependencies have been created (so the functionDefintion check is not actually required)...
@@ -795,9 +795,9 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		functionDependency->functionObjectName = functionObjectName;
 		functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;
 		functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
-		functionDependency->isReferenceElseFunctionDefinition = isReferenceElseFunctionDefinition;	
+		functionDependency->isReferenceElseFunctionDefinition = isReferenceElseFunctionDefinition;
 	#endif
-	
+
 		#ifdef NLC_DEBUG
 		//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
 		#endif
@@ -837,8 +837,8 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 		//cout << "functionOwnerClassDefinition->isActionOrConditionInstanceNotClass" << endl;
 		#endif
 
-		functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);							
-		
+		functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
+
 		#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 		if(hasFunctionOwnerClass)
 		{
@@ -856,24 +856,24 @@ NLCclassDefinition* createFunctionDefinitionClassDefinition(vector<NLCclassDefin
 			NLCitem* classDeclarationFunctionObjectItem = new NLCitem(functionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);		//changed from NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT 1p4a
 			functionClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 		}
-		
+
 		/*
 		#ifdef NLC_RECORD_ACTION_HISTORY
 		//added 1q1b, removed 1q6a
 		//NB classDefinitionAction must be generated by fillActionLists (functionClassDefinition cannot be used) because functionClassDefinitionName (e.g. printNewFunctionDefinition) is not the same as functionClassName (e.g. printClass)
 		fillActionLists(classDefinitionList, hasFunctionOwnerClass, hasFunctionObjectClass, functionName, functionObjectName, functionOwnerClassDefinition);
-		#endif	
+		#endif
 		*/
-		
+
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 		functionClassDefinition->functionDependency = functionDependency;
 	}
 	#endif
-	
+
 	return functionClassDefinition;
 }
 
-	
+
 
 
 

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1t2k 15-September-2016
+ * Project Version: 1t3a 21-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,7 +54,7 @@ NLCsentence::NLCsentence(void)
 	hasLogicalConditionOperator = false;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	logicalConditionOperator = INT_DEFAULT_VALUE;
-	#endif	
+	#endif
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 	ifDetected = false;
 	elseIfDetected = false;
@@ -105,7 +105,7 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 	string variableName = replaceAllOccurancesOfString(&(currentPhrase->sentenceContents), STRING_SPACE, "");
 	variableName = replaceAllOccurancesOfString(&variableName, STRING_FULLSTOP, "");
 	variableName = replaceAllOccurancesOfString(&variableName, STRING_APOSTROPHE, "");
-	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY	
+	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
 	//required for NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_NUMBER_OF_TYPES; i++)
 	{
@@ -119,12 +119,12 @@ string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentenc
 	}
 	#endif
 	#ifdef NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
-	string mathTextNLPparsablePhraseReference = variableName + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->mathTextNLPparsablePhraseIndex);	
+	string mathTextNLPparsablePhraseReference = variableName + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->mathTextNLPparsablePhraseIndex);
 	#else
 	string mathTextNLPparsablePhraseReference = variableName + convertIntToString(sentenceIndexOfFullSentence);
 	#endif
 	#else
-	string mathTextNLPparsablePhraseReference = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->mathTextNLPparsablePhraseIndex);	
+	string mathTextNLPparsablePhraseReference = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE) + convertIntToString(sentenceIndexOfFullSentence) + string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE) + convertIntToString(currentPhrase->mathTextNLPparsablePhraseIndex);
 	#endif
 	return mathTextNLPparsablePhraseReference;
 }
@@ -149,7 +149,7 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 		//cout << "isStringNLPparsableWord{} error: phrase.length() == 0" << endl;
 		#endif
 	}
-	
+
 	if(isStringValidVariableName(phrase, preprocessorMath))
 	{
 		stringIsNLPparsableWord = true;
@@ -170,17 +170,17 @@ bool isStringNLPparsableWord(string phrase, bool preprocessorMath)
 		if(isStringNumberOrFractional(phrase))
 		{
 			stringIsNLPparsableWord = true;
-		}	
+		}
 	}
 	#endif
-	
+
 	#ifdef NLC_DEBUG
 	//cout << "isStringNLPparsableWord: " << phrase << " = " << stringIsNLPparsableWord << endl;
 	#endif
 	return stringIsNLPparsableWord;
 }
 
-//isStringValidVariableName: alphanumeric string but can't start with number 
+//isStringValidVariableName: alphanumeric string but can't start with number
 bool isStringValidVariableName(string phrase, bool preprocessor)
 {
 	if(phrase.length() == 0)
@@ -189,7 +189,7 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 		//cout << "isStringValidVariableName{} error: phrase.length() == 0" << endl;
 		#endif
 	}
-	
+
 	bool stringIsNLPparsableWord = true;
 	bool variableNameMandatoryCharacterFoundInCurrentWord = false;
 	for(int i=0; i<phrase.length(); i++)
@@ -202,7 +202,7 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 		}
 		else
 		{
-			legalWordCharacterFound = charInCharArray(c, NLPparsableCharacters, NLC_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);			
+			legalWordCharacterFound = charInCharArray(c, NLPparsableCharacters, NLC_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
 		}
 		if(!legalWordCharacterFound)
 		{
@@ -212,7 +212,7 @@ bool isStringValidVariableName(string phrase, bool preprocessor)
 			//cout << "phrase = " << phrase << endl;
 			//cout << "i = " << i << endl;
 			#endif
-		}	
+		}
 		if(charInCharArray(c, preprocessorMathVariableNameCharactersMandatory, NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
 			variableNameMandatoryCharacterFoundInCurrentWord = true;
@@ -251,7 +251,7 @@ bool isStringNumberPreprocessorMath(string phrase)
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
-		char c = phrase[i];	
+		char c = phrase[i];
 		bool numberFound = charInCharArray(c, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
 		if(!numberFound)
 		{
@@ -275,7 +275,7 @@ bool isStringNumberOrFractional(string phrase)
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
-		char c = phrase[i];	
+		char c = phrase[i];
 		bool numberFound = charInCharArray(c, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
 		bool decimalPlaceFound = isDecimalPlace(i, &phrase);
 		if(!(numberFound || decimalPlaceFound))
@@ -294,16 +294,16 @@ bool isDecimalPlace(int indexOfCurrentToken, string* lineContents)
 {
 	bool decimalPlace = false;
 	char currentToken = (*lineContents)[indexOfCurrentToken];
-	if(currentToken == CHAR_FULLSTOP) 
+	if(currentToken == CHAR_FULLSTOP)
 	{
 		if(indexOfCurrentToken < lineContents->length()-1)	//ensure fullstop is not immediately succeded by an numeric character, which indicates a decimal place, eg "5.5"
-		{	
+		{
 			char characterImmediatelySucceedingPunctuationMark = (*lineContents)[indexOfCurrentToken+1];
 			bool isPunctuationMarkImmediatelySucceededByNumericCharacter = charInCharArray(characterImmediatelySucceedingPunctuationMark, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
 			if(isPunctuationMarkImmediatelySucceededByNumericCharacter)
 			{
 				decimalPlace = true;
-			}		
+			}
 		}
 	}
 	return decimalPlace;
@@ -340,10 +340,10 @@ bool isStringIllegalTargetSourceCharacter(string phrase)
 	return stringContainsIllegalTargetSourceCharacter;
 }
 #endif
-	
+
 bool sentencePertainsToLogicalCondition(NLCsentence* currentNLCsentenceInList)
 {
-	bool result = false; 
+	bool result = false;
 	if(currentNLCsentenceInList->hasLogicalConditionOperator || currentNLCsentenceInList->mathTextNLPparsablePhraseIndex > NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX)
 	{
 		result = true;	//sentence pertains to a logical condition (first parsable phrase in a logical condition || non-first parsable phrase in a logical condition)

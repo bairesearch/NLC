@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13g 18-October-2014
+ * Project Version: 1k14a 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -242,4 +242,24 @@ string generateDynamicCastOfEntity(string entityName, string castClassName, int 
 	return castText;
 }
 
+string generateCodeEntityStringPairListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang)
+{
+	string codeConditionListDefinitionText = generateCodeEntityStringPairListDefinitionTypeText(entityClassName, progLang) + generateEntityStringPairListName(genericListNameStart, genericListAppendName);	//unordered_map<string, entityClassName*> genericListNameStart+genericListAppendName;
+	return codeConditionListDefinitionText;
+}
+string generateCodeEntityStringPairListDefinitionTypeText(string entityClassName, int progLang)
+{
+	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string, entityClassName*>
+	return codeConditionListDefinitionTypeText;
+}
+string generateEntityStringPairListName(string genericListNameStart, string genericListAppendName)
+{
+	string conditionListName = entityClassName + genericListAppendName;	//genericListNameStart+genericListAppendName
+	return conditionListName;
+}
+string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang)
+{
+	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entity2ClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + entity1Name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + entity2Name + progLangClassMemberFunctionParametersClose[progLang];	//pair<string, entity2className*>(entity1name, entity2name)
+	return codeConditionPairTypeText;
+}
 

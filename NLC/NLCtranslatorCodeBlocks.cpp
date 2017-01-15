@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13g 18-October-2014
+ * Project Version: 1k14a 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -72,6 +72,9 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	}
 	#endif
 	#endif
+	#endif
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	currentCodeBlockInTree = createCodeBlocksDeclareAliasList(currentCodeBlockInTree);	
 	#endif
 	
 	#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES

@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13g 18-October-2014
+ * Project Version: 1k14a 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -334,8 +334,6 @@ NLCcodeblock * createCodeBlockDeclareNewBoolVar(NLCcodeblock * currentCodeBlockI
 NLCcodeblock * createCodeBlockSetBoolVar(NLCcodeblock * currentCodeBlockInTree, string boolVariableName, bool value);
 
 
-NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning);
-
 #ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
 NLCcodeblock * createCodeBlockRemoveProperties(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, GIAentityNode* propertyEntity);
 NLCcodeblock * createCodeBlockRemoveEntitiesFromLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
@@ -423,7 +421,16 @@ NLCcodeblock * createCodeBlocksCastVectorNewFunction(NLCcodeblock * currentCodeB
 NLCcodeblock * createCodeBlocksCastVectorExecuteFunction(NLCcodeblock * currentCodeBlockInTree, NLCitem * item, NLCitem * itemPassCastClassName);
 #endif
 
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+NLCcodeblock * createCodeBlocksDeclareAliasList(NLCcodeblock * currentCodeBlockInTree);
+NLCcodeblock * createCodeBlocksAddEntityToAliasList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock * currentCodeBlockInTree);
+NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, string aliasName, GIAentityNode* categoryEntity, string genericListAppendName);
+#endif
+
 void clearCodeBlock(NLCcodeblock * codeBlock);
+
+NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, string warning);
 
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 string generateCategoryListPropertyCountVariableName(GIAentityNode * entity);

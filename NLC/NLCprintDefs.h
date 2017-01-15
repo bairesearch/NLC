@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13g 18-October-2014
+ * Project Version: 1k14a 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -73,6 +73,9 @@ using namespace std;
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
 #define NLC_ITEM_TYPE_REFERENCECONTEXTVAR_APPENDITION "referenceContext"
 #endif
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#define NLC_ITEM_TYPE_ALIAS_APPENDITION "Alias"
+#endif
 
 #define NLC_ITEM_TYPE_CLASSLISTVAR_APPENDITION NLC_ITEM_TYPE_CLASSVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"ClassList"
 #define NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION NLC_ITEM_TYPE_PROPERTYVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"PropertyList"
@@ -81,7 +84,9 @@ using namespace std;
 #define NLC_ITEM_TYPE_CONDITIONPAIRVAR_APPENDITION NLC_ITEM_TYPE_CONDITIONVAR_APPENDITION NLC_ITEM_TYPE_PAIRVAR_APPENDITION	//"ConditionPair"
 #define NLC_ITEM_TYPE_INSTANCELISTVAR_APPENDITION NLC_ITEM_TYPE_INSTANCEVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"InstanceList"
 #define NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLISTVAR_APPENDITION NLC_ITEM_TYPE_REFERENCECONTEXTVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"referenceContextList"
-
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#define NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION NLC_ITEM_TYPE_ALIASVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"AliasList"
+#endif
 
 //from NLCclassDefinitionClass.h
 static string progLangClassTitlePrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -237,6 +242,15 @@ static string progLangTemplateUseClassSeparator[NLC_NUMBER_OF_PROGRAMMING_LANGUA
 static string progLangReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"&", "&", "&", "&", "&", "&", "&"};
 static string progLangReturn[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"return ", "return ", "return ", "return ", "return ", "return ", "return "};
 
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+static string progLangAliasNameVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
+#endif
+static string progLangForIterEntityPairListEntityReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->second", "->second", "->second", "->second", "->second", "->second", "->second"};
+static string progLangTestEntityPairFindPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"if(", "if(", "if(", "if(", "if(", "if(", "if("};
+static string progLangTestEntityPairFindPart2[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {" != ", " != ", " != ", " != ", " != ", " != ", " != "};
+static string progLangTestEntityPairFindPart3[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->end())", "->end())", "->end())", "->end())", "->end())", "->end())", "->end())"};
+
+
 
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyClassName);
@@ -266,5 +280,9 @@ string generateEntityDeclaration(NLCitem * param, int progLang);
 
 string generateDynamicCastOfEntity(string entityName, string castClassName, int progLang);
 
+string generateCodeEntityStringPairListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang);
+string generateCodeEntityStringPairListDefinitionTypeText(string entityClassName, int progLang);
+string generateEntityStringPairListName(string genericListNameStart, string genericListAppendName);
+string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang);
 
 #endif

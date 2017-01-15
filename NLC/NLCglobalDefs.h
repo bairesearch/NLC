@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13g 18-October-2014
+ * Project Version: 1k14a 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -66,6 +66,14 @@
 				#define NLC_USE_ADVANCED_REFERENCING_SINGULAR_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassSingularDefiniteReferencingTests"
 				#define NLC_USE_ADVANCED_REFERENCING_PLURAL_DEFINITE_REFERENCING_TESTS_FUNCTION_NAME "addToCategoryIfPassPluralDefiniteReferencingTests"
 				#define NLC_USE_ADVANCED_REFERENCING_COMMENT
+				#ifndef NLC_DISABLE_1k_CODE_FOR_DEBUG
+					#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES	//1k14a - requires GIA_DISABLE_ALIAS_ENTITY_MERGING
+					#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+						#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START ""	//with "AliasList" (NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION) appended
+						#define NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_NAME "aliasName"
+						#define NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME "findAliasAndAddToCategoryList"
+					#endif
+				#endif
 			#endif
 			#define NLC_CATEGORIES_TEST_PLURALITY	//1j1a
 			#ifdef NLC_CATEGORIES_TEST_PLURALITY

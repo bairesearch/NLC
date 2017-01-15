@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1o1e 07-February-2015
+ * Project Version: 1o1f 07-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1271,130 +1271,133 @@ bool generateObjectInitialisationsForConnectionType(NLCcodeblock** currentCodeBl
 		{
 			if(targetConnection->sameReferenceSet)
 			{
-				bool addObject = false;
-				GIAentityNode* actionOrConditionEntity = NULL;
-				GIAentityNode* objectEntity = NULL;
-				GIAentityNode* subjectEntity = NULL;
-				bool foundObject = false;
-				bool foundSubject = false;
-				bool recurse = false;
-				GIAentityNode* recurseEntity = NULL;
-				if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+				if(!(targetEntity->NLCcontextGeneratedTemp))
 				{
-					//foundSubject = true;
-					foundObject = true;
-					subjectEntity = entity;
-					objectEntity = targetEntity;
-					recurse = true;
-					recurseEntity = targetEntity;
-					//cout << "GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES; targetEntity = " << targetEntity->entityName << endl;
-					addObject = true;
-					
-				}
-				else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
-				{
-					//foundSubject = true;
-					subjectEntity = entity;
-					actionOrConditionEntity = targetEntity;
-					if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+					bool addObject = false;
+					GIAentityNode* actionOrConditionEntity = NULL;
+					GIAentityNode* objectEntity = NULL;
+					GIAentityNode* subjectEntity = NULL;
+					bool foundObject = false;
+					bool foundSubject = false;
+					bool recurse = false;
+					GIAentityNode* recurseEntity = NULL;
+					if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 					{
+						//foundSubject = true;
 						foundObject = true;
+						subjectEntity = entity;
+						objectEntity = targetEntity;
 						recurse = true;
-						recurseEntity = objectEntity;
-					}
-					addObject = true;
+						recurseEntity = targetEntity;
+						//cout << "GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES; targetEntity = " << targetEntity->entityName << endl;
+						addObject = true;
 
-				}
-				#ifdef NLC_RECORD_ACTION_HISTORY
-				else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
-				{
-					//foundSubject = true;
-					subjectEntity = entity;
-					actionOrConditionEntity = targetEntity;
-					if(getActionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+					}
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 					{
+						//foundSubject = true;
+						subjectEntity = entity;
+						actionOrConditionEntity = targetEntity;
+						if(getConditionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+						{
+							foundObject = true;
+							recurse = true;
+							recurseEntity = objectEntity;
+						}
+						addObject = true;
+
+					}
+					#ifdef NLC_RECORD_ACTION_HISTORY
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+					{
+						//foundSubject = true;
+						subjectEntity = entity;
+						actionOrConditionEntity = targetEntity;
+						if(getActionObjectCheckSameReferenceSetAndSentence(targetEntity, &objectEntity))
+						{
+							foundObject = true;
+							recurse = true;
+							recurseEntity = objectEntity;
+						}
+						addObject = true;
+					}
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
+					{
+						//foundObject = true;
+						objectEntity = entity;
+						actionOrConditionEntity = targetEntity;
+						if(getActionSubjectCheckSameReferenceSetAndSentence(targetEntity, &subjectEntity))
+						{
+							foundSubject = true;
+							recurse = true;
+							recurseEntity = subjectEntity;
+						}
+						addObject = true;
+					}
+					#endif
+					#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
+					else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+					{	
+						//foundSubject = true;
 						foundObject = true;
-						recurse = true;
-						recurseEntity = objectEntity;
+						subjectEntity = entity;
+						objectEntity = targetEntity;
+						recurse = false;
+						addObject = true;
 					}
-					addObject = true;
-				}
-				else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
-				{
-					//foundObject = true;
-					objectEntity = entity;
-					actionOrConditionEntity = targetEntity;
-					if(getActionSubjectCheckSameReferenceSetAndSentence(targetEntity, &subjectEntity))
-					{
-						foundSubject = true;
-						recurse = true;
-						recurseEntity = subjectEntity;
-					}
-					addObject = true;
-				}
-				#endif
-				#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_DEFINITIONS
-				else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
-				{	
-					//foundSubject = true;
-					foundObject = true;
-					subjectEntity = entity;
-					objectEntity = targetEntity;
-					recurse = false;
-					addObject = true;
-				}
-				#endif
-				
-				//targetEntity->NLCparsedForCodeBlocks = true;
-				if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
-				{
-					//initialise the action
-					if(generateObjectInitialisations(currentCodeBlockInTree, actionOrConditionEntity, sentenceIndex))	//subset of initialiseFunctionArguments()
-					{
+					#endif
 
-					}
-				}
-						
-				if(recurse)
-				{
-					//cout << "recurse; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
-
-					NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-					generateContextBlocksVariables.getParentCheckLastParent = true;
-					generateContextBlocksVariables.lastParent = entity;
+					//targetEntity->NLCparsedForCodeBlocks = true;
 					if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
 					{
-						actionOrConditionEntity->NLCcontextGeneratedTemp = true;	//prevent actionEntity from being parsed by getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks:generateContextBlocks;
-					}
-					//cout << "actionOrConditionEntity->NLCcontextGeneratedTemp = " << actionOrConditionEntity->entityName << endl;
-						
-					GIAentityNode* recurseEntityParent = NULL;
-					if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, recurseEntity, sentenceIndex, &generateContextBlocksVariables, false, &recurseEntityParent))
-					{
-						//*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, recurseEntity, recurseEntity, NLC_ITEM_TYPE_RECURSEENTITYCATEGORY_VAR_APPENDITION);
-					}
-					/*NO:	
-					if(generateObjectInitialisations(currentCodeBlockInTree, recurseEntity, sentenceIndex))
-					{
-					
-					}
-					*/
-				}
-				
-				if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
-				{
-					actionOrConditionEntity->NLCcontextGeneratedTemp = false;	//redundant
-				}
-				
-				if(addObject)
-				{
-					//cout << "addObject; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+						//initialise the action
+						if(generateObjectInitialisations(currentCodeBlockInTree, actionOrConditionEntity, sentenceIndex))	//subset of initialiseFunctionArguments()
+						{
 
-					result = true;
-					bool isPrimary = false;
-					if(!generateCodeBlocksAddObject(currentCodeBlockInTree, connectionType, targetConnection, subjectEntity, objectEntity, actionOrConditionEntity, foundSubject, foundObject, sentenceIndex, NULL, isPrimary))
-					{
+						}
+					}
 
+					if(recurse)
+					{
+						//cout << "recurse; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+
+						NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+						generateContextBlocksVariables.getParentCheckLastParent = true;
+						generateContextBlocksVariables.lastParent = entity;
+						if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+						{
+							actionOrConditionEntity->NLCcontextGeneratedTemp = true;	//prevent actionEntity from being parsed by getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks:generateContextBlocks;
+						}
+						//cout << "actionOrConditionEntity->NLCcontextGeneratedTemp = " << actionOrConditionEntity->entityName << endl;
+
+						GIAentityNode* recurseEntityParent = NULL;
+						if(getParentAndInitialiseParentIfNecessaryOrGenerateContextBlocks(currentCodeBlockInTree, recurseEntity, sentenceIndex, &generateContextBlocksVariables, false, &recurseEntityParent))
+						{
+							//*currentCodeBlockInTree = createCodeBlockAddEntityToCategoryListCheckLastSentenceReferencedPluralExecuteFunction(*currentCodeBlockInTree, recurseEntity, recurseEntity, NLC_ITEM_TYPE_RECURSEENTITYCATEGORY_VAR_APPENDITION);
+						}
+						/*NO:	
+						if(generateObjectInitialisations(currentCodeBlockInTree, recurseEntity, sentenceIndex))
+						{
+
+						}
+						*/
+					}
+
+					if((connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+					{
+						actionOrConditionEntity->NLCcontextGeneratedTemp = false;	//redundant
+					}
+
+					if(addObject)
+					{
+						//cout << "addObject; connectionType = " << entityVectorConnectionNameArray[connectionType] << endl;
+
+						result = true;
+						bool isPrimary = false;
+						if(!generateCodeBlocksAddObject(currentCodeBlockInTree, connectionType, targetConnection, subjectEntity, objectEntity, actionOrConditionEntity, foundSubject, foundObject, sentenceIndex, NULL, isPrimary))
+						{
+
+						}
 					}
 				}
 			}

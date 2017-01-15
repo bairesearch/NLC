@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1f14a 8-June-2014
+ * Project Version: 1f14b 8-June-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -46,6 +46,8 @@ NLCclassDefinition::NLCclassDefinition(string newName)
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
+
+	printed = false;
 }
 NLCclassDefinition::NLCclassDefinition(void)
 {
@@ -56,6 +58,8 @@ NLCclassDefinition::NLCclassDefinition(void)
 	#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 	actionOrConditionInstance = NULL;
 	#endif
+
+	printed = false;
 }
 NLCclassDefinition::~NLCclassDefinition(void)
 {

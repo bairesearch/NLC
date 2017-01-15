@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n27a 04-February-2015
+ * Project Version: 1n27b 04-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -221,22 +221,11 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		{
 		#endif	
 			#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-			//Part 1 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
+			//Part 2 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
 			#ifdef NLC_DEBUG
-			cout << "generateCodeBlocksPart1logicalConditions:" << endl;
+			cout << "generateCodeBlocksPart2logicalConditions:" << endl;
 			#endif
 			if(!generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
-			{
-				result = false;
-			}
-			#endif
-
-			#ifdef NLC_SUPPORT_REDEFINITIONS
-			//Part 2: redefinitions (eg The dog is an Alsation)
-			#ifdef NLC_DEBUG
-			cout << "generateCodeBlocksPart2redefinitions:" << endl;
-			#endif
-			if(!generateCodeBlocksPart2redefinitions(&currentCodeBlockInTree, entityNodesActiveListSentence, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
 			{
 				result = false;
 			}
@@ -259,6 +248,17 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			{
 				result = false;
 			}
+			
+			#ifdef NLC_SUPPORT_REDEFINITIONS
+			//Part 4: redefinitions (eg The dog is an Alsation)
+			#ifdef NLC_DEBUG
+			cout << "generateCodeBlocksPart5redefinitions:" << endl;
+			#endif
+			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListSentence, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
+			{
+				result = false;
+			}
+			#endif
 			
 		#ifdef NLC_PREPROCESSOR_MATH
 		}
@@ -724,7 +724,7 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBloc
 }
 
 #ifdef NLC_SUPPORT_REDEFINITIONS
-bool generateCodeBlocksPart2redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
 {
 	bool result = true;
 
@@ -760,7 +760,7 @@ bool generateCodeBlocksPart2redefinitions(NLCcodeblock** currentCodeBlockInTree,
 								{	
 									//check this code
 									#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
-									cout << "generateCodeBlocksPart2redefinitions (alias):" << endl;
+									cout << "generateCodeBlocksPart5redefinitions (alias):" << endl;
 									cout << "definitionEntity (aliasName) = " << definitionEntity << endl;
 									cout << "entity (aliasClassName) = " << entity << endl;
 									#endif
@@ -828,7 +828,7 @@ bool generateCodeBlocksPart2redefinitions(NLCcodeblock** currentCodeBlockInTree,
 										{//ignore substanceConcept definitions for for entities of same name
 											
 											#ifdef NLC_DEBUG
-											cout << "generateCodeBlocksPart2redefinitions (definition):" << endl;
+											cout << "generateCodeBlocksPart5redefinitions (definition):" << endl;
 											cout << "entity = " << entity->entityName << endl;
 											cout << "definitionEntity = " << definitionEntity->entityName << endl;
 											#endif

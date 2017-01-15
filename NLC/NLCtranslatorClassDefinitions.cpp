@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l4d 02-November-2014
+ * Project Version: 1l5a 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -319,14 +319,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									#endif
 								}
 							}
-							/*
-							else
-							{
-								cout << "entityNode->entityName = " << entityNode->entityName << endl;
-								cout << "i = " << i << endl;
-								cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
-							}
-							*/
 						#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 						}
 						#endif
@@ -354,7 +346,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition * classDefinition = *classDefinitionIter;
-		//cout << "0classDefinition = " << classDefinition->name << endl;
+		//cout << "classDefinition = " << classDefinition->name << endl;
 
 		if(classDefinition->definitionList.empty() && (classDefinition->name != generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE)))
 		{
@@ -486,19 +478,19 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition *> * classDefinit
 								bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 								if(!foundFunctionDependencyInParent)
 								{
-									//cout << "1. !foundFunctionDependencyInParent" << endl;		
+									//cout << "!foundFunctionDependencyInParent" << endl;		
 									parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 								}
 								else
 								{
-									//cout << "1. foundFunctionDependencyInParent" << endl;	
+									//cout << "foundFunctionDependencyInParent" << endl;	
 									duplicateFunctionDeclarationDetected = true;
 									//duplicate function declarations will be ignored
 								}
 							}
 							else
 							{
-								//cout << "1. !foundFunctionDependencyInList: " << functionName << endl;
+								//cout << "!foundFunctionDependencyInList: " << functionName << endl;
 
 								functionDependency = new NLCclassDefinitionFunctionDependency();
 								functionDependency->functionName = functionName;

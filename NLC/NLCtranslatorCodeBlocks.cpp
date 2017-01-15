@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l4d 02-November-2014
+ * Project Version: 1l5a 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -556,15 +556,15 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 							}
 							else
 							{
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
 								GIAentityNode * logicalConditionOperationObject = NULL;
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
 								if(checkIfPhraseContainsAction(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
 								{//eg "If the sun fights, the dog is happy."
 								
 									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
 									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
 
-									setDummyActionReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
+									setDummyReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
 									GIAentityNode * actionEntityCompare = logicalConditionOperationObject;	//if statement comparison...
 									GIAentityNode * actionEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(actionEntityCompare);
 									if(searchForEquivalentSubnetToIfStatement(actionEntityCompareConcept, logicalConditionOperationObject))
@@ -572,17 +572,33 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
 										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC: passed logical condition" << endl;
 									}								
-								}
-								else
-								{
+								} else 
 								#endif
-									if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, caseIndex))
+								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
+								if(checkIfPhraseContainsSubstanceConcept(entityNodesActiveListComplete, parsablePhrase->sentenceIndex, &logicalConditionOperationObject))
+								{//eg If red dogs are pies, eat the cabbage
+								
+									//logical operations on concepts are performed by NLC (code is not generated for them by NLC as they are not performed at runtime) - eg If red dogs are pies, eat the cabbage.	[as opposed to: "if the red dog is the/a pie, eat the cabbage"]
+									//verify the truth of the if statement now (if the statement is false, disable all classStructure formation based on condition subject subset)
+								
+									cout << "logicalConditionOperationObject->isSubstanceConcept" << endl;
+									string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentSentence->sentenceIndex, parsablePhrase);
+									*currentCodeBlockInTree = createCodeBlockDeclareNewBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, false);
+
+									setDummyReferenceSetIDforAllEntitiesInPhrase(entityNodesActiveListComplete, parsablePhrase->sentenceIndex);	//this is required for searchForEquivalentSubnetToIfStatement()
+									GIAentityNode * substanceConceptEntityCompare = logicalConditionOperationObject;	//if statement comparison...
+									GIAentityNode * substanceConceptEntityCompareConcept = getPrimaryConceptNodeDefiningInstance(substanceConceptEntityCompare);
+									if(searchForEquivalentSubnetToIfStatement(substanceConceptEntityCompareConcept, logicalConditionOperationObject))
 									{
-										result = false;
+										*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, parsablePhraseReferenceName, true);
+										//cout << "NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC: passed logical condition" << endl;
 									}
-								#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
-								}
+								} else
 								#endif
+								if(!generateCodeBlocksFromMathTextNLPparsablePhrase(currentCodeBlockInTree, entityNodesActiveListComplete, parsablePhrase->sentenceIndex, currentSentence, parsablePhrase, phraseIndex, caseIndex))
+								{
+									result = false;
+								}
 							}
 							#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 							cout << "finished generateCodeBlocksFromMathTextNLPparsablePhrase()" << endl;
@@ -1263,16 +1279,36 @@ bool checkIfPhraseContainsAction(vector<GIAentityNode*> * entityNodesActiveListC
 	}
 	return phraseContainsAction;
 }
+#endif
 
-void setDummyActionReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS
+bool checkIfPhraseContainsSubstanceConcept(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex, GIAentityNode ** logicalConditionOperationObject)
+{
+	bool phraseContainsSubstanceConcept = false;
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * connectedEntity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
+		{		
+			if(connectedEntity->isSubstanceConcept)
+			{
+				phraseContainsSubstanceConcept = true;
+				*logicalConditionOperationObject = connectedEntity;
+			}
+		}
+	}
+	return phraseContainsSubstanceConcept;
+}
+#endif
+
+void setDummyReferenceSetIDforAllEntitiesInPhrase(vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
 {
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * connectedEntity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(connectedEntity, sentenceIndex, false))
 		{			
-			connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_DUMMY_REFERENCE_SET_ID;
+			connectedEntity->referenceSetID = NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_OR_CONCEPTS_DUMMY_REFERENCE_SET_ID;
 		}
 	}
 }
-#endif

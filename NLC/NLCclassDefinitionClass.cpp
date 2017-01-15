@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l4d 02-November-2014
+ * Project Version: 1l5a 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -259,7 +259,6 @@ bool findFunctionDependencyInClassDefinitionList(vector<NLCclassDefinition *> * 
 bool findFunctionDeclarationClassDefinitionExactOrNonExactMatch(vector<NLCclassDefinition *> * classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, NLCclassDefinition ** functionClassDeclarationFound, bool rearrangeClassList, bool * foundFunctionOwnerExactMatch, bool * foundFunctionObjectExactMatch)
 {
 	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	//cout << "888888888888888888888888888888888888888888888888888888888888888" << endl;
 	cout << "findFunctionDeclarationClassDefinitionExactOrNonExactMatch(): " << endl;
 	cout << "functionName = " << functionName << endl;
 	cout << "functionOwnerName = " << functionOwnerName << endl;
@@ -407,10 +406,8 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 							#endif
 							if(rearrangeClassList)
 							{
-								//cout << "k1" << endl;
 								if(findParentClass(currentClassDef, generateClassName(functionOwnerName), 0, &inheritanceLevel, &parentFunctionOwnerClassDef))
 								{
-									//cout << "k2" << endl;
 									if(currentClassDef != parentFunctionOwnerClassDef)
 									{
 										passFunctionDefinitionRequirements = true;
@@ -429,18 +426,15 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 							else
 							{
 								//cout << "!findFunctionOwnerExactMatch ... " << endl;
-								//cout << "k1" << endl;
 								bool foundClassDefinitionCorrespondingToFunctionOwner = false;
 								NLCclassDefinition * classDefinitionCorrespondingToFunctionOwner = findClassDefinition(classDefinitionList, generateClassName(functionOwnerName), &foundClassDefinitionCorrespondingToFunctionOwner);
 
 								if(foundClassDefinitionCorrespondingToFunctionOwner)
 								{
-									//cout << "k2" << endl;
 									//cout << "currentClassDef->name (function declaration subject) = " << currentClassDef->name << endl;
 									//cout << "classDefinitionCorrespondingToFunctionOwner->name = " << classDefinitionCorrespondingToFunctionOwner->name << endl;
 									if(findParentClass(classDefinitionCorrespondingToFunctionOwner, currentClassDef->name, 0, &inheritanceLevel, &parentFunctionOwnerClassDef))
 									{
-										//cout << "k3" << endl;
 										if(classDefinitionCorrespondingToFunctionOwner != parentFunctionOwnerClassDef)
 										{
 											passFunctionDefinitionRequirements = true;
@@ -499,7 +493,6 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 								#endif
 								if(findFunctionArgument(&(functionDeclaration->parameters), NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT, &functionObjectArgument))
 								{
-									//cout << "k1" << endl;
 									//cout << "functionObjectArgument->name = " << functionObjectArgument->name << endl;
 									if(rearrangeClassList)
 									{
@@ -508,13 +501,11 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 
 										if(foundClassDefinitionCorrespondingToFunctionObject)
 										{
-											//cout << "k2" << endl;
 											int inheritanceLevel = 0;
 											//cout << "classDefinitionCorrespondingToFunctionObject->name = " << classDefinitionCorrespondingToFunctionObject->name << endl;
 											//cout << "functionObjectArgument->className = " << functionObjectArgument->className << endl;
 											if(findParentClass(classDefinitionCorrespondingToFunctionObject, generateClassName(functionObjectName), 0, &inheritanceLevel, &parentFunctionObjectClassDef))
 											{
-												//cout << "k3" << endl;
 												if(classDefinitionCorrespondingToFunctionObject != parentFunctionObjectClassDef)
 												{
 													passFunctionDefinitionRequirements = true;
@@ -532,13 +523,11 @@ bool findFunctionDeclarationClassDefinition(vector<NLCclassDefinition *> * class
 
 										if(foundClassDefinitionCorrespondingToFunctionObject)
 										{
-											//cout << "k2" << endl;
 											int inheritanceLevel = 0;
 											//cout << "classDefinitionCorrespondingToFunctionObject->name = " << classDefinitionCorrespondingToFunctionObject->name << endl;
 											//cout << "functionObjectArgument->className = " << functionObjectArgument->className << endl;
 											if(findParentClass(classDefinitionCorrespondingToFunctionObject, generateClassName(functionObjectArgument->name), 0, &inheritanceLevel, &parentFunctionObjectClassDef))
 											{
-												//cout << "k3" << endl;
 												if(classDefinitionCorrespondingToFunctionObject != parentFunctionObjectClassDef)
 												{
 													passFunctionDefinitionRequirements = true;

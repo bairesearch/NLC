@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l6c 02-November-2014
+ * Project Version: 1l6d 02-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1185,7 +1185,7 @@ bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCod
 			cout << "\tfail generateParentInitialisationCodeBlockWithChecks" << endl;
 			cout << "generateCodeBlocksObjectInitialisationsForEntity: generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions()" << endl;
 			#endif
-			if(!generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", true, false))
+			if(!generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", true))
 			{
 				*currentCodeBlockInTree = originalCodeBlockInLevel;
 				clearCodeBlock(originalCodeBlockInLevel);
@@ -1320,7 +1320,7 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 	#endif
 
 	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
-	performedAtLeastParentObjectInitialisation = generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "", false, true);
+	performedAtLeastParentObjectInitialisation = generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree, sentenceIndex, "", "", false);
 	
 	*currentCodeBlockInTree = lastCodeBlockInTree;
 	if(performedAtLeastParentObjectInitialisation)
@@ -1409,7 +1409,7 @@ bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, G
 //added recursion 1e8a
 //onlyGenerateContextBlocksIfContextNotGeneratedForNLC removed 1i3b
 
-bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName, string parentConditionName, bool generateParentContext, bool newlyDeclaredEntityInCategoryList)
+bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName, string parentConditionName, bool generateParentContext)
 {
 	#ifdef NLC_DEBUG_PARSE_CONTEXT3
 	string generateParentContextStringTemp = "false";
@@ -1437,13 +1437,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		}
 	}
 	#endif
-	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
-	if(newlyDeclaredEntityInCategoryList)		//this could equally check for !(entity->NLCcontextGenerated)
-	{
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
-		entity->NLCcontextGenerated = true;
-	}
-	#else
+
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	if(!(entity->NLCcontextGenerated))
 	{//context block already created by generateContextBlocks()	//added 1g14b 15-July-2014
@@ -1451,20 +1445,38 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 		NLCitem * entityClass = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
 		if(assumedToAlreadyHaveBeenDeclared(entity))
 		{
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_FOR_PARENT_INITIALISATION_SPECIAL
 			#ifdef NLC_DEBUG_PARSE_CONTEXT2
 			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 1createCodeBlockForPropertyListLocal: ") + entity->entityName);
 			#endif
-
+			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, entity, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);
+			entity->NLCcontextGenerated = true;
+			#else
+			#ifdef NLC_DEBUG_PARSE_CONTEXT2
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 1createCodeBlockForPropertyListLocal: ") + entity->entityName);
+			#endif
 			*currentCodeBlockInTree = createCodeBlockForLocalList(*currentCodeBlockInTree, entityClass);
+			#endif
 		}
+		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		else
 		{
 			cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: !(entity->NLCcontextGenerated) && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName  << ", sentenceIndex = " << sentenceIndex << endl;
 			exit(0);
 		}
+		#else		
+		else
+		{
+			#ifdef NLC_DEBUG_PARSE_CONTEXT2
+			*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): 2createCodeBlockForPropertyList: ") + entity->entityName);
+			#endif
+
+			entityClass->context.push_back(parentName);
+			*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, entityClass);
+		}
+		#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	}
-	#endif
 	#endif
 	
 	bool performedAtLeastOneObjectInitialisation = false;
@@ -1617,7 +1629,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				}
 
 				NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), "", false, newlyDeclaredEntityInCategoryList2);
+				bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(propertyEntity, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), "", false);
 				#ifdef NLC_DEBUG
 				cout << "performedAtLeastOneObjectInitialisationAtALowerLevel = " << performedAtLeastOneObjectInitialisationAtALowerLevel << endl;
 				#endif
@@ -1764,7 +1776,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							}
 
 							NLCcodeblock * firstCodeBlockBeforeRecursion = *currentCodeBlockInTree;
-							bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), conditionEntity->entityName, false, newlyDeclaredEntityInCategoryList2);
+							bool performedAtLeastOneObjectInitialisationAtALowerLevel = generateObjectInitialisationsBasedOnPropertiesAndConditions(conditionObject, currentCodeBlockInTree, sentenceIndex, generateInstanceName(entity), conditionEntity->entityName, false);
 
 							generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(currentCodeBlockInTree, firstCodeBlockBeforeRecursion, firstCodeBlockInSection, performedAtLeastOneObjectInitialisationAtThisLevel, performedAtLeastOneObjectInitialisationAtALowerLevel, &performedAtLeastOneObjectInitialisation);
 						}

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l9f 05-November-2014
+ * Project Version: 1l10a 06-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,7 +53,6 @@ void generateActionCodeBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityN
 		#ifdef NLC_DEBUG
 		cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
 		cout << "sentenceIndex = " << sentenceIndex << endl;
-		cout << "actionEntity->wasReference = " << actionEntity->wasReference << endl;
 		#endif
 
 		#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE
@@ -1024,6 +1023,9 @@ bool createCodeBlockForGivenAction(NLCcodeblock ** currentCodeBlockInTree, strin
 			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 			actionObject->NLCcontextGenerated = true;
 			#endif
+			#ifdef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION1
+			actionObject->grammaticalDefiniteTemp = true;
+			#endif
 
 			NLCitem * actionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_OBJECT);
 			hasActionObject = true;
@@ -1072,6 +1074,9 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTre
 			GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
 			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 			actionSubject->NLCcontextGenerated = true;
+			#endif
+			#ifdef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION1
+			actionSubject->grammaticalDefiniteTemp = true;
 			#endif
 		
 			NLCitem * actionSubjectItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_OBJECT);
@@ -1463,11 +1468,14 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 			{
 				//cout << "generateContextForChildEntity pass: entity = " << entity->entityName << endl;
 			}
+			#ifndef NLC_RECORD_ACTION_HISTORY_COMPENSATE_FOR_EFFECTIVE_DEFINITE_ENTITIES_IMPLEMENTATION2
 			else
 			{
 				cout << "generateObjectInitialisationsBasedOnPropertiesAndConditions() error: generateParentContextTopLevel && !assumedToAlreadyHaveBeenDeclared: entity = " << entity->entityName << ", sentenceIndex = " << sentenceIndex << endl;
+				cout << "sentenceIndex = " << sentenceIndex << endl; 
 				exit(0);
 			}
+			#endif
 		#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//ie #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 		}
 		else

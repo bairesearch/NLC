@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j5b 09-September-2014
+ * Project Version: 1j5c 09-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -346,9 +346,28 @@ NLCcodeblock * createCodeBlockAddCondition(NLCcodeblock * currentCodeBlockInTree
 
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex)
 {	
-	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
-
+	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
 	currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(currentCodeBlockInTree, entity, entity, sentenceIndex);
+	
+	return currentCodeBlockInTree;
+}
+
+NLCcodeblock * createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
+{
+	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
+	if(!(entity->NLClocalListVariableHasBeenDeclared))
+	{//added 1g8a 11-July-2014
+		entity->NLClocalListVariableHasBeenDeclared = true;
+	#else
+	GIAentityNode * conceptEntity = getPrimaryConceptNodeDefiningInstance(entity);
+	if(!(conceptEntity->NLClocalListVariableHasBeenDeclared))
+	{
+		entity->NLClocalListVariableHasBeenDeclared = true;
+		conceptEntity->NLClocalListVariableHasBeenDeclared = true;
+	#endif
+	
+		currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
+	}
 	
 	return currentCodeBlockInTree;
 }
@@ -533,7 +552,7 @@ NLCcodeblock * createCodeBlockDeclareAndInitialiseVariableForActionSubject(NLCco
 
 NLCcodeblock * createCodeBlocksAddVariableToNewList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity)
 {
-	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariable(currentCodeBlockInTree, entity);
+	currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(currentCodeBlockInTree, entity);
 	currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(currentCodeBlockInTree, entity, entity);
 
 	return currentCodeBlockInTree;

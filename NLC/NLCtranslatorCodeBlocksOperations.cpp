@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1j5b 09-September-2014
+ * Project Version: 1j5c 09-September-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1064,19 +1064,8 @@ bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTre
 										*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateParentInitialisationCodeBlock(): ") + parentEntity->entityName);
 										#endif
 										
-										#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-										if(parentEntity->NLClocalListVariableHasBeenDeclared)
-										{//added 1g8a 11-July-2014
-											*currentCodeBlockInTree = createCodeBlockAddNewPropertyToLocalList(*currentCodeBlockInTree, parentEntity, parentEntity, sentenceIndex);
-										}
-										else
-										{
-										#endif
+										*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity, sentenceIndex);
 
-											*currentCodeBlockInTree = createCodeBlocksCreateNewLocalListVariable(*currentCodeBlockInTree, parentEntity, sentenceIndex);	//is this ever called with NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES?
-										#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-										}
-										#endif
 										parentEntity->NLCparsedForCodeBlocks = true;
 										parentEntity->NLClocalListVariableHasBeenInitialised = true;
 										//cout << "createCodeBlocksCreateNewLocalListVariable: " << parentEntity->entityName << endl;

@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1d 02-November-2013
+ * Project Version: 1d1e 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -36,6 +36,7 @@
 
 #include "NLPIprint.h"
 
+#ifndef NLPI_SUPPORT_INPUT_FILE_LISTS
 bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code)
 {
 	bool result = true;
@@ -53,6 +54,7 @@ bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition
 
 	return result;
 }
+#endif
 
 /*
 class className
@@ -87,6 +89,10 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			string className = classDefinition->name;
 			string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className;
 
+			#ifdef NLPI_DEBUG
+			cout << "printClassDefinitions: className:" << className << endl;
+			#endif
+			
 			bool foundDefinition = false;
 			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 			{
@@ -115,8 +121,6 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			//printLine(classNameCode, 1, code);
 			//printLine("", 1, code);
 
-			//cout << "className = " << className << endl;
-
 			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 			{
 				NLPIclassDefinition * targetClassDefinition = *localListIter;			
@@ -138,15 +142,14 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
 			{
 				NLPIclassDefinition * targetClassDefinition = *localListIter;
-				NLPIitem * param1 = targetClassDefinition->parameters.at(0);
 				string targetName = targetClassDefinition->classNameSpecial;
 				string functionArguments = "";
-				if(targetClassDefinition->parameters.at(0) != NULL)		//CHECK THIS IS A CORRECT METHOD TO SEE IF A VECTOR ITEM EXISTS!
+				if(targetClassDefinition->parameters.size() > 0)
 				{
-					NLPIitem * param2 = targetClassDefinition->parameters.at(0);
-					if(param2->itemType == NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT)
+					NLPIitem * param1 = targetClassDefinition->parameters.at(0);
+					if(param1->itemType == NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT)
 					{
-						functionArguments = param2->className + progLangPointer[progLang] + STRING_SPACE + param2->instanceName;
+						functionArguments = param1->className + progLangPointer[progLang] + STRING_SPACE + param1->instanceName;
 					}
 				}
 				#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
@@ -155,7 +158,7 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 				string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
 				printLine(localListDeclarationText, 1, code);
 			}
-
+			
 			printLine(progLangCloseClass[progLang], 0, code);
 			printLine("", 0, code);
 		#ifndef NLPI_BAD_IMPLEMENTATION

@@ -23,7 +23,7 @@
  * File Name: NLPIprint.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1d 02-November-2013
+ * Project Version: 1d1e 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -116,7 +116,9 @@ static string progLangFindCondition[NLPI_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"em
 #define NLPI_ITEM_TYPE_CONDITIONLISTFINDFUNCTION "findCondition"
 */
 
+#ifndef NLPI_SUPPORT_INPUT_FILE_LISTS
 bool printCode(NLPIcodeblock * firstCodeBlockInLevel, vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);
+#endif	
 	bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, int progLang, string * code);	
 		string generateCodeConditionListDefinitionText(string conditionClassName, string conditionObjectClassName, int progLang);
 		string generateCodePropertyListDefinitionText(string targetClassName, int progLang);

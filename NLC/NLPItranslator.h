@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1d 02-November-2013
+ * Project Version: 1d1e 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -67,5 +67,9 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 #ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * functionName, string * functionOwnerName, bool * foundFunctionOwnerClass);
 	string parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName);
+void reconcileClassDefinitionListFunctionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition(NLPIcodeblock * firstCodeBlockInTree, vector<NLPIclassDefinition *> * classDefinitionList, string NLPIfunctionName);
+	bool findFormalFunctionArgumentCorrelateInExistingList(NLPIclassDefinition * functionClassDefinition, vector<NLPIitem*> * formalFunctionArgumentList, vector<NLPIclassDefinition *> * classDefinitionList);
+		bool findParentClass(NLPIclassDefinition * classDefinition, string variableName, int inheritanceLevel, int * maxInheritanceLevel, NLPIclassDefinition ** parentClass);
+int getFilesFromFileList2(string inputListFileName, vector<string> * inputTextFileNameList);
 #endif	
-#endif		
+#endif	

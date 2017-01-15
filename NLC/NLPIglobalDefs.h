@@ -23,7 +23,7 @@
  * File Name: NLPIglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1d 02-November-2013
+ * Project Version: 1d1e 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -37,11 +37,14 @@
 
 //#define NLPI_USE_SPECIFIC_CONCEPT_CLASSES	//1dXy
 //#define NLPI_DEBUG
+//#define NLPI_DEBUG_PRINT_HIDDEN_CLASSES
 
 #define NLPI_SUPPORT_INPUT_FILE_LISTS	//1d1a
 #ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	#define NLPI_SUPPORT_INPUT_FILE_LISTS_MAX_INHERITANCE_DEPTH_FOR_CLASS_CASTING (99)
 	#define NLPI_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS	//1d1b
+	#define NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER "::"
+	#define NLPI_SUPPORT_INPUT_FILE_LISTS_OWNER_CLASS_DELIMITER_LENGTH (2)
 #endif
 
 #define NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS

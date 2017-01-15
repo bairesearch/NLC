@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1d1d 02-November-2013
+ * Project Version: 1d1e 02-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -120,10 +120,10 @@ NLPIitem::~NLPIitem(void)
 
 string generateClassName(GIAentityNode * entity)
 {
-	string className = "";
 	#ifndef NLPI_BAD_IMPLEMENTATION
-	className = entity->entityName + "Class";
+	string className = generateClassName(entity->entityName);
 	#else
+	string className = "";
 	if(entity->isConcept)
 	{
 		className = entity->entityName + "Class";
@@ -133,6 +133,11 @@ string generateClassName(GIAentityNode * entity)
 		className = entity->entityName + convertLongToString(entity->idInstance) + "Class";
 	}
 	#endif
+	return className;
+}
+string generateClassName(string entityName)
+{
+	string className = entityName + "Class";
 	return className;
 }
 string generateInstanceName(GIAentityNode * entity)

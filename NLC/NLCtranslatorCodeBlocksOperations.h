@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1a 14-November-2014
+ * Project Version: 1m1b 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -92,19 +92,19 @@ bool getParentAndGenerateParentInitialisationCodeBlock(NLCcodeblock ** currentCo
 	bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, bool parseLogicalConditions);
 		bool generateParentInitialisationCodeBlock(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex);
 
-GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool parseConditionParents);
+GIAentityNode * getParent(GIAentityNode * currentEntity, int sentenceIndex, bool parseConditionParents, GIAentityNode * previousChildConditionEntity);
 bool getParentAndGenerateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * currentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool parseConditionParents);
 	
-bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName, string parentConditionName, bool generateParentContextTopLevel, bool generateParentContextPassThrough);
+bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, GIAentityNode * parentEntity, string parentConditionName, bool generateParentContextTopLevel, bool generateParentContextPassThrough);
 	void generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock * firstCodeBlockBeforeRecursion, NLCcodeblock * firstCodeBlockInSection, bool performedAtLeastOneObjectInitialisationAtThisLevel, bool performedAtLeastOneObjectInitialisationAtALowerLevel, bool * performedAtLeastOneObjectInitialisation);
 	bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * childEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, bool topLevel);
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-		GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentEntity, int sentenceIndex, GIAentityNode * generateObjectInitialisationsLastParent, bool * foundParentEntityNew, bool parseConditionParents);
+		GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentEntity, int sentenceIndex, GIAentityNode * generateObjectInitialisationsLastParent, bool * foundParentEntityNew, bool parseConditionParents, GIAentityNode * previousChildConditionEntity);
 		#endif
 
 #ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 void generateObjectInitialisationsBasedOnSubstanceConcepts(GIAentityNode * entity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, bool newlyDeclaredEntityInCategoryList);
-	void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode * entity, GIAentityNode * definitionEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, string parentName, string parentConditionName, bool newlyDeclaredEntityInCategoryList);
+	void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode * entity, GIAentityNode * definitionEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, GIAentityNode * parentEntity, string parentConditionName, bool newlyDeclaredEntityInCategoryList);
 #endif
 
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES

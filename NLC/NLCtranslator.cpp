@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1a 14-November-2014
+ * Project Version: 1m1b 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -271,6 +271,8 @@ int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode * conditi
 					bool conjunctionConditionFound = textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
 					if(conjunctionConditionFound)
 					{
+						//NB #ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS checks are not required because ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES are not defined to be two way
+						
 						NLClogicalConditionConjunctionContainer * logicalConditionConjunctionContainer2 = new NLClogicalConditionConjunctionContainer(conditionEntity2);
 						logicalConditionConjunctionContainer->nextConditionConjunctions.push_back(logicalConditionConjunctionContainer2);
 						int numberOfConjunctions = addConjunctionsConnectedToConditionConjunctionObject(conditionEntity2, logicalConditionConjunctionContainer2, sentenceIndex);

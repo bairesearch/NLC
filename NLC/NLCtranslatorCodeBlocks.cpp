@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1m1a 14-November-2014
+ * Project Version: 1m1b 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -959,7 +959,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock ** currentCode
 								cout << "generateCodeBlocksFromMathTextNLPparsablePhrase(): found entity: " << entity->entityName << endl;
 								#endif
 
-								GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
+								GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true, NULL);	//NB parseConditionParents probably does not need to ever be set to true (unless condition subject/object are switched and condition name is updated accordingly to reflect this inversion of relationship)
 
 								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
 								NLCcodeblock * NLCcodeBlockBeforeGenerateContext = *currentCodeBlockInTree; 
@@ -1293,7 +1293,7 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock ** currentCodeBlo
 				generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, entity, sentenceIndex);
 				#else
 				//This code is effectively identical to generateCodeBlocksObjectInitialisationsForEntity(), without the generateParentContext argument;
-				GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);
+				GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true, NULL);
 				if(!checkSpecialCaseEntity(parentEntity, true))
 				{
 					if(!generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity , sentenceIndex, false))

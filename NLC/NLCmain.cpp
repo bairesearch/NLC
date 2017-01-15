@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3d 25-June-2015
+ * Project Version: 1p3e 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -640,7 +640,7 @@ int main(int argc,char* *argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1p3d 25-June-2015" << endl;
+			cout << "OpenNLC.exe - Project Version: 1p3e 25-June-2015" << endl;
 			exit(1);
 		}
 
@@ -798,7 +798,7 @@ int main(int argc,char* *argv)
 	#endif
 	#endif
 	
-	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
+	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		int maxNumberSentences;
 
@@ -820,19 +820,19 @@ int main(int argc,char* *argv)
 		{
 			if(useInputTextPlainTXTFile)
 			{
-				inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(functionIndex);
+				inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(functionDefinitionIndex);
 			}
 			if(useInputTextNLPrelationXMLFile)
 			{
-				inputTextNLPrelationXMLfileName = inputTextNLPrelationXMLFileNameList.at(functionIndex);
+				inputTextNLPrelationXMLfileName = inputTextNLPrelationXMLFileNameList.at(functionDefinitionIndex);
 			}
 			if(useInputTextNLPfeatureXMLFile)
 			{
-				inputTextNLPfeatureXMLfileName = inputTextNLPfeatureXMLFileNameList.at(functionIndex);
+				inputTextNLPfeatureXMLfileName = inputTextNLPfeatureXMLFileNameList.at(functionDefinitionIndex);
 			}
 			if(useInputTextXMLFile)
 			{
-				inputTextXMLFileName = inputTextXMLFileNameList.at(functionIndex);
+				inputTextXMLFileName = inputTextXMLFileNameList.at(functionDefinitionIndex);
 			}
 		}
 		#endif
@@ -1026,7 +1026,7 @@ int main(int argc,char* *argv)
 		#endif
 
 		//generate class definition function declaration for new function definition (creates both functionDependency object and classDefinition object [if NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS])
-		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionIndex, false);
+		NLCclassDefinitionFunctionDependency* functionDependency = createFunctionDependencyForNewFunctionDefinition(NLCfunctionName, &classDefinitionList, &functionDependencyList, functionDefinitionIndex, false);
 		
 		translateNetwork(firstCodeBlockInTree, &classDefinitionList, entityNodesActiveListComplete, entityNodesActiveListSentences, maxNumberSentences, NLCfunctionName, currentNLCfunctionInList, useNLCpreprocessor);
 		
@@ -1062,9 +1062,9 @@ int main(int argc,char* *argv)
 	printPredefinedNLCfunctions(currentCodeBlockInTree);
 	#endif
 	
-	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
+	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
-		NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
+		NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDefinitionIndex);
 		int level = 0;
 		#ifdef NLC_SUPPORT_INPUT_FUNCTION_LISTS
 		if(!printCodeBlocks(firstCodeBlockInTree, &classDefinitionList, progLang, &code, level))
@@ -1414,12 +1414,12 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 	
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	//added 1k13g - generate class definition function declarations for all function execution references (generateClassHeirarchyFunctions has been separated from generateClassHeirarchy since non-exact function reconciliation can only occur once class definition heirachy has been established)
-	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
+	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
-		if(findFunctionDependencyInList(functionDependencyList, functionIndex, &functionDependency))
+		if(findFunctionDefinitionFunctionDependencyInList(functionDependencyList, functionDefinitionIndex, &functionDependency))
 		{	
-			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions->at(functionIndex);
+			vector<GIAentityNode*>* entityNodesActiveListComplete = entityNodesActiveListCompleteFunctions->at(functionDefinitionIndex);
 			
 			//NLC translator Part 2b.
 			if(!generateClassHeirarchyFunctions(classDefinitionList, entityNodesActiveListComplete, functionDependency, functionDependencyList))
@@ -1435,7 +1435,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 	{	
 		NLCclassDefinitionFunctionDependency* functionDependencyTemp = *functionDependencyIter;
 		cout << "1. ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
-		cout << "functionDependency->functionNameListIndex = " << functionDependencyTemp->functionNameListIndex << endl;
+		cout << "functionDependency->functionDefinitionListIndex = " << functionDependencyTemp->functionDefinitionListIndex << endl;
 		cout << "functionDependency->functionName = " << functionDependencyTemp->functionName << endl;
 		cout << "functionDependency->functionObject = " << functionDependencyTemp->functionObjectName << endl;
 		cout << "functionDependency->functionOwner = " << functionDependencyTemp->functionOwnerName << endl;
@@ -1443,7 +1443,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 		{	
 			NLCclassDefinitionFunctionDependency* functionDependencyTemp2 = *functionDependencyIter2;
 			cout << "  2. ---------------------------------------------------" << endl;
-			cout << "  functionDependencyTemp2->functionNameListIndex = " << functionDependencyTemp2->functionNameListIndex << endl;
+			cout << "  functionDependencyTemp2->functionDefinitionListIndex = " << functionDependencyTemp2->functionDefinitionListIndex << endl;
 			cout << "  functionDependencyTemp2->functionName = " << functionDependencyTemp2->functionName << endl;
 			cout << "  functionDependencyTemp2->functionObject = " << functionDependencyTemp2->functionObjectName << endl;
 			cout << "  functionDependencyTemp2->functionOwner = " << functionDependencyTemp2->functionOwnerName << endl;
@@ -1462,10 +1462,10 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 		{
 			NLCclassDefinitionFunctionDependency* functionDependency = *functionDependencyIter;
 
-			if(functionDependency->functionNameListIndex != INT_DEFAULT_VALUE)
+			if(functionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE)
 			{
 				#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-				if(!(functionDependency->isReference))	//redundant check (checking functionNameListIndex already)
+				if(!(functionDependency->isReferenceElseFunctionDefinition))	//redundant check (checking functionDefinitionListIndex already)
 				{
 				#endif
 					if(!(functionDependency->reconciledFunctionDeclarationArguments))
@@ -1474,10 +1474,10 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 						for(vector<NLCclassDefinitionFunctionDependency*>::iterator functionDependencyIter2 = functionDependency->functionDependencyList.begin(); functionDependencyIter2 != functionDependency->functionDependencyList.end(); functionDependencyIter2++)
 						{
 							NLCclassDefinitionFunctionDependency* functionDependencyChild = *functionDependencyIter2;
-							if(functionDependencyChild->functionNameListIndex != INT_DEFAULT_VALUE)
+							if(functionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE)
 							{
 								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-								if(!(functionDependencyChild->isReference))	//redundant check (checking functionNameListIndex already)
+								if(!(functionDependencyChild->isReferenceElseFunctionDefinition))	//redundant check (checking functionDefinitionListIndex already)
 								{
 								#endif
 									if(!(functionDependencyChild->reconciledFunctionDeclarationArguments))
@@ -1492,8 +1492,8 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 						}
 						if(reconciledChildFunctionDeclarationArguments)
 						{
-							//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
-							NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDependency->functionNameListIndex);
+							//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionDefinitionListIndex)
+							NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList->at(functionDependency->functionDefinitionListIndex);
 
 							string functionName = functionDependency->functionName;
 							#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
@@ -1512,7 +1512,7 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 				}
 				else
 				{
-					cout << "NLCmain error: functionDependency->functionNameListIndex != INT_DEFAULT_VALUE && functionDependency->isReference" << endl;
+					cout << "NLCmain error: functionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDependency->isReferenceElseFunctionDefinition" << endl;
 					exit(0);
 				}
 				#endif
@@ -1520,13 +1520,13 @@ bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(vector<NLC
 		}	
 	}
 	#else
-	for(int functionIndex=0; functionIndex<numberOfInputFilesInList; functionIndex++)
+	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
 	{
 		NLCclassDefinitionFunctionDependency* functionDependency = NULL;
-		if(findFunctionDependencyInList(&functionDependencyList, functionIndex, &functionDependency))
+		if(findFunctionDefinitionFunctionDependencyInList(&functionDependencyList, functionDefinitionIndex, &functionDependency))
 		{
-			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionNameListIndex)
-			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionIndex);
+			//updates all classDefinition functionList function declaration arguments corresponding to a single defined function (functionDependency->functionDefinitionListIndex)
+			NLCcodeblock* firstCodeBlockInTree = firstCodeBlockInTreeList.at(functionDefinitionIndex);
 
 			string functionName = functionDependency->functionName;
 			#ifdef NLC_DEBUG

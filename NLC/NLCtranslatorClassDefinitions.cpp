@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1p3d 25-June-2015
+ * Project Version: 1p3e 25-June-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -637,7 +637,7 @@ bool generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitio
 								#endif
 								functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
 								#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-								functionDependency->isReference = true;
+								functionDependency->isReferenceElseFunctionDefinition = true;
 								#endif
 								parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 								functionDependencyList->push_back(functionDependency);
@@ -979,7 +979,7 @@ void generateSubstanceConceptClassNameRecurse(GIAentityNode* substanceConceptEnt
 	{
 		GIAentityNode* substanceConceptCondition = (*entityIter)->entity;
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-		if(!(substanceConceptCondition->inverseConditionTwoWay) || (*entityIter)->isReference)		//prevent infinite loop for 2 way conditions
+		if(!(substanceConceptCondition->inverseConditionTwoWay) || (*entityIter)->isReferenceElseFunctionDefinition)		//prevent infinite loop for 2 way conditions
 		{
 		#endif
 			if(!(substanceConceptCondition->conditionObjectEntity->empty()))

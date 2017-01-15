@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8c 24-August-2014
+ * Project Version: 1i8d 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -153,7 +153,7 @@ public:
 	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	bool onlyGenerateContextBlocksIfConnectionsParsedForNLC;
-	bool onlyGenerateContextBlocksIfSameReferenceSet;	//added 1i3d
+	bool generateContextBlocksIfSameReferenceSet;	//added 1i3d
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE

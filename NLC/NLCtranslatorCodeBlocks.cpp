@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8c 24-August-2014
+ * Project Version: 1i8d 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -335,7 +335,7 @@ bool generateCodeBlocksFromMathText(NLCcodeblock ** currentCodeBlockInTree, vect
 			while(stillFindingLogicalConditionAtCurrentLevel)
 			{//this loop is only required by NLC_LOGICAL_CONDITION_OPERATIONS_IF (it is not used by NLC_LOGICAL_CONDITION_OPERATIONS_WHILE and NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 				
-				#ifdef NLC_ACTIVATE_OLD_CODE_FOR_DEBUG
+				#ifdef NLC_ACTIVATE_PRE1i_CODE_FOR_DEBUG
 				declareLocalPropertyListsForIndefiniteEntities(currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentSentence);	//indefinite logical condition objects (eg "a house" in "if a house is green, do this") must have been previously declared else output code will not compile [as these statements implicitly assume the existence of "a house"; which may or may not be "green"]
 				#endif
 				

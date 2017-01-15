@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i8c 24-August-2014
+ * Project Version: 1i8d 24-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -509,7 +509,11 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 									GIAentityNode * parentEntity = getParent(logicalConditionOperationSubject, sentenceIndex, true);		//CHECKTHIS check parseConditionParents value here
 									if(!generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
 									{
-										generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions(logicalConditionOperationSubject, currentCodeBlockInTree , sentenceIndex, "", "");	//NB generateContextBlocks added 1i8b
+										#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_BLOCKS_AT_ALL_TIMES
+										generateContextBlocksAndGenerateObjectInitialisationsBasedOnPropertiesAndConditions(logicalConditionOperationSubject, currentCodeBlockInTree , sentenceIndex, "", "");	//NB generateContextBlocks added 1i8c [is this required?]
+										#else
+										generateObjectInitialisationsBasedOnPropertiesAndConditions(logicalConditionOperationSubject, currentCodeBlockInTree , sentenceIndex, "", "");
+										#endif
 									}
 									#endif
 								}

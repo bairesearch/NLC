@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1n22c 02-February-2015
+ * Project Version: 1n23a 03-February-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -151,7 +151,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 		
 		#ifndef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
-		//Part Prep A - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
+		//Part Prep A - declareLocalVariables (for non-specific indefinite entities, eg "a chicken", not "a blue chicken") - added 1g8a;
 		#ifdef NLC_DEBUG
 		cout << "declareLocalPropertyListsForIndefiniteEntities:" << endl;
 		#endif
@@ -254,7 +254,7 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart5redefinitions:" << endl;
 			#endif
-			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName))
+			if(!generateCodeBlocksPart5redefinitions(&currentCodeBlockInTree, entityNodesActiveListSentence, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName))
 			{
 				result = false;
 			}
@@ -412,11 +412,11 @@ bool generateCodeBlocks(NLCcodeblock* firstCodeBlockInTree, vector<GIAentityNode
 }
 
 #ifdef NLC_MARK_ACTION_SUBJECT_OBJECT_INDEFINITE_ENTITY_ACTIONS_AS_NOT_SAME_REFERENCE_SET
-bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex)
+bool markActionSubjectObjectIndefiniteEntityActionsAsNotSameReferenceSet(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
 {
 	bool result = true;
 	//e.g. "a chicken" in "A chicken that ate a pie rows the boat."/"A chicken that ate the pie rows the boat" - set all actions as !sameReferenceSet such that they are not parsed by future references to generateContextBlocks(), but are instead treated as actions
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* actionEntity = (*entityIter);
 		if(actionEntity->isAction)
@@ -638,11 +638,11 @@ bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNod
 
 
 
-bool generateCodeBlocksPart3actions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
+bool generateCodeBlocksPart3actions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex, string NLCfunctionName, NLCsentence* currentNLCsentenceInList)
 {
 	bool result = true;
 	
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* actionEntity = (*entityIter);
 		if(actionEntity->isAction)
@@ -694,10 +694,10 @@ bool generateCodeBlocksPart3actions(NLCcodeblock** currentCodeBlockInTree, vecto
 
 
 
-bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex, string NLCfunctionName)
 {
 	bool result = true;
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = *entityIter;
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
@@ -724,12 +724,12 @@ bool generateCodeBlocksPart4objectInitialisations(NLCcodeblock** currentCodeBloc
 }
 
 #ifdef NLC_SUPPORT_REDEFINITIONS
-bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
+bool generateCodeBlocksPart5redefinitions(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, string NLCfunctionName)
 {
 	bool result = true;
 
 	bool phraseContainsSubstanceWithDefinitionLink = false;
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
 		if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
@@ -904,10 +904,10 @@ bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveList
 
 
 #ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
-bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex)
+bool generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListSentence, int sentenceIndex)
 {
 	bool result = true;
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
 		if(!checkSpecialCaseEntity(entity, true) && !(entity->isSubstanceQuality))

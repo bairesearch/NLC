@@ -177,7 +177,8 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction* firstNLCfunctionInL
 						{
 							startOfSentenceIndexNew = lineContents.find(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR, startOfSentenceIndexNew);
 							if(startOfSentenceIndexNew != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-							{
+							{	
+								//based on isIntrawordFullStop() code:
 								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
 								bool fullStopImmediatelySucceededByAlphabeticalCharacter = false;
 								if(startOfSentenceIndexNew < lineContents.length()-1)	//ensure fullstop is not immediately succeded by an alphabetical character, which indicates that the fullstop is part of a filename, eg "people.xml"

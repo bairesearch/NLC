@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l3a 01-November-2014
+ * Project Version: 1l3b 01-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1031,6 +1031,9 @@ bool createCodeBlockForGivenAction(NLCcodeblock ** currentCodeBlockInTree, strin
 		if(!(actionEntity->actionObjectEntity->empty()))
 		{
 			GIAentityNode * actionObject = (actionEntity->actionObjectEntity->back())->entity;
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+			actionObject->NLCcontextGenerated = true;
+			#endif
 
 			NLCitem * actionObjectItem = new NLCitem(actionObject, NLC_ITEM_TYPE_OBJECT);
 			hasActionObject = true;
@@ -1063,7 +1066,6 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTre
 		result = true;
 		
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-		//actionConnection->NLCcontextGenerated = true;
 		actionEntity->NLCcontextGenerated = true;
 		#endif
 
@@ -1076,7 +1078,10 @@ bool createCodeBlockForGivenActionIncoming(NLCcodeblock ** currentCodeBlockInTre
 		if(!(actionEntity->actionSubjectEntity->empty()))
 		{
 			GIAentityNode * actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
-
+			#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+			actionSubject->NLCcontextGenerated = true;
+			#endif
+		
 			NLCitem * actionSubjectItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_OBJECT);
 			hasActionSubject = true;
 			actionSubjectItem->context.push_back(actionSubjectItem->instanceName);
@@ -1288,8 +1293,12 @@ bool generateParentInitialisationCodeBlockWithChecks(NLCcodeblock ** currentCode
 									if(parentEntity->sentenceIndexTemp == sentenceIndex)	//ie "wasReference" is not a sufficient condition to initialise parent
 									{
 									#endif
-										generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex);
-										result = true;
+										if(!(parentEntity->NLCcontextGenerated))
+										{
+											//cout << "generateParentInitialisationCodeBlock: parentEntity = " << parentEntity->entityName << endl;
+											generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex);
+											result = true;
+										}										
 									#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
 									}
 									#endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1i11b 25-August-2014
+ * Project Version: 1i11c 25-August-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1121,12 +1121,15 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 				if(parentEntity != propertyEntity)
 				{
 					#ifdef NLC_DEBUG_PARSE_CONTEXT4
-					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != entity) propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
+					*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != propertyEntity) propertyEntity: ") + propertyEntity->entityName + string(", parentEntity: ") + parentEntity->entityName);
 					#endif
 					
-					if(generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
+					if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
 					{
 						generatedContext = true;
+						NLCitem * propertyEntityClass = new NLCitem(propertyEntity, NLC_ITEM_TYPE_OBJECT);
+						propertyEntityClass->context.push_back(generateInstanceName(parentEntity));
+						*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, propertyEntityClass);						
 						*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, propertyEntity, propertyEntity);
 						propertyEntity->NLClocalListVariableHasBeenInitialised = true;
 					}
@@ -1365,9 +1368,16 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							GIAentityNode * parentEntity = getUniqueSameReferenceSetDefiniteParent(conditionObject, sentenceIndex, entity);
 							if(parentEntity != conditionObject)
 							{
-								if(generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
+								#ifdef NLC_DEBUG_PARSE_CONTEXT4
+								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): (parentEntity != conditionObject) conditionObject: ") + conditionObject->entityName + string(", parentEntity: ") + parentEntity->entityName);
+								#endif
+												
+								if(generateContextBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables))
 								{
 									generatedContext = true;
+									NLCitem * conditionObjectEntityClass = new NLCitem(conditionObject, NLC_ITEM_TYPE_OBJECT);
+									conditionObjectEntityClass->context.push_back(generateInstanceName(parentEntity));
+									*currentCodeBlockInTree = createCodeBlockForPropertyList(*currentCodeBlockInTree, conditionObjectEntityClass);										
 									*currentCodeBlockInTree = createCodeBlockAddPropertyToLocalList(*currentCodeBlockInTree, conditionObject, conditionObject);
 									conditionObject->NLClocalListVariableHasBeenInitialised = true;
 								}
@@ -1376,6 +1386,10 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							#endif
 							if(assumedToAlreadyHaveBeenDeclared(conditionObject))
 							{
+								#ifdef NLC_DEBUG_PARSE_CONTEXT4
+								*currentCodeBlockInTree = createCodeBlockDebug(*currentCodeBlockInTree, string("generateObjectInitialisationsBasedOnPropertiesAndConditions(): assumedToAlreadyHaveBeenDeclared(propertyEntity): ") + conditionObject->entityName);
+								#endif
+												
 								if(generateContextBlocks(currentCodeBlockInTree, conditionObject, sentenceIndex, &logicalConditionConjunctionVariables))	//generateContextBlocksSimple?
 								{
 									generatedContext = true;

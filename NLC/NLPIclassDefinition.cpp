@@ -23,7 +23,7 @@
  * File Name: NLPIclassDefinition.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b4a 04-October-2013
+ * Project Version: 1b4b 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -40,6 +40,7 @@ NLPIclassDefinition::NLPIclassDefinition(string newName)
 
 	actionObjectClassName = "";
 	actionObjectInstanceName = "";
+	actionInstanceNotClassButFunction = false;
 }
 NLPIclassDefinition::NLPIclassDefinition(void)
 {
@@ -47,6 +48,7 @@ NLPIclassDefinition::NLPIclassDefinition(void)
 
 	actionObjectClassName = "";
 	actionObjectInstanceName = "";
+	actionInstanceNotClassButFunction = false;
 }
 NLPIclassDefinition::~NLPIclassDefinition(void)
 {

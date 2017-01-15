@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b4a 04-October-2013
+ * Project Version: 1b4b 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -330,10 +330,14 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 					}
 					
 					string targetName = "";
+
 					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
 					{
+						#ifndef NLPI_BAD_IMPLEMENTATION
+						targetName = generateInstanceName(targetEntity);
+						#else
 						targetName = generateActionName(targetEntity);
-						//targetName = generateInstanceName(targetEntity);
+						#endif
 					}
 					else
 					{
@@ -348,6 +352,13 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 						targetClassDefinition = new NLPIclassDefinition(targetName);
 						classDefinitionList->push_back(targetClassDefinition);
 					}
+					#ifndef NLPI_BAD_IMPLEMENTATION
+					if(targetEntity->isAction)
+					{
+						targetClassDefinition->actionInstanceNotClassButFunction = true;
+						//cout << "classDefinition->actionInstanceNotClassButFunction" << endl;
+					}
+					#endif					
 
 					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
 					{//declare subclass

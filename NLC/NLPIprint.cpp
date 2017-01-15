@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1b4a 04-October-2013
+ * Project Version: 1b4b 04-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -79,70 +79,78 @@ bool printClassDefinitions(vector<NLPIclassDefinition *> * classDefinitionList, 
 	for(vector<NLPIclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{	
 		NLPIclassDefinition * classDefinition = *classDefinitionIter;
-		string className = classDefinition->name;
-		string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className;
 		
-		bool foundDefinition = false;
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
+		#ifndef NLPI_BAD_IMPLEMENTATION
+		if(!(classDefinition->actionInstanceNotClassButFunction))
 		{
-			if(!foundDefinition)
-			{
-				foundDefinition = true;
-				classDefinitionEntryText = classDefinitionEntryText + " : ";
-			}
-			else
-			{
-				classDefinitionEntryText = classDefinitionEntryText + ", ";
-			}
-			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->name;
-			classDefinitionEntryText = classDefinitionEntryText + progLangClassInheritanceHeader[progLang] + targetName;
-		}
-		printLine(classDefinitionEntryText, 0, code);
-		printLine(progLangOpenClass[progLang], 0, code);
-		printLine(progLangClassIntro[progLang], 0, code);
-		string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang];
-		printLine(classConstructorDeclaration, 1, code);
-		string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
-		printLine(classDestructorDeclaration, 1, code);
-		//printLine("", 1, code);
-		string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + className + progLangStringOpenClose[progLang] + progLangEndLine[progLang];
-		printLine(classNameCode, 1, code);
-		//printLine("", 1, code);
-		
-		//cout << "className = " << className << endl;
-				
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
-		{
-			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->name;
-			string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName +  progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangEndLine[progLang];
-			printLine(localListDeclarationText, 1, code);	
-		}
+		#endif
+			string className = classDefinition->name;
+			string classDefinitionEntryText = progLangClassTitlePrepend[progLang] + className;
 
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
-		{
-			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->name;
-			string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName +  progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangEndLine[progLang];
-			printLine(localListDeclarationText, 1, code);	
-		}
-		
-		for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
-		{
-			NLPIclassDefinition * targetClassDefinition = *localListIter;
-			string targetName = targetClassDefinition->name;
-			string functionArguments = "";
-			if(targetClassDefinition->actionObjectClassName != "")
+			bool foundDefinition = false;
+			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->definitionList.begin(); localListIter != classDefinition->definitionList.end(); localListIter++)
 			{
-				functionArguments = targetClassDefinition->actionObjectClassName + progLangPointer[progLang] + " " + targetClassDefinition->actionObjectInstanceName;
+				if(!foundDefinition)
+				{
+					foundDefinition = true;
+					classDefinitionEntryText = classDefinitionEntryText + " : ";
+				}
+				else
+				{
+					classDefinitionEntryText = classDefinitionEntryText + ", ";
+				}
+				NLPIclassDefinition * targetClassDefinition = *localListIter;
+				string targetName = targetClassDefinition->name;
+				classDefinitionEntryText = classDefinitionEntryText + progLangClassInheritanceHeader[progLang] + targetName;
 			}
-			string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
-			printLine(localListDeclarationText, 1, code);	
+			printLine(classDefinitionEntryText, 0, code);
+			printLine(progLangOpenClass[progLang], 0, code);
+			printLine(progLangClassIntro[progLang], 0, code);
+			string classConstructorDeclaration = className + progLangClassConstructorDestructorAppend[progLang];
+			printLine(classConstructorDeclaration, 1, code);
+			string classDestructorDeclaration = progLangClassDestructorPrepend[progLang] + className + progLangClassConstructorDestructorAppend[progLang];
+			printLine(classDestructorDeclaration, 1, code);
+			//printLine("", 1, code);
+			string classNameCode = progLangClassNameVariableType[progLang] + progLangClassNameVariableName[progLang] + progLangStringOpenClose[progLang] + className + progLangStringOpenClose[progLang] + progLangEndLine[progLang];
+			printLine(classNameCode, 1, code);
+			//printLine("", 1, code);
+
+			//cout << "className = " << className << endl;
+
+			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
+			{
+				NLPIclassDefinition * targetClassDefinition = *localListIter;
+				string targetName = targetClassDefinition->name;
+				string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName +  progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangEndLine[progLang];
+				printLine(localListDeclarationText, 1, code);	
+			}
+
+			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
+			{
+				NLPIclassDefinition * targetClassDefinition = *localListIter;
+				string targetName = targetClassDefinition->name;
+				string localListDeclarationText = progLangClassListTypeStart[progLang] + targetName +  progLangClassListTypeEnd[progLang] + targetName + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangEndLine[progLang];
+				printLine(localListDeclarationText, 1, code);	
+			}
+
+			for(vector<NLPIclassDefinition*>::iterator localListIter = classDefinition->functionList.begin(); localListIter != classDefinition->functionList.end(); localListIter++)
+			{
+				NLPIclassDefinition * targetClassDefinition = *localListIter;
+				string targetName = targetClassDefinition->name;
+				string functionArguments = "";
+				if(targetClassDefinition->actionObjectClassName != "")
+				{
+					functionArguments = targetClassDefinition->actionObjectClassName + progLangPointer[progLang] + " " + targetClassDefinition->actionObjectInstanceName;
+				}
+				string localListDeclarationText = progLangClassMemberFunctionType[progLang] + targetName + progLangClassMemberFunctionParametersOpen[progLang] + functionArguments + progLangClassMemberFunctionParametersClose[progLang] + progLangEndLine[progLang];
+				printLine(localListDeclarationText, 1, code);	
+			}
+
+			printLine(progLangCloseClass[progLang], 0, code);
+			printLine("", 0, code);
+		#ifndef NLPI_BAD_IMPLEMENTATION
 		}
-						
-		printLine(progLangCloseClass[progLang], 0, code);
-		printLine("", 0, code);
+		#endif			
 	}
 } 
 
@@ -167,7 +175,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);
 			//cout << "contextParam2 = " << contextParam2 << endl;
 			
-			string codeBlockText = contextParam1 + param1->name + progLangOpenParameterSpace[progLang] + contextParam2 + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
+			string codeBlockText = contextParam1 + param1->instanceName + progLangOpenParameterSpace[progLang] + contextParam2 + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
 			//cout << "z7c" << endl;
 			printLine(codeBlockText, level, code);
 			
@@ -229,7 +237,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			string contextParam2 = generateStringFromContextVector(&(param2->context), progLang);	//IS THIS REQUIRED????
 			
 			//OLD: string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] +  contextParam1 + param1->name + progLangFunctionReferenceDelimiter[progLang] + progLangObjectCheckHasPropertyFunction[progLang] + progLangOpenParameterSpace[progLang] + param2->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(context.param1->has(param2)){
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangFunctionReferenceDelimiter[progLang] + param2->name + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangFindProperty[progLang] + progLangOpenParameterSpace[progLang] + contextParam2 + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(context1.param1.param2PropertyList.findProperty(context2.param2)){	
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangFunctionReferenceDelimiter[progLang] + param2->name + NLPI_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangFindProperty[progLang] + progLangOpenParameterSpace[progLang] + contextParam2 + param2->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(context1.param1.param2PropertyList.findProperty(context2.param2)){	
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}		
@@ -240,7 +248,7 @@ bool printCodeBlocks(NLPIcodeblock * firstCodeBlockInLevel, int progLang, string
 			string contextParam3 = generateStringFromContextVector(&(param3->context), progLang);
 				
 			//OLD: string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + param2->name + progLangOpenParameterSpace[progLang] + contextParam1 + param1->name + progLangParameterSpaceNextParam[progLang] + contextParam3 + param3->name + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(param2(context.param1, context.param3)){
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangFunctionReferenceDelimiter[progLang] + param3->name + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangFindCondition[progLang] + progLangOpenParameterSpace[progLang] + contextParam3 + param3->instanceName + progLangParameterSpaceNextParam[progLang] + NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS + param2->name + NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(context1.param1.param3ConditionList.findCondition(context3.param3, "param2")){	
+			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + param1->instanceName + progLangFunctionReferenceDelimiter[progLang] + param3->name + NLPI_ITEM_TYPE_CONDITIONLISTVAR_APPENDITION + progLangFunctionReferenceDelimiter[progLang] + progLangFindCondition[progLang] + progLangOpenParameterSpace[progLang] + contextParam3 + param3->name + progLangParameterSpaceNextParam[progLang] + NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS + param2->name + NLPI_ITEM_TYPE_CONDITIONLISTCONDITIONPARAMETERINVERTACOMMAS + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(context1.param1.param3ConditionList.findCondition(context3.param3, "param2")){	
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 		}

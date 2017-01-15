@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,6 +43,9 @@
 #include "NLCtranslatorClassDefinitions.h"
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
 #include "GIAtranslatorDefs.h"
+#endif
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+#include "NLCtranslatorCodeBlocksOperations.h"	//required for initialiseFunctionAliasClassList()
 #endif
 
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
@@ -594,74 +597,6 @@ bool identifyAndTagAllLogicalConditionOperations(vector<GIAentityNode*> * entity
 	return result;
 }
 #endif
-
-/*
-#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-bool addFunctionDependenciesWithoutOwners(vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
-{
-	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-	{
-		GIAentityNode * entityNode = *entityIter;
-
-		//cout << "entityNode = " << entityNode->entityName << endl;
-		if(generateClassHeirarchyValidClassChecks(entityNode))
-		{
-			if(!(entityNode->disabled))
-			{
-				if(entityNode->isAction)
-				{
-					bool hasActionObject = false;
-					string actionObjectName = "";
-					if(!(entityNode->actionObjectEntity->empty()))
-					{
-						GIAentityNode * actionObject = (entityNode->actionObjectEntity->back())->entity;
-						hasActionObject = true;
-						actionObjectName = actionObject->entityName;
-					}
-					
-					bool hasActionSubject = false;
-					string actionSubjectName = "";
-					if(!(entityNode->actionSubjectEntity->empty()))
-					{
-						GIAentityNode * actionSubject = (entityNode->actionSubjectEntity->back())->entity;
-						hasActionSubject = true;
-						actionSubjectName = actionSubject->entityName;
-					}
-					
-					if(!hasActionSubject)
-					{
-						cout << "addFunctionDependenciesWithoutOwners(): " << entityNode->entityName << endl;
-
-						NLCclassDefinitionFunctionDependency * functionDependency = NULL;
-						bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, entityNode->entityName, "", actionObjectName, false, hasActionObject, &functionDependency);
-						if(foundFunctionDependencyInList)
-						{
-							NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
-							bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, entityNode->entityName, "", actionObjectName, false, hasActionObject, &functionDependenciesInParentTemp);
-							if(!foundFunctionDependencyInParent)
-							{
-								parentFunctionDependency->functionDependencyList.push_back(functionDependency);
-							}
-						}
-						else
-						{
-							functionDependency = new NLCclassDefinitionFunctionDependency();
-							functionDependency->functionName = entityNode->entityName;
-							functionDependency->functionOwnerName = "";
-							functionDependency->functionObjectName = actionObjectName;
-							functionDependency->hasFunctionOwnerClass = false;
-							functionDependency->hasFunctionObjectClass = hasActionObject;
-							parentFunctionDependency->functionDependencyList.push_back(functionDependency);
-							functionDependencyList->push_back(functionDependency);
-						}
-					}
-				}
-			}
-		}
-	}
-}
-#endif
-*/
 
 #ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS

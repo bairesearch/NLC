@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,23 +54,23 @@ string generatePropertyListName(string propertyClassName)
 	return propertyListName;
 }
 
-string generateEntityLocalListName(NLCitem * entityParam)
+string generateEntityListName(NLCitem * entityParam)
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		string instanceName = entityParam->instanceName;
 		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
-		string entityListName = instanceName + generateEntityLocalListAppendName();
+		string entityListName = instanceName + generateEntityListAppendName();
 		#else
-		string entityListName = instanceName + generateEntityLocalListAppendName();	
+		string entityListName = instanceName + generateEntityListAppendName();	
 		#endif
 	#else
 		string className = entityParam->className;
-		string entityListName = className + generateEntityLocalListAppendName();		
+		string entityListName = className + generateEntityListAppendName();		
 	#endif
 	return entityListName;
 }
 
-string generateEntityLocalListAppendName()
+string generateEntityListAppendName()
 {
 	#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 		#ifdef NLC_USE_ORIGINAL_INSTANCE_LIST_NAMES
@@ -174,7 +174,7 @@ string generateCodePropertyListDefinitionText(string propertyClassName, int prog
 
 string generateCodeEntityListDefinitionText(NLCitem * entityParam, int progLang)
 {
-	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(entityParam->className, progLang) + generateEntityLocalListName(entityParam);
+	string codeEntityListDefinitionText = generateCodeEntityListDefinitionTypeText(entityParam->className, progLang) + generateEntityListName(entityParam);
 	return codeEntityListDefinitionText;
 }
 
@@ -186,7 +186,7 @@ string generateCodeEntityListDefinitionTypeText(string entityClassName, int prog
 
 string generateCodeEntityListDefinitionReferenceText(NLCitem * entityParam, int progLang)
 {
-	string codeEntityListDefinitionReferenceText = generateCodeEntityListDefinitionReferenceTypeText(entityParam->className, progLang) + generateEntityLocalListName(entityParam);
+	string codeEntityListDefinitionReferenceText = generateCodeEntityListDefinitionReferenceTypeText(entityParam->className, progLang) + generateEntityListName(entityParam);
 	return codeEntityListDefinitionReferenceText;
 }
 
@@ -242,24 +242,25 @@ string generateDynamicCastOfEntity(string entityName, string castClassName, int 
 	return castText;
 }
 
+//this code is not currently used;
 string generateCodeEntityStringPairListDefinitionText(string entityClassName, string genericListNameStart, string genericListAppendName, int progLang)
 {
-	string codeConditionListDefinitionText = generateCodeEntityStringPairListDefinitionTypeText(entityClassName, progLang) + generateEntityStringPairListName(genericListNameStart, genericListAppendName);	//unordered_map<string, entityClassName*> genericListNameStart+genericListAppendName;
-	return codeConditionListDefinitionText;
+	string codeEntityStringPairListDefinitionText = generateCodeEntityStringPairListDefinitionTypeText(entityClassName, progLang) + generateEntityStringPairListName(genericListNameStart, genericListAppendName);	//unordered_map<string, entityClassName*> genericListNameStart+genericListAppendName;
+	return codeEntityStringPairListDefinitionText;
 }
 string generateCodeEntityStringPairListDefinitionTypeText(string entityClassName, int progLang)
 {
-	string codeConditionListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string, entityClassName*>
-	return codeConditionListDefinitionTypeText;
+	string codeEntityStringPairListDefinitionTypeText = progLangClassList2DTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string, entityClassName*>
+	return codeEntityStringPairListDefinitionTypeText;
 }
 string generateEntityStringPairListName(string genericListNameStart, string genericListAppendName)
 {
-	string conditionListName = entityClassName + genericListAppendName;	//genericListNameStart+genericListAppendName
-	return conditionListName;
+	string codeEntityStringPairPairText = genericListNameStart + genericListAppendName;	//genericListNameStart+genericListAppendName
+	return codeEntityStringPairPairText;
 }
 string generateEntityStringPairText(string entity1Name, string entity2ClassName, string entity2Name, int progLang)
 {
-	string codeConditionPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entity2ClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + entity1Name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + entity2Name + progLangClassMemberFunctionParametersClose[progLang];	//pair<string, entity2className*>(entity1name, entity2name)
-	return codeConditionPairTypeText;
+	string codeEntityStringPairPairTypeText = progLangClassPairTypeStart[progLang] + progLangClassList2DTypeConditionTypeVar[progLang] + progLangClassList2DTypeMiddle[progLang] + entity2ClassName + progLangPointer[progLang] + progLangClassPairTypeEnd[progLang] + progLangClassMemberFunctionParametersOpen[progLang] + progLangStringOpenClose[progLang] + entity1Name + progLangStringOpenClose[progLang] + progLangClassMemberFunctionParametersNext[progLang] + entity2Name + progLangClassMemberFunctionParametersClose[progLang];	//pair<string, entity2className*>(entity1name, entity2name)
+	return codeEntityStringPairPairTypeText;
 }
 

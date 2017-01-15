@@ -26,7 +26,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -89,7 +89,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 			string codeBlockTextCreate = generateEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + param2->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
 			printLine(codeBlockTextCreate, level, code);
-			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param2->className + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);
+			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);
 			printLine(codeBlockText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_NEW_ENTITY_TO_LOCAL_LIST)
@@ -101,7 +101,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 
 			string codeBlockTextCreate = generateEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangNewObject[progLang] + param2->className + progLangOpenParameterSpace[progLang] + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];
 			printLine(codeBlockTextCreate, level, code);
-			string codeBlockText = generateEntityLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
+			string codeBlockText = generateEntityListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
 			printLine(codeBlockText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_NEW_CONDITION)
@@ -127,7 +127,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 
-			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param2->className + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);
+			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.push_back(param2);
 			printLine(codeBlockText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_LOCAL_LIST)
@@ -137,7 +137,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 
-			string codeBlockText = generateEntityLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
+			string codeBlockText = generateEntityListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
 			
 			printLine(codeBlockText, level, code);
 		}
@@ -174,7 +174,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_FOR_LOCAL_LIST" << endl;
 			#endif
-			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(param1->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateEntityLocalListName(param1) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + generateEntityLocalListName(param1) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
+			string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(param1->className, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateEntityListName(param1) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + generateEntityListName(param1) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
 			printLine(codeBlockText, level, code);
 			printLine(progLangOpenBlock[progLang], level, code);
 			string tempVarDeclarationText = generateEntityDeclaration(param1, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//OLD:  param1->className + NLC_ITEM_TYPE_TEMPVAR_APPENDITION
@@ -244,7 +244,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#ifdef NLC_DEBUG
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_LOCAL_LIST_VARIABLE" << endl;
 			#endif
-			string localListDeclarationText = generateCodeEntityListDefinitionTypeText(param1->className, progLang) + generateEntityLocalListName(param1) + progLangEndLine[progLang];	//vector<param1Class*> param1instanceList;
+			string localListDeclarationText = generateCodeEntityListDefinitionTypeText(param1->className, progLang) + generateEntityListName(param1) + progLangEndLine[progLang];	//vector<param1Class*> param1instanceList;
 			printLine(localListDeclarationText, level, code);
 		}
 		#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
@@ -408,7 +408,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
 
-			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + param2->className + NLC_ITEM_TYPE_PROPERTYLISTVAR_APPENDITION + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.clear();
+			string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + generatePropertyListName(param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.clear();
 			printLine(codeBlockText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_REMOVE_ENTITIES_FROM_LOCAL_LIST)
@@ -417,7 +417,7 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_REMOVE_ENTITIES_FROM_LOCAL_LIST" << endl;
 			#endif
 
-			string codeBlockText = generateEntityLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//param1instanceList.clear();
+			string codeBlockText = generateEntityListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//param1instanceList.clear();
 			printLine(codeBlockText, level, code);
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_REMOVE_CONDITIONS)
@@ -1060,9 +1060,9 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);	//functionArgumentPassCast
 
 			string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
-			string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)	
+			string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)	
 			//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param1->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
-			//string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)			
+			//string codeBlockExecuteFunctionText = string("") + NLC_CAST_VECTOR_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param1) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)			
 			printLine(codeBlockExecuteFunctionText, level, code);
 
 		}
@@ -1075,8 +1075,8 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string iterIndexString = convertIntToString(1);	//functions declared at level 1
 			string templateName1 = "E1";
 			string templateName2 = "E2";
-			string entity1InstanceListName = templateName1 + generateEntityLocalListAppendName();
-			string entity2InstanceListName = templateName2 + generateEntityLocalListAppendName();
+			string entity1InstanceListName = templateName1 + generateEntityListAppendName();
+			string entity2InstanceListName = templateName2 + generateEntityListAppendName();
 			string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 
 			string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + progLangTemplateHeaderClassType[progLang] + templateName2 + progLangTemplateHeaderPart2[progLang];  //template <class E1, class E2>
@@ -1103,30 +1103,21 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 		}
 		#endif
 		#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_ALIAS_LIST)
+		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST)
 		{
 			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_ALIAS_LIST" << endl;
+			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST" << endl;
 			#endif
-			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string aliasListName = string(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START) + string(NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION);
-			
-			string codeBlockTextDeclareAliasList = generateCodeEntityStringPairListDefinitionText(genericEntityClassName, NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION, progLang) + progLangEndLine[progLang];	//unordered_map<string, genericEntityClassName*> AliasList;
-			printLine(codeBlockTextDeclareAliasList, level, code);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_ALIAS_LIST)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ADD_ENTITY_TO_ALIAS_LIST" << endl;
-			#endif
-			string aliasName = param1;
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			string aliasName = param2->name;
 
-			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string aliasListName = string(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START) + string(NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION);
+			string codeBlockTextAddAliasToEntityAliasList = param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangAddProperty[progLang] + progLangOpenParameterSpace[progLang] + aliasName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//entity->aliasList.push_back(aliasName);			
+			printLine(codeBlockTextAddAliasToEntityAliasList, level, code);
 			
+			
+			/*
 			string codeBlockTextAddEntityToAliasList = generateEntityStringPairListName(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION) + progLangObjectReferenceDelimiter2[progLang] + progLangAddCondition[progLang] + progLangOpenParameterSpace[progLang] + generateEntityStringPairTexts(param1->name, genericEntityClassName, generateDynamicCastOfEntity(param2->instanceName, genericEntityClassName, progLang), progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//AliasList.insert(pair<string, param2className*>(param1, dynamic_cast<genericEntity*>param2));
-			printLine(codeBlockTextAddEntityToAliasList, level, code);
+			*/
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION)
 		{
@@ -1137,44 +1128,72 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			string iterIndexString = convertIntToString(1);	//functions declared at level 1
 
 			string genericEntityClassName = generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
-			string aliasListName = string(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START) + string(NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION);
+			string aliasListName = NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME;
 			string aliasName = NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_NAME;
-			string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);
 
 			string templateName1 = "E1";
-			string entity1CategoryListName = templateName1 + NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION;
+			string entity1InstanceListName = templateName1 + generateEntityListAppendName();
+			string entity1CategoryListName = templateName1 + NLC_ITEM_TYPE_CATEGORYLISTVAR_APPENDITION;
+			string tempVariableName = string(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE);	//NLCgenericEntity
+			string tempVariableAliasListName = tempVariableName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME;
 
 			string codeBlockTextTemplateHeader = progLangTemplateHeaderPart1[progLang] + progLangTemplateHeaderClassType[progLang] + templateName1 + progLangTemplateHeaderPart2[progLang];  //template <class E1>
 
-			string codeBlockTextFunctionHeader = progLangClassMemberFunctionDefaultType[progLang] + NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityStringPairListDefinitionText(genericEntityClassName, NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME_START, NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION, progLang) + aliasListName + progLangClassMemberFunctionParametersNext[progLang] + aliasName + progLangAliasNameVariableType[progLang] + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + entity1CategoryListName + progLangCloseParameterSpace[progLang];	//void findAliasAndAddToCategoryListNewFunction(unordered_map<string, genericEntityClass*> &aliasList, string aliasName, vector<E1*> &E1CategoryList)
+			string codeBlockTextFunctionHeader = progLangClassMemberFunctionDefaultType[progLang] + NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + entity1InstanceListName + progLangClassMemberFunctionParametersNext[progLang] + progLangAliasNameVariableType[progLang] + aliasName + progLangClassMemberFunctionParametersNext[progLang] + generateCodeEntityListDefinitionReferenceTypeText(templateName1, progLang) + entity1CategoryListName + progLangCloseParameterSpace[progLang];	//void findAliasAndAddToCategoryListNewFunction(vector<E1*> &E1instanceList, string aliasName, vector<E1*> &E1CategoryList)
 
-			printLine("", level, code);
-			printLine(codeBlockTextFunctionHeader, level, code);
-			printLine(progLangOpenBlock[progLang], level, code);
-			
-				//NEW (optimised):
-				string codeBlockTextFindAliasEntity = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringPairListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + aliasListName + progLangObjectReferenceDelimiter[progLang] + progLangOpenParameterSpace[progLang] + aliasName progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];  	//unordered_map<string, genericEntityClassName*>::iterator iter1 = AliasList->find(aliasName);
-				printLine(codeBlockTextFindAliasEntity, level+1, code);
-				string codeBlockTextTestFindAliasEntity = progLangTestEntityPairFindPart1[progLang] + progLangForIterName[progLang] + iterIndexString + progLangTestEntityPairFindPart2[progLang] + aliasListName + progLangTestEntityPairFindPart3[progLang] //if(iter1 != aliasListName->end())
-				printLine(codeBlockTextTestFindAliasEntity, level+1, code);
-				printLine(progLangOpenBlock[progLang], level+1, code);	//{
-					string tempVarDeclarationText = generateEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityPairListEntityReference[progLang] + progLangEndLine[progLang];	//genericEntityClass* genericEntity = iter1->second;
-					printLine(tempVarDeclarationText, (level+2), code);
-				/*//OLD (unoptimised):
-				string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringPairListDefinitionText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateEntityStringPairListName(genericEntityClassName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + generateEntityStringPairListName(genericEntityClassName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
-				printLine(codeBlockText, level+1, code);
-				printLine(progLangOpenBlock[progLang], level+1, code);
-				string tempVarDeclarationText = generateEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityPairListEntityReference[progLang] + progLangEndLine[progLang];
-				printLine(tempVarDeclarationText, (level+2), code);	
-					printLine(progLangOpenBlock[progLang], (level+1), code);	//{
-					//UNFINISHED; string codeBlockTextIfEntityNameEqualsAliasName = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(genericEntity->entityName == aliasName)
-				*/	
+			int q = 0;
+			printLine("", level+q, code);
+			printLine(codeBlockTextFunctionHeader, level+q, code);
+			printLine(progLangOpenBlock[progLang], level+q, code);
+				
+				q++;
+				string codeBlockTextForLoop = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityListDefinitionTypeText(templateName1, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + entity1InstanceListName + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3c[progLang] + entity1InstanceListName + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];	//for(vector<E1*> ::iterator iterX = E1InstanceList.begin(); iterX < E1InstanceList.end(); iterX++)
+				printLine(codeBlockTextForLoop, level+q, code);
+				printLine(progLangOpenBlock[progLang], level+q, code);	//{
+					q++;
+					string tempVarDeclarationText = generateEntityDeclaration(templateName1, tempVariableName, progLang) + progLangEquals[progLang] + progLangPointer[progLang] + progLangForIterName[progLang] + iterIndexString + progLangEndLine[progLang];	//E1* genericEntity = *iter1;
+					printLine(tempVarDeclarationText, (level+q), code);
+					//NB this code could be generated using existing codeblock (NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST)
 
-					string addCastedEntityToVectorText = entity1CategoryListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(tempVariableName, templateName1, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//E1CategoryList.push_back(dynamic_cast<E1*>(genericEntity));
-					printLine(addCastedEntityToVectorText, (level+2), code);
+					string negativeModifierStringFind = "";	//if found (positive find)
+					string findAliasNameInAliasListText = progLangFindPart1[progLang] + negativeModifierStringFind + progLangFindPart2[progLang] + tempVariableAliasListName + progLangFindPart3[progLang] + tempVariableAliasListName + progLangFindPart4[progLang] + aliasName + progLangFindPart5[progLang] + tempVariableAliasListName + progLangFindPart6[progLang];	//if(!find(genericEntity->aliasList.begin(), genericEntity->aliasList.end(), aliasName) != genericEntity->aliasList.end()) 
+						//NB this code could be moved to a new codeblock  (NLC_CODEBLOCK_TYPE_FIND_PROPERTY_IN_GENERIC_LIST)
+					printLine(findAliasNameInAliasListText, level+q, code);
+					printLine(progLangOpenBlock[progLang], level+q, code);
+						q++;
+						string addEntityToCategoryText = entity1CategoryListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + tempVariableName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//E1CategoryList.push_back(genericEntity);
+						printLine(addEntityToCategoryText, (level+q), code);
 					
-				printLine(progLangCloseBlock[progLang], (level+1), code);	//}
-			printLine(progLangCloseBlock[progLang], level, code);	//}
+					q--;
+					printLine(progLangCloseBlock[progLang], level+q, code);	//}
+				q--;
+				printLine(progLangCloseBlock[progLang], level+q, code);	//}
+			q--;
+			printLine(progLangCloseBlock[progLang], level+q, code);	//}
+
+			/*
+			//NEW (optimised):
+			string codeBlockTextFindAliasEntity = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringPairListDefinitionTypeText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + aliasListName + progLangObjectReferenceDelimiter[progLang] + progLangOpenParameterSpace[progLang] + aliasName progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];  	//unordered_map<string, genericEntityClassName*>::iterator iter1 = AliasList->find(aliasName);
+			printLine(codeBlockTextFindAliasEntity, level+1, code);
+			string codeBlockTextTestFindAliasEntity = progLangTestEntityPairFindPart1[progLang] + progLangForIterName[progLang] + iterIndexString + progLangTestEntityPairFindPart2[progLang] + aliasListName + progLangTestEntityPairFindPart3[progLang] //if(iter1 != aliasListName->end())
+			printLine(codeBlockTextTestFindAliasEntity, level+1, code);
+			printLine(progLangOpenBlock[progLang], level+1, code);	//{
+				string tempVarDeclarationText = generateEntityDeclaration(genericEntityClassName, tempVariableName, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityPairListEntityReference[progLang] + progLangEndLine[progLang];	//genericEntityClass* genericEntity = iter1->second;
+				printLine(tempVarDeclarationText, (level+2), code);
+			//OLD (unoptimised):
+			//string codeBlockText = progLangFor[progLang] + progLangForIterPart1[progLang] + generateCodeEntityStringPairListDefinitionText(genericEntityClassName, progLang) + progLangForIterPart2a[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart2c[progLang] + generateEntityStringPairListName(genericEntityClassName) + progLangForIterPart3a[progLang] + progLangForIterPart3b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart3cMap[progLang] + generateEntityStringPairListName(genericEntityClassName) + progLangForIterPart4a[progLang] + progLangForIterPart4b[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterPart4c[progLang];
+			//printLine(codeBlockText, level+1, code);
+			//printLine(progLangOpenBlock[progLang], level+1, code);
+			//string tempVarDeclarationText = generateEntityDeclaration(param2, progLang) + progLangEquals[progLang] + progLangForIterName[progLang] + iterIndexString + progLangForIterEntityPairListEntityReference[progLang] + progLangEndLine[progLang];
+			//printLine(tempVarDeclarationText, (level+2), code);	
+				//printLine(progLangOpenBlock[progLang], (level+1), code);	//{
+				//UNFINISHED; string codeBlockTextIfEntityNameEqualsAliasName = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + contextParam1 + generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangSizeOfList[progLang] + progLangGreaterThan[progLang] + valueString + progLangCloseParameterSpace[progLang];		//if(genericEntity->entityName == aliasName)
+
+				string addCastedEntityToVectorText = entity1CategoryListName + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + generateDynamicCastOfEntity(tempVariableName, templateName1, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//E1CategoryList.push_back(dynamic_cast<E1*>(genericEntity));
+				printLine(addCastedEntityToVectorText, (level+2), code);
+
+			printLine(progLangCloseBlock[progLang], (level+1), code);	//}
+			*/
 		}
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION)
 		{//not used - see printCodeBlockCastVectorExecuteFunction()
@@ -1183,14 +1202,16 @@ bool printCodeBlocks(NLCcodeblock * firstCodeBlockInLevel, vector<NLCclassDefini
 			#endif
 			
 			NLCitem * param2 = currentCodeBlockInLevel->parameters.at(1);
+			NLCitem * param3 = currentCodeBlockInLevel->parameters.at(2);
 			string genericListAppendName = param3->name;
 
 			string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + param2->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param2class>
-			string codeBlockExecuteFunctionText = string("") + NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + aliasListName + progLangClassMemberFunctionParametersNext[progLang] + param1->name + progLangClassMemberFunctionParametersNext[progLang] + generateGenericListName(param2->name, genericListAppendName, progLang) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//findAliasAndAddToCategoryList<param2class> (aliasList, param1aliasName, param2CategoryList);
+			string codeBlockExecuteFunctionText = string("") + NLC_USE_ADVANCED_REFERENCING_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_FUNCTION_NAME + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(param2) + progLangClassMemberFunctionParametersNext[progLang] + param1->name + progLangClassMemberFunctionParametersNext[progLang] + generateGenericListName(param2->instanceName, genericListAppendName) + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//findAliasAndAddToCategoryList<param2class> (param2InstanceList, param1aliasName, param3CategoryList);
 			printLine(codeBlockExecuteFunctionText, level, code);
 
 		}
 		#endif
+		
 		/*
 		else if(currentCodeBlockInLevel->codeBlockType == ...)
 		{
@@ -1451,7 +1472,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 
 string generateCodePluralReferenceText(NLCitem * functionArgumentItem, int progLang)
 {
-	string codePropertyTypeText = generateEntityLocalListName(functionArgumentItem);
+	string codePropertyTypeText = generateEntityListName(functionArgumentItem);
 	#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_ENABLE_TYPE_CASTING
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
@@ -1490,9 +1511,9 @@ string printCodeBlockCastVectorExecuteFunction(NLCitem * functionArgumentItem, i
 	//NO: v2.assign(v1.begin(), v1.end());
 	
 	string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUseClassSeparator[progLang] + STRING_SPACE + functionArgumentItem->functionArgumentPassCastClassName + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class, param2class>
-	string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
+	string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class, param2class> (param1InstanceList)				
 	//string codeBlockTextTemplateDefinition = progLangTemplateUsePart1[progLang] + functionArgumentItem->className + progLangTemplateUsePart2[progLang] + STRING_SPACE; 	//<param1class>
-	//string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityLocalListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
+	//string codeBlockExecuteFunctionText = string(NLC_CAST_VECTOR_FUNCTION_NAME) + codeBlockTextTemplateDefinition + progLangOpenParameterSpace[progLang] + generateEntityListName(functionArgumentItem) + progLangCloseParameterSpace[progLang];	//castVector<param1class> (param1InstanceList)
 	return codeBlockExecuteFunctionText;
 }
 #endif
@@ -1543,7 +1564,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments = *functionArguments + generateEntityDeclaration(currentItem, progLang);	//currentItem->className + progLangPointer[progLang] + STRING_SPACE + generateEntityLocalListName(currentItem);
+			*functionArguments = *functionArguments + generateEntityDeclaration(currentItem, progLang);	//currentItem->className + progLangPointer[progLang] + STRING_SPACE + generateEntityListName(currentItem);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT)
@@ -1556,7 +1577,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*> 
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 			*functionArguments = *functionArguments + generateCodeEntityListDefinitionReferenceText(currentItem, progLang);
 			#else
-			*functionArguments = *functionArguments + generateEntityDeclaration(currentItem, progLang); //currentItem->className + progLangPointer[progLang] + STRING_SPACE + generateEntityLocalListName(currentItem);
+			*functionArguments = *functionArguments + generateEntityDeclaration(currentItem, progLang); //currentItem->className + progLangPointer[progLang] + STRING_SPACE + generateEntityListName(currentItem);
 			#endif			
 		}
 	}

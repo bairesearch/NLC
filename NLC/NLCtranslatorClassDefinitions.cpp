@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -81,195 +81,202 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						GIAentityConnection * connection = *connectionIter;
 						GIAentityNode * targetEntity = connection->entity;
 
-						//valid class contents checks added 1g12f 14-July-2014
-						if(generateClassHeirarchyTargetValidClassChecks(targetEntity))
+						#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+						if(!(connection->isAlias))
 						{
-							if(!(targetEntity->disabled))
+						#endif
+							//valid class contents checks added 1g12f 14-July-2014
+							if(generateClassHeirarchyTargetValidClassChecks(targetEntity))
 							{
-								//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
-
-								#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-								GIAentityNode * conditionEntity = NULL;
-								if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+								if(!(targetEntity->disabled))
 								{
-									conditionEntity = targetEntity;
-									if(!(targetEntity->conditionObjectEntity->empty()))
+									//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
+
+									#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+									GIAentityNode * conditionEntity = NULL;
+									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
 									{
-										targetEntity = (targetEntity->conditionObjectEntity->back())->entity;	//index by conditionObject not by condition
-									}
-									else
-									{
-										cout << "generateClassHeirarchy() error: condition has no object" << endl;
-									}
-								}
-								#endif
-
-								string targetName = "";
-								string targetClassName = "";
-								if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
-								{
-									targetName = generateInstanceName(targetEntity);
-								}
-								#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-								else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->isSubstanceConcept))
-								{
-									targetName = generateSubstanceConceptClassName(targetEntity);
-								}
-								#endif
-								else
-								{
-									targetName = generateClassName(targetEntity);
-								}
-
-								bool foundTargetClassDefinition = false;
-								NLCclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
-								if(!foundTargetClassDefinition)
-								{
-									//cout << "new NLCclassDefinition(" << targetName << endl;
-									targetClassDefinition = new NLCclassDefinition(targetName);
-									classDefinitionList->push_back(targetClassDefinition);
-								}
-
-								if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
-								{
-									targetClassDefinition->functionNameSpecial = generateFunctionName(targetEntity);
-									#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-									targetClassDefinition->actionOrConditionInstance = targetEntity;
-									#endif
-								}
-
-								#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
-								if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isConcept)) 16 April 2014
-								#else
-								#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-								if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isConcept) ||) 16 April 2014
-								#else
-								if((targetEntity->isAction) || (targetEntity->isActionConcept) && !(targetEntity->isConcept))	//removed; || (targetEntity->isCondition) 16 April 2014
-								#endif
-								#endif
-								{
-									targetClassDefinition->isActionOrConditionInstanceNotClass = true;
-									//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
-								}
-
-								if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
-								{//declare subclass
-									//propertyList
-									bool foundLocalClassDefinition = false;
-									NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-									if(!foundLocalClassDefinition)
-									{
-										//cout << "propertyList.push_back: " << targetClassDefinition->name << endl;
-										classDefinition->propertyList.push_back(targetClassDefinition);
-
-										NLCitem * classDeclarationPropertiesListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);
-										targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
-									}
-								}
-								else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
-								{//declare conditions
-									//conditionList
-									bool foundLocalClassDefinition = false;
-									NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-									if(!foundLocalClassDefinition)
-									{
-										//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
-										classDefinition->conditionList.push_back(targetClassDefinition);
-										//cout << "targetEntity->entityName: " << targetEntity->entityName << endl;
-
-										NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
-										#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
-										string conditionClassName = generateClassName(conditionEntity);
-										classDeclarationConditionsListItem->className2 = conditionClassName;
-										#else
+										conditionEntity = targetEntity;
 										if(!(targetEntity->conditionObjectEntity->empty()))
 										{
-											string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
-											classDeclarationConditionsListItem->className2 = conditionObjectClassName;
+											targetEntity = (targetEntity->conditionObjectEntity->back())->entity;	//index by conditionObject not by condition
 										}
 										else
 										{
 											cout << "generateClassHeirarchy() error: condition has no object" << endl;
 										}
-										#endif
-										targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
 									}
-								}
-								else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
-								{//declare inheritance
-									#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
-									if(targetName != className)	//eg do not create a separate class for substance concept definitions
-									{
 									#endif
-										//definitionList
+
+									string targetName = "";
+									string targetClassName = "";
+									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
+									{
+										targetName = generateInstanceName(targetEntity);
+									}
+									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+									else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->isSubstanceConcept))
+									{
+										targetName = generateSubstanceConceptClassName(targetEntity);
+									}
+									#endif
+									else
+									{
+										targetName = generateClassName(targetEntity);
+									}
+
+									bool foundTargetClassDefinition = false;
+									NLCclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
+									if(!foundTargetClassDefinition)
+									{
+										//cout << "new NLCclassDefinition(" << targetName << endl;
+										targetClassDefinition = new NLCclassDefinition(targetName);
+										classDefinitionList->push_back(targetClassDefinition);
+									}
+
+									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+									{
+										targetClassDefinition->functionNameSpecial = generateFunctionName(targetEntity);
+										#ifdef NLC_SUPPORT_INPUT_FILE_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
+										targetClassDefinition->actionOrConditionInstance = targetEntity;
+										#endif
+									}
+
+									#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
+									if(1)	//removed; || (if((targetEntity->isCondition) && !(targetEntity->isConcept)) 16 April 2014
+									#else
+									#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+									if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))	//removed; ((targetEntity->isCondition) && !(targetEntity->isConcept) ||) 16 April 2014
+									#else
+									if((targetEntity->isAction) || (targetEntity->isActionConcept) && !(targetEntity->isConcept))	//removed; || (targetEntity->isCondition) 16 April 2014
+									#endif
+									#endif
+									{
+										targetClassDefinition->isActionOrConditionInstanceNotClass = true;
+										//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
+									}
+
+									if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+									{//declare subclass
+										//propertyList
 										bool foundLocalClassDefinition = false;
-										NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+										NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
 										if(!foundLocalClassDefinition)
 										{
-											//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
-											classDefinition->definitionList.push_back(targetClassDefinition);
+											//cout << "propertyList.push_back: " << targetClassDefinition->name << endl;
+											classDefinition->propertyList.push_back(targetClassDefinition);
+
+											NLCitem * classDeclarationPropertiesListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);
+											targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
 										}
-									#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+									}
+									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+									{//declare conditions
+										//conditionList
+										bool foundLocalClassDefinition = false;
+										NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+										if(!foundLocalClassDefinition)
+										{
+											//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
+											classDefinition->conditionList.push_back(targetClassDefinition);
+											//cout << "targetEntity->entityName: " << targetEntity->entityName << endl;
+
+											NLCitem * classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
+											#ifdef NLC_USE_STRING_INDEXED_UNORDERED_MAPS_FOR_CONDITION_LISTS
+											string conditionClassName = generateClassName(conditionEntity);
+											classDeclarationConditionsListItem->className2 = conditionClassName;
+											#else
+											if(!(targetEntity->conditionObjectEntity->empty()))
+											{
+												string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+												classDeclarationConditionsListItem->className2 = conditionObjectClassName;
+											}
+											else
+											{
+												cout << "generateClassHeirarchy() error: condition has no object" << endl;
+											}
+											#endif
+											targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
+										}
+									}
+									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+									{//declare inheritance
+										#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+										if(targetName != className)	//eg do not create a separate class for substance concept definitions
+										{
+										#endif
+											//definitionList
+											bool foundLocalClassDefinition = false;
+											NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+											if(!foundLocalClassDefinition)
+											{
+												//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
+												classDefinition->definitionList.push_back(targetClassDefinition);
+											}
+										#ifndef NLC_CREATE_A_SEPARATE_CLASS_FOR_SUBSTANCE_CONCEPT_DEFINITIONS
+										}
+										#endif
+									}
+									#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+									else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+									{//declare functions
+										//functionList
+										bool foundLocalClassDefinition = false;
+										//cout << "findClassDefinition: " << targetName << endl;
+										NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->functionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists	//note this check will not work for functions because they are added by instance 
+										//cout << "done findClassDefinition: " << targetName << endl;
+										if(!foundLocalClassDefinition)
+										{
+											//cout << "(!foundLocalClassDefinition): " << targetName << endl;
+
+											bool hasActionObject = false;
+											string actionObjectName = "";
+											GIAentityNode * actionObject = NULL;
+											if(!(targetEntity->actionObjectEntity->empty()))
+											{
+												actionObject = (targetEntity->actionObjectEntity->back())->entity;
+												hasActionObject = true;
+												actionObjectName = actionObject->entityName;
+											}
+
+											classDefinition->functionList.push_back(targetClassDefinition);
+											NLCitem * classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
+											targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+											if(hasActionObject)
+											{
+												NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+												targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
+											}
+
+											/*
+											#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
+											//added 1k9c for dynamic casting of children
+											NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
+											targetClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
+											#endif
+											*/
+
+											#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+											//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
+											generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
+											//#endif
+											#endif
+										}
 									}
 									#endif
 								}
-								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-								else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
-								{//declare functions
-									//functionList
-									bool foundLocalClassDefinition = false;
-									//cout << "findClassDefinition: " << targetName << endl;
-									NLCclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->functionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists	//note this check will not work for functions because they are added by instance 
-									//cout << "done findClassDefinition: " << targetName << endl;
-									if(!foundLocalClassDefinition)
-									{
-										//cout << "(!foundLocalClassDefinition): " << targetName << endl;
-										
-										bool hasActionObject = false;
-										string actionObjectName = "";
-										GIAentityNode * actionObject = NULL;
-										if(!(targetEntity->actionObjectEntity->empty()))
-										{
-											actionObject = (targetEntity->actionObjectEntity->back())->entity;
-											hasActionObject = true;
-											actionObjectName = actionObject->entityName;
-										}
-
-										classDefinition->functionList.push_back(targetClassDefinition);
-										NLCitem * classDeclarationFunctionItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);	//added 1e1c
-										targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
-										if(hasActionObject)
-										{
-											NLCitem * classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
-											targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
-										}
-
-										/*
-										#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-										//added 1k9c for dynamic casting of children
-										NLCitem * classDeclarationFunctionOwnerItem = new NLCitem(entityNode, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION_OWNER);
-										targetClassDefinition->parameters.push_back(classDeclarationFunctionOwnerItem);
-										#endif
-										*/
-
-										#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-										//#ifdef NLC_SUPPORT_INPUT_FILE_LISTS	//shouldn't this preprocessor requirement be enforced?
-										generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
-										//#endif
-										#endif
-									}
-								}
-								#endif
 							}
+							/*
+							else
+							{
+								cout << "entityNode->entityName = " << entityNode->entityName << endl;
+								cout << "i = " << i << endl;
+								cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
+							}
+							*/
+						#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 						}
-						/*
-						else
-						{
-							cout << "entityNode->entityName = " << entityNode->entityName << endl;
-							cout << "i = " << i << endl;
-							cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
-						}
-						*/
+						#endif
 					}
 				}
 			}
@@ -601,6 +608,14 @@ bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)
 	}
 	#endif
 	#endif
+	
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	string aliasClassName = "";
+	if(findEntityNameInFunctionAliasList(entityNode->entityName, &aliasClassName))
+	{
+		entityNode->entityName = aliasClassName;	//entity name can be overwritten as generateCodeBlocks has already been executed 
+	}
+	#endif
 		
 	return validClass;
 }
@@ -651,6 +666,14 @@ bool generateClassHeirarchyTargetValidClassChecks(GIAentityNode* targetEntity)
 		validClassContents = false;	
 	}
 	#endif
+	#endif
+	
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	string aliasClassName = "";
+	if(findEntityNameInFunctionAliasList(targetEntity->entityName, &aliasClassName))
+	{
+		targetEntity->entityName = aliasClassName;	//entity name can be overwritten as generateCodeBlocks has already been executed 
+	}
 	#endif
 	
 	return validClassContents;

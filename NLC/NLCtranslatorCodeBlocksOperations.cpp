@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -318,6 +318,7 @@ bool initialiseParentIfNecessaryOrGenerateCodeBlocks(NLCcodeblock ** currentCode
 
 
 
+
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
 bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName)
 {	
@@ -327,115 +328,131 @@ bool generateContextBlocks(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode
 bool generateContextBlocksCategories(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * parentEntity, int sentenceIndex, NLCgenerateContextBlocksVariables * generateContextBlocksVariables, bool generatedParentContext, string genericListAppendName)
 {			
 	bool contextFound = false;
-	*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
-	if(generateContextBlocksVariables->testNumerosity)
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	string parentEntityAliasClassName = "";
+	if(findEntityNameInFunctionAliasList(parentEntity->entityName, &parentEntityAliasClassName))
 	{
-		string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
-		*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 0);
-	}
-	#endif
-
-	NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
-	if(generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, generatedParentContext, genericListAppendName))
-	{
-		contextFound = true;
-	}
-
-	addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity, genericListAppendName, generateContextBlocksVariables);
-
-	if(!(generatedParentContext && !contextFound))
-	{
-		*currentCodeBlockInTree = lastCodeBlockInTree->next;
-	}
-
-	lastCodeBlockInTree = *currentCodeBlockInTree;
-	#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN
-	cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
-	#endif
-	
-	//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
-	for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
-	{
-		GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
-		if(parentSubstanceConcept->isSubstanceConcept)
-		{		
-			#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
-			cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren(): parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
-			#endif
-			if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, parentSubstanceConcept, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
-			{
-				contextFound = true;
-			}
-		}
-	}
-	
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
-	if(generateContextBlocksVariables->testNumerosity)
-	{
-		//test numerosity of child
-		if(generateContextBlocksVariables->childQuantity > 1)
-		{
-			#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-			*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (child)");
-			#endif
-			string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
-			*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, generateContextBlocksVariables->childQuantity);
-		}			
-		
-	}
-	#endif
-	#endif
-		
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-	if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
-	{
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
-		#ifndef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-		*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
-		#endif
-		NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
-		*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1);
-		*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
-		*currentCodeBlockInTree = lastCodeBlockInTree2->next;
-		#endif
-		#endif
-		
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
-		*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false, genericListAppendName);	//added 1j5a
-		*currentCodeBlockInTree = createCodeBlockGetBackCategoryEntityList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-		#else
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-		#endif
+		//added 1k14b;
+		GIAentityNode artificialAliasEntity;
+		artificialAliasEntity.entityName = parentEntityAliasClassName;
+		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, &artificialAliasEntity, genericListAppendName);
+		*currentCodeBlockInTree = createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(*currentCodeBlockInTree, parentEntity->entityName, &artificialAliasEntity, genericListAppendName);
+		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, &artificialAliasEntity, genericListAppendName);
 	}
 	else
 	{
 	#endif
-		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+		*currentCodeBlockInTree = createCodeBlocksDeclareNewCategoryListVariable(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 		if(generateContextBlocksVariables->testNumerosity)
 		{
-			//test numerosity of parent
-			if(parentEntity->hasQuantity)
-			{
-				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
-				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
-				#endif
-				*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, parentEntity->quantityNumber);
-			}
+			string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
+			*currentCodeBlockInTree = createCodeBlockDeclareNewIntVar(*currentCodeBlockInTree, categoryListPropertyCountVariableName, 0);
 		}
 		#endif
-			
-		*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
-	#ifdef NLC_CATEGORIES_TEST_PLURALITY
+
+		NLCcodeblock * lastCodeBlockInTree = *currentCodeBlockInTree;
+		if(generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, generateContextBlocksVariables, generatedParentContext, genericListAppendName))
+		{
+			contextFound = true;
+		}
+
+		addPropertyToCategoryList(currentCodeBlockInTree, parentEntity, parentEntity, genericListAppendName, generateContextBlocksVariables);
+
+		if(!(generatedParentContext && !contextFound))
+		{
+			*currentCodeBlockInTree = lastCodeBlockInTree->next;
+		}
+
+		lastCodeBlockInTree = *currentCodeBlockInTree;
+		#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN
+		cout << "contextFound: parentEntity = " << parentEntity->entityName << endl;
+		#endif
+
+		//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
+		for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->entityNodeDefinitionList->begin(); definitionNodeListIterator < parentEntity->entityNodeDefinitionList->end(); definitionNodeListIterator++)
+		{
+			GIAentityNode* parentSubstanceConcept = (*definitionNodeListIterator)->entity;	//e.g. "fruit" substance concept
+			if(parentSubstanceConcept->isSubstanceConcept)
+			{		
+				#ifdef NLC_DEBUG_PARSE_CONTEXT_CHILDREN	
+				cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN: createCodeBlockForStatementsForDefinitionChildren(): parentSubstanceConcept = " << parentSubstanceConcept->entityName << ", idInstance = " << parentSubstanceConcept->idInstance << endl;
+				#endif
+				if(createCodeBlockForStatementsForDefinitionChildren(currentCodeBlockInTree, &lastCodeBlockInTree, parentEntity, parentSubstanceConcept, sentenceIndex, generateContextBlocksVariables, true, genericListAppendName))
+				{
+					contextFound = true;
+				}
+			}
+		}
+
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
+		if(generateContextBlocksVariables->testNumerosity)
+		{
+			//test numerosity of child
+			if(generateContextBlocksVariables->childQuantity > 1)
+			{
+				#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+				*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (child)");
+				#endif
+				string categoryListPropertyCountVariableName = generateCategoryListPropertyCountVariableName(parentEntity);
+				*currentCodeBlockInTree = createCodeBlockIfIntVariableGreaterThanOrEqualToNum(*currentCodeBlockInTree, categoryListPropertyCountVariableName, generateContextBlocksVariables->childQuantity);
+			}			
+
+		}
+		#endif
+		#endif
+
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY
+		if((parentEntity->grammaticalNumber == GRAMMATICAL_NUMBER_SINGULAR) && assumedToAlreadyHaveBeenDeclared(parentEntity))	//added assumedToAlreadyHaveBeenDeclared(parentEntity) criteria 1j15a
+		{
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_WARNING
+			#ifndef NLC_CATEGORIES_TEST_PLURALITY_WARNING_PLACE_IN_NLC_PREDEFINED_FUNCTION_ADDTOCATEGORYIFPASSSINGULARDEFINITEREFERENCINGTESTS
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+			*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "Singular definite plurality tests");
+			#endif
+			NLCcodeblock * lastCodeBlockInTree2 = *currentCodeBlockInTree;
+			*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, 1);
+			*currentCodeBlockInTree = createCodeBlockPrintWarning(*currentCodeBlockInTree, NLC_CATEGORIES_TEST_PLURALITY_WARNING_MESSAGE);
+			*currentCodeBlockInTree = lastCodeBlockInTree2->next;
+			#endif
+			#endif
+
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE
+			*currentCodeBlockInTree = createCodeBlockIfHasCategoryItem(*currentCodeBlockInTree, parentEntity, false, genericListAppendName);	//added 1j5a
+			*currentCodeBlockInTree = createCodeBlockGetBackCategoryEntityList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+			#else
+			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+			#endif
+		}
+		else
+		{
+		#endif
+			#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
+			if(generateContextBlocksVariables->testNumerosity)
+			{
+				//test numerosity of parent
+				if(parentEntity->hasQuantity)
+				{
+					#ifdef NLC_CATEGORIES_TEST_PLURALITY_COMMENT
+					*currentCodeBlockInTree = createCodeBlockCommentSingleLine(*currentCodeBlockInTree, "numerosity tests (parent)");
+					#endif
+					*currentCodeBlockInTree = createCodeBlockIfHasGreaterThanOrEqualToNumCategoryItem(*currentCodeBlockInTree, parentEntity, genericListAppendName, parentEntity->quantityNumber);
+				}
+			}
+			#endif
+
+			*currentCodeBlockInTree = createCodeBlockForCategoryList(*currentCodeBlockInTree, parentEntity, genericListAppendName);
+		#ifdef NLC_CATEGORIES_TEST_PLURALITY
+		}
+		#endif
+
+		#ifdef NLC_USE_ADVANCED_REFERENCING
+		*currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, sentenceIndex);
+		#endif
+	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 	}
 	#endif
-		
-	#ifdef NLC_USE_ADVANCED_REFERENCING
-	*currentCodeBlockInTree = createCodeBlockUpdateLastSentenceReferenced(*currentCodeBlockInTree, parentEntity, sentenceIndex);
-	#endif
-	
 	return contextFound;
 
 }
@@ -2064,3 +2081,142 @@ void generateObjectInitialisationsBasedOnSubstanceConceptsRecurse(GIAentityNode 
 #endif
 
 
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+
+//"Tom rides a bike. Tom is a red dog."
+void fillFunctionAliasClassList(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete)
+{	
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "start fillFunctionAliasClassList():" << endl;
+	#endif
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * aliasClassEntity = (*entityIter);
+
+		for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = aliasClassEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < aliasClassEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+		{
+			GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+			GIAentityNode * aliasEntity = definitionConnection->entity;
+
+			if(definitionConnection->isAlias)
+			{
+				string aliasName = aliasEntity->entityName;
+				string aliasClassName = aliasClassEntity->entityName;
+				
+				//now initialise the entity corresponding to the alias (appropriate for "Tom rides a bike. Tom is a red dog." but not appropriate for "A red dog rides a bike. The name of the red dog is Tom."/"A red dog rides a bike. Tom is the red Dog."
+				//see if the first reference to the alias (eg Tom) occurs during its definition, and if not initialise the object it is referencing (eg dog)
+				bool aliasIsReferencedBeforeItIsDefined = false;
+				for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
+				{
+					GIAentityNode * entity2 = (*entityIter2);
+					if(entity2->entityName == aliasName)
+					{
+						if(entity2->sentenceIndexTemp < aliasEntity->sentenceIndexTemp)
+						{
+							aliasIsReferencedBeforeItIsDefined = true;		
+						}
+					}
+				}
+				if(aliasIsReferencedBeforeItIsDefined)
+				{
+					#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+					cout << "fillFunctionAliasClassList(): aliasIsReferencedBeforeItIsDefined" << endl;
+					cout << "aliasName = " << aliasName << endl;
+					cout << "aliasClassName = " << aliasClassName << endl;
+					#endif
+						
+					unordered_map<string, string> *  functionAliasClassList = getFunctionAliasClassList();
+					functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
+				
+					*currentCodeBlockInTree = createCodeBlocksDeclareNewLocalListVariableIfNecessary(*currentCodeBlockInTree, aliasClassEntity);
+				
+					int sentenceIndexTempNotUsed = 0;
+					*currentCodeBlockInTree = createCodeBlockAddNewEntityToLocalList(*currentCodeBlockInTree, aliasClassEntity, sentenceIndexTempNotUsed, false);
+					*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, aliasClassEntity, aliasName);
+				}
+			}
+		}
+	}
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "end fillFunctionAliasClassList():" << endl;
+	#endif
+}
+
+//"A red dog rides a bike. The name of the red dog is Tom."/"A red dog rides a bike. Tom is the red Dog."
+void identifyAliasesInCurrentSentence(NLCcodeblock ** currentCodeBlockInTree, vector<GIAentityNode*> * entityNodesActiveListComplete, int sentenceIndex)
+{
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "start identifyAliasesInCurrentSentence():" << endl;
+	#endif
+	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
+	{
+		GIAentityNode * aliasClassEntity = (*entityIter);
+		if(checkSentenceIndexParsingCodeBlocks(aliasClassEntity, sentenceIndex, false))
+		{
+			for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = aliasClassEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < aliasClassEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+			{
+				GIAentityConnection * definitionConnection = (*entityNodeDefinitionListIterator);
+				GIAentityNode * aliasEntity = definitionConnection->entity;
+				if(checkSentenceIndexParsingCodeBlocks(aliasEntity, sentenceIndex, false))
+				{
+					if(definitionConnection->isAlias)
+					{
+						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+						if(definitionConnection->sentenceIndexTemp == sentenceIndex)
+						{
+						#endif
+							bool aliasAlreadyInitialised = false;
+							string aliasName = aliasEntity->entityName;
+							string aliasClassName = aliasClassEntity->entityName;
+							
+							string aliasClassNameTemp = "";
+							if(findEntityNameInFunctionAliasList(aliasName, &aliasClassNameTemp))
+							{
+								if(aliasClassName == aliasClassNameTemp)
+								{
+									aliasAlreadyInitialised = true;
+								}
+							}
+							if(!aliasAlreadyInitialised)
+							{
+								#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+								cout << "identifyAliasesInCurrentSentence():" << endl;
+								cout << "aliasName = " << aliasName << endl;
+								cout << "aliasClassName = " << aliasClassName << endl;
+								#endif
+							
+								unordered_map<string, string> *  functionAliasClassList = getFunctionAliasClassList();
+								functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
+								
+								NLCgenerateContextBlocksVariables generateContextBlocksVariables;	//CHECKTHIS
+								bool generatedParentContext = false;	//CHECKTHIS
+								NLCcodeblock * firstCodeBlockInSentence = *currentCodeBlockInTree;
+								if(!generateContextBlocks(currentCodeBlockInTree, aliasClassEntity, sentenceIndex, &generateContextBlocksVariables, generatedParentContext, NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION))
+								{
+									#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+									cout << "identifyAliasesInCurrentSentence(): !generateContextBlocks: aliasClassEntity = " << aliasClassEntity->entityName << endl;
+									#endif
+								}
+								
+								*currentCodeBlockInTree = createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, aliasClassEntity, aliasName);
+								
+								*currentCodeBlockInTree = firstCodeBlockInSentence;
+								while((*currentCodeBlockInTree)->next != NULL)
+								{
+									*currentCodeBlockInTree = (*currentCodeBlockInTree)->next;
+								}
+							}
+						#ifdef NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX
+						}
+						#endif
+					}
+				}
+			}
+		}
+	}
+	#ifdef NLC_DEBUG_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	cout << "end identifyAliasesInCurrentSentence():" << endl;
+	#endif
+}
+
+#endif

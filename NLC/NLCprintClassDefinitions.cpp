@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -180,6 +180,10 @@ bool printClassDefinitions(vector<NLCclassDefinition *> * classDefinitionList, i
 							#ifdef NLC_USE_ADVANCED_REFERENCING
 							string classDefinitionLastSentenceReferencedCode = progLangClassLastSentenceReferencedVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME) + progLangEndLine[progLang];	//stack<int> lastSentenceReferenced;
 							printLine(classDefinitionLastSentenceReferencedCode, 1, code);
+							#endif
+							#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+							string classDefinitionAliasListCode = progLangAliasListVariableType[progLang] + string(NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_ALIAS_LIST_NAME) + progLangEndLine[progLang];	//vector<string> aliasList;
+							printLine(classDefinitionAliasListCode, 1, code);			
 							#endif
 						#ifdef NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS
 						}

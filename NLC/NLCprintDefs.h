@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -87,6 +87,8 @@ using namespace std;
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 #define NLC_ITEM_TYPE_ALIASLISTVAR_APPENDITION NLC_ITEM_TYPE_ALIASVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"AliasList"
 #endif
+#define NLC_ITEM_TYPE_CATEGORYLISTVAR_APPENDITION NLC_ITEM_TYPE_CATEGORYVAR_APPENDITION NLC_ITEM_TYPE_LISTVAR_APPENDITION	//"CategoryList"
+
 
 //from NLCclassDefinitionClass.h
 static string progLangClassTitlePrepend[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"class ", "class ", "class ", "class ", "class ", "class ", "class "};
@@ -244,6 +246,7 @@ static string progLangReturn[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"return ", 
 
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
 static string progLangAliasNameVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"string ", "string ", "string ", "string ", "string ", "string ", "string "};
+static string progLangAliasListVariableType[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"vector<string> ", "vector<string> ", "vector<string> ", "vector<string> ", "vector<string> ", "vector<string> ", "vector<string> "};
 #endif
 static string progLangForIterEntityPairListEntityReference[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"->second", "->second", "->second", "->second", "->second", "->second", "->second"};
 static string progLangTestEntityPairFindPart1[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"if(", "if(", "if(", "if(", "if(", "if(", "if("};
@@ -254,8 +257,8 @@ static string progLangTestEntityPairFindPart3[NLC_NUMBER_OF_PROGRAMMING_LANGUAGE
 
 void printLine(string command, int level, string * code);
 string generatePropertyListName(string propertyClassName);
-string generateEntityLocalListName(NLCitem * entityParam);	//added 1i6a
-string generateEntityLocalListAppendName();
+string generateEntityListName(NLCitem * entityParam);	//added 1i6a
+string generateEntityListAppendName();
 string generateGenericListName(string genericObjectName, string genericListAppendName);
 string generateConditionListName(string conditionClassName, string conditionObjectClassName);
 string generateConditionPairDefinitionName(string conditionClassName, string conditionObjectClassName);

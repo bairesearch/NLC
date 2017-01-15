@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -122,51 +122,56 @@ using namespace std;
 	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_NEW_FUNCTION (46)
 	#define NLC_CODEBLOCK_TYPE_CAST_VECTOR_EXECUTE_FUNCTION (47)
 #endif
+#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+	#define NLC_CODEBLOCK_TYPE_ADD_ALIAS_TO_ENTITY_ALIAS_LIST (48)
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_NEW_FUNCTION (49)
+	#define NLC_CODEBLOCK_TYPE_FIND_ALIAS_AND_ADD_TO_CATEGORY_LIST_EXECUTE_FUNCTION (50)
+#endif
 
 //containers:
-#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (50)		//forall(context1.param1PropertyList){
-#define NLC_CODEBLOCK_TYPE_FOR_LOCAL_LIST (51)	//forall(param1instance){
-#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (52)		//forall(context1.param1param2ConditionList){
-#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (53)
-#define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (54)			//main(){
+#define NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST (100)		//forall(context1.param1PropertyList){
+#define NLC_CODEBLOCK_TYPE_FOR_LOCAL_LIST (101)	//forall(param1instance){
+#define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (102)		//forall(context1.param1param2ConditionList){
+#define NLC_CODEBLOCK_TYPE_FOR_INTEGER (103)
+#define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (104)			//main(){
 #ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 #ifndef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (55)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (56)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (57)		//while(!(context1->param1PropertyList.empty())){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (58)		//while(!(context1->param1param2ConditionList.empty())){
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (105)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (106)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
+	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (107)		//while(!(context1->param1PropertyList.empty())){
+	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (108)		//while(!(context1->param1param2ConditionList.empty())){
 #endif
 #endif
-#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (59)
-#define NLC_CODEBLOCK_TYPE_ELSE (60)
-#define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (61)
-#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (62)
+#define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (109)
+#define NLC_CODEBLOCK_TYPE_ELSE (110)
+#define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (111)
+#define NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (112)
 #ifdef NLC_PREPROCESSOR_MATH
-	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (63)
+	#define NLC_CODEBLOCK_TYPE_MATHTEXT_WITH_LOGICAL_OPERATOR (113)
 #endif
-#define NLC_CODEBLOCK_TYPE_WHILE (64)
+#define NLC_CODEBLOCK_TYPE_WHILE (114)
 #ifdef NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN
-	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST (65)
+	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST (115)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY
-		#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY (66)
+		#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_NUM_GENERIC_ENTITY (116)
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING
-		#define NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY (67)
+		#define NLC_CODEBLOCK_TYPE_IF_HAS_GENERIC_ENTITY (117)
 	#endif
 #endif
 #ifdef NLC_GENERATE_TYPE_LISTS
-	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST2 (68)
+	#define NLC_CODEBLOCK_TYPE_FOR_GENERIC_LIST2 (118)
 #endif
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_GENERIC_ENTITY (69)
+	#define NLC_CODEBLOCK_TYPE_IF_HAS_GREATER_THAN_OR_EQUAL_TO_NUM_GENERIC_ENTITY (119)
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
-		#define NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM (70)
-		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY (71)
-		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION (72)
+		#define NLC_CODEBLOCK_TYPE_TEST_INT_VARIABLE_GREATER_THAN_OR_EQUAL_TO_NUM (120)
+		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_PROPERTY (121)
+		//#define NLC_CODEBLOCK_TYPE_IF_HAS_MORE_THAN_NUM_CONDITION (122)
 	#endif
 #endif
 #ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT
-	#define NLC_CODEBLOCK_TYPE_CONTEXT_BLOCK (73)
+	#define NLC_CODEBLOCK_TYPE_CONTEXT_BLOCK (123)
 #endif
 
 #define NLC_CODEBLOCK_TYPE_CONTAINERS (NLC_CODEBLOCK_TYPE_FOR_PROPERTY_LIST)
@@ -271,7 +276,7 @@ NLCcodeblock * createCodeBlockCreateNewCondition(NLCcodeblock * currentCodeBlock
 NLCcodeblock * createCodeBlocksCreateNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
 	NLCcodeblock * createCodeBlocksDeclareNewLocalListVariableIfNecessary(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
 		NLCcodeblock * createCodeBlocksDeclareNewLocalListVariable(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
-	NLCcodeblock * createCodeBlockAddNewEntityToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex);
+	NLCcodeblock * createCodeBlockAddNewEntityToLocalList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, int sentenceIndex, bool addReferencingContext);
 
 NLCcodeblock * createCodeBlockForPropertyList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
 NLCcodeblock * createCodeBlockForLocalList(NLCcodeblock * currentCodeBlockInTree, NLCitem * item);
@@ -422,10 +427,12 @@ NLCcodeblock * createCodeBlocksCastVectorExecuteFunction(NLCcodeblock * currentC
 #endif
 
 #ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-NLCcodeblock * createCodeBlocksDeclareAliasList(NLCcodeblock * currentCodeBlockInTree);
-NLCcodeblock * createCodeBlocksAddEntityToAliasList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity);
+NLCcodeblock * createCodeBlocksAddAliasToEntityAliasList(NLCcodeblock * currentCodeBlockInTree, GIAentityNode* entity, string aliasName);
 NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListNewFunction(NLCcodeblock * currentCodeBlockInTree);
 NLCcodeblock * createCodeBlocksFindAliasAndAddToCategoryListExecuteFunction(NLCcodeblock * currentCodeBlockInTree, string aliasName, GIAentityNode* categoryEntity, string genericListAppendName);
+unordered_map<string, string> * getFunctionAliasClassList();
+void initialiseFunctionAliasClassList();
+bool findEntityNameInFunctionAliasList(string aliasName, string * aliasClassName);
 #endif
 
 void clearCodeBlock(NLCcodeblock * codeBlock);
@@ -435,5 +442,6 @@ NLCcodeblock * createCodeBlockDebug(NLCcodeblock * currentCodeBlockInTree, strin
 #ifdef NLC_CATEGORIES_TEST_PLURALITY_NUMEROSITY_CHILDREN
 string generateCategoryListPropertyCountVariableName(GIAentityNode * entity);
 #endif
+
 
 #endif

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k14a 21-October-2014
+ * Project Version: 1k14b 21-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,14 +74,23 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 	#endif
 	#endif
 	#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
-	currentCodeBlockInTree = createCodeBlocksDeclareAliasList(currentCodeBlockInTree);	
+	#ifndef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES_CROSS_FUNCTION_ALIASES
+	#ifdef NLC_DEBUG
+	cout << "initialiseFunctionAliasClassList:" << endl;
+	#endif
+	initialiseFunctionAliasClassList();
+	#endif
+	#ifdef NLC_DEBUG
+	cout << "fillFunctionAliasClassList:" << endl;
+	#endif
+	fillFunctionAliasClassList(&currentCodeBlockInTree, entityNodesActiveListComplete);
 	#endif
 	
 	#ifdef NLC_USE_ADVANCED_REFERENCING_DECLARE_LOCAL_PROPERTY_LISTS_FOR_ALL_INDEFINITE_ENTITIES_FOR_ALL_SENTENCES
 	#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 	//Part Prep A - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
 	#ifdef NLC_DEBUG
-	cout << "generateCodeBlocksPart1declareLocalVariables:" << endl;
+	cout << "declareLocalPropertyListsForIndefiniteEntities:" << endl;
 	#endif
 	declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, 0, NLCfunctionName, currentNLCsentenceInList);
 	#endif
@@ -129,13 +138,23 @@ bool generateCodeBlocks(NLCcodeblock * firstCodeBlockInTree, vector<GIAentityNod
 		#ifdef NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES
 		//Part Prep A - declareLocalVariables (for non-specific indefinte entities, eg "a chicken", not "a blue chicken") - added 1g8a;
 		#ifdef NLC_DEBUG
-		cout << "generateCodeBlocksPart1declareLocalVariables:" << endl;
+		cout << "declareLocalPropertyListsForIndefiniteEntities:" << endl;
 		#endif
 		declareLocalPropertyListsForIndefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex, NLCfunctionName, currentNLCsentenceInList);	//added 1g8a 11-July-2014
 		#endif
 		#endif
 		
+		#ifdef NLC_USE_ADVANCED_REFERENCING_SUPPORT_ALIASES
+		#ifdef NLC_DEBUG
+		cout << "identifyAliasesInCurrentSentence:" << endl;
+		#endif
+		identifyAliasesInCurrentSentence(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
+		#endif
+		
 		#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_SUBSTANCE_CONCEPTS_FOR_ALL_DEFINITE_ENTITIES
+		#ifdef NLC_DEBUG
+		cout << "generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities:" << endl;
+		#endif
 		generateObjectInitialisationsBasedOnSubstanceConceptsForAllDefiniteEntities(&currentCodeBlockInTree, entityNodesActiveListComplete, sentenceIndex);
 		#endif
 

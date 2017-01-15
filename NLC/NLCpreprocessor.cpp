@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2j 28-July-2014
+ * Project Version: 1h3a 28-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,6 +41,20 @@
 #include "NLCprintDefs.h" //required for progLangOpenParameterSpace
 #include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
+
+#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+NLCsuperphrase::NLCsuperphrase(void)
+{
+	lineIndexOfFirstCharacterInPhrase = INT_DEFAULT_VALUE;
+	phraseContents = "";
+	hasConjunction = false;
+	conjunctionType = INT_DEFAULT_VALUE;
+	next = NULL;
+}
+NLCsuperphrase::~NLCsuperphrase(void)
+{
+}
+#endif
 
 NLCsentence::NLCsentence(void)
 {
@@ -419,7 +433,25 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 	
 	#ifdef NLC_DEBUG_PREPROCESSOR
 	cout << "Premature quit for debug" << endl;
-	exit(0);
+	NLCsentence * currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
+	while(currentNLCsentenceInList->next != NULL)
+	{
+		for(int i=0;i<currentNLCsentenceInList->indentation; i++)
+		{
+			cout << "\t";
+		}
+		cout << currentNLCsentenceInList->sentenceContents;
+		if(currentNLCsentenceInList->isMath)
+		{
+			cout << " (mathText = " << currentNLCsentenceInList->mathText << ")" << endl;
+		}
+		else
+		{
+			cout << endl;
+		}
+		currentNLCsentenceInList = currentNLCsentenceInList->next;
+	}	
+	//exit(0);
 	#endif
 
 	return result;
@@ -593,52 +625,55 @@ bool replaceLogicalConditionNaturalLanguageMathWithSymbols(string * lineContents
 		}
 	}
 	*/
+	
+	if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
+	{
+		//detect conjunctions...
+		*additionalClosingBracketRequired = false;
+		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
+		{
+			int index = (*lineContents).find(preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
+			if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{
+				*additionalClosingBracketRequired = true;
+			}
+			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			cout << "additionalClosingBracketRequired" << endl;
+			#endif
+		}
+		#endif
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+		{
+			*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
+		}
 
-	//detect conjunctions...
-	*additionalClosingBracketRequired = false;
-	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
-	{
-		int index = (*lineContents).find(preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
-		if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-		{
-			*additionalClosingBracketRequired = true;
+		//ensure all logical condition operators have enclosing brackets eg if(...) - this is done to prevent "if" in "if the house is cold" from being merged into an NLP parsable phrase
+
+		char characterAfterLogicalConditionOperator = lineContents->at(logicalConditionOperationsArray[logicalConditionOperator].length());
+		if(characterAfterLogicalConditionOperator == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
+		{//NB intermediary white text not currently supported, eg "if (...)"
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+			if(*additionalClosingBracketRequired)
+			{
+				lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length()+1, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
+			}
+			#endif
 		}
-		#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-		cout << "additionalClosingBracketRequired" << endl;
-		#endif
-	}
-	#endif
-	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
-	{
-		*lineContents = replaceAllOccurancesOfString(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
-	}
-	
-	//ensure all logical condition operators have enclosing brackets eg if(...) - this is done to prevent "if" in "if the house is cold" from being merged into an NLP parsable phrase
-	
-	char characterAfterLogicalConditionOperator = lineContents->at(logicalConditionOperationsArray[logicalConditionOperator].length());
-	if(characterAfterLogicalConditionOperator == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
-	{//NB intermediary white text not currently supported, eg "if (...)"
-		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-		if(*additionalClosingBracketRequired)
+		else if(characterAfterLogicalConditionOperator == CHAR_SPACE)
 		{
-			lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length()+1, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
+			lineContents->replace(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING);
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+			if(*additionalClosingBracketRequired)
+			{
+				lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length()+1, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
+			}	
+			#endif
 		}
-		#endif
-	}
-	else if(characterAfterLogicalConditionOperator == CHAR_SPACE)
-	{
-		lineContents->replace(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING);
-		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-		if(*additionalClosingBracketRequired)
+		else
 		{
-			lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length()+1, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
-		}	
-		#endif
-	}
-	else
-	{
-		cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols() error: invalid symbol found after logicalConditionOperator: " << logicalConditionOperationsArray[logicalConditionOperator] << characterAfterLogicalConditionOperator << endl;
+			cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols() error: invalid symbol found after logicalConditionOperator: " << logicalConditionOperationsArray[logicalConditionOperator] << characterAfterLogicalConditionOperator << endl;
+		}
 	}
 	
 	#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
@@ -662,18 +697,21 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	string mathText = "";
 	bool mandatoryCharacterFoundInCurrentWord = false;
 	
-	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-	string newlyDeclaredVariable = "";
-	#endif
-	
 	int startIndex = 0;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{
+		/*not required because brackets are added to logical condition operators;
 		//prevent logical condition operatators from being considered legal words by splitMathDetectedLineIntoNLPparsablePhrases
 		startIndex = logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator].length();
 		mathText = mathText + logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator];
+		#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		indexOfLogicalConditionCommand = indexOfLogicalConditionCommand-logicalConditionOperationsArray[firstNLCsentenceInFullSentence->logicalConditionOperator].length();
+		#endif
+		*/
 		
+		//#ifndef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		//UNFINISHED CODE; decided to use NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION instead
 		if(firstNLCsentenceInFullSentence->logicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 		{
 			//add a comma after "else", such that the logical condition command will be created (in a new sentence) instead of creating an nlp parsable phrase
@@ -686,9 +724,30 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				cout << "creating artificial comma for logical condition command to be detected" << endl;
 				cout << "lineContents = " << *lineContents << endl;
 			}
-		}			
+		}	
+		//#endif		
 	}
 	#endif
+
+	#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+	string newlyDeclaredVariable = "";
+	#endif
+	
+	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+	bool detectedLogicalConditionCommand = false;
+	bool foundImplicitConjunctions = false;	//not used
+	int indexOfLogicalConditionCommand = INT_DEFAULT_VALUE;
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
+		if(!generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(lineContents, &detectedLogicalConditionCommand, &foundImplicitConjunctions, &indexOfLogicalConditionCommand))
+		{
+			result = false;
+		}
+	}
+	cout << "indexOfLogicalConditionCommand = " << indexOfLogicalConditionCommand << endl;
+	int phraseIndexOfFirstLogicalCommand = INT_DEFAULT_VALUE;
+	#endif
+
 	
 	bool finalWordInSentenceFoundAndIsLegal = false;
 	for(int i=startIndex; i<lineContents->length(); i++)
@@ -696,6 +755,16 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		//eg y = x+the number of house in the park
 		//eg y = x+(the number of house in the park)
 		char c = (*lineContents)[i];
+		
+		#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		if(i >= indexOfLogicalConditionCommand)
+		{
+			if(phraseIndexOfFirstLogicalCommand == INT_DEFAULT_VALUE)
+			{//do not overwrite phraseIndexOfFirstLogicalCommand
+				phraseIndexOfFirstLogicalCommand = phraseIndex;
+			}
+		}
+		#endif
 		
 		bool legalWordCharacterFound = charInCharArray(c, preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
 		if(charInCharArray(c, preprocessorMathNLPparsableCharactersMandatory, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
@@ -722,10 +791,15 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		
 			if(mandatoryCharacterFoundInCurrentWord)
 			{
-				(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariableNames
-				#ifdef NLC_DEBUG_PREPROCESSOR_MATH
-				//cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
-				#endif
+				
+				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator) || !textInTextArray(currentWord, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
+				{
+					(*currentNLCsentenceInList)->mathTextVariableNames.push_back(currentWord);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariableNames
+					#ifdef NLC_DEBUG_PREPROCESSOR_MATH
+					//cout << "mandatoryCharacterFoundInCurrentWord: " << currentWord << endl;
+					#endif
+				}
+				
 				#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 				if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 				{
@@ -900,6 +974,74 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	}	
 	//}	
 	#endif
+
+	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
+		if(detectedLogicalConditionCommand)
+		{
+			//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			cout << "detectedLogicalConditionCommand: mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
+			//#endif
+			
+			NLCsentence * firstPhraseInLogicalConditionCommandOld = firstNLCsentenceInFullSentence;
+			NLCsentence * lastPhraseBeforeLogicalConditionCommand = firstNLCsentenceInFullSentence;
+			cout << "phraseIndexOfFirstLogicalCommand = " << phraseIndexOfFirstLogicalCommand << endl;
+			if(phraseIndexOfFirstLogicalCommand > 0)
+			{
+				for(int phraseIndex = 0; phraseIndex < phraseIndexOfFirstLogicalCommand; phraseIndex++)
+				{
+					lastPhraseBeforeLogicalConditionCommand = firstPhraseInLogicalConditionCommandOld;
+					firstPhraseInLogicalConditionCommandOld = firstPhraseInLogicalConditionCommandOld->next;
+				}
+			}
+
+			
+			string firstParsablePhraseReferenceInLogicalConditionCommand = generateMathTextNLPparsablePhraseReference(firstNLCsentenceInFullSentence->sentenceIndex, firstPhraseInLogicalConditionCommandOld);
+			int indexOfLogicalConditionCommandInMathText = firstNLCsentenceInFullSentence->mathText.find(firstParsablePhraseReferenceInLogicalConditionCommand);
+			if(indexOfLogicalConditionCommandInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{
+				//disconnect logical condition command parsable phrases from mathText
+				
+				NLCsentence * firstPhraseInLogicalConditionCommand = new NLCsentence();
+				firstPhraseInLogicalConditionCommand->next = firstPhraseInLogicalConditionCommandOld->next;
+				firstPhraseInLogicalConditionCommand->sentenceContents = firstPhraseInLogicalConditionCommandOld->sentenceContents;
+				if(phraseIndexOfFirstLogicalCommand > 0)
+				{
+					lastPhraseBeforeLogicalConditionCommand->next = new NLCsentence();
+					(*currentNLCsentenceInList) = lastPhraseBeforeLogicalConditionCommand->next;
+				}
+				else
+				{//could use the case above: for clarity only
+					firstPhraseInLogicalConditionCommandOld->next = new NLCsentence();
+					(*currentNLCsentenceInList) = firstPhraseInLogicalConditionCommandOld->next;
+					firstNLCsentenceInFullSentence->sentenceContents = string(NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY);			
+				}
+				
+				string mathTextOfLogicalConditionCommand = firstNLCsentenceInFullSentence->mathText.substr(indexOfLogicalConditionCommandInMathText, firstNLCsentenceInFullSentence->mathText.length());
+				firstNLCsentenceInFullSentence->mathTextNLPparsablePhraseTotal = phraseIndexOfFirstLogicalCommand;
+				firstNLCsentenceInFullSentence->mathText = firstNLCsentenceInFullSentence->mathText.substr(0, indexOfLogicalConditionCommandInMathText);	//remove parsable phrase reference from mathText	//-2 to take into account intermediary comma CHAR_COMMA and white space CHAR_SPACE
+				
+									
+				//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+				cout << "detectedLogicalConditionCommand; modified mathText for firstNLCsentenceInFullSentence = " << firstNLCsentenceInFullSentence->mathText << endl;
+				cout << "now generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand()... " << endl;
+				//#endif
+				if(!generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(currentNLCsentenceInList, firstPhraseInLogicalConditionCommand, mathTextOfLogicalConditionCommand, sentenceIndex, sentenceIndexOfFullSentence, currentIndentation + 1))
+				{
+					result = false;
+				}
+				
+				maxPhraseIndex = phraseIndexOfFirstLogicalCommand;	//required for automated phrase subject regeneration for phrase subject references based on auxillaries (see below)	
+			}
+			else
+			{
+				cout << "splitMathDetectedLineIntoNLPparsablePhrases() error: firstParsablePhraseReferenceInLogicalConditionCommand " << firstParsablePhraseReferenceInLogicalConditionCommand << " not found in mathText " << firstNLCsentenceInFullSentence->mathText << endl;
+			}
+
+		}
+	}
+	#endif
 	
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
@@ -907,10 +1049,14 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		//need to parse "is" as equals, eg "if x is 33534"; for all mathText which is not NLP parsable text, replace "is" with "=" 
 		//replace all instances of "is" in all mathText which is not NLP parsable text with "="
 		firstNLCsentenceInFullSentence->mathText = replaceAllOccurancesOfString(&(firstNLCsentenceInFullSentence->mathText), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL), string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST));	//NB this is type sensitive; could be changed in the future
-			
+
 		//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
 		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.; convert to mathText and parsable phrase ("x = the number of chickens")*
+	}
 
+	#ifndef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
 		//how do deal with logical condition commands? eg "if the dog has a ball and [the dog] has an apple, ride the bike."? must detect comma as a new NLP parsable phrase, and any parsable phrase without a starting conjunction as a logical condition command
 		if(firstNLCsentenceInFullSentence->mathText[firstNLCsentenceInFullSentence->mathText.length()-1] == NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR)
 		{
@@ -988,13 +1134,21 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				}
 			}
 		}
-		
+	}
+	#endif
+
+	#ifndef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
+	{
+	#endif	
 		//for logical condition NLP parsable phrases, look for first instance of keywords has/is, and take the preceeding text as the context
 		//this enables elimination for need for referencing in conjunctions, eg "if{(}the dog has a ball and [the dog] has an apple{)}"
 		//FINISH THIS...
 		NLCsentence * currentPhrasePrimarySubject = firstNLCsentenceInFullSentence;
+		cout << "maxPhraseIndex = " << maxPhraseIndex << endl;
 		for(int phraseIndex=0; phraseIndex<maxPhraseIndex; phraseIndex++)
 		{
+			cout << "currentPhrasePrimarySubject->sentenceContents = " << currentPhrasePrimarySubject->sentenceContents << endl; 
 			bool phraseContainsPrimarySubject = true; 
 			for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILLARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 			{
@@ -1002,7 +1156,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 				if((indexOfAuxillaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxillaryTemp == 0))
 				{
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					//cout << "phrase: " << currentPhraseReferenceToPrimarySubject->sentenceContents << ": first word in phrase is an auxillary; it does not contain a subject (does not contain a primary subject)" << endl;
+					//cout << "phrase: " << currentPhrasePrimarySubject->sentenceContents << ": first word in phrase is an auxillary; it does not contain a subject (does not contain a primary subject)" << endl;
 					#endif
 					phraseContainsPrimarySubject = false;
 				}
@@ -1018,7 +1172,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 					if((indexOfConjunction != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunction == expectedPosOfConjunctionIfExistent))
 					{
 						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-						//cout << "phrase: " << currentPhraseReferenceToPrimarySubject->sentenceContents << ": is preceeded by a conjunction (and/or); it may not contain a subject (and certainly does not contain a primary subject)" << endl;
+						//cout << "phrase: " << currentPhrasePrimarySubject->sentenceContents << ": is preceeded by a conjunction (and/or); it may not contain a subject (and certainly does not contain a primary subject)" << endl;
 						#endif
 						phraseContainsPrimarySubject = false;
 					}
@@ -1163,7 +1317,20 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 
 			currentPhrasePrimarySubject = currentPhrasePrimarySubject->next;					
 		}
+	#ifndef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 	}
+	#endif	
+	
+	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+	if(!(firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
+	{
+		cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): " << endl;
+		if(!generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(currentNLCsentenceInList, firstNLCsentenceInFullSentence, firstNLCsentenceInFullSentence->mathText, sentenceIndex, sentenceIndexOfFullSentence, currentIndentation))
+		{
+			result = false;
+		}
+	}	
+	#endif
 	
 	if(firstNLCsentenceInFullSentence->hasLogicalConditionOperator)
 	{	
@@ -1173,28 +1340,31 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 		cout << "remove all commas from mathText: mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
 		#endif
 	
-		char lastCharacterInMathText = firstNLCsentenceInFullSentence->mathText[firstNLCsentenceInFullSentence->mathText.length()-1];
-		if(lastCharacterInMathText == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET)
-		{//NB intermediary white text not currently supported, eg "if (...)"
-			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-			if(additionalClosingBracketRequired)
-			{
-				firstNLCsentenceInFullSentence->mathText.insert(firstNLCsentenceInFullSentence->mathText.length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET);
+		if(firstNLCsentenceInFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
+		{	
+			char lastCharacterInMathText = firstNLCsentenceInFullSentence->mathText[firstNLCsentenceInFullSentence->mathText.length()-1];
+			if(lastCharacterInMathText == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET)
+			{//NB intermediary white text not currently supported, eg "if (...)"
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+				if(additionalClosingBracketRequired)
+				{
+					firstNLCsentenceInFullSentence->mathText.insert(firstNLCsentenceInFullSentence->mathText.length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET);
+				}
+				#endif
 			}
-			#endif
-		}
-		else
-		{
-			firstNLCsentenceInFullSentence->mathText.insert(firstNLCsentenceInFullSentence->mathText.length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET);
-			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-			if(additionalClosingBracketRequired)
+			else
 			{
 				firstNLCsentenceInFullSentence->mathText.insert(firstNLCsentenceInFullSentence->mathText.length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET);
-			}	
-			#endif
-			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			cout << "insert CLOSE_BRACKET: mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
-			#endif
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+				if(additionalClosingBracketRequired)
+				{
+					firstNLCsentenceInFullSentence->mathText.insert(firstNLCsentenceInFullSentence->mathText.length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET);
+				}	
+				#endif
+				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				cout << "insert CLOSE_BRACKET: mathText = " << firstNLCsentenceInFullSentence->mathText << endl;
+				#endif
+			}
 		}
 	}
 	#endif
@@ -1209,6 +1379,295 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string * lineContents, NLCsente
 	return result;
 }
 
+#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string * lineContentsOrig, bool * detectedLogicalConditionCommand, bool * foundImplicitConjunctions, int * indexOfLogicalConditionCommand)
+{
+	bool result = true;
+	
+	*foundImplicitConjunctions = false;
+	*detectedLogicalConditionCommand = false;
+	string lineContents = *lineContentsOrig;
+	
+	cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand: lineContents = " << lineContents << endl;
+	
+	NLCsuperphrase * firstNLCsuperphraseInList = new NLCsuperphrase();
+	NLCsuperphrase * currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	
+	int startPosToSearchForComma = 0;
+	int commaIndex = 0;
+	bool stillCommasToFind = true;
+	while(stillCommasToFind)
+	{
+		int indexOfNextComma = lineContents.find(CHAR_COMMA, startPosToSearchForComma);	
+		if(indexOfNextComma == CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			stillCommasToFind = false;
+			indexOfNextComma = lineContents.length();
+		}
+		
+		bool conjunctionFoundInSuperphrase = false;
+		int conjunctionTypeOfConjunction = INT_DEFAULT_VALUE;
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+		{
+			int expectedPosOfConjunctionIfExistent = indexOfNextComma + 1;	//+1 for CHAR_SPACE
+			int indexOfConjunctionTemp = lineContents.find(progLangCoordinatingConjunctions[i], expectedPosOfConjunctionIfExistent);	
+			if((indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunctionTemp == 0))
+			{
+				conjunctionFoundInSuperphrase = true;
+				conjunctionTypeOfConjunction = i;
+			}
+		}
+
+		string superphraseContents = lineContents.substr(startPosToSearchForComma, indexOfNextComma);
+
+		currentNLCsuperphraseInList->phraseContents = superphraseContents;
+		currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase = startPosToSearchForComma;
+		currentNLCsuperphraseInList->hasConjunction = conjunctionFoundInSuperphrase;
+		if(conjunctionFoundInSuperphrase)
+		{
+			currentNLCsuperphraseInList->conjunctionType = conjunctionTypeOfConjunction;
+		}
+		
+		//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(): create new NLCsuperphrase" << endl;
+		cout << "lineContents = " << lineContents << endl;
+		cout << "currentNLCsuperphraseInList->phraseContents = " << currentNLCsuperphraseInList->phraseContents << endl;
+		cout << "currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase = " << currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase << endl;
+		cout << "currentNLCsuperphraseInList->hasConjunction = " << currentNLCsuperphraseInList->hasConjunction << endl;
+		cout << "currentNLCsuperphraseInList->conjunctionType = " << currentNLCsuperphraseInList->conjunctionType << endl;
+		//#endif
+		
+		currentNLCsuperphraseInList->next = new NLCsuperphrase();
+		currentNLCsuperphraseInList = currentNLCsuperphraseInList->next;
+				
+		if(stillCommasToFind)
+		{
+			startPosToSearchForComma = indexOfNextComma + 1;			
+		}		
+		
+		commaIndex++;
+	}
+	
+	int numberOfSuperPhrases = commaIndex;	
+	/*
+	//now;
+	DOING NLC 1h3a - support multiple logical condition commands in one one; NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_IN_ONE_LINE eg "if the house is blue, write the letter and read the book"/"else write the letter and read the book."
+	DOING NLC 1h3a - support logical condition mathText commands on same line NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_MATHTEXT_COMMANDS_ON_SAME_LINE eg "if the house is blue, X = 3+5"
+	DOING NLC 1h3a - NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION support implicit conjunctions, eg "if the house is blue, the cat is green, and the bike is tall, ride the bike"
+		algorithm: to determine whether text belongs to the logical condition test or command;
+			if a phrase without a preceeding conjunction occurs after a phrase with a preceeding conjunction, take this phrase as the start of the logical condition command
+				all other phrases without a preceeding conjuction are artifically assigned a preceeding conjunction of type based on the conjunction preceeding the last phrase in the logical condition test of command
+		NB with NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION, splitMathDetectedLineIntoNLPparsablePhrases() can be used to support multiple commands on the same line for non-logical conditions; by generating separate NLC sentences for these parsable phrases 
+	*/
+	
+	
+	//all other phrases without a preceeding conjuction are artifically assigned a preceeding conjunction of type based on the conjunction preceeding the last phrase in the logical condition test of command
+	currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	bool previousPhraseHadConjunction = false;
+	bool firstPhrase = true;
+	while(currentNLCsuperphraseInList->next != NULL)
+	{
+		if(firstPhrase)
+		{
+		
+		}
+		else if(!(currentNLCsuperphraseInList->hasConjunction))
+		{
+			NLCsuperphrase * currentNLCsuperphraseInList2 = currentNLCsuperphraseInList;
+			bool foundConjunctionOfFuturePhrase = false;
+			int conjunctionTypeOfFuturePhrase = INT_DEFAULT_VALUE;
+			while(currentNLCsuperphraseInList2->next != NULL)
+			{
+				if(!foundConjunctionOfFuturePhrase)
+				{
+					if(currentNLCsuperphraseInList2->hasConjunction)
+					{
+						foundConjunctionOfFuturePhrase = true;
+						conjunctionTypeOfFuturePhrase = currentNLCsuperphraseInList2->conjunctionType;
+					}
+				}
+				currentNLCsuperphraseInList2 = currentNLCsuperphraseInList2->next;
+			}
+			if(foundConjunctionOfFuturePhrase)
+			{
+				currentNLCsuperphraseInList->hasConjunction = true;				//redundant
+				currentNLCsuperphraseInList->conjunctionType = conjunctionTypeOfFuturePhrase;	//redundant
+				//update the lineContents with an artifical conjunction
+				//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(): foundConjunctionOfFuturePhrase" << endl;
+				cout << "update the lineContents with an artifical conjunction: currentNLCsuperphraseInList->phraseContents = " << currentNLCsuperphraseInList->phraseContents << endl;
+				cout << "old lineContents = " << lineContents << endl;
+				//#endif
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+				lineContents.insert(currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase, progLangCoordinatingConjunctionsWithPause[conjunctionTypeOfFuturePhrase]);
+				#else
+				lineContents.insert(currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase, progLangCoordinatingConjunctions[conjunctionTypeOfFuturePhrase]);
+				#endif
+				//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+				cout << "new lineContents = " << lineContents << endl;
+				//#endif
+			}
+		}
+		
+		currentNLCsuperphraseInList = currentNLCsuperphraseInList->next;
+		firstPhrase = false;
+	}
+	
+
+		
+	//if a phrase without a preceeding conjunction occurs after a phrase with a preceeding conjunction, take this phrase as the start of the logical condition command
+	currentNLCsuperphraseInList = firstNLCsuperphraseInList;
+	previousPhraseHadConjunction = false;
+	firstPhrase = true;
+	commaIndex = 0;
+	while(currentNLCsuperphraseInList->next != NULL)
+	{
+		if(firstPhrase)	//redundant
+		{
+		
+		}
+		else if(!(currentNLCsuperphraseInList->hasConjunction))
+		{
+			if(previousPhraseHadConjunction || (commaIndex = numberOfSuperPhrases-1))
+			{
+				//found first phrase in logical condition command
+				//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+				cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(): found first phrase in logical condition command" << endl;
+				//#endif
+				*detectedLogicalConditionCommand = true; 
+				*indexOfLogicalConditionCommand = currentNLCsuperphraseInList->lineIndexOfFirstCharacterInPhrase;
+			}
+		} 
+		
+		if(currentNLCsuperphraseInList->hasConjunction)
+		{
+			previousPhraseHadConjunction = true;
+		}
+		else
+		{
+			previousPhraseHadConjunction = false;
+		}
+		
+		currentNLCsuperphraseInList = currentNLCsuperphraseInList->next;
+		firstPhrase = false;
+		commaIndex++;
+	}
+
+	*lineContentsOrig = lineContents;
+	return result;
+}	
+
+
+
+bool generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(NLCsentence ** currentNLCsentenceInList, NLCsentence * firstPhraseInCommand, string mathTextInCommand, int * sentenceIndex, int sentenceIndexOfFullSentence, int currentIndentation)
+{	
+	int startPosToSearchForConjunction = 0;
+	int conjunctionIndex = 0;
+	bool stillConjunctionsToFind = true;
+	while(stillConjunctionsToFind)
+	{
+		int indexOfNextConjunction = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
+		int conjunctionTypeOfNextConjunction = INT_DEFAULT_VALUE;
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+		{
+			int indexOfConjunctionTemp = mathTextInCommand.find(progLangCoordinatingConjunctions[i], startPosToSearchForConjunction);	
+			if(indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{
+				cout << "mathTextInCommand = " << mathTextInCommand << endl;
+				cout << "indexOfConjunctionTemp = " << indexOfConjunctionTemp << endl;
+				
+				if(indexOfConjunctionTemp < indexOfNextConjunction)
+				{
+					indexOfNextConjunction = indexOfConjunctionTemp;
+					conjunctionTypeOfNextConjunction = i;
+					if(i != NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_AND_INDEX)
+					{
+						cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): error: command mathText has a conjunction that is not '&&' (and)" << endl;
+						exit(0);
+					}
+				}
+			}
+		}
+		if(indexOfNextConjunction == NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS)
+		{
+			stillConjunctionsToFind = false;
+			indexOfNextConjunction = mathTextInCommand.length();
+		}
+		
+		string subCommandContents = mathTextInCommand.substr(startPosToSearchForConjunction, indexOfNextConjunction);
+		//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+		cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): new conjunction found (or last ~phrase in list)" << endl;
+		cout << "mathTextInCommand = " << mathTextInCommand << endl;
+		cout << "subCommandContents = " << subCommandContents << endl;
+		//#endif
+		//exit(0);
+		
+		NLCsentence * fullSentenceInCommand = (*currentNLCsentenceInList);
+		(*currentNLCsentenceInList)->mathText = mathTextInCommand;
+		(*currentNLCsentenceInList)->isMath = true;
+		(*currentNLCsentenceInList)->sentenceContents = "";
+		
+		NLCsentence * currentPhraseInCommand = firstPhraseInCommand;
+		int phraseIndexInSubCommand = 0;
+		while(currentPhraseInCommand->next != NULL)
+		{
+			cout << "currentPhraseInCommand->sentenceContents = " << currentPhraseInCommand->sentenceContents << endl;
+			
+			string parsablePhraseReference = generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentPhraseInCommand);
+			int indexOfParsablePhraseReferenceInSubCommand = subCommandContents.find(parsablePhraseReference);
+			string parsablePhraseReferenceWithAppendedFullstop = parsablePhraseReference + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;
+			if(indexOfParsablePhraseReferenceInSubCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			{	
+				//reference to currentPhraseInCommand is in subCommandContents
+				cout << "parsablePhraseReference = " << parsablePhraseReference << endl;
+				if((parsablePhraseReferenceWithAppendedFullstop == mathTextInCommand) && (conjunctionIndex == 0) && !stillConjunctionsToFind)	//check the "(parsablePhraseReference == mathTextInCommand)" exact test is sufficient (or if white space can be allowed either side of test)
+				{
+					//no mathText detected
+					//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+					cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): no mathText detected in subcommand: " << mathTextInCommand << endl;
+					//#endif
+					(*currentNLCsentenceInList)->mathText = "";
+					(*currentNLCsentenceInList)->isMath = false;
+					(*currentNLCsentenceInList)->indentation = currentIndentation;
+					(*currentNLCsentenceInList)->sentenceContents = currentPhraseInCommand->sentenceContents;
+					(*currentNLCsentenceInList)->mathTextNLPparsablePhraseTotal = 0;
+					(*currentNLCsentenceInList)->next = new NLCsentence();
+					(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
+					(*sentenceIndex) = (*sentenceIndex) + 1;				
+				}
+				else
+				{
+					//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
+					cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand(): mathText detected in subcommand: " << mathTextInCommand << endl;
+					//#endif
+					(*currentNLCsentenceInList)->mathTextNLPparsablePhraseIndex = phraseIndexInSubCommand;
+					(*currentNLCsentenceInList)->indentation = currentIndentation;
+					(*currentNLCsentenceInList)->sentenceContents = currentPhraseInCommand->sentenceContents;
+					fullSentenceInCommand->mathTextNLPparsablePhraseTotal = fullSentenceInCommand->mathTextNLPparsablePhraseTotal + 1;
+					(*currentNLCsentenceInList)->next = new NLCsentence();
+					(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
+					(*sentenceIndex) = (*sentenceIndex) + 1;	
+					
+					phraseIndexInSubCommand++;
+				}		
+			}
+
+			currentPhraseInCommand = currentPhraseInCommand->next;
+		}
+
+		if(stillConjunctionsToFind)		
+		{	
+			startPosToSearchForConjunction = indexOfNextConjunction + 1;
+		}
+		
+				
+		conjunctionIndex++;
+	}			
+}
+
+
+#endif
+	
 string generateMathTextNLPparsablePhraseReference(int sentenceIndexOfFullSentence, NLCsentence * currentPhrase)
 {
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES

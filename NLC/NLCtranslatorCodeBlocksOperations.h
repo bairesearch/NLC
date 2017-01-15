@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l16b 08-November-2014
+ * Project Version: 1m1a 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -99,7 +99,7 @@ bool generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 	void generateObjectInitialisationsBasedOnPropertiesAndConditionsUpdateCodeBlockPointer(NLCcodeblock ** currentCodeBlockInTree, NLCcodeblock * firstCodeBlockBeforeRecursion, NLCcodeblock * firstCodeBlockInSection, bool performedAtLeastOneObjectInitialisationAtThisLevel, bool performedAtLeastOneObjectInitialisationAtALowerLevel, bool * performedAtLeastOneObjectInitialisation);
 	bool generateContextForChildEntity(GIAentityNode * entity, GIAentityNode * childEntity, NLCcodeblock ** currentCodeBlockInTree, int sentenceIndex, bool topLevel);
 		#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT
-		GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentEntity, int sentenceIndex, GIAentityNode * generateObjectInitialisationsLastParent, bool * foundParentEntityNew);
+		GIAentityNode * getSameReferenceSetDefiniteUniqueParent(GIAentityNode * currentEntity, int sentenceIndex, GIAentityNode * generateObjectInitialisationsLastParent, bool * foundParentEntityNew, bool parseConditionParents);
 		#endif
 
 #ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
@@ -123,6 +123,10 @@ bool getActionObjectEntityConnection(GIAentityNode * actionEntity, int sentenceI
 
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION		
 void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * childEntity);
+#endif
+
+#ifdef NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+bool checkConditionLogicalConditionAdvancedTests( GIAentityNode * conditionEntity);
 #endif
 
 #endif

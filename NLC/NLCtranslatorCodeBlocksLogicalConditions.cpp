@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l16b 08-November-2014
+ * Project Version: 1m1a 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -461,7 +461,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								#endif
 							}
 							#endif
-							getParentAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, &generateContextBlocksVariables, false))	//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being parsed
+							getParentAndGenerateContextBlocks(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, &generateContextBlocksVariables, true);
 
 							tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(logicalConditionOperationObject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
 
@@ -616,7 +616,7 @@ void addNewLogicalCondition(NLCcodeblock ** currentCodeBlockInTree, GIAentityNod
 			#endif	
 		}
 		#endif
-		getParentAndGenerateContextBlocks(currentCodeBlockInTree, currentLogicalConditionObject, sentenceIndex, &generateContextBlocksVariables, false))	//NB parseConditionParents is set false a) in accordance with original implementation [although the GIA specification supports such arrangements, in practice however they probably can't be generated as x will always be a condition subject not a condition object of y in "x is near the y"], and b) as a simple method to prevent logical conditions (eg if) and logical condition conjunctions (eg and) from being 
+		getParentAndGenerateContextBlocks(currentCodeBlockInTree, currentLogicalConditionObject, sentenceIndex, &generateContextBlocksVariables, true))
 
 		if(logicalOperation != NLC_LOGICAL_CONDITION_OPERATIONS_FOR)
 		{

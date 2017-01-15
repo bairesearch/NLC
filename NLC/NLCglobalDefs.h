@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1l16b 08-November-2014
+ * Project Version: 1m1a 14-November-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -43,6 +43,13 @@
 //#define NLC_DISABLE_1j_CODE_FOR_DEBUG	//aka NLC_ENABLE_1i_CODE_FOR_DEBUG - requires !GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1k_CODE_FOR_DEBUG	//aka NLC_ENABLE_1j_CODE_FOR_DEBUG - requires GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 //#define NLC_DISABLE_1l_CODE_FOR_DEBUG	//aka NLC_ENABLE_1k_CODE_FOR_DEBUG
+//#define NLC_DISABLE_1m_CODE_FOR_DEBUG	//aka NLC_ENABLE_1l_CODE_FOR_DEBUG
+
+#ifndef NLC_DISABLE_1m_CODE_FOR_DEBUG
+	#ifdef GIA_LRP_NORMALISE_INVERSE_PREPOSITIONS
+		#define NLC_NORMALISE_INVERSE_PREPOSITIONS
+	#endif
+#endif
 
 #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 	#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//added 1e, removed 1j2b+, optional 1k11a+

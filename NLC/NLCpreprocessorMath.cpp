@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5l 15-August-2016
+ * Project Version: 1r5m 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -316,135 +316,142 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 				bool foundMathEqualsSetCommand = findCharacterAtIndexOrAfterSpace(lineContents, i, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR, &indexOfMathEqualsSetCommand);	//mathText eg: "X=.." OR "X =.."
 				if(foundMathEqualsSetCommand)
 				{
-					int variableTypeTemp = INT_DEFAULT_VALUE;
-					string variableName = currentWord;
-					if(!findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, (*currentNLCsentenceInList), &variableTypeTemp))
-					{//variable not detected in previous sentences (found first use of variable in current sentence)
-							
-						string variableTypeMathtext = "";
-						int variableTypeObject = INT_DEFAULT_VALUE;
-						bool addMathTextVariable = false;
-													
-						if(i == currentWord.length())	//word comprises first mathText contents
-						{//first word in mathText (type will automatically be assigned) (eg "X = ")
-							
-							#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
-							string mathTextSubphraseContainingNLPparsablePhrase = lineContents->substr(indexOfMathEqualsSetCommand);
-							int mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
-	
-							for(int j=0; j<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES; j++)
-							{
-								if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeBooleanOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+					if(currentWord.length() != 0)
+					{//added 1r5l
+						int variableTypeTemp = INT_DEFAULT_VALUE;
+						string variableName = currentWord;
+						#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
+						if(!findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence, &variableTypeTemp))
+						#else
+						if(!findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, (*currentNLCsentenceInList), &variableTypeTemp))						
+						#endif
+						{//variable not detected in previous sentences (found first use of variable in current sentence)
+
+							string variableTypeMathtext = "";
+							int variableTypeObject = INT_DEFAULT_VALUE;
+							bool addMathTextVariable = false;
+
+							if(i == currentWord.length())	//word comprises first mathText contents
+							{//first word in mathText (type will automatically be assigned) (eg "X = ")
+
+								#ifdef NLC_USE_MATH_OBJECTS_ADVANCED
+								string mathTextSubphraseContainingNLPparsablePhrase = lineContents->substr(indexOfMathEqualsSetCommand);
+								int mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+
+								for(int j=0; j<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES; j++)
 								{
-									mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
-									#ifdef NLC_DEBUG
-									//cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;
-									#endif
-								}
-							}	
-							
-							for(int j=0; j<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; j++)
-							{
-								if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeNumericalOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+									if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeBooleanOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+									{
+										mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+										#ifdef NLC_DEBUG
+										//cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;
+										#endif
+									}
+								}	
+
+								for(int j=0; j<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; j++)
 								{
-									mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
-									#ifdef NLC_DEBUG
-									//cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL" << endl;
-									#endif
-								}
-							}	
-							
-							for(int j=0; j<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES; j++)
-							{
-								if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeStringOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+									if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeNumericalOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+									{
+										mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+										#ifdef NLC_DEBUG
+										//cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL" << endl;
+										#endif
+									}
+								}	
+
+								for(int j=0; j<NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES; j++)
 								{
-									mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
-									#ifdef NLC_DEBUG
-									//cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING" << endl;
-									#endif
+									if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeStringOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+									{
+										mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;
+										#ifdef NLC_DEBUG
+										//cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING" << endl;
+										#endif
+									}
+								}	
+
+								if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
+								{
+									variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_BOOLEAN;
+									variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;  	
 								}
-							}	
-	
-							if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN)
-							{
-								variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_BOOLEAN;
-								variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;  	
-							}
-							else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
-							{
+								else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)
+								{
+									variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_NUMERICAL;
+									variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;  	
+								}
+								else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
+								{
+									variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_STRING;
+									variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;  	
+								}
+								else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+								{
+									cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: implicitly declared mathText variable and variable type cannot be statically detected based on line contents" << endl;
+									exit(0);
+								}							
+								#else
 								variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_NUMERICAL;
 								variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;  	
-							}
-							else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING)
-							{
-								variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_STRING;
-								variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_STRING;  	
-							}
-							else if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
-							{
-								cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: implicitly declared mathText variable and variable type cannot be statically detected based on line contents" << endl;
-								exit(0);
-							}							
-							#else
-							variableTypeMathtext = NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_NUMERICAL;
-							variableTypeObject = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;  	
-							#endif
-							
-							//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
-							//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-							cout << "implicitly declared mathText variable detected: declaring " << variableTypeMathtext << currentWord << endl;	//inserting mathText variable declaration type (eg double)
-							//#endif
-							currentPhrase.insert(0, variableTypeMathtext);
-
-							newlyDeclaredVariable = currentWord;
-							NLPparsableMandatoryCharacterFoundInCurrentWord = false;
-							addMathTextVariable = true;
-						}
-						else
-						{//explicit type may have been provided (mathText eg: "int X = ")
-
-							bool explictTypeFound = false;
-							for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
-							{
-								#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-								int indexOfType = lineContents->find(preprocessorMathMathTextVariables[j]);
-								#else
-								int indexOfType = lineContents->find(preprocessorMathNaturalLanguageVariables[j]);
 								#endif
-								if((indexOfType != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfType < i))
+
+								//NB considering the current phrase contains an equal sign it will be classified as mathText, not an nlp parsable phrase
+								//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+								cout << "implicitly declared mathText variable detected: declaring " << variableTypeMathtext << currentWord << endl;	//inserting mathText variable declaration type (eg double)
+								//#endif
+								currentPhrase.insert(0, variableTypeMathtext);
+
+								newlyDeclaredVariable = currentWord;
+								NLPparsableMandatoryCharacterFoundInCurrentWord = false;
+								addMathTextVariable = true;
+							}
+							else
+							{//explicit type may have been provided (mathText eg: "int X = ")
+								bool explictTypeFound = false;
+								for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
 								{
-									explictTypeFound = true;
-									//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
-									cout << "explicit mathText variable type detected for currentWord: " << preprocessorMathNaturalLanguageVariables[j] << " " << currentWord << endl;
-									//#endif									
-									newlyDeclaredVariable = currentWord;
-									NLPparsableMandatoryCharacterFoundInCurrentWord = false;
-									variableTypeObject = preprocessorMathTextVariableMathObjectTypes[j];
-									addMathTextVariable = true;
+									#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+									int indexOfType = lineContents->find(preprocessorMathMathTextVariables[j]);
+									#else
+									int indexOfType = lineContents->find(preprocessorMathNaturalLanguageVariables[j]);
+									#endif
+									if((indexOfType != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfType < i))
+									{
+										explictTypeFound = true;
+										//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
+										cout << "explicit mathText variable type detected for currentWord: " << preprocessorMathNaturalLanguageVariables[j] << " " << currentWord << endl;
+										//#endif
+
+										newlyDeclaredVariable = currentWord;
+										NLPparsableMandatoryCharacterFoundInCurrentWord = false;
+										variableTypeObject = preprocessorMathTextVariableMathObjectTypes[j];
+										addMathTextVariable = true;
+									}
 								}
 							}
+
+							if(addMathTextVariable)
+							{
+								#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
+								addNewMathTextVariable(firstNLCsentenceInFullSentence, variableName, variableTypeObject);
+								#else
+								addNewMathTextVariable((*currentNLCsentenceInList), variableName, variableTypeObject);
+								#endif
+							}
+
 						}
-						
-						if(addMathTextVariable)
+						#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_DUPLICATES
+						else
 						{
 							#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-							addNewMathTextVariable(firstNLCsentenceInFullSentence, variableName, variableTypeObject);
+							addNewMathTextVariable(firstNLCsentenceInFullSentence, variableName, variableTypeTemp);
 							#else
-							addNewMathTextVariable((*currentNLCsentenceInList), variableName, variableTypeObject);
+							addNewMathTextVariable((*currentNLCsentenceInList), variableName, variableTypeTemp);
 							#endif
 						}
-							
-					}
-					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_DUPLICATES
-					else
-					{
-						#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-						addNewMathTextVariable(firstNLCsentenceInFullSentence, variableName, variableTypeTemp);
-						#else
-						addNewMathTextVariable((*currentNLCsentenceInList), variableName, variableTypeTemp);
 						#endif
 					}
-					#endif
 				}
 			}
 			#endif	
@@ -454,10 +461,17 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 				
 				if(!parsingWhiteSpace)
 				{	
-					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
-					addNewMathTextVariable(firstNLCsentenceInFullSentence, currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
-					#else
-					addNewMathTextVariable((*currentNLCsentenceInList), currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariables
+					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
+					if(!textInTextArray(currentWord, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))	//NB do not check preprocessorMathMathTextVariables because currentWord will not contain the appended $ character 
+					{
+					#endif
+						#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE
+						addNewMathTextVariable(firstNLCsentenceInFullSentence, currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
+						#else
+						addNewMathTextVariable((*currentNLCsentenceInList), currentWord, NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);	//note if the currentWord turns out not to belong to an NLP parsable phrase instead of mathtext it will be removed from mathTextVariables
+						#endif
+					#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
+					}
 					#endif
 				}
 				else
@@ -703,6 +717,7 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 		string mathTextVariableName = mathTextVariable->name;
 		
 		bool ignoreVariable = false;
+		#ifndef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
 		if((firstNLCsentenceInFullSentence->hasLogicalConditionOperator))
 		{
 			if(textInTextArray(mathTextVariableName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
@@ -713,32 +728,31 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 				ignoreVariable = true;
 			}
 		}
+		#endif
+		#ifndef NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES
 		if(textInTextArray(mathTextVariableName, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))
-		{
+		{	
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH
 			cout << "mathText variable type detected: ignoreVariable = true" << endl;
 			#endif
 			ignoreVariable = true;
 		}
-				
-		if(!ignoreVariable)
-		{			
-			if(mathTextVariableName != newlyDeclaredVariable)
+		#endif
+						
+		if(mathTextVariableName != newlyDeclaredVariable)
+		{
+			#ifdef NLC_DEBUG
+			//cout << "mathTextVariableName = " << mathTextVariableName << endl;
+			#endif
+			int variableTypeTemp = INT_DEFAULT_VALUE;
+			if(findPredefinedMathtextVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence, &variableTypeTemp))
 			{
-				#ifdef NLC_DEBUG
-				//cout << "mathTextVariableName = " << mathTextVariableName << endl;
-				#endif
-				int variableTypeTemp = INT_DEFAULT_VALUE;
-				if(!findPredefinedMathtextVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, firstNLCsentenceInFullSentence, &variableTypeTemp))
-				{
-					cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
-					//cout << "lineContents = " <<* lineContents << endl;
-					#ifndef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_MATHTEXT_VARIABLES_TO_BE_REFERENCED_BY_MATH
-					exit(0);
-					#endif
-					result = true;
-				} 
 				#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
+				if(variableTypeTemp == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+				{
+					cout << "NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES: splitMathDetectedLineIntoNLPparsablePhrases{} error: first instance of mathText variable type in function == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN" << endl;
+					exit(0);
+				}
 				else
 				{
 					/*
@@ -749,6 +763,17 @@ bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCsenten
 					mathTextVariable->type = variableTypeTemp;
 				}
 				#endif
+			}
+			else
+			{
+				if(!ignoreVariable)
+				{
+					cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
+					//cout << "lineContents = " <<* lineContents << endl;
+					#ifndef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_MATHTEXT_VARIABLES_TO_BE_REFERENCED_BY_MATH
+					exit(0);
+					#endif
+				}
 			}
 		}
 	}	
@@ -1014,6 +1039,8 @@ bool isWhiteSpaceOrInvalidWordCharacter(char c)
 
 	return whiteSpaceOrInvalidWordCharacter;
 }
+				
+#endif
 
 bool findPredefinedMathtextVariable(string* currentWord, NLCfunction* currentNLCfunctionInList, NLCfunction* firstNLCfunctionInList, NLCsentence* sentenceToIgnoreWhileSearching, int* variableType)
 {
@@ -1071,8 +1098,54 @@ bool findPredefinedMathtextVariableInFunction(string* currentWord, NLCfunction* 
 	return result;
 }
 
-				
+#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
+bool findMathTextVariableWithinMathText(string mathTextVariableName, string mathText)
+{
+	//assume: isStringValidVariableName(mathTextVariableName) == true
+	
+	bool result = false;
+	bool stillFindingInstances = true;
+	int currentIndexOfMathtextVariable = 0;
+	while(stillFindingInstances)
+	{
+		currentIndexOfMathtextVariable = mathText.find(mathTextVariableName, currentIndexOfMathtextVariable);
+		if(currentIndexOfMathtextVariable != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			//now check contents of text either side of potential mathText variable instance within mathText
+			bool foundVariable = true;
+			if(currentIndexOfMathtextVariable > 0)
+			{
+				if(charInCharArray(mathText[currentIndexOfMathtextVariable-1], preprocessorMathtextVariableValidCharacters, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_VALID_CHARACTERS))
+				{
+					foundVariable = false;
+				}
+			}
+			
+			if(currentIndexOfMathtextVariable < mathText.length()-mathTextVariableName.length())
+			{
+				if(charInCharArray(mathText[currentIndexOfMathtextVariable + mathTextVariableName.length()], preprocessorMathtextVariableValidCharacters, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_VALID_CHARACTERS))
+				{
+					foundVariable = false;
+				}	
+			}
+			
+			if(foundVariable)
+			{
+				result = true;
+			}
+			
+			currentIndexOfMathtextVariable = currentIndexOfMathtextVariable+1;
+		}
+		else
+		{
+			stillFindingInstances = false;
+		}
+	}
+	
+	return result;
+}
 #endif
+
 
 
 #endif

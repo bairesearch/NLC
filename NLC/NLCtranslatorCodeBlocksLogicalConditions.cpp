@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5l 15-August-2016
+ * Project Version: 1r5m 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -775,9 +775,12 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 
 int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, NLCsentence* currentFullSentence, NLCsentence* parsablePhrase)
 {
-	cout << "getMathObjectVariableType{}:\n" << endl;
 	string parsablePhraseReferenceName = generateMathTextNLPparsablePhraseReference(currentFullSentence->sentenceIndex, parsablePhrase);
-	cout << "parsablePhraseReferenceName = " << parsablePhraseReferenceName << endl;
+	
+	#ifdef NLC_DEBUG
+	//cout << "getMathObjectVariableType{}:\n" << endl;
+	//cout << "parsablePhraseReferenceName = " << parsablePhraseReferenceName << endl;
+	#endif
 	
 	int mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 
@@ -899,40 +902,87 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 	#endif
 	
 	#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
-	if(!(currentFullSentence->hasLogicalConditionOperator))
+	//NB this code is not absolutely required (as the getMathObjectValue return type will be inferred when compiling generated code), however it will simplify/normalise the generated output code
+	for(vector<NLCvariable*>::iterator iter = currentFullSentence->mathTextVariables.begin(); iter != currentFullSentence->mathTextVariables.end(); iter++)
 	{
-		for(vector<NLCvariable*>::iterator iter = currentFullSentence->mathTextVariables.begin(); iter != currentFullSentence->mathTextVariables.end(); iter++)
+		NLCvariable* mathTextVariable = (*iter);
+		if(mathTextVariable->type != NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 		{
-			NLCvariable* mathTextVariable = (*iter);
-			int indexOfMathEqualsSetCommand = currentFullSentence->mathText.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR);
-			if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
+			
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+			//egs foundMathtextVariableAssignment: eg1 [double] X = thecatssvalue
+			//egs foundParsablePhraseReferenceNameAssignment: thedogsvalue = X
+			#else
+			//egs foundMathtextVariableAssignment: eg1 [double] X = thecatssvalue, eg2 [double] X = thecatssvalue + themousessvalue
+			//egs foundParsablePhraseReferenceNameAssignment: thedogsvalue = X, eg2 thedogsvalue = thecatssvalue, eg3 thedogsvalue = X + Y, eg4 thedogsvalue = thecatssvalue + Y
+			//egs foundParsablePhraseReferenceNameTest: eg1 X == thecatssvalue, eg2 eg1 thedogsvalue == X, eg4 X == thecatssvalue + themousessvalue, eg5 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == X + themousessvalue, eg6 thedogsvalue == X + Y, eg7 thedogsvalue == thecatssvalue + Y
+			#endif
+
+			#ifdef NLC_DEBUG
+			//cout << "mathTextVariable name = " << mathTextVariable->name << endl;
+			//cout << "mathTextVariable name length = " << (mathTextVariable->name).length() << endl;
+			#endif
+			
+			if(findMathTextVariableWithinMathText(mathTextVariable->name, mathTextSubphraseContainingNLPparsablePhrase))
 			{
-				//find reference to already declared mathtext variable
-				string targetText = currentFullSentence->mathText.substr(0, indexOfMathEqualsSetCommand);
-				if((targetText == mathTextVariable->name) || (targetText == (mathTextVariable->name + STRING_SPACE)))
-				{
-					mathObjectVariableType = mathTextVariable->type;
-					#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
-					cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
-					#endif
-				}
+				mathObjectVariableType = mathTextVariable->type;
+				#ifdef NLC_DEBUG
+				//cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
+				#endif
+			}
+			
+			#else
+			if(!(currentFullSentence->hasLogicalConditionOperator))
+			{
+				#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+				//egs foundMathtextVariableAssignment: eg1 [double] X = thecatssvalue
+				#else
+				//egs foundMathtextVariableAssignment: eg1 [double] X = thecatssvalue, eg2 [double] X = thecatssvalue + themousessvalue
+				#endif
 				
-				//find reference to mathtext variable declaration
-				for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
+				cout << "mathTextVariable name = " << mathTextVariable->name << endl;
+				cout << "mathTextVariable name length = " << (mathTextVariable->name).length() << endl;
+				int indexOfMathEqualsSetCommand = currentFullSentence->mathText.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR);
+				if(indexOfMathEqualsSetCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 				{
-					int indexOfType = targetText.find(preprocessorMathNaturalLanguageVariables[j]);
-					if(indexOfType == 0)
+					if(currentFullSentence->mathText[indexOfMathEqualsSetCommand-1] == CHAR_SPACE)
 					{
-						if(targetText == (preprocessorMathNaturalLanguageVariables[j] + STRING_SPACE + mathTextVariable->name))
+						indexOfMathEqualsSetCommand = indexOfMathEqualsSetCommand-1;	//ignore space preceeding equals set character
+					}
+					
+					//find reference to already declared mathtext variable
+					string targetText = currentFullSentence->mathText.substr(0, indexOfMathEqualsSetCommand);
+					cout << "targetText = " << targetText << endl;
+
+					if((targetText == mathTextVariable->name) || (targetText == (mathTextVariable->name + STRING_SPACE)))
+					{
+						//eg X = The car + the house
+						mathObjectVariableType = mathTextVariable->type;
+						#ifdef NLC_DEBUG
+						//cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
+						#endif
+					}
+
+					//find reference to mathtext variable declaration
+					for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
+					{
+						int indexOfType = targetText.find(preprocessorMathNaturalLanguageVariables[j]);
+						if(indexOfType == 0)
 						{
-							mathObjectVariableType = mathTextVariable->type;
-							#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
-							cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
-							#endif
+							if(targetText == (preprocessorMathNaturalLanguageVariables[j] + STRING_SPACE + mathTextVariable->name))
+							{
+								//eg double X = The car + the house
+								mathObjectVariableType = mathTextVariable->type;
+								#ifdef NLC_DEBUG
+								//cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
+								#endif
+							}
 						}
 					}
 				}
 			}
+			#endif
 		}
 	}
 	#endif

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1r5l 15-August-2016
+ * Project Version: 1r5m 15-August-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -73,6 +73,13 @@
 		#define NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES	//1r5l	//NB this code is not absolutely required (as the getMathObjectValue return type will be inferred when compiling generated code), however it will simplify/normalise the generated output code
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
 			#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_TO_FIRST_PHRASE_IN_FULL_SENTENCE	//1r5b //CHECKTHIS
+			#define NLC_PREPROCESSOR_MATH_FIX_BUG_DO_NOT_ADD_TYPES_TO_MATH_TEXT_VARIABLES	//1r5l
+			//#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_DUPLICATES	//1r5b	//not required and untested
+			#define NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED	//1r5l	//CHECKTHIS
+			#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES_ADVANCED
+				#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_VALID_CHARACTERS (63)
+				static char preprocessorMathtextVariableValidCharacters[NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_VALID_CHARACTERS] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'};
+			#endif
 		#endif
 		//#define NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS	//1r5i
 		#ifdef NLC_USE_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
@@ -112,8 +119,9 @@
 	#endif
 	#define NLC_PREPROCESSOR_SUPPORT_WHITE_SPACE_BETWEEN_LOGICAL_CONDITION_AND_OPENING_BRACKET	//1r5j 	//intermediary white text, eg "if (...)"; NB generated text will be less readable eg if((...))	//should temporarily disable when performing transitional autotesting
 	#define NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE	//1r5i	//should temporarily disable when performing transitional autotesting
-	//#define NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE	//1r5i (never enabled)
-	//#define NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_DUPLICATES	//1r5b	//not required and untested
+	#ifndef NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
+		//#define NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE	//1r5i (never enabled or tested): alternate implementation of NLC_PREPROCESSOR_SUPPORT_IDENTICAL_PARSABLE_PHRASES_IN_SENTENCE
+	#endif
 	//#define NLC_API	//1r5d		//requires NLC_USE_LIBRARY_GENERATE_INDIVIDUAL_FILES
 	#ifdef NLC_API
 		#define NLC_API_DEFAULT_SOURCE_FOLDER_NAME "/home/systemusername/source/NLCthirdpartyAPI/"

@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4b 29-October-2013
+ * Project Version: 1c4c 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -107,38 +107,12 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 
 					//cout << "h2" << endl;
 
-					NLPIitem * functionItem = NULL;
-					
-					if(actionHasObject || actionHasSubject)
-					{
-						functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
-						
-						//MOVED 29 October 2013
-						/*
-						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(currentCodeBlockInTree->parameters));
 
-						//detect action properties and conditions (and disable these for NLPI generate code block parse: they will become function execution arguments)
-						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
-						{					
-							GIAentityNode * actionCondition = (*entityIter)->entity;
-							(*entityIter)->parsedForNLPIcodeBlocks = true;
-							actionCondition->parsedForNLPIcodeBlocks = true;
-						}
-						//for(vector<string>::iterator localListIter2 = targetClassDefinition->actionOrConditionInstance->propertyNodeList.begin(); localListIter2 != targetClassDefinition->actionOrConditionInstance->propertyNodeList.end(); localListIter2++)
-						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)				
-						{
-							//string actionProperty = *localListIter2;
-							GIAentityNode * actionProperty = (*entityIter)->entity;
-							(*entityIter)->parsedForNLPIcodeBlocks = true;
-							actionProperty->parsedForNLPIcodeBlocks = true;
-						}
-						#endif
-						*/
-					}
-					
+					NLPIcodeblock * functionExecuteCodeBlockInTree = NULL;
+			
 					if(actionHasObject)
 					{
+						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						bool objectRequiredTempVar = false;	//not used
 						NLPIitem * objectItem = NULL;
 						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, objectEntity, &objectItem, sentenceIndex, &objectRequiredTempVar);
@@ -178,10 +152,12 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						}
 						#endif
 						//cout << "h5" << endl;
+						functionExecuteCodeBlockInTree = currentCodeBlockInTree;
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem, objectItem);
 					}
 					else if(actionHasSubject)
 					{
+						NLPIitem * functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						bool subjectRequiredTempVar = false;	//not used
 						NLPIitem * subjectItem = NULL;
 						currentCodeBlockInTree = generateConditionBlocks(currentCodeBlockInTree, subjectEntity, &subjectItem, sentenceIndex, &subjectRequiredTempVar);
@@ -197,13 +173,14 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							getEntityContext(subjectEntity, &(functionItem->context), true, sentenceIndex, true);
 						}
 						//cout << "h5" << endl;
+						functionExecuteCodeBlockInTree = currentCodeBlockInTree;
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem);
 					}					
 
 					if(actionHasObject || actionHasSubject)
 					{						
 						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(currentCodeBlockInTree->parameters));
+						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));
 
 						//detect action properties and conditions (and disable these for NLPI generate code block parse: they will become function execution arguments)
 						for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
@@ -422,117 +399,122 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 					GIAentityConnection * connection = *connectionIter;
 					GIAentityNode * targetEntity = connection->entity;
 					
-					string targetName = "";
-
-					if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//in GIA actions and conditions are treated as special connections with intermediary nodes
+					if(!(targetEntity->disabled))
 					{
-						#ifndef NLPI_BAD_IMPLEMENTATION
-						targetName = generateInstanceName(targetEntity);
-						#else
-						targetName = generateActionName(targetEntity);
-						#endif
-					}
-					else
-					{
-						targetName = generateClassName(targetEntity);
-					}
 					
-					bool foundTargetClassDefinition = false;
-					NLPIclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
-					if(!foundTargetClassDefinition)
-					{
-						//cout << "new NLPIclassDefinition(" << targetName << endl;
-						targetClassDefinition = new NLPIclassDefinition(targetName);
-						classDefinitionList->push_back(targetClassDefinition);
-					}
-					#ifndef NLPI_BAD_IMPLEMENTATION
-					if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))	//CAN BE TEMPORARILY MODIFED FOR DEBUGGING
-					//if((targetEntity->isCondition) && !(targetEntity->isConcept))
-					{
-						targetClassDefinition->isActionOrConditionInstanceNotClass = true;
-						//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
-					}
-					#endif					
+						string targetName = "";
 
-					if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
-					{//declare subclass
-						//propertyList
-						bool foundLocalClassDefinition = false;
-						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-						if(!foundLocalClassDefinition)
+						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
 						{
-							//cout << "propertyList.push_back: " << targetClassDefinition->name << endl;
-							classDefinition->propertyList.push_back(targetClassDefinition);
-							
-							NLPIitem * classDeclarationPropertiesListItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);
-							targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
+							#ifndef NLPI_BAD_IMPLEMENTATION
+							targetName = generateInstanceName(targetEntity);
+							#else
+							targetName = generateActionName(targetEntity);
+							#endif
 						}
-					}
-					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
-					{//declare conditions
-						//conditionList
-						bool foundLocalClassDefinition = false;
-						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-						if(!foundLocalClassDefinition)
+						else
 						{
-							//cout << "conditionList.push_back: " << targetClassDefinition->name << endl;
-							classDefinition->conditionList.push_back(targetClassDefinition);
-							
-							NLPIitem * classDeclarationConditionsListItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);	//for special case (as actions and conditions are referenced by instance)
-							if(!(targetEntity->conditionObjectEntity->empty()))
-							{								
-								string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
-								classDeclarationConditionsListItem->className2 = conditionObjectClassName;				
-							}				
-							targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
-						}						
-					}	
-					#ifndef NLPI_BAD_IMPLEMENTATION
-					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) 
-					{//declare inheritance
-						if(targetName != className)	//eg do not create a separate class for substance concept definitions
+							targetName = generateClassName(targetEntity);
+						}
+
+						bool foundTargetClassDefinition = false;
+						NLPIclassDefinition * targetClassDefinition = findClassDefinition(classDefinitionList, targetName, &foundTargetClassDefinition);	//see if class definition already exists
+						if(!foundTargetClassDefinition)
 						{
-					#else			
-					else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE))
-					{//declare inheritance					
-					#endif
-							//definitionList
+							//cout << "new NLPIclassDefinition(" << targetName << endl;
+							targetClassDefinition = new NLPIclassDefinition(targetName);
+							classDefinitionList->push_back(targetClassDefinition);
+						}
+						#ifndef NLPI_BAD_IMPLEMENTATION
+						//if((targetEntity->isAction) || (targetEntity->isActionConcept) || (targetEntity->isCondition) && !(targetEntity->isConcept))	//CAN BE TEMPORARILY MODIFED FOR DEBUGGING
+						if((targetEntity->isCondition) && !(targetEntity->isConcept))
+						{
+							targetClassDefinition->isActionOrConditionInstanceNotClass = true;
+							//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
+						}
+						#endif					
+
+						if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+						{//declare subclass
+							//propertyList
 							bool foundLocalClassDefinition = false;
-							NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+							NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->propertyList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
 							if(!foundLocalClassDefinition)
 							{
-								//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
-								classDefinition->definitionList.push_back(targetClassDefinition);
+								//cout << "propertyList.push_back: " << targetClassDefinition->name << endl;
+								classDefinition->propertyList.push_back(targetClassDefinition);
+
+								NLPIitem * classDeclarationPropertiesListItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);
+								targetClassDefinition->parameters.push_back(classDeclarationPropertiesListItem);
 							}
-						#ifndef NLPI_BAD_IMPLEMENTATION
 						}
+						else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+						{//declare conditions
+							//conditionList
+							bool foundLocalClassDefinition = false;
+							NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->conditionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+							if(!foundLocalClassDefinition)
+							{
+								//cout << "conditionList.push_back: " << targetClassDefinition->className << endl;
+								classDefinition->conditionList.push_back(targetClassDefinition);
+
+								NLPIitem * classDeclarationConditionsListItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
+								if(!(targetEntity->conditionObjectEntity->empty()))
+								{								
+									string conditionObjectClassName = generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+									classDeclarationConditionsListItem->className2 = conditionObjectClassName;				
+								}				
+								targetClassDefinition->parameters.push_back(classDeclarationConditionsListItem);
+							}						
+						}	
+						#ifndef NLPI_BAD_IMPLEMENTATION
+						else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) 
+						{//declare inheritance
+							if(targetName != className)	//eg do not create a separate class for substance concept definitions
+							{
+						#else			
+						else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_NODE_DEFINING_INSTANCE))
+						{//declare inheritance					
 						#endif
-					}
-					else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
-					{//declare functions
-						//functionList
-						bool foundLocalClassDefinition = false;
-						NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->functionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
-						if(!foundLocalClassDefinition)
-						{
-							//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
-							classDefinition->functionList.push_back(targetClassDefinition);
-							
-							if(!(targetEntity->actionObjectEntity->empty()))
-							{							
-								GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
-								NLPIitem * classDeclarationFunctionItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT);	//for special case (as actions and conditions are referenced by instance)
-								targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+								//definitionList
+								bool foundLocalClassDefinition = false;
+								NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->definitionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+								if(!foundLocalClassDefinition)
+								{
+									//cout << "definitionList.push_back: " << targetClassDefinition->name << endl;
+									classDefinition->definitionList.push_back(targetClassDefinition);
+								}
+							#ifndef NLPI_BAD_IMPLEMENTATION
 							}
-							#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-							generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
-							#endif								
+							#endif
+						}
+						else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+						{//declare functions
+							//functionList
+							bool foundLocalClassDefinition = false;
+							NLPIclassDefinition * localClassDefinition = findClassDefinition(&(classDefinition->functionList), targetName, &foundLocalClassDefinition);	//see if class definition already exists
+							if(!foundLocalClassDefinition)
+							{
+								//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
+								classDefinition->functionList.push_back(targetClassDefinition);
+
+								if(!(targetEntity->actionObjectEntity->empty()))
+								{							
+									GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
+									NLPIitem * classDeclarationFunctionItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+									targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
+								}
+								#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+								generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(targetEntity, &(targetClassDefinition->parameters));
+								#endif								
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+	
 	
 	#ifdef NLPI_PREVENT_INHERITANCE_DOUBLE_DECLARATIONS_OF_CLASS_LIST_VARIABLES
 	//disable all double declarations
@@ -715,9 +697,9 @@ void generateFunctionPropertyConditionArguments(GIAentityNode * actionEntity, ve
 			{
 				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
 			}					
-			string conditionObjectClassName = generateClassName(conditionObject);
 			NLPIitem * argumentConditionItem = new NLPIitem(actionCondition, NLPI_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION);
-			argumentConditionItem->className2 = conditionObjectClassName;
+			argumentConditionItem->className2 = generateClassName(conditionObject);
+			argumentConditionItem->instanceName2 = generateInstanceName(conditionObject);;
 			parameters->push_back(argumentConditionItem);		
 		}
 	}

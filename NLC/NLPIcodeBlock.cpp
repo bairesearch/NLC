@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1c4b 29-October-2013
+ * Project Version: 1c4c 29-October-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -143,18 +143,21 @@ void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityN
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = *entityIter;
-		if(entity->isUnreferencedDefinite)
+		if((entity->grammaticalDefiniteTemp) || (entity->grammaticalProperNounTemp))
 		{
-			//detected "the x" without declaring x (ie implicit declaration)
-			if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
-			{
-				NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
-				parameters->push_back(thisFunctionArgumentInstanceItem);
-			}
-			else
-			{
-				NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE);
-				parameters->push_back(thisFunctionArgumentInstanceItem);			
+			if(!(entity->isConcept))
+			{		
+				//detected "the x" without declaring x (ie implicit declaration)
+				if(entity->grammaticalNumber == GRAMMATICAL_NUMBER_PLURAL)
+				{
+					NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL);
+					parameters->push_back(thisFunctionArgumentInstanceItem);
+				}
+				else
+				{
+					NLPIitem * thisFunctionArgumentInstanceItem = new NLPIitem(entity, NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE);
+					parameters->push_back(thisFunctionArgumentInstanceItem);			
+				}
 			}
 		}
 	}	

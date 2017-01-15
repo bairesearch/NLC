@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1d 20-November-2013
+ * Project Version: 1e1e 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -175,9 +175,15 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 	if(foundFunctionObjectClass)	//added 21 November 2013
 	{
 		if(functionObject != NULL)
-		{
-			NLPIitem * functionObjectItem = new NLPIitem(functionObject, NLPI_ITEM_TYPE_FUNCTION_OBJECT);
+		{//functionObject is used by the function definition: use functionObject instance name
+			//cout << "functionObjectName2 = " << functionObjectName << endl;
+			NLPIitem * functionObjectItem = new NLPIitem(functionObject, NLPI_ITEM_TYPE_FUNCTION_OBJECT);	
 			currentCodeBlockInTree->parameters.push_back(functionObjectItem);	
+		}
+		else
+		{//functionObject is not used by the function definition
+			NLPIitem * functionObjectItem = new NLPIitem(functionObjectName, NLPI_ITEM_TYPE_FUNCTION_OBJECT);
+			currentCodeBlockInTree->parameters.push_back(functionObjectItem);			
 		}
 	}
 	#endif

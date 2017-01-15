@@ -18,7 +18,7 @@
 
 /*******************************************************************************
  *
- * File Name: NLClibraryStandardPrint.hpp
+ * File Name: NLClibraryStandardAdd.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
  * Project Version: 1r5a 15-August-2016
@@ -26,16 +26,11 @@
  *
  *******************************************************************************/
  
-#ifndef HEADER_NLC_LIBRARY_STANDARD_PRINT
-#define HEADER_NLC_LIBRARY_STANDARD_PRINT
-
-#define NLC_LIBRARY_STANDARD_PRINT_CONDITIONS_TEMP	//this should not be used for deployment to prevent infinite loops
+#ifndef HEADER_NLC_LIBRARY_STANDARD_ADD
+#define HEADER_NLC_LIBRARY_STANDARD_ADD
 
 #include "NLClibraryGenericEntityClass.hpp"
 
-void printFunction(vector<NLCgenericEntityClass*>& printClassList, vector<NLCgenericEntityClass*>& printObjectClassList);
-	void printEntity(NLCgenericEntityClass* printObject, int level);
-		string createIndentationBasedOnLevel(int level);
-void print(double value);
+void addFunction(vector<NLCgenericEntityClass*>& addClassList, vector<NLCgenericEntityClass*>& addObjectClassList);
 
 #endif

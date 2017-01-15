@@ -23,7 +23,7 @@
  * File Name: NLPIprint.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1b 20-November-2013
+ * Project Version: 1e1c 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -345,6 +345,10 @@ void generateFunctionArgumentsWithActionConceptInheritanceString(vector<NLPIitem
 	{
 		//do: ADD: if(functionArgumentCertified);
 		NLPIitem * currentItem = *parametersIterator;
+		cout << "\tcurrentItem->itemType = " << currentItem->itemType << endl;
+		cout << "currentItem->className = " << currentItem->className << endl;
+		cout << "currentItem->instanceName = " << currentItem->instanceName << endl;
+		
 		if(currentItem->itemType == NLPI_ITEM_TYPE_THIS_FUNCTION_ARGUMENT_INSTANCE_PLURAL)
 		{
 			if(*functionArguments != "")
@@ -408,16 +412,16 @@ string generateCodePluralDefinitionText(NLPIitem * currentItem, int progLang)
 
 string generateCodeSingularDefinitionText(NLPIitem * currentItem, int progLang)
 {	
-	string propertyClassName = currentItem->className;
-	string propertyInstanceName = currentItem->instanceName;
+	string singularClassName = currentItem->className;
+	string singularInstanceName = currentItem->instanceName;
 	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
 	if(currentItem->functionArgumentPassCastRequired)
 	{
-		propertyClassName = currentItem->functionArgumentPassCastClassName;
+		singularClassName = currentItem->functionArgumentPassCastClassName;
 	}
 	#endif	
-	string codePropertyDefinitionText = propertyClassName + progLangPointer[progLang] + STRING_SPACE + propertyInstanceName;
-	return codePropertyDefinitionText;
+	string codeSingularDefinitionText = singularClassName + progLangPointer[progLang] + STRING_SPACE + singularInstanceName;
+	return codeSingularDefinitionText;
 }
 
 #ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
@@ -453,6 +457,7 @@ void generateFunctionExecutionArgumentsWithActionConceptInheritanceString(vector
 	#else		
 	parameters = codeBlockParameters;				
 	#endif
+	//parameters = codeBlockParameters;
 			
 	for(vector<NLPIitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
@@ -600,7 +605,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLPIitem*>
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + currentItem->instanceName;
+			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + STRING_SPACE + currentItem->instanceName;
 		}
 		else if(currentItem->itemType == NLPI_ITEM_TYPE_FUNCTION_OBJECT)
 		{
@@ -608,7 +613,7 @@ void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLPIitem*>
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + currentItem->instanceName;
+			*functionArguments = *functionArguments + currentItem->className + progLangPointer[progLang] + STRING_SPACE + currentItem->instanceName;
 		}		
 	}	
 }

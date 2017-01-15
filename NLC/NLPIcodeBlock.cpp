@@ -23,7 +23,7 @@
  * File Name: NLPIcodeBlock.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1b 20-November-2013
+ * Project Version: 1e1c 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -137,23 +137,26 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 	bool foundFunctionObjectClass = false;
 	string functionObjectName = "";
 	parseFunctionNameFromNLPIfunctionName(NLPIfunctionName, &functionName, &functionOwnerName, &foundFunctionOwnerClass, &functionObjectName, &foundFunctionObjectClass);
+	
+	GIAentityNode * functionOwner = NULL;
+	GIAentityNode * functionObject = NULL;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode * entity = *entityIter;
-		if(entity->entityName == functionOwnerName)
+		if(!(entity->isConcept) && !(entity->isActionConcept) && !(entity->isSubstanceConcept))
 		{
-			entity->NLPIisArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+			if(entity->entityName == functionOwnerName)
+			{
+				entity->NLPIisArgument = true;	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias
+
+				functionOwner = entity;
+			}
+			if(entity->entityName == functionObjectName)
+			{
+				entity->NLPIisArgument = true;
 			
-			//"Dog dog1 = this;"
-			NLPIitem * functionOwnerItem = new NLPIitem(entity, NLPI_ITEM_TYPE_OBJECT);
-			currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
-			NLPIitem * actionSubjectInstanceReplacementItem = new NLPIitem(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLPI_ITEM_TYPE_OBJECT);
-			currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
-			currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
-		}
-		if(entity->entityName == functionObjectName)
-		{
-			entity->NLPIisArgument = true;
+				functionObject = entity;
+			}
 		}
 	}	
 	#else
@@ -168,12 +171,39 @@ NLPIcodeblock * createCodeBlockNewFunction(NLPIcodeblock * currentCodeBlockInTre
 		NLPIitem * functionOwnerItem = new NLPIitem(functionOwnerName, NLPI_ITEM_TYPE_FUNCTION_OWNER);
 		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);	
 	}
+	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	if(foundFunctionObjectClass)	//added 21 November 2013
+	{
+		if(functionObject != NULL)
+		{
+			NLPIitem * functionObjectItem = new NLPIitem(functionObject, NLPI_ITEM_TYPE_FUNCTION_OBJECT);
+			currentCodeBlockInTree->parameters.push_back(functionObjectItem);	
+		}
+	}
+	#endif
 	#endif
 	
 	#ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
 	generateLocalFunctionArgumentsBasedOnImplicitDeclarations(entityNodesActiveListComplete, &(currentCodeBlockInTree->parameters));
 	#endif
-	return createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_NEW_FUNCTION);
+	
+	currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_NEW_FUNCTION);
+	
+	#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS
+	#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+	if(functionOwner != NULL)
+	{
+		//"Dog dog1 = this;"
+		NLPIitem * functionOwnerItem = new NLPIitem(functionOwner, NLPI_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(functionOwnerItem);
+		NLPIitem * actionSubjectInstanceReplacementItem = new NLPIitem(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_SUBJECT_INSTANCE_REPLACEMENT_NAME, NLPI_ITEM_TYPE_OBJECT);
+		currentCodeBlockInTree->parameters.push_back(actionSubjectInstanceReplacementItem);
+		currentCodeBlockInTree = createCodeBlock(currentCodeBlockInTree, NLPI_CODEBLOCK_TYPE_DECLARE_AND_INITIALISE_VARIABLE);
+	}
+	#endif
+	#endif
+	
+	return currentCodeBlockInTree;
 }
 
 #ifdef NLPI_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
@@ -486,9 +516,9 @@ void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * fun
 	{
 		if(indexOfObjectName != string::npos)
 		{
-			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfActionName);
+			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, indexOfObjectName-indexOfActionName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
-			*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH);	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
+			*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
 			*foundFunctionOwnerClass = true;
 			*foundFunctionObjectClass = true;	
 			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
@@ -499,7 +529,7 @@ void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * fun
 		}
 		else
 		{
-			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfActionName);
+			*functionName = NLPIfunctionName.substr(indexOfActionName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfActionName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLPIfunctionName.substr(0, indexOfActionName);
 			*foundFunctionOwnerClass = true;
 			cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
@@ -511,7 +541,7 @@ void parseFunctionNameFromNLPIfunctionName(string NLPIfunctionName, string * fun
 	else if(indexOfObjectName != string::npos)
 	{
 		*functionName = NLPIfunctionName.substr(0, indexOfObjectName);
-		*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH);	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
+		*functionObjectName = NLPIfunctionName.substr(indexOfObjectName+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, NLPIfunctionName.length()-indexOfObjectName-(NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH+NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));	// -NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_LENGTH to take into account NLPI_SUPPORT_INPUT_FILE_LISTS_ACTION_OBJECT_DELIMITER_CLOSE
 		*foundFunctionObjectClass = true;
 		cout << "parseFunctionNameFromNLPIfunctionName():" << endl;
 		cout << "NLPIfunctionName = " << NLPIfunctionName << endl;

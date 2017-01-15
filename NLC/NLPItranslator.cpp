@@ -23,7 +23,7 @@
  * File Name: NLPItranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e1b 20-November-2013
+ * Project Version: 1e1c 20-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -281,7 +281,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		itemType = NLPI_ITEM_TYPE_FUNCTION_SUBJECT;
 	}
 			
-	//cout << "objectOrSubjectEntity->parsedForNLPIcodeBlocks = " << objectOrSubjectEntity->parsedForNLPIcodeBlocks << endl;
+	cout << "itemType = " << itemType << endl;
 	
 	if(!(objectOrSubjectEntity->parsedForNLPIcodeBlocks))	//"&& !(objectOrSubjectEntity->parsedForNLPIcodeBlocks)" added 3 October 2013 NLPI1b2b - used for quick access of instances already declared in current context 
 	{//for loop required
@@ -292,6 +292,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &(objectOrSubjectClass->context), false, sentenceIndex, true);
 		currentCodeBlockInTree = createCodeBlockFor(currentCodeBlockInTree, objectOrSubjectClass);
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, itemType);	//OLD: NLPI_ITEM_TYPE_TEMPVAR
+		cout << "!parsedForNLPIcodeBlocks, objectOrSubjectEntity = " << objectOrSubjectEntity->entityName << endl;
 		
 		currentCodeBlockInTree = createCodeBlockIfStatements(currentCodeBlockInTree, *objectOrSubjectItem, objectOrSubjectEntity, sentenceIndex);
 	}
@@ -299,6 +300,7 @@ NLPIcodeblock * generateConditionBlocks(NLPIcodeblock * currentCodeBlockInTree, 
 	{
 		*objectOrSubjectItem = new NLPIitem(objectOrSubjectEntity, itemType);	//OLD: NLPI_ITEM_TYPE_OBJECT
 		objectOrSubjectsHaveParent = getEntityContext(objectOrSubjectEntity, &((*objectOrSubjectItem)->context), false, sentenceIndex, true);
+		cout << "objectOrSubjectEntity = " << objectOrSubjectEntity->entityName << endl;
 	}
 	return currentCodeBlockInTree;
 }
@@ -559,12 +561,12 @@ bool generateClassHeirarchy(vector<NLPIclassDefinition *> * classDefinitionList,
 								//cout << "functionList.push_back: " << targetClassDefinition->name << endl;
 								classDefinition->functionList.push_back(targetClassDefinition);
 
-								//NLPIitem * classDeclarationFunctionItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION);
-								//targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);	//required for NLPI 1c5a+ (print function class name not instance name)
+								NLPIitem * classDeclarationFunctionItem = new NLPIitem(targetEntity, NLPI_ITEM_TYPE_FUNCTION);	//added 1e1c
+								targetClassDefinition->parameters.push_back(classDeclarationFunctionItem);
 								if(!(targetEntity->actionObjectEntity->empty()))
 								{							
 									GIAentityNode * actionObject = (targetEntity->actionObjectEntity->back())->entity;
-									NLPIitem * classDeclarationFunctionObjectItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_CLASS_DECLARATION_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
+									NLPIitem * classDeclarationFunctionObjectItem = new NLPIitem(actionObject, NLPI_ITEM_TYPE_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)
 									targetClassDefinition->parameters.push_back(classDeclarationFunctionObjectItem);
 								}
 								#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS

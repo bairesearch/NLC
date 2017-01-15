@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2015 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1q14k 02-September-2015
+ * Project Version: 1q14l 02-September-2015
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1023,7 +1023,7 @@ void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* cl
 	
 	NLCitem* newGenericObject = new NLCitem(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE, NLC_ITEM_TYPE_OBJECT);
 	newGenericObject->instanceName = "newGenericObject";
-	string codeBlockTextDeclareNewGenericObject = generateCodeEntityDefinitionText(newGenericObject, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newObject = NULL;
+	string codeBlockTextDeclareNewGenericObject = generateCodeEntityDefinitionText(newGenericObject, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newGenericObject = NULL;
 	printLine(codeBlockTextDeclareNewGenericObject, level, code);	
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
@@ -1044,10 +1044,14 @@ void generateCodeGenerateObjectByNameNewFunction(vector<NLCclassDefinition*>* cl
 		}
 	}
 	#ifdef NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_UPDATE_GENERATE_OBJECT_BY_NAME
+	string ifNewGenericObjectNotNullText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + newGenericObject->instanceName + progLangIsNotEqualTo[progLang] + progLangNullPointer[progLang] + progLangCloseParameterSpace[progLang];	 //if(newGenericObject != NULL)
+	printLine(ifNewGenericObjectNotNullText, level, code);
+	printLine(progLangOpenBlock[progLang], level, code);	//{	
 	string codeBlockUpdateLastSentenceReferencedText = newGenericObject->instanceName + progLangObjectReferenceDelimiter[progLang] + NLC_USE_ADVANCED_REFERENCING_LAST_SENTENCE_REFERENCED_VARIABLE_NAME + progLangObjectReferenceDelimiter2[progLang] + progLangStackAdd[progLang] + progLangOpenParameterSpace[progLang] + NLC_USE_ADVANCED_REFERENCING_MONITOR_CONTEXT_DEFAULT_SENTENCE_INDEX + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//newGenericObject->lastSentenceReferenced.push(0);		
-	printLine(codeBlockUpdateLastSentenceReferencedText, level, code);
+	printLine(codeBlockUpdateLastSentenceReferencedText, level+1, code);
+	printLine(progLangCloseBlock[progLang], level, code);	//}
 	#endif	
-	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newObject;
+	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newGenericObject;
 	printLine(codeBlockTextReturnNewVector, level, code);
 	level--;
 	printLine(progLangCloseBlock[progLang], level, code);	//}
@@ -1077,7 +1081,7 @@ void generateCodeCopyObjectByNameNewFunction(vector<NLCclassDefinition*>* classD
 	
 	NLCitem* newGenericObject = new NLCitem(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE, NLC_ITEM_TYPE_OBJECT);
 	newGenericObject->instanceName = "newGenericObject";
-	string codeBlockTextDeclareNewGenericObject = generateCodeEntityDefinitionText(newGenericObject, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newObject = NULL;
+	string codeBlockTextDeclareNewGenericObject = generateCodeEntityDefinitionText(newGenericObject, progLang) + progLangEquals[progLang] + progLangNullPointer[progLang] + progLangEndLine[progLang];	//NLCgenericEntity* newGenericObject = NULL;
 	printLine(codeBlockTextDeclareNewGenericObject, level, code);	
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
@@ -1097,7 +1101,7 @@ void generateCodeCopyObjectByNameNewFunction(vector<NLCclassDefinition*>* classD
 			printLine(progLangCloseBlock[progLang], level, code);	
 		}
 	}
-	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newObject;
+	string codeBlockTextReturnNewVector = progLangReturn[progLang] + newGenericObject->instanceName + progLangEndLine[progLang];		//return newGenericObject;
 	printLine(codeBlockTextReturnNewVector, level, code);
 	level--;
 	printLine(progLangCloseBlock[progLang], level, code);	//}

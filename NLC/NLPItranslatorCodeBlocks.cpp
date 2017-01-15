@@ -23,7 +23,7 @@
  * File Name: NLPItranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2013 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1e6d 23-November-2013
+ * Project Version: 1e6e 23-November-2013
  * Requirements: requires text parsed by NLP Parser (eg Relex; available in .CFF format <relations>)
  *
  *******************************************************************************/
@@ -62,14 +62,14 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			GIAentityNode * actionEntity = (*entityNodesActiveListActionsIterator);
 			if(!(actionEntity->isActionConcept))
 			{
-				#ifdef NLPI_DEBUG
-				cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
-				#endif
 				//cout << "actionEntity->isAction = " << actionEntity->isAction << endl;
 				//cout << "actionEntity->hasAssociatedInstance = " << actionEntity->hasAssociatedInstance << endl;
 
 				if(checkSentenceIndexParsingCodeBlocks(actionEntity, sentenceIndex, true))
 				{
+					//#ifdef NLPI_DEBUG
+					cout << "actionEntity->entityName = " << actionEntity->entityName << endl;
+					//#endif
 					//cout << "sentenceIndexC = " << sentenceIndex << endl;
 					//cout << "h1" << endl;
 					
@@ -100,6 +100,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						functionItem = new NLPIitem(actionEntity, NLPI_ITEM_TYPE_FUNCTION);
 						
 						#ifdef NLPI_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
+						cout << "NLPI_CODEBLOCK_TYPE_DECLARE_NEW_VARIABLE" << endl;
 						actionEntity->NLPIisSingularArgument = true;	//added 1e2c
 						//declare an "abstract" variable for the action (that will be filled with the its properties and conditions) and passed as an argument to the function; eg "fast" of "run fast"
 						currentCodeBlockInTree->parameters.push_back(functionItem);
@@ -116,7 +117,8 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						if(actionHasObject)
 						{
 							generateContextBlocksAndInitialiseParentIfNecessary(&currentCodeBlockInTree, objectEntity, sentenceIndex);
-						}					
+						}	
+										
 					}
 					
 					
@@ -152,7 +154,8 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 								implictlyDeclaredFunctionList.push_back(functionItem);
 								#endif
 							}
-
+							
+							//subjectEntity->parsedForNLPIcodeBlocksActionRound = true;
 						}
 						#ifdef NLPI_NOT_NECESSARY
 						else
@@ -163,6 +166,10 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						//cout << "h5" << endl;
 						functionExecuteCodeBlockInTree = currentCodeBlockInTree;
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem, objectItem);
+						
+						actionEntity->parsedForNLPIcodeBlocks = true;
+						//actionEntity->parsedForNLPIcodeBlocksActionRound = true;
+						//objectEntity->parsedForNLPIcodeBlocksActionRound = true;
 					}
 					else if(actionHasSubject)
 					{
@@ -183,11 +190,15 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 						//cout << "h5" << endl;
 						functionExecuteCodeBlockInTree = currentCodeBlockInTree;
 						currentCodeBlockInTree = createCodeBlockExecute(currentCodeBlockInTree, functionItem);
+						
+						actionEntity->parsedForNLPIcodeBlocks = true;
+						//actionEntity->parsedForNLPIcodeBlocksActionRound = true;
+						//subjectEntity->parsedForNLPIcodeBlocksActionRound = true;
 					}	
 
+					#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 					if(actionHasObject || actionHasSubject)
-					{												
-						#ifdef NLPI_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
+					{											
 						#ifndef NLPI_SUPPORT_INPUT_FILE_LISTS
 						generateFunctionPropertyConditionArgumentsWithActionConceptInheritance(actionEntity, &(functionExecuteCodeBlockInTree->parameters));	//#ifdef NLPI_SUPPORT_INPUT_FILE_LISTS use class definition parameters instead
 						#endif
@@ -206,8 +217,8 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 							(*entityIter)->parsedForNLPIcodeBlocks = true;
 							actionProperty->parsedForNLPIcodeBlocks = true;
 						}
-						#endif
 					}
+					#endif
 					
 					
 					//cout << "h6" << endl;
@@ -242,7 +253,7 @@ bool generateCodeBlocks(NLPIcodeblock * firstCodeBlockInTree, vector<GIAentityNo
 			GIAentityNode * entity = *entityIter;
 			if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 			{	
-				generateObjectInitialisationsBasedOnPropertiesAndConditions(entity, &currentCodeBlockInTree, sentenceIndex);	
+				//generateObjectInitialisationsBasedOnPropertiesAndConditions(entity, &currentCodeBlockInTree, sentenceIndex);	
 				
 				/*//moved 1e1b: only generate object initialisations for items based on subject concepts when items are created in context
 				#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
@@ -311,6 +322,7 @@ bool generateContextBlocksAndInitialiseParentIfNecessary(NLPIcodeblock ** curren
 		{
 			//cout << "createCodeBlockAddNewListVariable: " << currentEntity->entityName << endl;
 			*currentCodeBlockInTree = createCodeBlockAddNewListVariable(*currentCodeBlockInTree, currentEntity, sentenceIndex);
+			currentEntity->parsedForNLPIcodeBlocks = true;
 			generateObjectInitialisationsBasedOnPropertiesAndConditions(currentEntity, currentCodeBlockInTree, sentenceIndex);	
 			#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 			//Part 2b: generate object initialisations based on substance concepts (class inheritance)
@@ -363,11 +375,12 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 {
 	if(!(entity->isSubstanceConcept) && !(entity->isActionConcept))
 	{
+		
 		#ifdef NLPI_CREATE_IMPLICITLY_DECLARED_ACTION_OBJECT_AND_SUBJECT_VARIABLES
 		//added 1e6c: eg A chicken's hat has a bike. / A blue dog has a bike.
 		if(!(entity->isConcept))
 		{
-			if(!(entity->parsedForNLPIcodeBlocks))
+			if(!(entity->parsedForNLPIcodeBlocks))	// && !(entity->parsedForNLPIcodeBlocksActionRound)
 			{
 				if(!assumedToAlreadyHaveBeenDeclared(entity))	
 				{
@@ -378,14 +391,14 @@ void generateObjectInitialisationsBasedOnPropertiesAndConditions(GIAentityNode *
 							//cout << "createCodeBlockAddNewListVariable: " << currentEntity->entityName << endl;
 							*currentCodeBlockInTree = createCodeBlockAddNewListVariable(*currentCodeBlockInTree, entity, sentenceIndex);
 							entity->parsedForNLPIcodeBlocks = true;
-							//cout << "createCodeBlockAddNewListVariable: " << entity->entityName << endl;
+							cout << "createCodeBlockAddNewListVariable: " << entity->entityName << endl;
 						}
 					}
 				}
 			}
 		}
 		#endif
-			
+		
 		//property initialisations
 		for(vector<GIAentityConnection*>::iterator propertyNodeListIterator = entity->propertyNodeList->begin(); propertyNodeListIterator < entity->propertyNodeList->end(); propertyNodeListIterator++)
 		{

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17a 18-July-2014
+ * Project Version: 1g17b 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -499,29 +499,43 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								}
 								#endif
 							}
-							else if(logicalConditionSubject->isAction)
-							{
-								//eg If the sun is bright, eat the cabbage.
-								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
-								generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex, NLCfunctionName);
-								*currentCodeBlockInTree = currentCodeBlockInTreeAtBaseLevel->next;
-							}
 							else
 							{
-								//eg If the sun is bright, the dog is happy.
-								tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
-
-								#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
-								generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex);
-								#else
-								GIAentityNode * parentEntity = getParent(logicalConditionSubject, sentenceIndex, true);		//CHECKTHIS check parseConditionParents value here
-								if(!generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
+								if(logicalConditionSubject->isAction)
 								{
-									generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", false);
+									#ifdef NLC_USE_PREPROCESSOR
+									if(logicalConditionSubject->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION)
+									{
+										//leave action entity as tagged NLCparsedForlogicalConditionOperations (such that it is not processed by generateActionCodeBlocks)
+										//assume the next line(s) is indented and contains the real logical condition command
+									}
+									else
+									{
+									#endif
+										//eg If the sun is bright, eat the cabbage.
+										tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+
+										generateActionCodeBlocks(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex, NLCfunctionName);
+									#ifdef NLC_USE_PREPROCESSOR
+									}
+									#endif
 								}
-								#endif
-				
+								else
+								{
+									//eg If the sun is bright, the dog is happy.
+									tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperation(logicalConditionSubject, sentenceIndex, false);	//used to enable class definition printing of conditional statements
+
+									#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
+									generateCodeBlocksObjectInitialisationsForEntity(currentCodeBlockInTree, logicalConditionSubject, sentenceIndex);
+									#else
+									GIAentityNode * parentEntity = getParent(logicalConditionSubject, sentenceIndex, true);		//CHECKTHIS check parseConditionParents value here
+									if(!generateParentInitialisationCodeBlock(currentCodeBlockInTree, parentEntity, sentenceIndex, false))
+									{
+										generateObjectInitialisationsBasedOnPropertiesAndConditions(parentEntity, currentCodeBlockInTree , sentenceIndex, "", "", false);
+									}
+									#endif
+								}
+
 								#ifdef NLC_USE_PREPROCESSOR
 								currentSentenceContainsLogicalCondition = true;
 								if(currentNLCsentenceInList->next->indentation == (currentNLCsentenceInList->indentation + 1))

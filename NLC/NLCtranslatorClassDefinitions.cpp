@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17a 18-July-2014
+ * Project Version: 1g17b 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -56,6 +56,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		{
 			validClass = false;
 		}
+		#ifdef NLC_USE_PREPROCESSOR
+		if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION_OBJECT))
+		{
+			validClass = false;
+		}
+		#endif
 		#endif
 		#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 		bool conjunctionConditionFound = textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
@@ -107,6 +113,12 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 						
 						}
 						*/
+						#ifdef NLC_USE_PREPROCESSOR
+						if((targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION) || (targetEntity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION_OBJECT))
+						{
+							validClassContents = false;
+						}
+						#endif
 						#endif
 						#ifdef NLC_LOGICAL_CONDITIONS_SUPPORT_CONJUNCTIONS
 						bool conjunctionConditionFound = textInTextArray(targetEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);

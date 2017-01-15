@@ -39,6 +39,7 @@
 
 #include "NLCpreprocessor.h"
 #include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX
+#include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
 
 NLCsentence::NLCsentence(void)
 {
@@ -62,7 +63,7 @@ NLCfunction::~NLCfunction(void)
 }
 
 
-bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList)
+bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionInList, bool * detectedFunctions, int * numberOfInputFilesInList, vector<string> * inputTextFileNameList, string outputFileName)
 {
 	*numberOfInputFilesInList = 1;
 	
@@ -82,30 +83,37 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 		int currentIndentation = 0;
 		bool parsingIndentation = true;
-		int lineWordIndex = 0;
 		bool parsingFunctionName = false;
 		string functionName = "";
 		*detectedFunctions = false;
 		string functionContents = "";
 		string sentenceContents = "";
+		bool lineFullStopDetected = false;
+		bool lineIsLogicalCondition = false;
+		bool lineNonWhiteSpaceDetected = false;
 		
 		while(parseFileObject.get(currentToken))
 		{
 			cout << currentToken;
-			
+			bool whiteSpaceDetected = isWhiteSpace(currentToken);
+
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			//extract functions from file and generate separate files
 			if(parsingFunctionName)
 			{
 				if(currentToken == CHAR_NEWLINE)
 				{
+					#ifdef NLC_DEBUG_PREPROCESSOR
+					#endif
 					cout << "start function: functionName = " << functionName << endl;
 					inputTextFileNameList->push_back(functionName);
 					functionContents = "";
 					sentenceContents = "";
 					currentIndentation = 0;
-					lineWordIndex = 0;
 					parsingFunctionName = false;
+					lineFullStopDetected = false;
+					lineIsLogicalCondition = false;
+					lineNonWhiteSpaceDetected = false;
 				}
 				else
 				{
@@ -117,24 +125,62 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 			#endif
 				if(currentToken == CHAR_NEWLINE)
 				{
-					//assume that a sentence has already been created based on a full stop (do not support multiline sentences)
+					#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+					if(!lineFullStopDetected && lineIsLogicalCondition)
+					{
+						//add dummy text ", do this." to the end of the logical condition, such that NLP can parse the logical condition header, and NLC can parse the multi-sentence logical condition based on its indentation.
+						#ifdef NLC_DEBUG_PREPROCESSOR
+						cout << "create new sentence" << endl;
+						#endif
+						cout << "sentenceContents = " << sentenceContents + string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT) << endl;
+						currentNLCsentenceInList->sentenceContents = sentenceContents + string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT);	//append dummy action ", do this."
+						functionContents = functionContents + string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT);	//append dummy action ", do this."
+						currentNLCsentenceInList->sentenceIndex = sentenceIndex;
+						currentNLCsentenceInList->indentation = currentIndentation;
+						currentNLCsentenceInList->next = new NLCsentence();
+						currentNLCsentenceInList = currentNLCsentenceInList->next;
+						sentenceContents = "";
+						sentenceIndex++;
+					}
+					else 
+					#endif
+					if(!lineFullStopDetected && lineNonWhiteSpaceDetected)
+					{
+						cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
+						exit(0);
+					}
+					else
+					{
+						//assume that a sentence has already been created based on a full stop (do not support multiline sentences)
+					}
 					parsingIndentation = true;
 					currentIndentation = 0;
-					lineWordIndex = 0;
+					lineFullStopDetected = false;
+					lineIsLogicalCondition = false; 
+					lineNonWhiteSpaceDetected = false;
 				}
 				else if(currentToken == CHAR_FULLSTOP)
 				{
-					parsingIndentation = false;
-					cout << "create new sentence" << endl;
-					cout << "sentenceContents = " << sentenceContents + currentToken << endl;
-					currentNLCsentenceInList->sentenceContents = sentenceContents + currentToken;	//append the fullstop
-					currentNLCsentenceInList->sentenceIndex = sentenceIndex;
-					currentNLCsentenceInList->indentation = currentIndentation;
-					currentNLCsentenceInList->next = new NLCsentence();
-					currentNLCsentenceInList = currentNLCsentenceInList->next;
-					sentenceContents = "";
-					sentenceIndex++;
-					lineWordIndex++;
+					if(lineNonWhiteSpaceDetected)
+					{
+						lineFullStopDetected = true;
+						parsingIndentation = false;
+						#ifdef NLC_DEBUG_PREPROCESSOR
+						cout << "create new sentence" << endl;
+						#endif
+						cout << "sentenceContents = " << sentenceContents + currentToken << endl;
+						currentNLCsentenceInList->sentenceContents = sentenceContents + currentToken;	//append the fullstop
+						currentNLCsentenceInList->sentenceIndex = sentenceIndex;
+						currentNLCsentenceInList->indentation = currentIndentation;
+						currentNLCsentenceInList->next = new NLCsentence();
+						currentNLCsentenceInList = currentNLCsentenceInList->next;
+						sentenceContents = "";
+						sentenceIndex++;
+					}
+					else
+					{
+						cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error: a full stop has been detected without any preceeding text on the line." << endl;
+					}
 				}
 				else if(currentToken == NLC_PREPROCESSOR_INDENTATION_CHAR)
 				{
@@ -144,24 +190,29 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 					}
 					else
 					{
-						cout << "preprocessTextForNLC() warning: NLC_INDENTATION_CHAR detected and !parsingIndentation" << endl;
+						cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() warning: NLC_INDENTATION_CHAR detected and !parsingIndentation" << endl;
 						sentenceContents = sentenceContents + currentToken;
 					}
-					lineWordIndex++;
 				}
 				else if(currentToken == NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR)
 				{
 					parsingIndentation = false;
+					#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+					string lowerCaseSentenceContents = convertStringToLowerCase(&sentenceContents);
+					bool logicalConditionDetected = textInTextArray(lowerCaseSentenceContents, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES);
+					#endif
 					#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
-					if(sentenceContents == NLC_PREPROCESSOR_FUNCTION_HEADER_STRING)
+					if(sentenceContents == NLC_PREPROCESSOR_FUNCTION_HEADER_STRING)	//this is a case sensitive test
 					{
 						if(*detectedFunctions)
 						{
 							functionContents = functionContents.substr(0, functionContents.length() - sentenceContents.length());
+							#ifdef NLC_DEBUG_PREPROCESSOR
+							cout << "end function: functionName = " << functionName << endl;
 							cout << "create new function = " << functionName << endl;
+							#endif
 							cout << "functionContents = " << functionContents << endl;
 							writeStringToFile(functionName, functionContents);
-							cout << "end function: functionName = " << functionName << endl;
 							currentNLCfunctionInList->functionName = functionName;
 							currentNLCfunctionInList->next = new NLCfunction();
 							currentNLCfunctionInList = currentNLCfunctionInList->next;
@@ -172,25 +223,36 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 						}
 						else
 						{
+							#ifdef NLC_DEBUG_PREPROCESSOR
 							cout << "detectedFunctions" << endl;
+							#endif
 							*detectedFunctions = true;
 						}
 						parsingFunctionName = true;
 					}
 					else
-					{
 					#endif
+					#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+					if(logicalConditionDetected)
+					{
+						lineIsLogicalCondition = true;
 						sentenceContents = sentenceContents + currentToken;
-					#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 					}
 					#endif
-					lineWordIndex++;
+					else
+					{
+						sentenceContents = sentenceContents + currentToken;
+					}
+				}
+				else if(whiteSpaceDetected)
+				{
+					cout << "NLC_USE_PREPROCESSOR preprocessTextForNLC() error / NLCglobalDefs.h preprocessor definition error:\ncurrent implementation assumes NLC_PREPROCESSOR_INDENTATION_CHAR and NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR encapsulate all white space characters (CHAR_TAB and CHAR_SPACE)" << endl; 
 				}
 				else
 				{
 					parsingIndentation = false;
 					sentenceContents = sentenceContents + currentToken;
-					lineWordIndex++;
+					lineNonWhiteSpaceDetected = true;
 				}
 				functionContents = functionContents + currentToken;
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
@@ -201,10 +263,22 @@ bool preprocessTextForNLC(string inputFileName, NLCfunction * firstNLCfunctionIn
 		if(*detectedFunctions)
 		{
 			//create a final function based on the final text..
+			#ifdef NLC_DEBUG_PREPROCESSOR
 			cout << "create new function = " << functionName << endl;
+			#endif
 			cout << "functionContents = " << functionContents << endl;
 			writeStringToFile(functionName, functionContents);
 			//create new function file based on current text
+		}
+		else
+		{
+		#endif
+		#ifdef NLC_DEBUG_PREPROCESSOR
+		cout << "create preprocessed file = " << functionName << endl;
+		#endif
+		cout  << "functionContents = \n" << functionContents << endl;
+		writeStringToFile(outputFileName, functionContents);
+		#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 		}
 		#endif
 	}

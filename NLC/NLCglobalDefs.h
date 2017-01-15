@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17a 18-July-2014
+ * Project Version: 1g17b 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,8 +44,11 @@
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES
 	#define NLC_PREPROCESSOR_INDENTATION_CHAR (CHAR_TAB)
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_STRING "function"
-	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR ':'
+	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR (CHAR_SPACE)
 	#define NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS (100)
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT ", do this."
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION "do"
+	#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_ACTION_OBJECT "this"
 #endif
 
 #define NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS	//1g16a 16-July-2014
@@ -53,7 +56,6 @@
 #define NLC_VERIFY_CONNECTIONS_SENTENCE_INDEX	//1g15a 16-July-2014	//requires GIA_STORE_CONNECTION_SENTENCE_INDEX	
 	
 #define NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE	//added 1g13b+ 15-July-2014
-//#define NLC_PARSE_CONTEXT_DEBUG
 
 #define NLC_DEFINE_LOCAL_VARIABLES_FOR_ALL_INDEFINATE_ENTITIES	//1g8a+ local variable implementation
 
@@ -96,6 +98,8 @@
 	#endif
 #endif
 
+//#define NLC_DEBUG_PREPROCESSOR
+//#define NLC_DEBUG_PARSE_CONTEXT
 //#define NLC_DEBUG_LOGICAL_CONDITION_CONJUNCTIONS
 //#define NLC_DEBUG
 //#define NLC_DEBUG_PRINT_HIDDEN_CLASSES

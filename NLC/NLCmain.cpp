@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17a 18-July-2014
+ * Project Version: 1g17b 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -74,7 +74,7 @@ static char errmessage[] = "Usage:  OpenNLC.exe [options]\n\n\twhere options are
 "\n\t-ilist		: all input files (itxt, ionlprel, ionlptag, ixml) will be treated as file lists (new line delimited) referencing NLC function names ([functionSubject#]functionName)[+functionObject])"
 #endif
 #ifdef NLC_USE_PREPROCESSOR
-"\n\t-ipreprocess	: itxt input file will be preprocessed, supporting condition block indentation (eg if the ball is red\\n\\tthe stars are bright\\n\\tthe cat is happy) and multiple functions (delimited by function:[functionSubject#]functionName)[+functionObject]"
+"\n\t-ipreprocess	: itxt input file will be preprocessed, supporting condition block indentation (eg if the ball is red\\n\\tthe stars are bright\\n\\tthe cat is happy) and multiple functions (delimited by 'function [functionSubject#]functionName)[+functionObject]'"
 #endif
 "\n\t-oxml [string]     : semantic network definition .xml output filename (def: semanticNet.xml)"
 "\n\t-ocxl [string]     : semantic network display .cxl vector graphics output filename (def: semanticNet.cxl)"
@@ -338,7 +338,6 @@ int main(int argc,char **argv)
 		if(argumentExists(argc,argv,"-ipreprocess"))
 		{
 			NLCpreprocessor = true;
-			cout << "ipreprocess" << endl;
 		}
 	#endif
 
@@ -641,7 +640,7 @@ int main(int argc,char **argv)
 
 		if (argumentExists(argc,argv,"-version"))
 		{
-			cout << "OpenNLC.exe - Project Version: 1g17a 18-July-2014" << endl;
+			cout << "OpenNLC.exe - Project Version: 1g17b 18-July-2014" << endl;
 			exit(1);
 		}
 
@@ -700,6 +699,7 @@ int main(int argc,char **argv)
 	if(NLCpreprocessor)
 	{
 		cout << "NLCpreprocessor" << endl;
+		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + "afterPreprocessedforNLConly.txt";
 		if(!useInputTextPlainTXTFile)
 		{
 			cout << "NLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
@@ -708,13 +708,19 @@ int main(int argc,char **argv)
 		{
 			cout << "NLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
 		}
-		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList))
+		if(preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
 			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			if(preprocessorDetectedFunctions)
 			{
 				cout << "preprocessorDetectedFunctions" << endl;
 				NLCinputFileList = true;
+			}
+			else
+			{
+			#endif
+				inputTextPlainTXTfileName = outputPreprocessedTextForNLConlyPlainTXTFileName;	//execute NLP on preprocessed file 
+			#ifdef NLC_SUPPORT_INPUT_FILE_LISTS
 			}
 			#endif
 		}

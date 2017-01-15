@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g17a 18-July-2014
+ * Project Version: 1g17b 18-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -456,7 +456,7 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 #ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCodeBlockInTree, GIAentityNode * entity, int sentenceIndex)
 {
-	#ifdef NLC_PARSE_CONTEXT_DEBUG
+	#ifdef NLC_DEBUG_PARSE_CONTEXT
 	cout << "\ngenerateCodeBlocksPart4objectInitialisations(): sentenceIndex = " << sentenceIndex << endl;
 	cout << "\tentity->entityName = " << entity->entityName << endl;
 	#endif
@@ -465,17 +465,17 @@ bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCod
 	NLClogicalConditionConjunctionVariables logicalConditionConjunctionVariables;
 	logicalConditionConjunctionVariables.onlyGenerateContextBlocksIfConnectionsParsedForNLC = true;
 
-	#ifdef NLC_PARSE_CONTEXT_DEBUG
+	#ifdef NLC_DEBUG_PARSE_CONTEXT
 	cout << "generateCodeBlocksObjectInitialisationsForEntity: getParent()" << endl;
 	#endif
 	GIAentityNode * parentEntity = getParent(entity, sentenceIndex, true);
-	#ifdef NLC_PARSE_CONTEXT_DEBUG
+	#ifdef NLC_DEBUG_PARSE_CONTEXT
 	cout << "\tparentEntity = " << parentEntity->entityName << endl;
 	cout << "generateCodeBlocksObjectInitialisationsForEntity: initialiseParentIfNecessaryAndGenerateCodeBlocks()" << endl;
 	#endif
 	if(!initialiseParentIfNecessaryOrGenerateCodeBlocks(currentCodeBlockInTree, parentEntity, sentenceIndex, &logicalConditionConjunctionVariables, true, false))	//parse condition parents in accordance with original generateCodeBlocksPart4objectInitialisations implementation
 	{
-		#ifdef NLC_PARSE_CONTEXT_DEBUG
+		#ifdef NLC_DEBUG_PARSE_CONTEXT
 		cout << "\tfail initialiseParentIfNecessaryOrGenerateCodeBlocks" << endl;
 		cout << "generateCodeBlocksObjectInitialisationsForEntity: generateObjectInitialisationsBasedOnPropertiesAndConditions()" << endl;
 		#endif
@@ -487,20 +487,20 @@ bool generateCodeBlocksObjectInitialisationsForEntity(NLCcodeblock ** currentCod
 			originalCodeBlockInLevel->lowerLevel = NULL;
 			originalCodeBlockInLevel->parameters.clear();
 
-			#ifdef NLC_PARSE_CONTEXT_DEBUG
+			#ifdef NLC_DEBUG_PARSE_CONTEXT
 			cout << "\tfail generateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
 			#endif
 		}
 		else
 		{
-			#ifdef NLC_PARSE_CONTEXT_DEBUG
+			#ifdef NLC_DEBUG_PARSE_CONTEXT
 			cout << "\tpass generateObjectInitialisationsBasedOnPropertiesAndConditions" << endl;
 			#endif
 		}
 	}
 	else
 	{
-		#ifdef NLC_PARSE_CONTEXT_DEBUG
+		#ifdef NLC_DEBUG_PARSE_CONTEXT
 		cout << "\tpass initialiseParentIfNecessaryOrGenerateCodeBlocks" << endl;
 		#endif
 	}

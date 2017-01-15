@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2c 27-July-2014
+ * Project Version: 1h2d 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -154,13 +154,6 @@ static string progLangArrayOpen[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"[", "["
 static string progLangArrayClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"]", "]", "]", "]", "]", "]", "]"};
 static string progLangArrayInitialisationOpen[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"{", "{", "{", "{", "{", "{", "{"};
 static string progLangArrayInitialisationClose[NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {"}", "}", "}", "}", "}", "}", "}"};
-
-/*
-#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-static string progLangCoordinatingConjunctionsFull[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES][NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {{"&&", "&&", "&&", "&&", "&&", "&&", "&&"}, {"||", "||", "||", "||", "||", "||", "||"}};	//CHECKTHIS; can 2D string arrays be initialised?
-static string preprocessorMathOperatorsFull[NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES][NLC_NUMBER_OF_PROGRAMMING_LANGUAGES] = {{">", ">", ">", ">", ">", ">", ">"}, {"<", "<", "<", "<", "<", "<", "<"}, {"=", "=", "=", "=", "=", "=", "="}, {"+", "+", "+", "+", "+", "+", "+"}, {"=", "=", "=", "=", "=", "=", "="}};		//CHECKTHIS; can 2D string arrays be initialised?
-#endif
-*/
 
 
 

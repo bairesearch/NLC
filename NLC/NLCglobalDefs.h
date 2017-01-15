@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1h2c 27-July-2014
+ * Project Version: 1h2d 27-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -105,21 +105,26 @@
 		#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL " is "
 		#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE	//replaces NLC_SUPPORT_LOGICAL_CONDITION_OPERATIONS_ADVANCED implementation
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-			#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-				#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES (2)
-				static string preprocessorMathOperatorsEquivalentConjunctionsWithPause[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES] = {", and ", ", or "};
-				static string progLangCoordinatingConjunctionsWithPause[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES] = {") && (", ") || ("};
-			#endif
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_GREATER_THAN "is greater than"
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_LESS_THAN "is less than"
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_EQUALS "equals"
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_PLUS "plus"
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO "is equal to"
 			static string preprocessorMathOperatorsEquivalentNumberOfTypes[NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES] = {NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_GREATER_THAN, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_LESS_THAN, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_EQUALS, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_PLUS, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO};
-			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES (2)
-			static string preprocessorMathOperatorsEquivalentConjunctions[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES] = {"and", "or"};		//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print
-			static string progLangCoordinatingConjunctions[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES] = {"&&", "||"};	//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print 
+			#define NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+				#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES (2)
+				static string preprocessorMathOperatorsEquivalentConjunctionsWithPause[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES] = {", and ", ", or "};
+				static string progLangCoordinatingConjunctionsWithPause[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES] = {") && (", ") || ("};				
+				#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES (4)
+				static string preprocessorMathOperatorsEquivalentConjunctions[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES] = {" and ", " or ", ", and ", ", or "};		//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print
+				static string progLangCoordinatingConjunctions[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES] = {" && ", " || ", ") && (", ") || ("};	//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print 
+			#else
+				#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES (2)
+				static string preprocessorMathOperatorsEquivalentConjunctions[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES] = {"and", "or"};		//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print
+				static string progLangCoordinatingConjunctions[NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES] = {"&&", "||"};	//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print 
+
+			#endif
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET '('	//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print 
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET ')'	//use intermediary mathText symbols for equivalent natural lanaguage replacements eg &&/|| and convert later to compiler specific symbols if necessary during codeblocks print
 			#define NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING "("

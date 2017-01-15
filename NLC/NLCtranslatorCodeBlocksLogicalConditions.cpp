@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2016 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1u2d 26-September-2016
+ * Project Version: 1u2e 26-September-2016
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -608,19 +608,19 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 		if(mathObjectVariableType == NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT)
 		{//added 1t2a
 			//this is required to parse both the subject and the object of the boolean statement independently
-			bool logicalConditionBooleanStatementNegativeDetected = false;
-
-			if(generateCodeBlocksPart3subjectObjectConnections(currentCodeBlockInTree, entityNodesActiveListParsablePhrase, sentenceIndex, true, &logicalConditionBooleanStatementNegativeDetected))
+			NLCgenerateContextBlocksVariables generateContextBlocksVariablesLogicalConditionBooleanStatement;
+			generateContextBlocksVariablesLogicalConditionBooleanStatement.logicalConditionBooleanStatement = true;
+			if(generateCodeBlocksPart3subjectObjectConnections(currentCodeBlockInTree, entityNodesActiveListParsablePhrase, sentenceIndex, &generateContextBlocksVariablesLogicalConditionBooleanStatement))
 			{
-				if(logicalConditionBooleanStatementNegativeDetected)
+				if(generateContextBlocksVariablesLogicalConditionBooleanStatement.negativeDetectedInContextBlocks)
 				{
 					int parsablePhraseReferenceNamePosInMathText = currentFullSentence->mathText.find(parsablePhraseReferenceName);
 					if(parsablePhraseReferenceNamePosInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)	//&& (parsablePhraseReferenceNamePosInMathText > 0
 					{
 						currentFullSentence->mathText.insert(parsablePhraseReferenceNamePosInMathText, 1, NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR);
-						//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+						#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 						cout << "negativeDetectedInContextBlocks detected; inserting NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR into mathText logical condition" << endl;
-						//#endif
+						#endif
 					}
 				}
 
@@ -653,6 +653,23 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 
 								GIAentityNode* parentEntity = getParent(entity, sentenceIndex);		//find both definite and indefinite parents; eg The dog's value = X / A dog's value = X
 
+								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
+								bool foundChildEntity = false;
+								GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
+								
+								GIAentityNode* parentEntityTemp = NULL;	//already determined
+								bool newInitialisation = false;
+								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
+								if(currentFullSentence->hasLogicalConditionOperator)
+								{
+									generateContextBlocksVariables.logicalConditionBooleanStatement = true;
+									if(!assumedToAlreadyHaveBeenDeclared(parentEntity))	//!isDefiniteEntity
+									{
+										parentEntity->NLClogicalConditionIndefiniteEntity = true;
+									}
+								}
+								getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntityTemp, &newInitialisation);
+								#else
 								//initialise parsing of indefinate entities (set how to intepret these, eg "a house")
 								bool parentEntityWasNotDeclared = false;
 								bool initialisedParent = false;
@@ -682,7 +699,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 									{
 										//isnt this redundant with parseParsablePhraseParent?
 										//eg A dog's value = X.
-										#ifndef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
 										if(generateParentInitialisationCodeBlockWithChecks(currentCodeBlockInTree, parentEntity, sentenceIndex, false, false))
 										{
 											#ifdef NLC_DEBUG
@@ -692,25 +708,12 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 											initialisedParent = true;
 											#endif
 										}
-										#endif
 									}
 								}
 								else
 								{
 									//eg The dog's value = X.
 								}
-
-								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION
-								bool foundChildEntity = false;
-								GIAentityNode* childEntity = getSameReferenceSetSubstanceNonQualityChild(parentEntity, sentenceIndex, &foundChildEntity);
-								
-								GIAentityNode* parentEntityTemp = NULL;	//already determined
-								bool newInitialisation = false;
-								NLCgenerateContextBlocksVariables generateContextBlocksVariables;
-								if(getParentAndInitialiseParentIfNecessaryAndGenerateContextBlocks(currentCodeBlockInTree, childEntity, sentenceIndex, &generateContextBlocksVariables, false, &parentEntityTemp, &newInitialisation))
-								{
-								}
-								#else
 								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
 								GIAentityNode* childEntity = NULL;
 								if(initialisedParent)
@@ -746,8 +749,6 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 								#ifdef NLC_TRANSLATOR_DO_NOT_REPARSE_CONTEXT_BLOCKS_IF_ALREADY_PARSED_DURING_ENTITY_INITIALISATION_BASIC
 								}
 								#endif
-								#endif
-
 								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_SUPPORT_INDEFINITE_LOGICAL_CONDITION_OBJECTS
 								if(currentFullSentence->hasLogicalConditionOperator)
 								{
@@ -760,6 +761,7 @@ bool generateCodeBlocksFromMathTextNLPparsablePhrase(NLCcodeblock** currentCodeB
 										}
 									}
 								}
+								#endif
 								#endif
 									
 								#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -991,7 +993,9 @@ int getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListCompl
 		if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeBooleanOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			#ifdef NLC_DEBUG_MATH_OBJECTS_ADVANCED
 			cout << "mathObjectVariableType = NLC_USE_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN" << endl;
+			#endif
 		}
 	}
 	#endif

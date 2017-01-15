@@ -26,7 +26,7 @@
  * File Name: NLCclassDefinitionClass.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13a 18-October-2014
+ * Project Version: 1k13b 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -72,6 +72,7 @@ public:
 	int functionNameListIndex;
 	bool reconciledFunctionDeclarationArguments;
 	
+	bool isReference;
 	vector<NLCclassDefinitionFunctionDependency *> functionDependencyList;
 };
 //#endif

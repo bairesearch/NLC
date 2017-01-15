@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.h
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13a 18-October-2014
+ * Project Version: 1k13b 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,6 +69,7 @@ public:
 };
 #endif
 
+NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition *> * classDefinitionList, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, int functionIndex);
 bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency * functionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList);
 	/*
 	#ifdef NLC_CATEGORIES_TEST_PLURALITY_ENFORCE

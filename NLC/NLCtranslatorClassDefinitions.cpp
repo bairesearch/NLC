@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13a 18-October-2014
+ * Project Version: 1k13b 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -89,7 +89,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 								//cout << "targetEntity->entityName = " << targetEntity->entityName << endl;
 								
 								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-								bool duplicateFunctionDeclarationDetected = false;
+								bool foundFunctionDependencyInList = false;
 								bool hasActionObject = false;
 								string actionObjectName = "";
 								NLCclassDefinitionFunctionDependency * functionDependency = NULL;
@@ -104,7 +104,8 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 									}
 											
 									//cout << "findFunctionDependencyInList: " << targetName << endl;
-									bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, targetEntity->entityName, entityNode->entityName, actionObjectName, true, hasActionObject, &functionDependency);
+									foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, targetEntity->entityName, entityNode->entityName, actionObjectName, true, hasActionObject, &functionDependency);
+									bool duplicateFunctionDeclarationDetected = false;
 									if(foundFunctionDependencyInList)
 									{
 										cout << "1. foundFunctionDependencyInList: " << targetEntity->entityName << endl;
@@ -120,8 +121,7 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										{
 											cout << "1. foundFunctionDependencyInParent" << endl;	
 											duplicateFunctionDeclarationDetected = true;
-											//duplicate function declarations will be ignored	
-
+											//duplicate function declarations will be ignored
 										}
 									}
 									else
@@ -134,12 +134,13 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 										functionDependency->functionObjectName = actionObjectName;
 										functionDependency->hasFunctionOwnerClass = true;
 										functionDependency->hasFunctionObjectClass = hasActionObject;
+										functionDependency->isReference = true;
 										parentFunctionDependency->functionDependencyList.push_back(functionDependency);
 										functionDependencyList->push_back(functionDependency);
 									}
 								}
 								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-								if(!duplicateFunctionDeclarationDetected)
+								if(!foundFunctionDependencyInList)
 								{
 								#endif
 								#endif
@@ -373,29 +374,6 @@ bool generateClassHeirarchy(vector<NLCclassDefinition *> * classDefinitionList, 
 		result = false;
 	}
 	#endif
-	
-	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-	string functionClassDefinitionName = parentFunctionDependency->functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
-	string functionOwnerClassDefinitionName = "";
-	bool passNewFunctionDefinitionChecks = true;
-	if(parentFunctionDependency->hasFunctionOwnerClass)
-	{
-		functionOwnerClassDefinitionName = generateClassName(parentFunctionDependency->functionOwnerName);
-	}
-	else
-	{
-		#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
-		functionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
-		#else
-		passNewFunctionDefinitionChecks = false;
-		#endif
-	}
-	if(passNewFunctionDefinitionChecks)
-	{	
-		cout << "passNewFunctionDefinitionChecks: parentFunctionDependency->functionName  = " << parentFunctionDependency->functionName << endl;
-		createNewClassDefinitionFunctionDeclaration(classDefinitionList, parentFunctionDependency->functionName, parentFunctionDependency->functionOwnerName, parentFunctionDependency->functionObjectName, parentFunctionDependency->hasFunctionOwnerClass, parentFunctionDependency->hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, parentFunctionDependency, functionDependencyList);
-	}
-	#endif
 
 	return result;
 }
@@ -443,7 +421,7 @@ bool generateClassDefinitionsActionsWithoutSubject(vector<NLCclassDefinition *> 
 							actionObjectName = actionObject->entityName;
 						}
 						
-						createNewClassDefinitionFunctionDeclaration(classDefinitionList, actionName, actionSubjectName, actionObjectName, hasActionSubject, hasActionObject, actionClassDefinitionName, actionOwnerClassDefinitionName, parentFunctionDependency, functionDependencyList);
+						createNewClassDefinitionFunctionDeclaration(classDefinitionList, actionName, actionSubjectName, actionObjectName, hasActionSubject, hasActionObject, actionClassDefinitionName, actionOwnerClassDefinitionName, true, parentFunctionDependency, functionDependencyList, true);
 					}
 				}
 			}
@@ -451,44 +429,57 @@ bool generateClassDefinitionsActionsWithoutSubject(vector<NLCclassDefinition *> 
 	}
 }
 #endif
-void createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
+NLCclassDefinitionFunctionDependency * createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * classDefinitionList, string functionName, string functionOwnerName, string functionObjectName, bool hasFunctionOwnerClass, bool hasFunctionObjectClass, string functionClassDefinitionName, string functionOwnerClassDefinitionName, bool hasParent, NLCclassDefinitionFunctionDependency * parentFunctionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, bool isReference)
 {
-	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+
+	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	bool duplicateFunctionDeclarationDetected = false;
 	bool foundFunctionDependencyInList = findFunctionDependencyInList(functionDependencyList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependency);
 	if(foundFunctionDependencyInList)
 	{
-		cout << "findFunctionDependencyInList" << endl;
-		NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
-		bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
-		if(!foundFunctionDependencyInParent)
+		//cout << "findFunctionDependencyInList" << endl;
+		if(hasParent)
 		{
-			cout << "!foundFunctionDependencyInParent" << endl;
-			parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+			//cout << "findFunctionDependencyInList" << endl;
+			NLCclassDefinitionFunctionDependency * functionDependenciesInParentTemp = NULL;
+			bool foundFunctionDependencyInParent = findFunctionDependencyInParent(parentFunctionDependency, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
+			if(!foundFunctionDependencyInParent)
+			{
+				//cout << "!foundFunctionDependencyInParent" << endl;
+				parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+			}
+			else
+			{
+				//cout << "foundFunctionDependencyInParent" << endl;
+				//duplicate function declarations will be ignored
+				duplicateFunctionDeclarationDetected = true;
+			}
 		}
-		else
+		if(!isReference)
 		{
-			cout << "foundFunctionDependencyInParent" << endl;
-			//duplicate function declarations will be ignored
-			duplicateFunctionDeclarationDetected = true;
+			functionDependency->isReference = false;	//upgrade isReference value (!isReference takes priority)
 		}
 	}
 	else
 	{
-		cout << "!findFunctionDependencyInList" << endl;
+		//cout << "!findFunctionDependencyInList" << endl;
 		functionDependency = new NLCclassDefinitionFunctionDependency();
 		functionDependency->functionName = functionName;
 		functionDependency->functionOwnerName = functionOwnerName;
 		functionDependency->functionObjectName = functionObjectName;
 		functionDependency->hasFunctionOwnerClass = hasFunctionOwnerClass;
 		functionDependency->hasFunctionObjectClass = hasFunctionObjectClass;
-		parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+		functionDependency->isReference = isReference;	
+		if(hasParent)
+		{
+			parentFunctionDependency->functionDependencyList.push_back(functionDependency);
+		}
 		functionDependencyList->push_back(functionDependency);
 	}
 	#endif
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
-	if(!duplicateFunctionDeclarationDetected)
+	if(!foundFunctionDependencyInList)
 	{
 	#endif
 		//cout << "functionOwnerClassDefinitionName = " << functionOwnerClassDefinitionName << endl;
@@ -525,8 +516,6 @@ void createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * 
 		functionClassDefinition->isActionOrConditionInstanceNotClass = true;
 		//cout << "functionOwnerClassDefinition->isActionOrConditionInstanceNotClass" << endl;
 
-
-
 		functionOwnerClassDefinition->functionList.push_back(functionClassDefinition);
 
 		NLCitem * classDeclarationFunctionItem = new NLCitem(functionName, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_FUNCTION);
@@ -559,6 +548,8 @@ void createNewClassDefinitionFunctionDeclaration(vector<NLCclassDefinition *> * 
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_IGNORE_DUPLICATE_FUNCTION_DELCARATIONS
 	}
 	#endif
+	
+	return functionDependency;
 }
 
 bool generateClassHeirarchyValidClassChecks(GIAentityNode* entityNode)

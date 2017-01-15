@@ -26,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1k13a 18-October-2014
+ * Project Version: 1k13b 18-October-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -61,6 +61,46 @@ NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContaine
 }
 #endif
 
+NLCclassDefinitionFunctionDependency * createFunctionDependencyForNewFunctionDefinition(string NLCfunctionName, vector<NLCclassDefinition *> * classDefinitionList, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList, int functionIndex)
+{
+	NLCclassDefinitionFunctionDependency * functionDependency = NULL;
+	 
+	string functionName = "";
+	string functionOwnerName = "";
+	string functionObjectName = "";
+	bool hasFunctionOwnerClass = false;
+	bool hasFunctionObjectClass = false;
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);	//gets "fight" from "dog::fight"
+		
+	#ifdef NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS
+	string functionClassDefinitionName = functionName + NLC_CLASS_DEFINITIONS_CREATE_FUNCTION_DECLARATIONS_FOR_NEW_FUNCTION_DEFINITIONS_CLASS_DEFINITION_HIDDEN_NAME_APPEND;
+	string functionOwnerClassDefinitionName = "";
+	bool passNewFunctionDefinitionChecks = true;
+	if(hasFunctionOwnerClass)
+	{
+		functionOwnerClassDefinitionName = generateClassName(functionOwnerName);
+	}
+	else
+	{
+		#ifdef NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT
+		functionOwnerClassDefinitionName = generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
+		#else
+		passNewFunctionDefinitionChecks = false;
+		#endif
+	}
+	if(passNewFunctionDefinitionChecks)
+	{	
+		cout << "createNewClassDefinitionFunctionDeclaration (!isReference): functionName  = " << functionName << endl;
+		NLCclassDefinitionFunctionDependency * parentFunctionDependencyTemp = NULL;
+		functionDependency = createNewClassDefinitionFunctionDeclaration(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, false, parentFunctionDependencyTemp, functionDependencyList, false);
+	}
+	#endif
+	
+	functionDependency->functionNameListIndex = functionIndex;
+	
+	return functionDependency;
+}
+		
 bool translateNetwork(NLCcodeblock * firstCodeBlockInTree, vector<NLCclassDefinition *> * classDefinitionList, vector<GIAentityNode*> * entityNodesActiveListComplete, int maxNumberSentences, string NLCfunctionName, NLCfunction * currentNLCfunctionInList, bool useNLCpreprocessor, NLCclassDefinitionFunctionDependency * functionDependency, vector<NLCclassDefinitionFunctionDependency*> * functionDependencyList)
 {
 	bool result = true;

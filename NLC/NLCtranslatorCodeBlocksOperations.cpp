@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18c 21-July-2014
+ * Project Version: 1g18d 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -396,11 +396,11 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 					conjunctionConditionConnectionFound = true;
 				}
 			}
-			//if(conditionEntity != primaryEntityInLogicalConditionConjunctionSubset) {//removed GIA 1g6j - 10 July 2014
+			//if(conditionEntity != primaryEntityInLogicalConditionConjunctionSubset) {//removed NLC 1g6j - 10 July 2014
 			if(!(conditionEntity2->NLCconjunctionCondition))
 			{//do not reparse same conjunction conditions - added NLC 1g7b - 11 July 2014
 				if(*foundLogicalConditionConjunction == NULL)
-				{//do not overwrite foundLogicalConditionConjunction; always take the first conjunction in subset as the one to parse next - added GIA 1g6j - 10 July 2014
+				{//do not overwrite foundLogicalConditionConjunction; always take the first conjunction in subset as the one to parse next - added NLC 1g6j - 10 July 2014
 					*foundLogicalConditionConjunction = conditionEntity2;
 				}
 			}
@@ -422,6 +422,7 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 		}
 	}
 
+	/*
 	//for debugging only:
 	if(!conjunctionConditionConnectionFound)
 	{
@@ -430,6 +431,7 @@ bool hasConjunctionConditionConnection(GIAentityNode * conditionEntity, GIAentit
 			cout << "hasConjunctionConditionConnection() error: child of primaryEntityInLogicalConditionConjunctionSubset has been declared as pertaining to a different logicalConditionConjunctionSubset - is this a shared context?" << endl;
 		}
 	}
+	*/
 
 	return conjunctionConditionConnectionFound;
 }

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18c 21-July-2014
+ * Project Version: 1g18d 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -208,6 +208,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 		if(!(entity->isConcept) && !(entity->isAction) && !(entity->isSubstanceQuality) && !(entity->isSubstanceConcept) && !(entity->isCondition) && !(entity->isActionConcept))
 		{
 			#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+			#ifdef NLC_USE_PREPROCESSOR
 			bool validClassContents = true;
 			if((entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
 			{
@@ -215,6 +216,7 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 			}
 			if(validClassContents)
 			{
+			#endif
 			#endif		
 				//cout << "pass1: " << entity->entityName << endl;
 				if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
@@ -282,7 +284,9 @@ bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock ** currentCodeB
 					}
 				}
 			#ifdef NLC_SUPPORT_CONDITION_LOGICAL_OPERATIONS
+			#ifdef NLC_USE_PREPROCESSOR
 			}
+			#endif
 			#endif
 		}
 	}
@@ -543,8 +547,10 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 							{
 								previousCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 							}
+							#ifdef NLC_USE_PREPROCESSOR
 							previousCodeBlockInTree = *currentCodeBlockInTree;
-								
+							#endif
+							
 							//cout << "logicalConditionOperationObject = " << logicalConditionOperationObject->entityName << endl;
 							addNewLogicalCondition(currentCodeBlockInTree, logicalConditionOperationObject, sentenceIndex, logicalOperation, &logicalConditionConjunctionIndex, logicalConditionConjunctionArray, logicalConditionOperationObject);
 
@@ -576,7 +582,17 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								{
 									currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
 								}
-								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, logicalOperation, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax, currentLogicalConditionLevel, currentLogicalConditionCase[currentLogicalConditionLevel], elseIfDetected);
+								
+								#ifndef NLC_USE_PREPROCESSOR
+								bool elseIfDetected = false;
+								#endif
+								int logicalOperation2 = logicalOperation;
+								if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
+								{
+									logicalOperation2 = NLC_CONDITION_LOGICAL_OPERATIONS_IF;
+								}
+								*currentCodeBlockInTree = createCodeBlockLogicalConditionConjunctionOfBools(*currentCodeBlockInTree, logicalOperation2, logicalConditionConjunctionArray, logicalConditionConjunctionIndexMax, currentLogicalConditionLevel, currentLogicalConditionCase[currentLogicalConditionLevel], elseIfDetected);
+								
 								if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
 								{
 									*currentCodeBlockInTree = createCodeBlockSetBoolVar(*currentCodeBlockInTree, whileLogicalConditionConjunctionBooleanName, true);
@@ -667,7 +683,7 @@ bool generateCodeBlocksPart2logicalConditions(NLCcodeblock ** currentCodeBlockIn
 								{
 									if((logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_IF) && !elseIfDetected && !elseDetected)
 									{
-										cout << "codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray " << currentLogicalConditionLevel << "is being defined" << endl;
+										//cout << "codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray " << currentLogicalConditionLevel << "is being defined" << endl;
 										codeBlockAtPreviousLogicalConditionBaseStartOfIfStatementLevelArray[currentLogicalConditionLevel] = previousCodeBlockInTreeAtBaseLevel;
 									}
 								

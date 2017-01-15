@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2014 Baxter AI (baxterai.com)
  * Project: Natural Language Programming Interface (compiler)
- * Project Version: 1g18c 21-July-2014
+ * Project Version: 1g18d 21-July-2014
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -815,7 +815,7 @@ NLCcodeblock * createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock * 
 		}
 	}
 	else if(logicalOperation == NLC_CONDITION_LOGICAL_OPERATIONS_WHILE)
-	{
+	{//not currently used
 		codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
 	}
 	else

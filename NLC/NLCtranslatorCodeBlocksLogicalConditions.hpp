@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCtranslatorCodeBlocksLogicalConditions.h
+ * File Name: NLCtranslatorCodeBlocksLogicalConditions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,18 +35,18 @@
 #ifndef HEADER_NLC_TRANSLATOR_CODEBLOCKS_LOGICAL_CONDITIONS
 #define HEADER_NLC_TRANSLATOR_CODEBLOCKS_LOGICAL_CONDITIONS
 
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-#include "NLCglobalDefs.h"
-#include "NLCcodeBlockClass.h"
-#include "NLCclassDefinitionClass.h"
+#include "GIAentityNodeClass.hpp"
+#include "GIAentityConnectionClass.hpp"
+#include "NLCglobalDefs.hpp"
+#include "NLCcodeBlockClass.hpp"
+#include "NLCclassDefinitionClass.hpp"
 //#ifdef NLC_PREPROCESSOR
-#include "NLCpreprocessorSentenceClass.h"
-#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"
-#include "NLCtranslatorCodeBlocksOperations.h"
-#include "GIAtranslatorOperations.h"	//required for getPrimaryNetworkIndexNodeDefiningInstance{}
-#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
-#include "NLCpreprocessorMath.h"	//required for findCharacterAtIndexOrAfterSpace{}
+#include "NLCpreprocessorSentenceClass.hpp"
+#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.hpp"
+#include "NLCtranslatorCodeBlocksOperations.hpp"
+#include "GIAtranslatorOperations.hpp"	//required for getPrimaryNetworkIndexNodeDefiningInstance{}
+#include "NLCprintDefs.hpp"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#include "NLCpreprocessorMath.hpp"	//required for findCharacterAtIndexOrAfterSpace{}
 //#endif
 
 

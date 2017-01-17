@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCprintCodeBlocksFunctions.h
+ * File Name: NLCprintCodeBlocksFunctions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,9 +35,9 @@
 #ifndef HEADER_NLC_PRINT_CODEBLOCKS_FUNCTIONS
 #define HEADER_NLC_PRINT_CODEBLOCKS_FUNCTIONS
 
-#include "NLCglobalDefs.h"
-#include "NLCitemClass.h"
-#include "NLCprintDefs.h"
+#include "NLCglobalDefs.hpp"
+#include "NLCitemClass.hpp"
+#include "NLCprintDefs.hpp"
 
 
 class NLCprintCodeBlocksFunctionsClass

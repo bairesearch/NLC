@@ -26,13 +26,13 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
-#include "NLCpreprocessorMath.h"
+#include "NLCpreprocessorMath.hpp"
 
 #ifdef NLC_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH

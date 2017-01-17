@@ -26,13 +26,13 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
-#include "NLCprintClassDefinitions.h"
+#include "NLCprintClassDefinitions.hpp"
 
 
 /*
@@ -723,9 +723,9 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 						string printedClassDefinitionSourceFileName = this->generateCodeClassDefinitionSourceFileName(classDefinition->name);		//eg NLCgeneratedmoveClass.cpp
 
 						string printedClassDefinitionTextCPPheader = "";
-						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + this->generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);		//eg #include "NLCgeneratedmoveClass.hpp"
+						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + this->generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);		//eg #include "NLCgeneratedmoveClass.hpppp"
 						#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
-						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + this->generateCodeHashIncludeReferenceLibrary(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME, progLang);	//eg #include "NLClibrary.hpp"
+						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + this->generateCodeHashIncludeReferenceLibrary(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_LIBRARY_HEADER_NAME, progLang);	//eg #include "NLClibrary.hpppp"
 						#endif
 						printedClassDefinitionTextCPPheader = printedClassDefinitionTextCPPheader + CHAR_NEWLINE;
 						printedClassDefinitionSourceText = printedClassDefinitionTextCPPheader + printedClassDefinitionSourceText;
@@ -778,7 +778,7 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 		if(classDefinition->printed)
 		{
 			string printedClassDefinitionHeaderFileName = this->generateCodeClassDefinitionHeaderFileName(classDefinition->name);
-			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + this->generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);	//eg #include "NLCgeneratedmoveClass.hpp"
+			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + this->generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);	//eg #include "NLCgeneratedmoveClass.hpppp"
 		}
 	}
 	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + CHAR_NEWLINE;

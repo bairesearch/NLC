@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCpreprocessor.h
+ * File Name: NLCpreprocessor.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,13 +35,13 @@
 #ifndef HEADER_NLC_PREPROCESSOR
 #define HEADER_NLC_PREPROCESSOR
 
-#include "NLCglobalDefs.h"
-#include "NLCpreprocessorSentenceClass.h"
-#include "NLCpreprocessorMath.h"
-#include "NLCpreprocessorMathLogicalConditions.h"
-#include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
-#include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-#include "GIAlrp.h"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_TRANSLATOR_UNIQUE_CONCATENATION_TYPES_QUOTES_DELIMITER
+#include "NLCglobalDefs.hpp"
+#include "NLCpreprocessorSentenceClass.hpp"
+#include "NLCpreprocessorMath.hpp"
+#include "NLCpreprocessorMathLogicalConditions.hpp"
+#include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
+#include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
+#include "GIAlrp.hpp"	//requied for isIntrawordPunctuationMark, nlpQuotationMarkCharacterArray/GIA_TRANSLATOR_UNIQUE_CONCATENATION_TYPES_QUOTES_DELIMITER
 
 
 #ifdef NLC_PREPROCESSOR

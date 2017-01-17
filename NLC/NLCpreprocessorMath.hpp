@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCpreprocessorMath.h
+ * File Name: NLCpreprocessorMath.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,12 +35,12 @@
 #ifndef HEADER_NLC_PREPROCESSOR_MATH
 #define HEADER_NLC_PREPROCESSOR_MATH
 
-#include "NLCglobalDefs.h"
-#include "NLCpreprocessorSentenceClass.h"
-#include "NLCpreprocessorMathLogicalConditions.h"
-#include "NLCprintDefs.h" //required for progLangOpenParameterSpace
-#include "SHAREDvars.h"	//required for convertStringToLowerCase/isWhiteSpace
-#include "GIAentityNodeClass.h" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
+#include "NLCglobalDefs.hpp"
+#include "NLCpreprocessorSentenceClass.hpp"
+#include "NLCpreprocessorMathLogicalConditions.hpp"
+#include "NLCprintDefs.hpp" //required for progLangOpenParameterSpace
+#include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
+#include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
 
 #ifdef NLC_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH

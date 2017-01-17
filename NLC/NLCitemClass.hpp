@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCitemClass.h
+ * File Name: NLCitemClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,11 +35,11 @@
 #ifndef HEADER_NLC_ITEM_CLASS
 #define HEADER_NLC_ITEM_CLASS
 
-#include "NLCglobalDefs.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-#include "GIAtranslatorOperations.h"
-#include "SHAREDvars.h"	//required for convertLongToString()
+#include "NLCglobalDefs.hpp"
+#include "GIAentityNodeClass.hpp"
+#include "GIAentityConnectionClass.hpp"
+#include "GIAtranslatorOperations.hpp"
+#include "SHAREDvars.hpp"	//required for convertLongToString()
 
 #define NLC_ITEM_INSTANCE_ID_UNDEFINED (INT_DEFAULT_VALUE)
 

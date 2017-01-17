@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCpreprocessorSentenceClass.h
+ * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,8 +35,8 @@
 #ifndef HEADER_NLC_PREPROCESSOR_SENTENCE_CLASS
 #define HEADER_NLC_PREPROCESSOR_SENTENCE_CLASS
 
-#include "NLCglobalDefs.h"
-#include "SHAREDvars.h"
+#include "NLCglobalDefs.hpp"
+#include "SHAREDvars.hpp"
 
 class NLCvariable
 {
@@ -123,7 +123,7 @@ class NLCpreprocessorSentenceClassClass
 	public: bool isStringValidVariableName(string phrase, const bool preprocessor);
 	public: bool isStringNumberPreprocessorMath(string phrase);
 	public: bool isStringNumberOrFractional(string phrase);
-		public: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
+		private: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
 	public: bool isStringAliasFileName(const string phrase);
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 	public: bool isStringIllegalTargetSourceCharacter(const string phrase);

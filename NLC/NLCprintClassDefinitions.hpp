@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCprintClassDefinitions.h
+ * File Name: NLCprintClassDefinitions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,9 +35,9 @@
 #ifndef HEADER_NLC_PRINT_CLASSDEFINITIONS
 #define HEADER_NLC_PRINT_CLASSDEFINITIONS
 
-#include "NLCclassDefinitionClass.h"
-#include "NLCpreprocessorSentenceClass.h"	//required for NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
-#include "NLCprintDefs.h"
+#include "NLCclassDefinitionClass.hpp"
+#include "NLCpreprocessorSentenceClass.hpp"	//required for NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
+#include "NLCprintDefs.hpp"
 
 class NLCprintClassDefinitionsClass
 {

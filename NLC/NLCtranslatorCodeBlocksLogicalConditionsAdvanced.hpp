@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h
+ * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,16 +35,16 @@
 #ifndef HEADER_NLC_TRANSLATOR_CODEBLOCKS_LOGICAL_CONDITIONS_ADVANCED
 #define HEADER_NLC_TRANSLATOR_CODEBLOCKS_LOGICAL_CONDITIONS_ADVANCED
 
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-#include "NLCglobalDefs.h"
-#include "NLCcodeBlockClass.h"
-#include "NLCclassDefinitionClass.h"
+#include "GIAentityNodeClass.hpp"
+#include "GIAentityConnectionClass.hpp"
+#include "NLCglobalDefs.hpp"
+#include "NLCcodeBlockClass.hpp"
+#include "NLCclassDefinitionClass.hpp"
 #ifdef NLC_PREPROCESSOR
-#include "NLCpreprocessor.h"	//required for NLCsentence
-#include "NLCtranslatorCodeBlocksOperations.h"
-#include "GIAquery.h"	//required for testReferencedEntityNodeForExactNameMatch2/traceEntityNode
-#include "GIAtranslatorDefs.h"
+#include "NLCpreprocessor.hpp"	//required for NLCsentence
+#include "NLCtranslatorCodeBlocksOperations.hpp"
+#include "GIAquery.hpp"	//required for testReferencedEntityNodeForExactNameMatch2/traceEntityNode
+#include "GIAtranslatorDefs.hpp"
 #endif
 
 

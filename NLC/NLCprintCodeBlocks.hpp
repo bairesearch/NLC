@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCprintCodeBlocks.h
+ * File Name: NLCprintCodeBlocks.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,11 +35,11 @@
 #ifndef HEADER_NLC_PRINT_CODEBLOCKS
 #define HEADER_NLC_PRINT_CODEBLOCKS
 
-#include "NLCcodeBlockClass.h"
-#include "NLCclassDefinitionClass.h"
-#include "NLCprintCodeBlocksFunctions.h"
-#include "NLCprintDefs.h"
-#include "GIAtranslatorDefs.h"	//required for ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND/ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_OR
+#include "NLCcodeBlockClass.hpp"
+#include "NLCclassDefinitionClass.hpp"
+#include "NLCprintCodeBlocksFunctions.hpp"
+#include "NLCprintDefs.hpp"
+#include "GIAtranslatorDefs.hpp"	//required for ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND/ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_OR
 
 class NLCprintCodeBlocksClass
 {

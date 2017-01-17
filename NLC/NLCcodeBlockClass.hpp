@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCcodeBlockClass.h
+ * File Name: NLCcodeBlockClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,14 +35,14 @@
 #ifndef HEADER_NLC_CODEBLOCK_CLASS
 #define HEADER_NLC_CODEBLOCK_CLASS
 
-#include "NLCglobalDefs.h"
-#include "NLCitemClass.h"
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
+#include "NLCglobalDefs.hpp"
+#include "NLCitemClass.hpp"
+#include "GIAentityNodeClass.hpp"
+#include "GIAentityConnectionClass.hpp"
 //#ifdef NLC_PREPROCESSOR
-#include "NLCpreprocessorSentenceClass.h"	//required for findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext()
-#include "NLCprintDefs.h"	//required for progLangArrayOpen/progLangArrayClose/NLC_ITEM_TYPE_PROPERTYCOUNT_VAR_APPENDITION/NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
-#include "GIAtranslatorOperations.h"
+#include "NLCpreprocessorSentenceClass.hpp"	//required for findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext()
+#include "NLCprintDefs.hpp"	//required for progLangArrayOpen/progLangArrayClose/NLC_ITEM_TYPE_PROPERTYCOUNT_VAR_APPENDITION/NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
+#include "GIAtranslatorOperations.hpp"
 //#endif
 
 #define NLC_CODEBLOCK_TYPE_UNDEFINED (-1)

@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCtranslator.h
+ * File Name: NLCtranslator.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,18 +35,18 @@
 #ifndef HEADER_NLC_TRANSLATOR
 #define HEADER_NLC_TRANSLATOR
 
-#include "GIAentityNodeClass.h"
-#include "GIAentityConnectionClass.h"
-#include "NLCglobalDefs.h"
-#include "NLCcodeBlockClass.h"
-#include "NLCclassDefinitionClass.h"
+#include "GIAentityNodeClass.hpp"
+#include "GIAentityConnectionClass.hpp"
+#include "NLCglobalDefs.hpp"
+#include "NLCcodeBlockClass.hpp"
+#include "NLCclassDefinitionClass.hpp"
 //#ifdef NLC_PREPROCESSOR
-#include "NLCpreprocessorSentenceClass.h"	//required for NLCfunction
-#include "NLCtranslatorCodeBlocks.h"
-#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.h"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced
-#include "NLCtranslatorClassDefinitions.h"
-#include "GIAtranslatorDefs.h"
-#include "NLCtranslatorCodeBlocksOperations.h"	//required for initialiseFunctionAliasClassList()
+#include "NLCpreprocessorSentenceClass.hpp"	//required for NLCfunction
+#include "NLCtranslatorCodeBlocks.hpp"
+#include "NLCtranslatorCodeBlocksLogicalConditionsAdvanced.hpp"	//required for tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced
+#include "NLCtranslatorClassDefinitions.hpp"
+#include "GIAtranslatorDefs.hpp"
+#include "NLCtranslatorCodeBlocksOperations.hpp"	//required for initialiseFunctionAliasClassList()
 //#endif
 
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED

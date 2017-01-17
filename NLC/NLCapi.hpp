@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCapi.h
+ * File Name: NLCapi.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,13 +35,13 @@
 #ifndef HEADER_NLC_API
 #define HEADER_NLC_API
 
-#include "NLCglobalDefs.h"
-#include "NLCclassDefinitionClass.h"
-#include "XMLparserClass.h"
-#include "NLCtranslatorClassDefinitions.h"
-#include "NLCprintClassDefinitions.h"
-#include "NLCprintDefs.h"
-#include "NLCprintCodeBlocksFunctions.h"
+#include "NLCglobalDefs.hpp"
+#include "NLCclassDefinitionClass.hpp"
+#include "XMLparserClass.hpp"
+#include "NLCtranslatorClassDefinitions.hpp"
+#include "NLCprintClassDefinitions.hpp"
+#include "NLCprintDefs.hpp"
+#include "NLCprintCodeBlocksFunctions.hpp"
 
 #define NET_XML_TAG_doxygen "doxygen"
 #define NET_XML_TAG_compounddef "compounddef"

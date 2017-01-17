@@ -23,10 +23,10 @@
 
 /*******************************************************************************
  *
- * File Name: NLCmain.h
+ * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -35,26 +35,26 @@
 #ifndef HEADER_NLC_MAIN
 #define HEADER_NLC_MAIN
 
-#include "NLCglobalDefs.h"
-#include "NLCcodeBlockClass.h"
-#include "NLCclassDefinitionClass.h"
-#include "NLCtranslator.h"
-#include "NLCprint.h"
-#include "NLCprintClassDefinitions.h"
-#include "NLCprintCodeBlocks.h"
-#include "NLCpreprocessor.h"
-#include "NLCtranslatorClassDefinitions.h"
-#include "NLCprintDefs.h"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, setProgLang
-#include "NLCapi.h"
-#include "NLCtranslatorCodeBlocksOperations.h"
-#include "GIAmain.h"
-#include "GIAdatabase.h"
-#include "GIAwordnet.h"
-#include "GIAsemanticParserDatabase.h"
-#include "GIAtranslatorOperations.h"
-#include "GIAtranslatorDefs.h"
-#include "XMLrulesClass.h"
-#include "SHAREDvars.h"
+#include "NLCglobalDefs.hpp"
+#include "NLCcodeBlockClass.hpp"
+#include "NLCclassDefinitionClass.hpp"
+#include "NLCtranslator.hpp"
+#include "NLCprint.hpp"
+#include "NLCprintClassDefinitions.hpp"
+#include "NLCprintCodeBlocks.hpp"
+#include "NLCpreprocessor.hpp"
+#include "NLCtranslatorClassDefinitions.hpp"
+#include "NLCprintDefs.hpp"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, setProgLang
+#include "NLCapi.hpp"
+#include "NLCtranslatorCodeBlocksOperations.hpp"
+#include "GIAmain.hpp"
+#include "GIAdatabase.hpp"
+#include "GIAwordnet.hpp"
+#include "GIAsemanticParserDatabase.hpp"
+#include "GIAtranslatorOperations.hpp"
+#include "GIAtranslatorDefs.hpp"
+#include "XMLrulesClass.hpp"
+#include "SHAREDvars.hpp"
 
 int main(const int argc, const char** argv);
 

@@ -26,13 +26,13 @@
  * File Name: NLCapi.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w3c 14-January-2017
+ * Project Version: 1w4a 17-January-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
-#include "NLCapi.h"
+#include "NLCapi.hpp"
 
 #ifdef NLC_API
 bool NLCapiClass::parseDoxygenClassXMLfile(const string APIclassName, const string APIsourceFolder, vector<NLCclassDefinition*>* classDefinitionList, int progLang)
@@ -104,7 +104,7 @@ bool NLCapiClass::parseDoxygenClassXMLfile(const string APIclassName, const stri
 					string APIwrapperSourceText = "";
 					string APIwrapperHeaderText = "";
 					#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS
-					APIwrapperSourceText = APIwrapperSourceText + NLCprintClassDefinitions.generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);	//eg #include "NLCgeneratedInterfaceXClass.hpp";
+					APIwrapperSourceText = APIwrapperSourceText + NLCprintClassDefinitions.generateCodeHashIncludeReference(printedClassDefinitionHeaderFileName, progLang);	//eg #include "NLCgeneratedInterfaceXClass.hpppp";
 					#endif
 
 					#ifdef NLC_DEBUG_API

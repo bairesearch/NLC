@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -389,101 +389,6 @@ bool NLCprintCodeBlocksClass::printCodeBlocks(NLCcodeblock* firstCodeBlockInLeve
 			string localListDeclarationText = NLCprintDefs.generateCodeEntityListDefinitionTypeText(param1->className, progLang) + NLCprintDefs.generateLocalListName(param1) + progLangEndLine[progLang];	//vector<param1Class*> param1instanceList;
 			NLCprintDefs.printLine(localListDeclarationText, level, &printedCodeBlocksSourceText);
 		}
-		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS" << endl;
-			#endif
-			string codeBlockText =  progLangIf[progLang] + progLangOpenParameterSpace[progLang] + this->generateLogicalConjunctionOfBoolsText(&(currentCodeBlockInLevel->parameters), progLang) + progLangCloseParameterSpace[progLang];
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS" << endl;
-			#endif
-			string codeBlockText = progLangElseIf[progLang] + progLangOpenParameterSpace[progLang] + this->generateLogicalConjunctionOfBoolsText(&(currentCodeBlockInLevel->parameters), progLang) + progLangCloseParameterSpace[progLang];
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS" << endl;
-			#endif
-			string codeBlockText = progLangWhile[progLang] + progLangOpenParameterSpace[progLang] + this->generateLogicalConjunctionOfBoolsText(&(currentCodeBlockInLevel->parameters), progLang) + progLangCloseParameterSpace[progLang];
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_TRUE)
-		{//CHECK THIS: not used
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_TRUE" << endl;
-			#endif
-			string arraySizeString = SHAREDvars.convertIntToString(NLC_MAXIMUM_NUMBER_OF_CONJUNCTIONS_IN_SENTENCE);	//make this dynamic
-			string codeBlockText = progLangBoolean[progLang] + param1->name + progLangArrayOpen[progLang] + arraySizeString + progLangArrayClose[progLang] + progLangEquals[progLang] + progLangArrayInitialisationOpen[progLang] + progLangTrue[progLang] + progLangArrayInitialisationClose[progLang] + progLangEndLine[progLang];
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_FALSE)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_FALSE" << endl;
-			#endif
-			string arraySizeString = SHAREDvars.convertIntToString(NLC_MAXIMUM_NUMBER_OF_CONJUNCTIONS_IN_SENTENCE);	//make this dynamic
-			string codeBlockText = progLangBoolean[progLang] + param1->name + progLangArrayOpen[progLang] + arraySizeString + progLangArrayClose[progLang] + progLangEquals[progLang] + progLangArrayInitialisationOpen[progLang] + progLangFalse[progLang] + progLangArrayInitialisationClose[progLang] + progLangEndLine[progLang];
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-		}
-		#else
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY" << endl;
-			#endif
-
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + NLCprintDefs.generatePropertyListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//if(!(context1->param1PropertyList.empty())){
-
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION" << endl;
-			#endif
-
-			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-			string codeBlockText = progLangIf[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + NLCprintDefs.generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangHasCondition[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//if(!(context1->param1param2ConditionList.empty())){
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY" << endl;
-			#endif
-
-			string codeBlockText = progLangWhile[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + NLCprintDefs.generatePropertyListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangHasEntity[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];		//while(!(context1->param1PropertyList.empty())){
-
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION)
-		{
-			#ifdef NLC_DEBUG
-			cout << "printCodeBlocks: NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION" << endl;
-			#endif
-
-			NLCitem* param2 = currentCodeBlockInLevel->parameters.at(1);
-
-			string codeBlockText = progLangWhile[progLang] + progLangOpenParameterSpace[progLang] + negativeModifierString + progLangOpenParameterSpace[progLang] + contextParam1 + NLCprintDefs.generateConditionListName(param1->className, param2->className) + progLangObjectReferenceDelimiter2[progLang] + progLangHasCondition[progLang] + progLangCloseParameterSpace[progLang] + progLangCloseParameterSpace[progLang];	//while(!(context1->param1param2ConditionList.empty())){
-			NLCprintDefs.printLine(codeBlockText, level, &printedCodeBlocksSourceText);
-			NLCprintDefs.printLine(progLangOpenBlock[progLang], level, &printedCodeBlocksSourceText);
-		}
-		#endif
-		#endif
 		else if(currentCodeBlockInLevel->codeBlockType == NLC_CODEBLOCK_TYPE_ELSE)
 		{
 			#ifdef NLC_DEBUG
@@ -1895,32 +1800,6 @@ string NLCprintCodeBlocksClass::generateFunctionOwnerContext(vector<NLCitem*>* p
 	return functionOwnerContext;
 }
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-string NLCprintCodeBlocksClass::generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, const int progLang)
-{
-	string logicalConjunctionOfBoolsText = "";
-	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
-	{
-		NLCitem* currentItem = *parametersIterator;
-		if(currentItem->conjunctionType == ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_AND)
-		{
-			logicalConjunctionOfBoolsText = logicalConjunctionOfBoolsText + STRING_SPACE + progLangAnd[progLang] + STRING_SPACE;
-		}
-		else if(currentItem->conjunctionType == ENTITY_COORDINATINGCONJUNCTION_ARRAY_INDEX_OR)
-		{
-			logicalConjunctionOfBoolsText = logicalConjunctionOfBoolsText + STRING_SPACE + progLangOr[progLang] + STRING_SPACE;
-		}
-
-		if(currentItem->negative)
-		{
-			logicalConjunctionOfBoolsText = logicalConjunctionOfBoolsText + progLangNot[progLang];
-		}
-
-		logicalConjunctionOfBoolsText = logicalConjunctionOfBoolsText + currentItem->name;	//should create a new currentItem variable called variableName for non-objects
-	}
-	return logicalConjunctionOfBoolsText;
-}
-#endif
 
 
 #ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN

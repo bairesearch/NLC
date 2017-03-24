@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1040,39 +1040,8 @@
 
 #define NLC_QUANTITIES	//1f3a
 
-#ifndef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	#define NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED		//1f1a+ if statement support	//not currently maintained (with introduction of NLC preprocessor logical condition detection)
-#endif
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS
-		#define NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS
-	#endif
-
-	#define NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME "logicalCondition"	//eg logicalCondition
-	#define NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL "L"		//eg logicalConditionL0		//L="level"
-	#define NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE "C"		//eg logicalConditionL0C0	//C="case"
-
-	#define NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE	//this is a more restricted implementation but is faster. It still requires modifications of GIA (it requires entityIndex information to be stored in GIAdatabase.cpp or GIAxmlConversion.cpp)
-	#define NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED	//1gXy+ logical if/while/for support + conjunction support
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-		#define NLC_MAXIMUM_NUMBER_OF_CONJUNCTIONS_IN_SENTENCE (100)
-		//#assert defined NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_CONDITION_INTO_A_PROPERTY_CONDITION
-	#else
-		#define NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_BASIC
-	#endif
-
-	#ifdef NLC_PREPROCESSOR
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION "do"
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT "this"
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSE "If this is done,"	//replaces "Else"
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSEIF "If"		//replaces "Else if"
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND_ELSE " " NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION " " NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT "."	//" do this."	//appending to "Else" statments without a command (in which it is assumed the following indented lines constitute the command)
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND "," NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND_ELSE	//", do this."	//appending to "If" statments without a command (in which it is assumed the following indented lines constitute the command)
-		#define NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	#endif
-#endif
 #define NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES (3)
 static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES] = {"each", "all", "every"};	//should be dynamically defined in NLCrules.xml (should sync with GIArules.xml redistributeStanfordRelationsSetPluralBasedOnPredeterminers)
 

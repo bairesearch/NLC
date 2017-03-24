@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -106,9 +106,6 @@ public:
 	string instanceName2;	//used for NLC_ITEM_TYPE_FUNCTION_ARGUMENT_CONDITION/NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST only
 
 	bool negative;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	int conjunctionType;
-	#endif
 
 	string name;	//added 1h1d 24-July-2014 for NLC_ITEM_TYPE_VARIABLE
 	string genericObjectName;	//added 1i7a	//NB name could be co-opted for this purpose (ie instead of using genericObjectName)

@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -82,9 +82,6 @@ class NLCtranslatorCodeBlocksOperationsClass
 						#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 						private: bool createCodeBlockForGivenAlias(NLCcodeblock** currentCodeBlockInTree, const GIAentityNode* entity, GIAentityNode* definitionRelationshipEntity, const int sentenceIndex, const NLCgenerateContextBlocksVariables* generateContextBlocksVariables, constEffective GIAentityNode** objectEntity, bool* generateContextForObject);
 						#endif
-						#endif
-						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-						private: bool hasConjunctionConditionConnection(GIAentityNode* conditionRelationshipEntity, const GIAentityNode* primaryEntityInLogicalConditionConjunctionSubset, const int logicalConditionConjunctionIndex, constEffective GIAentityNode** foundLogicalConditionConjunction);
 						#endif
 						#ifdef NLC_TRANSLATOR_GENERATE_CONTEXT_BLOCKS_PARSE_PARENT_OF_TARGET_AND_MULTIPLE_DEFINITE_ENTITIES
 						private: string generateCandidateObjectName(const GIAentityNode* objectEntity);
@@ -154,10 +151,6 @@ class NLCtranslatorCodeBlocksOperationsClass
 
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_ADVANCED_GENERATE_CONTEXT_FOR_EACH_CHILD_GET_PARENT_ORIGINAL_IMPLEMENTATION
 	private: void addIntermediaryImplicitlyDeclaredEntityToLocalList(NLCcodeblock** currentCodeBlockInTree, const GIAentityNode* childEntity, const int sentenceIndex);
-	#endif
-
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	private: bool checkConditionLogicalConditionAdvancedTests(const GIAentityNode* conditionRelationshipEntity);
 	#endif
 
 	private: bool checkNumerosity(const GIAentityNode* entity);

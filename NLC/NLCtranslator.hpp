@@ -25,7 +25,7 @@
  * File Name: NLCtranslator.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -48,20 +48,6 @@
 #include "NLCtranslatorCodeBlocksOperations.hpp"	//required for initialiseFunctionAliasClassList()
 //#endif
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-class NLClogicalConditionConjunctionContainer
-{
-public:
-
-	NLClogicalConditionConjunctionContainer(void);
-	NLClogicalConditionConjunctionContainer(GIAentityNode* entity);
-	~NLClogicalConditionConjunctionContainer(void);
-
-	GIAentityNode* entity;
-	vector<NLClogicalConditionConjunctionContainer*> nextConditionConjunctions;
-	int optimumPathIndex;
-};
-#endif
 
 class NLCtranslatorClass
 {
@@ -81,16 +67,7 @@ class NLCtranslatorClass
 	#endif
 	#endif
 	*/
-		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-		#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-		private: bool removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences);
-			private: int addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode* conditionRelationshipEntity, NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, const int sentenceIndex);
-			private: bool traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, const GIAentityNode* logicalConditionConjunctionToTest);
-		#endif
-		private: bool identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences);
-		#else
 		private: bool disableAllForLoopPredeterminers(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences);
-		#endif
 	/*
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 	bool addFunctionDependenciesWithoutOwners(vector<GIAentityNode*>* entityNodesActiveListComplete, int maxNumberSentences, NLCclassDefinitionFunctionDependency* parentFunctionDependencies, vector<NLCclassDefinitionFunctionDependency*>* functionDependencyList);

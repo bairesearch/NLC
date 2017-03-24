@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -213,17 +213,6 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 			currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksCreateContextBlock(currentCodeBlockInTree);
 			#endif
 
-			#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-			//Part 2 - logical conditions (eg If the house is red, ride the boat) - added 1f1a;
-			#ifdef NLC_DEBUG
-			cout << "generateCodeBlocksPart2logicalConditions:" << endl;
-			#endif
-			if(!NLCtranslatorCodeBlocksLogicalConditionsAdvanced.generateCodeBlocksPart2logicalConditions(&currentCodeBlockInTree, entityNodesActiveListSentence, sentenceIndex, NLCfunctionName, currentNLCsentenceInList))
-			{
-				result = false;
-			}
-			#endif
-
 			//Part 3; subject object connections (object initialisations; actions, properties, conditions, redefinitions) (eg Tom rides the boat, Tom has a boat, Tom is near a boat, The dog is an Alsation)
 			#ifdef NLC_DEBUG
 			cout << "generateCodeBlocksPart3subjectObjectConnections:" << endl;
@@ -252,11 +241,7 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 		{
 			if(currentNLCsentenceInList->next != NULL)
 			{
-				#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-				NLCpreprocessorSentence* nextNLCfullSentenceInList = currentNLCsentenceInList->next;
-				bool currentSentenceContainsLogicalCondition = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCurrentSentenceContainsLogicalCondition();
-				int currentLogicalConditionLevel = NLCcodeBlockClass.getCurrentLogicalConditionLevel();
-				#elif defined NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				NLCpreprocessorSentence* nextNLCsentenceInList = currentNLCsentenceInList->next;
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				cout << "\tcurrentNLCsentenceInList->mathTextNLPparsablePhraseTotal = " << currentNLCsentenceInList->mathTextNLPparsablePhraseTotal << endl;
@@ -269,7 +254,7 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 				bool currentSentenceContainsLogicalCondition = currentNLCsentenceInList->hasLogicalConditionOperator;
 				int currentLogicalConditionLevel = currentNLCsentenceInList->indentation;
 				#else
-				cout << "preprocessor error: NLC_PREPROCESSOR && !NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE" << endl;
+				cout << "preprocessor error: !NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE" << endl;
 				#endif
 
 				if(nextNLCsentenceInList->indentation == (currentNLCsentenceInList->indentation + 1))
@@ -309,9 +294,6 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 					else
 					{
 						currentCodeBlockInTree = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCodeBlockAtPreviousLogicalConditionBaseLevelArray(nextNLCsentenceInList->indentation);
-						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-						NLCcodeBlockClass.setCurrentLogicalConditionLevel(nextNLCsentenceInList->indentation);
-						#endif
 					}
 				}
 				else
@@ -327,10 +309,6 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 				//cout << "next sentenceIndex = " << sentenceIndex << endl;
 				#endif
 			}
-						
-			#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-			NLCtranslatorCodeBlocksLogicalConditionsAdvanced.setCurrentSentenceContainsLogicalCondition(false);
-			#endif
 		}
 		else
 		{
@@ -401,27 +379,7 @@ bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntity(
 {
 	bool result = true;
 
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_PREPROCESSOR
-	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	NLCcodeblock* firstCodeBlockAtStartOfElseStatement = *currentCodeBlockInTree;
-	NLCcodeblock* firstCodeBlockAtStartOfIfStatement = NULL;
-	NLCcodeblock* previousCodeBlockInTree = NULL;
-	NLCtranslatorCodeBlocksLogicalConditionsAdvanced.setCurrentCodeBlockInTreeToStartOfIfStatement(currentCodeBlockInTree, &firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected);
-	previousCodeBlockInTree = *currentCodeBlockInTree;
-	#endif
-	#endif
-	#endif
-
 	*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksDeclareNewLocalListVariableIfNecessary(*currentCodeBlockInTree, entity);
-
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_PREPROCESSOR
-	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-	NLCtranslatorCodeBlocksLogicalConditionsAdvanced.restoreCurrentCodeBlockInTreeToStartOfElseStatement(currentCodeBlockInTree, firstCodeBlockAtStartOfIfStatement, firstCodeBlockAtStartOfElseStatement, currentNLCsentenceInList->elseIfDetected, currentNLCsentenceInList->elseDetected, &previousCodeBlockInTree);
-	#endif
-	#endif
-	#endif
 
 	#ifdef NLC_DEBUG
 	cout << "declareLocalPropertyListsForIndefiniteEntities{}: createCodeBlocksDeclareNewLocalListVariable for " << entity->entityName << endl;
@@ -434,14 +392,6 @@ bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntitie
 {
 	bool validClassContents = true;
 
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_PREPROCESSOR
-	if((entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entity->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
-	{
-		validClassContents = false;
-	}
-	#endif
-	#endif
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 	if(entityNode->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
 	{

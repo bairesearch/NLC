@@ -25,15 +25,14 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCtranslatorClassDefinitions.hpp"
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-#endif
+
 #ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 #endif
 
@@ -873,25 +872,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyValidClassChecks(
 {
 	bool validClass = true;
 
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	if(entityNode->NLClogicalConditionOperation)
-	{
-		validClass = false;
-	}
-	#ifdef NLC_PREPROCESSOR
-	if((entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION) || (entityNode->entityName == NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT))
-	{
-		validClass = false;
-	}
-	#endif
-	#endif
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	bool conjunctionConditionFound = SHAREDvars.textInTextArray(entityNode->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES);
-	if(conjunctionConditionFound)
-	{
-		validClass = false;
-	}
-	#endif
 	#ifdef NLC_PREPROCESSOR_MATH
 	#ifdef NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
 	if(entityNode->entityName == REFERENCE_TYPE_QUESTION_COMPARISON_VARIABLE)

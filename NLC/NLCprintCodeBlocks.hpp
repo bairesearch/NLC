@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocks.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,9 +64,6 @@ class NLCprintCodeBlocksClass
 		private: void generateFunctionArgumentsBasedOnActionAndActionObjectVars(vector<NLCitem*>* parameters, string* functionArguments, int progLang, string* functionDeclarationOwnerName, string* functionDeclarationObjectName);
 		#endif
 		private: string generateFunctionOwnerContext(vector<NLCitem*>* parameters, const int progLang, string* functionOwnerName);
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	private: string generateLogicalConjunctionOfBoolsText(vector<NLCitem*>* parameters, const int progLang);
-	#endif
 	#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
 	private: string generateMainFunctionText(vector<NLCitem*>* parameters, const int progLang);
 	#endif

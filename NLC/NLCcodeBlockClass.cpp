@@ -25,7 +25,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -33,7 +33,6 @@
 
 #include "NLCcodeBlockClass.hpp"
 
-//#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED || NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 static int currentLogicalConditionLevel;
 int NLCcodeBlockClassClass::getCurrentLogicalConditionLevel()
 {
@@ -70,14 +69,7 @@ NLCcodeblock::~NLCcodeblock(void)
 NLCgenerateContextBlocksVariables::NLCgenerateContextBlocksVariables(void)
 {
 	logicalOperation = NLC_LOGICAL_CONDITION_OPERATIONS_FOR;
-	//#ifndef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	negative = BOOL_IRRELEVANT;
-	//#endif
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	logicalConditionConjunctionIndex = INT_DEFAULT_VALUE;
-	primaryEntityInLogicalConditionConjunctionSubset = NULL;
-	foundLogicalConditionConjunction = NULL;
-	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet = true;
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE_BASIC_GENERATE_CONTEXT_BLOCKS_IF_SAME_REFERENCE_SET
@@ -126,16 +118,6 @@ NLCgenerateContextBlocksVariables::~NLCgenerateContextBlocksVariables(void)
 {
 }
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-NLClogicalConditionConjunction::NLClogicalConditionConjunction(void)
-{
-	conjunctionType = INT_DEFAULT_VALUE;
-	negative = false;
-}
-NLClogicalConditionConjunction::~NLClogicalConditionConjunction(void)
-{
-}
-#endif
 
 
 //Resultant code: functionItem[context].functionItem[name](objectItem[context].objectItem[name]);	//NB functionItem[context] = action subject
@@ -1169,168 +1151,6 @@ bool NLCcodeBlockClassClass::checkDuplicateCondition(GIAentityNode* conditionRel
 }
 
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-
-NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* currentCodeBlockInTree, const int logicalOperation, const NLClogicalConditionConjunction* logicalConditionConjunctionArray, const int logicalConditionConjunctionIndexMax, const int logicalConditionLevel, const int logicalConditionCase, const bool elseIfDetected)
-{
-	#ifdef NLC_DEBUG
-	//cout << "logicalConditionConjunctionIndexMax = " << logicalConditionConjunctionIndexMax << endl;
-	#endif
-	for(int i=0; i<logicalConditionConjunctionIndexMax; i++)
-	{
-		string logicalConditionConjunctionBooleanName = this->generateLogicalConditionConjunctionBooleanName(logicalConditionLevel, logicalConditionCase, i, logicalOperation);
-		NLCitem* conditionItem = new NLCitem(logicalConditionConjunctionBooleanName, NLC_ITEM_TYPE_VARIABLE);
-		conditionItem->conjunctionType = logicalConditionConjunctionArray[i].conjunctionType;
-		conditionItem->negative = logicalConditionConjunctionArray[i].negative;
-		#ifdef NLC_DEBUG
-		//cout << "currentCodeBlockInTree->parameters.push_back(conditionItem)" << endl;
-		#endif
-		currentCodeBlockInTree->parameters.push_back(conditionItem);
-	}
-
-	int codeBlockType;
-	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-	{
-		if(elseIfDetected)
-		{
-			codeBlockType = NLC_CODEBLOCK_TYPE_ELSE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
-		}
-		else
-		{
-			codeBlockType = NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS;
-		}
-	}
-	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-	{//not currently used
-		codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS;
-	}
-	else
-	{
-		cout << "createCodeBlockLogicalConditionHasBools{} error: invalid logicalOperation: " << logicalOperation << endl;
-	}
-
-	return this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-string NLCcodeBlockClassClass::generateLogicalConditionConjunctionBooleanName(const int logicalConditionLevel, const int logicalConditionCase, const int logicalOperation)
-{
-	string logicalConditionConjunctionBooleanName = "";
-	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-	{
-		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + SHAREDvars.convertIntToString(logicalConditionLevel) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE) + SHAREDvars.convertIntToString(logicalConditionCase);
-	}
-	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-	{
-		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + SHAREDvars.convertIntToString(logicalConditionLevel);
-	}
-	else
-	{
-		cout << "generateLogicalConditionConjunctionBooleanName{} error: invalid logicalOperation: " << logicalOperation << endl;
-	}
-
-	return logicalConditionConjunctionBooleanName;
-}
-
-
-string NLCcodeBlockClassClass::generateLogicalConditionConjunctionBooleanName(const int logicalConditionLevel, const int logicalConditionCase, const int logicalConditionConjunctionIndex, const int logicalOperation)
-{
-	string logicalConditionConjunctionBooleanName = "";
-	if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-	{
-		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + SHAREDvars.convertIntToString(logicalConditionLevel) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_CASE) + SHAREDvars.convertIntToString(logicalConditionCase) + progLangArrayOpen[0] + SHAREDvars.convertIntToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
-	}
-	else if(logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_WHILE)
-	{
-		logicalConditionConjunctionBooleanName = string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME) + string(NLC_LOGICAL_CONDITION_CONJUNCTION_BOOLEAN_VARIABLE_NAME_LEVEL) + SHAREDvars.convertIntToString(logicalConditionLevel) + progLangArrayOpen[0] + SHAREDvars.convertIntToString(logicalConditionConjunctionIndex) + progLangArrayClose[0];
-	}
-	else
-	{
-		cout << "generateLogicalConditionConjunctionBooleanName{} error: invalid logicalOperation: " << logicalOperation << endl;
-	}
-	return logicalConditionConjunctionBooleanName;
-}
-
-NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockDeclareNewBoolArray(NLCcodeblock* currentCodeBlockInTree, const string boolArrayName, const bool value)
-{
-	NLCitem* itemDeclareNewBoolVariable = new NLCitem(boolArrayName, NLC_ITEM_TYPE_VARIABLE);
-	currentCodeBlockInTree->parameters.push_back(itemDeclareNewBoolVariable);
-	int codeBlockType;
-	if(value)
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_TRUE;
-	}
-	else
-	{
-		codeBlockType = NLC_CODEBLOCK_TYPE_DECLARE_NEW_BOOL_ARRAY_INITIALISE_FALSE;
-	}
-	return this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-#else
-
-NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockIfHasProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const bool negative)
-{
-	NLCitem* item = new NLCitem(propertyRelationshipObjectEntity, NLC_ITEM_TYPE_OBJECT);
-	item->context.push_back(context);
-
-	currentCodeBlockInTree->parameters.push_back(item);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY;
-	if(negative)
-	{
-		item->negative = true;
-	}
-	return this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockIfHasCondition(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionRelationshipObjectEntity, const string context, const bool negative)
-{
-	NLCitem* conditionItem = new NLCitem(conditionRelationshipEntity, NLC_ITEM_TYPE_OBJECT);
-	NLCitem* conditionObjectItem = new NLCitem(conditionRelationshipObjectEntity, NLC_ITEM_TYPE_OBJECT);
-	conditionItem->context.push_back(context);
-	conditionObjectItem->context.push_back(context);	//redundant
-
-	currentCodeBlockInTree->parameters.push_back(itemCondition);
-	currentCodeBlockInTree->parameters.push_back(itemConditionObject);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION;
-	if(negative)
-	{
-		itemCondition->negative = true;
-	}
-	return this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockWhileHasProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const bool negative)
-{
-	NLCitem* item = new NLCitem(propertyRelationshipObjectEntity, NLC_ITEM_TYPE_OBJECT);
-	item->context.push_back(context);
-
-	currentCodeBlockInTree->parameters.push_back(item);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY;
-	if(negative)
-	{
-		item->negative = true;
-	}
-	return this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-
-NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockWhileHasCondition(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionRelationshipObjectEntity, const string context, const bool negative)
-{
-	NLCitem* conditionItem = new NLCitem(conditionRelationshipEntity, NLC_ITEM_TYPE_OBJECT);
-	NLCitem* conditionObjectItem = new NLCitem(conditionRelationshipObjectEntity, NLC_ITEM_TYPE_OBJECT);
-	conditionItem->context.push_back(context);
-	conditionObjectItem->context.push_back(context);	//redundant
-
-	currentCodeBlockInTree->parameters.push_back(itemCondition);
-	currentCodeBlockInTree->parameters.push_back(itemConditionObject);
-	int codeBlockType = NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION;
-	if(negative)
-	{
-		itemCondition->negative = true;
-	}
-	return this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
-}
-#endif
-#endif
 
 NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockElse(NLCcodeblock* currentCodeBlockInTree)
 {

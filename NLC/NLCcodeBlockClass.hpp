@@ -25,7 +25,7 @@
  * File Name: NLCcodeBlockClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -187,14 +187,7 @@
 #define NLC_CODEBLOCK_TYPE_FOR_CONDITION_LIST (102)		//forall(context1.param1param2ConditionList){
 #define NLC_CODEBLOCK_TYPE_FOR_INTEGER (103)
 #define NLC_CODEBLOCK_TYPE_NEW_FUNCTION (104)			//main(){
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifndef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_PROPERTY (105)			//if(!(context1->param1PropertyList.empty())){			//OLD2:	if(context1.param1.param2PropertyList.findProperty(context2.param2)){		//OLD: if(context.param1->has(param2)){
-	#define NLC_CODEBLOCK_TYPE_IF_HAS_CONDITION (106)		//if(!(context1->param1param2ConditionList.empty())){		//OLD2: if(context1.param1.param3ConditionList.findCondition(context3.param3, param2)){	//OLD: if(param2(context.param1, context.param3)){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_PROPERTY (107)		//while(!(context1->param1PropertyList.empty())){
-	#define NLC_CODEBLOCK_TYPE_WHILE_HAS_CONDITION (108)		//while(!(context1->param1param2ConditionList.empty())){
-#endif
-#endif
+
 #define NLC_CODEBLOCK_TYPE_WHILE_LOGICAL_CONJUNCTION_OF_BOOLS (109)
 #define NLC_CODEBLOCK_TYPE_ELSE (110)
 #define NLC_CODEBLOCK_TYPE_IF_LOGICAL_CONJUNCTION_OF_BOOLS (111)
@@ -308,14 +301,7 @@ public:
 	~NLCgenerateContextBlocksVariables(void);
 
 	int logicalOperation;
-	//#ifndef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
 	bool negative;
-	//#endif
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	int logicalConditionConjunctionIndex;
-	GIAentityNode* primaryEntityInLogicalConditionConjunctionSubset;
-	GIAentityNode* foundLogicalConditionConjunction;
-	#endif
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 	bool onlyGenerateContextBlocksIfConnectionsParsedForNLCorSameReferenceSet;
 	bool generateContextBlocksIfSameReferenceSet;	//added 1i3d
@@ -359,19 +345,6 @@ public:
 	bool secondaryComparison;
 	#endif
 };
-
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-class NLClogicalConditionConjunction
-{
-public:
-
-	NLClogicalConditionConjunction(void);
-	~NLClogicalConditionConjunction(void);
-
-	int conjunctionType;
-	bool negative;
-};
-#endif
 
 
 class NLCcodeBlockClassClass
@@ -472,19 +445,6 @@ class NLCcodeBlockClassClass
 	public: bool checkDuplicateProperty(const GIAentityNode* propertyRelationshipObjectEntity, GIAentityNode* childActionEntity);
 	public: bool checkDuplicateCondition(GIAentityNode* conditionRelationshipEntity, GIAentityNode* childActionEntity);
 
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	public: NLCcodeblock* createCodeBlockLogicalConditionConjunctionOfBools(NLCcodeblock* currentCodeBlockInTree, const int logicalOperation, const NLClogicalConditionConjunction* logicalConditionConjunctionArray, const int logicalConditionConjunctionIndexMax, const int logicalConditionLevel, const int logicalConditionCase, const bool elseIfDetected);
-	public: string generateLogicalConditionConjunctionBooleanName(const int logicalConditionLevel, const int logicalConditionCase, const int logicalOperation);
-	public: string generateLogicalConditionConjunctionBooleanName(const int logicalConditionLevel, const int logicalConditionCase, const int logicalConditionConjunctionIndex, const int logicalOperation);
-	public: NLCcodeblock* createCodeBlockDeclareNewBoolArray(NLCcodeblock* currentCodeBlockInTree, const string boolArrayName, const bool value);
-	#else
-	public: NLCcodeblock* createCodeBlockIfHasProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const bool negative);
-	public: NLCcodeblock* createCodeBlockIfHasCondition(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionRelationshipObjectEntity, const string context, const bool negative);
-	public: NLCcodeblock* createCodeBlockWhileHasProperty(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity, const string context, const bool negative);
-	public: NLCcodeblock* createCodeBlockWhileHasCondition(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* condition, const GIAentityNode* conditionRelationshipObjectEntity, const string context, const bool negative);
-	#endif
-	#endif
 	public: NLCcodeblock* createCodeBlockElse(NLCcodeblock* currentCodeBlockInTree);
 	public: NLCcodeblock* createCodeBlockWhileHasBool(NLCcodeblock* currentCodeBlockInTree, const string whileLogicalConditionConjunctionBooleanName);
 	public: string generateWhileLogicalConditionConjunctionBooleanName(const int logicalConditionLevel);

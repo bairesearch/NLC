@@ -25,33 +25,17 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
 
 
 #include "NLCtranslator.hpp"
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-#endif
+
 #ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 #endif
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(void)
-{
-	entity = NULL;
-	optimumPathIndex = 0;
-}
-NLClogicalConditionConjunctionContainer::NLClogicalConditionConjunctionContainer(GIAentityNode* currentEntity)
-{
-	entity = currentEntity;
-	optimumPathIndex = 0;
-}
-NLClogicalConditionConjunctionContainer::~NLClogicalConditionConjunctionContainer(void)
-{
-}
-#endif
 
 bool NLCtranslatorClass::translateNetwork(NLCcodeblock* firstCodeBlockInTree, vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences, string NLCfunctionName, NLCfunction* currentNLCfunctionInList, const bool useNLCpreprocessor)
 {
@@ -73,25 +57,10 @@ bool NLCtranslatorClass::translateNetwork(NLCcodeblock* firstCodeBlockInTree, ve
 	#endif
 	*/
 
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	//NLC translator Part prep B.
-	if(!this->removeRedundantConditionConjunctions(entityNodesActiveListSentences, maxNumberSentences))
-	{
-		result = false;
-	}
-	#endif
-	//NLC translator Part prep C.
-	if(!this->identifyAndTagAllLogicalConditionOperations(entityNodesActiveListSentences, maxNumberSentences))
-	{
-		result = false;
-	}
-	#else
 	if(!this->disableAllForLoopPredeterminers(entityNodesActiveListSentences, maxNumberSentences))
 	{
 		result = false;
 	}
-	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
 	if(!this->checkAlphaNumericEntityNames(entityNodesActiveListComplete, maxNumberSentences))
@@ -171,262 +140,6 @@ bool identifyImplicitPluralLogicalConditionOperationsObjects(vector<GIAentityNod
 #endif
 */
 
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-bool NLCtranslatorClass::removeRedundantConditionConjunctions(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences)
-{
-	bool result = true;
-	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
-	{
-		int sentenceIndex = sentenceIter->first;
-		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
-
-		NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainerFirstInOptimumPath = NULL;
-		int maximumNumberOfConjunctions = 0;
-		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-		{
-			GIAentityNode* conditionRelationshipEntity = (*entityIter);
-			if(conditionRelationshipEntity->entityType == GIA_ENTITY_TYPE_CONDITION)
-			{
-				if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(conditionRelationshipEntity, sentenceIndex, false))
-				{
-					int conjunctionType = INT_DEFAULT_VALUE;
-					bool conjunctionConditionFound = SHAREDvars.textInTextArray(conditionRelationshipEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-					if(conjunctionConditionFound)
-					{
-						NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer = new NLClogicalConditionConjunctionContainer(conditionRelationshipEntity);
-						int numberOfConjunctions = this->addConjunctionsConnectedToConditionConjunctionObject(conditionRelationshipEntity, logicalConditionConjunctionContainer, sentenceIndex);
-						if(numberOfConjunctions > maximumNumberOfConjunctions)
-						{
-							logicalConditionConjunctionContainerFirstInOptimumPath = logicalConditionConjunctionContainer;
-							maximumNumberOfConjunctions = numberOfConjunctions;
-							#ifdef NLC_DEBUG
-							//cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
-							#endif
-						}
-					}
-				}
-			}
-		}
-
-		#ifdef NLC_DEBUG
-		cout << "maximumNumberOfConjunctions = " << maximumNumberOfConjunctions << endl;
-		#endif
-		if(maximumNumberOfConjunctions > 0)
-		{
-			for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
-			{
-				GIAentityNode* conditionRelationshipEntity = (*entityIter);
-				if(conditionRelationshipEntity->entityType == GIA_ENTITY_TYPE_CONDITION)
-				{
-					if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(conditionRelationshipEntity, sentenceIndex, false))
-					{
-						int conjunctionType = INT_DEFAULT_VALUE;
-						bool conjunctionConditionFound = SHAREDvars.textInTextArray(conditionRelationshipEntity->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-						if(conjunctionConditionFound)
-						{
-							if(!this->traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainerFirstInOptimumPath, conditionRelationshipEntity))
-							{
-								GIAentityNode* logicalConditionConjunctionObjectEntity = (conditionRelationshipEntity->relationshipObjectEntity->back())->entity;
-								GIAentityNode* logicalConditionConjunctionSubjectEntity = (conditionRelationshipEntity->relationshipSubjectEntity->back())->entity;
-								#ifdef NLC_DEBUG
-								cout << "disabling conditionRelationshipEntity: " << conditionRelationshipEntity->entityName << endl;
-								cout << "logicalConditionConjunctionObjectEntity: " << logicalConditionConjunctionObjectEntity->entityName << endl;
-								cout << "logicalConditionConjunctionSubjectEntity: " << logicalConditionConjunctionSubjectEntity->entityName << endl;
-								#endif
-
-								conditionRelationshipEntity->disabled = true;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return result;
-}
-
-int NLCtranslatorClass::addConjunctionsConnectedToConditionConjunctionObject(GIAentityNode* conditionRelationshipEntity, NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, const int sentenceIndex)
-{
-	int maximumNumberOfConjunctions = 0;
-	GIAentityNode* relationshipObjectEntity = NULL;
-	GIAentityConnection* conditionConnection = NULL;
-	bool conditionHasObject = false;
-	if(!(conditionRelationshipEntity->relationshipObjectEntity->empty()))
-	{
-		conditionHasObject = true;
-		conditionConnection = conditionRelationshipEntity->relationshipObjectEntity->back();
-		relationshipObjectEntity = conditionConnection->entity;
-	}
-	if(conditionHasObject)
-	{
-		if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(relationshipObjectEntity, conditionConnection, sentenceIndex, false))
-		{
-			int conjunctionIndex = 0;
-			for(vector<GIAentityConnection*>::iterator connectionIter = relationshipObjectEntity->conditionNodeList->begin(); connectionIter != relationshipObjectEntity->conditionNodeList->end(); connectionIter++)
-			{
-				GIAentityConnection* conditionConnection2 = (*connectionIter);
-				GIAentityNode* conditionEntity2 = conditionConnection2->entity;
-				if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(conditionEntity2, conditionConnection2, sentenceIndex, false))
-				{
-					int conjunctionType = INT_DEFAULT_VALUE;
-					bool conjunctionConditionFound = SHAREDvars.textInTextArray(conditionEntity2->entityName, entityCoordinatingConjunctionArray, ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES, &conjunctionType);
-					if(conjunctionConditionFound)
-					{
-						//NB #ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS checks are not required because ENTITY_COORDINATINGCONJUNCTION_ARRAY_NUMBER_OF_TYPES are not defined to be two way
-
-						NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer2 = new NLClogicalConditionConjunctionContainer(conditionEntity2);
-						logicalConditionConjunctionContainer->nextConditionConjunctions.push_back(logicalConditionConjunctionContainer2);
-						int numberOfConjunctions = this->addConjunctionsConnectedToConditionConjunctionObject(conditionEntity2, logicalConditionConjunctionContainer2, sentenceIndex);
-						if(numberOfConjunctions > maximumNumberOfConjunctions)
-						{
-							logicalConditionConjunctionContainer->optimumPathIndex = conjunctionIndex;
-							maximumNumberOfConjunctions = numberOfConjunctions;
-						}
-						conjunctionIndex++;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		cout << "addConjunctionsConnectedToConditionConjunctionObject{} error: !conditionHasObject" << endl;
-	}
-	return maximumNumberOfConjunctions + 1;
-}
-
-bool NLCtranslatorClass::traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(NLClogicalConditionConjunctionContainer* logicalConditionConjunctionContainer, const GIAentityNode* logicalConditionConjunctionToTest)
-{
-	bool foundLogicalConditionConjunctionOnOptimumPath = false;
-	if(logicalConditionConjunctionToTest == logicalConditionConjunctionContainer->entity)
-	{
-		foundLogicalConditionConjunctionOnOptimumPath = true;
-	}
-	else
-	{
-		if(!(logicalConditionConjunctionContainer->nextConditionConjunctions.empty()))
-		{
-			if(this->traceConditionConjunctionsOptimiumPathAndSeeIfConditionConjunctionEntityIsOnIt(logicalConditionConjunctionContainer->nextConditionConjunctions[logicalConditionConjunctionContainer->optimumPathIndex], logicalConditionConjunctionToTest))
-			{
-				foundLogicalConditionConjunctionOnOptimumPath = true;
-			}
-		}
-	}
-	return foundLogicalConditionConjunctionOnOptimumPath;
-	/*
-	for(vector<NLClogicalConditionConjunctionContainer*>::iterator iter = logicalConditionConjunctionContainer->nextConditionConjunctions->begin(); iter != logicalConditionConjunctionContainer->nextConditionConjunctions->end(); iter++)
-	{
-
-	}
-	*/
-}
-#endif
-
-bool NLCtranslatorClass::identifyAndTagAllLogicalConditionOperations(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences)
-{
-	bool result = true;
-
-	for(map<int, vector<GIAentityNode*>*>::iterator sentenceIter = entityNodesActiveListSentences->begin(); sentenceIter != entityNodesActiveListSentences->end(); sentenceIter++)
-	{
-		int sentenceIndex = sentenceIter->first;
-		vector<GIAentityNode*>* entityNodesActiveListSentence = sentenceIter->second;
-
-		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
-		{
-			GIAentityNode* conditionRelationshipEntity = (*entityIter);
-			if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(conditionRelationshipEntity, sentenceIndex, true))	//could be set to false instead
-			{
-				bool foundLogicalConditionOperation = false;
-				int logicalOperation;
-				bool foundLogicalConditionOperationBasic = SHAREDvars.textInTextArray(conditionRelationshipEntity->entityName, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES, &logicalOperation);
-				if(foundLogicalConditionOperationBasic && (logicalOperation == NLC_LOGICAL_CONDITION_OPERATIONS_FOR))
-				{
-					//FUTURE: NB this implementation must be made compatible with GIAdatabase.cpp and GIAxmlConversion.cpp (eg store entityIndex and sentenceIndexTemp). NB sentenceIndexTemp is necessary for other NLC functions also.
-					#ifdef NLC_ONLY_SUPPORT_LOGICAL_CONJUNCTION_FOR_AT_START_OF_SENTENCE
-					if(conditionRelationshipEntity->entityIndexTemp == 1)
-					{
-						foundLogicalConditionOperation = true;
-					}
-					#else
-					//because GIA GIAsentence objects are unavailable to NLC, must parse all entities including disabled entites and locate matching entities (in same sentence and with entityIndex+1 of "for" condition):
-					for(vector<GIAentityNode*>::iterator entityIter2 = entityNodesActiveListComplete->begin(); entityIter2 != entityNodesActiveListComplete->end(); entityIter2++)
-					{
-						GIAentityNode* entity2 = (*entityIter);
-						if(entity2->sentenceIndexTemp == sentenceIndex)
-						{
-							if(entity2->entityIndexTemp = conditionRelationshipEntity->entityIndex+1)
-							{
-								bool wordImmediatelySucceedingForFound = SHAREDvars.textInTextArray(entity2->entityName, logicalConditionOperationsWordImmediatelySucceedingForArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORD_IMMEDIATELY_SUCCEEDING_FOR_NUMBER_OF_TYPES);
-								foundLogicalConditionOperation = true;
-							}
-						}
-					}
-					#endif
-				}
-				else if(foundLogicalConditionOperationBasic)
-				{
-					foundLogicalConditionOperation = true;
-				}
-				if(foundLogicalConditionOperation)
-				{
-					//networkIndexes must be tagged as NLClogicalConditionOperation to prevent generateClassHeirarchy from creating class definitions for logical conditions
-					#ifdef NLC_DEBUG
-					cout << "foundLogicalConditionOperation: " << conditionRelationshipEntity->entityName << endl;
-					#endif
-					conditionRelationshipEntity->NLClogicalConditionOperation = true;
-
-					if(conditionRelationshipEntity->entityType == GIA_ENTITY_TYPE_CONDITION)
-					{//ignore networkIndexes
-
-						GIAentityNode* conditionRelationshipSubjectEntity = NULL;
-						GIAentityNode* conditionRelationshipObjectEntity = NULL;
-						bool foundConditionSubject = false;
-						bool foundConditionObject = false;
-						if(!(conditionRelationshipEntity->relationshipSubjectEntity->empty()))
-						{
-							conditionRelationshipSubjectEntity = (conditionRelationshipEntity->relationshipSubjectEntity->back())->entity;
-							foundConditionSubject = true;
-						}
-						if(!(conditionRelationshipEntity->relationshipObjectEntity->empty()))
-						{
-							conditionRelationshipObjectEntity = (conditionRelationshipEntity->relationshipObjectEntity->back())->entity;
-							foundConditionObject = true;
-						}
-						if(foundConditionSubject && foundConditionObject)
-						{
-							conditionRelationshipEntity->NLCparsedForlogicalConditionOperations = true;
-							#ifdef NLC_DEBUG
-							//cout << "tagged: conditionRelationshipEntity->entityName = " << conditionRelationshipEntity->entityName << endl;
-							#endif
-
-							if(conditionRelationshipObjectEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX)
-							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
-								cout << "conditionRelationshipObjectEntity = " << conditionRelationshipObjectEntity->entityName;
-							}
-							else
-							{
-								NLCtranslatorCodeBlocksLogicalConditionsAdvanced.tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionRelationshipObjectEntity, sentenceIndex, true);
-							}
-							if(conditionRelationshipSubjectEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX)
-							{
-								cout << "identifyAndTagAllLogicalConditionOperations{} error: NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BASED_ON_CONCEPTS only handles concepts. GIA_CREATE_CONCEPTS_FOR_ALL_SENTENCES_WITH_NETWORK_INDEXES must be enabled." << endl;
-								cout << "conditionRelationshipSubjectEntity = " << conditionRelationshipSubjectEntity->entityName;
-							}
-							else
-							{
-								NLCtranslatorCodeBlocksLogicalConditionsAdvanced.tagAllEntitiesInSentenceSubsetAsPertainingToLogicalConditionOperationAdvanced(conditionRelationshipSubjectEntity, sentenceIndex, true);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-	return result;
-}
-#else
 
 
 bool NLCtranslatorClass::disableAllForLoopPredeterminers(map<int, vector<GIAentityNode*>*>* entityNodesActiveListSentences, const int maxNumberSentences)
@@ -463,7 +176,6 @@ void disableInstanceAndNetworkIndexEntityNLC(GIAentityNode* entity)
 }
 */
 
-#endif
 
 #ifdef NLC_INPUT_FUNCTION_LISTS
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS

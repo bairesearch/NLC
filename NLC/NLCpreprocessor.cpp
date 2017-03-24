@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -282,74 +282,13 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 						currentNLCsentenceInList->sentenceContentsOriginal = this->removePrependingWhiteSpace(sentenceContents);
 						#endif
 
-						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-
-						#ifdef NLC_PREPROCESSOR_MATH
-						#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-						NLCpreprocessorMath.replaceNumericalVariablesWithDummyNumberIfNecessary(&sentenceContents, currentNLCsentenceInList, currentNLCfunctionInList, firstNLCfunctionInList);
-						#endif
-						#endif
-						#ifdef NLC_DEBUG
-						//cout << "sentenceContents = " << sentenceContents << endl;
-						#endif
-
-						#ifdef NLC_MATH_OBJECTS_ADVANCED
-						if(this->detectMathObjectStringDelimiter(&sentenceContents))
-						{
-							cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
-						}
-						#endif
-
-						bool sentenceIsLogicalCondition = false;
-						int sentenceLogicalConditionOperator;
-						if(this->detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
-						{
-							sentenceIsLogicalCondition = true;
-							#ifdef NLC_DEBUG_PREPROCESSOR
-							cout << "sentenceIsLogicalCondition: " << logicalConditionOperationsArray[sentenceLogicalConditionOperator] << endl;
-							#endif
-							currentNLCsentenceInList->hasLogicalConditionOperator = true;
-
-							/*logicalConditionOperator is only used by mathText with parsable phrases at present (ie lineLogicalConditionOperator)
-							#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-							currentNLCsentenceInList->logicalConditionOperator = sentenceLogicalConditionOperator;
-							#endif
-							*/
-
-							if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_IF)
-							{
-								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-								currentNLCsentenceInList->ifDetected = true;
-								#endif
-							}
-							else if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF)
-							{
-								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-								currentNLCsentenceInList->elseIfDetected = true;
-								//replace "else if" with "If"
-								sentenceContents.replace(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF_STRING).length(), string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSEIF));
-								#else
-								//will rely on NLP to add an "else" property to the logicalConditionObject
-								#endif
-							}
-							else if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
-							{
-								#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
-								currentNLCsentenceInList->elseDetected = true;
-								#endif
-								//replace "else" with "If this is done,"
-								sentenceContents.replace(0, string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_STRING).length(), string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSE));
-
-							}
-						}
-						#else
+						
 						//error checking only:
 						int sentenceLogicalConditionOperator;
 						if(this->detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
 						{
-							cout << "preprocessTextForNLC{} error: !NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
+							cout << "preprocessTextForNLC{} error: !(currentNLCsentenceInList->isMath) && detectLogicalConditionOperatorAtStartOfLine" << endl;
 						}
-						#endif
 
 						if(!lineFullStopDetected)
 						{
@@ -367,51 +306,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 									#endif
 								}
 							}
-							#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine && sentenceIsLogicalCondition)
-							{
-								#ifdef NLC_DEBUG_PREPROCESSOR
-								cout << "(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine && sentenceIsLogicalCondition)" << endl;
-								#endif
-
-								string lowerCaseSentenceContents = SHAREDvars.convertStringToLowerCase(&sentenceContents);
-								string dummyCommand = "";
-								if(sentenceLogicalConditionOperator == NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
-								{
-									if(sentenceContents.length() == (string(NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_STRING)).length())
-									{
-										//sentence was originally "Else" and has not yet been converted to "If this is done,"
-										//replace "else" with "If this is done, "
-										sentenceContents = string(NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_TEST_ELSE);
-
-										dummyCommand = NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND_ELSE;	//append dummy action " do this."
-									}
-									else
-									{
-										//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
-										cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
-										exit(EXIT_ERROR);
-									}
-								}
-								else
-								{
-									dummyCommand = NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_COMMAND;	//append dummy action ", do this."
-								}
-								//add dummy text ", do this." to the end of the logical condition, such that NLP can parse the logical condition header, and NLC can parse the multi-sentence logical condition based on its indentation.
-								#ifdef NLC_DEBUG_PREPROCESSOR
-								cout << "create new sentence" << endl;
-								cout << sentenceIndex << ": sentenceContents = " << sentenceContents + string(dummyCommand) << endl;
-								#endif
-								sentenceContents = sentenceContents + string(dummyCommand);
-								currentNLCsentenceInList->->firstNLPparsablePhraseInList->sentenceContents = sentenceContents;
-								currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex = sentenceIndex;
-								currentNLCsentenceInList->indentation = currentIndentation;
-								currentNLCsentenceInList->next = new NLCpreprocessorSentence();
-								currentNLCsentenceInList = currentNLCsentenceInList->next;
-								sentenceIndex++;
-							}
-							else
-							#endif
+							
 							if(!lineFullStopDetected && nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine)
 							{
 								cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;

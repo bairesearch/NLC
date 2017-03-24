@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1b 26-February-2017
+ * Project Version: 2a1c 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,9 +52,6 @@ NLCitem::NLCitem(void)
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
 	name = "";
 	genericObjectName = "";
 }
@@ -76,9 +73,6 @@ NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType)
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
 	name = entity->entityName;
 	genericObjectName = "";
 }
@@ -100,9 +94,6 @@ NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const int s
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
 	name = entity->entityName;
 	genericObjectName = NLCitemClassClass().generateCategoryListGenericObjectName(entity, sentenceIndex);
 }
@@ -124,9 +115,6 @@ NLCitem::NLCitem(const GIAentityNode* entity, const int newItemType, const strin
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
 	name = entity->entityName;
 	genericObjectName = newGenericObjectName;
 }
@@ -152,9 +140,6 @@ NLCitem::NLCitem(const string newName, const int newItemType)
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = false;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
 	//if(newItemType == NLC_ITEM_TYPE_VARIABLE)
 	name = newName;
 	genericObjectName = "";
@@ -177,9 +162,6 @@ NLCitem::NLCitem(const NLCitem* newItem)
 	//formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias = newItem->formalFunctionArgumentCorrespondsToActionSubjectUseThisAlias;
 	#endif
 	negative = false;
-	#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED_CONJUNCTIONS_ADVANCED
-	conjunctionType = INT_DEFAULT_VALUE;
-	#endif
 	name = newItem->name;
 	genericObjectName = "";
 }

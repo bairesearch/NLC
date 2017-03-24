@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a2c 21-March-2017
+ * Project Version: 2a2d 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -416,7 +416,10 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	}
 	#endif
 
-	
+	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
+	cout << "Premature quit for debug" << endl;
+	exit(EXIT_ERROR);
+	#endif	
 
 
 	return result;

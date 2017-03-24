@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1c 26-February-2017
+ * Project Version: 2a1d 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -304,17 +304,44 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 					cout << "nextNLCsentenceInList->indentation = " << nextNLCsentenceInList->indentation << endl;
 				}
 
+				if(currentNLCsentenceInList->mathTextNLPparsablePhraseTotal > 0)
+				{
+					NLCpreprocessorParsablePhrase* currentParsablePhrase = currentNLCsentenceInList->firstNLPparsablePhraseInList;
+					while(currentParsablePhrase->next != NULL)
+					{	
+						sentenceIter++;
+						currentParsablePhrase = currentParsablePhrase->next;
+					}
+				}
+				else
+				{
+					sentenceIter++;	
+				}
+
 				currentNLCsentenceInList = nextNLCsentenceInList;
 				#ifdef NLC_DEBUG
 				//cout << "next sentenceIndex = " << sentenceIndex << endl;
 				#endif
 			}
+			else
+			{
+				sentenceIter++;	//standard iteration - go to last sentence in list (finish parsing full sentences)?
+				#ifdef NLC_DEBUG
+				//cout << "NLC_PREPROCESSOR generateCodeBlocks{}: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
+				#endif
+			}
+						
+			#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
+			NLCtranslatorCodeBlocksLogicalConditionsAdvanced.setCurrentSentenceContainsLogicalCondition(false);
+			#endif
 		}
 		else
 		{
+			sentenceIter++;	//standard iteration
 		}
+		#else
+		sentenceIter++;	//standard iteration
 		#endif
-		sentenceIter++;
 	}
 
 	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT

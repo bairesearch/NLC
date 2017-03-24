@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1c 26-February-2017
+ * Project Version: 2a1d 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -366,14 +366,22 @@ bool NLCpreprocessorSentenceClassClass::getSentenceInSentenceList(const int sent
 	while(currentNLCsentence->next != NULL)
 	{	
 		NLCpreprocessorParsablePhrase* currentParsablePhrase = currentNLCsentence->firstNLPparsablePhraseInList;
-		while(currentParsablePhrase->next != NULL)
+		if(currentNLCsentence->mathTextNLPparsablePhraseTotal > 0)
 		{
-			if(currentParsablePhrase->sentenceIndex == sentenceIndex)	//NB entity->sentenceIndexTemp can be tested here as entities within logical conditions are not advanced referenced (even if GIA advance referencing is enabled)
+			while(currentParsablePhrase->next != NULL)
 			{
-				*sentenceFound = currentNLCsentence;
-				result = true;
+				if(currentParsablePhrase->sentenceIndex == sentenceIndex)	//NB entity->sentenceIndexTemp can be tested here as entities within logical conditions are not advanced referenced (even if GIA advance referencing is enabled)
+				{
+					*sentenceFound = currentNLCsentence;
+					result = true;
+				}
+				currentParsablePhrase = currentParsablePhrase->next;
 			}
-			currentParsablePhrase = currentParsablePhrase->next;
+		}
+		else if(currentParsablePhrase->sentenceIndex == sentenceIndex)	//NB entity->sentenceIndexTemp can be tested here as entities within logical conditions are not advanced referenced (even if GIA advance referencing is enabled)
+		{
+			*sentenceFound = currentNLCsentence;
+			result = true;
 		}
 		
 		currentNLCsentence = currentNLCsentence->next;

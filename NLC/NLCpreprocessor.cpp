@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1c 26-February-2017
+ * Project Version: 2a1d 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -41,6 +41,11 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 {
 	*numberOfInputFilesInList = 0;
 
+	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	string inputFileText = "";
+	string outputFileText = "";
+	#endif
+	
 	bool result = true;
 	ifstream parseFileObject(inputFileName.c_str());
 	if(!parseFileObject.rdbuf()->is_open())
@@ -65,6 +70,10 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 
 		while(getline(parseFileObject, currentLine))
 		{
+			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+			inputFileText = inputFileText + currentLine + CHAR_NEWLINE;
+			#endif
+
 			currentLineNumber++;
 			#ifdef NLC_DEBUG_PREPROCESSOR
 			cout << currentLineNumber << ": " << currentLine << endl;
@@ -124,7 +133,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 				#endif
 
 				#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-				currentNLCsentenceInList->sentenceOriginal = lineContents;
+				currentNLCsentenceInList->sentenceOriginal = lineContents;	//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
 				#endif
 
 				#ifdef NLC_PREPROCESSOR_MATH
@@ -170,7 +179,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 					}
 					#endif
 
-					NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+					NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 
 					#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 					if(detectedLogicalConditionCommand)
@@ -180,7 +189,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 						{
 							if(NLCpreprocessorMath.detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents)))
 							{
-								NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+								NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 							}
 							else
 							{
@@ -278,10 +287,6 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 							sentenceContents = lineContents.substr(startOfSentenceIndex, lineContents.length());
 
 						}
-						#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-						currentNLCsentenceInList->sentenceContentsOriginal = this->removePrependingWhiteSpace(sentenceContents);
-						#endif
-
 						
 						//error checking only:
 						int sentenceLogicalConditionOperator;
@@ -367,6 +372,9 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 			cout << "create preprocessed file, outputFileName = " << outputFileName << endl;
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
+			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+			outputFileText = functionContents;
+			#endif
 			SHAREDvars.writeStringToFile(outputFileName, &functionContents);
 			*numberOfInputFilesInList = *numberOfInputFilesInList+1;
 		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
@@ -398,30 +406,54 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	}
 	#endif
 
+
+	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	cout << "inputFileText = \n" << inputFileText << endl;
+	cout << "outputFileText = \n" << outputFileText << endl;
+	cout << "NLCpreprocessorSentences = " << endl;
+	NLCpreprocessorSentence* currentSentence = firstNLCfunctionInList->firstNLCsentenceInFunction;
+	while(currentSentence->next != NULL)
+	{
+		cout << "" << endl;
+		cout << "currentSentence->indentation = " << currentSentence->indentation << endl;
+		cout << "currentSentence->hasLogicalConditionOperator = " << currentSentence->hasLogicalConditionOperator << endl;
+		cout << "currentSentence->logicalConditionOperator = " << currentSentence->logicalConditionOperator << endl;
+		cout << "currentSentence->isMath = " << currentSentence->isMath << endl;
+		cout << "currentSentence->mathText = " << currentSentence->mathText << endl;
+		cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
+		for(int i=0; i< currentSentence->mathTextVariables.size(); i++)
+		{
+			cout << " currentSentence->mathTextVariables[" << i << "]->name = " << currentSentence->mathTextVariables[i]->name << endl;
+		}
+		for(int i=0; i< currentSentence->variableNamesDetected.size(); i++)
+		{
+			cout << " currentSentence->variableNamesDetected[" << i << "] = " << currentSentence->variableNamesDetected[i] << endl;
+		}
+		cout << "currentSentence->mathTextIdentifiesMathValue = " << currentSentence->mathTextIdentifiesMathValue << endl;
+		cout << "currentSentence->sentenceOriginal = " << currentSentence->sentenceOriginal << endl;
+		cout << "currentSentence->sentenceContentsOriginal = " << currentSentence->sentenceContentsOriginal << endl;
+		//cout << "currentSentence->singleWordSentenceActionName = " << currentSentence->singleWordSentenceActionName << endl;
+
+
+		NLCpreprocessorParsablePhrase* currentParsablePhrase = currentSentence->firstNLPparsablePhraseInList;
+		while(currentParsablePhrase->next != NULL)
+		{	
+			cout << "\tcurrentParsablePhrase->sentenceContents = " << currentParsablePhrase->sentenceContents << endl;
+			cout << "\tcurrentParsablePhrase->sentenceIndex = " << currentParsablePhrase->sentenceIndex << endl;
+			cout << "\tcurrentParsablePhrase->mathTextNLPparsablePhraseIndex = " << currentParsablePhrase->mathTextNLPparsablePhraseIndex << endl;
+			
+			currentParsablePhrase = currentParsablePhrase->next;
+		}
+		
+		currentSentence = currentSentence->next;
+	}
+	#endif
+
+	
 	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;
 	exit(EXIT_ERROR);
 	#endif
-
-
-	NLCpreprocessorSentence* currentSentence = firstNLCfunctionInList->firstNLCsentenceInFunction;
-	while(currentSentence->next != NULL)
-	{
-		/*
-		cout << "\ncurrentSentence->->firstNLPparsablePhraseInList->sentenceContents = " << currentSentence->->firstNLPparsablePhraseInList->sentenceContents << endl;
-		cout << "currentSentence->firstNLPparsablePhraseInList->sentenceIndex = " << currentSentence->firstNLPparsablePhraseInList->sentenceIndex << endl;
-		cout << "currentSentence->indentation = " << currentSentence->indentation << endl;
-		cout << "currentSentence->hasLogicalConditionOperator = " << currentSentence->hasLogicalConditionOperator << endl;
-		cout << "currentSentence->logicalConditionOperator = " << currentSentence->logicalConditionOperator << endl;
-		cout << "currentSentence->mathText = " << currentSentence->mathText << endl;
-		cout << "currentSentence->isMath = " << currentSentence->isMath << endl;
-		cout << "currentSentence->mathTextNLPparsablePhraseIndex = " << currentSentence->mathTextNLPparsablePhraseIndex << endl;
-		cout << "currentSentence->mathTextNLPparsablePhraseTotal = " << currentSentence->mathTextNLPparsablePhraseTotal << endl;
-		cout << "currentSentence->sentenceOriginal = " << currentSentence->sentenceOriginal << endl;
-		cout << "currentSentence->sentenceContentsOriginal = " << currentSentence->sentenceContentsOriginal << endl;
-		*/
-		currentSentence = currentSentence->next;
-	}
 
 
 	return result;
@@ -438,6 +470,11 @@ void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(string* sentence
 	//cout << "sentenceContents = " << sentenceContents << endl;
 	#endif
 
+	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
+	(*currentNLCsentenceInList)->sentenceOriginal = (*sentenceContents);
+	(*currentNLCsentenceInList)->sentenceContentsOriginal = this->removePrependingWhiteSpace(*sentenceContents);
+	#endif
+	
 	#ifdef NLC_MATH_OBJECTS_ADVANCED
 	if(this->detectMathObjectStringDelimiter(sentenceContents))
 	{

@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1c 26-February-2017
+ * Project Version: 2a1d 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -386,19 +386,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 
 		if(fullSentence->next != NULL)
 		{
-			NLCpreprocessorSentence* nextNLCfullSentenceInList = fullSentence;
-			bool hasNextSentence = false;
-			if(fullSentence->mathTextNLPparsablePhraseTotal > 0)
-			{
-				for(int phraseIndex=0; phraseIndex<fullSentence->mathTextNLPparsablePhraseTotal; phraseIndex++)
-				{
-					nextNLCfullSentenceInList = nextNLCfullSentenceInList->next;
-				}
-			}
-			else
-			{
-				nextNLCfullSentenceInList = fullSentence->next;
-			}
+			NLCpreprocessorSentence* nextNLCfullSentenceInList = fullSentence->next;
 
 			#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 			cout << "fullSentence->firstNLPparsablePhraseInList->sentenceContents = " << fullSentence->firstNLPparsablePhraseInList->sentenceContents << endl;

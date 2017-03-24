@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1c 26-February-2017
+ * Project Version: 2a1d 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -203,11 +203,13 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoS
 }
 #endif
 
-bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCpreprocessorSentence* fullSentence, int* sentenceIndex, const int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 
 	int startIndex = 0;
+
+	NLCpreprocessorSentence* fullSentence = *currentNLCsentenceInList;
 
 	int sentenceIndexOfFullSentence = *sentenceIndex;
 	NLCpreprocessorParsablePhrase* currentParsablePhraseInList = fullSentence->firstNLPparsablePhraseInList;
@@ -850,6 +852,9 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(strin
 		currentParsablePhraseInList = currentParsablePhraseInList->next;
 	}
 
+	(*currentNLCsentenceInList)->next = new NLCpreprocessorSentence();
+	(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
+					
 	return result;
 }
 

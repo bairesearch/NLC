@@ -2,9 +2,8 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is licensed under the GNU Affero General Public License
+ * version 3, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -26,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1a 26-February-2017
+ * Project Version: 2a1b 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -166,7 +165,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 							}
 							else
 							{
-								GIAentityNode* definitionEntity = NULL;
+								GIAentityNode* definitionRelationshipObjectEntity = NULL;
 								GIAentityNode* logicalConditionOperationObject = NULL;
 								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_ACTIONS_BASIC
 								if(this->checkIfPhraseContainsAction(entityNodesActiveListParsablePhrase, parsablePhrase->firstNLPparsablePhraseInList->sentenceIndex, &logicalConditionOperationObject))
@@ -217,7 +216,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 
 								} else
 								#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_REDEFINITIONS
-								if(this->checkIfPhraseContainsSubstanceWithDefinitionLink(entityNodesActiveListParsablePhrase, parsablePhrase->sentenceIndex, &logicalConditionOperationObject, &definitionEntity))
+								if(this->checkIfPhraseContainsSubstanceWithDefinitionLink(entityNodesActiveListParsablePhrase, parsablePhrase->sentenceIndex, &logicalConditionOperationObject, &definitionRelationshipObjectEntity))
 								{//eg "The dog is an alsation. / If the dog is an alsation, eat the cabbage."
 
 									NLCcodeblock* currentCodeBlockAtStartOfparsablePhrase = *currentCodeBlockInTree;
@@ -236,10 +235,10 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 									//bool generatedContextBlocks = generateContextBlocksSimple(currentCodeBlockInTree, parentEntity, sentenceIndex, &generateContextBlocksVariables, false, NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION);	//check if should parse categories here
 
 									//eg If the dog is an alsation, eat the cabbage
-									*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockCheckParentClassNameExecuteFunction1(*currentCodeBlockInTree, logicalConditionOperationObject, definitionEntity->entityName);
+									*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockCheckParentClassNameExecuteFunction1(*currentCodeBlockInTree, logicalConditionOperationObject, definitionRelationshipObjectEntity->entityName);
 
 									//eg If the dog is a red alsation, eat the cabbage
-									if(NLCtranslatorCodeBlocksOperations.createCodeBlockForStatements(currentCodeBlockInTree, NLCitemClass.generateInstanceName(logicalConditionOperationObject), definitionEntity, sentenceIndex, &generateContextBlocksVariables))
+									if(NLCtranslatorCodeBlocksOperations.createCodeBlockForStatements(currentCodeBlockInTree, NLCitemClass.generateInstanceName(logicalConditionOperationObject), definitionRelationshipObjectEntity, sentenceIndex, &generateContextBlocksVariables))
 									{
 
 									}
@@ -308,7 +307,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 		else
 		{
 			cout << "generateCodeBlocksFromMathText{} error: illegal fullSentence->logicalConditionOperator" << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 		}
 		
 		#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
@@ -977,7 +976,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
 			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
 			cout << "parsablePhrase->sentenceContents = " << parsablePhrase->sentenceContents << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 			#endif
 		}
 	}
@@ -1122,7 +1121,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 			mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
 			#else
 			cout << "NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 			#endif
 		}
 	}
@@ -1239,14 +1238,14 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContaini
 		{
 			result = false;
 			cout << "getMathObjectVariableType{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 		}
 	}
 	else
 	{
 		result = false;
 		cout << "getMathObjectVariableType{} error: !foundLogicalConditionStartText" << endl;
-		exit(1);
+		exit(EXIT_ERROR);
 	}
 
 	return result;
@@ -1447,7 +1446,7 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 		if(foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)
 		{
 			cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: hasLogicalConditionOperator && (foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)" << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 		}
 
 		int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
@@ -1456,7 +1455,7 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 		if(!this->getMathTextSubphraseContainingNLPparsablePhrase(*mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex))
 		{
 			cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: !getMathTextSubphraseContainingNLPparsablePhrase" << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 		}
 		int indexOfMathEqualsTestCommand = mathTextSubphraseContainingNLPparsablePhrase.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
 		if(indexOfMathEqualsTestCommand != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -1834,7 +1833,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsAction(
 		GIAentityNode* entity = (*entityIter);
 		if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)	//removed || (entity->isConcept && entity->isActionConcept) 1u15a
+			if(entity->entityType == GIA_ENTITY_TYPE_ACTION)	//removed || (entity->isConcept && entity->isActionConcept) 1u15a
 			{
 				phraseContainsAction = true;
 				*logicalConditionOperationObject = entity;
@@ -1855,9 +1854,9 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsConcept
 		GIAentityNode* entity = (*entityIter);
 		if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+			if(entity->entityType == GIA_ENTITY_TYPE_CONCEPT)
 			{
-				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
+				for(vector<GIAentityConnection*>::iterator iter = entity->definitionNodeList->begin(); iter < entity->definitionNodeList->end(); iter++)
 				{
 					GIAentityConnection* definitionConnection = *iter;
 					GIAentityNode* definitionEntityTemp =  definitionConnection->entity;
@@ -1878,7 +1877,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsConcept
 					}
 				}
 				/*OLD: before 1n5b update;
-				if(!(entity->entityNodeDefinitionList->empty()))
+				if(!(entity->definitionNodeList->empty()))
 				{
 					phraseContainsConcept = true;
 					*logicalConditionOperationObject = entity;
@@ -1898,27 +1897,27 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsConcept
 		GIAentityNode* entity = (*entityIter);
 		if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+			if(entity->entityType == GIA_ENTITY_TYPE_CONCEPT)
 			{
 				phraseContainsConcept = true;
 				*logicalConditionOperationObject = entity;
 
-				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionReverseList->begin(); iter < entity->entityNodeDefinitionReverseList->end(); iter++)
+				for(vector<GIAentityConnection*>::iterator iter = entity->definitionReverseNodeList->begin(); iter < entity->definitionReverseNodeList->end(); iter++)
 				{
 					GIAentityConnection* definitionConnection = *iter;
-					GIAentityNode* definitionChildEntity =  definitionConnection->entity;
+					GIAentityNode* definitionChildEntity = GIAtranslatorOperations.getDefinitionRelationshipSubjectEntity(definitionConnection);
 					if(definitionChildEntity->sentenceIndexTemp == sentenceIndex)	//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
 					{
 						if(!(definitionConnection->sameReferenceSet))
 						{
 							#ifdef GIA_TRANSLATOR_INTERPRET_PRENOMINAL_MODIFIER_SUBCLASSES_ENABLE_INCONSISTENT_REFERENCING
 							//ignore additional subclass concepts/definitions created by GIA when parsing NLC logical condition statements (eg alsation_dog for "If the dog is an alsation")
-							if((definitionChildEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT) && (entity->isSubClass))
+							if((definitionChildEntity->entityType == GIA_ENTITY_TYPE_CONCEPT) && (entity->isSubClass))
 							{
 								phraseContainsConcept = false;
 							}
 							#endif
-							if(definitionChildEntity->entityType != GIA_ENTITY_TYPE_TYPE_CONCEPT)
+							if(definitionChildEntity->entityType != GIA_ENTITY_TYPE_CONCEPT)
 							{
 								phraseContainsConcept = false;	//this is absolutely required for NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_DEFINITIONS/NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_REDEFINITIONS
 							}
@@ -1933,7 +1932,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsConcept
 #endif
 
 #ifdef NLC_LOGICAL_CONDITION_OPERATIONS_BASED_ON_CONCEPTS_BASIC_REDEFINITIONS
-bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject, constEffective GIAentityNode** definitionEntity)
+bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsSubstanceWithDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, int sentenceIndex, constEffective GIAentityNode** logicalConditionOperationObject, constEffective GIAentityNode** definitionRelationshipObjectEntity)
 {
 	bool phraseContainsSubstanceWithDefinitionLink = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -1941,12 +1940,12 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsSubstan
 		GIAentityNode* entity = (*entityIter);
 		if(NLCcodeBlockClass.checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
 		{
-			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
+			if(entity->entityType == GIA_ENTITY_TYPE_SUBSTANCE)
 			{
-				for(vector<GIAentityConnection*>::iterator iter = entity->entityNodeDefinitionList->begin(); iter < entity->entityNodeDefinitionList->end(); iter++)
+				for(vector<GIAentityConnection*>::iterator iter = entity->definitionNodeList->begin(); iter < entity->definitionNodeList->end(); iter++)
 				{
 					GIAentityConnection* definitionConnection = *iter;
-					GIAentityNode* definitionEntityTemp = definitionConnection->entity;
+					GIAentityNode* definitionEntityTemp = getDefinitionRelationshipObjectEntity(definitionConnection);
 					if(definitionConnection->sentenceIndexTemp == sentenceIndex)	//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
 					{
 						if(!(definitionConnection->sameReferenceSet))
@@ -1963,11 +1962,11 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::checkIfPhraseContainsSubstan
 									{//ignore concept definitions for for entities of same name
 										phraseContainsSubstanceWithDefinitionLink = true;
 										*logicalConditionOperationObject = entity;
-										*definitionEntity = definitionEntityTemp;
+										*definitionRelationshipObjectEntity = definitionEntityTemp;
 										#ifdef NLC_DEBUG
 										//cout << "checkIfPhraseContainsSubstanceWithDefinitionLink: = " << entity->entityName << endl;
 										//cout << "entity = " << entity->entityName << endl;
-										//cout << "definitionEntity = " << definitionEntityTemp->entityName << endl;
+										//cout << "definitionRelationshipObjectEntity = " << definitionEntityTemp->entityName << endl;
 										#endif
 									}
 								}
@@ -2016,7 +2015,11 @@ void NLCtranslatorCodeBlocksLogicalConditionsClass::setDummyReferenceSetIDforAll
 bool NLCtranslatorCodeBlocksLogicalConditionsClass::readParsablePhraseEntryEntityChecks(const GIAentityNode* entity)
 {
 	bool result = false;
-	if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION))
+	#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+	if(!(entity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_CONDITION) && !(entity->entityType == GIA_ENTITY_TYPE_PROPERTY) && !(entity->entityType == GIA_ENTITY_TYPE_DEFINITION))
+	#else
+	if(!(entity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_CONDITION))
+	#endif
 	{
 		result = true;
 	}

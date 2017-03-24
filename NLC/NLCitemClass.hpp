@@ -2,9 +2,8 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is licensed under the GNU Affero General Public License
+ * version 3, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -26,7 +25,7 @@
  * File Name: NLCitemClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1a 26-February-2017
+ * Project Version: 2a1b 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -129,22 +128,22 @@ class NLCitemClassClass
 
 	private: string generateTypeName(string entityName);
 
-//string generateItemName(GIAentityNode* entity, int itemType);
+	//string generateItemName(GIAentityNode* entity, int itemType);
 
 	public: string removeClassTextFromClassDefinitionName(const string className);
 
-#ifdef NLC_INPUT_FUNCTION_LISTS
+	#ifdef NLC_INPUT_FUNCTION_LISTS
 	public: string parseFunctionNameFromNLCfunctionName(string NLCfunctionName);
 	public: void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass);
 	public: void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass);
-#ifdef NLC_LIBRARY
+	#ifdef NLC_LIBRARY
 	public: void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
-#endif
+	#endif
 	private: void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
 	public: string generateNLCfunctionHeader(const string functionName, const string functionOwnerName, const bool hasFunctionOwnerClass, const string functionObjectName, const bool hasFunctionObjectClass);
-#endif
+	#endif
 
-//see NLCclassDefinitionClass.cpp for other versions of this function;
+	//see NLCclassDefinitionClass.cpp for other versions of this function;
 	public: bool findFunctionArgument(vector<NLCitem*>* parameters, const GIAentityNode* entity, const int itemType, constEffective NLCitem** functionArgument);
 
 	public: bool detectPredeterminer(GIAentityNode* entity, int sentenceIndex);

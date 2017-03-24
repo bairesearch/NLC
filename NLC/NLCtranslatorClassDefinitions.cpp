@@ -2,9 +2,8 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is licensed under the GNU Affero General Public License
+ * version 3, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -26,7 +25,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1a 26-February-2017
+ * Project Version: 2a1b 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -58,7 +57,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 				#endif
 					string className = NLCitemClass.generateClassName(entityNode);
 					#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-					if(entityNode->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+					if(entityNode->entityType == GIA_ENTITY_TYPE_CONCEPT)
 					{
 						className = this->generateConceptClassName(entityNode);
 					}
@@ -78,8 +77,26 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 							GIAentityConnection* connection = *connectionIter;
 							GIAentityNode* targetEntity = connection->entity;
 
+							//skip over property/definition relationship entities;
+							if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY)
+							{
+								targetEntity = GIAtranslatorOperations.getPropertyRelationshipObjectEntity(connection);
+							}
+							else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITION)
+							{
+								targetEntity = GIAtranslatorOperations.getDefinitionRelationshipObjectEntity(connection);
+							}
+							else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY_REVERSE)
+							{
+								targetEntity = GIAtranslatorOperations.getPropertyRelationshipSubjectEntity(connection);
+							}
+							else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITION_REVERSE)
+							{
+								targetEntity = GIAtranslatorOperations.getDefinitionRelationshipSubjectEntity(connection);
+							}											
+											
 							#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
-							if(!(connection->isAlias))
+							if(!GIAtranslatorOperations.connectionIsAlias(connection))
 							{
 							#endif
 								//valid class contents checks added 1g12f 14-July-2014
@@ -93,12 +110,12 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 
 										string targetName = "";
 										string targetClassName = "";
-										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)	//in GIA actions are treated as special connections with intermediary nodes
+										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION)	//in GIA actions are treated as special connections with intermediary nodes
 										{
 											targetName = NLCitemClass.generateInstanceName(targetEntity);
 										}
 										#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-										else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS) && (targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
+										else if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITION) && (targetEntity->entityType == GIA_ENTITY_TYPE_CONCEPT))
 										{
 											targetName = this->generateConceptClassName(targetEntity);
 										}
@@ -110,7 +127,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 
 										bool foundTargetClassDefinition = false;
 										NLCclassDefinition* targetClassDefinition = NULL;
-										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION)
 										{
 											targetClassDefinition = NLCclassDefinitionClass.findClassDefinitionCondition(classDefinitionList, targetEntity, &foundTargetClassDefinition);	//see if class definition already exists
 										}
@@ -125,25 +142,25 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											classDefinitionList->push_back(targetClassDefinition);
 										}
 
-										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION)
 										{
 											targetClassDefinition->functionNameSpecial = NLCitemClass.generateFunctionName(targetEntity);
 											#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
 											targetClassDefinition->actionOrConditionInstance = targetEntity;
 											#endif
 										}
-										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION)
 										{
 											targetClassDefinition->isConditionInstance = true;
 										}
 
 										#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
-										if(1)	//removed; || (if((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)) 16 April 2014
+										if(1)	//removed; || (if((targetEntity->entityType == GIA_ENTITY_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX)) 16 April 2014
 										#else
 										#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
-										if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))	//removed; ((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS) 1m3a
+										if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION))	//removed; ((targetEntity->entityType == GIA_ENTITY_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION) 1m3a
 										#else
-										if((targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//removed; || (targetEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONDITION) 16 April 2014	//removed || (targetEntity->isActionConcept) 1u15a
+										if((targetEntity->entityType == GIA_ENTITY_TYPE_ACTION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX))	//removed; || (targetEntity->entityType == GIA_ENTITY_TYPE_CONDITION) 16 April 2014	//removed || (targetEntity->isActionConcept) 1u15a
 										#endif
 										#endif
 										{
@@ -153,13 +170,13 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											#endif
 										}
 
-										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY)
 										{//declare subclass
 
 											this->addPropertyListToClassDefinition(classDefinition, targetClassDefinition);
 
 										}
-										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION)
 										{//declare conditions
 											//conditionList
 											if(!this->generateClassHeirarchyCondition(classDefinition, targetClassDefinition, targetEntity))
@@ -170,9 +187,9 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED
 											if(targetEntity->conditionTwoWay)
 											{
-												if(!(targetEntity->conditionObjectEntity->empty()))
+												if(!(targetEntity->relationshipObjectEntity->empty()))
 												{
-													string conditionObjectClassName = NLCitemClass.generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+													string conditionObjectClassName = NLCitemClass.generateClassName((targetEntity->relationshipObjectEntity->back())->entity);
 													bool foundClassDefinitionInverse = false;
 													NLCclassDefinition* classDefinitionInverse = NLCclassDefinitionClass.findClassDefinition(classDefinitionList, conditionObjectClassName, &foundClassDefinitionInverse);	//see if class definition already exists
 													if(!foundClassDefinitionInverse)
@@ -181,9 +198,9 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 														classDefinitionList->push_back(classDefinitionInverse);
 													}
 
-													GIAentityNode* conditionEntity = targetEntity;
+													GIAentityNode* conditionRelationshipEntity = targetEntity;
 													GIAentityNode* conditionEntityInverse = NULL;
-													conditionEntityInverse = NLCcodeBlockClass.generateInverseConditionEntity(conditionEntity);
+													conditionEntityInverse = NLCcodeBlockClass.generateInverseConditionEntity(conditionRelationshipEntity);
 													#ifdef NLC_DEBUG
 													cout << "conditionEntityInverse: conditionEntityInverse = " << conditionEntityInverse->entityName << endl;
 													#endif
@@ -205,7 +222,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											}
 											#endif
 										}
-										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITIONS)
+										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITION)
 										{//declare inheritance
 											#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_REDEFINITIONS
 											#ifndef NLC_REDEFINITIONS_FOR_IMMEDIATELY_DECLARED_INDEFINITE_ENTITIES
@@ -245,7 +262,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											#endif
 										}
 										#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
-										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+										else if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION)
 										{//declare functions
 											//functionList
 											bool foundLocalClassDefinition = false;
@@ -254,12 +271,12 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											{
 												bool hasActionObject = false;
 												string actionObjectName = "";
-												GIAentityNode* actionObject = NULL;
-												if(!(targetEntity->actionObjectEntity->empty()))
+												GIAentityNode* actionRelationshipObjectEntity = NULL;
+												if(!(targetEntity->relationshipObjectEntity->empty()))
 												{
-													actionObject = (targetEntity->actionObjectEntity->back())->entity;
+													actionRelationshipObjectEntity = (targetEntity->relationshipObjectEntity->back())->entity;
 													hasActionObject = true;
-													actionObjectName = actionObject->entityName;
+													actionObjectName = actionRelationshipObjectEntity->entityName;
 												}
 
 												#ifdef NLC_DEBUG
@@ -398,7 +415,7 @@ bool NLCtranslatorClassDefinitionsClass::entityIsConceptAndInLogicalCondition(co
 	{//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
 		if(NLCpreprocessorSentenceClass.sentencePertainsToLogicalCondition(sentence))
 		{
-			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+			if(entity->entityType == GIA_ENTITY_TYPE_CONCEPT)
 			{
 				result = true;
 			}
@@ -415,37 +432,37 @@ bool NLCtranslatorClassDefinitionsClass::isSubstanceEntityDefinitionAChildOfTheS
 	bool parentClassIsChildOfChildClass = false;
 
 
-	if(substanceEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)	//added 1t2g
+	if(substanceEntity->entityType == GIA_ENTITY_TYPE_CONCEPT)	//added 1t2g
 	{
 		//ignore this case
 	}
 	#ifndef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
-	else if(substanceEntity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))	//added 1t2g (old implementation: 1r1a)
+	else if(substanceEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX))	//added 1t2g (old implementation: 1r1a)
 	{
 		//ignore this case
 	}
 	#endif
-	else if(parentEntity->entityType != GIA_ENTITY_TYPE_TYPE_CONCEPT)
+	else if(parentEntity->entityType != GIA_ENTITY_TYPE_CONCEPT)
 	{
 		#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
-		if(!(connection->isAlias))
+		if(!GIAtranslatorOperations.connectionIsAlias(connection))
 		{
 			cout << "isSubstanceEntityDefinitionAChildOfTheSubstanceEntity{} error: a substance has a non-alias definition connection to a substance" << endl;
-			exit(1);
+			exit(EXIT_ERROR);
 		}
 		#endif
 	}
 	else
 	{
 		GIAentityNode* parentNetworkIndexEntity = parentNetworkIndexEntity = GIAtranslatorOperations.getPrimaryNetworkIndexNodeDefiningInstance(parentEntity);
-		for(vector<GIAentityConnection*>::iterator connectionIter = parentNetworkIndexEntity->associatedInstanceNodeList->begin(); connectionIter != parentNetworkIndexEntity->associatedInstanceNodeList->end(); connectionIter++)
+		for(vector<GIAentityConnection*>::iterator connectionIter = parentNetworkIndexEntity->instanceNodeList->begin(); connectionIter != parentNetworkIndexEntity->instanceNodeList->end(); connectionIter++)
 		{
 			GIAentityNode* parentConceptEntity = (*connectionIter)->entity;
-			if(parentConceptEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+			if(parentConceptEntity->entityType == GIA_ENTITY_TYPE_CONCEPT)
 			{
-				for(vector<GIAentityConnection*>::iterator connectionIter2 = parentConceptEntity->entityNodeDefinitionList->begin(); connectionIter2 != parentConceptEntity->entityNodeDefinitionList->end(); connectionIter2++)
+				for(vector<GIAentityConnection*>::iterator connectionIter2 = parentConceptEntity->definitionNodeList->begin(); connectionIter2 != parentConceptEntity->definitionNodeList->end(); connectionIter2++)
 				{
-					GIAentityNode* parentConceptParentEntity = (*connectionIter2)->entity;
+					GIAentityNode* parentConceptParentEntity = GIAtranslatorOperations.getDefinitionRelationshipObjectEntity(*connectionIter2);
 					if(parentConceptParentEntity->entityName == substanceEntity->entityName)
 					{
 						parentClassIsChildOfChildClass = true;
@@ -475,9 +492,9 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyCondition(NLCclas
 
 		NLCitem* classDeclarationConditionsListItem = new NLCitem(targetEntity, NLC_ITEM_TYPE_CLASS_DECLARATION_CONDITION_LIST);
 
-		if(!(targetEntity->conditionObjectEntity->empty()))
+		if(!(targetEntity->relationshipObjectEntity->empty()))
 		{
-			string conditionObjectClassName = NLCitemClass.generateClassName((targetEntity->conditionObjectEntity->back())->entity);
+			string conditionObjectClassName = NLCitemClass.generateClassName((targetEntity->relationshipObjectEntity->back())->entity);
 			classDeclarationConditionsListItem->className2 = conditionObjectClassName;
 			#ifdef NLC_DEBUG
 			//cout << "\tgenerateClassHeirarchy{}: conditionObjectClassName = " << conditionObjectClassName << endl;
@@ -505,17 +522,17 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
-		GIAentityNode* actionEntity = *entityIter;
+		GIAentityNode* actionRelationshipEntity = *entityIter;
 
 		#ifdef NLC_DEBUG
-		//cout << "generateClassHeirarchyFunctions{}: actionEntity = " << actionEntity->entityName << endl;
+		//cout << "generateClassHeirarchyFunctions{}: actionRelationshipEntity = " << actionRelationshipEntity->entityName << endl;
 		#endif
 		//valid class checks added 1g12f 14-July-2014
-		if(!(actionEntity->disabled))
+		if(!(actionRelationshipEntity->disabled))
 		{
-			if(this->generateClassHeirarchyValidClassChecks(actionEntity))
+			if(this->generateClassHeirarchyValidClassChecks(actionRelationshipEntity))
 			{
-				if(actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_ACTION)
+				if(actionRelationshipEntity->entityType == GIA_ENTITY_TYPE_ACTION)
 				{
 					string actionOwnerClassDefinitionName = NLCitemClass.generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME);
 
@@ -523,18 +540,18 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 
 					bool hasActionSubject = false;
 					string actionSubjectName = "";
-					GIAentityNode* actionSubject = NULL;
-					if(!(actionEntity->actionSubjectEntity->empty()))
+					GIAentityNode* actionRelationshipSubjectEntity = NULL;
+					if(!(actionRelationshipEntity->relationshipSubjectEntity->empty()))
 					{
-						actionSubject = (actionEntity->actionSubjectEntity->back())->entity;
+						actionRelationshipSubjectEntity = (actionRelationshipEntity->relationshipSubjectEntity->back())->entity;
 						hasActionSubject = true;
-						actionSubjectName = actionSubject->entityName;
+						actionSubjectName = actionRelationshipSubjectEntity->entityName;
 
 						passSubjectObjectValidClassChecks = false;
 						//valid class contents checks added 1g12f 14-July-2014
-						if(this->generateClassHeirarchyTargetValidClassChecks(actionSubject))
+						if(this->generateClassHeirarchyTargetValidClassChecks(actionRelationshipSubjectEntity))
 						{
-							if(!(actionSubject->disabled))
+							if(!(actionRelationshipSubjectEntity->disabled))
 							{
 								passSubjectObjectValidClassChecks = true;
 							}
@@ -543,22 +560,22 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 
 					bool hasActionObject = false;
 					string actionObjectName = "";
-					GIAentityNode* actionObject = NULL;
-					if(!(actionEntity->actionObjectEntity->empty()))
+					GIAentityNode* actionRelationshipObjectEntity = NULL;
+					if(!(actionRelationshipEntity->relationshipObjectEntity->empty()))
 					{
-						actionObject = (actionEntity->actionObjectEntity->back())->entity;
+						actionRelationshipObjectEntity = (actionRelationshipEntity->relationshipObjectEntity->back())->entity;
 						hasActionObject = true;
-						actionObjectName = actionObject->entityName;
+						actionObjectName = actionRelationshipObjectEntity->entityName;
 					}
 
 					//valid class contents checks added 1g12f 14-July-2014
 					if(passSubjectObjectValidClassChecks)
 					{
 						#ifdef NLC_DEBUG
-						//cout << "generateClassHeirarchyFunctions{}: passSubjectObjectValidClassChecks, actionEntity = " << actionEntity->entityName << endl;
+						//cout << "generateClassHeirarchyFunctions{}: passSubjectObjectValidClassChecks, actionRelationshipEntity = " << actionRelationshipEntity->entityName << endl;
 						#endif
 
-						string functionName = actionEntity->entityName;
+						string functionName = actionRelationshipEntity->entityName;
 						string functionOwnerName = actionSubjectName;
 						string functionObjectName = actionObjectName;
 						bool hasFunctionOwnerClass = hasActionSubject;
@@ -590,7 +607,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 							}
 
 							#ifdef NLC_RECORD_ACTION_HISTORY
-							this->fillActionLists(classDefinitionList, hasActionSubject, hasActionObject, actionEntity->entityName, actionObjectName, actionSubjectName);
+							this->fillActionLists(classDefinitionList, hasActionSubject, hasActionObject, actionRelationshipEntity->entityName, actionObjectName, actionSubjectName);
 							#endif
 						}
 						else
@@ -636,7 +653,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 								cout << "functionName: " << functionName << endl;
 								cout << "functionOwnerName: " << functionOwnerName << endl;
 								cout << "functionObjectName: " << functionObjectName << endl;
-								exit(1);
+								exit(EXIT_ERROR);
 								#endif
 
 							}
@@ -666,11 +683,11 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 								string classDefinitionFunctionOwnerName = "";
 								if(hasActionSubject)
 								{
-									classDefinitionFunctionOwnerName = NLCitemClass.generateClassName(actionSubject);
+									classDefinitionFunctionOwnerName = NLCitemClass.generateClassName(actionRelationshipSubjectEntity);
 									#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
-									if(actionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+									if(actionRelationshipEntity->entityType == GIA_ENTITY_TYPE_CONCEPT)
 									{
-										classDefinitionFunctionOwnerName = this->generateConceptClassName(actionSubject);	//is this still required?
+										classDefinitionFunctionOwnerName = this->generateConceptClassName(actionRelationshipSubjectEntity);	//is this still required?
 									}
 									#endif
 								}
@@ -690,7 +707,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 									#endif
 								}
 
-								string classDefinitionFunctionName = NLCitemClass.generateInstanceName(actionEntity);
+								string classDefinitionFunctionName = NLCitemClass.generateInstanceName(actionRelationshipEntity);
 								bool foundClassDefinitionFunction = false;
 								NLCclassDefinition* classDefinitionFunction = NLCclassDefinitionClass.findClassDefinition(classDefinitionList, classDefinitionFunctionName, &foundClassDefinitionFunction);	//see if class definition already exists
 								if(!foundClassDefinitionFunction)
@@ -708,9 +725,9 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 								parentFunctionDependencyClassDefinition->functionDependencyList.push_back(classDefinitionFunction);
 								#endif
 
-								classDefinitionFunction->functionNameSpecial = NLCitemClass.generateFunctionName(actionEntity);
+								classDefinitionFunction->functionNameSpecial = NLCitemClass.generateFunctionName(actionRelationshipEntity);
 								#ifdef NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS
-								classDefinitionFunction->actionOrConditionInstance = actionEntity;
+								classDefinitionFunction->actionOrConditionInstance = actionRelationshipEntity;
 								#endif
 								classDefinitionFunction->isActionOrConditionInstanceNotClass = true;
 
@@ -741,27 +758,27 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 									//added 1l1a for dynamic casting of children
 									if(hasFunctionOwnerClass)
 									{
-										NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(actionSubject, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);	//corrected 1p5a
+										NLCitem* classDeclarationFunctionOwnerItem = new NLCitem(actionRelationshipSubjectEntity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OWNER);	//corrected 1p5a
 										classDefinitionFunction->parameters.push_back(classDeclarationFunctionOwnerItem);
 									}
 									#endif
 
-									NLCitem* classDeclarationFunctionItem = new NLCitem(actionEntity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);	//added 1e1c
+									NLCitem* classDeclarationFunctionItem = new NLCitem(actionRelationshipEntity, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION);	//added 1e1c
 									classDefinitionFunction->parameters.push_back(classDeclarationFunctionItem);
 
 									if(hasFunctionObjectClass)
 									{
-										NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)	//why use actionObject instead of actionObjectName?
+										NLCitem* classDeclarationFunctionObjectItem = new NLCitem(actionObjectName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_FUNCTION_OBJECT);	//for special case (as actions are referenced by instance)	//why use actionRelationshipObjectEntity instead of actionObjectName?
 										classDefinitionFunction->parameters.push_back(classDeclarationFunctionObjectItem);
 									}
 
 									#ifdef NLC_RECORD_ACTION_HISTORY
-									this->fillActionLists(classDefinitionList, hasActionSubject, hasActionObject, actionEntity->entityName, actionObjectName, actionSubjectName);	//fillActionLists will find classDefinitionFunctionOwner
+									this->fillActionLists(classDefinitionList, hasActionSubject, hasActionObject, actionRelationshipEntity->entityName, actionObjectName, actionSubjectName);	//fillActionLists will find classDefinitionFunctionOwner
 									#endif
 
 									#ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
 									//#ifdef NLC_INPUT_FUNCTION_LISTS	//shouldn't this preprocessor requirement be enforced?
-									this->generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(actionEntity, &(classDefinitionFunction->parameters));
+									this->generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(actionRelationshipEntity, &(classDefinitionFunction->parameters));
 									//#endif
 									#endif
 								}
@@ -899,7 +916,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyValidClassChecks(
 	#endif
 	#endif
 	#ifdef GIA_CREATE_NON_SPECIFIC_CONCEPTS_FOR_ALL_NETWORK_INDEXES
-	if(entityNode->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)	//added 1n2f
+	if(entityNode->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX)	//added 1n2f
 	{
 		validClass = false;
 	}
@@ -951,6 +968,13 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyValidClassChecks(
 	}
 	#endif
 
+	#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+	if((entityNode->entityType == GIA_ENTITY_TYPE_PROPERTY) || (entityNode->entityType == GIA_ENTITY_TYPE_DEFINITION))
+	{
+		validClass = false;
+	}
+	#endif
+	
 	return validClass;
 }
 
@@ -977,16 +1001,16 @@ void NLCtranslatorClassDefinitionsClass::generateConceptClassNameRecurse(GIAenti
 {
 	for(vector<GIAentityConnection*>::iterator entityIter = conceptEntity->conditionNodeList->begin(); entityIter != conceptEntity->conditionNodeList->end(); entityIter++)
 	{
-		GIAentityNode* conceptCondition = (*entityIter)->entity;
+		GIAentityNode* conceptConditionRelationshipEntity = (*entityIter)->entity;
 		#ifdef NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
-		if(!(conceptCondition->inverseConditionTwoWay) || (*entityIter)->isReferenceElseFunctionDefinition)		//prevent infinite loop for 2 way conditions
+		if(!(conceptConditionRelationshipEntity->inverseConditionTwoWay) || (*entityIter)->isReferenceElseFunctionDefinition)		//prevent infinite loop for 2 way conditions
 		{
 		#endif
-			if(!(conceptCondition->conditionObjectEntity->empty()))
+			if(!(conceptConditionRelationshipEntity->relationshipObjectEntity->empty()))
 			{
-				GIAentityNode* conceptConditionObject = (conceptCondition->conditionObjectEntity->back())->entity;
-				*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptCondition->entityName + conceptConditionObject->entityName + NLC_CONCEPT_CLASS_CONDITION;
-				*conceptClassName = *conceptClassName + this->generateConceptClassNameRecurse(conceptConditionObject, conceptClassName);	//recurse in case of very detailed concept eg "red dogs next to blue cows"
+				GIAentityNode* conceptConditionRelationshipObjectEntity = (conceptCondition->relationshipObjectEntity->back())->entity;
+				*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptConditionRelationshipEntity->entityName + conceptConditionRelationshipObjectEntity->entityName + NLC_CONCEPT_CLASS_CONDITION;
+				*conceptClassName = *conceptClassName + this->generateConceptClassNameRecurse(conceptConditionRelationshipObjectEntity, conceptClassName);	//recurse in case of very detailed concept eg "red dogs next to blue cows"
 			}
 			else
 			{
@@ -998,9 +1022,9 @@ void NLCtranslatorClassDefinitionsClass::generateConceptClassNameRecurse(GIAenti
 	}
 	for(vector<GIAentityConnection*>::iterator entityIter = conceptEntity->propertyNodeList->begin(); entityIter != conceptEntity->propertyNodeList->end(); entityIter++)
 	{
-		GIAentityNode* conceptProperty = (*entityIter)->entity;
-		*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptProperty->entityName + NLC_CONCEPT_CLASS_PROPERTY;
-		*conceptClassName = *conceptClassName + this->generateConceptClassNameRecurse(conceptProperty, conceptClassName);	//recurse in case of very detailed concept eg "red dogs next to blue cows"
+		GIAentityNode* conceptPropertyRelationshipObjectEntity = getPropertyRelationshipObjectEntity(*entityIter);
+		*conceptClassName = *conceptClassName + NLC_CONCEPT_CLASS_PREPEND + conceptPropertyRelationshipObjectEntity->entityName + NLC_CONCEPT_CLASS_PROPERTY;
+		*conceptClassName = *conceptClassName + this->generateConceptClassNameRecurse(conceptPropertyRelationshipObjectEntity, conceptClassName);	//recurse in case of very detailed concept eg "red dogs next to blue cows"
 	}
 }
 
@@ -1014,14 +1038,14 @@ void NLCtranslatorClassDefinitionsClass::preventDoubleDeclarationsOfClassDefinit
 	for(vector<NLCclassDefinition*>::iterator classDefinitionIter = classDefinitionList->begin(); classDefinitionIter != classDefinitionList->end(); classDefinitionIter++)
 	{
 		NLCclassDefinition* classDefinition = *classDefinitionIter;
-		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES);	//changed from GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS, 1k8b
-		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS);
+		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->propertyList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY);	//changed from GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION, 1k8b
+		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->conditionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION);
 		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->functionList), NLC_ENTITY_VECTOR_CONNECTION_TYPE_FUNCTIONS);
 		#ifdef NLC_RECORD_ACTION_HISTORY
-		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
-		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionIncomingList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS);
-		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionSubjectList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT);	//?not currently required as actionSubject/actionObject lists are defined after function (arguments) have been reconciled
-		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionObjectList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_OBJECT);		//?not currently required as actionSubject/actionObject lists are defined after function (arguments) have been reconciled
+		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION);
+		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionIncomingList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION);
+		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionSubjectList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_RELATIONSHIP_SUBJECT);	//?not currently required as actionRelationshipSubjectEntity/actionRelationshipObjectEntity lists are defined after function (arguments) have been reconciled
+		this->eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist(classDefinition, &(classDefinition->actionObjectList), GIA_ENTITY_VECTOR_CONNECTION_TYPE_RELATIONSHIP_OBJECT);		//?not currently required as actionRelationshipSubjectEntity/actionRelationshipObjectEntity lists are defined after function (arguments) have been reconciled
 		#endif
 	}
 }
@@ -1069,7 +1093,7 @@ void NLCtranslatorClassDefinitionsClass::eraseDuplicateClassDefinitionSublistIte
 bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefinition* classDefinition, const string variableName, const int variableType)
 {
 	bool foundVariable = false;
-	if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES)
+	if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY)
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->propertyList.begin(); localListIter != classDefinition->propertyList.end(); localListIter++)
 		{
@@ -1081,7 +1105,7 @@ bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefin
 			}
 		}
 	}
-	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS)
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION)
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->conditionList.begin(); localListIter != classDefinition->conditionList.end(); localListIter++)
 		{
@@ -1108,7 +1132,7 @@ bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefin
 		}
 	}
 	#ifdef NLC_RECORD_ACTION_HISTORY
-	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS)
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION)
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionList.begin(); localListIter != classDefinition->actionList.end(); localListIter++)
 		{
@@ -1120,7 +1144,7 @@ bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefin
 			}
 		}
 	}
-	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS)
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_REVERSE)
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionIncomingList.begin(); localListIter != classDefinition->actionIncomingList.end(); localListIter++)
 		{
@@ -1132,7 +1156,7 @@ bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefin
 			}
 		}
 	}
-	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT)
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_RELATIONSHIP_SUBJECT)
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionSubjectList.begin(); localListIter != classDefinition->actionSubjectList.end(); localListIter++)
 		{
@@ -1144,7 +1168,7 @@ bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefin
 			}
 		}
 	}
-	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_OBJECT)
+	else if(variableType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_RELATIONSHIP_OBJECT)
 	{
 		for(vector<NLCclassDefinition*>::iterator localListIter = classDefinition->actionObjectList.begin(); localListIter != classDefinition->actionObjectList.end(); localListIter++)
 		{
@@ -1175,28 +1199,28 @@ bool NLCtranslatorClassDefinitionsClass::findVariableInParentClass(NLCclassDefin
 
 
 #ifdef NLC_INTERPRET_ACTION_PROPERTIES_AND_CONDITIONS_AS_FUNCTION_ARGUMENTS
-void NLCtranslatorClassDefinitionsClass::generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(GIAentityNode* actionEntity, vector<NLCitem*>* parameters)
+void NLCtranslatorClassDefinitionsClass::generateFunctionPropertyConditionArgumentsWithActionNetworkIndexInheritance(GIAentityNode* actionRelationshipEntity, vector<NLCitem*>* parameters)
 {
-	this->generateFunctionPropertyConditionArguments(actionEntity, parameters, false);
+	this->generateFunctionPropertyConditionArguments(actionRelationshipEntity, parameters, false);
 
 	#ifdef GIA_TRANSLATOR_DREAM_MODE_LINK_SPECIFIC_CONCEPTS_AND_ACTIONS
 	//Part b: generate object initialisations based on action networkIndexes (class inheritance)
-	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionEntity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < actionEntity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+	for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = actionRelationshipEntity->definitionNodeList->begin(); entityNodeDefinitionListIterator < actionRelationshipEntity->definitionNodeList->end(); entityNodeDefinitionListIterator++)
 	{
 		GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
 		definitionConnection->NLCparsedForCodeBlocks = true;
-		GIAentityNode* definitionEntity = definitionConnection->entity;
-		if(definitionEntity->isActionConcept)
+		GIAentityNode* definitionRelationshipObjectEntity = getDefinitionRelationshipObjectEntity(definitionConnection);
+		if(definitionRelationshipObjectEntity->isActionConcept)
 		{
-			this->generateFunctionPropertyConditionArguments(definitionEntity, parameters, true);
+			this->generateFunctionPropertyConditionArguments(definitionRelationshipObjectEntity, parameters, true);
 		}
 	}
 	#endif
 }
 
-void NLCtranslatorClassDefinitionsClass::generateFunctionPropertyConditionArguments(GIAentityNode* actionEntity, vector<NLCitem*>* parameters, const bool performChildActionDuplicateCheck)
+void NLCtranslatorClassDefinitionsClass::generateFunctionPropertyConditionArguments(GIAentityNode* actionRelationshipEntity, vector<NLCitem*>* parameters, const bool performChildActionDuplicateCheck)
 {
-	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->conditionNodeList->begin(); entityIter != actionEntity->conditionNodeList->end(); entityIter++)
+	for(vector<GIAentityConnection*>::iterator entityIter = actionRelationshipEntity->conditionNodeList->begin(); entityIter != actionRelationshipEntity->conditionNodeList->end(); entityIter++)
 	{
 		GIAentityNode* actionCondition = (*entityIter)->entity;
 		bool alreadyAdded = false;
@@ -1206,20 +1230,20 @@ void NLCtranslatorClassDefinitionsClass::generateFunctionPropertyConditionArgume
 		}
 		if(!alreadyAdded)
 		{
-			GIAentityNode* conditionObject = NULL;
-			if(!(actionCondition->conditionObjectEntity->empty()))
+			GIAentityNode* conditionRelationshipObjectEntity = NULL;
+			if(!(actionCondition->relationshipObjectEntity->empty()))
 			{
-				conditionObject = (actionCondition->conditionObjectEntity->back())->entity;
+				conditionRelationshipObjectEntity = (actionCondition->relationshipObjectEntity->back())->entity;
 			}
 			NLCitem* argumentConditionItem = new NLCitem(actionCondition, NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_CONDITION);
-			argumentConditionItem->className2 = NLCitemClass.generateClassName(conditionObject);
-			argumentConditionItem->instanceName2 = NLCitemClass.generateInstanceName(conditionObject);
+			argumentConditionItem->className2 = NLCitemClass.generateClassName(conditionRelationshipObjectEntity);
+			argumentConditionItem->instanceName2 = NLCitemClass.generateInstanceName(conditionRelationshipObjectEntity);
 			parameters->push_back(argumentConditionItem);
 		}
 	}
-	for(vector<GIAentityConnection*>::iterator entityIter = actionEntity->propertyNodeList->begin(); entityIter != actionEntity->propertyNodeList->end(); entityIter++)
+	for(vector<GIAentityConnection*>::iterator entityIter = actionRelationshipEntity->propertyNodeList->begin(); entityIter != actionRelationshipEntity->propertyNodeList->end(); entityIter++)
 	{
-		GIAentityNode* actionProperty = (*entityIter)->entity;
+		GIAentityNode* actionProperty = getPropertyRelationshipObjectEntity(*entityIter);
 		bool alreadyAdded = false;
 		if(performChildActionDuplicateCheck)
 		{
@@ -1233,7 +1257,7 @@ void NLCtranslatorClassDefinitionsClass::generateFunctionPropertyConditionArgume
 	}
 }
 
-bool NLCtranslatorClassDefinitionsClass::checkDuplicateProperty(const GIAentityNode* propertyEntity, vector<NLCitem*>* parameters)
+bool NLCtranslatorClassDefinitionsClass::checkDuplicateProperty(const GIAentityNode* propertyRelationshipObjectEntity, vector<NLCitem*>* parameters)
 {
 	bool alreadyAdded = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
@@ -1241,7 +1265,7 @@ bool NLCtranslatorClassDefinitionsClass::checkDuplicateProperty(const GIAentityN
 		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_PROPERTY)
 		{
-			if(NLCitemClass.generateClassName(propertyEntity) == currentItem->className)
+			if(NLCitemClass.generateClassName(propertyRelationshipObjectEntity) == currentItem->className)
 			{
 				alreadyAdded = true;
 			}
@@ -1251,7 +1275,7 @@ bool NLCtranslatorClassDefinitionsClass::checkDuplicateProperty(const GIAentityN
 	return alreadyAdded;
 }
 
-bool NLCtranslatorClassDefinitionsClass::checkDuplicateCondition(GIAentityNode* conditionEntity, vector<NLCitem*>* parameters)
+bool NLCtranslatorClassDefinitionsClass::checkDuplicateCondition(GIAentityNode* conditionRelationshipEntity, vector<NLCitem*>* parameters)
 {
 	bool alreadyAdded = false;
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
@@ -1259,13 +1283,13 @@ bool NLCtranslatorClassDefinitionsClass::checkDuplicateCondition(GIAentityNode* 
 		NLCitem* currentItem = *parametersIterator;
 		if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_DECLARATION_ARGUMENT_CONDITION)
 		{
-			GIAentityNode* conditionObjectEntity = NULL;
-			if(!(conditionEntity->conditionObjectEntity->empty()))
+			GIAentityNode* relationshipObjectEntity = NULL;
+			if(!(conditionRelationshipEntity->relationshipObjectEntity->empty()))
 			{
-				conditionObjectEntity = (conditionEntity->conditionObjectEntity->back())->entity;
+				relationshipObjectEntity = (conditionRelationshipEntity->relationshipObjectEntity->back())->entity;
 			}
 
-			if((NLCitemClass.generateClassName(conditionEntity) == currentItem->className) && (NLCitemClass.generateClassName(conditionObjectEntity) == currentItem->className2))
+			if((NLCitemClass.generateClassName(conditionRelationshipEntity) == currentItem->className) && (NLCitemClass.generateClassName(relationshipObjectEntity) == currentItem->className2))
 			{
 				alreadyAdded = true;
 			}

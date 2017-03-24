@@ -2,6 +2,6 @@
 
 CC=g++
 #CFLAGS=-c -Wall
-CFLAGS=-c -W --no-warn -std=c++0x -I../source -I../source/NLClibrary  -I.
+CFLAGS=-c -W --no-warn -std=c++0x -I../source -I../source/NLClibrary  -I. -ggdb
 LDFLAGS=-lglut -lGL -lGLU -lwordnet
 SOURCES= ../source/NLClibrary/NLClibrary.cpp ../source/NLClibrary/NLClibraryGenericEntityClass.cpp ../source/NLClibrary/NLClibraryUserPrint.cpp ../source/NLClibrary/NLClibraryUser.cpp ../source/XMLparserClass.cpp ../source/SHAREDvars.cpp 

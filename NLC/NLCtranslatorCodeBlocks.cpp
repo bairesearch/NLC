@@ -2,9 +2,8 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is licensed under the GNU Affero General Public License
+ * version 3, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -26,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1a 26-February-2017
+ * Project Version: 2a1b 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -361,7 +360,7 @@ bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntitie
 	{
 		GIAentityNode* entity = (*entityIter);
 		#ifdef NLC_DO_NOT_PREDECLARE_LOCAL_LISTS_FOR_QUALITIES
-		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
+		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_QUALITY))
 		#else
 		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true))
 		#endif
@@ -509,7 +508,7 @@ bool NLCtranslatorCodeBlocksClass::generateObjectInitialisationsBasedOnConceptsF
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListSentence->begin(); entityIter != entityNodesActiveListSentence->end(); entityIter++)
 	{
 		GIAentityNode* entity = (*entityIter);
-		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_QUALITY))
+		if(!NLCtranslatorCodeBlocksOperations.checkSpecialCaseEntity(entity, true) && !(entity->entityType == GIA_ENTITY_TYPE_QUALITY))
 		{
 			if(entity->sentenceIndexTemp == sentenceIndex)	//changed 1l15a
 			//if(checkSentenceIndexParsingCodeBlocks(entity, sentenceIndex, false))
@@ -549,7 +548,7 @@ NLCcodeblock* NLCtranslatorCodeBlocksClass::createCodeBlockNewFunction(NLCcodebl
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
 		GIAentityNode* entity = *entityIter;
-		if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
+		if(!(entity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX) && !(entity->entityType == GIA_ENTITY_TYPE_CONCEPT))
 		{
 			if(entity->entityName == functionOwnerName)
 			{
@@ -707,7 +706,7 @@ void NLCtranslatorCodeBlocksClass::generateLocalFunctionArgumentsBasedOnImplicit
 					entityIsAlias = true;
 				}
 				/*
-				for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListReverseIterator = entity->entityNodeDefinitionReverseList->begin(); entityNodeDefinitionListReverseIterator < entity->entityNodeDefinitionReverseList->end(); entityNodeDefinitionListReverseIterator++)
+				for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListReverseIterator = entity->definitionReverseNodeList->begin(); entityNodeDefinitionListReverseIterator < entity->definitionReverseNodeList->end(); entityNodeDefinitionListReverseIterator++)
 				{
 					GIAentityConnection* definitionConnection = (*entityNodeDefinitionListReverseIterator);
 					if(definitionConnection->isAlias)
@@ -774,7 +773,7 @@ bool NLCtranslatorCodeBlocksClass::isDefiniteEntityInitialisation(GIAentityNode*
 	{
 		if(entity->entityName != NLC_PREPROCESSOR_LOGICAL_CONDITION_DUMMY_TEXT_ACTION_OBJECT)
 		{
-			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
+			if(entity->entityType == GIA_ENTITY_TYPE_SUBSTANCE)
 			{
 				NLCpreprocessorSentence* sentence = NULL;
 				if(NLCpreprocessorSentenceClass.getSentenceInFunction(entity->sentenceIndexTemp, currentNLCfunctionInList, &sentence))
@@ -791,24 +790,24 @@ bool NLCtranslatorCodeBlocksClass::isDefiniteEntityInitialisation(GIAentityNode*
 
 						GIAentityNode* targetEntity = NULL;
 						GIAentityConnection* connection = NULL;
-						if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITIONS))
+						if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION))
 						{
 							entityIsEffectiveSubject = true;
 						}
-						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTIES))
+						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY))
 						{
 							entityIsEffectiveSubject = true;
 						}
-						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTIONS))
+						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(childEntity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION))
 						{
 							entityIsEffectiveSubject = true;
 						}
-						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(entity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_INCOMING_ACTIONS))
+						else if(NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(entity, &targetEntity, &connection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_REVERSE))
 						{
 							foundActionIncoming = true;
-							GIAentityNode* actionSubject = NULL;
+							GIAentityNode* actionRelationshipSubjectEntity = NULL;
 							GIAentityConnection* actionSubjectConnection = NULL;
-							if(!NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(targetEntity, &actionSubject, &actionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION_SUBJECT))
+							if(!NLCtranslatorCodeBlocksOperations.getEntityCheckSameReferenceSetAndSentence(targetEntity, &actionRelationshipSubjectEntity, &actionSubjectConnection, sentenceIndex, false, GIA_ENTITY_VECTOR_CONNECTION_TYPE_RELATIONSHIP_SUBJECT))
 							{
 								entityIsEffectiveSubject = true;	//this is required to sync with generateCodeBlocksPart3subjectObjectConnection implementation
 							}
@@ -831,7 +830,7 @@ bool NLCtranslatorCodeBlocksClass::isDefiniteEntityInitialisation(GIAentityNode*
 	if(NLCcodeBlockClass.isDefiniteEntity(entity))
 	#endif
 	{
-		if(!(entity->entityType == GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX))
+		if(!(entity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX))
 		{
 			#ifdef NLC_INPUT_FUNCTION_LISTS
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_FIRST_INSTANCE
@@ -866,7 +865,7 @@ bool NLCtranslatorCodeBlocksClass::generateLocalFunctionArgumentsBasedOnImplicit
 	}
 	#endif
 	#endif
-	if(entityNode->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+	if(entityNode->entityType == GIA_ENTITY_TYPE_CONCEPT)
 	{
 		validClass = false;
 	}
@@ -917,7 +916,7 @@ bool NLCtranslatorCodeBlocksClass::isIndefiniteEntityCorrespondingToDefiniteEnti
 
 	if(indefiniteEntity->entityName == definiteEntity->entityName)
 	{
-		if(!(indefiniteEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT))
+		if(!(indefiniteEntity->entityType == GIA_ENTITY_TYPE_CONCEPT))
 		{		
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_USE_MORE_PRECISE_BUT_REDUNDANT_FUNCTIONS
 			if(!NLCcodeBlockClass.assumedToAlreadyHaveBeenDeclaredInitialisation(indefiniteEntity))
@@ -960,7 +959,7 @@ bool NLCtranslatorCodeBlocksClass::findPropernounDefinitionLink(vector<GIAentity
 		for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 		{
 			GIAentityNode* entity = *entityIter;
-			if(entity->entityType != GIA_ENTITY_TYPE_TYPE_NETWORK_INDEX)	//added 1u9a
+			if(entity->entityType != GIA_ENTITY_TYPE_NETWORK_INDEX)	//added 1u9a
 			{
 				if(entity->entityName == definiteEntity->entityName)
 				{
@@ -972,13 +971,13 @@ bool NLCtranslatorCodeBlocksClass::findPropernounDefinitionLink(vector<GIAentity
 							firstReferenceToPropernounInContextSentenceIndex = entity->sentenceIndexTemp;
 							firstReferenceToPropernounInContext = entity;
 						}
-						for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->entityNodeDefinitionList->begin(); entityNodeDefinitionListIterator < entity->entityNodeDefinitionList->end(); entityNodeDefinitionListIterator++)
+						for(vector<GIAentityConnection*>::iterator entityNodeDefinitionListIterator = entity->definitionNodeList->begin(); entityNodeDefinitionListIterator < entity->definitionNodeList->end(); entityNodeDefinitionListIterator++)
 						{
 							GIAentityConnection* definitionConnection = (*entityNodeDefinitionListIterator);
-							GIAentityNode* definitionEntity = definitionConnection->entity;
-							if(definitionEntity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
+							GIAentityNode* definitionRelationshipObjectEntity = GIAtranslatorOperations.getDefinitionRelationshipObjectEntity(definitionConnection);
+							if(definitionRelationshipObjectEntity->entityType == GIA_ENTITY_TYPE_CONCEPT)
 							{
-								if(definitionEntity->entityName != entity->entityName)	//ignore dream mode definitions connections
+								if(definitionRelationshipObjectEntity->entityName != entity->entityName)	//ignore dream mode definitions connections
 								{
 									//if NLC ref, verify sentence index TODO
 									//eg Africa is a country. Africa has a castle with knights.

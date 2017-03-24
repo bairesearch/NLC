@@ -2,9 +2,8 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is licensed under the GNU Affero General Public License
+ * version 3, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -26,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1a 26-February-2017
+ * Project Version: 2a1b 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -52,7 +51,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	}
 	else
 	{
-		SHAREDvars.setCurrentDirectory(tempFolder);	//save output files to temp folder
+		SHAREDvars.setCurrentDirectory(outputFolder);	//save output files to output folder
 
 		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
@@ -223,7 +222,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 								#ifdef NLC_DEBUG
 								//cout << "startOfSentenceIndexNew1 = " << startOfSentenceIndexNew << endl;
 								#endif
-								if(GIAlrp.isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
+								if(GIApreprocessorMultiwordReduction.isIntrawordPunctuationMark(startOfSentenceIndexNew, &lineContents))
 								{
 									//cout << "isIntrawordPunctuationMark" << endl;
 									startOfSentenceIndexNew = startOfSentenceIndexNew+1;
@@ -391,7 +390,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 									{
 										//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
 										cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
-										exit(1);
+										exit(EXIT_ERROR);
 									}
 								}
 								else
@@ -417,7 +416,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 							{
 								cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
 								cout << "sentenceContents = " << sentenceContents << endl;
-								exit(1);
+								exit(EXIT_ERROR);
 							}
 							else
 							{//!lineFullStopDetected && !nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine
@@ -479,7 +478,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		}
 		#endif
 
-		SHAREDvars.setCurrentDirectory(workingFolder);	//set current directory back to the original workingFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's workingFolder is changed to tempFolder as it should be in the case of NLC preprocessed input)
+		SHAREDvars.setCurrentDirectory(inputFolder);	//set current directory back to the original inputFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's inputFolder is changed to outputFolder as it should be in the case of NLC preprocessed input)
 	}
 
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
@@ -506,7 +505,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 
 	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;
-	exit(1);
+	exit(EXIT_ERROR);
 	#endif
 
 

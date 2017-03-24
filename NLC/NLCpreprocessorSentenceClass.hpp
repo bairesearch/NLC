@@ -2,9 +2,8 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License version 3
- * only, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is licensed under the GNU Affero General Public License
+ * version 3, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -26,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1a 26-February-2017
+ * Project Version: 2a1b 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -131,19 +130,19 @@ class NLCpreprocessorSentenceClassClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase);
-#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
+	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 	public: int generateDummyNumber(const int predefinedVariableIndex);
-#endif
-#endif
+	#endif
+	#endif
 	public: bool isStringNLPparsableWord(string phrase, const bool preprocessorMath);
 	public: bool isStringValidVariableName(string phrase, const bool preprocessor);
 	public: bool isStringNumberPreprocessorMath(string phrase);
 	public: bool isStringNumberOrFractional(string phrase);
 		private: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
 	public: bool isStringAliasFileName(const string phrase);
-#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
+	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 	public: bool isStringIllegalTargetSourceCharacter(const string phrase);
-#endif	
+	#endif	
 	public: bool getSentenceInFunction(const int sentenceIndex, const NLCfunction* currentNLCfunctionInList, NLCpreprocessorSentence** sentenceFound);
 		public: bool getSentenceInSentenceList(const int sentenceIndex, constEffective NLCpreprocessorSentence* firstNLCsentenceInFunction, NLCpreprocessorSentence** sentenceFound);
 	public: bool sentencePertainsToLogicalCondition(const NLCpreprocessorSentence* currentNLCsentenceInList);

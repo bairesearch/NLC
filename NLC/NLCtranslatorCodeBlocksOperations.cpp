@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1e 26-February-2017
+ * Project Version: 2a1f 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -3932,7 +3932,7 @@ bool NLCtranslatorCodeBlocksOperationsClass::checkIndefiniteEntityCorrespondingT
 		NLCpreprocessorSentence* indefiniteEntityNLCsentenceInList = NULL;
 		if(NLCpreprocessorSentenceClass.getSentenceInSentenceList(indefiniteEntity->sentenceIndexTemp, firstNLCsentenceInList, &indefiniteEntityNLCsentenceInList))
 		{
-			 foundIndefiniteEntitySentence = true;
+			foundIndefiniteEntitySentence = true;
 		}
 		
 		if(foundIndefiniteEntitySentence)
@@ -3945,12 +3945,12 @@ bool NLCtranslatorCodeBlocksOperationsClass::checkIndefiniteEntityCorrespondingT
 			}
 			
 			NLCpreprocessorSentence* currentNLCsentenceInList = indefiniteEntityNLCsentenceInList;
-			int minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = indefiniteEntityNLCsentenceInList->indentation;
+			int minimumIndentationBetweenIndefiniteAndDefiniteEntitySentence = indefiniteEntityNLCsentenceInList->indentation;
 			while(currentNLCsentenceInList != definiteEntityNLCsentenceInList)
 			{
-				if(currentNLCsentenceInList->indentation < minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence)
+				if(currentNLCsentenceInList->indentation < minimumIndentationBetweenIndefiniteAndDefiniteEntitySentence)
 				{
-				       minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
+				       minimumIndentationBetweenIndefiniteAndDefiniteEntitySentence = currentNLCsentenceInList->indentation;
 				}
 				currentNLCsentenceInList = currentNLCsentenceInList->next;
 			}
@@ -3962,11 +3962,17 @@ bool NLCtranslatorCodeBlocksOperationsClass::checkIndefiniteEntityCorrespondingT
 			
 			if(foundDefiniteEntitySentence)
 			{
-				if(minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence < indefiniteEntityNLCsentenceInList->indentation)
+				if(minimumIndentationBetweenIndefiniteAndDefiniteEntitySentence < indefiniteEntityNLCsentenceInList->indentation)
 				{
 				       #ifdef GIA_DEBUG
 				       //cout << "checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{}: no reference found" << endl;
 				       #endif
+				}
+				else if(definiteEntityNLCsentenceInList->indentation < indefiniteEntityNLCsentenceInList->indentation)
+				{
+				       #ifdef GIA_DEBUG
+				       //cout << "checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContext{}: no reference found" << endl;
+				       #endif				
 				}
 				else
 				{

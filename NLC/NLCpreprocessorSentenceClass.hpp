@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1d 26-February-2017
+ * Project Version: 2a1e 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -101,8 +101,8 @@ public:
 	#endif
 	#endif
 	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-	string sentenceOriginal;
-	string sentenceContentsOriginal;
+	string sentenceOriginal;		//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
+	string sentenceContentsOriginal;	//this is for !isMath sentences only (it is designed for lines with more than 1 sentence).
 	#endif
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 	string singleWordSentenceActionName;

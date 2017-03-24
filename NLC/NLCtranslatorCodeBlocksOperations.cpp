@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1d 26-February-2017
+ * Project Version: 2a1e 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -3508,7 +3508,7 @@ GIAentityNode* NLCtranslatorCodeBlocksOperationsClass::getSameReferenceSetUnique
 void NLCtranslatorCodeBlocksOperationsClass::generateObjectInitialisationsBasedOnConcepts(GIAentityNode* targetEntity, GIAentityNode* entity, NLCcodeblock** currentCodeBlockInTree, int sentenceIndex, const bool newlyDeclaredEntityInCategoryList)
 {
 	#ifdef NLC_DEBUG
-	//cout << "generateObjectInitialisationsBasedOnConcepts{}: targetEntity = " << targetEntity->entityName << ", entity = " << entity->entityName << endl;
+	cout << "generateObjectInitialisationsBasedOnConcepts{}: targetEntity = " << targetEntity->entityName << ", entity = " << entity->entityName << endl;
 	#endif
 	
 	#ifdef NLC_GENERATE_OBJECT_INITIALISATIONS_BASED_ON_CONCEPTS_DEFINITIONS

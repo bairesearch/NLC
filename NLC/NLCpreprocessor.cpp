@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1d 26-February-2017
+ * Project Version: 2a1e 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -187,14 +187,23 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 						NLCpreprocessorSentence* currentSentenceInLogicalConditionCommandTemp = firstSentenceInLogicalConditionCommandTemp;
 						while(currentSentenceInLogicalConditionCommandTemp->next != NULL)
 						{
+							#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
+							currentSentenceInLogicalConditionCommandTemp->sentenceOriginal = currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents;
+							#endif
+							
 							if(NLCpreprocessorMath.detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents)))
 							{
 								NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 							}
 							else
 							{
+								#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
+								currentSentenceInLogicalConditionCommandTemp->sentenceContentsOriginal = this->removePrependingWhiteSpace(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents);
+								#endif
+								
 								this->addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex,  currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
-								functionContents = functionContents + (currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents) + CHAR_NEWLINE;
+								//cout << "currentSentenceInLogicalConditionCommandTemp->indentation = " << currentSentenceInLogicalConditionCommandTemp->indentation << endl;
+								functionContents = functionContents + indentationContents + NLC_PREPROCESSOR_INDENTATION_CHAR + (currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents) + CHAR_NEWLINE;
 							}
 							currentSentenceInLogicalConditionCommandTemp = currentSentenceInLogicalConditionCommandTemp->next;
 						}
@@ -204,8 +213,6 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 				else
 				{
 				#endif
-
-					functionContents = functionContents + indentationContents;
 
 					//now for each sentence on line:
 					int startOfSentenceIndex = 0;
@@ -288,6 +295,8 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 
 						}
 						
+						currentNLCsentenceInList->sentenceContentsOriginal = this->removePrependingWhiteSpace(sentenceContents);
+
 						//error checking only:
 						int sentenceLogicalConditionOperator;
 						if(this->detectLogicalConditionOperatorAtStartOfLine(&sentenceContents, &sentenceLogicalConditionOperator))
@@ -297,6 +306,8 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 
 						if(!lineFullStopDetected)
 						{
+							//if !lineFullStopDetected, the line has to be all white space
+							
 							stillSentenceToParseOnLine = false;
 
 							bool nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine = false;
@@ -336,7 +347,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 								stillSentenceToParseOnLine = false;
 							}
 						}
-						functionContents = functionContents + sentenceContents + CHAR_NEWLINE;
+						functionContents = functionContents + indentationContents + sentenceContents + CHAR_NEWLINE;
 						startOfSentenceIndex = startOfSentenceIndexNew + 1;	//is +1 required? (to prevent current NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR/CHAR_FULLSTOP from being redetected)
 					}
 
@@ -354,7 +365,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		if(*detectedFunctions)
 		{
 			//create a final function based on the final text..
-			#ifdef NLC_DEBUG_PREPROCESSOR
+			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 			cout << "create new function, functionFileName = " << functionFileName << endl;
 			cout << "functionContents = " << functionContents << endl;
 			#endif
@@ -368,7 +379,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		else
 		{
 		#endif
-			#ifdef NLC_DEBUG_PREPROCESSOR
+			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 			cout << "create preprocessed file, outputFileName = " << outputFileName << endl;
 			cout  << "functionContents = \n" << functionContents << endl;
 			#endif
@@ -380,10 +391,13 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		}
 		#endif
+		
+		
 
 		SHAREDvars.setCurrentDirectory(inputFolder);	//set current directory back to the original inputFolder (this is required for both NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS and GIA, even if the GIA's inputFolder is changed to outputFolder as it should be in the case of NLC preprocessed input)
 	}
 
+	/*
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 	NLCpreprocessorSentence* currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentNLCsentenceInList->next != NULL)
@@ -405,7 +419,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		currentNLCsentenceInList = currentNLCsentenceInList->next;
 	}
 	#endif
-
+	*/
 
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 	cout << "inputFileText = \n" << inputFileText << endl;
@@ -468,11 +482,6 @@ void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(string* sentence
 	#endif
 	#ifdef NLC_DEBUG
 	//cout << "sentenceContents = " << sentenceContents << endl;
-	#endif
-
-	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-	(*currentNLCsentenceInList)->sentenceOriginal = (*sentenceContents);
-	(*currentNLCsentenceInList)->sentenceContentsOriginal = this->removePrependingWhiteSpace(*sentenceContents);
 	#endif
 	
 	#ifdef NLC_MATH_OBJECTS_ADVANCED

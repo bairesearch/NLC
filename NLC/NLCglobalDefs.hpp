@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1d 26-February-2017
+ * Project Version: 2a1e 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -446,7 +446,7 @@
 #endif
 
 #ifndef NLC_DEBUG_DISABLE_1o_CODE
-	#ifndef GIA_LRP_REDUCE_QUOTES_TO_SINGLE_WORDS
+	#ifndef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_REDUCE_QUOTES_TO_SINGLE_WORDS
 		#ifndef NLC_MATH_OBJECTS_STRING
 			#define NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS	//disabled 1r5b
 		#endif
@@ -488,7 +488,7 @@
 		#endif
 		#define NLC_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
-	#ifdef GIA_LRP_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS_AND_FLOATS_AND_TIMES
+	#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS_AND_FLOATS_AND_TIMES
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS	//1n2e
 	#endif
 	//#define NLC_NONOO	//1n1a
@@ -499,15 +499,15 @@
 #endif
 
 #ifndef NLC_DEBUG_DISABLE_1m_CODE
-	#ifdef GIA_LRP_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NORMALISE_INVERSE_PREPOSITIONS
 		#define NLC_NORMALISE_INVERSE_PREPOSITIONS
 		#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
 			#define NLC_PARSE_CONDITION_PARENTS
 		#endif
 	#endif
-	#ifdef GIA_LRP_NORMALISE_TWOWAY_PREPOSITIONS
+	#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NORMALISE_TWOWAY_PREPOSITIONS
 		#define NLC_NORMALISE_TWOWAY_PREPOSITIONS
-		#ifdef GIA_LRP_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+		#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED	//GIA dual conditions are enabled (NLC will not parse GIA entities with inverseConditionTwoWay set; prevents infinite loop parsing - relies on GIA advanced referencing to parse inverted sentence contents. E.g. sentenceIndex1: a new two way condition is created (the inverted condition of which has a inverseConditionTwoWay set) (eg Tom is near the house). This inverted condition is referenced using GIA advanced referencing by a new sentenceIndex2 with inverted sentence contents (eg The house that is near Tom). Yet the condition connection created for the referenced condition (sentenceIndex2) will not be inverted, therefore it will be correctly parsed by NLC)
 		#else
 			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED	//GIA dual conditions are disabled (NLC will create dual condition links; required for parsing of inverted sentence contents; eg Tom is near the house. The house that is near Tom is red.)
@@ -883,7 +883,10 @@
 		#endif
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_DELIMITER_NUMBER_OF_TYPES (1)
 		static char preprocessorMathNLPparsableCharactersDelimiter[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_DELIMITER_NUMBER_OF_TYPES] = {CHAR_SPACE};	//CHAR_COMMA removed 1h1e (parsable phrases are divided by commas)
-		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS (2)
+		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS_LESS_OR_EQUAL_TO_TWO
+		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS_LESS_OR_EQUAL_TO_TWO
+			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS (2)
+		#endif
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE "nlpParsablePhraseRef"
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_SENTENCE "S"
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE "P"
@@ -904,7 +907,7 @@
 			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_BOOLEAN "bool$ "
 		#endif
 
-		#if NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS <= 2
+		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS_LESS_OR_EQUAL_TO_TWO
 			#define NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 			#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 				#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES (8)

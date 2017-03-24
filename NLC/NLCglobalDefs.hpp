@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1f 26-February-2017
+ * Project Version: 2a1g 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1142,6 +1142,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 #ifdef NLC_PRINT_EXPLICIT_LOCAL_CONTEXT
 	#define NLC_LOCAL_CONTEXT_NAME "locaL"
 #endif
+
 
 //#define NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 

@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1f 26-February-2017
+ * Project Version: 2a1g 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2798,8 +2798,8 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksVerifyConnection(
 	#endif
 	else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY)
 	{
-		GIAentityNode* propertyRelationshipObjectEntity = objectEntity;
-		if(this->createCodeBlockForGivenProperty(currentCodeBlockInTree, NLCitemClass.generateInstanceName(subjectEntity), propertyRelationshipObjectEntity, sentenceIndex, &generateContextBlocksVariables, &objectEntityTemp, &generateContextForObjectTemp))
+		GIAentityNode* propertyRelationshipEntity = connection->entity;
+		if(this->createCodeBlockForGivenProperty(currentCodeBlockInTree, NLCitemClass.generateInstanceName(subjectEntity), propertyRelationshipEntity, sentenceIndex, &generateContextBlocksVariables, &objectEntityTemp, &generateContextForObjectTemp))
 		{
 			#ifdef NLC_DEBUG
 			cout << "createCodeBlockForGivenProperty: subjectEntity = " << subjectEntity->entityName << ", propertyRelationshipObjectEntity = " << propertyRelationshipObjectEntity->entityName << endl;
@@ -2829,6 +2829,7 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksVerifyConnection(
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY_DEFINITIONS
 	else if(connectionType == GIA_ENTITY_VECTOR_CONNECTION_TYPE_DEFINITION)
 	{
+		GIAentityNode* definitionRelationshipEntity = connection->entity;
 		GIAentityNode* definitionRelationshipObjectEntity = objectEntity;
 		#ifdef NLC_MATH_OBJECTS
 		if(NLCpreprocessorSentenceClass.isStringNumberOrFractional(definitionRelationshipObjectEntity->entityName)) 
@@ -2848,7 +2849,7 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksVerifyConnection(
 			{	
 				//CHECKTHIS
 				//eg If the name of the dog is Max, ride the bike.
-				if(this->createCodeBlockForGivenAlias(currentCodeBlockInTree, subjectEntity, definitionRelationshipObjectEntity, sentenceIndex, &generateContextBlocksVariables, &objectEntityTemp, &generateContextForObjectTemp))
+				if(this->createCodeBlockForGivenAlias(currentCodeBlockInTree, subjectEntity, definitionRelationshipEntity, sentenceIndex, &generateContextBlocksVariables, &objectEntityTemp, &generateContextForObjectTemp))
 				{
 					#ifdef NLC_DEBUG
 					cout << "createCodeBlockForGivenAlias: subjectEntity = " << subjectEntity->entityName << ", definitionRelationshipObjectEntity = " << definitionRelationshipObjectEntity->entityName << endl;

@@ -647,15 +647,19 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateContextBlocksCategories(NLC
 		
 		if(generateContextBlocksVariables->searchConceptsForChildren)
 		{
-			cout << "\tsentenceIndex = " << sentenceIndex << endl;
-			cout << "\tparentEntity->entityName = " << parentEntity->entityName << endl;
-			cout << "\tparentEntity->entityIndexTemp = " << parentEntity->entityIndexTemp << endl;
+			/*
+			cout << "sentenceIndex = " << sentenceIndex << endl;
+			cout << "parentEntity->entityName = " << parentEntity->entityName << endl;
+			cout << "parentEntity->entityIndexTemp = " << parentEntity->entityIndexTemp << endl;
+			*/
 			//eg "A yellow bannana is on the table. Yellow bannanas are fruit. The fruit is tasty."
 			for(vector<GIAentityConnection*>::iterator definitionNodeListIterator = parentEntity->definitionNodeList->begin(); definitionNodeListIterator < parentEntity->definitionNodeList->end(); definitionNodeListIterator++)
 			{
 				GIAentityNode* parentConcept = GIAtranslatorOperations.getDefinitionRelationshipObjectEntity(*definitionNodeListIterator);	//e.g. "fruit" concept
-				cout << "sentenceIndex = " << sentenceIndex << endl;
-				cout << "parentConcept->entityName = " << parentConcept->entityName << endl;
+				/*
+				cout << "\tsentenceIndex = " << sentenceIndex << endl;
+				cout << "\tparentConcept->entityName = " << parentConcept->entityName << endl;
+				*/
 				if(parentConcept->entityType == GIA_ENTITY_TYPE_CONCEPT)
 				{	
 					if(parentConcept->entityName == parentEntity->entityName)	//added 1q3a

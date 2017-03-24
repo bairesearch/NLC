@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a2a 21-March-2017
+ * Project Version: 2a2b 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1424,7 +1424,11 @@ bool NLCtranslatorCodeBlocksOperationsClass::createCodeBlockForGivenProperty(NLC
 
 
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	if(propertyRelationshipEntity->negative)
+	#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+	if(propertyRelationshipEntity->negative || ((propertyRelationshipObjectEntity->entityType == GIA_ENTITY_TYPE_QUALITY) && propertyRelationshipObjectEntity->negative))	//NB NLP/GIA will assign the negative to the property relationship object for qualities (e.g. x is not red)
+	#else
+	if(propertyRelationshipObjectEntity->negative)	
+	#endif
 	{
 		generateContextBlocksVariables->negativeDetectedInContextBlocks = true;
 	}
@@ -2213,7 +2217,12 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksAddConnection(NLC
 
 			result = true;
 			#ifdef NLC_TRANSLATE_NEGATIVE_PROPERTIES_AND_CONDITIONS
+			#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+			GIAentityNode* propertyRelationshipEntity = connection->entity;
+			if(propertyRelationshipEntity->negative || ((propertyRelationshipObjectEntity->entityType == GIA_ENTITY_TYPE_QUALITY) && propertyRelationshipObjectEntity->negative))	//NB NLP/GIA will assign the negative to the property relationship object for qualities (e.g. x is not red)
+			#else
 			if(connection->negative || ((propertyRelationshipObjectEntity->entityType == GIA_ENTITY_TYPE_QUALITY) && propertyRelationshipObjectEntity->negative))
+			#endif
 			{
 				if(NLCcodeBlockClass.isDefiniteEntity(propertyRelationshipObjectEntity))	//added 1p1b - CHECKTHIS
 				{
@@ -2552,7 +2561,11 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksVerifyConnection(
 		{
 			//this additional negative check code is from createCodeBlockForConnectionType;
 			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+			#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+			if(propertyRelationshipEntity->negative)
+			#else
 			if(connection->negative)
+			#endif
 			{
 				generateContextBlocksVariables.negativeDetectedInContextBlocks = true;
 			}
@@ -2594,7 +2607,11 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksVerifyConnection(
 					result = true;
 
 					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+					#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+					if(definitionRelationshipEntity->negative)
+					#else
 					if(connection->negative)
+					#endif
 					{
 						generateContextBlocksVariables.negativeDetectedInContextBlocks = true;
 					}
@@ -2624,7 +2641,11 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksVerifyConnection(
 
 				
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
+				#ifdef GIA_ADD_ARTIFICIAL_AUXILIARY_FOR_ALL_PROPERTIES_AND_DEFINITIONS
+				if(definitionRelationshipEntity->negative)
+				#else
 				if(connection->negative)
+				#endif
 				{
 					generateContextBlocksVariables.negativeDetectedInContextBlocks = true;
 				}

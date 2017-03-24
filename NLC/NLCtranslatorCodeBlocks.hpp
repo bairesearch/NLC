@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,7 +65,6 @@ class NLCtranslatorCodeBlocksClass
 			private: void generateLocalFunctionArgumentsBasedOnImplicitDeclarations(vector<GIAentityNode*>* entityNodesActiveListComplete, vector<NLCitem*>* parameters, constEffective NLCfunction* currentNLCfunctionInList);
 				private: bool isDefiniteEntityInitialisation(GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList);
 					private: bool generateLocalFunctionArgumentsBasedOnImplicitDeclarationsValidClassChecks(const GIAentityNode* entityNode);
-					private: bool getSentenceInFunction(const GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList, constEffective NLCsentence** sentenceFound);
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS_SUPPORT_LOCAL_LISTS_USE_CLASS_NAMES
 				private: bool findIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity);
 					private: bool isIndefiniteEntityCorrespondingToDefiniteEntityInSameContext(const GIAentityNode* indefiniteEntity, const GIAentityNode* definiteEntity);
@@ -73,9 +73,9 @@ class NLCtranslatorCodeBlocksClass
 				private: bool findPropernounDefinitionLink(vector<GIAentityNode*>* entityNodesActiveListComplete, const GIAentityNode* definiteEntity);
 			#endif
 		#endif
-		private: bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCsentence* currentNLCsentenceInList);	//added 1g8a 11-July-2014
+		private: bool declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCpreprocessorSentence* currentNLCsentenceInList);	//added 1g8a 11-July-2014
 			private: bool declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks(GIAentityNode* entityNode);
-			private: bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCsentence* currentNLCsentenceInList);
+			private: bool declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCpreprocessorSentence* currentNLCsentenceInList);
 	#ifdef NLC_PARSE_OBJECT_CONTEXT_BEFORE_INITIALISE
 		private: bool clearContextGeneratedVariable(vector<GIAentityNode*>* entityNodesActiveListComplete);
 	#endif

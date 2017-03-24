@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -512,7 +513,7 @@ void NLCtranslatorClass::reconcileFunctionDefinitionClassDefinitionArgumentsBase
 
 	#else
 	cout << "reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition{} error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
-	exit(0);
+	exit(1);
 	#endif
 }
 
@@ -623,50 +624,6 @@ void NLCtranslatorClass::addImplicitlyDeclaredVariablesInCurrentFunctionDefiniti
 #endif
 
 
-bool NLCtranslatorClass::getFilesFromFileList(const string inputListFileName, vector<string>* inputTextFileNameList, int* numberOfInputFilesInList)
-{
-	bool result = true;
-	*numberOfInputFilesInList = 0;
-	ifstream parseFileObject(inputListFileName.c_str());
-	if(!parseFileObject.rdbuf()->is_open())
-	{
-		//txt file does not exist in current directory.
-		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
-		cout << "Error: input list file does not exist in current directory: " << inputListFileName << endl;
-		#endif
-		result = false;
-	}
-	else
-	{
-		char currentToken;
-		int fileNameIndex = 0;
-		int charCount = 0;
-		string currentFileName = "";
-		while(parseFileObject.get(currentToken))
-		{
-			if(currentToken == CHAR_NEWLINE)
-			{
-				inputTextFileNameList->push_back(currentFileName);
-				#ifdef GIA_MAIN_DEBUG
-				//cout << "currentFileName = " << currentFileName << endl;
-				#endif
-				currentFileName = "";
-				fileNameIndex++;
-			}
-			else
-			{
-				currentFileName = currentFileName + currentToken;
-			}
-			charCount++;
-		}
-		*numberOfInputFilesInList = fileNameIndex;
-	}
-	#ifdef GIA_MAIN_DEBUG
-	//cout << "*numberOfInputFilesInList = " <<* numberOfInputFilesInList << endl;
-	#endif
-	return result;
-}
-
 #endif
 
 #ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
@@ -685,7 +642,7 @@ bool NLCtranslatorClass::checkAlphaNumericEntityNames(vector<GIAentityNode*>* en
 			{
 				result = false;
 				cout << "checkAlphaNumericEntityNames{}: user input error - entity names cannot start with numbers: " << entity->entityName << endl;
-				exit(0);
+				exit(1);
 			}
 		}
 	}
@@ -777,7 +734,7 @@ NLCclassDefinition* NLCtranslatorClass::createFunctionDefinitionClassDefinition(
 	if(foundFunctionDependencyInList)
 	{
 		cout << "createFunctionDefinitionClassDefinition{}:createNewClassDefinitionFunctionDeclaration{} error: duplicate functionDefinition classDefinition defined" << endl;
-		exit(0);
+		exit(1);
 	}
 	else
 	{

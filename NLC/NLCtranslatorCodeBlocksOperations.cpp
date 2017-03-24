@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -34,7 +35,7 @@
 #include "NLCtranslatorCodeBlocksOperations.hpp"
 
 
-NLCsentence* firstNLCsentenceInListLocal;
+NLCpreprocessorSentence* firstNLCsentenceInListLocal;
 
 
 
@@ -1179,7 +1180,7 @@ bool NLCtranslatorCodeBlocksOperationsClass::createCodeBlockForStatementsForNear
 	else
 	{
 		cout << "NLC_CATEGORIES_PARSE_CONTEXT_CHILDREN_SUBCLASSES: generateContextBlocksCategories{} error: !NLCcodeBlockClass.assumedToAlreadyHaveBeenDeclared(nearestSubclassParentEntity): subclassEntity = " << subclassEntity->entityName << ", nearestSubclassParentEntity = " << nearestSubclassParentEntity->entityName << endl;
-		exit(0);
+		exit(1);
 	}
 	
 	NLCcodeblock* tempCodeBlockInTree = *currentCodeBlockInTree;
@@ -4280,11 +4281,11 @@ void NLCtranslatorCodeBlocksOperationsClass::secondaryComparisonRestoreIDinstanc
 
 
 //based on checkIndefiniteEntityCorrespondingToDefiniteEntityInSameContextGIA from GIAtranslatorOperations.cpp
-NLCsentence* NLCtranslatorCodeBlocksOperationsClass::getFirstNLCsentenceInList()
+NLCpreprocessorSentence* NLCtranslatorCodeBlocksOperationsClass::getFirstNLCsentenceInList()
 {
 	return firstNLCsentenceInListLocal;
 }
-void NLCtranslatorCodeBlocksOperationsClass::setFirstNLCsentenceInList(NLCsentence* firstNLCsentenceInListNew)
+void NLCtranslatorCodeBlocksOperationsClass::setFirstNLCsentenceInList(NLCpreprocessorSentence* firstNLCsentenceInListNew)
 {
 	firstNLCsentenceInListLocal = firstNLCsentenceInListNew;
 }
@@ -4294,42 +4295,33 @@ bool NLCtranslatorCodeBlocksOperationsClass::checkIndefiniteEntityCorrespondingT
 
 	if(indefiniteEntity->sentenceIndexTemp < definiteEntity->sentenceIndexTemp)
 	{
-		NLCsentence* currentNLCsentenceInList = this->getFirstNLCsentenceInList();
+		NLCpreprocessorSentence* firstNLCsentenceInList = this->getFirstNLCsentenceInList();
 		bool foundIndefiniteEntitySentence = false;
-		while((currentNLCsentenceInList->next != NULL) && !foundIndefiniteEntitySentence)
+		NLCpreprocessorSentence* indefiniteEntityNLCsentenceInList = NULL;
+		if(NLCpreprocessorSentenceClass.getSentenceInSentenceList(indefiniteEntity->sentenceIndexTemp, firstNLCsentenceInList, &indefiniteEntityNLCsentenceInList))
 		{
-			if(currentNLCsentenceInList->sentenceIndex == indefiniteEntity->sentenceIndexTemp)
-			{
-			       foundIndefiniteEntitySentence = true;
-			}
-			else
-			{
-			       currentNLCsentenceInList = currentNLCsentenceInList->next;
-			}
+			 foundIndefiniteEntitySentence = true;
 		}
-		NLCsentence* indefiniteEntityNLCsentenceInList = currentNLCsentenceInList;
 		
 		if(foundIndefiniteEntitySentence)
 		{
 			bool foundDefiniteEntitySentence = false;
-			int minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
-			while((currentNLCsentenceInList->next != NULL) && !foundDefiniteEntitySentence)
+			NLCpreprocessorSentence* definiteEntityNLCsentenceInList = NULL;
+			if(NLCpreprocessorSentenceClass.getSentenceInSentenceList(definiteEntity->sentenceIndexTemp, indefiniteEntityNLCsentenceInList, &definiteEntityNLCsentenceInList))
+			{
+				foundDefiniteEntitySentence = true;
+			}
+			
+			NLCpreprocessorSentence* currentNLCsentenceInList = indefiniteEntityNLCsentenceInList;
+			int minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = indefiniteEntityNLCsentenceInList->indentation;
+			while(currentNLCsentenceInList != definiteEntityNLCsentenceInList)
 			{
 				if(currentNLCsentenceInList->indentation < minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence)
 				{
 				       minimumIndentationBetweenIndefiniteAndIndefiniteEntitySentence = currentNLCsentenceInList->indentation;
 				}
-
-				if(currentNLCsentenceInList->sentenceIndex == definiteEntity->sentenceIndexTemp)
-				{
-				       foundDefiniteEntitySentence = true;
-				}
-				else
-				{
-				       currentNLCsentenceInList = currentNLCsentenceInList->next;
-				}
+				currentNLCsentenceInList = currentNLCsentenceInList->next;
 			}
-			NLCsentence* definiteEntityNLCsentenceInList = currentNLCsentenceInList;
 
 			#ifdef GIA_DEBUG
 			cout << "definiteEntity = " << definiteEntity->entityName << endl;
@@ -4370,6 +4362,9 @@ bool NLCtranslatorCodeBlocksOperationsClass::checkIndefiniteEntityCorrespondingT
 
 	return foundIndefiniteEntity;
 }
+
+
+
 
 
 

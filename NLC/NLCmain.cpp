@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -486,7 +487,7 @@ int main(const int argc, const char** argv)
 			else
 			{
 				cout << "error: nlpcompmode set but (NLPdependencyRelationsParser != GIA_NLP_PARSER_RELEX)" << endl;
-				exit(0);
+				exit(1);
 			}
 		}
 
@@ -521,7 +522,7 @@ int main(const int argc, const char** argv)
 			else
 			{
 				cout << "error: nlpcompmodeq set but (queryNLPdependencyRelationsParser != GIA_NLP_PARSER_RELEX)" << endl;
-				exit(0);
+				exit(1);
 			}
 		}
 
@@ -639,8 +640,8 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 1w4c 17-January-2017" << endl;
-			exit(1);
+			cout << "NLC.exe - Project Version: 2a1a 26-February-2017" << endl;
+			exit(0);
 		}
 
 
@@ -656,7 +657,7 @@ int main(const int argc, const char** argv)
 	if(!XMLrulesClassClass().parseNLCrulesXMLfile())
 	{
 		cout << "warning: NLCrules.xml file not detected" << endl;
-		//exit(0);
+		//exit(1);
 	}
 
 	#ifndef NLC_GIA_NLP_OR_XML_INPUT
@@ -680,7 +681,7 @@ int main(const int argc, const char** argv)
 	{
 		if(useInputTextPlainTXTFile)
 		{
-			if(!NLCtranslatorClass().getFilesFromFileList(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
+			if(!SHAREDvarsClass().getFilesFromFileList(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextPlainTXTfileName << endl;
 			}
@@ -727,21 +728,21 @@ int main(const int argc, const char** argv)
 		#ifdef NLC_GIA_NLP_OR_XML_INPUT
 		if(useInputTextNLPrelationXMLFile)
 		{
-			if(!NLCtranslatorClass().getFilesFromFileList(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
+			if(!SHAREDvarsClass().getFilesFromFileList(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextNLPrelationXMLfileName << endl;
 			}
 		}
 		if(useInputTextNLPfeatureXMLFile)
 		{
-			if(!NLCtranslatorClass().getFilesFromFileList(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
+			if(!SHAREDvarsClass().getFilesFromFileList(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextNLPfeatureXMLfileName << endl;
 			}
 		}
 		if(useInputTextXMLFile)
 		{
-			if(!NLCtranslatorClass().getFilesFromFileList(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
+			if(!SHAREDvarsClass().getFilesFromFileList(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
 			{
 				cout << "main{} error: !getFilesFromFileList: " << inputTextXMLFileName << endl;
 			}
@@ -799,7 +800,7 @@ int main(const int argc, const char** argv)
 		else
 		{
 			cout << "main{} error: !preprocessTextForNLC{}" << endl;
-			exit(0);
+			exit(1);
 		}
 	}
 	#endif
@@ -823,7 +824,7 @@ int main(const int argc, const char** argv)
 	vector<string> nlcLibraryFunctionList;
 	int nlcLibraryFunctionListSizeTemp;
 	#ifdef NLC_LIBRARY_STANDARD
-	if(!NLCtranslatorClass().getFilesFromFileList(NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
+	if(!SHAREDvarsClass().getFilesFromFileList(NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
@@ -831,7 +832,7 @@ int main(const int argc, const char** argv)
 	}
 	#endif
 	#ifdef NLC_LIBRARY_USER
-	if(!NLCtranslatorClass().getFilesFromFileList(NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
+	if(!SHAREDvarsClass().getFilesFromFileList(NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
@@ -1147,7 +1148,7 @@ int main(const int argc, const char** argv)
 		#else
 		vector<NLCclassDefinition*>* classDefinitionListAPI = new vector<NLCclassDefinition*>;
 		#endif
-		if(!NLCtranslatorClass().getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
+		if(!SHAREDvarsClass().getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
 		{
 			cout << "main{} error: !getFilesFromFileList: " << APIclassListFileName << endl;
 		}
@@ -1234,7 +1235,7 @@ string NLCmainClass::removeNLCfileNameExtension(string NLCfunctionName)
 	else
 	{
 		cout << "removeNLCfileNameExtension{} error: .nlc (natural language code) file extension expected, NLCfunctionName = " << NLCfunctionName << endl;
-		exit(0);
+		exit(1);
 	}
 	#endif
 	return NLCfunctionNameCleaned;
@@ -1324,7 +1325,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 					if(numberOfDuplicateConnections != actionEntity->actionObjectEntity->size())
 					{
 						cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: numberOfDuplicateConnections inconsistent between action object and action subject" << endl;
-						exit(0);
+						exit(1);
 					}
 					for(int i=0; i < numberOfDuplicateConnections; i++)
 					{
@@ -1342,7 +1343,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 						if(sentenceIndex != (actionEntity->actionObjectEntity->at(i))->sentenceIndexTemp)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sentenceIndex inconsistent between action object and action subject" << endl;
-							exit(0);
+							exit(1);
 						}
 
 						//added 1i8g
@@ -1353,7 +1354,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 						if(sameReferenceSet != (actionEntity->actionObjectEntity->at(i))->sameReferenceSet)
 						{
 							cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: sameReferenceSet inconsistent between action object and action subject" << endl;
-							exit(0);
+							exit(1);
 						}
 
 						#ifdef GIA_TRANSLATOR_MARK_DOUBLE_LINKS_AS_REFERENCE_CONNECTIONS
@@ -1367,7 +1368,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 							cout << " actionEntity->entityName = " <<  actionEntity->entityName << endl;
 							cout << " (actionEntity->actionSubjectEntity->at(i))->entityName = " <<  (actionEntity->actionSubjectEntity->at(i))->entityName << endl;
 							cout << " (actionEntity->actionObjectEntity->at(i))->entityName = " <<  (actionEntity->actionObjectEntity->at(i))->entityName << endl;
-							exit(0);
+							exit(1);
 						}
 						#endif
 
@@ -1402,7 +1403,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 						if(!foundConnection)
 						{
 							cout << "1 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
-							exit(0);
+							exit(1);
 						}
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionEntity->actionObjectEntity->begin(); connectionIter != actionEntity->actionObjectEntity->end(); )
@@ -1432,7 +1433,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 						if(!foundConnection)
 						{
 							cout << "2 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
-							exit(0);
+							exit(1);
 						}
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionSubjectEntity->actionNodeList->begin(); connectionIter != actionSubjectEntity->actionNodeList->end(); )
@@ -1462,7 +1463,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 						if(!foundConnection)
 						{
 							cout << "3 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
-							exit(0);
+							exit(1);
 						}
 						foundConnection = false;
 						for(vector<GIAentityConnection*>::iterator connectionIter = actionObjectEntity->incomingActionNodeList->begin(); connectionIter != actionObjectEntity->incomingActionNodeList->end(); )
@@ -1492,7 +1493,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 						if(!foundConnection)
 						{
 							cout << "4 transformTheActionOfPossessionEgHavingIntoAproperty{} error: !foundConnection - defined connections and their respective sentence indicies are inconsistent between action object and action subject" << endl;
-							exit(0);
+							exit(1);
 						}
 
 						#ifdef GIA_TRANSLATOR_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY_BASIC_HYBRID
@@ -1533,7 +1534,7 @@ void NLCmainClass::transformTheActionOfPossessionEgHavingIntoAproperty(vector<GI
 							if(!artificialHaveEntityDetected)
 							{
 								cout << "transformTheActionOfPossessionEgHavingIntoAproperty{} error: artificialHaveEntityDetected - connection (or sentence indicies) is inconsistent between property parent and property" << endl;
-								exit(0);
+								exit(1);
 							}
 						}
 						if(artificialHaveEntityDetected)
@@ -1710,7 +1711,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 									else
 									{
 										cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition" << endl;
-										exit(0);
+										exit(1);
 									}
 								}
 								#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
@@ -1718,7 +1719,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 								else
 								{
 									cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
-									exit(0);
+									exit(1);
 								}
 								#endif
 								#endif
@@ -1745,7 +1746,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 					else
 					{
 						cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependency->isReferenceElseFunctionDefinition" << endl;
-						exit(0);
+						exit(1);
 					}
 				}
 				#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
@@ -1753,7 +1754,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 				else
 				{
 					cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
-					exit(0);
+					exit(1);
 				}
 				#endif
 				#endif
@@ -1792,7 +1793,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 				else
 				{
 					cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
-					exit(0);
+					exit(1);
 				}
 				#endif
 				#endif

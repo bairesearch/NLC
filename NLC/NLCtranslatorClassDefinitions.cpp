@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -391,22 +392,17 @@ void NLCtranslatorClassDefinitionsClass::addPropertyListToClassDefinition(NLCcla
 #ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_LOGICAL_CONDITION_CONCEPTS
 bool NLCtranslatorClassDefinitionsClass::entityIsConceptAndInLogicalCondition(const GIAentityNode* entity, const NLCfunction* currentNLCfunctionInList)
 {
-	bool result = false;
-	const NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-	while(currentNLCsentenceInList->next != NULL)
-	{
-		if(currentNLCsentenceInList->sentenceIndex == entity->sentenceIndexTemp)	//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
+	bool result = false;	
+	NLCpreprocessorSentence* sentence = NULL;
+	if(NLCpreprocessorSentenceClass.getSentenceInFunction(entity->sentenceIndexTemp, currentNLCfunctionInList, &sentence))
+	{//note (with USE_NLC) separate concept entites are created for logical condition NLP parsable phrases (GIA advanced referencing is not applied), therefore a direct test of sentenceIndexTemp can be made
+		if(NLCpreprocessorSentenceClass.sentencePertainsToLogicalCondition(sentence))
 		{
-			if(NLCpreprocessorSentenceClass.sentencePertainsToLogicalCondition(currentNLCsentenceInList))
+			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
 			{
-				if(entity->entityType == GIA_ENTITY_TYPE_TYPE_CONCEPT)
-				{
-					result = true;
-				}
+				result = true;
 			}
 		}
-
-		currentNLCsentenceInList = currentNLCsentenceInList->next;
 	}
 	return result;
 
@@ -435,7 +431,7 @@ bool NLCtranslatorClassDefinitionsClass::isSubstanceEntityDefinitionAChildOfTheS
 		if(!(connection->isAlias))
 		{
 			cout << "isSubstanceEntityDefinitionAChildOfTheSubstanceEntity{} error: a substance has a non-alias definition connection to a substance" << endl;
-			exit(0);
+			exit(1);
 		}
 		#endif
 	}
@@ -640,7 +636,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 								cout << "functionName: " << functionName << endl;
 								cout << "functionOwnerName: " << functionOwnerName << endl;
 								cout << "functionObjectName: " << functionObjectName << endl;
-								exit(0);
+								exit(1);
 								#endif
 
 							}

@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,7 +55,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		SHAREDvars.setCurrentDirectory(tempFolder);	//save output files to temp folder
 
 		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
-		NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		string currentLine;
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;
 		*detectedFunctions = false;
@@ -163,29 +164,29 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 					#endif
 					#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 					bool detectedLogicalConditionCommand = false;
-					NLCsentence* firstSentenceInLogicalConditionCommandTemp = new NLCsentence();
+					NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp = new NLCpreprocessorSentence();
 					if(currentNLCsentenceInList->hasLogicalConditionOperator)
 					{
 						NLCpreprocessorMath.splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(&lineContents, currentIndentation, currentNLCsentenceInList, firstSentenceInLogicalConditionCommandTemp, &detectedLogicalConditionCommand);
 					}
 					#endif
 
-					NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+					NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&lineContents, currentNLCsentenceInList, &sentenceIndex, currentIndentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 
 					#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 					if(detectedLogicalConditionCommand)
 					{
-						NLCsentence* currentSentenceInLogicalConditionCommandTemp = firstSentenceInLogicalConditionCommandTemp;
+						NLCpreprocessorSentence* currentSentenceInLogicalConditionCommandTemp = firstSentenceInLogicalConditionCommandTemp;
 						while(currentSentenceInLogicalConditionCommandTemp->next != NULL)
 						{
-							if(NLCpreprocessorMath.detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents)))
+							if(NLCpreprocessorMath.detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents)))
 							{
-								NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
+								NLCpreprocessorMath.splitMathDetectedLineIntoNLPparsablePhrases(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, &functionContents, currentNLCfunctionInList, firstNLCfunctionInList);
 							}
 							else
 							{
-								this->addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->sentenceContents), &currentNLCsentenceInList, &sentenceIndex,  currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
-								functionContents = functionContents + (currentSentenceInLogicalConditionCommandTemp->sentenceContents) + CHAR_NEWLINE;
+								this->addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex,  currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
+								functionContents = functionContents + (currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents) + CHAR_NEWLINE;
 							}
 							currentSentenceInLogicalConditionCommandTemp = currentSentenceInLogicalConditionCommandTemp->next;
 						}
@@ -390,7 +391,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 									{
 										//sentence was originally "else ___" and has been converted to "If this is done, ___" - it is invalid because it does not contain a full stop.
 										cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: \"else\" logical condition operation detected in combination with an incomplete command (no full stop): sentenceContents = " << sentenceContents << endl;
-										exit(0);
+										exit(1);
 									}
 								}
 								else
@@ -403,10 +404,10 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 								cout << sentenceIndex << ": sentenceContents = " << sentenceContents + string(dummyCommand) << endl;
 								#endif
 								sentenceContents = sentenceContents + string(dummyCommand);
-								currentNLCsentenceInList->sentenceContents = sentenceContents;
-								currentNLCsentenceInList->sentenceIndex = sentenceIndex;
+								currentNLCsentenceInList->->firstNLPparsablePhraseInList->sentenceContents = sentenceContents;
+								currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex = sentenceIndex;
 								currentNLCsentenceInList->indentation = currentIndentation;
-								currentNLCsentenceInList->next = new NLCsentence();
+								currentNLCsentenceInList->next = new NLCpreprocessorSentence();
 								currentNLCsentenceInList = currentNLCsentenceInList->next;
 								sentenceIndex++;
 							}
@@ -416,7 +417,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 							{
 								cout << "NLC_PREPROCESSOR preprocessTextForNLC{} error: NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES are not currently supported" << endl;
 								cout << "sentenceContents = " << sentenceContents << endl;
-								exit(0);
+								exit(1);
 							}
 							else
 							{//!lineFullStopDetected && !nonWhiteSpaceDetectedBetweenFinalFullStopAndEndOfLine
@@ -482,15 +483,15 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	}
 
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-	NLCsentence* currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
+	NLCpreprocessorSentence* currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentNLCsentenceInList->next != NULL)
 	{
 		for(int i=0;i<currentNLCsentenceInList->indentation; i++)
 		{
 			cout << "\t";
 		}
-		cout << currentNLCsentenceInList->sentenceContents;
-		cout << "(sentenceIndex: " << currentNLCsentenceInList->sentenceIndex << ") ";
+		cout << currentNLCsentenceInList->->firstNLPparsablePhraseInList->sentenceContents;
+		cout << "(sentenceIndex: " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex << ") ";
 		if(currentNLCsentenceInList->isMath)
 		{
 			cout << " (mathText: " << currentNLCsentenceInList->mathText << ")" << endl;
@@ -505,16 +506,16 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 
 	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;
-	exit(0);
+	exit(1);
 	#endif
 
 
-	NLCsentence* currentSentence = firstNLCfunctionInList->firstNLCsentenceInFunction;
+	NLCpreprocessorSentence* currentSentence = firstNLCfunctionInList->firstNLCsentenceInFunction;
 	while(currentSentence->next != NULL)
 	{
 		/*
-		cout << "\ncurrentSentence->sentenceContents = " << currentSentence->sentenceContents << endl;
-		cout << "currentSentence->sentenceIndex = " << currentSentence->sentenceIndex << endl;
+		cout << "\ncurrentSentence->->firstNLPparsablePhraseInList->sentenceContents = " << currentSentence->->firstNLPparsablePhraseInList->sentenceContents << endl;
+		cout << "currentSentence->firstNLPparsablePhraseInList->sentenceIndex = " << currentSentence->firstNLPparsablePhraseInList->sentenceIndex << endl;
 		cout << "currentSentence->indentation = " << currentSentence->indentation << endl;
 		cout << "currentSentence->hasLogicalConditionOperator = " << currentSentence->hasLogicalConditionOperator << endl;
 		cout << "currentSentence->logicalConditionOperator = " << currentSentence->logicalConditionOperator << endl;
@@ -532,7 +533,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	return result;
 }
 
-void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(string* sentenceContents, NLCsentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(string* sentenceContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	#ifdef NLC_PREPROCESSOR_MATH
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -570,10 +571,10 @@ void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(string* sentence
 	cout << "create new sentence" << endl;
 	cout << sentenceIndex << ": sentenceContents = " << sentenceContents << endl;
 	#endif
-	(*currentNLCsentenceInList)->sentenceContents = *sentenceContents;	//full stop should already be appended
-	(*currentNLCsentenceInList)->sentenceIndex = (*sentenceIndex);
+	(*currentNLCsentenceInList)->firstNLPparsablePhraseInList->sentenceContents = *sentenceContents;	//full stop should already be appended
+	(*currentNLCsentenceInList)->firstNLPparsablePhraseInList->sentenceIndex = (*sentenceIndex);
 	(*currentNLCsentenceInList)->indentation = currentIndentation;
-	(*currentNLCsentenceInList)->next = new NLCsentence();
+	(*currentNLCsentenceInList)->next = new NLCpreprocessorSentence();
 	(*currentNLCsentenceInList) = (*currentNLCsentenceInList)->next;
 	(*sentenceIndex) = (*sentenceIndex)+1;
 }

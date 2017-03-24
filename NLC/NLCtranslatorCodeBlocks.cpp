@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,7 +56,7 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 	currentCodeBlockInTree = this->createCodeBlockNewFunction(currentCodeBlockInTree, NLCfunctionName, entityNodesActiveListComplete, currentNLCfunctionInList);
 
 	//#ifdef NLC_PREPROCESSOR
-	NLCsentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+	NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
 	//#endif
 
 	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
@@ -89,8 +90,8 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 
 		#ifdef NLC_DEBUG
 		/*
-		cout << "\ncurrentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
-		cout << "currentNLCsentenceInList->sentenceIndex = " << currentNLCsentenceInList->sentenceIndex << endl;
+		cout << "\ncurrentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents = " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents << endl;
+		cout << "currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex = " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex << endl;
 		cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
 		cout << "currentNLCsentenceInList->hasLogicalConditionOperator = " << currentNLCsentenceInList->hasLogicalConditionOperator << endl;
 		cout << "currentNLCsentenceInList->logicalConditionOperator = " << currentNLCsentenceInList->logicalConditionOperator << endl;
@@ -169,7 +170,7 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 					int dummyNumber = NLCpreprocessorSentenceClass.generateDummyNumber(i+1);
 					string numericalVariableName = currentNLCsentenceInList->variableNamesDetected[i];
 					#ifdef NLC_DEBUG_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES
-					cout << "currentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
+					cout << "currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents = " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents << endl;
 					cout << "dummyNumber = " << dummyNumber << endl;
 					cout << "numericalVariableName = " << numericalVariableName << endl;
 					#endif
@@ -253,29 +254,18 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 			if(currentNLCsentenceInList->next != NULL)
 			{
 				#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-				NLCsentence* nextNLCfullSentenceInList = currentNLCsentenceInList->next;
+				NLCpreprocessorSentence* nextNLCfullSentenceInList = currentNLCsentenceInList->next;
 				bool currentSentenceContainsLogicalCondition = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCurrentSentenceContainsLogicalCondition();
 				int currentLogicalConditionLevel = NLCcodeBlockClass.getCurrentLogicalConditionLevel();
 				#elif defined NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-				NLCsentence* nextNLCfullSentenceInList = currentNLCsentenceInList;
-				if(currentNLCsentenceInList->mathTextNLPparsablePhraseTotal > 0)
-				{
-					for(int phraseIndex=0; phraseIndex<currentNLCsentenceInList->mathTextNLPparsablePhraseTotal; phraseIndex++)
-					{
-						nextNLCfullSentenceInList = nextNLCfullSentenceInList->next;
-					}
-				}
-				else
-				{
-					nextNLCfullSentenceInList = currentNLCsentenceInList->next;
-				}
+				NLCpreprocessorSentence* nextNLCsentenceInList = currentNLCsentenceInList->next;
 				#ifdef NLC_DEBUG_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
 				cout << "\tcurrentNLCsentenceInList->mathTextNLPparsablePhraseTotal = " << currentNLCsentenceInList->mathTextNLPparsablePhraseTotal << endl;
-				cout << "currentNLCsentenceInList->sentenceIndex = " << currentNLCsentenceInList->sentenceIndex << endl;
-				cout << "currentNLCsentenceInList->sentenceContents = " << currentNLCsentenceInList->sentenceContents << endl;
-				cout << "nextNLCfullSentenceInList->sentenceContents = " << nextNLCfullSentenceInList->sentenceContents << endl;
+				cout << "currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex = " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex << endl;
+				cout << "currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents = " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents << endl;
+				cout << "nextNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents = " << nextNLCsentenceInList->firstNLPparsablePhraseInList->sentenceContents << endl;
 				cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
-				cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
+				cout << "nextNLCsentenceInList->indentation = " << nextNLCsentenceInList->indentation << endl;
 				#endif
 				bool currentSentenceContainsLogicalCondition = currentNLCsentenceInList->hasLogicalConditionOperator;
 				int currentLogicalConditionLevel = currentNLCsentenceInList->indentation;
@@ -283,7 +273,7 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 				cout << "preprocessor error: NLC_PREPROCESSOR && !NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED && !NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE" << endl;
 				#endif
 
-				if(nextNLCfullSentenceInList->indentation == (currentNLCsentenceInList->indentation + 1))
+				if(nextNLCsentenceInList->indentation == (currentNLCsentenceInList->indentation + 1))
 				{
 					if(currentSentenceContainsLogicalCondition)
 					{
@@ -291,13 +281,13 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 					}
 					else
 					{
-						cout << "NLC_PREPROCESSOR generateCodeBlocks{} error: invalid indentation of nextNLCfullSentenceInList, sentenceIndex = " << sentenceIndex << endl;
-						cout << "!currentSentenceContainsLogicalCondition && nextNLCfullSentenceInList->indentation == currentNLCsentenceInList->indentation + 1" << endl;
+						cout << "NLC_PREPROCESSOR generateCodeBlocks{} error: invalid indentation of nextNLCsentenceInList, sentenceIndex = " << sentenceIndex << endl;
+						cout << "!currentSentenceContainsLogicalCondition && nextNLCsentenceInList->indentation == currentNLCsentenceInList->indentation + 1" << endl;
 						cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
-						cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
+						cout << "nextNLCsentenceInList->indentation = " << nextNLCsentenceInList->indentation << endl;
 					}
 				}
-				else if(nextNLCfullSentenceInList->indentation == currentNLCsentenceInList->indentation)
+				else if(nextNLCsentenceInList->indentation == currentNLCsentenceInList->indentation)
 				{
 					if(currentSentenceContainsLogicalCondition)
 					{
@@ -308,70 +298,46 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 						//no changes
 					}
 				}
-				else if(nextNLCfullSentenceInList->indentation < currentNLCsentenceInList->indentation)
+				else if(nextNLCsentenceInList->indentation < currentNLCsentenceInList->indentation)
 				{
 					if(currentLogicalConditionLevel == 0)
 					{
 						cout << "NLC_PREPROCESSOR generateCodeBlocks{} error: invalid indentation of currentNLCsentenceInList->next, sentenceIndex = " << sentenceIndex << endl;
-						cout << "(currentLogicalConditionLevel == 0) && nextNLCfullSentenceInList->indentation < currentNLCsentenceInList->indentation" << endl;
+						cout << "(currentLogicalConditionLevel == 0) && nextNLCsentenceInList->indentation < currentNLCsentenceInList->indentation" << endl;
 						cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
-						cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
+						cout << "nextNLCsentenceInList->indentation = " << nextNLCsentenceInList->indentation << endl;
 					}
 					else
 					{
-						currentCodeBlockInTree = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCodeBlockAtPreviousLogicalConditionBaseLevelArray(nextNLCfullSentenceInList->indentation);
+						currentCodeBlockInTree = NLCtranslatorCodeBlocksLogicalConditionsAdvanced.getCodeBlockAtPreviousLogicalConditionBaseLevelArray(nextNLCsentenceInList->indentation);
 						#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
-						NLCcodeBlockClass.setCurrentLogicalConditionLevel(nextNLCfullSentenceInList->indentation);
+						NLCcodeBlockClass.setCurrentLogicalConditionLevel(nextNLCsentenceInList->indentation);
 						#endif
 					}
 				}
 				else
 				{
-					cout << "NLC_PREPROCESSOR generateCodeBlocksPart2logicalConditions{} error: invalid indentation of nextNLCfullSentenceInList, sentenceIndex = " << sentenceIndex << endl;
-					cout << "nextNLCfullSentenceInList->indentation > currentNLCsentenceInList->indentation + 1" << endl;
+					cout << "NLC_PREPROCESSOR generateCodeBlocksPart2logicalConditions{} error: invalid indentation of nextNLCsentenceInList, sentenceIndex = " << sentenceIndex << endl;
+					cout << "nextNLCsentenceInList->indentation > currentNLCsentenceInList->indentation + 1" << endl;
 					cout << "currentNLCsentenceInList->indentation = " << currentNLCsentenceInList->indentation << endl;
-					cout << "nextNLCfullSentenceInList->indentation = " << nextNLCfullSentenceInList->indentation << endl;
+					cout << "nextNLCsentenceInList->indentation = " << nextNLCsentenceInList->indentation << endl;
 				}
 
-				if(nextNLCfullSentenceInList->next != NULL)
-				{
-					for(int i=0; i<((nextNLCfullSentenceInList->sentenceIndex)-sentenceIndex); i++)
-					{
-						sentenceIter++;
-					}
-					//sentenceIndex = nextNLCfullSentenceInList->sentenceIndex;
-				}
-				else
-				{
-					for(int i=0; i<(maxNumberSentences-sentenceIndex)+1; i++)
-					{
-						sentenceIter++;	//go to last sentence in list (finish parsing full sentences)
-					}
-					//sentenceIndex = maxNumberSentences+1;
-				}
-				currentNLCsentenceInList = nextNLCfullSentenceInList;
+				currentNLCsentenceInList = nextNLCsentenceInList;
 				#ifdef NLC_DEBUG
 				//cout << "next sentenceIndex = " << sentenceIndex << endl;
 				#endif
 			}
-			else
-			{
-				sentenceIter++;	//standard iteration - go to last sentence in list (finish parsing full sentences)?
-				#ifdef NLC_DEBUG
-				//cout << "NLC_PREPROCESSOR generateCodeBlocks{}: currentNLCsentenceInList->next == NULL, sentenceIndex = " << sentenceIndex << endl;
-				#endif
-			}
+						
 			#ifdef NLC_LOGICAL_CONDITION_OPERATIONS_ADVANCED
 			NLCtranslatorCodeBlocksLogicalConditionsAdvanced.setCurrentSentenceContainsLogicalCondition(false);
 			#endif
 		}
 		else
 		{
-			sentenceIter++;	//standard iteration
 		}
-		#else
-		sentenceIter++;	//standard iteration
 		#endif
+		sentenceIter++;
 	}
 
 	#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
@@ -388,7 +354,7 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 	return result;
 }
 
-bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCsentence* currentNLCsentenceInList)
+bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntities(NLCcodeblock** currentCodeBlockInTree, vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, const string NLCfunctionName, const NLCpreprocessorSentence* currentNLCsentenceInList)
 {
 	bool result = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
@@ -432,7 +398,7 @@ bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntitie
 	return result;
 }
 
-bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCsentence* currentNLCsentenceInList)
+bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntity(NLCcodeblock** currentCodeBlockInTree, GIAentityNode* entity, const NLCpreprocessorSentence* currentNLCsentenceInList)
 {
 	bool result = true;
 
@@ -810,8 +776,8 @@ bool NLCtranslatorCodeBlocksClass::isDefiniteEntityInitialisation(GIAentityNode*
 		{
 			if(entity->entityType == GIA_ENTITY_TYPE_TYPE_SUBSTANCE)
 			{
-				NLCsentence* sentence = NULL;
-				if(this->getSentenceInFunction(entity, currentNLCfunctionInList, &sentence))
+				NLCpreprocessorSentence* sentence = NULL;
+				if(NLCpreprocessorSentenceClass.getSentenceInFunction(entity->sentenceIndexTemp, currentNLCfunctionInList, &sentence))
 				{
 					if(NLCpreprocessorSentenceClass.sentencePertainsToLogicalCondition(sentence))
 					{
@@ -908,23 +874,6 @@ bool NLCtranslatorCodeBlocksClass::generateLocalFunctionArgumentsBasedOnImplicit
 	return validClass;
 }
 
-bool NLCtranslatorCodeBlocksClass::getSentenceInFunction(const GIAentityNode* entity, constEffective NLCfunction* currentNLCfunctionInList, constEffective NLCsentence** sentenceFound)
-{
-	bool result = false;
-	constEffective NLCsentence* currentNLCsentence = currentNLCfunctionInList->firstNLCsentenceInFunction;
-	while(currentNLCsentence->next != NULL)
-	{
-		if(currentNLCsentence->sentenceIndex == entity->sentenceIndexTemp)	//NB entity->sentenceIndexTemp can be tested here as entities within logical conditions are not advanced referenced (even if GIA advance referencing is enabled)
-		{
-			*sentenceFound = currentNLCsentence;
-			result = true;
-		}
-		
-		currentNLCsentence = currentNLCsentence->next;
-	}
-	
-	return result;
-}
 
 
 

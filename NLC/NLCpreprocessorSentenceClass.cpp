@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,10 +45,25 @@ NLCvariable::~NLCvariable(void)
 {
 }
 
-NLCsentence::NLCsentence(void)
+NLCpreprocessorParsablePhrase::NLCpreprocessorParsablePhrase(void)
 {
-	sentenceContents = "";
 	sentenceIndex = 0;
+	sentenceContents = "";
+	#ifdef NLC_PREPROCESSOR_MATH;
+	mathTextNLPparsablePhraseIndex = INT_DEFAULT_VALUE;
+	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
+	mathTextNLPparsablePhrasePositionApproximate = INT_DEFAULT_VALUE;
+	#endif
+	#endif
+	
+	next = NULL;
+}
+NLCpreprocessorParsablePhrase::~NLCpreprocessorParsablePhrase(void)
+{
+}
+
+NLCpreprocessorSentence::NLCpreprocessorSentence(void)
+{
 	indentation = 0;
 	hasLogicalConditionOperator = false;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -61,8 +77,8 @@ NLCsentence::NLCsentence(void)
 	#ifdef NLC_PREPROCESSOR_MATH
 	isMath = false;
 	mathText = "";
-	mathTextNLPparsablePhraseIndex = INT_DEFAULT_VALUE;
 	mathTextNLPparsablePhraseTotal = INT_DEFAULT_VALUE;
+	firstNLPparsablePhraseInList = new NLCpreprocessorParsablePhrase();
 	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
 	mathTextNLPparsablePhrasePositionApproximate = INT_DEFAULT_VALUE;
 	#endif
@@ -80,14 +96,14 @@ NLCsentence::NLCsentence(void)
 	#endif
 	next = NULL;
 }
-NLCsentence::~NLCsentence(void)
+NLCpreprocessorSentence::~NLCpreprocessorSentence(void)
 {
 }
 
 NLCfunction::NLCfunction(void)
 {
 	NLCfunctionName = "";
-	firstNLCsentenceInFunction = new NLCsentence();
+	firstNLCsentenceInFunction = new NLCpreprocessorSentence();
 	next = NULL;
 }
 NLCfunction::~NLCfunction(void)
@@ -97,7 +113,7 @@ NLCfunction::~NLCfunction(void)
 
 
 #ifdef NLC_PREPROCESSOR_MATH
-string NLCpreprocessorSentenceClassClass::generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCsentence* currentPhrase)
+string NLCpreprocessorSentenceClassClass::generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase)
 {
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 	string variableName = SHAREDvars.replaceAllOccurancesOfString(&(currentPhrase->sentenceContents), STRING_SPACE, "");
@@ -339,13 +355,42 @@ bool NLCpreprocessorSentenceClassClass::isStringIllegalTargetSourceCharacter(con
 }
 #endif
 
-bool NLCpreprocessorSentenceClassClass::sentencePertainsToLogicalCondition(const NLCsentence* currentNLCsentenceInList)
+bool NLCpreprocessorSentenceClassClass::getSentenceInFunction(const int sentenceIndex, const NLCfunction* currentNLCfunctionInList, NLCpreprocessorSentence** sentenceFound)
+{
+	return getSentenceInSentenceList(sentenceIndex, currentNLCfunctionInList->firstNLCsentenceInFunction, sentenceFound);
+}
+
+bool NLCpreprocessorSentenceClassClass::getSentenceInSentenceList(const int sentenceIndex, constEffective NLCpreprocessorSentence* firstNLCsentenceInFunction, NLCpreprocessorSentence** sentenceFound)
 {
 	bool result = false;
-	if(currentNLCsentenceInList->hasLogicalConditionOperator || currentNLCsentenceInList->mathTextNLPparsablePhraseIndex > NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX)
+	constEffective NLCpreprocessorSentence* currentNLCsentence = firstNLCsentenceInFunction;
+	while(currentNLCsentence->next != NULL)
+	{	
+		NLCpreprocessorParsablePhrase* currentParsablePhrase = currentNLCsentence->firstNLPparsablePhraseInList;
+		while(currentParsablePhrase->next != NULL)
+		{
+			if(currentParsablePhrase->sentenceIndex == sentenceIndex)	//NB entity->sentenceIndexTemp can be tested here as entities within logical conditions are not advanced referenced (even if GIA advance referencing is enabled)
+			{
+				*sentenceFound = currentNLCsentence;
+				result = true;
+			}
+			currentParsablePhrase = currentParsablePhrase->next;
+		}
+		
+		currentNLCsentence = currentNLCsentence->next;
+	}
+	
+	return result;
+}
+
+bool NLCpreprocessorSentenceClassClass::sentencePertainsToLogicalCondition(const NLCpreprocessorSentence* currentNLCsentenceInList)
+{
+	bool result = false;
+	if(currentNLCsentenceInList->hasLogicalConditionOperator || currentNLCsentenceInList->mathTextNLPparsablePhraseTotal > 0)	//REDUNDANT: || currentNLCsentenceInList->mathTextNLPparsablePhraseTotal > 0
 	{
-		result = true;	//sentence pertains to a logical condition (first parsable phrase in a logical condition || non-first parsable phrase in a logical condition)
+		result = true;	//sentence pertains to a logical condition
 	}
 	return result;
 }
+
 

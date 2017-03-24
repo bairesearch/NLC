@@ -2,8 +2,9 @@
  *
  * This file is part of BAIPROJECT.
  *
- * BAIPROJECT is licensed under the GNU Affero General Public License
- * version 3, as published by the Free Software Foundation. The use of
+ * BAIPROJECT is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License version 3
+ * only, as published by the Free Software Foundation. The use of
  * intermediary programs or interfaces including file i/o is considered
  * remote network interaction. This does not imply such arrangements
  * do not constitute derivative works.
@@ -25,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 1w4c 17-January-2017
+ * Project Version: 2a1a 26-February-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,19 +50,37 @@ public:
 	string typeString;
 };
 
-class NLCsentence
+class NLCpreprocessorParsablePhrase
 {
 public:
 
-	NLCsentence(void);
-	~NLCsentence(void);
+	NLCpreprocessorParsablePhrase(void);
+	~NLCpreprocessorParsablePhrase(void);
 
-	string sentenceContents;
 	int sentenceIndex;
+	string sentenceContents;	//OLD: sentenceContents
+	#ifdef NLC_PREPROCESSOR_MATH;
+	int mathTextNLPparsablePhraseIndex;
+	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
+	int mathTextNLPparsablePhrasePositionApproximate;	//rough position of parsable phrase within full sentence (first character); will not be accurate due to replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd/restoreExplicitVariableTypes
+	#endif
+	#endif
+	
+	NLCpreprocessorParsablePhrase* next;
+};
+
+class NLCpreprocessorSentence
+{
+public:
+
+	NLCpreprocessorSentence(void);
+	~NLCpreprocessorSentence(void);
+
+	//int sentenceIndex;
 	int indentation;
-	bool hasLogicalConditionOperator;	//set true for first parsable phrase only, or if no NLP parsable phrases [CHECKTHIS]
+	bool hasLogicalConditionOperator;
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-	int logicalConditionOperator;		//set true for first parsable phrase only, or if no NLP parsable phrases [CHECKTHIS]
+	int logicalConditionOperator;
 	#endif
 	#ifdef NLC_PREPROCESSOR_LOGICAL_CONDITION_USE_ROBUST_NLP_INDEPENDENT_CODE
 	bool ifDetected;
@@ -69,13 +88,10 @@ public:
 	bool elseDetected;
 	#endif
 	#ifdef NLC_PREPROCESSOR_MATH
-	bool isMath;		//set true for first parsable phrase only, or if no NLP parsable phrases
-	string mathText;	//set for first parsable phrase only, or if no NLP parsable phrases
-	int mathTextNLPparsablePhraseIndex;
-	int mathTextNLPparsablePhraseTotal;	//set for first parsable phrase only, or if no NLP parsable phrases
-	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
-	int mathTextNLPparsablePhrasePositionApproximate;	//rough position of parsable phrase within full sentence (first character); will not be accurate due to replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd/restoreExplicitVariableTypes
-	#endif
+	bool isMath;
+	string mathText;
+	int mathTextNLPparsablePhraseTotal;
+	NLCpreprocessorParsablePhrase* firstNLPparsablePhraseInList;	//added 2a1a
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 	vector<NLCvariable*> mathTextVariables;	//required to be recorded such that future instances of variable name in non-math text can be temporarily replaced with dummy number 9999 for NLP/GIA to parse
 	vector<string> variableNamesDetected;	//record of original variable name that has been replaced by dummy number for NLP/GIA to parse
@@ -86,13 +102,14 @@ public:
 	#endif
 	#endif
 	#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-	string sentenceOriginal;	//set for first parsable phrase only, or if no NLP parsable phrases
+	string sentenceOriginal;
 	string sentenceContentsOriginal;
 	#endif
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 	string singleWordSentenceActionName;
 	#endif
-	NLCsentence* next;
+	
+	NLCpreprocessorSentence* next;
 
 };
 
@@ -104,7 +121,7 @@ public:
 	~NLCfunction(void);
 
 	string NLCfunctionName;
-	NLCsentence* firstNLCsentenceInFunction;
+	NLCpreprocessorSentence* firstNLCsentenceInFunction;
 	NLCfunction* next;
 };
 
@@ -113,7 +130,7 @@ public:
 class NLCpreprocessorSentenceClassClass
 {
 	private: SHAREDvarsClass SHAREDvars;
-	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCsentence* currentPhrase);
+	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase);
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 	public: int generateDummyNumber(const int predefinedVariableIndex);
 #endif
@@ -126,8 +143,11 @@ class NLCpreprocessorSentenceClassClass
 	public: bool isStringAliasFileName(const string phrase);
 #ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 	public: bool isStringIllegalTargetSourceCharacter(const string phrase);
-#endif
-	public: bool sentencePertainsToLogicalCondition(const NLCsentence* currentNLCsentenceInList);
+#endif	
+	public: bool getSentenceInFunction(const int sentenceIndex, const NLCfunction* currentNLCfunctionInList, NLCpreprocessorSentence** sentenceFound);
+		public: bool getSentenceInSentenceList(const int sentenceIndex, constEffective NLCpreprocessorSentence* firstNLCsentenceInFunction, NLCpreprocessorSentence** sentenceFound);
+	public: bool sentencePertainsToLogicalCondition(const NLCpreprocessorSentence* currentNLCsentenceInList);
+
 };
 
 #endif

@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1g 26-February-2017
+ * Project Version: 2a2a 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -528,9 +528,7 @@
 #ifndef GIA_DISABLE_CROSS_SENTENCE_REFERENCING
 	#define NLC_LOCAL_LISTS_USE_INSTANCE_NAMES	//added 1e, removed 1j2b+, optional 1k11a+
 #endif
-#ifdef NLC_DEBUG_DISABLE_1i_CODE
-	#define NLC_ORIGINAL_INSTANCE_LIST_NAMES
-#else
+#ifndef NLC_DEBUG_DISABLE_1i_CODE
 	#ifndef NLC_DEBUG_DISABLE_1k_CODE
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY	//1k7c	//required for most output languages
 	#endif
@@ -1071,9 +1069,7 @@ static string logicalConditionOperationsWordImmediatelySucceedingForArray[NLC_LO
 	#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS	//added x?
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 		#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION	//added x?
-		#ifdef NLC_DEBUG_DISABLE_1k_CODE
-			#define NLC_INPUT_FUNCTION_LISTS_CHECK_ACTION_SUBJECT_CONTENTS_FOR_IMPLICITLY_DECLARED_PARAMETERS	//added 1d1b
-		#else
+		#ifndef NLC_DEBUG_DISABLE_1k_CODE
 			#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED	//1k9c
 			#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 				#define NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ACCEPT_NON_EXACT_MATCH	//1k9c

@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1g 26-February-2017
+ * Project Version: 2a2a 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -386,9 +386,6 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeClearReferenceContextListExec
 	string contextLevelString = SHAREDvars.convertIntToString(level);
 	#else
 	string contextLevelString = param1->name;
-	#ifdef NLC_DEBUG
-	//cout << "contextLevelString = " << contextLevelString << endl;
-	#endif
 	#endif
 
 	string contextListName = string(NLC_ITEM_TYPE_REFERENCECONTEXTLEVELLIST_VAR_APPENDITION) + contextLevelString;

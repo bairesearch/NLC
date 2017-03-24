@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1g 26-February-2017
+ * Project Version: 2a2a 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -297,25 +297,12 @@ void NLCitemClassClass::parseFunctionNameFromNLCgeneralFunctionName(string NLCfu
 			*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfObjectName-(NLC_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 			*hasFunctionOwnerClass = true;
 			*hasFunctionObjectClass = true;
-			#ifdef NLC_DEBUG
-			cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
-			cout << "NLCfunctionName = " << NLCfunctionName << endl;
-			cout << "functionName = " <<* functionName << endl;
-			cout << "functionOwnerName = " <<* functionOwnerName << endl;
-			cout << "functionObjectName = " <<* functionObjectName << endl;
-			#endif
 		}
 		else
 		{
 			*functionName = NLCfunctionName.substr(indexOfActionName+NLC_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfActionName-NLC_INPUT_FUNCTION_LISTS_ACTION_DELIMITER_LENGTH);
 			*functionOwnerName = NLCfunctionName.substr(0, indexOfActionName);
 			*hasFunctionOwnerClass = true;
-			#ifdef NLC_DEBUG
-			cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
-			cout << "NLCfunctionName = " << NLCfunctionName << endl;
-			cout << "functionName = " <<* functionName << endl;
-			cout << "functionOwnerName = " <<* functionOwnerName << endl;
-			#endif
 		}
 	}
 	else if(indexOfObjectName != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -323,12 +310,6 @@ void NLCitemClassClass::parseFunctionNameFromNLCgeneralFunctionName(string NLCfu
 		*functionName = NLCfunctionName.substr(0, indexOfObjectName);
 		*functionObjectName = NLCfunctionName.substr(indexOfObjectName+NLC_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH, indexOfFirstArgumentOrEnd-indexOfObjectName-(NLC_INPUT_FUNCTION_LISTS_ACTION_OBJECT_DELIMITER_LENGTH));
 		*hasFunctionObjectClass = true;
-		#ifdef NLC_DEBUG
-		cout << "parseFunctionNameFromNLCfunctionName{}:" << endl;
-		cout << "NLCfunctionName = " << NLCfunctionName << endl;
-		cout << "functionName = " <<* functionName << endl;
-		cout << "functionObjectName = " <<* functionObjectName << endl;
-		#endif
 	}
 	else
 	{
@@ -353,9 +334,6 @@ void NLCitemClassClass::parseFunctionNameFromNLCgeneralFunctionName(string NLCfu
 				argumentName = NLCfunctionName.substr(indexOfArgument, NLCfunctionName.length()-indexOfArgument);
 				stillFindingArguments = false;
 			}
-			#ifdef NLC_DEBUG
-			//cout << "argumentName = " << argumentName << endl;
-			#endif
 			NLCitem* functionArgumentItem = new NLCitem(argumentName, NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST);	//NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST
 			additionalArguments->push_back(functionArgumentItem);
 			indexOfArgument = indexOfArgumentNew+NLC_INPUT_FUNCTION_LISTS_ACTION_ARGUMENT_DELIMITER_LENGTH;
@@ -388,23 +366,14 @@ bool NLCitemClassClass::findFunctionArgument(vector<NLCitem*>* parameters, const
 	for(vector<NLCitem*>::iterator parametersIterator = parameters->begin(); parametersIterator < parameters->end(); parametersIterator++)
 	{
 		NLCitem* currentItem = *parametersIterator;
-		#ifdef NLC_DEBUG
-		//cout << "currentItem->itemType = " << currentItem->itemType << endl;
-		#endif
 		if(currentItem->itemType == itemType)
 		{
-			#ifdef NLC_DEBUG
-			//cout << "(currentItem->itemType == itemType)" << endl;
-			#endif
 			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
 			if(currentItem->instanceName == this->generateInstanceName(entity))
 			#else
 			if(currentItem->name == entity->entityName)	//or if(currentItem->className == generateClassName(entity->entityName))
 			#endif
 			{
-				#ifdef NLC_DEBUG
-				//cout << "(currentItem->name)" << endl;
-				#endif
 				*functionArgument = currentItem;
 				foundFunctionArgument = true;
 			}

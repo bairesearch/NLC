@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1g 26-February-2017
+ * Project Version: 2a2a 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -80,9 +80,6 @@ bool NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass::searchForEquivalentS
 	for(vector<GIAentityConnection*>::iterator entityIter = entityCompareNetworkIndex->instanceNodeList->begin(); entityIter != entityCompareNetworkIndex->instanceNodeList->end(); entityIter++)
 	{
 		GIAentityNode* entityCompare = (*entityIter)->entity;
-		#ifdef GIA_DREAMMODE_REFERENCING_DEBUG
-		cout << "searchForEquivalentSubnetToIfStatement{}: identifyReferenceSetsSpecificConcepts: " << entityCompare->entityName << endl;
-		#endif
 
 		if(!(entityCompare->disabled))
 		{
@@ -90,11 +87,6 @@ bool NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass::searchForEquivalentS
 			{
 				GIAqueryTraceParameters queryTraceParameters;		//not used
 
-				#ifdef NLC_DEBUG
-				//cout << "searchForEquivalentSubnetToIfStatement{}:" << endl;
-				//cout << "entityCompare->entityName = " << entityCompare->entityName << endl;
-				//cout << "entity->entityName = " << entity->entityName << endl;
-				#endif
 
 				int numberOfMatchedNodesTemp = 0;
 				int numberOfMatchedNodesRequiredSynonymnDetectionTemp = 0;
@@ -104,9 +96,6 @@ bool NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass::searchForEquivalentS
 				{
 					if(numberOfMatchedNodesTemp > 0)
 					{
-						#ifdef NLC_DEBUG
-						//cout << "exactMatch: numberOfMatchedNodesTemp = " << numberOfMatchedNodesTemp << endl;
-						#endif
 						result = true;
 					}
 				}

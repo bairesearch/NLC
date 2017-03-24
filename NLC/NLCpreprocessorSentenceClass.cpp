@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1g 26-February-2017
+ * Project Version: 2a2a 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -125,9 +125,6 @@ string NLCpreprocessorSentenceClassClass::generateMathTextNLPparsablePhraseRefer
 		if(variableName[0] == preprocessorMathVariableNameCharactersIllegalAsFirst[i])
 		{
 			variableName = string(NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_ILLEGAL_AS_FIRST_REPLACEMENT_CHARACTER) + variableName;
-			#ifdef NLC_DEBUG
-			//cout << "variableName = " << variableName << endl;
-			#endif
 		}
 	}
 	#endif
@@ -158,9 +155,6 @@ bool NLCpreprocessorSentenceClassClass::isStringNLPparsableWord(string phrase, c
 	bool stringIsNLPparsableWord = false;
 	if(phrase.length() == 0)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "isStringNLPparsableWord{} error: phrase.length() == 0" << endl;
-		#endif
 	}
 
 	if(this->isStringValidVariableName(phrase, preprocessorMath))
@@ -187,9 +181,6 @@ bool NLCpreprocessorSentenceClassClass::isStringNLPparsableWord(string phrase, c
 	}
 	#endif
 
-	#ifdef NLC_DEBUG
-	//cout << "isStringNLPparsableWord: " << phrase << " = " << stringIsNLPparsableWord << endl;
-	#endif
 	return stringIsNLPparsableWord;
 }
 
@@ -198,9 +189,6 @@ bool NLCpreprocessorSentenceClassClass::isStringValidVariableName(string phrase,
 {
 	if(phrase.length() == 0)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "isStringValidVariableName{} error: phrase.length() == 0" << endl;
-		#endif
 	}
 
 	bool stringIsNLPparsableWord = true;
@@ -220,11 +208,6 @@ bool NLCpreprocessorSentenceClassClass::isStringValidVariableName(string phrase,
 		if(!legalWordCharacterFound)
 		{
 			stringIsNLPparsableWord = false;
-			#ifdef NLC_DEBUG
-			//cout << "!legalWordCharacterFound: " << c << endl;
-			//cout << "phrase = " << phrase << endl;
-			//cout << "i = " << i << endl;
-			#endif
 		}
 		if(SHAREDvars.charInCharArray(c, preprocessorMathVariableNameCharactersMandatory, NLC_PREPROCESSOR_MATH_VARIABLE_NAME_CHARACTERS_MANDATORY_NUMBER_OF_TYPES))
 		{
@@ -233,9 +216,6 @@ bool NLCpreprocessorSentenceClassClass::isStringValidVariableName(string phrase,
 	}
 	if(!variableNameMandatoryCharacterFoundInCurrentWord)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "!variableNameMandatoryCharacterFoundInCurrentWord" << endl;
-		#endif
 		stringIsNLPparsableWord = false;
 	}
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
@@ -246,9 +226,6 @@ bool NLCpreprocessorSentenceClassClass::isStringValidVariableName(string phrase,
 	}
 	#endif
 
-	#ifdef NLC_DEBUG
-	//cout << "isStringValidVariableName: " << phrase << " = " << stringIsNLPparsableWord << endl;
-	#endif
 	return stringIsNLPparsableWord;
 }
 
@@ -258,9 +235,6 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberPreprocessorMath(string ph
 	bool stringIsNumber = true;
 	if(phrase.length() == 0)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "isStringNumberPreprocessorMath{} error: phrase.length() == 0" << endl;
-		#endif
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
@@ -271,9 +245,6 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberPreprocessorMath(string ph
 			stringIsNumber = false;
 		}
 	}
-	#ifdef NLC_DEBUG
-	//cout << "isStringNumberPreprocessorMath: " << phrase << " = " << stringIsNumber << endl;
-	#endif
 	return stringIsNumber;
 }
 
@@ -282,9 +253,6 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberOrFractional(string phrase
 	bool stringIsNumberOrFractional = true;
 	if(phrase.length() == 0)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "isStringNumberOrFractional{} error: phrase.length() == 0" << endl;
-		#endif
 	}
 	for(int i=0; i<phrase.length(); i++)
 	{
@@ -296,9 +264,6 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberOrFractional(string phrase
 			stringIsNumberOrFractional = false;
 		}
 	}
-	#ifdef NLC_DEBUG
-	//cout << "isStringNumberOrFractional: " << phrase << " = " << stringIsNumberOrFractional << endl;
-	#endif
 	return stringIsNumberOrFractional;
 }
 

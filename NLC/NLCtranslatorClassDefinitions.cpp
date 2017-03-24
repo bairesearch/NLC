@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a1g 26-February-2017
+ * Project Version: 2a2a 21-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -65,9 +65,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 					NLCclassDefinition* classDefinition = NULL;
 					this->addClassDefinitionToList(classDefinitionList, className, &classDefinition);
 
-					#ifdef NLC_DEBUG
-					cout << "generateClassHeirarchy: entityNode->entityName = " << entityNode->entityName << endl;
-					#endif
 
 					for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 					{
@@ -103,9 +100,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 								{
 									if(!(targetEntity->disabled))
 									{
-										#ifdef NLC_DEBUG
-										cout << "generateClassHeirarchy{}: targetEntity->entityName = " << targetEntity->entityName << endl;
-										#endif
 
 										string targetName = "";
 										string targetClassName = "";
@@ -153,9 +147,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 											targetClassDefinition->isConditionInstance = true;
 										}
 
-										#ifdef NLC_DEBUG_PRINT_HIDDEN_CLASSES
-										if(1)	//removed; || (if((targetEntity->entityType == GIA_ENTITY_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX)) 16 April 2014
-										#else
+										#ifndef NLC_DEBUG_PRINT_HIDDEN_CLASSES
 										#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS
 										if((i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_ACTION) || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION))	//removed; ((targetEntity->entityType == GIA_ENTITY_TYPE_CONDITION) && !(targetEntity->entityType == GIA_ENTITY_TYPE_NETWORK_INDEX) ||) 16 April 2014	//restored || (i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_CONDITION) 1m3a
 										#else
@@ -164,9 +156,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 										#endif
 										{
 											targetClassDefinition->isActionOrConditionInstanceNotClass = true;
-											#ifdef NLC_DEBUG
-											//cout << "classDefinition->isActionOrConditionInstanceNotClass" << endl;
-											#endif
 										}
 
 										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY)
@@ -200,9 +189,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 													GIAentityNode* conditionRelationshipEntity = targetEntity;
 													GIAentityNode* conditionEntityInverse = NULL;
 													conditionEntityInverse = NLCcodeBlockClass.generateInverseConditionEntity(conditionRelationshipEntity);
-													#ifdef NLC_DEBUG
-													cout << "conditionEntityInverse: conditionEntityInverse = " << conditionEntityInverse->entityName << endl;
-													#endif
 													bool foundTargetClassDefinitionInverse = false;
 													NLCclassDefinition* targetClassDefinitionInverse = NLCclassDefinitionClass.findClassDefinitionCondition(classDefinitionList, conditionEntityInverse, &foundTargetClassDefinition);	//see if class definition already exists
 													if(!foundTargetClassDefinitionInverse)
@@ -278,9 +264,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 													actionObjectName = actionRelationshipObjectEntity->entityName;
 												}
 
-												#ifdef NLC_DEBUG
-												//cout << "generateClassHeirarchy{}: classDefinition->functionList.push_back: " << targetClassDefinition->name << endl;
-												#endif
 												classDefinition->functionList.push_back(targetClassDefinition);
 
 												#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
@@ -339,11 +322,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 
 			if(!foundTargetClassDefinition)
 			{
-				#ifdef NLC_DEBUG
-				//cout << "generateClassHeirarchy{}: NLC_CLASS_DEFINITIONS_USE_GENERIC_LIBRARY_ENTITY_CLASS: new NLCclassDefinition(" << targetName << endl;
-				//cout << "classDefinition = " << classDefinition->name << endl;
-				//cout << "targetName = " << targetName << endl;
-				#endif
 
 				targetClassDefinition = new NLCclassDefinition(targetName);
 				//classDefinitionList->push_back(targetClassDefinition);	//breaks iteration
@@ -378,9 +356,6 @@ void NLCtranslatorClassDefinitionsClass::addDefinitionToClassDefinition(NLCclass
 	NLCclassDefinition* localClassDefinition = NLCclassDefinitionClass.findClassDefinition(&(classDefinition->definitionList), targetClassDefinition->name, &foundLocalClassDefinition);	//see if class definition already exists
 	if(!foundLocalClassDefinition)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "generateClassHeirarchy{}: classDefinition->definitionList.push_back: " << targetClassDefinition->name << endl;
-		#endif
 
 		classDefinition->definitionList.push_back(targetClassDefinition);
 	}
@@ -393,9 +368,6 @@ void NLCtranslatorClassDefinitionsClass::addPropertyListToClassDefinition(NLCcla
 	NLCclassDefinition* localClassDefinition = NLCclassDefinitionClass.findClassDefinition(&(classDefinition->propertyList), targetClassDefinition->name, &foundLocalClassDefinition);	//see if class definition already exists
 	if(!foundLocalClassDefinition)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "generateClassHeirarchy{}: classDefinition->propertyList.push_back: " << targetClassDefinition->name << endl;
-		#endif
 		classDefinition->propertyList.push_back(targetClassDefinition);
 
 		NLCitem* classDeclarationPropertiesListItem = new NLCitem(targetClassDefinition->name, NLC_ITEM_TYPE_CLASS_DECLARATION_PROPERTY_LIST);	//CHECKTHIS
@@ -483,9 +455,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyCondition(NLCclas
 	NLCclassDefinition* localClassDefinition = NLCclassDefinitionClass.findClassDefinitionCondition(&(classDefinition->conditionList), targetEntity, &foundLocalClassDefinition);	//see if class definition already exists
 	if(!foundLocalClassDefinition)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "generateClassHeirarchy{}: classDefinition->conditionList.push_back: " << targetClassDefinition->name << endl;
-		#endif
 
 		classDefinition->conditionList.push_back(targetClassDefinition);
 
@@ -495,9 +464,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyCondition(NLCclas
 		{
 			string conditionObjectClassName = NLCitemClass.generateClassName((targetEntity->relationshipObjectEntity->back())->entity);
 			classDeclarationConditionsListItem->className2 = conditionObjectClassName;
-			#ifdef NLC_DEBUG
-			//cout << "\tgenerateClassHeirarchy{}: conditionObjectClassName = " << conditionObjectClassName << endl;
-			#endif
 		}
 		else
 		{
@@ -513,9 +479,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyCondition(NLCclas
 #ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
 bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<NLCclassDefinition*>* classDefinitionList, vector<GIAentityNode*>* entityNodesActiveListComplete, NLCclassDefinition* parentFunctionDependencyClassDefinition)
 {
-	#ifdef NLC_DEBUG_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
-	cout << "generateClassHeirarchyFunctions:" << endl;
-	#endif
 
 	bool result = true;
 
@@ -523,9 +486,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 	{
 		GIAentityNode* actionRelationshipEntity = *entityIter;
 
-		#ifdef NLC_DEBUG
-		//cout << "generateClassHeirarchyFunctions{}: actionRelationshipEntity = " << actionRelationshipEntity->entityName << endl;
-		#endif
 		//valid class checks added 1g12f 14-July-2014
 		if(!(actionRelationshipEntity->disabled))
 		{
@@ -570,9 +530,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 					//valid class contents checks added 1g12f 14-July-2014
 					if(passSubjectObjectValidClassChecks)
 					{
-						#ifdef NLC_DEBUG
-						//cout << "generateClassHeirarchyFunctions{}: passSubjectObjectValidClassChecks, actionRelationshipEntity = " << actionRelationshipEntity->entityName << endl;
-						#endif
 
 						string functionName = actionRelationshipEntity->entityName;
 						string functionOwnerName = actionSubjectName;
@@ -583,21 +540,9 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 						bool foundFunctionObjectExactMatch = false;
 						bool rearrangeClassList = false;
 						NLCclassDefinition* functionDefinitionClassDefinition = NULL;
-						#ifdef NLC_DEBUG
-						cout << "hasFunctionOwnerClass = " << hasFunctionOwnerClass << endl;
-						cout << "hasFunctionObjectClass = " << hasFunctionObjectClass << endl;
-						cout << "functionName = " << functionName << endl;
-						cout << "functionOwnerName = " << functionOwnerName << endl;
-						cout << "functionObjectName = " << functionObjectName << endl;
-						#endif
 						//look for both exact and non-exact matches here as functionDependencies have already been created for all functions explicitly declared+defined by the user (don't yet reconcile arguments however)
 						if(NLCclassDefinitionClass.findFunctionDefinitionClassDefinitionExactOrNonExactMatch(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDefinitionClassDefinition, rearrangeClassList, &foundFunctionOwnerExactMatch, &foundFunctionObjectExactMatch))
 						{
-							#ifdef NLC_DEBUG
-							cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch pass: " << functionName << endl;
-							cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch pass: " << functionOwnerName << endl;
-							cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch pass: " << functionObjectName << endl;
-							#endif
 							NLCclassDefinitionFunctionDependency* functionDependenciesInParentTemp = NULL;
 							bool foundFunctionDependencyInParent = NLCclassDefinitionClass.findFunctionDependencyInParent(parentFunctionDependencyClassDefinition, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 							if(!foundFunctionDependencyInParent)
@@ -611,10 +556,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 						}
 						else
 						{
-							#ifdef NLC_DEBUG
-							cout << "findFunctionDefinitionClassDefinitionExactOrNonExactMatch fail: " << functionName << endl;
-							cout << "findFunctionDependencyInList: " << functionName << endl;
-							#endif
 							//function execution reference does not correspond to a new function definition, so create a function declaration for it
 
 							NLCclassDefinition* functionReferenceClassDefinition = NULL;
@@ -623,27 +564,15 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 							if(foundFunctionDependencyInList)
 							{
 								//this will be true if an action (function reference) has been declared twice, but the action (function) has not been defined, eg "A chicken ate a pie. The chicken that ate a pie rowed the boat."
-								#ifdef NLC_DEBUG
-								cout << "generateClassHeirarchyFunctions{}: foundFunctionDependencyInList" << endl;
-								cout << "functionName: " << functionName << endl;
-								cout << "functionOwnerName: " << functionOwnerName << endl;
-								cout << "functionObjectName: " << functionObjectName << endl;
-								#endif
 								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 								NLCclassDefinitionFunctionDependency* functionDependenciesInParentTemp = NULL;
 								bool foundFunctionDependencyInParent = NLCclassDefinitionClass.findFunctionDependencyInParent(parentFunctionDependencyClassDefinition, functionName, functionOwnerName, functionObjectName, true, hasFunctionObjectClass, &functionDependenciesInParentTemp);
 								if(!foundFunctionDependencyInParent)
 								{
-									#ifdef NLC_DEBUG
-									//cout << "generateClassHeirarchyFunctions{}: !foundFunctionDependencyInParent" << endl;
-									#endif
 									parentFunctionDependencyClassDefinition->functionDependencyList.push_back(functionReferenceClassDefinition);
 								}
 								else
 								{
-									#ifdef NLC_DEBUG
-									//cout << "generateClassHeirarchyFunctions{}: foundFunctionDependencyInParent" << endl;
-									#endif
 									duplicateFunctionDeclarationDetected = true;
 									//duplicate function declarations will be ignored
 								}
@@ -658,12 +587,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 							}
 							else
 							{
-								#ifdef NLC_DEBUG
-								cout << "generateClassHeirarchyFunctions{}: !foundFunctionDependencyInList" << endl;
-								cout << "generateClassHeirarchyFunctions{}: functionName = " << functionName << endl;
-								cout << "generateClassHeirarchyFunctions{}: functionOwnerName = " << functionOwnerName << endl;
-								cout << "generateClassHeirarchyFunctions{}: functionObjectName = " << functionObjectName << endl;
-								#endif
 
 								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
 								NLCclassDefinitionFunctionDependency* functionDependency = new NLCclassDefinitionFunctionDependency();
@@ -700,10 +623,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 								{
 									classDefinitionFunctionOwner = new NLCclassDefinition(classDefinitionFunctionOwnerName);
 									classDefinitionList->push_back(classDefinitionFunctionOwner);
-									#ifdef NLC_DEBUG
-									//cout << "generateClassHeirarchyFunctions{}: !foundClassDefinitionFunctionOwner" << endl;
-									//cout << "new NLCclassDefinition(" << classDefinitionFunctionOwnerName << endl;
-									#endif
 								}
 
 								string classDefinitionFunctionName = NLCitemClass.generateInstanceName(actionRelationshipEntity);
@@ -713,10 +632,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 								{
 									classDefinitionFunction = new NLCclassDefinition(classDefinitionFunctionName);
 									classDefinitionList->push_back(classDefinitionFunction);
-									#ifdef NLC_DEBUG
-									//cout << "generateClassHeirarchyFunctions{}: !foundClassDefinitionFunction" << endl;
-									//cout << "new NLCclassDefinition(" << classDefinitionFunctionName << endl;
-									#endif
 								}
 
 								#ifndef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_DO_NOT_ADD_FUNCTION_DEPENDENCY_FOR_FUNCTION_REFERENCES
@@ -883,9 +798,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyValidClassChecks(
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS
 	if(entityNode->entityName == NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT)
 	{
-		#ifdef NLC_DEBUG
-		//cout << "entityNode->entityName = " << entityNode->entityName << endl;
-		#endif
 		validClass = false;
 	}
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
@@ -1037,29 +949,16 @@ void NLCtranslatorClassDefinitionsClass::eraseDuplicateClassDefinitionSublistIte
 		bool localListIterErased = false;
 		NLCclassDefinition* variableClassDefinition = *localListIter;
 		string variableName = variableClassDefinition->name;
-		#ifdef NLC_DEBUG
-		//cout << "variableName = " << variableName << endl;
-		//cout << "variableType = " << entityVectorConnectionNameArray[min(variableType, 12)] << endl;
-		#endif
 		for(vector<NLCclassDefinition*>::iterator parentListIter = classDefinition->definitionList.begin(); parentListIter != classDefinition->definitionList.end(); parentListIter++)
 		{
 			if(!localListIterErased)
 			{
 				NLCclassDefinition* targetClassDefinition = *parentListIter;
-				#ifdef NLC_DEBUG
-				//cout << "targetClassDefinition = " << targetClassDefinition->name << endl;
-				#endif
 
 				if(this->findVariableInParentClass(targetClassDefinition, variableName, variableType))
 				{
 					localListIter = classDefinitionSublist->erase(localListIter);
 					localListIterErased = true;
-					#ifdef NLC_DEBUG
-					cout << "eraseDuplicateClassDefinitionSublistItemIfFoundInParentClassDefinitionSublist{}: localListIterErased" << endl;
-					cout << "variableClassDefinition->name = " << variableClassDefinition->name << endl;
-					cout << "classDefinition->name = " << classDefinition->name << endl;
-					cout << "targetClassDefinition->name = " << targetClassDefinition->name << endl;
-					#endif
 				}
 			}
 		}

@@ -25,7 +25,7 @@
  * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a2d 21-March-2017
+ * Project Version: 2a3a 26-March-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -44,12 +44,18 @@
 #include "NLCpreprocessor.hpp"
 #include "NLCtranslatorClassDefinitions.hpp"
 #include "NLCprintDefs.hpp"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION, setProgLang
+#ifdef NLC_API
 #include "NLCapi.hpp"
+#endif
 #include "NLCtranslatorCodeBlocksOperations.hpp"
 #include "GIAmain.hpp"
 #include "GIAdatabase.hpp"
+#ifdef USE_WORDNET
 #include "GIAwordnet.hpp"
+#endif
+#ifdef GIA_SEMANTIC_PARSER
 #include "GIAsemanticParserDatabase.hpp"
+#endif
 #include "GIAtranslatorOperations.hpp"
 #include "GIAtranslatorDefs.hpp"
 #include "XMLrulesClass.hpp"

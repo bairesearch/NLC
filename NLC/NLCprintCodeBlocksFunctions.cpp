@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a3b 26-March-2017
+ * Project Version: 2a4a 27-April-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -1086,5 +1086,24 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeVerifyDefiniteReferenceExiste
 	NLCprintDefs.printLine(codeBlockText, level, code);
 }
 
-
 #endif
+
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
+void NLCprintCodeBlocksFunctionsClass::findAndRemoveEntityFromLocalListExecuteFunction(const NLCitem* param1, const int progLang, string* code, const int level)
+{
+	string codeBlockExecuteFunctionText = string("") + REMOVE_ENTITY_FROM_LOCAL_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + NLCprintDefs.generateLocalListName(param1) + progLangClassMemberFunctionParametersNext[progLang] + NLCprintDefs.generateInstanceName(param1) + progLangCloseParameterSpace[progLang];	//findAndRemoveEntityFromLocalList(param1instanceList, param1instance);
+	NLCprintDefs.printLine(codeBlockExecuteFunctionText, level, code);
+}
+void NLCprintCodeBlocksFunctionsClass::findAndReplaceEntityInLocalListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level)
+{
+	string codeBlockExecuteFunctionText = string("") + REPLACE_ENTITY_IN_LOCAL_LIST_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + NLCprintDefs.generateLocalListName(param1) + progLangClassMemberFunctionParametersNext[progLang] + NLCprintDefs.generateInstanceName(param1) + progLangClassMemberFunctionParametersNext[progLang] + NLCprintDefs.generateInstanceName(param2) + progLangCloseParameterSpace[progLang];	//findAndReplaceEntityInLocalList(param1instanceList, param1instance, param2instance);
+	NLCprintDefs.printLine(codeBlockExecuteFunctionText, level, code);
+}
+void NLCprintCodeBlocksFunctionsClass::mergeEntity1AttributesIntoEntity2ExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level)
+{
+	string codeBlockExecuteFunctionText = string("") + MERGE_ENTITY1_ATTRIBUTES_INTO_ENTITY2_FUNCTION_NAME + progLangOpenParameterSpace[progLang] + NLCprintDefs.generateInstanceName(param1) + progLangClassMemberFunctionParametersNext[progLang] + NLCprintDefs.generateInstanceName(param2) + progLangCloseParameterSpace[progLang];	//mergeEntity1AttributesIntoEntity2(param1instance, param2instance);
+	NLCprintDefs.printLine(codeBlockExecuteFunctionText, level, code);
+}
+#endif
+
+

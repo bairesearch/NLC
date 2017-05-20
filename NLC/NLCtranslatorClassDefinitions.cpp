@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a3b 26-March-2017
+ * Project Version: 2a4a 27-April-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -50,10 +50,13 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 		{
 			if(this->generateClassHeirarchyValidClassChecks(entityNode))
 			{
+				cout << "1 entityNode = " << entityNode->entityName << endl;
+
 				#ifdef NLC_CLASS_DEFINITIONS_DO_NOT_DEFINE_INHERITANCE_FOR_LOGICAL_CONDITION_CONCEPTS
 				if(!this->entityIsConceptAndInLogicalCondition(entityNode, currentNLCfunctionInList))
 				{
 				#endif
+
 					string className = NLCitemClass.generateClassName(entityNode);
 					#ifdef NLC_CREATE_A_SEPARATE_CLASS_FOR_CONCEPT_DEFINITIONS
 					if(entityNode->entityType == GIA_ENTITY_TYPE_CONCEPT)
@@ -64,7 +67,6 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 
 					NLCclassDefinition* classDefinition = NULL;
 					this->addClassDefinitionToList(classDefinitionList, className, &classDefinition);
-
 
 					for(int i=0; i<GIA_ENTITY_NUMBER_OF_VECTOR_CONNECTION_TYPES; i++)
 					{
@@ -160,7 +162,8 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchy(vector<NLCclassD
 
 										if(i == GIA_ENTITY_VECTOR_CONNECTION_TYPE_PROPERTY)
 										{//declare subclass
-
+											cout << "classDefinition = " << classDefinition->name << endl;
+											cout << "targetClassDefinition = " << targetClassDefinition->name << endl;
 											this->addPropertyListToClassDefinition(classDefinition, targetClassDefinition);
 
 										}
@@ -817,6 +820,7 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyValidClassChecks(
 	if(entityNode->NLCisAlias)
 	{
 		validClass = false;
+		cout << "At: entityNode->entityName " << entityNode->entityName << endl;
 	}
 	#endif
 

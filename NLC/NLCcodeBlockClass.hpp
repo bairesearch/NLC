@@ -25,7 +25,7 @@
  * File Name: NLCcodeBlockClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a3b 26-March-2017
+ * Project Version: 2a4a 27-April-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -179,6 +179,11 @@
 #ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE
 	#define NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_NEW_FUNCTION (84)
 	#define NLC_CODEBLOCK_TYPE_VERIFY_DEFINITE_ENTITY_EXISTENCE_EXECUTE_FUNCTION (85)
+#endif
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
+	#define NLC_CODEBLOCK_TYPE_REMOVE_ENTITY_FROM_LOCAL_LIST_EXECUTE_FUNCTION (86)
+	#define NLC_CODEBLOCK_TYPE_REPLACE_ENTITY_IN_LOCAL_LIST_EXECUTE_FUNCTION (87)
+	#define NLC_CODEBLOCK_TYPE_MERGE_ENTITY1_ATTRIBUTES_INTO_ENTITY2_EXECUTE_FUNCTION (88)
 #endif
 
 //containers:
@@ -641,6 +646,12 @@ class NLCcodeBlockClassClass
 	#endif
 
 	public: GIAentityNode* getSameReferenceSetSubstanceNonQualityChild(GIAentityNode* parentEntity, int sentenceIndex, bool *foundChildEntity);
+	
+	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
+	public: NLCcodeblock* createCodeBlockRemoveEntityFromLocalListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity);
+	public: NLCcodeblock* createCodeBlockReplaceEntityInLocalListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity1, const GIAentityNode* entity2);	//replace entity1 with entity2
+	public: NLCcodeblock* createCodeBlocksMergeEntity1AttributesIntoEntity2ExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity1, const GIAentityNode* entity2);
+	#endif
 };
 
 #endif

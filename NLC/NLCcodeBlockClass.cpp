@@ -25,7 +25,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a3b 26-March-2017
+ * Project Version: 2a4a 27-April-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2573,5 +2573,44 @@ GIAentityNode* NLCcodeBlockClassClass::getSameReferenceSetSubstanceNonQualityChi
 	
 	return childEntity;
 }
+
+#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
+NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockRemoveEntityFromLocalListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity)
+{
+	NLCitem* entityItem = new NLCitem(entity, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REMOVE_ENTITY_FROM_LOCAL_LIST_EXECUTE_FUNCTION;
+	currentCodeBlockInTree = this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+NLCcodeblock* NLCcodeBlockClassClass::createCodeBlockReplaceEntityInLocalListExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity1, const GIAentityNode* entity2)
+{
+	NLCitem* entityItem = new NLCitem(entity1, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem* propertyItem = new NLCitem(entity2, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_REPLACE_ENTITY_IN_LOCAL_LIST_EXECUTE_FUNCTION;
+	currentCodeBlockInTree = this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+NLCcodeblock* NLCcodeBlockClassClass::createCodeBlocksMergeEntity1AttributesIntoEntity2ExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const GIAentityNode* entity1, const GIAentityNode* entity2)
+{
+	NLCitem* entityItem = new NLCitem(entity1, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(entityItem);
+
+	NLCitem* propertyItem = new NLCitem(entity2, NLC_ITEM_TYPE_OBJECT);
+	currentCodeBlockInTree->parameters.push_back(propertyItem);
+
+	int codeBlockType = NLC_CODEBLOCK_TYPE_MERGE_ENTITY1_ATTRIBUTES_INTO_ENTITY2_EXECUTE_FUNCTION;
+	currentCodeBlockInTree = this->createCodeBlock(currentCodeBlockInTree, codeBlockType);
+
+	return currentCodeBlockInTree;
+}
+#endif
 
 

@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocksFunctions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a3b 26-March-2017
+ * Project Version: 2a4a 27-April-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -132,6 +132,12 @@ class NLCprintCodeBlocksFunctionsClass
 	#ifdef NLC_TRANSLATOR_TEST_DEFINITE_ENTITY_EXISTENCE_SUBJECT_OBJECT
 	public: void generateCodeVerifyDefiniteReferenceExistenceNewFunction(const int progLang, string* code, const int level);
 	public: void generateCodeVerifyDefiniteReferenceExistenceExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	#endif
+	
+	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
+	public: void findAndRemoveEntityFromLocalListExecuteFunction(const NLCitem* param1, const int progLang, string* code, const int level);
+	public: void findAndReplaceEntityInLocalListExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
+	public: void mergeEntity1AttributesIntoEntity2ExecuteFunction(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level);
 	#endif
 };
 

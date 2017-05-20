@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2a3b 26-March-2017
+ * Project Version: 2a4a 27-April-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2303,42 +2303,106 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksAddConnection(NLC
 				#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES			
 				if(GIAtranslatorOperations.connectionIsAlias(connection))
 				{
-					result = true;
-					bool aliasAlreadyInitialised = false;
-					string aliasName = definitionRelationshipObjectEntity->entityName;
-					string aliasClassName = subjectEntity->entityName;
-
-					string aliasNameTemp = "";
-					if(NLCcodeBlockClass.findAliasInEntity(definitionRelationshipObjectEntity, &aliasNameTemp)) //*
+					#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
+					if(isDefiniteEntity(subjectEntity) && isDefiniteEntity(definitionRelationshipObjectEntity))
 					{
-						aliasAlreadyInitialised = true;
-					}
-					if(!aliasAlreadyInitialised)
-					{	
-						//check this code
-
-						NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
-						GIAentityNode* parentEntity = NULL;
-
-						*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, subjectEntity, aliasName);
-
-						//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
-						GIAentityNode* aliasNetworkIndexEntity = GIAtranslatorOperations.getPrimaryNetworkIndexNodeDefiningInstance(definitionRelationshipObjectEntity);
-						for(vector<GIAentityConnection*>::iterator iter2 = aliasNetworkIndexEntity->instanceNodeList->begin(); iter2 < aliasNetworkIndexEntity->instanceNodeList->end(); iter2++)
+						if(subjectEntity->entityName == definitionRelationshipObjectEntity->entityName)
 						{
-							GIAentityNode* entity2 = (*iter2)->entity;
-							if(entity2->entityName == aliasName)
+							//eg the new dogs are the original dogs
+							/*
+							NB this merger command can be used to create a subset of dogs by subsequently executing: i = 0; for every new dog {if i = 1, the dog is not new; i = i+1;}
+							*/
+							
+							result = true;
+
+							//1. merge all subject attributes (properties etc) with object 
+							*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksMergeEntity1AttributesIntoEntity2ExecuteFunction(*currentCodeBlockInTree, subjectEntity, definitionRelationshipObjectEntity);
+
+							//2. remove entity from entityLocalList (effectively delete the entity from existence)
+							*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockRemoveEntityFromLocalListExecuteFunction(*currentCodeBlockInTree, subjectEntity);
+						}
+						#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS_DIFFERENT_NAMES
+						else
+						{
+							//eg The dog is the Alsatian		
+							//3. verify that alsations are dogs
+							#ifdef NLC_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY
+							//FUTURE NLC - could use classDefinitionList instead of GIAentityNode concepts; but generateClassHeirarchy needs to be called before generateCodeBlocks
+							if(this->checkParentExists(definitionRelationshipObjectEntity, subjectEntity->entityName))
 							{
-								if(entity2->sentenceIndexTemp > definitionRelationshipObjectEntity->sentenceIndexTemp)	//this test isn't required because of* 
+								result = true;
+
+								//1. merge all subject attributes (properties etc) with object 
+								*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksMergeEntity1AttributesIntoEntity2ExecuteFunction(*currentCodeBlockInTree, subjectEntity, definitionRelationshipObjectEntity);
+
+								//2. replace entity in entityLocalList (effectively delete the entity from existence)
+								*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockReplaceEntityInLocalListExecuteFunction(*currentCodeBlockInTree, subjectEntity, definitionRelationshipObjectEntity);
+							}
+							//3. verify that dogs are alsations
+							else if(this->checkParentExists(subjectEntity, definitionRelationshipObjectEntity->entityName))
+							{
+								result = true;
+
+								//1. merge all subject attributes (properties etc) with object 
+								*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksMergeEntity1AttributesIntoEntity2ExecuteFunction(*currentCodeBlockInTree, definitionRelationshipObjectEntity, subjectEntity);
+
+								//2. replace entity in entityLocalList (effectively delete the entity from existence)
+								*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlockReplaceEntityInLocalListExecuteFunction(*currentCodeBlockInTree, definitionRelationshipObjectEntity, subjectEntity);
+							}
+							else
+							{
+								//currently ignore these cases as NLC definition class hierarchy will not store all properties of Alsatian in dog class (which is required for merger)
+							}
+							#else
+							cout << "NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksAddConnection{} error: NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS_DIFFERENT_NAMES requires NLC_REDEFINITIONS_VERIFY_PARENT_CLASS_INTERNALLY" << endl; 
+							#endif
+						}
+						#endif
+					}
+					else
+					{
+					#endif
+						//eg The name of the red dog is Tom.
+
+						result = true;
+						bool aliasAlreadyInitialised = false;
+						string aliasName = definitionRelationshipObjectEntity->entityName;
+						string aliasClassName = subjectEntity->entityName;
+
+						string aliasNameTemp = "";
+						if(NLCcodeBlockClass.findAliasInEntity(definitionRelationshipObjectEntity, &aliasNameTemp)) //*
+						{
+							aliasAlreadyInitialised = true;
+						}
+						if(!aliasAlreadyInitialised)
+						{	
+							//check this code
+
+							NLCcodeblock* firstCodeBlockInSentence = *currentCodeBlockInTree;
+							GIAentityNode* parentEntity = NULL;
+
+							*currentCodeBlockInTree = NLCcodeBlockClass.createCodeBlocksAddAliasToEntityAliasList(*currentCodeBlockInTree, subjectEntity, aliasName);
+
+							//1k14c; replace all alias GIA entities with their respective class (eg dog), and add an alias to their vector list (eg Tom)
+							GIAentityNode* aliasNetworkIndexEntity = GIAtranslatorOperations.getPrimaryNetworkIndexNodeDefiningInstance(definitionRelationshipObjectEntity);
+							for(vector<GIAentityConnection*>::iterator iter2 = aliasNetworkIndexEntity->instanceNodeList->begin(); iter2 < aliasNetworkIndexEntity->instanceNodeList->end(); iter2++)
+							{
+								GIAentityNode* entity2 = (*iter2)->entity;
+								if(entity2->entityName == aliasName)
 								{
-									entity2->aliasList.push_back(aliasName);
-									entity2->entityName = aliasClassName;	
+									if(entity2->sentenceIndexTemp > definitionRelationshipObjectEntity->sentenceIndexTemp)	//this test isn't required because of* 
+									{
+										entity2->aliasList.push_back(aliasName);
+										entity2->entityName = aliasClassName;	
+									}
 								}
 							}
-						}
 
-						definitionRelationshipObjectEntity->NLCisAlias = true; //added 1o1b (prevents addition of alias to class heirachy)	
+							definitionRelationshipObjectEntity->NLCisAlias = true; //added 1o1b (prevents addition of alias to class heirachy)	
+						}
+					#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_MERGERS
 					}
+					#endif
 				}
 				else
 				{

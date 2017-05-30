@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3a 25-May-2017
+ * Project Version: 2b3b 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -91,7 +91,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 				cout << "NLCpreprocessorClass::preprocessTextForNLC{} error: !generateSentenceWordList" << endl;
 				exit(EXIT_ERROR);
 			}
-			cout << "1 lineContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents) << endl;
+			//cout << "lineContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents) << endl;
 
 			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 			string currentLine = GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents);

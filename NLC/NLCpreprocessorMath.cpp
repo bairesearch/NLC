@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3a 25-May-2017
+ * Project Version: 2b3b 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -177,7 +177,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 		GIApreprocessorWord* currentWordTag = (*lineContents)[w];
 		string currentWord = currentWordTag->tagName;
 		//NLP parsable phrase is taken to be at least 2 consecutive words delimited by a space ie, [a-zA-Z0-9_] [a-zA-Z0-9_]
-		cout << "currentWord = " << currentWord << endl;
+		
+		//cout << "currentWord = " << currentWord << endl;
 		
 		//eg y = x+the number of house in the park
 		//eg y = x+(the number of house in the park)
@@ -193,7 +194,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 		}
 		if(wordIsNLPparsable)
 		{
-			cout << "wordIsNLPparsable" << endl;
+			//cout << "wordIsNLPparsable" << endl;
 			for(int i=0; i<currentWord.length(); i++)
 			{
 				bool legalWordCharacterFound = SHAREDvars.charInCharArray(currentWord[i], preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
@@ -210,7 +211,6 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 		if(w == lineContents->size()-1)
 		{
 			finalWordInSentence = true;
-			cout << "finalWordInSentence" << endl;
 		}
 		
 		bool firstWordInSentence = false;
@@ -230,10 +230,11 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 		*/
 
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
+		bool addMathTextVariable = false;
 		if(!(fullSentence->hasLogicalConditionOperator))
 		{
 			if(findWordAtIndex(lineContents, w+1, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_CHAR)))
-			{
+			{				
 				//mathText eg: "X=.." OR "X =.."
 				//foundMathEqualsSetCommand = true;
 
@@ -244,7 +245,6 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 					string variableTypeMathtext = "";
 					int variableTypeObject = INT_DEFAULT_VALUE;
-					bool addMathTextVariable = false;
 
 					if(w == 0)	//word comprises first mathText contents
 					{//first word in mathText (type will automatically be assigned) (eg "X = ")
@@ -307,6 +307,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 						cout << "implicitly declared mathText variable detected: declaring " << variableTypeMathtext << currentWord << endl;	//inserting mathText variable declaration type (eg double)
 						//#endif
 						GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(&currentPhrase, variableTypeMathtext, 0);
+						//cout << " currentPhrase = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
 
 						newlyDeclaredVariable = currentWord;
 						addMathTextVariable = true;
@@ -329,13 +330,14 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 								variableTypeObject = preprocessorMathTextVariableMathObjectTypes[j];
 								addMathTextVariable = true;
 								
-								cout << "explicitly declared mathText variable detected: declaring " << preprocessorMathTextVariableMathObjectTypes[j] << currentWord << endl;
+								//cout << "explicitly declared mathText variable detected: declaring " << preprocessorMathTextVariableMathObjectTypes[j] << currentWord << endl;
 							}
 						}
 					}
 
 					if(addMathTextVariable)
 					{
+						//cout << "addNewMathTextVariable; variableName = " << variableName << endl;
 						this->addNewMathTextVariable(fullSentence, variableName, variableTypeObject);
 					}
 
@@ -343,6 +345,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				#ifdef NLC_PREPROCESSOR_MATH_FIX_BUG_ADD_MATH_TEXT_VARIABLES_DUPLICATES
 				else
 				{
+					//cout << "addNewMathTextVariable; variableName = " << variableName << endl;
 					this->addNewMathTextVariable(fullSentence, variableName, variableTypeTemp);
 				}
 				#endif
@@ -352,21 +355,23 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 		if(!wordIsNLPparsable || (wordIsNLPparsable && finalWordInSentence))
 		{
-			cout << "(!wordIsNLPparsable || (wordIsNLPparsable && finalWordInSentence))" << endl;
+			//cout << "(!wordIsNLPparsable || (wordIsNLPparsable && finalWordInSentence))" << endl;
 			
 			//currentWord is either a mathText variable name or part of an NLP parsable phrase (c is a space or comma)
 			if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
 			{
-				cout << "(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)" << endl;
+				//cout << "(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)" << endl;
 				
 				if(wordIsNLPparsable && finalWordInSentence)
 				{
+					addNewMathTextVariable(fullSentence, currentWord, NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
 					currentPhrase.push_back(currentWordTag);
 				}
 
 				//CHECKTHIS; //remove all mathTextVariable nlp parsable phrase (as an NLP parsable phrase does not contain mathText variable names, or if it does the mathText variable are references to predefined mathText variables and will be detected later)
 				for(int i=0; i<currentPhrase.size(); i++)
 				{
+					//cout << "removing mathText variable: " << fullSentence->mathTextVariables.back()->name << endl;
 					this->removeLastMathTextVariable(fullSentence);
 				}
 
@@ -421,7 +426,11 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 		else if(wordIsNLPparsable)
 		{
 			currentPhrase.push_back(currentWordTag);	//add the nlpParsable word to the currentPhrase
-			addNewMathTextVariable(fullSentence, currentWord, NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);	//CHECKTHIS
+			if(!addMathTextVariable)
+			{
+				//cout << "addNewMathTextVariable; currentWord = " << currentWord << endl;
+				addNewMathTextVariable(fullSentence, currentWord, NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
+			}
 			wordIndex++;
 		}
 

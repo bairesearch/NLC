@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3a 25-May-2017
+ * Project Version: 2b3b 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -910,9 +910,9 @@
 
 		#define NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
-			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_NUMERICAL "double$ "
-			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_STRING "string$ "
-			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_BOOLEAN "bool$ "
+			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_NUMERICAL "double$"
+			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_STRING "string$"
+			#define NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLE_TYPE_BOOLEAN "bool$"
 		#endif
 
 		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS_LESS_OR_EQUAL_TO_TWO

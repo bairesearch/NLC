@@ -25,7 +25,7 @@
  * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b1a 19-May-2017
+ * Project Version: 2b2a 21-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -85,6 +85,80 @@ class NLCmainClass
 		#ifndef NLC_LIBRARY
 		private: void printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInTree);
 		#endif
+		
+	public: bool executeNLC(
+
+		GIAtranslatorVariablesClass* translatorVariablesTemplate,
+		
+		string NLPexeFolderArray[],
+
+		bool useInputTextPlainTXTFile,
+		string inputTextPlainTXTfileName,
+
+		bool useInputTextNLPrelationXMLFile,
+		string inputTextNLPrelationXMLfileName,
+		bool useInputTextNLPfeatureXMLFile,
+		string inputTextNLPfeatureXMLfileName,
+		bool useOutputTextCFFFile,
+		string outputTextCFFFileName,
+		bool useInputTextXMLFile,
+		string inputTextXMLFileName,
+		bool useOutputTextXMLFile,
+		string outputTextXMLFileName,
+		bool useOutputTextCXLFile,
+		string outputTextCXLFileName,
+		bool useOutputTextLDRFile,
+		string outputTextLDRFileName,
+		bool useOutputTextPPMFile,
+		string outputTextPPMFileName,
+		bool useOutputTextSVGFile,
+		string outputTextSVGFileName,
+
+		bool useOutputTextAllFile,
+		string outputTextAllFileName,
+
+		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
+		bool NLCinputFileList,
+		#endif
+		//#ifdef NLC_PREPROCESSOR
+		bool useNLCpreprocessor,
+		//#endif
+		#ifdef NLC_API
+		bool NLCapi,
+		string APIsourceFolder,
+		string APIclassListFileName,
+		#endif
+		bool printOutput,
+		bool displayInOpenGLAndOutputScreenshot,
+
+		int rasterImageWidth,
+		int rasterImageHeight,
+
+		#ifdef GIA_DATABASE
+		bool readFromDatabase,
+		bool writeToDatabase,
+		bool useDatabase,
+		string databaseFolderName,
+		#endif
+		#ifdef GIA_SEMANTIC_PARSER
+		string semanticParserDatabaseFolderName,
+		#endif
+
+		#ifdef GIA_PREPROCESSOR
+		bool useLRP,
+		bool useOutputLRPTextPlainTXTFile,
+		string outputLRPTextPlainTXTFileName,
+		string lrpDataFolderName,
+		#endif
+
+		#ifdef USE_WORDNET
+		int synonymnDetectionStatus
+		#endif
+		);
+	
+	#ifdef USE_CS_WORKAROUND
+	bool GIAmainClass::executeNLC2();
+	#endif
 };
 	
 

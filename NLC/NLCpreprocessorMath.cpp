@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3i 25-May-2017
+ * Project Version: 2b4a 28-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -200,6 +200,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	vector<GIApreprocessorWord*> currentPhrase;
 	string mathText = "";
 	bool previousWordWasNLPparsable = false;
+	bool previousWordWasLogicalConditionOperator = false;
 	
 	for(int w=0; w<lineContents->size(); w++)
 	{
@@ -244,7 +245,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				logicalConditionOperatorInSentence = true;
 			}
 		}	
-
+		
 		bool finalWordInSentence = false;
 		if(w == lineContents->size()-1)
 		{
@@ -462,15 +463,40 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 					currentParsablePhraseInList->sentenceContents = currentPhrase;
 					currentParsablePhraseInList->sentenceIndex = *sentenceIndex;
-					mathText = mathText + NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentParsablePhraseInList);	//consider adding STRING_SPACE in the middle
+					
+					string spaceTextBefore = "";
+					#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
+					determineSpacingForAppendingMathTextNLPparsablePhrase(&mathText, currentWord, &spaceTextBefore);
+					#endif
+					
+					mathText = mathText + spaceTextBefore + NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentParsablePhraseInList);
 					if(!finalWordInSentenceAndWordIsNLPparsable)
 					{
-						mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, firstWordInSentence);
-					}
+						#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
+						spaceTextBefore = "";
+						determineSpacingForAppendingMathText(&mathText, currentWord, &spaceTextBefore, previousWordWasLogicalConditionOperator);
+						#endif
+						bool prependWhiteSpace = false;
+						if(!firstWordInSentence)
+						{
+							#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
+							if(spaceTextBefore == STRING_SPACE)
+							{
+							#endif
+								prependWhiteSpace = true;
+							#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
+							}
+							#endif
+						}
 
+						mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, !prependWhiteSpace);
+					}
+					
+					#ifndef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
 					#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
 					//readd the final space to the mathText since it has been removed from the nlp parsable phrase
 					mathText = mathText + CHAR_SPACE;
+					#endif
 					#endif
 
 					currentParsablePhraseInList->next = new NLCpreprocessorParsablePhrase();
@@ -488,8 +514,12 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 										
 					//added 2b3g;
 					//cout << "mathText = mathText + " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
-					string spaceText = "";
+					string spaceTextBefore = "";
 					string spaceTextAfter = "";
+					
+					#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
+					determineSpacingForAppendingMathText(&mathText, currentWord, &spaceTextBefore, previousWordWasLogicalConditionOperator);	
+					#else
 					#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
 					bool isMathTextVariableType = SHAREDvars.textInTextArray(currentWord, preprocessorMathMathTextVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES);
 					#else
@@ -497,10 +527,11 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					#endif
 					if(isMathTextVariableType)
 					{
-						spaceTextAfter = STRING_SPACE;
-					}
+						*spaceTextAfter = STRING_SPACE;
+					}	
+					#endif
 					
-					mathText = mathText + spaceText + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) + spaceTextAfter;	//CHECKTHIS; how should spaces be reinserted?
+					mathText = mathText + spaceTextBefore + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) + spaceTextAfter;
 				}
 
 				currentPhrase.clear();	//restart phrase (assuming it contains text)
@@ -518,6 +549,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 			}
 		}
 		
+		previousWordWasLogicalConditionOperator = logicalConditionOperatorInSentence;
 		previousWordWasNLPparsable = wordIsNLPparsable;
 	}
 	
@@ -680,6 +712,68 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					
 	return result;
 }
+
+#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
+void NLCpreprocessorMathClass::determineSpacingForAppendingMathText(const string* mathText, const string currentWord, string* spaceTextBefore, const bool previousWordWasLogicalConditionOperator)
+{
+	*spaceTextBefore = "";
+	
+	//when generating mathtext from word lists parse brackets specially. For right/closing brackets don't prepend white space, left/opening brackets; don't prepend white space if previous character is an opening bracket. For normal words don't prepend white space if previous character is an opening bracket).
+	//see nlpMathCharacterUngroupedArray for why this is safe to do for CHAR_OPEN_BRACKET and CHAR_CLOSE_BRACKET
+	if(mathText->length() >= 1)
+	{
+		bool previousCharacterIsOpeningBracket = false;
+		char previousCharacterInMathtext = (*mathText)[mathText->length()-1];
+		if(previousCharacterInMathtext == CHAR_OPEN_BRACKET)
+		{
+			previousCharacterIsOpeningBracket = true;
+		}
+		if(currentWord == SHAREDvars.convertCharToString(CHAR_CLOSE_BRACKET))
+		{
+			*spaceTextBefore = "";
+		}
+		else //if(currentWord == SHAREDvars.convertCharToString(CHAR_OPEN_BRACKET))
+		{
+			if(previousCharacterIsOpeningBracket)
+			{
+				*spaceTextBefore = "";
+			}
+			else
+			{
+				if(!previousWordWasLogicalConditionOperator)
+				{
+					*spaceTextBefore = STRING_SPACE;
+				}
+			}	
+		}
+	}
+}
+
+void NLCpreprocessorMathClass::determineSpacingForAppendingMathTextNLPparsablePhrase(const string* mathText, const string currentWord, string* spaceTextBefore)
+{
+	*spaceTextBefore = "";
+									
+	//when generating mathtext from word lists parse brackets specially. For normal words don't prepend white space if previous character is an opening bracket).
+	//see nlpMathCharacterUngroupedArray for why this is safe to do for CHAR_OPEN_BRACKET and CHAR_CLOSE_BRACKET
+	bool previousCharacterIsOpeningBracket = false;
+	if(mathText->length() >= 1)
+	{
+		char previousCharacterInMathtext = (*mathText)[mathText->length()-1];
+		if(previousCharacterInMathtext == CHAR_OPEN_BRACKET)
+		{
+			previousCharacterIsOpeningBracket = true;
+		}
+	}	
+	if(previousCharacterIsOpeningBracket)
+	{
+		*spaceTextBefore = "";
+	}
+	else
+	{
+		*spaceTextBefore = CHAR_SPACE;
+	}
+}
+#endif
 
 
 bool NLCpreprocessorMathClass::findCharacterAtIndexOrAfterSpace(const string* lineContents, const int i, const char characterToFind, int* indexOfCharacterFound)

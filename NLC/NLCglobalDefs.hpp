@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3i 25-May-2017
+ * Project Version: 2b4a 28-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,6 +53,7 @@
 	#ifdef USE_NLCI
 		#define NLC_NLCI
 	#endif
+	#define NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT	//2b4a
 #endif
 
 //#define NLC_DEBUG_DISABLE_2a_CODE

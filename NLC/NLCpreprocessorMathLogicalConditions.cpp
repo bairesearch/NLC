@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3b 25-May-2017
+ * Project Version: 2b3c 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -57,7 +57,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLa
 		
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
-		GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i]);	//NB this is type sensitive; could be changed in the future
+		GIApreprocessorMultiwordReductionClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i]);	//NB this is type sensitive; could be changed in the future
 	}
 
 	if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
@@ -67,8 +67,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLa
 		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
 		{
-			int index = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
-			if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+			if(GIApreprocessorMultiwordReductionClassObject.findSimpleSubstringInWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]))	//NB this is type sensitive; could be changed in the future
 			{
 				*additionalClosingBracketRequired = true;
 			}
@@ -76,45 +75,52 @@ bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLa
 		#endif
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
 		{
-			GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
+			GIApreprocessorMultiwordReductionClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
 		}
 	}
 
 	#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
-	GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
+	GIApreprocessorMultiwordReductionClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
 	#endif
+	
+	
+	vector<GIApreprocessorWord*> logicalConditionOperationWordList;
+	GIApreprocessorMultiwordReductionClassObject.generateSentenceWordListFromStringSimple(&logicalConditionOperationWordList, &(logicalConditionOperationsArray[logicalConditionOperator]));
 	
 	if(!parallelReplacement)
 	{
 		//replace the logical condition operator with a lower case version if necessary
-		(*lineContents)[0]->tagName = logicalConditionOperationsArray[logicalConditionOperator];
+		GIApreprocessorMultiwordReductionClassObject.replaceWordListAtIndexWithSimpleSubstring(lineContents, 0, logicalConditionOperationsArray[logicalConditionOperator]);
 	}	
 	if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 	{	
 		//ensure all logical condition operators have enclosing brackets eg if(...) - this is done to prevent "if" in "if the house is cold" from being merged into an NLP parsable phrase
 		if(!parallelReplacement)
 		{
-			string wordAfterLogicalConditionOperator = (*lineContents)[1]->tagName;
+			int indexOfWordAfterLogicalConditionOperator = logicalConditionOperationWordList.size();
+			cout << "indexOfWordAfterLogicalConditionOperator = " << indexOfWordAfterLogicalConditionOperator << endl;
+			
+			string wordAfterLogicalConditionOperator = (*lineContents)[indexOfWordAfterLogicalConditionOperator]->tagName;
 			if(wordAfterLogicalConditionOperator == SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET))
 			{
 				#ifdef NLC_PREPROCESSOR_SUPPORT_WHITE_SPACE_BETWEEN_LOGICAL_CONDITION_AND_OPENING_BRACKET
-				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 1);
+				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), indexOfWordAfterLogicalConditionOperator);
 				#endif
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
 				if(*additionalClosingBracketRequired)
 				{
-					GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 2);
+					GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), indexOfWordAfterLogicalConditionOperator+1);
 				}
 				#endif
 			}
 			//unsupported; else if(wordAfterLogicalConditionOperator == CHAR_SPACE)
 			else
 			{
-				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 1);	//lineContents->replace(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING);
+				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), indexOfWordAfterLogicalConditionOperator);	//lineContents->replace(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING);
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
 				if(*additionalClosingBracketRequired)
 				{
-					GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 2);
+					GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), indexOfWordAfterLogicalConditionOperator+1);
 				}
 				#endif
 			}
@@ -565,7 +571,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 	//1r5n: copied from replaceLogicalConditionNaturalLanguageMathWithSymbols;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
 	{
-		GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(logicalConditionCommandSubphraseContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);		//NB this is type sensitive; could be changed in the future
+		GIApreprocessorMultiwordReductionClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(logicalConditionCommandSubphraseContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);		//NB this is type sensitive; could be changed in the future
 	}
 	//OLD: 1r5n: remove preceeding space	//CHECKTHIS: //if(logicalConditionCommandSubphraseContents[0] == CHAR_SPACE) logicalConditionCommandSubphraseContents = logicalConditionCommandSubphraseContents.substr(1);
 

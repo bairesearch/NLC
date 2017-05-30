@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3b 25-May-2017
+ * Project Version: 2b3c 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -218,7 +218,9 @@
 			#define NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_SYMBOL_STRING_COMPARISON "~~"
 			#define NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_SYMBOL_STRING_ADDITION "&"
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES (21)
-			static string mathObjectsVariableTypeNumericalOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "-", "/", "*", "%", " 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "the number of", "+", "=="};
+			static string mathObjectsVariableTypeNumericalOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "-", "/", "*", "%", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "the number of", "+", "=="};
+			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES (21)
+			static string mathObjectsVariableTypeNumericalOperatorsWithSpace[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "-", "/", "*", "%", " 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "the number of", "+", "=="};
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES (3)
 			static string mathObjectsVariableTypeStringOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES] = {NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_SYMBOL_STRING_ADDITION, NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_SYMBOL_STRING_COMPARISON, NLC_MATH_OBJECTS_STRING_DELIMITER};
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES (2)
@@ -230,7 +232,9 @@
 			//NB strings: can use default string concatenation + and equality test == symbols
 			//NB booleans: boolean "== true" / "== false" test statements are supported; can say if(theDog == true) or if(theDog == false)
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES (19)
-			static string mathObjectsVariableTypeNumericalOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "-", "/", "*", "%", " 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "the number of"};
+			static string mathObjectsVariableTypeNumericalOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "-", "/", "*", "%", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "the number of"};
+			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES (19)
+			static string mathObjectsVariableTypeNumericalOperatorsWithSpace[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "-", "/", "*", "%", " 0", " 1", " 2", " 3", " 4", " 5", " 6", " 7", " 8", " 9", "the number of"};
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES (1)
 			static string mathObjectsVariableTypeStringOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES] = {NLC_MATH_OBJECTS_STRING_DELIMITER};
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES (2)

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3b 25-May-2017
+ * Project Version: 2b3c 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -452,15 +452,11 @@ bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vec
 	//get first word in line
 	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
 	{
-		if(lineContents->size() >= 1)
+		if(GIApreprocessorMultiwordReductionClassObject.findSimpleSubstringInWordListAtIndex(lineContents, logicalConditionOperationsArray[i], 0, true))
 		{
-			string firstWordOnLine = (*lineContents)[0]->tagName;
-			string firstWordOnLineLowerCase = SHAREDvars.convertStringToLowerCase(&firstWordOnLine);
-			if(firstWordOnLineLowerCase == logicalConditionOperationsArray[i])
-			{
-				logicalConditionOperatorFound = true;
-				*logicalConditionOperator = i;
-			}
+			logicalConditionOperatorFound = true;
+			*logicalConditionOperator = i;
+			cout << "logicalConditionOperator = " << i << endl; 
 		}
 	}
 	return logicalConditionOperatorFound;

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b4a 28-May-2017
+ * Project Version: 2b4b 28-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -467,9 +467,18 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					string spaceTextBefore = "";
 					#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
 					determineSpacingForAppendingMathTextNLPparsablePhrase(&mathText, currentWord, &spaceTextBefore);
+					/*
+					cout << "currentWord = " << currentWord << endl;
+					cout << "w = " << w << endl;
+					cout << "wordIndex = " << wordIndex << endl;
+					*/
+					if(w == wordIndex)
+					{
+						spaceTextBefore = "";	//effective firstWordInSentence
+					}
 					#endif
-					
 					mathText = mathText + spaceTextBefore + NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentParsablePhraseInList);
+					
 					if(!finalWordInSentenceAndWordIsNLPparsable)
 					{
 						#ifdef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
@@ -722,19 +731,23 @@ void NLCpreprocessorMathClass::determineSpacingForAppendingMathText(const string
 	//see nlpMathCharacterUngroupedArray for why this is safe to do for CHAR_OPEN_BRACKET and CHAR_CLOSE_BRACKET
 	if(mathText->length() >= 1)
 	{
-		bool previousCharacterIsOpeningBracket = false;
+		bool previousCharacterIsOpeningBracketOrExclamationMark = false;
 		char previousCharacterInMathtext = (*mathText)[mathText->length()-1];
-		if(previousCharacterInMathtext == CHAR_OPEN_BRACKET)
+		if(previousCharacterInMathtext == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
 		{
-			previousCharacterIsOpeningBracket = true;
+			previousCharacterIsOpeningBracketOrExclamationMark = true;
 		}
-		if(currentWord == SHAREDvars.convertCharToString(CHAR_CLOSE_BRACKET))
+		if(previousCharacterInMathtext == NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR)
+		{
+			previousCharacterIsOpeningBracketOrExclamationMark = true;
+		}
+		if(currentWord == SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET))
 		{
 			*spaceTextBefore = "";
 		}
 		else //if(currentWord == SHAREDvars.convertCharToString(CHAR_OPEN_BRACKET))
 		{
-			if(previousCharacterIsOpeningBracket)
+			if(previousCharacterIsOpeningBracketOrExclamationMark)
 			{
 				*spaceTextBefore = "";
 			}
@@ -755,16 +768,20 @@ void NLCpreprocessorMathClass::determineSpacingForAppendingMathTextNLPparsablePh
 									
 	//when generating mathtext from word lists parse brackets specially. For normal words don't prepend white space if previous character is an opening bracket).
 	//see nlpMathCharacterUngroupedArray for why this is safe to do for CHAR_OPEN_BRACKET and CHAR_CLOSE_BRACKET
-	bool previousCharacterIsOpeningBracket = false;
+	bool previousCharacterIsOpeningBracketOrExclamationMark = false;
 	if(mathText->length() >= 1)
 	{
 		char previousCharacterInMathtext = (*mathText)[mathText->length()-1];
-		if(previousCharacterInMathtext == CHAR_OPEN_BRACKET)
+		if(previousCharacterInMathtext == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
 		{
-			previousCharacterIsOpeningBracket = true;
+			previousCharacterIsOpeningBracketOrExclamationMark = true;
+		}
+		if(previousCharacterInMathtext == NLC_PREPROCESSOR_MATH_OPERATOR_NEGATIVE_CHAR)
+		{
+			previousCharacterIsOpeningBracketOrExclamationMark = true;
 		}
 	}	
-	if(previousCharacterIsOpeningBracket)
+	if(previousCharacterIsOpeningBracketOrExclamationMark)
 	{
 		*spaceTextBefore = "";
 	}

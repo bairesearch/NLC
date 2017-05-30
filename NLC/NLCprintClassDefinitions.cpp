@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3h 25-May-2017
+ * Project Version: 2b3i 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -324,7 +324,7 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 										string functionOwnerName = "";
 										bool hasFunctionObjectClass = false;
 										string functionObjectName = "";
-										cout << "currentNLCfunctionInList->NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
+										//cout << "currentNLCfunctionInList->NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
 										NLCitemClass.parseFunctionNameFromNLCfunctionName(currentNLCfunctionInList->NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 										bool foundMatchedFunction = true;
 										for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)

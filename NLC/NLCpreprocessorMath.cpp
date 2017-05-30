@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3h 25-May-2017
+ * Project Version: 2b3i 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -64,6 +64,9 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 		{
 			//convert x is equal to/equals the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
+			//cout << "lineContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(lineContents) << endl;
+			//cout << "preprocessorMathOperatorsEquivalentNumberOfTypes[i] = " << preprocessorMathOperatorsEquivalentNumberOfTypes[i] << endl;
+			//cout << "preprocessorMathOperators[i] = " << preprocessorMathOperators[i] << endl;
 			if(GIApreprocessorMultiwordReductionClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i]))
 			{
 				result = true;
@@ -381,7 +384,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 								variableTypeObject = preprocessorMathTextVariableMathObjectTypes[j];
 								addMathTextVariable = true;
 								
-								cout << "explicitly declared mathText variable detected: declaring " << preprocessorMathNaturalLanguageVariables[j] << " " << currentWord << endl;
+								//cout << "explicitly declared mathText variable detected: declaring " << preprocessorMathNaturalLanguageVariables[j] << " " << currentWord << endl;
 							}
 						}
 					}

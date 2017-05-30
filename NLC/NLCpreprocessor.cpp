@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3h 25-May-2017
+ * Project Version: 2b3i 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -85,12 +85,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;	//NLC sentence index
 		while(currentNLCprepreprocessorSentenceInList->next != NULL)
 		{
-			vector<GIApreprocessorWord*> lineContents;
-			if(!GIApreprocessorMultiwordReductionClassObject.generateSentenceWordList(currentNLCprepreprocessorSentenceInList->sentenceContentsOriginalFirstWord, &lineContents))
-			{
-				cout << "NLCpreprocessorClass::preprocessTextForNLC{} error: !generateSentenceWordList" << endl;
-				exit(EXIT_ERROR);
-			}
+			vector<GIApreprocessorWord*> lineContents = currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal;
 			//cout << "lineContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents) << endl;
 
 			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
@@ -207,15 +202,9 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 				functionContents = functionContents + indentationContents + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
 				
 				#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
-				GIApreprocessorMultiwordReductionClassObject.generateFlatSentenceWordList(&(currentParsablePhrase->sentenceContents), &(currentGIApreprocessorSentenceInList->sentenceContentsOriginalFirstWord));	//precondition: words in logicReferenceVariableWordList are unique across all logicReferenceVariableWordLists in memory
+				currentGIApreprocessorSentenceInList->sentenceContentsOriginal = currentParsablePhrase->sentenceContents;	//precondition: words in logicReferenceVariableWordList are unique across all logicReferenceVariableWordLists in memory
 				#ifdef NLC_PREPROCESSOR_DEBUG
-				GIApreprocessorWord* currentWordInSentence = currentGIApreprocessorSentenceInList->sentenceContentsOriginalFirstWord;
-				cout << endl;
-				while(currentWordInSentence->nextTag != NULL)
-				{
-					cout << "generateFlatSentenceWordList result: currentWordInSentence = " << currentWordInSentence->tagName << endl;
-					currentWordInSentence = currentWordInSentence->nextTag;
-				}
+				cout << "currentGIApreprocessorSentenceInList = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentGIApreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 				#endif
 				currentGIApreprocessorSentenceInList->next = new GIApreprocessorSentence();
 				currentGIApreprocessorSentenceInList = currentGIApreprocessorSentenceInList->next;
@@ -241,7 +230,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
 
-	//#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 	//cout << "inputFileText = \n" << inputFileText << endl;
 	currentNLCfunctionInList = firstNLCfunctionInList;
 	while(currentNLCfunctionInList->next != NULL)
@@ -290,7 +279,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		}
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
-	//#endif
+	#endif
 
 	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;

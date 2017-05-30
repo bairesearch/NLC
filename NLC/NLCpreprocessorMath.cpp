@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2a 21-May-2017
+ * Project Version: 2b2b 21-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -485,12 +485,12 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(strin
 						{
 							lastCharacterOfPhraseIsFullStop = true;
 						}
-						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
 						if(!lastCharacterOfPhraseIsFullStop)
 						{
 						#endif
 							currentParsablePhraseInList->sentenceContents = currentPhrase + NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR;	//append a fullstop to the NLP parsable phrase to make it readable by NLP
-						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
 						}
 						else
 						{
@@ -514,7 +514,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(strin
 
 						//restart phrase
 						currentPhrase = "";
-						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_FILENAMES_WITH_FULLSTOPS
+						#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
 						if(!finalWordInSentenceFoundAndIsLegal || lastCharacterOfPhraseIsFullStop)	//ie !finalWordInSentenceFoundAndIsLegal || (finalWordInSentenceFoundAndIsLegal && lastCharacterOfPhraseIsFullStop)
 						{
 						#else

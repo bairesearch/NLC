@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2b 21-May-2017
+ * Project Version: 2b3a 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -36,6 +36,8 @@
 
 #include "NLCglobalDefs.hpp"
 #include "SHAREDvars.hpp"
+#include "GIApreprocessorSentenceClass.hpp"
+#include "GIApreprocessorMultiwordReductionClass.hpp"
 
 class NLCvariable
 {
@@ -57,7 +59,7 @@ public:
 	~NLCpreprocessorParsablePhrase(void);
 
 	int sentenceIndex;
-	string sentenceContents;	//OLD: sentenceContents
+	vector<GIApreprocessorWord*> sentenceContents;
 	#ifdef NLC_PREPROCESSOR_MATH;
 	int mathTextNLPparsablePhraseIndex;
 	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
@@ -120,6 +122,8 @@ public:
 	~NLCfunction(void);
 
 	string NLCfunctionName;
+	string functionContentsRaw;
+	GIApreprocessorSentence* firstGIApreprocessorSentenceInList;
 	NLCpreprocessorSentence* firstNLCsentenceInFunction;
 	NLCfunction* next;
 };
@@ -129,6 +133,8 @@ public:
 class NLCpreprocessorSentenceClassClass
 {
 	private: SHAREDvarsClass SHAREDvars;
+	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+
 	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase);
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 	public: int generateDummyNumber(const int predefinedVariableIndex);

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2b 21-May-2017
+ * Project Version: 2b3a 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -37,6 +37,7 @@
 #include "NLCglobalDefs.hpp"
 #include "NLCpreprocessorSentenceClass.hpp"
 #include "NLCpreprocessorMathLogicalConditions.hpp"
+#include "GIApreprocessorMultiwordReductionClass.hpp"
 #include "NLCprintDefs.hpp" //required for progLangOpenParameterSpace
 #include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
@@ -49,25 +50,28 @@ class NLCpreprocessorMathClass
 	private: SHAREDvarsClass SHAREDvars;
 	private: NLCpreprocessorMathLogicalConditionsClass NLCpreprocessorMathLogicalConditions;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
-	public: bool detectMathSymbolsInLine(const string* lineContents);
-	public: bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(string* lineContents, const bool hasLogicalConditionOperator, const bool isMathText);
+	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+	
+	public: bool detectMathSymbolsInLine(const vector<GIApreprocessorWord*>* lineContents);
+	public: bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(vector<GIApreprocessorWord*>* lineContents, const bool hasLogicalConditionOperator, const bool isMathText);
 
 	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-	public: bool splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(string* lineContents, int currentIndentation, const NLCpreprocessorSentence* fullSentence, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand);
+	public: bool splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(vector<GIApreprocessorWord*>* lineContents, int currentIndentation, const NLCpreprocessorSentence* fullSentence, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand);
 	#endif
 
-	public: bool splitMathDetectedLineIntoNLPparsablePhrases(string* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, string* functionContents, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
-		public: bool findCharacterAtIndexOrAfterSpace(const string* lineContents, int i, char characterToFind, int* indexOfCharacterFound);
+	public: bool splitMathDetectedLineIntoNLPparsablePhrases(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
+		public: bool findCharacterAtIndexOrAfterSpace(const string* lineContents, const int i, const char characterToFind, int* indexOfCharacterFound);
+		public: bool findWordAtIndex(const vector<GIApreprocessorWord*>* wordList, const int index, const string wordToFind);
 		#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-		private: bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(string* lineContents);
+		private: bool replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(vector<GIApreprocessorWord*>* lineContents);
 		private: bool restoreExplicitVariableTypes(string* mathText);
-		private: string replaceSubstringAtStartOfString(const string* textOrig, string stringToFind, string replacementString);
+			private: string replaceSubstringAtStartOfString(const string* textOrig, string stringToFind, string replacementString);
 		#endif
 		private: void addNewMathTextVariable(NLCpreprocessorSentence* sentence, const string variableName, const int variableTypeObject);
 		private: void removeLastMathTextVariable(NLCpreprocessorSentence* sentence);
 
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
-	public: bool replaceNumericalVariablesWithDummyNumberIfNecessary(string* lineContents, NLCpreprocessorSentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
+	public: bool replaceNumericalVariablesWithDummyNumberIfNecessary(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
 		private: bool isWhiteSpaceOrInvalidWordCharacter(const char c);
 	#endif
 

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2b 21-May-2017
+ * Project Version: 2b3a 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -47,7 +47,7 @@ NLCvariable::~NLCvariable(void)
 NLCpreprocessorParsablePhrase::NLCpreprocessorParsablePhrase(void)
 {
 	sentenceIndex = 0;
-	sentenceContents = "";
+	//sentenceContents = "";
 	#ifdef NLC_PREPROCESSOR_MATH;
 	mathTextNLPparsablePhraseIndex = INT_DEFAULT_VALUE;
 	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
@@ -102,6 +102,8 @@ NLCpreprocessorSentence::~NLCpreprocessorSentence(void)
 NLCfunction::NLCfunction(void)
 {
 	NLCfunctionName = "";
+	functionContentsRaw = "";
+	firstGIApreprocessorSentenceInList = NULL;
 	firstNLCsentenceInFunction = new NLCpreprocessorSentence();
 	next = NULL;
 }
@@ -115,7 +117,8 @@ NLCfunction::~NLCfunction(void)
 string NLCpreprocessorSentenceClassClass::generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase)
 {
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
-	string variableName = SHAREDvars.replaceAllOccurancesOfString(&(currentPhrase->sentenceContents), STRING_SPACE, "");
+	string variableName = GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentPhrase->sentenceContents));
+	variableName = SHAREDvars.replaceAllOccurancesOfString(&variableName, STRING_SPACE, "");
 	variableName = SHAREDvars.replaceAllOccurancesOfString(&variableName, STRING_FULLSTOP, "");
 	variableName = SHAREDvars.replaceAllOccurancesOfString(&variableName, STRING_APOSTROPHE, "");
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY

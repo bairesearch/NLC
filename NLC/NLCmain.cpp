@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2b 21-May-2017
+ * Project Version: 2b3a 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -459,7 +459,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2b2b 21-May-2017" << endl;
+			cout << "NLC.exe - Project Version: 2b3a 25-May-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -717,6 +717,11 @@ bool NLCmainClass::executeNLC2()
 	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
 	if(NLCinputFileList)
 	{
+		#ifdef NLC_NLCI
+		cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: NLCinputFileList == true" << endl;
+		exit(EXIT_ERROR);
+		#endif
+		
 		if(useInputTextPlainTXTFile)
 		{
 			if(!SHAREDvarsClass().getFilesFromFileList(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
@@ -805,7 +810,15 @@ bool NLCmainClass::executeNLC2()
 		}
 		#endif
 
-		if(NLCpreprocessorClass().preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
+		
+		if(translatorVariablesTemplate->firstGIApreprocessorSentenceInList == NULL)
+		{
+			#ifdef NLC_NLCI
+			cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: (translatorVariablesTemplate->firstGIApreprocessorSentenceInList == NULL)" << endl;
+			exit(EXIT_ERROR);
+			#endif
+		}
+		if(NLCpreprocessorClass().preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName, translatorVariablesTemplate->firstGIApreprocessorSentenceInList))
 		{
 			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(preprocessorDetectedFunctions)
@@ -895,11 +908,12 @@ bool NLCmainClass::executeNLC2()
 			translatorVariables->entityNodesActiveListComplete = translatorVariablesTemplate->entityNodesActiveListComplete;
 			translatorVariables->entityNodesActiveListNetworkIndexes = translatorVariablesTemplate->entityNodesActiveListNetworkIndexes;
 			translatorVariables->timeConditionNodesActiveList = translatorVariablesTemplate->timeConditionNodesActiveList;
-			translatorVariables->entityNodesActiveListSentences = translatorVariablesTemplate->entityNodesActiveListSentences;	
+			translatorVariables->entityNodesActiveListSentences = translatorVariablesTemplate->entityNodesActiveListSentences;
+			translatorVariables->firstGIApreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;	
 		}
 		else
 		{
-			cout << "NLCmainClass::executeNLC2{}: NLC_NLCI error: numberOfInputFilesInList != 1" << endl;
+			cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: numberOfInputFilesInList != 1" << endl;
 			exit(EXIT_ERROR);
 		}
 		#else
@@ -924,6 +938,7 @@ bool NLCmainClass::executeNLC2()
 		{
 			if(useInputTextPlainTXTFile)
 			{
+				//this will be the only case executed if useNLCpreprocessor
 				inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(functionDefinitionIndex);
 			}
 			#ifdef NLC_GIA_NLP_OR_XML_INPUT

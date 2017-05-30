@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2b 21-May-2017
+ * Project Version: 2b3a 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -39,8 +39,8 @@
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 NLCsubphrase::NLCsubphrase(void)
 {
-	lineIndexOfFirstCharacterInPhrase = INT_DEFAULT_VALUE;
-	phraseContents = "";
+	lineIndexOfFirstWordInPhrase = INT_DEFAULT_VALUE;
+	//phraseContents = "";
 	hasConjunction = false;
 	conjunctionType = INT_DEFAULT_VALUE;
 	next = NULL;
@@ -50,145 +50,80 @@ NLCsubphrase::~NLCsubphrase(void)
 }
 #endif
 
-bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLanguageMathWithSymbols(string* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement)
+bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLanguageMathWithSymbols(vector<GIApreprocessorWord*>* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement)
 {
 	bool result = true;
 
-	#ifdef NLC_MATH_OBJECTS_ADVANCED
-	//ignore string quotations during replacement
-	bool stillFindingLineContentsSub = true;
-	int lineContentsSubIndex = 0;
-	int lineContentsSubIndexEnd = 0;
-	string lineContentsNew = "";
-	while(stillFindingLineContentsSub) 
+		
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
-		int indexOfStringDelimiter = lineContents->find(NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndex);
-		if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-		{
-			lineContentsSubIndexEnd = indexOfStringDelimiter+1;
-		}
-		else
-		{
-			lineContentsSubIndexEnd = lineContents->length();
-			stillFindingLineContentsSub = false;
-		}
-		string lineContentsSub = lineContents->substr(lineContentsSubIndex, lineContentsSubIndexEnd-lineContentsSubIndex);
-	#else
-	string lineContentsSub = *lineContents;
-	#endif
-		
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
-		{
-			bool foundAtLeastOneInstance = false;
-			lineContentsSub = SHAREDvars.replaceAllOccurancesOfString(&lineContentsSub, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i], &foundAtLeastOneInstance);	//NB this is type sensitive; could be changed in the future
-			/*
-			if(foundAtLeastOneInstance)
-			{
-				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} foundAtLeastOneInstance" << endl;
-			}
-			*/
-		}
+		GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperatorsForLogicalConditions[i]);	//NB this is type sensitive; could be changed in the future
+	}
 
-		/*
-		for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
+	if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
+	{
+		//detect conjunctions...
+		*additionalClosingBracketRequired = false;
+		#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
 		{
-			int index = lineContentsSub.find(logicalConditionOperationsArray[i]);
-			if((index != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (index == 0))
+			int index = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
+			if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
-				logicalConditionOperatorFound = true;
-				*logicalConditionOperator = i;
-				cout << "detectLogicalConditionOperatorAtStartOfLine{}: logicalConditionOperatorFound" << logicalConditionOperationsArray[i] << endl;
+				*additionalClosingBracketRequired = true;
 			}
 		}
-		*/
-
-		if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
-		{
-			//detect conjunctions...
-			*additionalClosingBracketRequired = false;
-			#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
-			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITH_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
-			{
-				int index = lineContentsSub.find(preprocessorMathOperatorsEquivalentConjunctionsWithPause[i]);	//NB this is type sensitive; could be changed in the future
-				if(index != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-				{
-					*additionalClosingBracketRequired = true;
-				}
-			}
-			#endif
-			for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
-			{
-				lineContentsSub = SHAREDvars.replaceAllOccurancesOfString(&lineContentsSub, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
-			}
-		}
-
-		#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
-		lineContentsSub = SHAREDvars.replaceAllOccurancesOfString(&lineContentsSub, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET_WITH_PADDING, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING);
 		#endif
-		
-	#ifdef NLC_MATH_OBJECTS_ADVANCED
-		lineContentsNew = lineContentsNew + lineContentsSub;
-		if(stillFindingLineContentsSub)
-		{	
-			//add the string quotation text
-			int indexOfStringDelimiter = lineContents->find(NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR, lineContentsSubIndexEnd);
-			if(indexOfStringDelimiter != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-			{
-				lineContentsSubIndex = indexOfStringDelimiter + 1;
-				lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd, indexOfStringDelimiter-lineContentsSubIndexEnd + 1);
-			}
-			else
-			{
-				//unfinished quotation
-				stillFindingLineContentsSub = false;
-				lineContentsNew = lineContentsNew + lineContents->substr(lineContentsSubIndexEnd);	
-				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} error: unfinished quotation detected" << endl;
-			}			
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
+		{
+			GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
 		}
 	}
-	*lineContents = lineContentsNew;
-	#else
-	*lineContents = lineContentsSub;
+
+	#ifdef NLC_PREPROCESSOR_MATH_FIX_USER_INAPPROPRIATE_USE_OF_EQUALS_SET_IN_LOGICAL_CONDITIONS
+	GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);
 	#endif
-	
 	
 	if(!parallelReplacement)
 	{
 		//replace the logical condition operator with a lower case version if necessary
-		lineContents->replace(0, logicalConditionOperationsArray[logicalConditionOperator].length(), logicalConditionOperationsArray[logicalConditionOperator]);
+		(*lineContents)[0]->tagName = logicalConditionOperationsArray[logicalConditionOperator];
 	}	
 	if(logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 	{	
 		//ensure all logical condition operators have enclosing brackets eg if(...) - this is done to prevent "if" in "if the house is cold" from being merged into an NLP parsable phrase
 		if(!parallelReplacement)
 		{
-			char characterAfterLogicalConditionOperator = lineContents->at(logicalConditionOperationsArray[logicalConditionOperator].length());
-			if(characterAfterLogicalConditionOperator == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET)
+			string wordAfterLogicalConditionOperator = (*lineContents)[1]->tagName;
+			if(wordAfterLogicalConditionOperator == SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET))
 			{
 				#ifdef NLC_PREPROCESSOR_SUPPORT_WHITE_SPACE_BETWEEN_LOGICAL_CONDITION_AND_OPENING_BRACKET
-				lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
+				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 1);
 				#endif
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
 				if(*additionalClosingBracketRequired)
 				{
-					lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length()+1, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
+					GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 2);
 				}
 				#endif
 			}
-			else if(characterAfterLogicalConditionOperator == CHAR_SPACE)
+			//unsupported; else if(wordAfterLogicalConditionOperator == CHAR_SPACE)
+			else
 			{
-				lineContents->replace(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING);
+				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 1);	//lineContents->replace(logicalConditionOperationsArray[logicalConditionOperator].length(), 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING);
 				#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE_REPLACE_COMMAS_WITH_BRACKETS
 				if(*additionalClosingBracketRequired)
 				{
-					lineContents->insert(logicalConditionOperationsArray[logicalConditionOperator].length()+1, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET);
+					GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET), 2);
 				}
 				#endif
 			}
+			/*
 			else
 			{
 				cout << "replaceLogicalConditionNaturalLanguageMathWithSymbols{} error: invalid symbol found after logicalConditionOperator: " << logicalConditionOperationsArray[logicalConditionOperator] << characterAfterLogicalConditionOperator << endl;
 			}
+			*/
 		}
 	}
 
@@ -202,7 +137,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLa
 	//remove all commas from mathText:
 	fullSentence->mathText = SHAREDvars.replaceAllOccurancesOfString(&(fullSentence->mathText), ", ", "");	//added 1j19a
 	fullSentence->mathText = SHAREDvars.replaceAllOccurancesOfString(&(fullSentence->mathText), STRING_COMMA, "");
-
+	
 	if(fullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)
 	{
 		char lastCharacterInMathText = fullSentence->mathText[fullSentence->mathText.length()-1];
@@ -250,7 +185,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 		bool phraseContainsPrimarySubject = true;
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 		{
-			int indexOfAuxiliaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
+			int indexOfAuxiliaryTemp = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(&(currentPhrasePrimarySubject->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
 			if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxiliaryTemp == 0))
 			{
 				phraseContainsPrimarySubject = false;
@@ -262,8 +197,8 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 			int indexOfParsablePhraseReferenceInMathText = fullSentence->mathText.find(parsablePhraseReference);
 			if(indexOfParsablePhraseReferenceInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
-				int expectedPosOfConjunctionIfExistent = indexOfParsablePhraseReferenceInMathText - progLangCoordinatingConjunctions[i].length();
-				int indexOfConjunction = fullSentence->mathText.find(progLangCoordinatingConjunctions[i], expectedPosOfConjunctionIfExistent);
+				int expectedPosOfConjunctionIfExistent = indexOfParsablePhraseReferenceInMathText - progLangCoordinatingConjunctionsWithSpace[i].length();	//CHECKTHIS; use progLangCoordinatingConjunctionsWithSpace rather than progLangCoordinatingConjunctions
+				int indexOfConjunction = fullSentence->mathText.find(progLangCoordinatingConjunctionsWithSpace[i], expectedPosOfConjunctionIfExistent);			//CHECKTHIS; use progLangCoordinatingConjunctionsWithSpace rather than progLangCoordinatingConjunctions
 				if((indexOfConjunction != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunction == expectedPosOfConjunctionIfExistent))
 				{
 					phraseContainsPrimarySubject = false;
@@ -285,12 +220,12 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 			int startPosToSearchForAuxiliary = 0;
 			while(stillFindingPrimaryAuxiliary)
 			{
-				int indexOfNextClosestAuxiliary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
+				int indexOfNextClosestAuxiliary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_WORDS;
 				bool foundAnAuxiliaryButItWasIgnored = false;
-				int indexOfClosestIgnoredAuxiliary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
+				int indexOfClosestIgnoredAuxiliary = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_WORDS;
 				for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 				{
-					int indexOfAuxiliaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], startPosToSearchForAuxiliary);
+					int indexOfAuxiliaryTemp = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(&(currentPhrasePrimarySubject->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], startPosToSearchForAuxiliary);
 					if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxiliaryTemp < indexOfNextClosestAuxiliary))
 					{
 						//ignore auxiliary if has a preceeding 'that'/'which'; eg "the dog that is[ignore] near the house has[take] a ball or has[reference] an apple"
@@ -299,8 +234,8 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 						bool ignoreAuxiliary = false;
 						for(int i2=0; i2<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES; i2++)
 						{
-							int expectedPosOfRcmodSameReferenceSetDelimiterIfExistent = indexOfAuxiliaryTemp - preprocessorMathRcmodSameReferenceSetDelimiter[i2].length() - 1;
-							int indexOfRcmodSameReferenceSet = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathRcmodSameReferenceSetDelimiter[i2], expectedPosOfRcmodSameReferenceSetDelimiterIfExistent);
+							int expectedPosOfRcmodSameReferenceSetDelimiterIfExistent = indexOfAuxiliaryTemp-1;
+							int indexOfRcmodSameReferenceSet = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(&(currentPhrasePrimarySubject->sentenceContents), preprocessorMathRcmodSameReferenceSetDelimiter[i2], expectedPosOfRcmodSameReferenceSetDelimiterIfExistent);
 							if((indexOfRcmodSameReferenceSet != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfRcmodSameReferenceSet == expectedPosOfRcmodSameReferenceSetDelimiterIfExistent))
 							{
 								ignoreAuxiliary = true;
@@ -319,7 +254,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 						}
 					}
 				}
-				if(indexOfNextClosestAuxiliary != NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS)
+				if(indexOfNextClosestAuxiliary != NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_WORDS)
 				{
 					indexOfPrimaryAuxiliaryTaggingSubject = indexOfNextClosestAuxiliary;
 					stillFindingPrimaryAuxiliary = false;
@@ -336,7 +271,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 
 			if(indexOfPrimaryAuxiliaryTaggingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
-				string subjectText = currentPhrasePrimarySubject->sentenceContents.substr(0, indexOfPrimaryAuxiliaryTaggingSubject);	//check -1 is not required
+				vector<GIApreprocessorWord*> subjectText = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(&(currentPhrasePrimarySubject->sentenceContents), 0, indexOfPrimaryAuxiliaryTaggingSubject);
 
 				NLCpreprocessorParsablePhrase* currentPhraseReferenceToPrimarySubject = currentPhrasePrimarySubject->next;
 				for(int phraseIndex2=phraseIndex+1; phraseIndex2<fullSentence->mathTextNLPparsablePhraseTotal; phraseIndex2++)
@@ -347,14 +282,14 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 					int indexOfSecondaryAuxiliaryReferencingSubject = CPP_STRING_FIND_RESULT_FAIL_VALUE;
 					for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 					{
-						int indexOfAuxiliaryTemp = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i]);
+						int indexOfAuxiliaryTemp = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(&(currentPhraseReferenceToPrimarySubject->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i]);
 						if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfAuxiliaryTemp  == 0))
 						{
 							indexOfSecondaryAuxiliaryReferencingSubject = indexOfAuxiliaryTemp;
 						}
 					}
 					#else
-					int indexOfSecondaryAuxiliaryReferencingSubject = currentPhraseReferenceToPrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[primaryAuxiliaryType]);
+					int indexOfSecondaryAuxiliaryReferencingSubject = findStringInWordList(&(currentPhraseReferenceToPrimarySubject->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[primaryAuxiliaryType]);
 					#endif
 					if((indexOfSecondaryAuxiliaryReferencingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfSecondaryAuxiliaryReferencingSubject == 0))
 					{
@@ -365,8 +300,8 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 							int indexOfParsablePhraseReferenceInMathText = fullSentence->mathText.find(parsablePhraseReference);
 							if(indexOfParsablePhraseReferenceInMathText != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 							{
-								int expectedPosOfConjunctionIfExistent = indexOfParsablePhraseReferenceInMathText - progLangCoordinatingConjunctions[i].length();
-								int indexOfConjunction = fullSentence->mathText.find(progLangCoordinatingConjunctions[i], expectedPosOfConjunctionIfExistent);
+								int expectedPosOfConjunctionIfExistent = indexOfParsablePhraseReferenceInMathText - progLangCoordinatingConjunctionsWithSpace[i].length();	//CHECKTHIS; use progLangCoordinatingConjunctionsWithSpace rather than progLangCoordinatingConjunctions
+								int indexOfConjunction = fullSentence->mathText.find(progLangCoordinatingConjunctionsWithSpace[i], expectedPosOfConjunctionIfExistent);		//CHECKTHIS; use progLangCoordinatingConjunctionsWithSpace rather than progLangCoordinatingConjunctions
 								if((indexOfConjunction != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunction == expectedPosOfConjunctionIfExistent))
 								{
 									secondaryChecks = true;
@@ -383,7 +318,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 							//insert subject content
 							string parsablePhraseReferenceOld = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(fullSentence->firstNLPparsablePhraseInList->sentenceIndex, currentPhraseReferenceToPrimarySubject);
 
-							currentPhraseReferenceToPrimarySubject->sentenceContents.insert(indexOfSecondaryAuxiliaryReferencingSubject, subjectText);
+							GIApreprocessorMultiwordReductionClassObject.insertWordListIntoWordList((&currentPhraseReferenceToPrimarySubject->sentenceContents), &subjectText, indexOfSecondaryAuxiliaryReferencingSubject);
 
 							string parsablePhraseReferenceNew = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(fullSentence->firstNLPparsablePhraseInList->sentenceIndex, currentPhraseReferenceToPrimarySubject);
 							int parsablePhraseReferenceOldPos = fullSentence->mathText.find(parsablePhraseReferenceOld);
@@ -411,12 +346,11 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(string* lineContents, bool* detectedLogicalConditionCommand, string* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex)
+bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(vector<GIApreprocessorWord*>* lineContents, bool* detectedLogicalConditionCommand, vector<GIApreprocessorWord*>* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex)
 {
 	bool result = true;
 
 	*detectedLogicalConditionCommand = false;
-
 
 	NLCsubphrase* firstNLCsubphraseInList = new NLCsubphrase();
 	NLCsubphrase* currentNLCsubphraseInList = firstNLCsubphraseInList;
@@ -426,19 +360,19 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 	bool stillCommasToFind = true;
 	while(stillCommasToFind)
 	{
-		int indexOfNextComma = lineContents->find(CHAR_COMMA, startPosToSearchForComma);
+		int indexOfNextComma = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, STRING_COMMA, startPosToSearchForComma);
 		if(indexOfNextComma == CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			stillCommasToFind = false;
-			indexOfNextComma = lineContents->length();
+			indexOfNextComma = lineContents->size();
 		}
 
 		bool conjunctionFoundInSubphrase = false;
 		int conjunctionTypeOfConjunction = INT_DEFAULT_VALUE;
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITHOUT_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_BASIC_ARRAY_NUMBER_OF_TYPES; i++)
 		{
 			int expectedPosOfConjunctionIfExistent = startPosToSearchForComma;
-			int indexOfConjunctionTemp = lineContents->find(preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[i], expectedPosOfConjunctionIfExistent);
+			int indexOfConjunctionTemp = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], expectedPosOfConjunctionIfExistent);
 			if((indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunctionTemp == expectedPosOfConjunctionIfExistent))
 			{
 				conjunctionFoundInSubphrase = true;
@@ -446,13 +380,21 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 			}
 		}
 
-		string subphraseContents = lineContents->substr(startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
+		vector<GIApreprocessorWord*> subphraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
+		//#define NLC_PREPROCESSOR_DEBUG
+		cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: subphraseContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&subphraseContents) << endl;
+		//#endif
 
-		currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase = startPosToSearchForComma;
+		currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase = startPosToSearchForComma;
 		currentNLCsubphraseInList->hasConjunction = conjunctionFoundInSubphrase;
 		if(conjunctionFoundInSubphrase)
 		{
-			currentNLCsubphraseInList->phraseContents = subphraseContents.substr(preprocessorMathOperatorsEquivalentConjunctionsWithoutPause[conjunctionTypeOfConjunction].length());	//remove conjunction from subphrase contents (redundant)
+			if(subphraseContents.size() < 1)	//< 2?
+			{
+				cout << "NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{} error: (subphraseContents.size() < 1)" << endl;
+				exit(EXIT_ERROR);
+			}
+			currentNLCsubphraseInList->phraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(&subphraseContents, 1);	//remove conjunction from subphrase contents (redundant) - ie the first word in the subphrase
 			currentNLCsubphraseInList->conjunctionType = conjunctionTypeOfConjunction;
 		}
 		else
@@ -475,6 +417,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 	int numberOfSuperPhrases = commaIndex;
 
 	/*
+	CHECKTHIS:
 	FUTURE support multiple logical condition commands in one line; NLC_PREPROCESSOR_MATH_SUPPORT_MULTIPLE_LOGICAL_CONDITION_COMMANDS_ON_ONE_LINE eg "if the house is blue, write the letter and read the book"/"else write the letter and read the book."
 	support logical condition mathText commands on same line NLC_PREPROCESSOR_MATH_SUPPORT_LOGICAL_CONDITION_MATHTEXT_COMMANDS_ON_SAME_LINE eg "if the house is blue, X = 3+5"
 	NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION support implicit conjunctions, eg "if the house is blue, the cat is green, and the bike is tall, ride the bike"
@@ -517,15 +460,15 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 				currentNLCsubphraseInList->hasConjunction = true;				//redundant
 				currentNLCsubphraseInList->conjunctionType = conjunctionTypeOfFuturePhrase;	//redundant
 				//update the lineContents with an artifical conjunction
-				lineContents->insert(currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase, preprocessorMathOperatorsEquivalentConjunctionsWithoutEndWhiteSpace[conjunctionTypeOfFuturePhrase]);
-
+				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctionsBasic[conjunctionTypeOfFuturePhrase], currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase);
+				
 				//added 1r5n: support multiple commas, eg "if the house is blue, the cat is green, the apple is sad, and the bike is tall, ride the bike"
 				if(currentNLCsubphraseInList->next != NULL)
 				{
 					currentNLCsubphraseInList2 = currentNLCsubphraseInList->next;
 					while(currentNLCsubphraseInList2->next != NULL)
 					{
-						currentNLCsubphraseInList2->lineIndexOfFirstCharacterInPhrase = currentNLCsubphraseInList2->lineIndexOfFirstCharacterInPhrase + preprocessorMathOperatorsEquivalentConjunctionsWithoutEndWhiteSpace[conjunctionTypeOfFuturePhrase].length();
+						currentNLCsubphraseInList2->lineIndexOfFirstWordInPhrase = currentNLCsubphraseInList2->lineIndexOfFirstWordInPhrase + 1;
 						currentNLCsubphraseInList2 = currentNLCsubphraseInList2->next;
 					}
 				}
@@ -551,23 +494,21 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 		}
 		else if(!(currentNLCsubphraseInList->hasConjunction))
 		{
-			if(previousPhraseHadConjunction || (commaIndex = numberOfSuperPhrases-1))
+			if(previousPhraseHadConjunction || (commaIndex == numberOfSuperPhrases-1))
 			{
 				//found first phrase in logical condition command
 				*detectedLogicalConditionCommand = true;
-				//*indexOfLogicalConditionCommand = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
+				//*indexOfLogicalConditionCommand = currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase;
 				*logicalConditionCommandSubphraseContents = currentNLCsubphraseInList->phraseContents;
-				*logicalConditionCommandSubphraseLineIndex = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
+				*logicalConditionCommandSubphraseLineIndex = currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase;
 				#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN
-				if(logicalConditionCommandSubphraseContents->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME) == 0)	//ie ", then.."
+				if(GIApreprocessorMultiwordReductionClassObject.findStringInWordList(logicalConditionCommandSubphraseContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME) == 0)	//ie ", then.."
 				{
 					//eg If the dog is happy, then ride the bike.
-					int thenLength = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME).length();
-					*logicalConditionCommandSubphraseContents = logicalConditionCommandSubphraseContents->substr(thenLength);
-					*logicalConditionCommandSubphraseLineIndex = currentNLCsubphraseInList->lineIndexOfFirstCharacterInPhrase;
+					GIApreprocessorMultiwordReductionClassObject.removeWordFromWordList(logicalConditionCommandSubphraseContents, 0);	//remove the "then" word	//extractSubWordListInWordList(logicalConditionCommandSubphraseContents, 1, (logicalConditionCommandSubphraseContents->size()-1));
+					*logicalConditionCommandSubphraseLineIndex = currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase;
 				}
 				#endif
-				
 			}
 		}
 
@@ -589,13 +530,12 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN
 	if(!(*detectedLogicalConditionCommand))
 	{
-		int thenIndex = lineContents->find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME);
+		int thenIndex = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME);
 		if(thenIndex != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			//eg If the dog is happy then ride the bike.
-			int thenLength = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION_DETECT_THEN_NAME).length();
 			*detectedLogicalConditionCommand = true;
-			*logicalConditionCommandSubphraseContents = lineContents->substr(thenIndex + thenLength);
+			*logicalConditionCommandSubphraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(logicalConditionCommandSubphraseContents, thenIndex+1);
 			*logicalConditionCommandSubphraseLineIndex = thenIndex;
 		}		
 	
@@ -607,7 +547,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 
 
 
-bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCommand(string logicalConditionCommandSubphraseContents, int currentIndentation, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp)
+bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCommand(vector<GIApreprocessorWord*>* logicalConditionCommandSubphraseContents, int currentIndentation, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp)
 {
 	/*
 	algorithm;
@@ -625,13 +565,9 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 	//1r5n: copied from replaceLogicalConditionNaturalLanguageMathWithSymbols;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_ARRAY_NUMBER_OF_TYPES; i++)
 	{
-		logicalConditionCommandSubphraseContents = SHAREDvars.replaceAllOccurancesOfString(&logicalConditionCommandSubphraseContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);	//NB this is type sensitive; could be changed in the future
+		GIApreprocessorMultiwordReductionClassObject.wordListFindAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(logicalConditionCommandSubphraseContents, preprocessorMathOperatorsEquivalentConjunctions[i], progLangCoordinatingConjunctions[i]);		//NB this is type sensitive; could be changed in the future
 	}
-	//1r5n: remove preceeding space
-	if(logicalConditionCommandSubphraseContents[0] == CHAR_SPACE)
-	{
-		logicalConditionCommandSubphraseContents = logicalConditionCommandSubphraseContents.substr(1);
-	}
+	//OLD: 1r5n: remove preceeding space	//CHECKTHIS: //if(logicalConditionCommandSubphraseContents[0] == CHAR_SPACE) logicalConditionCommandSubphraseContents = logicalConditionCommandSubphraseContents.substr(1);
 
 	bool result = true;
 	int startPosToSearchForConjunction = 0;
@@ -639,15 +575,14 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 	bool stillConjunctionsToFind = true;
 	while(stillConjunctionsToFind)
 	{
-		int indexOfNextConjunction = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_CHARACTERS;
+		int indexOfNextConjunction = NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_WORDS;
 		int conjunctionTypeOfNextConjunction = INT_DEFAULT_VALUE;
 		bool foundConjunction = false;
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_WITHOUT_PAUSE_ARRAY_NUMBER_OF_TYPES; i++)
 		{
-			int indexOfConjunctionTemp = logicalConditionCommandSubphraseContents.find(progLangCoordinatingConjunctionsWithoutPause[i], startPosToSearchForConjunction);		//updated 1r5k
+			int indexOfConjunctionTemp = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(logicalConditionCommandSubphraseContents, progLangCoordinatingConjunctionsBasic[i], startPosToSearchForConjunction);		//updated 1r5k
 			if(indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
-
 				if(indexOfConjunctionTemp < indexOfNextConjunction)
 				{
 					indexOfNextConjunction = indexOfConjunctionTemp;
@@ -665,16 +600,15 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 		if(!foundConjunction)
 		{
 			stillConjunctionsToFind = false;
-			indexOfNextConjunction = logicalConditionCommandSubphraseContents.length();
+			indexOfNextConjunction = logicalConditionCommandSubphraseContents->size();
 		}
 
-		string subCommandContents = logicalConditionCommandSubphraseContents.substr(startPosToSearchForConjunction, indexOfNextConjunction);
+		vector<GIApreprocessorWord*> subCommandContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(logicalConditionCommandSubphraseContents, startPosToSearchForConjunction, indexOfNextConjunction-startPosToSearchForConjunction);	//CHECKTHIS; length parameter used to be indexOfNextConjunction
 
 		if(foundConjunction)
 		{
-			subCommandContents = subCommandContents + CHAR_FULLSTOP;	//1r5n
+			GIApreprocessorMultiwordReductionClassObject.addStringToWordList(&subCommandContents, STRING_FULLSTOP);	//1r5n
 		}
-
 
 		//currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceIndex = ?		//CHECKTHIS
 		currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents = subCommandContents;
@@ -684,7 +618,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 
 		if(stillConjunctionsToFind)
 		{
-			startPosToSearchForConjunction = indexOfNextConjunction + progLangCoordinatingConjunctionsWithoutPause[conjunctionTypeOfNextConjunction].length();	//updated 1r5k
+			startPosToSearchForConjunction = indexOfNextConjunction + 1;	//updated 1r5k	//+1 to account for progLangCoordinatingConjunctionsWithoutPause[conjunctionTypeOfNextConjunction] - CHECKTHIS
 		}
 
 		conjunctionIndex++;

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b2b 21-May-2017
+ * Project Version: 2b3a 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,7 +40,8 @@
 #include "NLCpreprocessorMathLogicalConditions.hpp"
 #include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-#include "GIApreprocessorMultiwordReduction.hpp"	//required for isIntrawordPunctuationMark only
+#include "GIApreprocessor.hpp"
+#include "GIApreprocessorMultiwordReductionClass.hpp"
 
 
 #ifdef NLC_PREPROCESSOR
@@ -48,23 +49,23 @@ class NLCpreprocessorClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: NLCpreprocessorMathClass NLCpreprocessorMath;
-	private: GIApreprocessorMultiwordReductionClass GIApreprocessorMultiwordReduction;
+	private: GIApreprocessorClass GIApreprocessor;
+	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
-	public: bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName);
-		#ifdef NLC_PREPROCESSOR_REDUCE_QUOTES_TO_SINGLE_WORDS
-		private: bool reduceQuotesToSingleWords(const string lineText, string* updatedLineText);
+	public: bool preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName, GIApreprocessorSentence* firstGIApreprocessorSentenceInListTemplate);
+		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
+		private: bool preprocessTextForNLCextractFunctions(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList);
 		#endif
-		private: void addNonLogicalConditionSentenceToList(string* sentenceContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
-		private: void extractIndentationFromCurrentLine(string* currentLine, int* currentIndentation, string* lineContents, string* indentationContents);
+			private: string printStringVector(vector<string>* stringVector);
+		private: void addNonLogicalConditionSentenceToList(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
 		#ifdef NLC_INPUT_FUNCTION_LISTS
 		public: bool detectFunctionHeader(const string* lineContents);
 		public: string getFunctionNameFromFunctionHeader(const string* lineContents);
 		private: string generateNLCfunctionFileName(const string NLCfunctionName);
 		#endif
-		private: bool detectLogicalConditionOperatorAtStartOfLine(const string* lineContents, int* logicalConditionOperator);
-		private: string removePrependingWhiteSpace(string sentenceContents);
+		private: bool detectLogicalConditionOperatorAtStartOfLine(const vector<GIApreprocessorWord*>* lineContents, int* logicalConditionOperator);
 		#ifdef NLC_MATH_OBJECTS_ADVANCED
-		private: bool detectMathObjectStringDelimiter(string* lineContents);
+		private: bool detectMathObjectStringDelimiter(const vector<GIApreprocessorWord*>* lineContents);
 		#endif
 };
 #endif

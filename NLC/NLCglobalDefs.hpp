@@ -49,9 +49,9 @@
 
 //#define NLC_DEBUG_DISABLE_2b_CODE
 #ifndef NLC_DEBUG_DISABLE_2b_CODE
-	//#ifdef NLCI
+	#ifdef NLCI
 		#define NLC_NLCI
-	//#endif
+	#endif
 #endif
 
 //#define NLC_DEBUG_DISABLE_2a_CODE

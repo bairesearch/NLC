@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3g 25-May-2017
+ * Project Version: 2b3h 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -186,6 +186,10 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 			result = false;
 		}
 	}
+	#endif
+
+	#ifdef NLC_PREPROCESSOR_DEBUG
+	cout << "splitMathDetectedLineIntoNLPparsablePhrases lineContents = " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(lineContents) << endl;
 	#endif
 
 	int phraseIndex = NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX;
@@ -519,6 +523,9 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	fullSentence->isMath = true;
 	fullSentence->mathTextNLPparsablePhraseTotal = phraseIndex;
 	fullSentence->mathText = mathText;
+	#ifdef NLC_PREPROCESSOR_DEBUG
+	cout << "fullSentence->mathText = " << fullSentence->mathText << endl;
+	#endif
 	fullSentence->indentation = currentIndentation;
 	if(fullSentence->mathTextNLPparsablePhraseTotal == 0)
 	{

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3g 25-May-2017
+ * Project Version: 2b3h 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -378,8 +378,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_BASIC_ARRAY_NUMBER_OF_TYPES; i++)
 		{
 			int expectedPosOfConjunctionIfExistent = startPosToSearchForComma;
-			int indexOfConjunctionTemp = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctions[i], expectedPosOfConjunctionIfExistent);
-			if((indexOfConjunctionTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfConjunctionTemp == expectedPosOfConjunctionIfExistent))
+			if(GIApreprocessorMultiwordReductionClassObject.findSimpleSubstringInWordListAtIndex(lineContents, preprocessorMathOperatorsEquivalentConjunctionsBasic[i], expectedPosOfConjunctionIfExistent, false))
 			{
 				conjunctionFoundInSubphrase = true;
 				conjunctionTypeOfConjunction = i;
@@ -387,12 +386,15 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 		}
 
 		vector<GIApreprocessorWord*> subphraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
+
+
+		currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase = startPosToSearchForComma;
+		currentNLCsubphraseInList->hasConjunction = conjunctionFoundInSubphrase;
+		
 		#ifdef NLC_PREPROCESSOR_DEBUG
 		cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: subphraseContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&subphraseContents) << endl;
 		#endif
 
-		currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase = startPosToSearchForComma;
-		currentNLCsubphraseInList->hasConjunction = conjunctionFoundInSubphrase;
 		if(conjunctionFoundInSubphrase)
 		{
 			if(subphraseContents.size() < 1)	//< 2?
@@ -462,12 +464,12 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 				currentNLCsubphraseInList2 = currentNLCsubphraseInList2->next;
 			}
 			if(foundConjunctionOfFuturePhrase)
-			{
+			{				
 				currentNLCsubphraseInList->hasConjunction = true;				//redundant
 				currentNLCsubphraseInList->conjunctionType = conjunctionTypeOfFuturePhrase;	//redundant
 				//update the lineContents with an artifical conjunction
 				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, preprocessorMathOperatorsEquivalentConjunctionsBasic[conjunctionTypeOfFuturePhrase], currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase);
-				
+								
 				//added 1r5n: support multiple commas, eg "if the house is blue, the cat is green, the apple is sad, and the bike is tall, ride the bike"
 				if(currentNLCsubphraseInList->next != NULL)
 				{

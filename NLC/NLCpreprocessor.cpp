@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3d 25-May-2017
+ * Project Version: 2b3e 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -456,7 +456,7 @@ bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vec
 		{
 			logicalConditionOperatorFound = true;
 			*logicalConditionOperator = i;
-			cout << "logicalConditionOperator = " << i << endl; 
+			//cout << "logicalConditionOperator = " << i << endl; 
 		}
 	}
 	return logicalConditionOperatorFound;

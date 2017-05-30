@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3d 25-May-2017
+ * Project Version: 2b3e 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -98,7 +98,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLa
 		if(!parallelReplacement)
 		{
 			int indexOfWordAfterLogicalConditionOperator = logicalConditionOperationWordList.size();
-			cout << "indexOfWordAfterLogicalConditionOperator = " << indexOfWordAfterLogicalConditionOperator << endl;
+			//cout << "indexOfWordAfterLogicalConditionOperator = " << indexOfWordAfterLogicalConditionOperator << endl;
 			
 			string wordAfterLogicalConditionOperator = (*lineContents)[indexOfWordAfterLogicalConditionOperator]->tagName;
 			if(wordAfterLogicalConditionOperator == SHAREDvars.convertCharToString(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET))
@@ -387,9 +387,9 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 		}
 
 		vector<GIApreprocessorWord*> subphraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
-		//#define NLC_PREPROCESSOR_DEBUG
+		#ifdef NLC_PREPROCESSOR_DEBUG
 		cout << "generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{}: subphraseContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&subphraseContents) << endl;
-		//#endif
+		#endif
 
 		currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase = startPosToSearchForComma;
 		currentNLCsubphraseInList->hasConjunction = conjunctionFoundInSubphrase;

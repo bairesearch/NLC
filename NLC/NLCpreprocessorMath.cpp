@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3d 25-May-2017
+ * Project Version: 2b3e 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -175,7 +175,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	int wordIndex = 0;	//wordIndex in parsable phrase
 	vector<GIApreprocessorWord*> currentPhrase;
 	string mathText = "";
-		
+	bool previousWordWasNLPparsable = false;
+	
 	for(int w=0; w<lineContents->size(); w++)
 	{
 		GIApreprocessorWord* currentWordTag = (*lineContents)[w];
@@ -207,6 +208,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				}
 			}
 		}
+		
 		//cout << "currentWord = " << currentWord << endl;
 		//cout << "wordIsNLPparsable = " << wordIsNLPparsable << endl;
 
@@ -231,22 +233,27 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 			firstWordInSentence = true;
 		}
 		
-		/*
-		if((fullSentence->hasLogicalConditionOperator))
-		{
-			if(SHAREDvars.textInTextArray(currentWord, logicalConditionOperationsArray, NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES))
-			{
-				NLPparsableMandatoryCharacterFoundInCurrentWord = false;
-			}
-		}
-		*/
-		
 		bool finalWordInSentenceAndWordIsNLPparsable = false;
 		if(wordIsNLPparsable && finalWordInSentence)
 		{
 			finalWordInSentenceAndWordIsNLPparsable = true;
 		}
-
+	
+		#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_VARIABLE_NAMES_ONLY
+		//this test needs to be reworked and inserted	
+		if(!wordIsNLPparsable)
+		{
+			if(previousWordWasNLPparsable)
+			{
+				if(SHAREDvars.charInCharArray(currentWord[0], preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES))
+				{
+					cout << "splitMathDetectedLineIntoNLPparsablePhrases{}: user input error - variables names cannot start with numbers: " << currentWord << endl;
+					exit(EXIT_ERROR);
+				}
+			}
+		}
+		#endif
+		
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
 		bool addMathTextVariable = false;
 		if(!(fullSentence->hasLogicalConditionOperator))
@@ -283,6 +290,10 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 						for(int j=0; j<NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; j++)
 						{
 							if(GIApreprocessorMultiwordReductionClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeNumericalOperators[j]))
+							{
+								mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+							}
+							if(GIApreprocessorMultiwordReductionClassObject.findSimpleSubstringInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeNumericalOperators[j]))
 							{
 								mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
 							}
@@ -467,6 +478,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				wordIndex++;
 			}
 		}
+		
+		previousWordWasNLPparsable = wordIsNLPparsable;
 	}
 	
 

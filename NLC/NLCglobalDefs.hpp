@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3e 25-May-2017
+ * Project Version: 2b3f 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -49,6 +49,7 @@
 
 //#define NLC_DEBUG_DISABLE_2b_CODE
 #ifndef NLC_DEBUG_DISABLE_2b_CODE
+	//#define NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE	 //2b3f now optional (default: automatically pass structures to GIA in memory)
 	#ifdef USE_NLCI
 		#define NLC_NLCI
 	#endif
@@ -1041,7 +1042,7 @@
 
 			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MAX_WORDS (1000)
 		#endif
-		#define NLC_PREPROCESSOR_PRINT_OUTPUT
+		//#define NLC_PREPROCESSOR_PRINT_OUTPUT
 	#endif
 	//#define NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES

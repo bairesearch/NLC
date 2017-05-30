@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3e 25-May-2017
+ * Project Version: 2b3f 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,11 +40,11 @@
 
 
 
-bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName, GIApreprocessorSentence* firstGIApreprocessorSentenceInListTemplate)
+bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName, GIAtranslatorVariablesClass* translatorVariables)
 {
 	bool result = true;
 	
-	if(firstGIApreprocessorSentenceInListTemplate == NULL)
+	if(translatorVariables->firstNLCprepreprocessorSentenceInList == NULL)
 	{		
 		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 		if(!preprocessTextForNLCextractFunctions(inputFileName, firstNLCfunctionInList, detectedFunctions, numberOfInputFilesInList, inputTextFileNameList))
@@ -58,8 +58,8 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 		for(int functionDefinitionIndex=0; functionDefinitionIndex<*numberOfInputFilesInList; functionDefinitionIndex++)
 		{
-			currentNLCfunctionInList->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
-			if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstGIApreprocessorSentenceInList, true))	//NB NLC interprets new lines as new sentences
+			currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
+			if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, true))	//NB NLC interprets new lines as new sentences
 			{
 				result = false;
 			}
@@ -68,7 +68,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	}
 	else
 	{
-		firstNLCfunctionInList->firstGIApreprocessorSentenceInList = firstGIApreprocessorSentenceInListTemplate;
+		firstNLCfunctionInList->firstNLCprepreprocessorSentenceInList = translatorVariables->firstNLCprepreprocessorSentenceInList;
 		*numberOfInputFilesInList = 1;
 	}	
 
@@ -81,12 +81,12 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	{
 		int currentLineNumber = 0;
 		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-		GIApreprocessorSentence* currentGIApreprocessorSentenceInList = currentNLCfunctionInList->firstGIApreprocessorSentenceInList;
+		GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList;
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;	//NLC sentence index
-		while(currentGIApreprocessorSentenceInList->next != NULL)
+		while(currentNLCprepreprocessorSentenceInList->next != NULL)
 		{
 			vector<GIApreprocessorWord*> lineContents;
-			if(!GIApreprocessorMultiwordReductionClassObject.generateSentenceWordList(currentGIApreprocessorSentenceInList->sentenceContentsOriginalFirstWord, &lineContents))
+			if(!GIApreprocessorMultiwordReductionClassObject.generateSentenceWordList(currentNLCprepreprocessorSentenceInList->sentenceContentsOriginalFirstWord, &lineContents))
 			{
 				cout << "NLCpreprocessorClass::preprocessTextForNLC{} error: !generateSentenceWordList" << endl;
 				exit(EXIT_ERROR);
@@ -97,7 +97,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 			string currentLine = GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents);
 			inputFileText = inputFileText + currentLine + CHAR_NEWLINE;
 			#endif
-			int currentIndentation = currentGIApreprocessorSentenceInList->indentation;
+			int currentIndentation = currentNLCprepreprocessorSentenceInList->indentation;
 			#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
 			currentNLCsentenceInList->sentenceOriginal = GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents); 	//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
 			#endif
@@ -179,37 +179,70 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 			#endif
 
 			currentLineNumber++;
-			currentGIApreprocessorSentenceInList = currentGIApreprocessorSentenceInList->next;
+			currentNLCprepreprocessorSentenceInList = currentNLCprepreprocessorSentenceInList->next;
 		}
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
 
-	/*
-	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-	NLCpreprocessorSentence* currentNLCsentenceInList = firstNLCfunctionInList->firstNLCsentenceInFunction;
-	while(currentNLCsentenceInList->next != NULL)
+
+	currentNLCfunctionInList = firstNLCfunctionInList;
+	while(currentNLCfunctionInList->next != NULL)
 	{
-		for(int i=0;i<currentNLCsentenceInList->indentation; i++)
+		string functionContents = "";
+		NLCpreprocessorSentence* currentSentence = currentNLCfunctionInList->firstNLCsentenceInFunction;
+		
+		#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
+		currentNLCfunctionInList->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
+		GIApreprocessorSentence* currentGIApreprocessorSentenceInList = currentNLCfunctionInList->firstGIApreprocessorSentenceInList;
+		#endif
+		while(currentSentence->next != NULL)
 		{
-			cout << "\t";
+			string indentationContents = GIApreprocessor.generateIndentationContents(currentSentence->indentation);
+
+			NLCpreprocessorParsablePhrase* currentParsablePhrase = currentSentence->firstNLPparsablePhraseInList;
+			bool first = true;
+			while(currentParsablePhrase->next != NULL || (!currentSentence->isMath && first))
+			{	
+				first = false;
+				functionContents = functionContents + indentationContents + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
+				
+				#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
+				GIApreprocessorMultiwordReductionClassObject.generateFlatSentenceWordList(&(currentParsablePhrase->sentenceContents), &(currentGIApreprocessorSentenceInList->sentenceContentsOriginalFirstWord));	//precondition: words in logicReferenceVariableWordList are unique across all logicReferenceVariableWordLists in memory
+				#ifdef NLC_PREPROCESSOR_DEBUG
+				GIApreprocessorWord* currentWordInSentence = currentGIApreprocessorSentenceInList->sentenceContentsOriginalFirstWord;
+				cout << endl;
+				while(currentWordInSentence->nextTag != NULL)
+				{
+					cout << "generateFlatSentenceWordList result: currentWordInSentence = " << currentWordInSentence->tagName << endl;
+					currentWordInSentence = currentWordInSentence->nextTag;
+				}
+				#endif
+				currentGIApreprocessorSentenceInList->next = new GIApreprocessorSentence();
+				currentGIApreprocessorSentenceInList = currentGIApreprocessorSentenceInList->next;
+				#endif
+				
+				if(currentSentence->isMath)
+				{
+					currentParsablePhrase = currentParsablePhrase->next;
+				}
+			}
+			currentSentence = currentSentence->next;
 		}
-		cout << currentNLCsentenceInList->->firstNLPparsablePhraseInList->sentenceContents;
-		cout << "(sentenceIndex: " << currentNLCsentenceInList->firstNLPparsablePhraseInList->sentenceIndex << ") ";
-		if(currentNLCsentenceInList->isMath)
+		
+		#ifdef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
+		string functionName = currentNLCfunctionInList->NLCfunctionName;
+		if(!(*detectedFunctions))
 		{
-			cout << " (mathText: " << currentNLCsentenceInList->mathText << ")" << endl;
+			functionName = outputFileName;
 		}
-		else
-		{
-			cout << endl;
-		}
-		currentNLCsentenceInList = currentNLCsentenceInList->next;
+		SHAREDvars.writeStringToFile(functionName, &functionContents);
+		#endif
+		
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
-	#endif
-	*/
 
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-	cout << "inputFileText = \n" << inputFileText << endl;
+	//cout << "inputFileText = \n" << inputFileText << endl;
 	currentNLCfunctionInList = firstNLCfunctionInList;
 	while(currentNLCfunctionInList->next != NULL)
 	{
@@ -259,10 +292,10 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	}
 	#endif
 
-	//#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
+	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;
 	exit(EXIT_ERROR);
-	//#endif
+	#endif
 
 	return result;
 }

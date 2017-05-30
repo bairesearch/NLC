@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3e 25-May-2017
+ * Project Version: 2b3f 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -459,7 +459,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2b3e 25-May-2017" << endl;
+			cout << "NLC.exe - Project Version: 2b3f 25-May-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -811,14 +811,14 @@ bool NLCmainClass::executeNLC2()
 		#endif
 
 		
-		if(translatorVariablesTemplate->firstGIApreprocessorSentenceInList == NULL)
+		if(translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList == NULL)
 		{
 			#ifdef NLC_NLCI
-			cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: (translatorVariablesTemplate->firstGIApreprocessorSentenceInList == NULL)" << endl;
+			cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: (translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList == NULL)" << endl;
 			exit(EXIT_ERROR);
 			#endif
 		}
-		if(NLCpreprocessorClass().preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName, translatorVariablesTemplate->firstGIApreprocessorSentenceInList))
+		if(NLCpreprocessorClass().preprocessTextForNLC(inputTextPlainTXTfileName, firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName, translatorVariablesTemplate))
 		{
 			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(preprocessorDetectedFunctions)
@@ -909,7 +909,6 @@ bool NLCmainClass::executeNLC2()
 			translatorVariables->entityNodesActiveListNetworkIndexes = translatorVariablesTemplate->entityNodesActiveListNetworkIndexes;
 			translatorVariables->timeConditionNodesActiveList = translatorVariablesTemplate->timeConditionNodesActiveList;
 			translatorVariables->entityNodesActiveListSentences = translatorVariablesTemplate->entityNodesActiveListSentences;
-			translatorVariables->firstGIApreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;	
 		}
 		else
 		{
@@ -922,6 +921,15 @@ bool NLCmainClass::executeNLC2()
 		translatorVariables->timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
 		translatorVariables->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		#endif
+		if(useNLCpreprocessor)
+		{
+			translatorVariables->firstGIApreprocessorSentenceInList = currentNLCfunctionInList->firstGIApreprocessorSentenceInList;	
+		}
+		else
+		{
+			translatorVariables->firstGIApreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;	//ie most likely NULL (unless the higher level application is executing NLC without useNLCpreprocessor)
+		}
+		
 		entityNodesActiveListCompleteFunctions.push_back(translatorVariables->entityNodesActiveListComplete);
 		entityNodesActiveListSentencesFunctions.push_back(translatorVariables->entityNodesActiveListSentences);
 		translatorVariables->NLPfeatureParser = translatorVariablesTemplate->NLPfeatureParser;

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3c 25-May-2017
+ * Project Version: 2b3d 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -176,15 +176,12 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	vector<GIApreprocessorWord*> currentPhrase;
 	string mathText = "";
 		
-	bool finalWordInSentenceFoundAndIsLegal = false;
 	for(int w=0; w<lineContents->size(); w++)
 	{
 		GIApreprocessorWord* currentWordTag = (*lineContents)[w];
 		string currentWord = currentWordTag->tagName;
 		//NLP parsable phrase is taken to be at least 2 consecutive words delimited by a space ie, [a-zA-Z0-9_] [a-zA-Z0-9_]
-		
-		//cout << "currentWord = " << currentWord << endl;
-		
+				
 		//eg y = x+the number of house in the park
 		//eg y = x+(the number of house in the park)
 		
@@ -210,6 +207,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				}
 			}
 		}
+		//cout << "currentWord = " << currentWord << endl;
+		//cout << "wordIsNLPparsable = " << wordIsNLPparsable << endl;
 
 		bool logicalConditionOperatorInSentence = false;
 		if((fullSentence->hasLogicalConditionOperator))
@@ -241,6 +240,12 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 			}
 		}
 		*/
+		
+		bool finalWordInSentenceAndWordIsNLPparsable = false;
+		if(wordIsNLPparsable && finalWordInSentence)
+		{
+			finalWordInSentenceAndWordIsNLPparsable = true;
+		}
 
 		#ifdef NLC_PREPROCESSOR_MATH_DETECT_AND_DECLARE_IMPLICITLY_DECLARED_VARIABLES
 		bool addMathTextVariable = false;
@@ -374,20 +379,24 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 		}
 		else
 		{
-			if(!wordIsNLPparsable || (wordIsNLPparsable && finalWordInSentence))
+			if(!wordIsNLPparsable || finalWordInSentenceAndWordIsNLPparsable)
 			{
-				//cout << "(!wordIsNLPparsable || (wordIsNLPparsable && finalWordInSentence))" << endl;
+				//cout << "(!wordIsNLPparsable || finalWordInSentenceAndWordIsNLPparsable)" << endl;
 
+				if(finalWordInSentenceAndWordIsNLPparsable)
+				{
+					if(!addMathTextVariable)	//CHECKTHIS - is this check required?
+					{
+						addNewMathTextVariable(fullSentence, currentWord, NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
+						currentPhrase.push_back(currentWordTag);
+						wordIndex++;
+					}
+				}
+					
 				//currentWord is either a mathText variable name or part of an NLP parsable phrase (c is a space or comma)
 				if(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)
 				{
 					//cout << "(wordIndex >= NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_MIN_NUMBER_WORDS)" << endl;
-
-					if(wordIsNLPparsable && finalWordInSentence)
-					{
-						addNewMathTextVariable(fullSentence, currentWord, NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN);
-						currentPhrase.push_back(currentWordTag);
-					}
 
 					//CHECKTHIS; //remove all mathTextVariable nlp parsable phrase (as an NLP parsable phrase does not contain mathText variable names, or if it does the mathText variable are references to predefined mathText variables and will be detected later)
 					for(int i=0; i<currentPhrase.size(); i++)
@@ -418,8 +427,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 					currentParsablePhraseInList->sentenceContents = currentPhrase;
 					currentParsablePhraseInList->sentenceIndex = *sentenceIndex;
-					mathText = mathText + NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentParsablePhraseInList);
-					if(!(wordIsNLPparsable && finalWordInSentence))
+					mathText = mathText + NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(sentenceIndexOfFullSentence, currentParsablePhraseInList);	//consider adding STRING_SPACE in the middle
+					if(!finalWordInSentenceAndWordIsNLPparsable)
 					{
 						mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, firstWordInSentence);
 					}
@@ -437,7 +446,10 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				else
 				{
 					//currentWord is a mathText variable name (c is likely a mathematical operator)
-					currentPhrase.push_back(currentWordTag);	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText
+					if(!finalWordInSentenceAndWordIsNLPparsable)
+					{
+						currentPhrase.push_back(currentWordTag);	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText
+					}
 					mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase);	//CHECKTHIS; how should spaces be reinserted?
 				}
 
@@ -556,6 +568,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 						l = the house
 						*/
 						mathTextVariable->type = variableTypeTemp;
+						//cout << "findPredefinedMathtextVariable: mathTextVariable->type = " << mathTextVariable->type << endl;
 					}
 					#endif
 				}

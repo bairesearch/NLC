@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3f 25-May-2017
+ * Project Version: 2b3g 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -69,6 +69,23 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 				result = true;
 			}
 		}
+		
+		#ifdef NLC_MATH_OBJECTS_ADVANCED
+		//special case reimplemented 2b3g;
+		for(int w=0; w<lineContents->size()-1; w++)
+		{
+			if((*lineContents)[w]->tagName == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS)
+			{
+				if(((*lineContents)[w+1]->tagName)[0] == NLC_MATH_OBJECTS_STRING_DELIMITER_CHAR)
+				{
+					//ie 'is "' NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_STRING
+					(*lineContents)[w]->tagName = NLC_PREPROCESSOR_MATH_OPERATOR_STRING_EQUALS_SET; 	//NLC_PREPROCESSOR_MATH_OPERATOR_STRING_EQUALS_SET_NEW
+					result = true;
+					//cout << "lineContents = " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(lineContents) << endl;
+				}
+			}
+		}
+		#endif
 		
 		//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
 		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.
@@ -360,7 +377,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 								variableTypeObject = preprocessorMathTextVariableMathObjectTypes[j];
 								addMathTextVariable = true;
 								
-								//cout << "explicitly declared mathText variable detected: declaring " << preprocessorMathTextVariableMathObjectTypes[j] << currentWord << endl;
+								cout << "explicitly declared mathText variable detected: declaring " << preprocessorMathNaturalLanguageVariables[j] << " " << currentWord << endl;
 							}
 						}
 					}
@@ -461,7 +478,22 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					{
 						currentPhrase.push_back(currentWordTag);	//add previous words in the failed NLP parsable phrase (if existent) and the currentWord to the mathText
 					}
-					mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase);	//CHECKTHIS; how should spaces be reinserted?
+										
+					//added 2b3g;
+					//cout << "mathText = mathText + " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
+					string spaceText = "";
+					string spaceTextAfter = "";
+					#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
+					bool isMathTextVariableType = SHAREDvars.textInTextArray(currentWord, preprocessorMathMathTextVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES);
+					#else
+					bool isMathTextVariableType = SHAREDvars.textInTextArray(currentWord, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES);
+					#endif
+					if(isMathTextVariableType)
+					{
+						spaceTextAfter = STRING_SPACE;
+					}
+					
+					mathText = mathText + spaceText + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) + spaceTextAfter;	//CHECKTHIS; how should spaces be reinserted?
 				}
 
 				currentPhrase.clear();	//restart phrase (assuming it contains text)

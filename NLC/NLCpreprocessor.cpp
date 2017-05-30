@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3f 25-May-2017
+ * Project Version: 2b3g 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -241,7 +241,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
 
-	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	//#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 	//cout << "inputFileText = \n" << inputFileText << endl;
 	currentNLCfunctionInList = firstNLCfunctionInList;
 	while(currentNLCfunctionInList->next != NULL)
@@ -290,7 +290,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 		}
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
-	#endif
+	//#endif
 
 	#ifdef NLC_DEBUG_PREPROCESSOR_PREMATURE_QUIT
 	cout << "Premature quit for debug" << endl;

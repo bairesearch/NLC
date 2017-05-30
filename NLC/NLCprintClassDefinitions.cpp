@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b3f 25-May-2017
+ * Project Version: 2b3g 25-May-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -312,47 +312,52 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 								NLCprintDefs.printLine(functionDeclarationText, 1, &printedClassDefinitionHeaderText);
 
 								#ifdef NLC_CLASS_DEFINITIONS_PRINT_UNDEFINED_BUT_REFERENCED_FUNCTIONS
-								NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+								//cout << "firstNLCfunctionInList->NLCfunctionName = " << firstNLCfunctionInList->NLCfunctionName << endl;
 								bool undefinedFunctionDetected = true;
-								while(currentNLCfunctionInList->next != NULL)
+								if(firstNLCfunctionInList->NLCfunctionName != "")	//NLCitemClass.parseFunctionNameFromNLCfunctionName(firstNLCfunctionInList->NLCfunctionName) != NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME)
 								{
-									string functionName = "";
-									bool hasFunctionOwnerClass = false;
-									string functionOwnerName = "";
-									bool hasFunctionObjectClass = false;
-									string functionObjectName = "";
-									NLCitemClass.parseFunctionNameFromNLCfunctionName(currentNLCfunctionInList->NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
-									bool foundMatchedFunction = true;
-									for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
+									NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+									while(currentNLCfunctionInList->next != NULL)
 									{
-										NLCitem* currentItem = *parametersIterator;
-										if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER)
+										string functionName = "";
+										bool hasFunctionOwnerClass = false;
+										string functionOwnerName = "";
+										bool hasFunctionObjectClass = false;
+										string functionObjectName = "";
+										cout << "currentNLCfunctionInList->NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
+										NLCitemClass.parseFunctionNameFromNLCfunctionName(currentNLCfunctionInList->NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+										bool foundMatchedFunction = true;
+										for(vector<NLCitem*>::iterator parametersIterator = targetClassDefinition->parameters.begin(); parametersIterator < targetClassDefinition->parameters.end(); parametersIterator++)
 										{
-											if(currentItem->name != functionOwnerName)
+											NLCitem* currentItem = *parametersIterator;
+											if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OWNER)
 											{
-												foundMatchedFunction = false;
+												if(currentItem->name != functionOwnerName)
+												{
+													foundMatchedFunction = false;
+												}
+											}
+											else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
+											{
+												if(currentItem->name != functionName)
+												{
+													foundMatchedFunction = false;
+												}
+											}
+											else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
+											{
+												if(currentItem->name != functionObjectName)
+												{
+													foundMatchedFunction = false;
+												}
 											}
 										}
-										else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION)
+										if(foundMatchedFunction)
 										{
-											if(currentItem->name != functionName)
-											{
-												foundMatchedFunction = false;
-											}
+											undefinedFunctionDetected = false;
 										}
-										else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
-										{
-											if(currentItem->name != functionObjectName)
-											{
-												foundMatchedFunction = false;
-											}
-										}
+										currentNLCfunctionInList = currentNLCfunctionInList->next;
 									}
-									if(foundMatchedFunction)
-									{
-										undefinedFunctionDetected = false;
-									}
-									currentNLCfunctionInList = currentNLCfunctionInList->next;
 								}
 								#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
 								if(classDefinition->name == NLCitemClass.generateClassName(NLC_CLASS_DEFINITIONS_SUPPORT_FUNCTIONS_WITHOUT_SUBJECT_ARTIFICIAL_CLASS_NAME))

@@ -25,60 +25,10 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1d 01-June-2017
+ * Project Version: 2c1e 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
- 
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
 
 #include <QtWidgets>
 
@@ -183,34 +133,73 @@ void NLCIeditorWindowClass::about()
 
 bool NLCIeditorWindowClass::save()
 {
-	return saveEditorWindowSimple();
+	return saveEditorWindow(true);
 }
 
-bool NLCIeditorWindowClass::preprepreprocessText()
+bool NLCIeditorWindowClass::preprepreprocessText(const bool highlight)
 {
 	bool result = true;
 
 	//cout << "preprepreprocessText:" << endl;
 
-	if(!isPreprocessed || editor->document()->isModified())
+	closeTextDisplayWindowsAll();
+	isPreprocessed = true;
+	
+	ensureTextEndsWithNewLineCharacter();
+	
+	#ifdef USE_NLCI
+	firstNLCfunctionInList = new NLCfunction();
+	if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, firstNLCfunctionInList))
 	{
-		closeTextDisplayWindowsAll();
-		isPreprocessed = true;
-		#ifdef USE_NLCI
-		firstNLCfunctionInList = new NLCfunction();
-		if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), firstNLCfunctionInList))
-		#elif defined USE_GIAI
-		translatorVariablesTemplate = new GIAtranslatorVariablesClass();
-		translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
-		if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), translatorVariablesTemplate))
-		#endif
+		result = false;
+	}
+	#elif defined USE_GIAI
+	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
+	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
+	if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, translatorVariablesTemplate))
+	{
+		result = false;
+	}
+	#endif
+	
+	if(highlight)
+	{
+		if(!highlightText())
 		{
 			result = false;
 		}
-
-		highlighter->rehighlight();
 	}
 
+	return result;
+}
+
+void NLCIeditorWindowClass::ensureTextEndsWithNewLineCharacter()
+{
+	//if necessary, insert a newline character at the end of the text window (this is required based on standardised definition of text files)
+	QString textQ = editor->toPlainText();
+	string text = convertQStringToString(textQ);
+	if(text[text.length()-1] != CHAR_NEWLINE)
+	{
+		editor->append(convertStringToQString(""));
+	}
+}
+
+bool NLCIeditorWindowClass::highlightText()
+{
+	bool result = true;
+	highlighter->reinitialiseSyntaxHighlighterRules();
+	#ifdef USE_NLCI
+	if(!NLCIeditorOperations.preprepreprocessTextForNLChighlightWrapper(&(highlighter->highlightingRules), firstNLCfunctionInList))
+	{
+		result = false;
+	}
+	#elif defined USE_GIAI
+	if(!NLCIeditorOperations.preprepreprocessTextForNLChighlightWrapper(&(highlighter->highlightingRules), translatorVariablesTemplate))
+	{
+		result = false;
+	}
+	#endif
+	highlighter->rehighlight();
 	return result;
 }
 
@@ -241,8 +230,7 @@ bool NLCIeditorWindowClass::processText()
 {
 	bool result = true;
 
-	isPreprocessed = false;
-	preprepreprocessText();
+	preprepreprocessText(false);
 	
 	#ifdef USE_NLCI
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
@@ -256,16 +244,26 @@ bool NLCIeditorWindowClass::processText()
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}	
 	#elif defined USE_GIAI
-	if(!createNewTextDisplayWindow(NULL))
+	if(!createNewTextDisplayWindow())
 	{
 		result = false;
 	}
 	#endif
-	
+
+	//recalculate the syntax highlighting based on GIA parsed text
+	if(!highlightText())
+	{
+		result = false;
+	}
+
 	return result;
 }
 
+#ifdef USE_NLCI
 bool NLCIeditorWindowClass::createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList)
+#elif defined USE_GIAI
+bool NLCIeditorWindowClass::createNewTextDisplayWindow()
+#endif
 {
 	//1. create a new text display window to show NLC/GIA prepreprocessed text (ie without modifications)
 	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
@@ -353,7 +351,7 @@ bool NLCIeditorWindowClass::closeEditorWindow()
 	return result;
 }
 
-bool NLCIeditorWindowClass::saveEditorWindow()
+bool NLCIeditorWindowClass::saveEditorWindow(const bool simple)
 {
 	bool result = true;
 
@@ -364,57 +362,19 @@ bool NLCIeditorWindowClass::saveEditorWindow()
 	else
 	{
 		bool cancelExit = false;
-		const QMessageBox::StandardButton ret = QMessageBox::warning(this, tr("Application"),
-						   tr("The document has been modified.\n"
-							  "Do you want to save your changes?"),
-						   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-		if(ret == QMessageBox::Save)
+		QMessageBox::StandardButton ret;
+		if(simple)
 		{
-			if(!saveFile(convertStringToQString(editorName), editor->toPlainText()))	//.toAscii();
-			{
-				cancelExit = true;
-				//qInfo("1cancelExit");
-			}
-			else
-			{
-				//qInfo("2acceptExit");
-			}
-		}
-		else if(ret == QMessageBox::Cancel)
-		{
-			cancelExit = true;
-			//qInfo("3cancelExit");
+			ret = QMessageBox::warning(this, tr("Application"), tr("The document has been modified.\nDo you want to save your changes?"), QMessageBox::Save | QMessageBox::Cancel);
 		}
 		else
 		{
-
+			ret = QMessageBox::warning(this, tr("Application"),tr("The document has been modified.\nDo you want to save your changes?"), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 		}
 
-		editor->document()->setModified(false);
-
-		result = !cancelExit;
-	}
-
-	return result;
-}
-
-bool NLCIeditorWindowClass::saveEditorWindowSimple()
-{
-	bool result = true;
-
-	if(!(editor->document()->isModified()))
-	{
-		result = true;
-	}
-	else
-	{
-		bool cancelExit = false;
-		const QMessageBox::StandardButton ret = QMessageBox::warning(this, tr("Application"),
-						   tr("The document has been modified.\n"
-							  "Do you want to save your changes?"),
-						   QMessageBox::Save | QMessageBox::Cancel);
 		if(ret == QMessageBox::Save)
 		{
+			ensureTextEndsWithNewLineCharacter();
 			if(!saveFile(convertStringToQString(editorName), editor->toPlainText()))	//.toAscii();
 			{
 				cancelExit = true;

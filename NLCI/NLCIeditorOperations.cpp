@@ -25,79 +25,21 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1d 01-June-2017
+ * Project Version: 2c1e 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
- 
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** BSD License Usage
-** Alternatively, you may use this file under the terms of the BSD license
-** as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
 
 #include "NLCIglobalDefs.hpp"
 #include "NLCIeditorOperations.hpp"
-#include "GIAdraw.hpp"
 #include "LDreferenceClass.hpp"
-
-
-#define GIA_DRAW_VERB_NODE_COLOUR (GIA_DRAW_ACTION_NODE_COLOUR)
-#define GIA_DRAW_PREPOSITION_NODE_COLOUR (GIA_DRAW_CONDITION_NODE_COLOUR)
-#define GIA_DRAW_ADVERB_NODE_COLOUR (GIA_DRAW_SUBSTANCE_QUALITY_NODE_COLOUR)
-#define GIA_DRAW_ADJECTIVE_NODE_COLOUR (GIA_DRAW_SUBSTANCE_QUALITY_NODE_COLOUR)
-#define GIA_DRAW_NOUN_NODE_COLOUR (GIA_DRAW_PROPERTY_NODE_COLOUR)
 
 
 #include <QtWidgets>
 
 
 #ifdef USE_NLCI
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 	
@@ -120,11 +62,24 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QV
 	{
 		result = false;
 	}
+	
+	return result;
+}
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList)
+{
+	bool result = true;
+	
+	string lrpFolder = string(NLCI_LRP_FOLDER) + CHAR_FOLDER_DELIMITER;
+	if(!GIApreprocessorMultiwordReduction.initialiseLRP(lrpFolder, true))
+	{
+		result = false;
+	}
+	
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 	while(currentNLCfunctionInList->next != NULL)
 	{
 		//cout << "currentNLCfunctionInList->NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
-		if(!preprepreprocessTextForNLChighlightFast(highlightingRules, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList))
+		if(!preprepreprocessTextForNLChighlight(highlightingRules, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList))
 		{
 			result = false;
 		}
@@ -134,7 +89,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QV
 	return result;
 }
 #elif defined USE_GIAI
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, GIAtranslatorVariablesClass* translatorVariablesTemplate)
 {
 	bool result = true;
 	
@@ -147,23 +102,29 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QV
 	{
 		result = false;
 	}
-	if(!preprepreprocessTextForNLChighlightFast(highlightingRules, translatorVariablesTemplate->firstGIApreprocessorSentenceInList))
-	{
-		result = false;
-	}
-	
 	return result;
 }
-#endif
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFast(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate)
 {
 	bool result = true;
-	
+
 	string lrpFolder = string(NLCI_LRP_FOLDER) + CHAR_FOLDER_DELIMITER;
 	if(!GIApreprocessorMultiwordReduction.initialiseLRP(lrpFolder, true))
 	{
 		result = false;
 	}
+	
+	if(!preprepreprocessTextForNLChighlight(highlightingRules, translatorVariablesTemplate->firstGIApreprocessorSentenceInList))
+	{
+		result = false;
+	}
+	return result;
+}
+#endif
+
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlight(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList)
+{
+	bool result = true;
 	
 	int line = 0;
 	GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList = firstNLCpreprepreprocessorSentenceInList;
@@ -171,7 +132,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFast(QVector<
 	{
 		vector<GIApreprocessorWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
 		//cout << "currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
-		if(!preprepreprocessTextForNLChighlightFastSentence(highlightingRules, sentence, true))
+		if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 		{
 			result = false;
 		}
@@ -210,21 +171,23 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* 
 		result = false;
 	}
 
-	if(!preprepreprocessTextForNLCsingleLineHighlightFast(highlightingRules, modifiedNLCpreprepreprocessorSentenceInList, lineIndex))
+	if(!preprepreprocessTextForNLCsingleLinehighlight(highlightingRules, modifiedNLCpreprepreprocessorSentenceInList, lineIndex))
 	{
 		result = false;
 	}
+	
+	delete modifiedNLCpreprepreprocessorSentenceInList;
 
 	return result;
 }
 		
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLineHighlightFast(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, int lineIndex)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, int lineIndex)
 {
 	bool result = true;
 
 	vector<GIApreprocessorWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
-	//cout << "preprepreprocessTextForNLCsingleLineHighlightFast{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
-	if(!preprepreprocessTextForNLChighlightFastSentence(highlightingRules, sentence, true))
+	//cout << "preprepreprocessTextForNLCsingleLinehighlight{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
+	if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 	{
 		result = false;
 	}
@@ -232,7 +195,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLineHighlightFas
 	return result;
 }
 
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFastSentence(QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, bool useOriginalSpacing)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, bool useOriginalSpacing)
 {
 	int characterIndexFirst = 0;
 	int charCount = 0;
@@ -252,7 +215,15 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFastSentence(
 		}
 		if(!ignoreWord)
 		{
-			int colourIndex = preprepreprocessTextForNLChighlightFastWordDetermineColourIndex(&word);
+			int colourIndex = DAT_FILE_COLOUR_BLACK;
+			if(wordTag->entityReference != NULL)
+			{
+				colourIndex = NLCIoperations.processTextForNLChighlightWordDetermineColourIndex(wordTag->entityReference);
+			}
+			else
+			{
+				colourIndex = NLCIoperations.preprepreprocessTextForNLChighlightWordDetermineColourIndex(&word);
+			}
 			//cout << "word = " << word << endl;
 			//cout << "colourIndex = " << colourIndex << endl;
 
@@ -269,36 +240,6 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFastSentence(
 	}
 }
 
-int NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFastWordDetermineColourIndex(const string* word)
-{
-	int colourIndex = DAT_FILE_COLOUR_BLACK;
-	int grammaticalBaseTenseForm = INT_DEFAULT_VALUE;
-	if(GIApreprocessorMultiwordReduction.determineVerbCaseStandardWithAdditional(*word, &grammaticalBaseTenseForm))
-	{
-		colourIndex = GIA_DRAW_VERB_NODE_COLOUR;
-	}
-	else if(GIApreprocessorMultiwordReduction.determineIsPreposition(*word))
-	{
-		colourIndex = GIA_DRAW_PREPOSITION_NODE_COLOUR;
-	}
-	else if(GIApreprocessorMultiwordReduction.determineIsAdverb(*word))
-	{
-		colourIndex = GIA_DRAW_ADVERB_NODE_COLOUR;
-	}
-	else if(GIApreprocessorMultiwordReduction.determineIsAdjective(*word))
-	{
-		colourIndex = GIA_DRAW_ADJECTIVE_NODE_COLOUR;
-	}
-	else if(GIApreprocessorMultiwordReduction.determineIsNoun(*word))
-	{
-		colourIndex = GIA_DRAW_NOUN_NODE_COLOUR;
-	}
-	else
-	{
-
-	}
-	return colourIndex;
-}
 
 
 

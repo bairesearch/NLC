@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1d 01-June-2017
+ * Project Version: 2c1e 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -685,13 +685,16 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 	//print generateObjectByName
 	int level = 0;
 
+	string NLCgeneratedCodeSourceAuxiliaryFunctions = "";
+	this->generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSourceAuxiliaryFunctions, level);
+	this->generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSourceAuxiliaryFunctions, level);
+	
 	#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES
 	string NLCgeneratedCodeSource = "";
 	string NLCgeneratedCodeSourceFileName = string(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_CPP;	//NLCgenerated.cpp
 	string NLCgeneratedCodeHeaderFileName = string(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND) + NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_EXTENSION_HPP;	//NLCgenerated.hpp
 	NLCgeneratedCodeSource = NLCgeneratedCodeSource + this->generateCodeHashIncludeReferenceGenerated(NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_NAME_PREPEND_BASE, progLang) + CHAR_NEWLINE;	//NLCgenerated.hpp
-	this->generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
-	this->generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
+	NLCgeneratedCodeSource = NLCgeneratedCodeSource + NLCgeneratedCodeSourceAuxiliaryFunctions;
 	SHAREDvars.writeStringToFile(NLCgeneratedCodeSourceFileName, &NLCgeneratedCodeSource);
 
 	string NLCgeneratedCodeHeader = "";
@@ -745,6 +748,8 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 	#ifdef NLC_API
 	}
 	#endif
+	#else
+	string NLCgeneratedCodeSource = NLCgeneratedCodeSourceAuxiliaryFunctions;
 	#endif
 	
 	#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES

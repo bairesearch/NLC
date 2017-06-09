@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1d 01-June-2017
+ * Project Version: 2c1e 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -481,12 +481,12 @@ void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIAprepro
 			string actionName = firstWordInSentence;
 			(*currentNLCsentenceInList)->singleWordSentenceActionName = actionName;
 			lineContents->clear();
-			GIApreprocessorMultiwordReductionClassObject.addStringToWordList(lineContents, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_FULL);
+			GIApreprocessorMultiwordReductionClassObject.addStringArrayToWordList(lineContents, preprocessorInterpretSingleWordSentencesAsActionsDummyTextActionFullWordArray, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_FULL_NUMBER_OF_WORDS);
 			GIApreprocessorMultiwordReductionClassObject.addStringToWordList(lineContents, STRING_FULLSTOP);
 			#else
 			lineContents->clear();
 			GIApreprocessorMultiwordReductionClassObject.addStringToWordList(lineContents, actionName);
-			GIApreprocessorMultiwordReductionClassObject.addStringToWordList(lineContents, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL);
+			GIApreprocessorMultiwordReductionClassObject.addStringArrayToWordList(lineContents, preprocessorInterpretSingleWordSentencesAsActionsDummyTextActionObjectFullWordArray, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL_NUMBER_OF_WORDS);
 			GIApreprocessorMultiwordReductionClassObject.addStringToWordList(lineContents, STRING_FULLSTOP);
 			#endif
 		}

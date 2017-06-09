@@ -1,3 +1,0 @@
-rm *.o
-head -c -1 -q makefile.OpenNLClibraryPart1.noStandard NLCgeneratedList.txt makefile.OpenNLClibraryPart3.noStandard > makefile
-make

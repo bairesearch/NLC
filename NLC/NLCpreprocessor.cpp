@@ -24,8 +24,8 @@
  *
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
- * Project: Natural Language Compiler (Programming Interface)
- * Project Version: 2b4b 28-May-2017
+ * Project: Natural Language Compiler
+ * Project Version: 2c1a 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -40,38 +40,164 @@
 
 
 
-bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName, GIAtranslatorVariablesClass* translatorVariables)
+bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCfunction** firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName, GIAtranslatorVariablesClass* translatorVariables)
 {
 	bool result = true;
 	
-	if(translatorVariables->firstNLCprepreprocessorSentenceInList == NULL)
-	{		
-		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
-		if(!preprocessTextForNLCextractFunctions(inputFileName, firstNLCfunctionInList, detectedFunctions, numberOfInputFilesInList, inputTextFileNameList))
-		{
-			result = false;
-		}
-		#else
-		*numberOfInputFilesInList = 1;
-		#endif
-		
-		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
-		for(int functionDefinitionIndex=0; functionDefinitionIndex<*numberOfInputFilesInList; functionDefinitionIndex++)
-		{
-			currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
-			if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, true))	//NB NLC interprets new lines as new sentences
+	if(*firstNLCfunctionInList == NULL)
+	{
+		if(translatorVariables->firstNLCprepreprocessorSentenceInList == NULL)
+		{		
+			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
+			if(!preprocessTextForNLCextractFunctions(inputFileName, *firstNLCfunctionInList, detectedFunctions, numberOfInputFilesInList, inputTextFileNameList))
 			{
 				result = false;
 			}
-			currentNLCfunctionInList = currentNLCfunctionInList->next;
+			#else
+			*numberOfInputFilesInList = 1;
+			#endif
+
+			NLCfunction* currentNLCfunctionInList = *firstNLCfunctionInList;
+			for(int functionDefinitionIndex=0; functionDefinitionIndex<*numberOfInputFilesInList; functionDefinitionIndex++)
+			{
+				currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
+				if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, true))	//NB NLC interprets new lines as new sentences
+				{
+					result = false;
+				}
+				currentNLCfunctionInList = currentNLCfunctionInList->next;
+			}
+		}
+		else
+		{
+			//assume function has already been created externally
+			*firstNLCfunctionInList = new NLCfunction();
+			(*firstNLCfunctionInList)->firstNLCprepreprocessorSentenceInList = translatorVariables->firstNLCprepreprocessorSentenceInList;
+			*numberOfInputFilesInList = 1;
 		}
 	}
 	else
 	{
-		firstNLCfunctionInList->firstNLCprepreprocessorSentenceInList = translatorVariables->firstNLCprepreprocessorSentenceInList;
-		*numberOfInputFilesInList = 1;
-	}	
+		//assume function list has already been created externally
+	}
+	
+	if(!preprocessTextForNLC(*firstNLCfunctionInList, detectedFunctions, numberOfInputFilesInList, outputFileName))
+	{
+		result = false;
+	}
+	
+	return result;	
+}
 
+#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
+bool NLCpreprocessorClass::preprocessTextForNLCextractFunctions(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList)
+{
+	bool result = true;
+
+	*numberOfInputFilesInList = 0;
+
+	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	string inputFileText = "";
+	#endif
+			
+	ifstream parseFileObject(inputFileName.c_str());
+	if(!parseFileObject.rdbuf()->is_open())
+	{
+		//txt file does not exist in current directory.
+		cout << "Error: NLC input file does not exist in current directory: " << inputFileName << endl;
+		result = false;
+	}
+	else
+	{
+		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+		string currentLine;
+		*detectedFunctions = false;
+		string functionContentsRaw = "";
+		string NLCfunctionName = "";
+		string functionFileName = "";	//with NLCfunctionName with extension
+		int currentLineNumber = 0;
+
+		while(getline(parseFileObject, currentLine))
+		{
+			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+			inputFileText = inputFileText + currentLine + CHAR_NEWLINE;
+			#endif
+
+			if(this->detectFunctionHeader(&currentLine))
+			{
+				//extract functions from file
+				if(*detectedFunctions)
+				{
+					currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
+					currentNLCfunctionInList->functionContentsRaw = functionContentsRaw;
+					currentNLCfunctionInList->next = new NLCfunction();
+					currentNLCfunctionInList = currentNLCfunctionInList->next;
+					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
+					*numberOfInputFilesInList = *numberOfInputFilesInList+1;
+				}
+				else
+				{
+					*detectedFunctions = true;
+				}
+				NLCfunctionName = this->getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
+				functionFileName = this->generateNLCfunctionFileName(NLCfunctionName);
+				inputTextFileNameList->push_back(functionFileName);
+				functionContentsRaw = "";
+			}
+			else
+			{
+				functionContentsRaw = functionContentsRaw + currentLine + CHAR_NEWLINE;
+			}
+			
+			currentLineNumber++;
+		}
+
+		//create a final function based on the final text..
+		if(*detectedFunctions)
+		{
+			currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
+		}
+		else
+		{
+			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+			cout << "create new artificial function" << endl;
+			#endif	
+		}
+		currentNLCfunctionInList->functionContentsRaw = functionContentsRaw;
+		currentNLCfunctionInList->next = new NLCfunction();
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
+		*numberOfInputFilesInList = *numberOfInputFilesInList+1;
+	}
+
+	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+	while(currentNLCfunctionInList->next != NULL)
+	{
+		cout << "NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
+		cout << "functionContentsRaw = \n" << currentNLCfunctionInList->functionContentsRaw << endl;
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
+	}
+	#endif
+
+	return result;
+}
+#endif
+
+string NLCpreprocessorClass::printStringVector(vector<string>* stringVector)
+{
+	string text = "";
+	for(vector<string>::iterator iter = stringVector->begin(); iter != stringVector->end(); iter++)
+	{
+		text = text + *iter + CHAR_NEWLINE;
+	}
+	return text;
+}
+
+bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, const string outputFileName)
+{
+	bool result = true;
+	
 	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
 	string inputFileText = "";
 	#endif
@@ -289,110 +415,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(const string inputFileName, NLCf
 	return result;
 }
 
-#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
-bool NLCpreprocessorClass::preprocessTextForNLCextractFunctions(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList)
-{
-	bool result = true;
 
-	*numberOfInputFilesInList = 0;
-
-	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-	string inputFileText = "";
-	#endif
-			
-	ifstream parseFileObject(inputFileName.c_str());
-	if(!parseFileObject.rdbuf()->is_open())
-	{
-		//txt file does not exist in current directory.
-		cout << "Error: NLC input file does not exist in current directory: " << inputFileName << endl;
-		result = false;
-	}
-	else
-	{
-		NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
-		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-		string currentLine;
-		*detectedFunctions = false;
-		string functionContentsRaw = "";
-		string NLCfunctionName = "";
-		string functionFileName = "";	//with NLCfunctionName with extension
-		int currentLineNumber = 0;
-
-		while(getline(parseFileObject, currentLine))
-		{
-			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-			inputFileText = inputFileText + currentLine + CHAR_NEWLINE;
-			#endif
-
-			if(this->detectFunctionHeader(&currentLine))
-			{
-				//extract functions from file
-				if(*detectedFunctions)
-				{
-					currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
-					currentNLCfunctionInList->functionContentsRaw = functionContentsRaw;
-					currentNLCfunctionInList->next = new NLCfunction();
-					currentNLCfunctionInList = currentNLCfunctionInList->next;
-					currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-					*numberOfInputFilesInList = *numberOfInputFilesInList+1;
-				}
-				else
-				{
-					*detectedFunctions = true;
-				}
-				NLCfunctionName = this->getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
-				functionFileName = this->generateNLCfunctionFileName(NLCfunctionName);
-				inputTextFileNameList->push_back(functionFileName);
-				functionContentsRaw = "";
-			}
-			else
-			{
-				functionContentsRaw = functionContentsRaw + currentLine + CHAR_NEWLINE;
-			}
-			
-			currentLineNumber++;
-		}
-
-		//create a final function based on the final text..
-		if(*detectedFunctions)
-		{
-			currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
-		}
-		else
-		{
-			#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-			cout << "create new artificial function" << endl;
-			#endif	
-		}
-		currentNLCfunctionInList->functionContentsRaw = functionContentsRaw;
-		currentNLCfunctionInList->next = new NLCfunction();
-		currentNLCfunctionInList = currentNLCfunctionInList->next;
-		*numberOfInputFilesInList = *numberOfInputFilesInList+1;
-	}
-
-	#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
-	while(currentNLCfunctionInList->next != NULL)
-	{
-		cout << "NLCfunctionName = " << currentNLCfunctionInList->NLCfunctionName << endl;
-		cout << "functionContentsRaw = \n" << currentNLCfunctionInList->functionContentsRaw << endl;
-		currentNLCfunctionInList = currentNLCfunctionInList->next;
-	}
-	#endif
-
-	return result;
-}
-#endif
-
-string NLCpreprocessorClass::printStringVector(vector<string>* stringVector)
-{
-	string text = "";
-	for(vector<string>::iterator iter = stringVector->begin(); iter != stringVector->end(); iter++)
-	{
-		text = text + *iter + CHAR_NEWLINE;
-	}
-	return text;
-}
 	
 void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {

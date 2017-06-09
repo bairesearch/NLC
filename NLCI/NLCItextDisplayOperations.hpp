@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -88,7 +88,7 @@
 #include "GIAtranslatorOperations.hpp"
 #include "GIAentityNodeClass.hpp"
 
-#include <QLabel>
+#include <QTextBrowser>
 
 #define NLCI_URL_DELIMITER "/"
 
@@ -102,12 +102,12 @@ private:
 	
 public:	
 	#ifdef USE_NLCI
-	bool processTextForNLC(QLabel* label, GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* NLCfunctionInList, bool displayLRPprocessedText);
+	bool processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* NLCfunctionInList, bool displayLRPprocessedText);
 	#elif defined USE_GIAI
-	bool processTextForNLC(QLabel* label, GIAtranslatorVariablesClass* translatorVariablesTemplate, bool displayLRPprocessedText);
+	bool processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, bool displayLRPprocessedText);
 	#endif
-		bool processTextForNLChighlight(QLabel* label, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, bool displayLRPprocessedText, const int functionIndex);
-			bool processTextForNLChighlightSentence(QLabel* label, vector<GIApreprocessorWord*>* sentence, const int sentenceIndex, const int functionIndex);
+		bool processTextForNLChighlight(QTextBrowser* textBrowser, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, bool displayLRPprocessedText, const int functionIndex);
+			bool processTextForNLChighlightSentence(QTextBrowser* textBrowser, vector<GIApreprocessorWord*>* sentence, const int sentenceIndex, const int functionIndex, string* htmlSource);
 				int processTextForNLChighlightWordDetermineColourIndex(GIAentityNode* entity);
 	#ifdef USE_NLCI
 	//bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, GIApreprocessorWord** wordTagFound);

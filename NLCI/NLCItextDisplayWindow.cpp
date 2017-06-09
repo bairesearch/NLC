@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -94,11 +94,11 @@ NLCItextDisplayWindowClass::NLCItextDisplayWindowClass(QWidget *parent)
 {
 	setupFileMenu();
 	setupHelpMenu();
-	setupLabel();
+	setupTextBrowser();
 
 	textDisplayFileName = "";
 
-	setCentralWidget(label);
+	setCentralWidget(textBrowser);
 	setWindowTitle(tr("NLCI Text Display"));
 	
 	#ifdef USE_NLCI
@@ -124,12 +124,12 @@ void NLCItextDisplayWindowClass::about()
 #endif
 }
 
-//TODO: enable this slot
-void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
+void NLCItextDisplayWindowClass::linkActivated(const QUrl &link)
 {
 	bool result = true;
 
-	QStringList pieces = link.split(NLCI_URL_DELIMITER);
+	QString linkStringQ = link.toEncoded();
+	QStringList pieces = linkStringQ.split(NLCI_URL_DELIMITER);
 	QString functionIndexStringQ = pieces.value(0);
 	QString sentenceIndexStringQ = pieces.value(1);
 	QString wordIndexStringQ = pieces.value(2);
@@ -141,8 +141,9 @@ void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
 	int wordIndex = SHAREDvars.convertStringToInt(wordIndexString);
 
 	GIApreprocessorWord* wordTagFound = NULL;
+
 	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList, &wordTagFound))
-	//if(NLCItextDisplayOperations.getWordByIndex(functionIndex, sentenceIndex, wordIndex, firstNLCfunctionInList, &wordTagFound))	//use this function in case label_linkActivated can't distinguish between the NLCItextDisplayWindowClass class object which triggered the function
+	//if(NLCItextDisplayOperations.getWordByIndex(functionIndex, sentenceIndex, wordIndex, firstNLCfunctionInList, &wordTagFound))	//use this function in case linkActivated can't distinguish between the NLCItextDisplayWindowClass class object which triggered the function
 	{
 
 		#ifdef USE_NLCI
@@ -150,11 +151,13 @@ void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
 		NLCItextDisplayWindowClass* textDisplayWindow2 = new NLCItextDisplayWindowClass();
 		textDisplayWindow2->translatorVariablesTemplate = translatorVariablesTemplate;
 		textDisplayWindow2->textDisplayFileName = textDisplayFileName;
+		string textDisplayWindowName = textDisplayWindow2->textDisplayFileName + " (generated code)";
+		textDisplayWindow2->setWindowTitle(convertStringToQString(textDisplayWindowName));
 		textDisplayWindow2->resize(NLCI_TEXT_DISPLAY_WINDOW_NLC_GENERATED_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_NLC_GENERATED_HEIGHT);
 		textDisplayWindow2->show();
 		string code = translatorVariablesTemplate->nlcGeneratedCode;
 		QString codeQ = convertStringToQString(code);
-		textDisplayWindow2->label->setText(codeQ);
+		textDisplayWindow2->textBrowser->setText(codeQ);
 		addToWindowList(textDisplayWindow2);
 		#endif
 
@@ -162,22 +165,32 @@ void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
 		string writeFileStringSVG = "";
 		int width = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_WIDTH;
 		int height = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT;
-		if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndex, &writeFileStringSVG, wordTagFound->entityReference))
+		//cout << "functionIndex = " << functionIndex << endl;
+		//cout << "sentenceIndex = " << sentenceIndex << endl;
+		//cout << "wordIndex = " << wordIndex << endl;
+		int sentenceIndexGIA = sentenceIndex + GIA_NLP_START_SENTENCE_INDEX;
+		if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndexGIA, &writeFileStringSVG, wordTagFound->entityReference))
 		{
+			cout << "writeFileStringSVG = " << writeFileStringSVG << endl;
 			QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
 			QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
 			QSvgWidget* svgDisplayWindow = new QSvgWidget();
 			svgDisplayWindow->load(writeFileStringSVGQbyteArray);
+			string svgDisplayWindowName = textDisplayWindow2->textDisplayFileName + " (semantic network)";
+			svgDisplayWindow->setWindowTitle(convertStringToQString(svgDisplayWindowName));
+			svgDisplayWindow->resize(NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_WIDTH, NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT);
+			svgDisplayWindow->show();
 		}
 		else
 		{
+			cout << "!printGIAnetworkNodesToSVGstring" << endl;
 			result = false;
 		}
 	}
 	else
 	{
-		cout << "label_linkActivated error{}: !getWordByIndex; sentenceIndex = " << sentenceIndex << ", wordIndex = " << wordIndex << endl;
-		exit(0);
+		cout << "linkActivated error{}: !getWordByIndex; sentenceIndex = " << sentenceIndex << ", wordIndex = " << wordIndex << endl;
+		exit(EXIT_ERROR);
 	}
 }
 
@@ -190,12 +203,14 @@ bool NLCIeditorWindowClass::displayPreprocessedText()
 	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
 	textDisplayWindow->translatorVariablesTemplate = translatorVariablesTemplate;
 	textDisplayWindow->textDisplayFileName = editorFileName;
+	string textDisplayWindowName = textDisplayWindow->textDisplayFileName;
+	textDisplayWindow->setWindowTitle(convertStringtoStringQ(textDisplayWindowName));
 	textDisplayWindow->resize(NLCI_TEXT_DISPLAY_WINDOW_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_HEIGHT);
 	textDisplayWindow->show();
 	textDisplayWindow->addToWindowList(textDisplayWindow);
 
 	bool displayLRPprocessedText = true;
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->label, translatorVariablesTemplate, displayLRPprocessedText);
+	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, translatorVariablesTemplate, displayLRPprocessedText);
 
 	return result;
 }
@@ -240,16 +255,19 @@ bool NLCItextDisplayWindowClass::displayNLPoutput()
 
 
 
-void NLCItextDisplayWindowClass::setupLabel()
+void NLCItextDisplayWindowClass::setupTextBrowser()
 {
 	QFont font;
 	font.setFamily("Courier");
 	font.setFixedPitch(true);
 	font.setPointSize(10);
 
-	label = new QLabel;
-	label->setTextFormat(Qt::RichText);
-	label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+	textBrowser = new QTextBrowser;
+	textBrowser->setOpenExternalLinks(false);
+	textBrowser->setOpenLinks(false);
+	//textBrowser->setTextInteractionFlags(Qt::TextBrowserInteraction);
+
+	connect(textBrowser, SIGNAL(anchorClicked(QUrl)), this, SLOT(linkActivated(QUrl)));
 }
 
 void NLCItextDisplayWindowClass::setupFileMenu()
@@ -313,16 +331,27 @@ void NLCItextDisplayWindowClass::addToWindowList(NLCItextDisplayWindowClass* tex
 }
 
 
-static bool closeTextDisplayWindowsAll()
+bool closeTextDisplayWindowsAll()
 {
 	bool result = true;
-	for(int i=0; i<textDisplayWindowList.size(); i++)
+	//qDebug() << "closeTextDisplayWindowsAll(): textDisplayWindowList.size() = " << textDisplayWindowList.size();
+	bool stillWindowsToClose =  true;
+	while(stillWindowsToClose)
 	{
-		if(!(textDisplayWindowList[i]->closeTextDisplayWindow()))
+		if(textDisplayWindowList.size() > 0)
 		{
-			result = false;
+			//qDebug() << "closeTextDisplayWindowsAll(): textDisplayWindowList[0] = ";
+			if(!(textDisplayWindowList[0]->close()))
+			{
+				result = false;
+			}
+		}
+		else
+		{
+			stillWindowsToClose = false;
 		}
 	}
+
 	return result;
 }
 

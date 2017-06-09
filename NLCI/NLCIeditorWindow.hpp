@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -114,16 +114,16 @@ public:
 	NLCIeditorWindowClass(QWidget *parent = 0);
 	
 	#ifdef USE_NLCI
-	std::string projectName;
+	string projectName;
 	#endif
-	std::string editorName;
+	string editorName;
 	bool isPreprocessed;
 
 	//single line update functions
 	int editorCursorLineNumber;
 	bool textChangedSinceListCursorMovement;
 
-	AdvancedTextEdit* editor;
+	QTextEdit* editor;
 	
 	bool closeEditorWindow();
 	bool saveEditorWindow();

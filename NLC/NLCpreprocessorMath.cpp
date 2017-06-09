@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -574,7 +574,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	if(fullSentence->mathTextNLPparsablePhraseTotal == 0)
 	{
 		//add dummy phrase for NLP to parse (will not be used by NLC; create NLP/GIA sentence as a filler for math text replacement only)
-		GIApreprocessorMultiwordReductionClassObject.addStringToWordList((&currentParsablePhraseInList->sentenceContents), NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY);
+		GIApreprocessorMultiwordReductionClassObject.addStringArrayToWordList((&currentParsablePhraseInList->sentenceContents), preprocessorMathNLPparsablePhraseDummyWordArray, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS);
 		currentParsablePhraseInList->sentenceIndex = (*sentenceIndex);	//added 1r5h
 		currentParsablePhraseInList->next = new NLCpreprocessorParsablePhrase();
 		currentParsablePhraseInList = currentParsablePhraseInList->next;

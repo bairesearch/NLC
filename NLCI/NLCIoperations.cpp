@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -87,31 +87,6 @@
 #include "GIApreprocessor.hpp"
 
 #include <QTextCodec>
-
-/*
-#include <QKeyEvent>
-
-AdvancedTextEdit::AdvancedTextEdit()
-{
-	enterPressed = false;
-}
-
-void AdvancedTextEdit::keyPressEvent(QKeyEvent *event)
-{
-	if(event->key() == Qt::Key_Return)
-	{
-		enterPressed = true;
-		QTextEdit::keyPressEvent(event);
-		//QTextCursor cursor = textCursor();
-		//cursor.insertText(STRING_NEW_LINE);
-	}
-	else
-	{
-		enterPressed = false;
-		QTextEdit::keyPressEvent(event);
-	}
-}
-*/
 
 QColor NLCIoperationsClass::generateColourQ(int colourIndex)
 {

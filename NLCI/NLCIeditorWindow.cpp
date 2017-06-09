@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -108,12 +108,15 @@ NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent): QMainWindow(paren
 	setCentralWidget(editor);
 	setWindowTitle(tr("NLCI Editor"));
 	
+	/*
+	//these are reinitialised everytime the preprocessor is called
 	#ifdef USE_NLCI
 	firstNLCfunctionInList = new NLCfunction();
 	#elif defined USE_GIAI
 	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
 	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();	
 	#endif
+	*/
 }
 
 
@@ -128,7 +131,7 @@ void NLCIeditorWindowClass::textChangedFunction()
 void NLCIeditorWindowClass::cursorPositionChangedFunction()
 {
 	//update editorCursorLineNumber to new position:
-	AdvancedTextEdit *edit = qobject_cast<AdvancedTextEdit*>(sender());
+	QTextEdit *edit = qobject_cast<QTextEdit*>(sender());
 	Q_ASSERT(edit);
 	QTextCursor cursor = edit->textCursor();
 	cursor.movePosition(QTextCursor::StartOfLine);
@@ -191,10 +194,14 @@ bool NLCIeditorWindowClass::preprepreprocessText()
 
 	if(!isPreprocessed || editor->document()->isModified())
 	{
+		closeTextDisplayWindowsAll();
 		isPreprocessed = true;
 		#ifdef USE_NLCI
+		firstNLCfunctionInList = new NLCfunction();
 		if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), firstNLCfunctionInList))
 		#elif defined USE_GIAI
+		translatorVariablesTemplate = new GIAtranslatorVariablesClass();
+		translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
 		if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), translatorVariablesTemplate))
 		#endif
 		{
@@ -234,7 +241,8 @@ bool NLCIeditorWindowClass::processText()
 {
 	bool result = true;
 
-	preprepreprocessText();	//in case preprocessing is required
+	isPreprocessed = false;
+	preprepreprocessText();
 	
 	#ifdef USE_NLCI
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
@@ -263,20 +271,22 @@ bool NLCIeditorWindowClass::createNewTextDisplayWindow(NLCfunction* activeNLCfun
 	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
 	#ifdef USE_NLCI
 	textDisplayWindow->activeNLCfunctionInList = activeNLCfunctionInList;
-	textDisplayWindow->textDisplayFileName = NLCitemClass.parseFunctionNameFromNLCfunctionName(activeNLCfunctionInList->NLCfunctionName);
+	textDisplayWindow->textDisplayFileName = activeNLCfunctionInList->NLCfunctionName;	//NLCitemClass.parseFunctionNameFromNLCfunctionName(activeNLCfunctionInList->NLCfunctionName);
 	#elif defined USE_GIAI
 	textDisplayWindow->translatorVariablesTemplate = translatorVariablesTemplate;
 	textDisplayWindow->textDisplayFileName = getFileNameFromFileNameFull(editorName);
 	#endif
+	string textDisplayWindowName = textDisplayWindow->textDisplayFileName;
+	textDisplayWindow->setWindowTitle(convertStringToQString(textDisplayWindowName));
 	textDisplayWindow->resize(NLCI_TEXT_DISPLAY_WINDOW_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_HEIGHT);
 	textDisplayWindow->show();
 	textDisplayWindow->addToWindowList(textDisplayWindow);
 
 	bool displayLRPprocessedText = false;
 	#ifdef USE_NLCI
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->label, textDisplayWindow->translatorVariablesTemplate, activeNLCfunctionInList, displayLRPprocessedText);
+	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, textDisplayWindow->translatorVariablesTemplate, activeNLCfunctionInList, displayLRPprocessedText);
 	#else
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->label, textDisplayWindow->translatorVariablesTemplate, displayLRPprocessedText);
+	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, textDisplayWindow->translatorVariablesTemplate, displayLRPprocessedText);
 	#endif
 }
 
@@ -289,7 +299,7 @@ void NLCIeditorWindowClass::setupEditor()
 	font.setFixedPitch(true);
 	font.setPointSize(10);
 
-	editor = new AdvancedTextEdit;
+	editor = new QTextEdit;
 	editor->setFont(font);
 
 	highlighter = new NLCIeditorSyntaxHighlighterClass(editor->document());
@@ -460,8 +470,8 @@ bool closeEditorWindowsAll()
 	bool result = true;
 	
 	//qDebug() << "closeEditorWindowsAll(): editorWindowList.size() = " << editorWindowList.size();
-	bool stillEditorWindowsToClose =  true;
-	while(stillEditorWindowsToClose)
+	bool stillWindowsToClose =  true;
+	while(stillWindowsToClose)
 	{	
 		if(editorWindowList.size() > 0)
 		{
@@ -473,7 +483,7 @@ bool closeEditorWindowsAll()
 		}
 		else
 		{
-			stillEditorWindowsToClose = false;
+			stillWindowsToClose = false;
 		}
 	}
 	

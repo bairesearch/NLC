@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -236,7 +236,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				currentNLCsentenceInList->sentenceOriginal = "";
 				currentNLCsentenceInList->indentation = currentNLCprepreprocessorSentenceInList->indentation;
 				NLCpreprocessorParsablePhrase* currentParsablePhraseInList = currentNLCsentenceInList->firstNLPparsablePhraseInList;
-				GIApreprocessorMultiwordReductionClassObject.addStringToWordList((&currentParsablePhraseInList->sentenceContents), NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY);
+				GIApreprocessorMultiwordReductionClassObject.addStringArrayToWordList((&currentParsablePhraseInList->sentenceContents), preprocessorMathNLPparsablePhraseDummyWordArray, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS);
 				currentParsablePhraseInList->sentenceIndex = sentenceIndex;
 				currentParsablePhraseInList->next = new NLCpreprocessorParsablePhrase();
 				currentParsablePhraseInList = currentParsablePhraseInList->next;
@@ -352,6 +352,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 		currentNLCfunctionInList->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
 		GIApreprocessorSentence* currentGIApreprocessorSentenceInList = currentNLCfunctionInList->firstGIApreprocessorSentenceInList;
 		#endif
+		int sentenceIndexOriginal = GIA_NLP_START_SENTENCE_INDEX;
 		while(currentSentence->next != NULL)
 		{
 			string indentationContents = GIApreprocessor.generateIndentationContents(currentSentence->indentation);
@@ -364,12 +365,14 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				functionContents = functionContents + indentationContents + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
 				
 				#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
+				currentGIApreprocessorSentenceInList->sentenceIndexOriginal = sentenceIndexOriginal;
 				currentGIApreprocessorSentenceInList->sentenceContentsOriginal = currentParsablePhrase->sentenceContents;	//precondition: words in logicReferenceVariableWordList are unique across all logicReferenceVariableWordLists in memory
 				#ifdef NLC_PREPROCESSOR_DEBUG
 				cout << "currentGIApreprocessorSentenceInList = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentGIApreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 				#endif
 				currentGIApreprocessorSentenceInList->next = new GIApreprocessorSentence();
 				currentGIApreprocessorSentenceInList = currentGIApreprocessorSentenceInList->next;
+				sentenceIndexOriginal++;
 				#endif
 				
 				if(currentSentence->isMath)

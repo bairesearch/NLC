@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -93,7 +93,7 @@ NLCImainWindowClass::NLCImainWindowClass(QWidget *parent)
 {
 	setupFileMenu();
 	setupHelpMenu();
-	setupLabel();
+	setupTextBrowser();
 	
 	projectOpened = false;
 	projectName = "";
@@ -396,7 +396,9 @@ void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameF
 				//create an editor window
 				NLCIeditorWindowClass* editorWindow = new NLCIeditorWindowClass();
 				editorWindow->editorName = convertQStringToString(fileNameFull);
-				editorWindow->resize(640, 512);
+				QString editorWindowName = getFileNameFromFileNameFull(fileNameFull);
+				editorWindow->setWindowTitle(editorWindowName);
+				editorWindow->resize(NLCI_EDITOR_WINDOW_WIDTH, NLCI_EDITOR_WINDOW_HEIGHT);
 				editorWindow->show();
 
 				#ifdef USE_NLCI
@@ -426,13 +428,13 @@ void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameF
 	}
 }
 
-void NLCImainWindowClass::setupLabel()
+void NLCImainWindowClass::setupTextBrowser()
 {
 	/*
-	label = new QLabel(mainWindowScrollArea);
-	//label->setTextFormat(Qt::RichText);
-	label->setText("Welcome");
-	//label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+	textBrowser = new QLabel(mainWindowScrollArea);
+	//textBrowser->setTextFormat(Qt::RichText);
+	textBrowser->setText("Welcome");
+	//textBrowser->setTextInteractionFlags(Qt::TextBrowserInteraction);
 	*/
 
 

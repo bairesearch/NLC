@@ -25,7 +25,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -400,6 +400,13 @@ NLCclassDefinition* NLCtranslatorClass::createFunctionDefinitionClassDefinition(
 	NLCclassDefinition* functionClassDefinition = NULL;
 
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE
+	/*
+	cout << "functionName = " << functionName << endl;
+	cout << "functionOwnerName = " << functionOwnerName << endl;
+	cout << "functionObjectName = " << functionObjectName << endl;
+	cout << "hasFunctionOwnerClass = " << hasFunctionOwnerClass << endl;
+	cout << "hasFunctionObjectClass = " << hasFunctionObjectClass << endl;
+	*/
 	bool duplicateFunctionDeclarationDetected = false;
 	bool foundFunctionDependencyInList = NLCclassDefinitionClass.findFunctionDefinitionFunctionDependencyInList(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependency);	//note at this stage only functionDefinition functionDependencies have been created (so the functionDefintion check is not actually required)...
 	if(foundFunctionDependencyInList)

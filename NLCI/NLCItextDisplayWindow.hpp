@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -97,7 +97,7 @@ class NLCItextDisplayWindowClass : public QMainWindow
 
 public slots:
 	void about();
-	void label_linkActivated(const QString &link);
+	void linkActivated(const QUrl &link);
 	#ifdef USE_GIAI
 	bool displayPreprocessedText();
 	#endif
@@ -113,7 +113,7 @@ public:
 	NLCfunction* activeNLCfunctionInList;
 	#endif
 
-	QLabel* label;
+	QTextBrowser* textBrowser;
 	
 	bool closeTextDisplayWindow();
 	bool eraseFromWindowList(NLCItextDisplayWindowClass* textDisplayWindowRef);
@@ -124,7 +124,7 @@ private:
 	NLCItextDisplayOperationsClass NLCItextDisplayOperations;
 	SHAREDvarsClass SHAREDvars;
 	
-	void setupLabel();
+	void setupTextBrowser();
 	void setupFileMenu();
 	void setupHelpMenu();
 
@@ -134,6 +134,6 @@ private:
 	void closeEvent(QCloseEvent *e);
 };
 
-static bool closeTextDisplayWindowsAll();
+bool closeTextDisplayWindowsAll();
 
 #endif

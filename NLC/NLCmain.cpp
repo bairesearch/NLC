@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1c 01-June-2017
+ * Project Version: 2c1d 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -433,7 +433,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2c1c 01-June-2017" << endl;
+			cout << "NLC.exe - Project Version: 2c1d 01-June-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -820,7 +820,7 @@ bool NLCmainClass::executeNLC2()
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 	//#endif
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<numberOfInputFilesInList; functionDefinitionIndex++)
-	{
+	{		
 		NLCcodeblock* firstCodeBlockInTree = new NLCcodeblock();
 		firstCodeBlockInTreeList.push_back(firstCodeBlockInTree);
 
@@ -1007,36 +1007,43 @@ bool NLCmainClass::executeNLC2()
 		}
 		else
 		{
-			#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
-			NLCfunctionName = NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME;
-			#else
-			if(useInputTextPlainTXTFile)
+			if(currentNLCfunctionInList->NLCfunctionName != "")
 			{
-				#ifdef NLC_PREPROCESSOR
-				if(useNLCpreprocessor)
-				{
-					NLCfunctionName = inputTextPlainTXTfileNameOrig;	//NLC 1i2c - do not add "afterPreprocessedforNLConly" to function name
-				}
-				else
-				{
-				#endif
-					NLCfunctionName = inputTextPlainTXTfileName;
-				#ifdef NLC_PREPROCESSOR
-				}
-				#endif
+				NLCfunctionName = currentNLCfunctionInList->NLCfunctionName;
 			}
 			else
 			{
-				cout << "error: NLC requires useInputTextPlainTXTFile" << endl;
+				#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
+				NLCfunctionName = NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_NAME;
+				#else
+				if(useInputTextPlainTXTFile)
+				{
+					#ifdef NLC_PREPROCESSOR
+					if(useNLCpreprocessor)
+					{
+						NLCfunctionName = inputTextPlainTXTfileNameOrig;	//NLC 1i2c - do not add "afterPreprocessedforNLConly" to function name
+					}
+					else
+					{
+					#endif
+						NLCfunctionName = inputTextPlainTXTfileName;
+					#ifdef NLC_PREPROCESSOR
+					}
+					#endif
+				}
+				else
+				{
+					cout << "error: NLC requires useInputTextPlainTXTFile" << endl;
+				}
+
+				#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
+				NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
+				#else
+				NLCfunctionName = NLCmainClass().removeFileNameExtensions(NLCfunctionName);
+				#endif
+
+				#endif
 			}
-			
-			#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
-			NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
-			#else
-			NLCfunctionName = NLCmainClass().removeFileNameExtensions(NLCfunctionName);
-			#endif
-		
-			#endif
 		}
 		
 		#ifdef NLC_INPUT_FUNCTION_LISTS

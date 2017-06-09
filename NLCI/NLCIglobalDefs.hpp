@@ -25,7 +25,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1f 01-June-2017
+ * Project Version: 2c1g 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -35,7 +35,8 @@
 
 #include "NLCglobalDefs.hpp"
 
-//#define NLCI_OPEN_NLC
+#define NLCI_OPEN_NLC
+
 //#define NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS	//this will not work if the user adds a new file of the same name as an already associated file to the project
 //#define NLCI_EDITOR_HIGHLIGHT_HTML	//else use qt syntax highlighter
 
@@ -54,25 +55,35 @@
 
 #ifdef NLCI_OPEN_NLC
 #define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
+#define NLCI_NLC_ROOT_FOLDER NLCI_HOME_FOLDER "/source/git/repositories/NLC"
+#define NLCI_GIA_ROOT_FOLDER NLCI_HOME_FOLDER "/source/git/repositories/GIA"
 #else
 #define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
+#define NLCI_NLC_ROOT_FOLDER NLCI_HOME_FOLDER "/source"
+#define NLCI_GIA_ROOT_FOLDER NLCI_HOME_FOLDER "/source"
 #endif
+#define NLCI_NLP_ROOT_FOLDER NLCI_HOME_FOLDER "/soft/BAISource"
+#define NLCI_NLP_RELEX_FOLDER NLCI_NLP_ROOT_FOLDER "/relex/relex-1.4.0"
+#define NLCI_NLP_STANFORD_CORE_NLP_FOLDER NLCI_NLP_ROOT_FOLDER "/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
+#define NLCI_NLP_STANFORD_PARSER_FOLDER NLCI_NLP_ROOT_FOLDER "/stanford/parser/stanford-parser-full-2016-10-31"
+#define NLCI_LRP_ROOT_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
+
 
 #ifdef USE_NLCI
 #define NLCI_NLC_NLP_CLIENT (true)
 #define NLCI_NLC_USE_LRP (true)
-#define NLCI_NLC_LRP_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
+#define NLCI_NLC_LRP_FOLDER NLCI_LRP_ROOT_FOLDER
 #define NLCI_NLC_USE_NLC_PREPROCESSOR (true)
 #define NLCI_NLC_USE_OUTPUT_TEXT_ALL_FILE (true)
 #define NLCI_NLC_PRINT_OUTPUT (true)
 #define NLCI_NLC_OUTPUT_TEXT_ALL_FILE_NAME "semanticNet"
 #define NLCI_NLC_NLP_FEATURE_PARSER (GIA_NLP_FEATURE_PARSER_FOR_INPUT_TEXT_DEFAULT)
 #define NLCI_NLC_NLP_DEPENDENCY_RELATIONS_PARSER (GIA_NLP_RELATIONS_PARSER_FOR_INPUT_TEXT_DEFAULT)
-#define NLCI_NLC_NLP_RELEX_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/relex/relex-1.4.0"
-#define NLCI_NLC_NLP_STANFORD_CORE_NLP_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
-#define NLCI_NLC_NLP_STANFORD_PARSER_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
-#define NLCI_NLC_INPUT_FOLDER NLCI_HOME_FOLDER "/source/NLCinput"
-#define NLCI_NLC_OUTPUT_FOLDER NLCI_HOME_FOLDER "/source/NLCgenerated"
+#define NLCI_NLC_NLP_RELEX_FOLDER NLCI_NLP_RELEX_FOLDER
+#define NLCI_NLC_NLP_STANFORD_CORE_NLP_FOLDER NLCI_NLP_STANFORD_CORE_NLP_FOLDER
+#define NLCI_NLC_NLP_STANFORD_PARSER_FOLDER NLCI_NLP_STANFORD_PARSER_FOLDER
+#define NLCI_NLC_INPUT_FOLDER NLCI_NLC_ROOT_FOLDER "/NLCinput"
+#define NLCI_NLC_OUTPUT_FOLDER NLCI_NLC_ROOT_FOLDER "/NLCgenerated"
 #ifdef NLCI_OPEN_NLC
 #define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileOpenNLClibraryGenerated.bat"	//or compileOpenNLClibraryGenerated.bat
 #else
@@ -84,7 +95,7 @@
 #elif defined USE_GIAI
 #define GIAI_GIA_NLP_CLIENT (true)
 #define GIAI_GIA_USE_LRP (true)
-#define GIAI_GIA_LRP_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
+#define GIAI_GIA_LRP_FOLDER NLCI_LRP_ROOT_FOLDER
 #define GIAI_GIA_USE_NLC_PREPROCESSOR (true)
 #define GIAI_GIA_USE_OUTPUT_TEXT_ALL_FILE (true)
 #define GIAI_GIA_PRINT_OUTPUT (true)
@@ -94,11 +105,11 @@
 #define GIAI_GIA_NLP_DEPENDENCY_RELATIONS_PARSER (GIA_NLP_RELATIONS_PARSER_FOR_INPUT_TEXT_DEFAULT)
 #define GIAI_GIA_NLP_FEATURE_PARSER_QUERY (GIA_NLP_FEATURE_PARSER_FOR_INPUT_TEXT_DEFAULT)
 #define GIAI_GIA_NLP_DEPENDENCY_RELATIONS_PARSER_QUERY (GIA_NLP_RELATIONS_PARSER_FOR_INPUT_TEXT_DEFAULT)
-#define GIAI_GIA_NLP_RELEX_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/relex/relex-1.4.0"
-#define GIAI_GIA_NLP_STANFORD_CORE_NLP_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
-#define GIAI_GIA_NLP_STANFORD_PARSER_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
-#define GIAI_GIA_INPUT_FOLDER NLCI_HOME_FOLDER "/source/GIAworking"
-#define GIAI_GIA_OUTPUT_FOLDER NLCI_HOME_FOLDER "/source/GIAworking"
+#define GIAI_GIA_NLP_RELEX_FOLDER NLCI_NLP_RELEX_FOLDER
+#define GIAI_GIA_NLP_STANFORD_CORE_NLP_FOLDER NLCI_NLP_STANFORD_CORE_NLP_FOLDER
+#define GIAI_GIA_NLP_STANFORD_PARSER_FOLDER NLCI_NLP_STANFORD_PARSER_FOLDER
+#define GIAI_GIA_INPUT_FOLDER NLCI_GIA_ROOT_FOLDER "/GIAinput"
+#define GIAI_GIA_OUTPUT_FOLDER NLCI_GIA_ROOT_FOLDER "/GIAgenerated"
 #define NLCI_INPUT_FOLDER (GIAI_GIA_INPUT_FOLDER)
 #define NLCI_LRP_FOLDER (GIAI_GIA_LRP_FOLDER)
 #endif

@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1f 01-June-2017
+ * Project Version: 2c1g 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -121,7 +121,7 @@ void NLCItextDisplayWindowClass::linkActivated(const QUrl &link)
 		int sentenceIndexGIA = sentenceIndex + GIA_NLP_START_SENTENCE_INDEX;
 		if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndexGIA, &writeFileStringSVG, wordTagFound->entityReference))
 		{
-			cout << "writeFileStringSVG = " << writeFileStringSVG << endl;
+			//cout << "writeFileStringSVG = " << writeFileStringSVG << endl;
 			QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
 			QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
 			QSvgWidget* svgDisplayWindow = new QSvgWidget();

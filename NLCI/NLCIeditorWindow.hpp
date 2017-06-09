@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1f 01-June-2017
+ * Project Version: 2c1g 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/

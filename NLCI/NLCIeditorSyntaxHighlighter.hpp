@@ -25,7 +25,7 @@
  * File Name: NLCIeditorSyntaxHighlighter.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -97,7 +97,7 @@ class NLCIeditorSyntaxHighlighterClass : public QSyntaxHighlighter
 public:
 	NLCIeditorSyntaxHighlighterClass(QTextDocument *parent = 0);
 
-	QVector<HighlightingRule> highlightingRules;
+	QVector<HighlightingRule> highlightingRules;	//consider changing this to a map (will increase the change time, but decrease the lookup time; in the event of repeated words)
 	
 protected:
 	void highlightBlock(const QString &text) override;

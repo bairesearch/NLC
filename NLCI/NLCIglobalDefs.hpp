@@ -25,7 +25,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -85,6 +85,8 @@
 
 #include "NLCglobalDefs.hpp"
 
+//#define NLCI_OPEN_NLC
+//#define NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS	//this will not work if the user adds a new file of the same name as an already associated file to the project
 //#define NLCI_EDITOR_HIGHLIGHT_HTML	//else use qt syntax highlighter
 
 #define NLCI_MAIN_WINDOW_WIDTH (640)
@@ -100,7 +102,11 @@
 #define NLCI_SEMANTIC_NETWORK_FULL_DISPLAY_WINDOW_WIDTH (1920)
 #define NLCI_SEMANTIC_NETWORK_FULLDISPLAY_WINDOW_HEIGHT (1080)
 
+#ifdef NLCI_OPEN_NLC
 #define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
+#else
+#define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
+#endif
 
 #ifdef USE_NLCI
 #define NLCI_NLC_NLP_CLIENT (true)
@@ -117,9 +123,14 @@
 #define NLCI_NLC_NLP_STANFORD_PARSER_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
 #define NLCI_NLC_INPUT_FOLDER NLCI_HOME_FOLDER "/source/NLCinput"
 #define NLCI_NLC_OUTPUT_FOLDER NLCI_HOME_FOLDER "/source/NLCgenerated"
+#ifdef NLCI_OPEN_NLC
+#define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileOpenNLClibraryGenerated.bat"	//or compileOpenNLClibraryGenerated.bat
+#else
 #define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileNLClibraryGenerated.bat"	//or compileOpenNLClibraryGenerated.bat
+#endif
 #define NLCI_NLC_EXE_NAME_NLC_GENERATED_PROGRAM "NLCgeneratedProgram.exe"
 #define NLCI_INPUT_FOLDER (NLCI_NLC_INPUT_FOLDER)
+#define NLCI_LRP_FOLDER (NLCI_NLC_LRP_FOLDER)
 #elif defined USE_GIAI
 #define GIAI_GIA_NLP_CLIENT (true)
 #define GIAI_GIA_USE_LRP (true)
@@ -139,6 +150,7 @@
 #define GIAI_GIA_INPUT_FOLDER NLCI_HOME_FOLDER "/source/GIAworking"
 #define GIAI_GIA_OUTPUT_FOLDER NLCI_HOME_FOLDER "/source/GIAworking"
 #define NLCI_INPUT_FOLDER (GIAI_GIA_INPUT_FOLDER)
+#define NLCI_LRP_FOLDER (GIAI_GIA_LRP_FOLDER)
 #endif
 
 

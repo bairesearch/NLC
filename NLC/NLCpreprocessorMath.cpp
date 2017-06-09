@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -228,7 +228,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				bool legalWordCharacterFound = SHAREDvars.charInCharArray(currentWord[i], preprocessorMathNLPparsableCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_CHARACTERS_NUMBER_OF_TYPES);
 				if(!legalWordCharacterFound)
 				{
-					cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: wordIsNLPparsable && !legalWordCharacterFound" << endl;
+					cerr << "splitMathDetectedLineIntoNLPparsablePhrases{} error: wordIsNLPparsable && !legalWordCharacterFound" << endl;
 					exit(EXIT_ERROR);
 				}
 			}
@@ -272,7 +272,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 			{
 				if(SHAREDvars.charInCharArray(currentWord[0], preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES))
 				{
-					cout << "splitMathDetectedLineIntoNLPparsablePhrases{}: user input error - variables names cannot start with numbers: " << currentWord << endl;
+					cerr << "splitMathDetectedLineIntoNLPparsablePhrases{}: user input error - variables names cannot start with numbers: " << currentWord << endl;
 					exit(EXIT_ERROR);
 				}
 			}
@@ -349,7 +349,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 						}
 						else if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 						{
-							cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: implicitly declared mathText variable and variable type cannot be statically detected based on line contents" << endl;
+							cerr << "splitMathDetectedLineIntoNLPparsablePhrases{} error: implicitly declared mathText variable and variable type cannot be statically detected based on line contents" << endl;
 							exit(EXIT_ERROR);
 						}
 						#else
@@ -653,7 +653,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					#ifdef NLC_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
 					if(variableTypeTemp == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 					{
-						cout << "NLC_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES: splitMathDetectedLineIntoNLPparsablePhrases{} error: first instance of mathText variable type in function == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN" << endl;
+						cerr << "NLC_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES: splitMathDetectedLineIntoNLPparsablePhrases{} error: first instance of mathText variable type in function == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN" << endl;
 						exit(EXIT_ERROR);
 					}
 					else
@@ -672,8 +672,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				{
 					if(!ignoreVariable)
 					{
-						cout << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
-						//cout << "lineContents = " <<* lineContents << endl;
+						cerr << "splitMathDetectedLineIntoNLPparsablePhrases{} error: mathText variable " << mathTextVariableName << " is undeclared" << endl;
+						//cerr << "lineContents = " <<* lineContents << endl;
 						#ifndef NLC_PREPROCESSOR_MATH_ALLOW_UNDECLARED_MATHTEXT_VARIABLES_TO_BE_REFERENCED_BY_MATH
 						exit(EXIT_ERROR);
 						#endif

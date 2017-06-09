@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -92,6 +92,7 @@
 
 class QTextEdit;
 class QLabel;
+class QScrollArea;
 
 class NLCImainWindowClass : public QMainWindow
 {
@@ -105,7 +106,9 @@ public slots:
 	
 	//#ifdef USE_NLCI
 	void createNewProject(QString projectFileNameFull = "");
-	void openProject(QString projectFileNameFull = "");
+	void selectProject(QString projectFileNameFull = "");
+	void openProjectAssociatedFile(QString fileNameFull = "");
+	void openProject(QString projectFileNameFull = "", bool openFiles = true);
 	void addNewFileToProject(QString fileNameFull = "");
 	void addExistingFileToProject(QString fileNameFull = "");
 	
@@ -117,7 +120,7 @@ public slots:
 	void closeProject();
 	//#endif
 	
-	void openFile(QString fileNameFull = QString(), string projectFileNameFull = "");
+	void openFile(QString fileNameFull = QString(), string projectFileNameFull = "", bool expectAssociatedFile = false);
 
 private:
 	NLCIoperationsClass NLCIoperations;
@@ -131,11 +134,13 @@ private:
 	QString addFileNameExtensionIfNecessary(const QString fileName, const string extensionToAddIfNecessary);
 	string addFileNameExtensionIfNecessary(const string fileName, const string extensionToAddIfNecessary);
 	bool findFileNameExtension(const string fileName, const string extensionToFind);
+	string generateProjectFileContents();
 	
 	bool projectOpened;
 	string projectName;
 
-	QLabel* label;
+	//QLabel* label;
+	QTextEdit* textBox;
 	
 };
 

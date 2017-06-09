@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -86,6 +86,8 @@
 #include "NLCIeditorWindow.hpp"
 
 
+vector<string> projectNLCfilesList;
+
 NLCImainWindowClass::NLCImainWindowClass(QWidget *parent)
 	: QMainWindow(parent)
 {
@@ -96,7 +98,7 @@ NLCImainWindowClass::NLCImainWindowClass(QWidget *parent)
 	projectOpened = false;
 	projectName = "";
 
-	setCentralWidget(label);
+	setCentralWidget(textBox);
 	setWindowTitle(tr("NLCI"));
 }
 
@@ -119,8 +121,11 @@ void NLCImainWindowClass::about()
 #ifdef USE_NLCI
 void NLCImainWindowClass::createNewProject(QString projectFileNameFull)
 {
-	closeProject();
-	
+	if(projectFileNameFull != "")
+	{
+		closeProject();
+	}
+
 	if(projectFileNameFull == "")
 	{
 		projectFileNameFull = QFileDialog::getSaveFileName(this, tr("New nlc project file"), NLCI_NLC_INPUT_FOLDER, "nlc project files (*.nlcp)");
@@ -139,9 +144,12 @@ void NLCImainWindowClass::createNewProject(QString projectFileNameFull)
 	}
 }
 
-void NLCImainWindowClass::openProject(QString projectFileNameFull)
+void NLCImainWindowClass::openProject(QString projectFileNameFull, bool openFiles)
 {
-	closeProject();
+	if(projectFileNameFull != "")
+	{
+		closeProject();
+	}
 	
 	//qDebug() << "NLCI_NLC_INPUT_FOLDER = " << NLCI_NLC_INPUT_FOLDER;
 	
@@ -174,11 +182,41 @@ void NLCImainWindowClass::openProject(QString projectFileNameFull)
 			for(int i=0; i<numberOfInputFilesInList; i++)
 			{
 				QString fileNameFull = projectFileNamePath + "/" + convertStringToQString(fileNameList[i]);
-				openFile(fileNameFull, projectName);
+				if(openFiles)
+				{
+					openFile(fileNameFull, projectName, false);
+				}
+				else
+				{
+					#ifdef NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS
+					string fileName = convertQStringToString(fileNameFull);
+					#else
+					string fileName = getFileNameFromFileNameFull(convertQStringToString(fileNameFull));
+					#endif
+					projectNLCfilesList.push_back(fileName);
+				}
 			}
 		}
 	}
 }
+
+void NLCImainWindowClass::selectProject(QString projectFileNameFull)
+{
+	openProject(projectFileNameFull, false);
+}
+
+void NLCImainWindowClass::openProjectAssociatedFile(QString fileNameFull)
+{
+	if(projectName != "")
+	{
+		openFile(fileNameFull, projectName, true);
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::openProjectAssociatedFile{} warning: project not open or selected" << endl;
+	}
+}
+
 
 void NLCImainWindowClass::addNewFileToProject(QString fileNameFull)
 {
@@ -197,11 +235,15 @@ void NLCImainWindowClass::addNewFileToProject(QString fileNameFull)
 			if(file.open(QFile::WriteOnly | QFile::Text))
 			{
 				file.close();
-				openFile(fileNameFull, projectName);
+				openFile(fileNameFull, projectName, false);
 			}
 		}
 
 		saveProject();
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::addNewFileToProject{} warning: project not open or selected" << endl;
 	}
 }
 
@@ -209,7 +251,13 @@ void NLCImainWindowClass::addExistingFileToProject(QString fileNameFull)
 {
 	if(projectName != "")
 	{
-		openFile(fileNameFull, projectName);
+		openFile(fileNameFull, projectName, false);
+		
+		saveProject();
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::addExistingFileToProject{} warning: project not open or selected" << endl;
 	}
 }
 
@@ -220,11 +268,21 @@ void NLCImainWindowClass::compileProject()
 	{	
 		bool useNLCinputFileList = true;
 		string NLCinputFileListName = getFileNameFromFileNameFull(projectName);
-		cout << "compileProject: NLCinputFileListName = " << NLCinputFileListName << endl;
-		if(!NLCIoperations.executeNLCwrapper(useNLCinputFileList, NLCinputFileListName))
+		cout << "compileProject(): NLCinputFileListName = " << NLCinputFileListName << endl;
+		GIAtranslatorVariablesClass translatorVariablesTemplate;	//global (project level) translatorVariablesTemplate will be disgarded
+		if(!NLCIoperations.executeNLCwrapper(&translatorVariablesTemplate, useNLCinputFileList, NLCinputFileListName))
 		{
 			result = false;
 		}
+		else
+		{
+			string outputDisplayText = string("compileProject output:\n\n") + translatorVariablesTemplate.nlcGeneratedCode;
+			textBox->setText(convertStringToQString(outputDisplayText));
+		}
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::compileProject{} warning: project not open or selected" << endl;
 	}
 }
 
@@ -233,13 +291,19 @@ void NLCImainWindowClass::compileGeneratedCppProjectCode()
 	if(projectName != "")
 	{
 		QProcess *process = new QProcess(this);
-		QString file = QString(NLCI_NLC_OUTPUT_FOLDER) + QString(NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED);
-		process->start(file);
+		string executableFolder = string(NLCI_NLC_OUTPUT_FOLDER);
+		process->setWorkingDirectory(convertStringToQString(executableFolder));
+		string executableFile = executableFolder + CHAR_FOLDER_DELIMITER + NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED;
+		cout << "compileGeneratedCppProjectCode(): executableFile = " << executableFile << endl;
+		process->start(convertStringToQString(executableFile));
 		process->waitForFinished(-1); // will wait forever until finished
 		QString stdout = process->readAllStandardOutput();
 		QString stderr = process->readAllStandardError();
-		//label->setText(stdout);
-		label->setText(stderr);
+		textBox->setText(stdout + stderr);
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::compileGeneratedCppProjectCode{} warning: project not open or selected" << endl;
 	}
 }
 
@@ -248,13 +312,19 @@ void NLCImainWindowClass::runGeneratedCppProjectCode()
 	if(projectName != "")
 	{
 		QProcess *process = new QProcess(this);
-		QString file = QString(NLCI_NLC_OUTPUT_FOLDER) + QString(NLCI_NLC_EXE_NAME_NLC_GENERATED_PROGRAM);
-		process->start(file);
+		string executableFolder = string(NLCI_NLC_OUTPUT_FOLDER);
+		process->setWorkingDirectory(convertStringToQString(executableFolder));
+		string executableFile = executableFolder + CHAR_FOLDER_DELIMITER + NLCI_NLC_EXE_NAME_NLC_GENERATED_PROGRAM;
+		cout << "runGeneratedCppProjectCode(): executableFile = " << executableFile << endl;
+		process->start(convertStringToQString(executableFile));
 		process->waitForFinished(-1); // will wait forever until finished
 		QString stdout = process->readAllStandardOutput();
 		QString stderr = process->readAllStandardError();
-		//label->setText(stdout);
-		label->setText(stderr);
+		textBox->setText(stdout + stderr);
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::runGeneratedCppProjectCode{} warning: project not open or selected" << endl;
 	}
 }
 
@@ -270,6 +340,10 @@ void NLCImainWindowClass::saveProject()
 			cout << "NLCImainWindowClass::saveProject{} error: !saveFile: " << projectName << endl;
 		}		
 	}
+	else
+	{
+		cout << "NLCImainWindowClass::saveProject{} warning: project not open or selected" << endl;
+	}
 }
 
 void NLCImainWindowClass::closeProject()
@@ -278,12 +352,17 @@ void NLCImainWindowClass::closeProject()
 	{
 		projectName = "";
 		closeEditorWindowsAll();
+		projectNLCfilesList.clear();
+	}
+	else
+	{
+		cout << "NLCImainWindowClass::closeProject{} warning: project not open or selected" << endl;
 	}
 }
 #endif
 
 
-void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameFull)
+void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameFull, bool expectAssociatedFile)
 {
 	if(fileNameFull == "")
 	{
@@ -292,34 +371,81 @@ void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameF
 	
 	if(!fileNameFull.isEmpty()) 
 	{
-		QFile file(fileNameFull);
-		if(file.open(QFile::ReadOnly | QFile::Text))
-		{
-			//create an editor window
-			NLCIeditorWindowClass* editorWindow = new NLCIeditorWindowClass();
-			editorWindow->editorName = convertQStringToString(fileNameFull);
-			editorWindow->resize(640, 512);
-			editorWindow->show();
-			#ifdef USE_NLCI
-			editorWindow->projectName = projectFileNameFull;
-			#endif
 
-			editorWindow->editor->setPlainText(file.readAll());
-			editorWindow->addToWindowList(editorWindow);
+		bool fileAssociatedWithProject = false;
+		#ifdef NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS
+		string fileName = convertQStringToString(fileNameFull);
+		#else
+		string fileName = getFileNameFromFileNameFull(convertQStringToString(fileNameFull));
+		#endif
+		vector<string>::iterator iter = std::find(projectNLCfilesList.begin(), projectNLCfilesList.end(), fileName);
+		if(iter != projectNLCfilesList.end())
+		{
+			fileAssociatedWithProject = true;
+		}
+
+		if(expectAssociatedFile && !fileAssociatedWithProject)
+		{
+			cout << "openFile{} warning: expect associated file and file is not associated with the project (to avoid this warning user should select 'Add new/existing nlc file to project')" << endl;
+		}
+		else
+		{
+			QFile file(fileNameFull);
+			if(file.open(QFile::ReadOnly | QFile::Text))
+			{
+				//create an editor window
+				NLCIeditorWindowClass* editorWindow = new NLCIeditorWindowClass();
+				editorWindow->editorName = convertQStringToString(fileNameFull);
+				editorWindow->resize(640, 512);
+				editorWindow->show();
+
+				#ifdef USE_NLCI
+				if(projectFileNameFull != "")
+				{
+					editorWindow->projectName = projectFileNameFull;
+
+					//add file to project list if not already added;
+					if(!fileAssociatedWithProject)
+					{
+						projectNLCfilesList.push_back(fileName);
+					}
+					else
+					{
+						if(!expectAssociatedFile)
+						{
+							cout << "openFile{} warning: fileName already added to project (to avoid this warning user should select 'Open nlc project associated file')" << endl;
+						}
+					}
+				}
+				#endif
+
+				editorWindow->editor->setPlainText(file.readAll());
+				editorWindow->addToWindowList(editorWindow);
+			}
 		}
 	}
 }
 
 void NLCImainWindowClass::setupLabel()
 {
-	QFont font;
-	font.setFamily("Courier");
-	font.setFixedPitch(true);
-	font.setPointSize(10);
-
-	label = new QLabel;
+	/*
+	label = new QLabel(mainWindowScrollArea);
 	//label->setTextFormat(Qt::RichText);
+	label->setText("Welcome");
 	//label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+	*/
+
+
+	textBox = new QTextEdit();
+	textBox->setReadOnly(true);
+	textBox->setText("Welcome to NLCI (Natural Language Compiler Interface)");
+
+	/*
+	QPalette* palette = new QPalette();
+	palette->setColor(QPalette::Base, Qt::gray);
+	palette->setColor(QPalette::Text, Qt::black);
+	textBox->setPalette(*palette);
+	*/
 }
 
 void NLCImainWindowClass::setupFileMenu()
@@ -329,6 +455,8 @@ void NLCImainWindowClass::setupFileMenu()
 
 	#ifdef USE_NLCI
 	fileMenu->addAction(tr("&Create new nlc project"), this, SLOT(createNewProject()));
+	fileMenu->addAction(tr("&Select nlc project"), this, SLOT(selectProject()));
+	fileMenu->addAction(tr("&Open nlc project associated file"), this, SLOT(openProjectAssociatedFile()));
 	fileMenu->addAction(tr("&Open nlc project"), this, SLOT(openProject()));
 	fileMenu->addAction(tr("&Add new nlc file to project"), this, SLOT(addNewFileToProject()));
 	fileMenu->addAction(tr("&Add existing nlc file to project"), this, SLOT(addExistingFileToProject()));
@@ -396,3 +524,19 @@ bool NLCImainWindowClass::findFileNameExtension(const string fileName, const str
 }
 
 
+string NLCImainWindowClass::generateProjectFileContents()
+{
+	string projectFileContents = "";
+	for(int i=0; i<projectNLCfilesList.size(); i++)
+	{
+		#ifdef NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS
+		QString editorFileNameFull = convertStringToQString(projectNLCfilesList[i]);
+		QString editorFileName = getFileNameFromFileNameFull(editorFileNameFull);
+		projectFileContents = projectFileContents + convertQStringToString(editorFileName) + CHAR_NEWLINE;
+		#else
+		projectFileContents = projectFileContents + projectNLCfilesList[i] + CHAR_NEWLINE;
+		#endif
+	}
+	
+	return projectFileContents;
+}

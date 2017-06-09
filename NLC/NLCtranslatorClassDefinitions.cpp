@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -418,7 +418,7 @@ bool NLCtranslatorClassDefinitionsClass::isSubstanceEntityDefinitionAChildOfTheS
 		#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES
 		if(!GIAtranslatorOperations.connectionIsAlias(connection))
 		{
-			cout << "isSubstanceEntityDefinitionAChildOfTheSubstanceEntity{} error: a substance has a non-alias definition connection to a substance" << endl;
+			cerr << "isSubstanceEntityDefinitionAChildOfTheSubstanceEntity{} error: a substance has a non-alias definition connection to a substance" << endl;
 			exit(EXIT_ERROR);
 		}
 		#endif
@@ -577,10 +577,10 @@ bool NLCtranslatorClassDefinitionsClass::generateClassHeirarchyFunctions(vector<
 									//duplicate function declarations will be ignored
 								}
 								#else
-								cout << "generateClassHeirarchyFunctions{} error: !findFunctionDefinitionClassDefinitionExactOrNonExactMatch && findFunctionDependencyClassDefinitionInList" << endl;
-								cout << "functionName: " << functionName << endl;
-								cout << "functionOwnerName: " << functionOwnerName << endl;
-								cout << "functionObjectName: " << functionObjectName << endl;
+								cerr << "generateClassHeirarchyFunctions{} error: !findFunctionDefinitionClassDefinitionExactOrNonExactMatch && findFunctionDependencyClassDefinitionInList" << endl;
+								cerr << "functionName: " << functionName << endl;
+								cerr << "functionOwnerName: " << functionOwnerName << endl;
+								cerr << "functionObjectName: " << functionObjectName << endl;
 								exit(EXIT_ERROR);
 								#endif
 

@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -87,22 +87,27 @@
 #include "NLCIeditorSyntaxHighlighter.hpp"
 #include "NLCIeditorOperations.hpp"
 #include "NLCItextDisplayOperations.hpp"
+#include "NLCIoperations.hpp"
 #include "NLCpreprocessor.hpp"
 #include "NLCmain.hpp"
 
 #include <QMainWindow>
 
-class QTextEdit;
 
 class NLCIeditorWindowClass : public QMainWindow
 {
 	Q_OBJECT
 
 public slots:
+	void textChangedFunction();
+	void cursorPositionChangedFunction();
+	//void on_editor_textChanged();
+	//void on_editor_cursorPositionChanged();
 	void about();
 	bool save();
+	bool preprepreprocessText();
+	void preprepreprocessTextLine(bool enterWasPressed);
 	bool processText();
-		bool preprepreprocessText();
 		bool createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList);
 
 public:
@@ -113,8 +118,12 @@ public:
 	#endif
 	std::string editorName;
 	bool isPreprocessed;
-	
-	QTextEdit* editor;
+
+	//single line update functions
+	int editorCursorLineNumber;
+	bool textChangedSinceListCursorMovement;
+
+	AdvancedTextEdit* editor;
 	
 	bool closeEditorWindow();
 	bool saveEditorWindow();
@@ -144,7 +153,6 @@ private:
 	#endif
 };
 
-string generateProjectFileContents();
 bool closeEditorWindowsAll();
 bool saveEditorWindowsAll();
 string getFileNameFromFileNameFull(const string fileNameFull);

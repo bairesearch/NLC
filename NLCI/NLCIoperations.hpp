@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -90,6 +90,18 @@
 #include "NLCpreprocessor.hpp"
 
 #include <QTextCharFormat>
+#include <QTextEdit>
+
+class AdvancedTextEdit : public QTextEdit
+{
+    Q_OBJECT
+public:
+	/*//NOT USED:
+	AdvancedTextEdit();
+	void keyPressEvent(QKeyEvent *event);
+	bool enterPressed;
+	*/
+};
 
 class HighlightingRule
 {
@@ -108,7 +120,7 @@ public:
 		QColor generateColourQ(colour* col);	
 	
 	#ifdef USE_NLCI
-	bool executeNLCwrapper(bool useNLCinputFileList, string NLCinputFileListName);
+	bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, bool useNLCinputFileList, string NLCinputFileListName);
 	bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList);
 		bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList, bool useNLCinputFileList, string NLCinputFileListName);
 	#else
@@ -118,6 +130,8 @@ public:
 
 QString convertStringToQString(const string str);
 string convertQStringToString(const QString qstr);
+QString convertByteArrayToQString(const QByteArray& ba);
+
 
 
 #endif

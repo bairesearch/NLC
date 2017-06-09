@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -86,6 +86,32 @@
 #include "GIAmain.hpp"
 #include "GIApreprocessor.hpp"
 
+#include <QTextCodec>
+
+/*
+#include <QKeyEvent>
+
+AdvancedTextEdit::AdvancedTextEdit()
+{
+	enterPressed = false;
+}
+
+void AdvancedTextEdit::keyPressEvent(QKeyEvent *event)
+{
+	if(event->key() == Qt::Key_Return)
+	{
+		enterPressed = true;
+		QTextEdit::keyPressEvent(event);
+		//QTextCursor cursor = textCursor();
+		//cursor.insertText(STRING_NEW_LINE);
+	}
+	else
+	{
+		enterPressed = false;
+		QTextEdit::keyPressEvent(event);
+	}
+}
+*/
 
 QColor NLCIoperationsClass::generateColourQ(int colourIndex)
 {
@@ -100,11 +126,10 @@ QColor NLCIoperationsClass::generateColourQ(colour* col)
 }
 
 #ifdef USE_NLCI
-bool NLCIoperationsClass::executeNLCwrapper(bool useNLCinputFileList, string NLCinputFileListName)
+bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, bool useNLCinputFileList, string NLCinputFileListName)
 {
-	GIAtranslatorVariablesClass translatorVariablesTemplate;	//global (project level) translatorVariablesTemplate will be disgarded
 	NLCfunction* firstNLCfunctionInList = NULL;
-	return executeNLCwrapper(&translatorVariablesTemplate, firstNLCfunctionInList, useNLCinputFileList, NLCinputFileListName);
+	return executeNLCwrapper(translatorVariablesTemplate, firstNLCfunctionInList, useNLCinputFileList, NLCinputFileListName);
 	
 }
 bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList)
@@ -568,7 +593,10 @@ string convertQStringToString(const QString qstr)
 	return qstr.toStdString();
 }
 
-
+QString convertByteArrayToQString(const QByteArray& ba)
+{
+	return QTextCodec::codecForMib(1015)->toUnicode(ba);	//1015 = UTF-16
+}
 
 
 

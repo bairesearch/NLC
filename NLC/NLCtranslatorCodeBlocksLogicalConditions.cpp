@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -275,7 +275,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 		}
 		else
 		{
-			cout << "generateCodeBlocksFromMathText{} error: illegal fullSentence->logicalConditionOperator" << endl;
+			cerr << "generateCodeBlocksFromMathText{} error: illegal fullSentence->logicalConditionOperator" << endl;
 			exit(EXIT_ERROR);
 		}
 		
@@ -875,8 +875,8 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 			foundBooleanStatementExpression = false;
 			#else
 			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
-			cout << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
-			cout << "parsablePhrase->sentenceContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(parsablePhrase->sentenceContents)) << endl;
+			cerr << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
+			cerr << "parsablePhrase->sentenceContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(parsablePhrase->sentenceContents)) << endl;
 			exit(EXIT_ERROR);
 			#endif
 		}
@@ -999,7 +999,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 			#ifdef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_ASSUME_LOGICAL_CONDITION_STATEMENTS_ARE_BOOLEAN_IF_UNKNOWN
 			mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
 			#else
-			cout << "NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
+			cerr << "NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
 			exit(EXIT_ERROR);
 			#endif
 		}
@@ -1106,14 +1106,14 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContaini
 		else
 		{
 			result = false;
-			cout << "getMathObjectVariableType{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
+			cerr << "getMathObjectVariableType{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
 			exit(EXIT_ERROR);
 		}
 	}
 	else
 	{
 		result = false;
-		cout << "getMathObjectVariableType{} error: !foundLogicalConditionStartText" << endl;
+		cerr << "getMathObjectVariableType{} error: !foundLogicalConditionStartText" << endl;
 		exit(EXIT_ERROR);
 	}
 
@@ -1314,7 +1314,7 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 		bool foundParsablePhraseReferenceNameTest = false;
 		if(foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)
 		{
-			cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: hasLogicalConditionOperator && (foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)" << endl;
+			cerr << "generateAssignMathTextValueExecuteFunctionMathText{} error: hasLogicalConditionOperator && (foundMathtextVariableAssignment || foundParsablePhraseReferenceNameAssignment)" << endl;
 			exit(EXIT_ERROR);
 		}
 
@@ -1323,7 +1323,7 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 		bool subphraseFound = false;
 		if(!this->getMathTextSubphraseContainingNLPparsablePhrase(*mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex))
 		{
-			cout << "generateAssignMathTextValueExecuteFunctionMathText{} error: !getMathTextSubphraseContainingNLPparsablePhrase" << endl;
+			cerr << "generateAssignMathTextValueExecuteFunctionMathText{} error: !getMathTextSubphraseContainingNLPparsablePhrase" << endl;
 			exit(EXIT_ERROR);
 		}
 		int indexOfMathEqualsTestCommand = mathTextSubphraseContainingNLPparsablePhrase.find(NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST);

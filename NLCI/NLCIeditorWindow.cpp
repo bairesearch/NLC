@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -87,10 +87,9 @@
 #include "GIApreprocessor.hpp"
 
 
-std::vector<NLCIeditorWindowClass*> editorWindowList;
+vector<NLCIeditorWindowClass*> editorWindowList;
 
-NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent)
-	: QMainWindow(parent)
+NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent): QMainWindow(parent)
 {
 	setupFileMenu();
 	setupHelpMenu();
@@ -102,6 +101,10 @@ NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent)
 	editorName = "";
 	isPreprocessed = false;
 
+	//single line update functions
+	editorCursorLineNumber = 0;
+	textChangedSinceListCursorMovement = false;
+
 	setCentralWidget(editor);
 	setWindowTitle(tr("NLCI Editor"));
 	
@@ -111,6 +114,52 @@ NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent)
 	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
 	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();	
 	#endif
+}
+
+
+
+void NLCIeditorWindowClass::textChangedFunction()
+{
+	//cout << "textChangedFunction" << endl;
+	textChangedSinceListCursorMovement = true;
+}
+
+
+void NLCIeditorWindowClass::cursorPositionChangedFunction()
+{
+	//update editorCursorLineNumber to new position:
+	AdvancedTextEdit *edit = qobject_cast<AdvancedTextEdit*>(sender());
+	Q_ASSERT(edit);
+	QTextCursor cursor = edit->textCursor();
+	cursor.movePosition(QTextCursor::StartOfLine);
+
+	int lines = 0;
+	while(cursor.positionInBlock()>0)
+	{
+		cursor.movePosition(QTextCursor::Up);
+		lines++;
+	}
+	QTextBlock block = cursor.block().previous();
+
+	while(block.isValid())
+	{
+		lines += block.lineCount();
+		block = block.previous();
+	}
+
+	if(lines != editorCursorLineNumber)
+	{
+		//cout << "cursorPositionChangedFunction" << endl;
+		//reprocess line at last cursor position:
+		if(isPreprocessed && textChangedSinceListCursorMovement)
+		{
+			preprepreprocessTextLine(false);
+			textChangedSinceListCursorMovement = false;
+		}
+
+		editorCursorLineNumber = lines;
+	}
+	//cout << "on_editor_cursorPositionChanged(): editorCursorLineNumber = " << editorCursorLineNumber << endl;
 }
 
 void NLCIeditorWindowClass::about()
@@ -134,6 +183,53 @@ bool NLCIeditorWindowClass::save()
 	return saveEditorWindowSimple();
 }
 
+bool NLCIeditorWindowClass::preprepreprocessText()
+{
+	bool result = true;
+
+	//cout << "preprepreprocessText:" << endl;
+
+	if(!isPreprocessed || editor->document()->isModified())
+	{
+		isPreprocessed = true;
+		#ifdef USE_NLCI
+		if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), firstNLCfunctionInList))
+		#elif defined USE_GIAI
+		if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), translatorVariablesTemplate))
+		#endif
+		{
+			result = false;
+		}
+
+		highlighter->rehighlight();
+	}
+
+	return result;
+}
+
+void NLCIeditorWindowClass::preprepreprocessTextLine(bool enterWasPressed)
+{
+	bool result = true;
+	if(isPreprocessed)
+	{
+		int lineIndex = editorCursorLineNumber;
+		/*
+		if(enterWasPressed)
+		{
+			lineIndex = lineIndex - 1;	//reprocess the text on the previous line
+		}
+		*/
+
+		//cout << "preprepreprocessTextForNLCsingleLine; lineIndex = " << lineIndex << endl;
+
+		if(!NLCIeditorOperations.preprepreprocessTextForNLCsingleLine(editor, &(highlighter->highlightingRules), firstNLCfunctionInList, editorCursorLineNumber))
+		{
+			result = false;
+		}
+		highlighter->rehighlight();
+	}
+}
+
 bool NLCIeditorWindowClass::processText()
 {
 	bool result = true;
@@ -144,6 +240,7 @@ bool NLCIeditorWindowClass::processText()
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 	while(currentNLCfunctionInList->next != NULL)
 	{
+		//cout << "currentNLCfunctionInList:" << endl;
 		if(!createNewTextDisplayWindow(currentNLCfunctionInList))
 		{
 			result = false;
@@ -157,24 +254,6 @@ bool NLCIeditorWindowClass::processText()
 	}
 	#endif
 	
-	return result;
-}
-
-bool NLCIeditorWindowClass::preprepreprocessText()
-{
-	bool result = true;
-	
-	if(!isPreprocessed || editor->document()->isModified())
-	{
-		isPreprocessed = true;
-		#ifdef USE_NLCI
-		NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), firstNLCfunctionInList);
-		#elif defined USE_GIAI
-		NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), translatorVariablesTemplate);	
-		#endif
-		editor->document()->setModified(false);
-	}
-
 	return result;
 }
 
@@ -210,11 +289,13 @@ void NLCIeditorWindowClass::setupEditor()
 	font.setFixedPitch(true);
 	font.setPointSize(10);
 
-	editor = new QTextEdit;
+	editor = new AdvancedTextEdit;
 	editor->setFont(font);
 
 	highlighter = new NLCIeditorSyntaxHighlighterClass(editor->document());
-	//syntaxHighlighter = new QSyntaxHighlighter(editor->document());
+
+	connect(editor, SIGNAL(textChanged()), this, SLOT(textChangedFunction()));
+	connect(editor, SIGNAL(cursorPositionChanged()), this, SLOT(cursorPositionChangedFunction()));
 }
 
 void NLCIeditorWindowClass::setupFileMenu()
@@ -222,10 +303,11 @@ void NLCIeditorWindowClass::setupFileMenu()
 	QMenu *fileMenu = new QMenu(tr("&File"), this);
 	menuBar()->addMenu(fileMenu);
 
-	fileMenu->addAction(tr("Save"), this, SLOT(save()));
+	fileMenu->addAction(tr("Save"), this, SLOT(save()), QKeySequence::Save);
 	fileMenu->addAction(tr("Preprepre&process"), this, SLOT(preprepreprocessText()));	//just performs preprocessing and syntax highlighting based on wordnet word type lookups
 	fileMenu->addAction(tr("P&rocess"), this, SLOT(processText()));
 	fileMenu->addAction(tr("C&lose"), this, SLOT(close()), QKeySequence::Close);
+
 }
 
 void NLCIeditorWindowClass::setupHelpMenu()
@@ -298,6 +380,8 @@ bool NLCIeditorWindowClass::saveEditorWindow()
 
 		}
 
+		editor->document()->setModified(false);
+
 		result = !cancelExit;
 	}
 
@@ -341,6 +425,8 @@ bool NLCIeditorWindowClass::saveEditorWindowSimple()
 
 		}
 
+		editor->document()->setModified(false);
+
 		result = !cancelExit;
 	}
 
@@ -351,7 +437,7 @@ bool NLCIeditorWindowClass::saveEditorWindowSimple()
 bool NLCIeditorWindowClass::eraseFromWindowList(NLCIeditorWindowClass* editorWindowRef)
 {
 	bool result = false;
-	std::vector<NLCIeditorWindowClass*>::iterator iter = std::find(editorWindowList.begin(), editorWindowList.end(), editorWindowRef);
+	vector<NLCIeditorWindowClass*>::iterator iter = std::find(editorWindowList.begin(), editorWindowList.end(), editorWindowRef);
 	if(iter != editorWindowList.end())
 	{
 		result = true;
@@ -368,25 +454,6 @@ void NLCIeditorWindowClass::addToWindowList(NLCIeditorWindowClass* editorWindowR
 }
 
 
-
-
-string generateProjectFileContents()
-{
-	string projectFileContents = "";
-	
-	for(int i=0; i<editorWindowList.size(); i++)
-	{
-		NLCIeditorWindowClass* editorWindow = editorWindowList[i];
-		if(editorWindow->projectName != "")
-		{
-			QString editorFileNameFull = convertStringToQString(editorWindow->editorName);
-			QString editorFileName = getFileNameFromFileNameFull(editorFileNameFull);
-			projectFileContents = projectFileContents + convertQStringToString(editorFileName) + CHAR_NEWLINE;
-		}
-	}
-	
-	return projectFileContents;
-}
 
 bool closeEditorWindowsAll()
 {
@@ -472,10 +539,6 @@ bool saveFile(const QString& fileName, const QString& fileContents)
 
 	return result;
 }
-
-
-
-
 
 
 

@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -399,7 +399,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 		{
 			if(subphraseContents.size() < 1)	//< 2?
 			{
-				cout << "NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{} error: (subphraseContents.size() < 1)" << endl;
+				cerr << "NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand{} error: (subphraseContents.size() < 1)" << endl;
 				exit(EXIT_ERROR);
 			}
 			currentNLCsubphraseInList->phraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(&subphraseContents, 1);	//remove conjunction from subphrase contents (redundant) - ie the first word in the subphrase
@@ -598,7 +598,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 					conjunctionTypeOfNextConjunction = i;
 					if(i != NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_COORDINATING_CONJUNCTION_AND_INDEX)
 					{
-						cout << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand{}: error: command mathText has a conjunction that is not '&&' (and)" << endl;
+						cerr << "generateSeparateSentencesFromMathTextAndParsablePhrasesInCommand{}: error: command mathText has a conjunction that is not '&&' (and)" << endl;
 						exit(EXIT_ERROR);
 					}
 				}

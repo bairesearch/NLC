@@ -25,7 +25,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -92,7 +92,6 @@
 
 #define NLCI_URL_DELIMITER "/"
 
-class QTextEdit;
 
 class NLCIeditorOperationsClass
 {
@@ -103,23 +102,24 @@ private:
 	NLCIoperationsClass NLCIoperations;
 	GIApreprocessorClass GIApreprocessor;
 	GIApreprocessorMultiwordReductionClass GIApreprocessorMultiwordReduction;
+	GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
 	NLCpreprocessorClass NLCpreprocessor;
 
 public:
 	#ifdef USE_NLCI
-	bool preprepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList);
+	bool preprepreprocessTextForNLC(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList);
 	#elif defined USE_GIAI
-	bool preprepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate);
+	bool preprepreprocessTextForNLC(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate);
 	#endif
-		bool preprepreprocessTextForNLChighlightFast(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList);
+		bool preprepreprocessTextForNLChighlightFast(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList);
 	#ifdef USE_NLCI
-	bool preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList, int lineIndex);
+	bool preprepreprocessTextForNLCsingleLine(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList, int lineIndex);
 	#elif defined USE_GIAI
-	bool preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstGIApreprocessorSentenceInList, int lineIndex);
+	bool preprepreprocessTextForNLCsingleLine(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstGIApreprocessorSentenceInList, int lineIndex);
 	#endif
 		bool getActiveSentenceInList(int* currentLineNumber, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorSentence** activeNLCprepreprocessorSentenceInList, const int lineIndex);
-		bool preprepreprocessTextForNLCsingleLineHighlightFast(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, int lineIndex, QTextBlock* textBlockQ);		
-	bool preprepreprocessTextForNLChighlightFastSentence(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, QTextCursor* cursor, bool useOriginalSpacing);
+		bool preprepreprocessTextForNLCsingleLineHighlightFast(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, int lineIndex, QTextBlock* textBlockQ);		
+	bool preprepreprocessTextForNLChighlightFastSentence(AdvancedTextEdit* editor, QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, QTextCursor* cursor, bool useOriginalSpacing);
 		int preprepreprocessTextForNLChighlightFastWordDetermineColourIndex(const string* word);
 
 };

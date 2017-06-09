@@ -25,7 +25,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -662,10 +662,15 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 
 						SHAREDvars.writeStringToFile(printedClassDefinitionHeaderFileName, &printedClassDefinitionHeaderText);
 						SHAREDvars.writeStringToFile(printedClassDefinitionSourceFileName, &printedClassDefinitionSourceText);
-						#else
-						*code = *code + printedClassDefinitionHeaderText;
-						*code = *code + printedClassDefinitionSourceText;
 						#endif
+						#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES
+						*code = *code + NLCprintDefs.generatePrintedFileName(printedClassDefinitionHeaderFileName); 
+						#endif
+						*code = *code + printedClassDefinitionHeaderText;
+						#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES
+						*code = *code + NLCprintDefs.generatePrintedFileName(printedClassDefinitionSourceFileName);
+						#endif
+						*code = *code + printedClassDefinitionSourceText;
 					}
 				}
 			}
@@ -699,7 +704,7 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 		if(classDefinition->printed)
 		{
 			string printedClassDefinitionHeaderFileName = this->generateCodeClassDefinitionHeaderFileName(classDefinition->name);
-			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + this->generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);	//eg #include "NLCgeneratedmoveClass.hpppp"
+			NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + this->generateCodeHashIncludeReferenceGenerated(classDefinition->name, progLang);	//eg #include "NLCgeneratedmoveClass.hpp"
 		}
 	}
 	NLCgeneratedCodeHeader = NLCgeneratedCodeHeader + CHAR_NEWLINE;
@@ -740,13 +745,17 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 	#ifdef NLC_API
 	}
 	#endif
-	#else
-	string NLCgeneratedCodeSource = "";
-	this->generateCodeGenerateObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
-	this->generateCodeCopyObjectByNameNewFunction(classDefinitionList, progLang, &NLCgeneratedCodeSource, level);
-	*code = *code + NLCgeneratedCodeSource;
 	#endif
-
+	
+	#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES
+	*code = *code + NLCprintDefs.generatePrintedFileName(NLCgeneratedCodeSourceFileName); 
+	#endif
+	*code = *code + NLCgeneratedCodeSource;
+	#ifdef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES
+	*code = *code + NLCprintDefs.generatePrintedFileName(NLCgeneratedCodeHeaderFileName);
+	*code = *code + NLCgeneratedCodeHeader;
+	#endif
+	
 	#endif
 
 	return result;

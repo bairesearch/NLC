@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -335,7 +335,7 @@ int main(const int argc, const char** argv)
 			}
 			else
 			{
-				cout << "error: nlpcompmode set but (NLPdependencyRelationsParser != GIA_NLP_PARSER_RELEX)" << endl;
+				cerr << "error: nlpcompmode set but (NLPdependencyRelationsParser != GIA_NLP_PARSER_RELEX)" << endl;
 				exit(EXIT_ERROR);
 			}
 		}
@@ -433,7 +433,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2c1b 01-June-2017" << endl;
+			cout << "NLC.exe - Project Version: 2c1c 01-June-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -441,8 +441,8 @@ int main(const int argc, const char** argv)
 	}
 	else
 	{
-		cout << "error: GIA requires either a plain text inputText file (.txt), an NPL parsed inputText file (.xml) or GIA semantic network (.xml) to be defined" << endl;
-		printf(errmessage);
+		cerr << "error: GIA requires either a plain text inputText file (.txt), an NPL parsed inputText file (.xml) or GIA semantic network (.xml) to be defined" << endl;
+		cerr << errmessage << endl;
 		exit(EXIT_ERROR);
 	}
 	
@@ -756,7 +756,7 @@ bool NLCmainClass::executeNLC2()
 		}
 		else
 		{
-			cout << "main{} error: !preprocessTextForNLCwrapper{}" << endl;
+			cerr << "main{} error: !preprocessTextForNLCwrapper{}" << endl;
 			exit(EXIT_ERROR);
 		}
 	}
@@ -1003,7 +1003,7 @@ bool NLCmainClass::executeNLC2()
 		if(useNLCinputFileList)
 		{
 			NLCfunctionName = currentNLCfunctionInList->NLCfunctionName;
-			cout << "NLCfunctionName = " << NLCfunctionName << endl;
+			//cout << "NLCfunctionName = " << NLCfunctionName << endl;
 		}
 		else
 		{
@@ -1134,13 +1134,16 @@ bool NLCmainClass::executeNLC2()
 		#endif
 		
 	}
-	#ifndef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
-	cout << "code = \n" << code << endl;
-	#endif
 	
 	#ifdef USE_NLCI
 	translatorVariablesTemplate->nlcGeneratedCode = code;
+	#else
+	#ifndef NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES_ADD_CLASS_FUNCTIONS_TO_CLASS_DEFINITIONS
+	cout << "code = \n" << code << endl;
+	#endif	
 	#endif
+	
+	return result;
 }
 
 string NLCmainClass::removeFileNameExtensions(string NLCfunctionName)
@@ -1165,7 +1168,7 @@ string NLCmainClass::removeNLCfileNameExtension(string NLCfunctionName)
 	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_ENFORCE_NLC_FILE_EXTENSIONS
 	else
 	{
-		cout << "removeNLCfileNameExtension{} error: .nlc (natural language code) file extension expected, NLCfunctionName = " << NLCfunctionName << endl;
+		cerr << "removeNLCfileNameExtension{} error: .nlc (natural language code) file extension expected, NLCfunctionName = " << NLCfunctionName << endl;
 		exit(EXIT_ERROR);
 	}
 	#endif
@@ -1242,7 +1245,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 									}
 									else
 									{
-										cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition" << endl;
+										cerr << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependencyChild->isReferenceElseFunctionDefinition" << endl;
 										exit(EXIT_ERROR);
 									}
 								}
@@ -1250,7 +1253,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 								#ifndef NLC_LIBRARY
 								else
 								{
-									cout << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
+									cerr << "NLCmain error: functionDefinitionFunctionDependencyChild->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
 									exit(EXIT_ERROR);
 								}
 								#endif
@@ -1271,7 +1274,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 					}
 					else
 					{
-						cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependency->isReferenceElseFunctionDefinition" << endl;
+						cerr << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex != INT_DEFAULT_VALUE && functionDefinitionFunctionDependency->isReferenceElseFunctionDefinition" << endl;
 						exit(EXIT_ERROR);
 					}
 				}
@@ -1279,7 +1282,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 				#ifndef NLC_LIBRARY
 				else
 				{
-					cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
+					cerr << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
 					exit(EXIT_ERROR);
 				}
 				#endif
@@ -1312,7 +1315,7 @@ bool NLCmainClass::generateClassDefinitionFunctionDeclarationsAndReconcileArgume
 				#ifndef NLC_LIBRARY
 				else
 				{
-					cout << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
+					cerr << "NLCmain error: functionDefinitionFunctionDependency->functionDefinitionListIndex == INT_DEFAULT_VALUE. FunctionDependencies are only defined for functionDefinition classDefinitions" << endl;
 					exit(EXIT_ERROR);
 				}
 				#endif

@@ -25,7 +25,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1b 01-June-2017
+ * Project Version: 2c1c 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -211,7 +211,7 @@ void NLCtranslatorClass::reconcileFunctionDefinitionClassDefinitionArgumentsBase
 	#endif
 
 	#else
-	cout << "reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition{} error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
+	cerr << "reconcileFunctionDefinitionClassDefinitionArgumentsBasedOnImplicitlyDeclaredVariablesInCurrentFunctionDefinition{} error: !NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED no longer supported" << endl;
 	exit(EXIT_ERROR);
 	#endif
 }
@@ -315,7 +315,7 @@ bool NLCtranslatorClass::checkAlphaNumericEntityNames(vector<GIAentityNode*>* en
 			if(!NLCpreprocessorSentenceClass.isStringNLPparsableWord(entity->entityName, false))
 			{
 				result = false;
-				cout << "checkAlphaNumericEntityNames{}: user input error - entity names cannot start with numbers: " << entity->entityName << endl;
+				cerr << "checkAlphaNumericEntityNames{}: user input error - entity names cannot start with numbers: " << entity->entityName << endl;
 				exit(EXIT_ERROR);
 			}
 		}
@@ -404,7 +404,7 @@ NLCclassDefinition* NLCtranslatorClass::createFunctionDefinitionClassDefinition(
 	bool foundFunctionDependencyInList = NLCclassDefinitionClass.findFunctionDefinitionFunctionDependencyInList(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, &functionDependency);	//note at this stage only functionDefinition functionDependencies have been created (so the functionDefintion check is not actually required)...
 	if(foundFunctionDependencyInList)
 	{
-		cout << "createFunctionDefinitionClassDefinition{}:createNewClassDefinitionFunctionDeclaration{} error: duplicate functionDefinition classDefinition defined" << endl;
+		cerr << "createFunctionDefinitionClassDefinition{}:createNewClassDefinitionFunctionDeclaration{} error: duplicate functionDefinition classDefinition defined" << endl;
 		exit(EXIT_ERROR);
 	}
 	else

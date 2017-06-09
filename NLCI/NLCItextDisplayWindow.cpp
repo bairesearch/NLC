@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -97,25 +97,29 @@ NLCItextDisplayWindowClass::NLCItextDisplayWindowClass(QWidget *parent)
 	setupLabel();
 
 	textDisplayFileName = "";
-	translatorVariablesTemplate = NULL;
 
 	setCentralWidget(label);
 	setWindowTitle(tr("NLCI Text Display"));
 	
-
+	#ifdef USE_NLCI
+	activeNLCfunctionInList = NULL;
+	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
+	#elif defined USE_GIAI
+	translatorVariablesTemplate = NULL;	
+	#endif
 }
 
 void NLCItextDisplayWindowClass::about()
 {
-#ifdef COMPILE_NLCI
+#ifdef USE_NLCI
     QMessageBox::about(this, tr("About NLCI (Natural Language Compiler Interface)"),
                 tr("<b>NLCI</b> enables editing of natural language code along " \
-		"with the real-time display of its semantic processing (GIA)" \
+		"with the real-time display of its semantic processing (GIA) " \
 		"and generated C++ output</p>"));
-#elif defined COMPILE_GIAI
+#elif defined USE_GIAI
     QMessageBox::about(this, tr("About GIAI (General Intelligence Algorithm Interface)"),
                 tr("<b>NLCI</b> enables editing of natural language code along " \
-		"with the real-time display of its semantic processing (GIA)" \
+		"with the real-time display of its semantic processing (GIA) " \
 		"</p>"));
 #endif
 }
@@ -125,16 +129,20 @@ void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
 {
 	bool result = true;
 
-	QStringList pieces = link.split( "/" );
-	QString sentenceIndexStringQ = pieces.value(0);
-	QString wordIndexStringQ = pieces.value(1);
-	string sentenceIndexString = sentenceIndexStringQ.toStdString();
-	string wordIndexString = wordIndexStringQ.toStdString();
+	QStringList pieces = link.split(NLCI_URL_DELIMITER);
+	QString functionIndexStringQ = pieces.value(0);
+	QString sentenceIndexStringQ = pieces.value(1);
+	QString wordIndexStringQ = pieces.value(2);
+	string functionIndexString = convertQStringToString(functionIndexStringQ);
+	string sentenceIndexString = convertQStringToString(sentenceIndexStringQ);
+	string wordIndexString = convertQStringToString(wordIndexStringQ);
+	int functionIndex = SHAREDvars.convertStringToInt(functionIndexString);
 	int sentenceIndex = SHAREDvars.convertStringToInt(sentenceIndexString);
 	int wordIndex = SHAREDvars.convertStringToInt(wordIndexString);
 
 	GIApreprocessorWord* wordTagFound = NULL;
-	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, translatorVariablesTemplate, &wordTagFound))
+	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList, &wordTagFound))
+	//if(NLCItextDisplayOperations.getWordByIndex(functionIndex, sentenceIndex, wordIndex, firstNLCfunctionInList, &wordTagFound))	//use this function in case label_linkActivated can't distinguish between the NLCItextDisplayWindowClass class object which triggered the function
 	{
 
 		#ifdef USE_NLCI
@@ -145,7 +153,7 @@ void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
 		textDisplayWindow2->resize(NLCI_TEXT_DISPLAY_WINDOW_NLC_GENERATED_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_NLC_GENERATED_HEIGHT);
 		textDisplayWindow2->show();
 		string code = translatorVariablesTemplate->nlcGeneratedCode;
-		QString codeQ = QString::fromStdString(code);
+		QString codeQ = convertStringToQString(code);
 		textDisplayWindow2->label->setText(codeQ);
 		addToWindowList(textDisplayWindow2);
 		#endif
@@ -156,7 +164,7 @@ void NLCItextDisplayWindowClass::label_linkActivated(const QString &link)
 		int height = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT;
 		if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndex, &writeFileStringSVG, wordTagFound->entityReference))
 		{
-			QString writeFileStringSVGQ = QString::fromStdString(writeFileStringSVG);
+			QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
 			QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
 			QSvgWidget* svgDisplayWindow = new QSvgWidget();
 			svgDisplayWindow->load(writeFileStringSVGQbyteArray);
@@ -206,7 +214,7 @@ bool NLCItextDisplayWindowClass::displaySemanticNetwork()
 
 	if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndex, &writeFileStringSVG, entityReference))
 	{
-		QString writeFileStringSVGQ = QString::fromStdString(writeFileStringSVG);
+		QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
 		QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
 		QSvgWidget* svgDisplayWindow = new QSvgWidget();
 		svgDisplayWindow->load(writeFileStringSVGQbyteArray);

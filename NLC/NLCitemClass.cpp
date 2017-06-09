@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -239,7 +239,7 @@ string NLCitemClassClass::removeClassTextFromClassDefinitionName(const string cl
 
 
 #ifdef NLC_INPUT_FUNCTION_LISTS
-string NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionName)
+string NLCitemClassClass::parseFunctionNameFromNLCfunctionName(const string NLCfunctionName)
 {
 	//gets "fight" from "dog::fight"
 	string functionName = "";
@@ -249,7 +249,7 @@ string NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctio
 	return functionName;
 }
 
-void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass)
+void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass)
 {
 	//gets "fight" from "dog::fight"
 	bool hasFunctionObjectClass = false;
@@ -257,20 +257,20 @@ void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionN
 	this->parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 }
 
-void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass)
+void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass)
 {
 	vector<NLCitem*> additionalArgumentsTempNotUsed;
 	this->parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, &additionalArgumentsTempNotUsed);
 }
 
 #ifdef NLC_LIBRARY
-void NLCitemClassClass::parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
+void NLCitemClassClass::parseFunctionNameFromNLClibFunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
 {
 	this->parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, additionalArguments);
 }
 #endif
 
-void NLCitemClassClass::parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
+void NLCitemClassClass::parseFunctionNameFromNLCgeneralFunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
 {
 	//gets "fight" from "dog::fight"
 	*hasFunctionOwnerClass = false;

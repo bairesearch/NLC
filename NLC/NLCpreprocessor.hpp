@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -53,12 +53,13 @@ class NLCpreprocessorClass
 	private: GIApreprocessorClass GIApreprocessor;
 	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
-	public: bool preprocessTextForNLC(const string inputFileName, NLCfunction** firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList, const string outputFileName, GIAtranslatorVariablesClass* translatorVariables);
-		#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
-		private: bool preprocessTextForNLCextractFunctions(const string inputFileName, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, vector<string>* inputTextFileNameList);
-		#endif
-			private: string printStringVector(vector<string>* stringVector);	
-		private: bool preprocessTextForNLC(NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfInputFilesInList, const string outputFileName);
+	public: bool preprocessTextForNLCwrapper(const string inputFileName, NLCfunction** firstNLCfunctionInList, bool* detectedFunctions, int* numberOfFunctionsInList, vector<string>* inputTextFileNameList, const string outputFileName);
+		public: bool preprocessTextForNLCextractFunctionsAndCreatePreprocessSentences(vector<string>* fileLinesList, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfFunctionsInList, vector<string>* inputTextFileNameList);
+			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
+			private: bool preprocessTextForNLCextractFunctions(vector<string>* fileLinesList, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfFunctionsInList, vector<string>* inputTextFileNameList);
+			#endif
+				private: string printStringVector(vector<string>* stringVector);	
+		private: bool preprocessTextForNLC(NLCfunction* firstNLCfunctionInList, bool detectedFunctions, int numberOfFunctionsInList, const string outputFileName);
 			private: void addNonLogicalConditionSentenceToList(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
 			#ifdef NLC_INPUT_FUNCTION_LISTS
 			public: bool detectFunctionHeader(const string* lineContents);

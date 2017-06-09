@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -149,7 +149,6 @@ bool NLCtranslatorCodeBlocksClass::generateCodeBlocks(NLCcodeblock* firstCodeBlo
 		else
 		{
 		#endif
-
 			#ifdef NLC_GENERATE_UNIQUE_CONTEXT_BLOCK_FOR_EACH_SENTENCE
 			//added 1q10b - used prevent redeclarations of xSubjectCategoryList/xObjectCategoryList//xCategoryList
 			//NB createCodeBlocksCreateContextBlock be executed after generateObjectInitialisationsBasedOnConceptsForAllDefiniteEntities because newlyDeclaredEntityInCategoryList=false is set (ie category lists are not created)

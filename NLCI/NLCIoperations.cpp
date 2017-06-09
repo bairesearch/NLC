@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -100,7 +100,21 @@ QColor NLCIoperationsClass::generateColourQ(colour* col)
 }
 
 #ifdef USE_NLCI
+bool NLCIoperationsClass::executeNLCwrapper(bool useNLCinputFileList, string NLCinputFileListName)
+{
+	GIAtranslatorVariablesClass translatorVariablesTemplate;	//global (project level) translatorVariablesTemplate will be disgarded
+	NLCfunction* firstNLCfunctionInList = NULL;
+	return executeNLCwrapper(&translatorVariablesTemplate, firstNLCfunctionInList, useNLCinputFileList, NLCinputFileListName);
+	
+}
 bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList)
+{
+	bool useNLCinputFileList = false;
+	string NLCinputFileListName = "inputFileList.nlcp";
+	return executeNLCwrapper(translatorVariablesTemplate, firstNLCfunctionInList, useNLCinputFileList, NLCinputFileListName);
+	
+}
+bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList, bool useNLCinputFileList, string NLCinputFileListName)
 {
 	bool result = true;
 
@@ -121,16 +135,12 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 	NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] = NLCI_NLC_NLP_STANFORD_PARSER_FOLDER;
 
 	bool useInputTextPlainTXTFile = false;	//passing data instead
-	string inputTextPlainTXTfileName = "inputText.txt";
-
-	bool useInputTextNLPrelationXMLFile = false;
-	string inputTextNLPrelationXMLfileName = "inputNLPrelation.xml";
-	bool useInputTextNLPfeatureXMLFile = false;
-	string inputTextNLPfeatureXMLfileName = "inputNLPfeature.xml";
+	string inputTextPlainTXTfileName = "inputText.nlc";
+	
+	string outputTextNLPrelationXMLfileName = "inputNLPrelation.xml";
+	string outputTextNLPfeatureXMLfileName = "inputNLPfeature.xml";
 	bool useOutputTextCFFFile = false;
 	string outputTextCFFFileName = "outputNLP.cff";
-	bool useInputTextXMLFile = false;
-	string inputTextXMLFileName = "semanticNet.xml";
 	bool useOutputTextXMLFile = false;
 	string outputTextXMLFileName = "semanticNet.xml";
 	bool useOutputTextCXLFile = false;
@@ -145,10 +155,6 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 	bool useOutputTextAllFile = NLCI_NLC_USE_OUTPUT_TEXT_ALL_FILE;
 	string outputTextAllFileName = NLCI_NLC_OUTPUT_TEXT_ALL_FILE_NAME;
 
-
-	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-	bool NLCinputFileList = false;
-	#endif
 	//#ifdef NLC_PREPROCESSOR
 	bool useNLCpreprocessor = NLCI_NLC_USE_NLC_PREPROCESSOR;
 	//#endif
@@ -220,15 +226,15 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,
-
-		useInputTextNLPrelationXMLFile,
-		inputTextNLPrelationXMLfileName,
-		useInputTextNLPfeatureXMLFile,
-		inputTextNLPfeatureXMLfileName,
+		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
+		useNLCinputFileList,
+		NLCinputFileListName,
+		#endif
+		
+		outputTextNLPrelationXMLfileName,
+		outputTextNLPfeatureXMLfileName,
 		useOutputTextCFFFile,
 		outputTextCFFFileName,
-		useInputTextXMLFile,
-		inputTextXMLFileName,
 		useOutputTextXMLFile,
 		outputTextXMLFileName,
 		useOutputTextCXLFile,
@@ -247,9 +253,6 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 		outputTextAnswerPlainTXTFileName,
 		#endif
 
-		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-		NLCinputFileList,
-		#endif
 		//#ifdef NLC_PREPROCESSOR
 		useNLCpreprocessor,
 		//#endif
@@ -462,20 +465,19 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,
-
 		#ifdef USE_CE
 		useInputTextCodeextensionsTXTFileName,
 		inputTextCodeextensionsTXTFileName,
 		#endif
-
 		useInputTextNLPrelationXMLFile,
 		inputTextNLPrelationXMLfileName,
 		useInputTextNLPfeatureXMLFile,
 		inputTextNLPfeatureXMLfileName,
+		useInputTextXMLFile,
+		inputTextXMLFileName,		
+		
 		useOutputTextCFFFile,
 		outputTextCFFFileName,
-		useInputTextXMLFile,
-		inputTextXMLFileName,
 		useOutputTextXMLFile,
 		outputTextXMLFileName,
 		useOutputTextCXLFile,
@@ -556,6 +558,15 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 #endif
 
+QString convertStringToQString(const string str)
+{
+	return QString::fromStdString(str);
+}
+
+string convertQStringToString(const QString qstr)
+{
+	return qstr.toStdString();
+}
 
 
 

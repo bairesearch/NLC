@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -100,33 +100,106 @@ NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent)
 	projectName = "";
 	#endif
 	editorName = "";
+	isPreprocessed = false;
 
 	setCentralWidget(editor);
 	setWindowTitle(tr("NLCI Editor"));
 	
-	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
 	#ifdef USE_NLCI
-	translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
+	firstNLCfunctionInList = new NLCfunction();
 	#elif defined USE_GIAI
-	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
+	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
+	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();	
 	#endif
 }
 
 void NLCIeditorWindowClass::about()
 {
-#ifdef COMPILE_NLCI
+#ifdef USE_NLCI
     QMessageBox::about(this, tr("About NLCI (Natural Language Compiler Interface)"),
                 tr("<b>NLCI</b> enables editing of natural language code along " \
-		"with the real-time display of its semantic processing (GIA)" \
+		"with the real-time display of its semantic processing (GIA) " \
 		"and generated C++ output</p>"));
-#elif defined COMPILE_GIAI
+#elif defined USE_GIAI
     QMessageBox::about(this, tr("About GIAI (General Intelligence Algorithm Interface)"),
                 tr("<b>NLCI</b> enables editing of natural language code along " \
-		"with the real-time display of its semantic processing (GIA)" \
+		"with the real-time display of its semantic processing (GIA) " \
 		"</p>"));
 #endif
 }
 
+
+bool NLCIeditorWindowClass::save()
+{
+	return saveEditorWindowSimple();
+}
+
+bool NLCIeditorWindowClass::processText()
+{
+	bool result = true;
+
+	preprepreprocessText();	//in case preprocessing is required
+	
+	#ifdef USE_NLCI
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+	while(currentNLCfunctionInList->next != NULL)
+	{
+		if(!createNewTextDisplayWindow(currentNLCfunctionInList))
+		{
+			result = false;
+		}
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
+	}	
+	#elif defined USE_GIAI
+	if(!createNewTextDisplayWindow(NULL))
+	{
+		result = false;
+	}
+	#endif
+	
+	return result;
+}
+
+bool NLCIeditorWindowClass::preprepreprocessText()
+{
+	bool result = true;
+	
+	if(!isPreprocessed || editor->document()->isModified())
+	{
+		isPreprocessed = true;
+		#ifdef USE_NLCI
+		NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), firstNLCfunctionInList);
+		#elif defined USE_GIAI
+		NLCIeditorOperations.preprepreprocessTextForNLC(editor, &(highlighter->highlightingRules), translatorVariablesTemplate);	
+		#endif
+		editor->document()->setModified(false);
+	}
+
+	return result;
+}
+
+bool NLCIeditorWindowClass::createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList)
+{
+	//1. create a new text display window to show NLC/GIA prepreprocessed text (ie without modifications)
+	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
+	#ifdef USE_NLCI
+	textDisplayWindow->activeNLCfunctionInList = activeNLCfunctionInList;
+	textDisplayWindow->textDisplayFileName = NLCitemClass.parseFunctionNameFromNLCfunctionName(activeNLCfunctionInList->NLCfunctionName);
+	#elif defined USE_GIAI
+	textDisplayWindow->translatorVariablesTemplate = translatorVariablesTemplate;
+	textDisplayWindow->textDisplayFileName = getFileNameFromFileNameFull(editorName);
+	#endif
+	textDisplayWindow->resize(NLCI_TEXT_DISPLAY_WINDOW_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_HEIGHT);
+	textDisplayWindow->show();
+	textDisplayWindow->addToWindowList(textDisplayWindow);
+
+	bool displayLRPprocessedText = false;
+	#ifdef USE_NLCI
+	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->label, textDisplayWindow->translatorVariablesTemplate, activeNLCfunctionInList, displayLRPprocessedText);
+	#else
+	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->label, textDisplayWindow->translatorVariablesTemplate, displayLRPprocessedText);
+	#endif
+}
 
 
 
@@ -149,7 +222,8 @@ void NLCIeditorWindowClass::setupFileMenu()
 	QMenu *fileMenu = new QMenu(tr("&File"), this);
 	menuBar()->addMenu(fileMenu);
 
-	fileMenu->addAction(tr("Pre&process"), this, SLOT(prepreprocessText()));	//just performs preprocessing and syntax highlighting based on wordnet word type lookups
+	fileMenu->addAction(tr("Save"), this, SLOT(save()));
+	fileMenu->addAction(tr("Preprepre&process"), this, SLOT(preprepreprocessText()));	//just performs preprocessing and syntax highlighting based on wordnet word type lookups
 	fileMenu->addAction(tr("P&rocess"), this, SLOT(processText()));
 	fileMenu->addAction(tr("C&lose"), this, SLOT(close()), QKeySequence::Close);
 }
@@ -204,7 +278,50 @@ bool NLCIeditorWindowClass::saveEditorWindow()
 						   QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
 		if(ret == QMessageBox::Save)
 		{
-			if(!saveFile(QString::fromStdString(editorName), editor->toPlainText()))	//.toAscii();
+			if(!saveFile(convertStringToQString(editorName), editor->toPlainText()))	//.toAscii();
+			{
+				cancelExit = true;
+				//qInfo("1cancelExit");
+			}
+			else
+			{
+				//qInfo("2acceptExit");
+			}
+		}
+		else if(ret == QMessageBox::Cancel)
+		{
+			cancelExit = true;
+			//qInfo("3cancelExit");
+		}
+		else
+		{
+
+		}
+
+		result = !cancelExit;
+	}
+
+	return result;
+}
+
+bool NLCIeditorWindowClass::saveEditorWindowSimple()
+{
+	bool result = true;
+
+	if(!(editor->document()->isModified()))
+	{
+		result = true;
+	}
+	else
+	{
+		bool cancelExit = false;
+		const QMessageBox::StandardButton ret = QMessageBox::warning(this, tr("Application"),
+						   tr("The document has been modified.\n"
+							  "Do you want to save your changes?"),
+						   QMessageBox::Save | QMessageBox::Cancel);
+		if(ret == QMessageBox::Save)
+		{
+			if(!saveFile(convertStringToQString(editorName), editor->toPlainText()))	//.toAscii();
 			{
 				cancelExit = true;
 				//qInfo("1cancelExit");
@@ -239,7 +356,7 @@ bool NLCIeditorWindowClass::eraseFromWindowList(NLCIeditorWindowClass* editorWin
 	{
 		result = true;
 		editorWindowList.erase(iter);
-		//qInfo("eraseFromWindowList");
+		//qDebug() << "eraseFromWindowList: editorWindowList size = " << editorWindowList.size();
 	}
 	return result;
 }
@@ -247,35 +364,9 @@ bool NLCIeditorWindowClass::eraseFromWindowList(NLCIeditorWindowClass* editorWin
 void NLCIeditorWindowClass::addToWindowList(NLCIeditorWindowClass* editorWindowRef)
 {
 	editorWindowList.push_back(editorWindowRef);
+	//qDebug() << "addToWindowList: editorWindowList size = " << editorWindowList.size();
 }
 
-
-bool NLCIeditorWindowClass::prepreprocessText()
-{
-	bool result = true;
-	
-	NLCIeditorOperations.prepreprocessTextForNLC(editor, &(highlighter->highlightingRules), translatorVariablesTemplate);
-
-	return result;
-}
-
-bool NLCIeditorWindowClass::processText()
-{
-	bool result = true;
-		
-	//1. create a new text display window to show NLC/GIA prepreprocessed text (ie without modifications)
-	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
-	textDisplayWindow->translatorVariablesTemplate = translatorVariablesTemplate;
-	textDisplayWindow->textDisplayFileName = editorName;
-	textDisplayWindow->resize(NLCI_TEXT_DISPLAY_WINDOW_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_HEIGHT);
-	textDisplayWindow->show();
-	textDisplayWindow->addToWindowList(textDisplayWindow);
-			
-	bool displayLRPprocessedText = false;
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->label, translatorVariablesTemplate, displayLRPprocessedText);
-			
-	return result;
-}
 
 
 
@@ -288,9 +379,9 @@ string generateProjectFileContents()
 		NLCIeditorWindowClass* editorWindow = editorWindowList[i];
 		if(editorWindow->projectName != "")
 		{
-			QString editorFileNameFull = QString::fromStdString(editorWindow->editorName);
+			QString editorFileNameFull = convertStringToQString(editorWindow->editorName);
 			QString editorFileName = getFileNameFromFileNameFull(editorFileNameFull);
-			projectFileContents = projectFileContents + editorFileName.toStdString() + CHAR_NEWLINE;
+			projectFileContents = projectFileContents + convertQStringToString(editorFileName) + CHAR_NEWLINE;
 		}
 	}
 	
@@ -301,11 +392,21 @@ bool closeEditorWindowsAll()
 {
 	bool result = true;
 	
-	for(int i=0; i<editorWindowList.size(); i++)
-	{
-		if(!(editorWindowList[i]->closeEditorWindow()))
+	//qDebug() << "closeEditorWindowsAll(): editorWindowList.size() = " << editorWindowList.size();
+	bool stillEditorWindowsToClose =  true;
+	while(stillEditorWindowsToClose)
+	{	
+		if(editorWindowList.size() > 0)
 		{
-			result = false;
+			//qDebug() << "closeEditorWindowsAll(): editorWindowList[0] = ";
+			if(!(editorWindowList[0]->close()))
+			{
+				result = false;
+			}
+		}
+		else
+		{
+			stillEditorWindowsToClose = false;
 		}
 	}
 	
@@ -327,58 +428,22 @@ bool saveEditorWindowsAll()
 	return result;
 }
 
+string getFileNameFromFileNameFull(const string fileNameFull)
+{
+	return convertQStringToString(getFileNameFromFileNameFull(convertStringToQString(fileNameFull)));
+}
 QString getFileNameFromFileNameFull(QString fileNameFull)
 {
 	return QFileInfo(fileNameFull).fileName();
 }
 
+string getPathFromFileNameFull(const string fileNameFull)
+{
+	return convertQStringToString(getPathFromFileNameFull(convertStringToQString(fileNameFull)));
+}
 QString getPathFromFileNameFull(QString fileNameFull)
 {
 	return QFileInfo(fileNameFull).absolutePath();
-}
-
-bool generateNLCfunctionList(NLCfunction* firstNLCfunctionInList)
-{
-	bool result = true;
-	
-	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
-	for(int i=0; i<editorWindowList.size(); i++)
-	{
-		NLCIeditorWindowClass* editorWindow = editorWindowList[i];
-		if(editorWindow->projectName != "")
-		{
-			QString editorFileNameFull = QString::fromStdString(editorWindow->editorName);
-			QString editorFileName = getFileNameFromFileNameFull(editorFileNameFull);
-			
-			//code copied from NLCmain::executeNLC();
-			string NLCfunctionName = NLCmainClass().removeNLCfileNameExtension(editorFileName.toStdString());
-			cout << "generateNLCfunctionList{}: NLCfunctionName = " << NLCfunctionName << endl;
-			string functionName = "";
-			string functionOwnerName = "";
-			bool hasFunctionOwnerClass = "";
-			string functionObjectName = "";
-			bool hasFunctionObjectClass = "";
-			NLCitemClassClass().parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
-			string NLCfunctionHeader = NLCitemClassClass().generateNLCfunctionHeader(functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass);
-			QString functionContentsQ = editorWindow->editor->toPlainText();	//.toAscii();
-			string functionContents = functionContentsQ.toStdString();
-			string functionText = NLCfunctionHeader + CHAR_NEWLINE + functionContents + CHAR_NEWLINE;	//not used
-				
-			//code copied from NLCpreprocessor::preprocessTextForNLC();			
-			currentNLCfunctionInList->NLCfunctionName = NLCfunctionName;
-			currentNLCfunctionInList->functionContentsRaw = functionContents;
-			currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
-			if(!GIApreprocessorClass().createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, true))	//NB NLC interprets new lines as new sentences
-			{
-				result = false;
-			}
-			
-			currentNLCfunctionInList->next = new NLCfunction();
-			currentNLCfunctionInList = currentNLCfunctionInList->next;
-		}
-	}
-	
-	return result;
 }
 
 bool saveFile(const QString& fileName, const QString& fileContents)

@@ -25,7 +25,7 @@
  * File Name: NLCIeditorSyntaxHighlighter.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -87,13 +87,6 @@ NLCIeditorSyntaxHighlighterClass::NLCIeditorSyntaxHighlighterClass(QTextDocument
 {
 	HighlightingRule rule;
 	
-	functionFormat.setFontItalic(true);
-	functionFormat.setForeground(Qt::blue);
-	rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
-	rule.format = functionFormat;
-	highlightingRules.append(rule);
-	
-	
 	logicalConditionFormat.setForeground(Qt::yellow);
 	logicalConditionFormat.setFontWeight(QFont::Bold);
 	QStringList keywordPatterns1;
@@ -115,6 +108,24 @@ NLCIeditorSyntaxHighlighterClass::NLCIeditorSyntaxHighlighterClass(QTextDocument
 		rule.format = mathtextVariableTypeFormat;
 		highlightingRules.append(rule);
 	}
+	
+	functionFormat1.setFontItalic(true);
+	functionFormat1.setForeground(Qt::blue);
+	QStringList keywordPatterns3;
+	keywordPatterns3 << "\\bfunction\\b";
+	foreach (const QString &pattern, keywordPatterns3)
+	{
+		rule.pattern = QRegExp(pattern);
+		rule.format = functionFormat1;
+		highlightingRules.append(rule);
+	}
+	
+	functionFormat2.setFontItalic(true);
+	functionFormat2.setForeground(Qt::blue);
+	rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
+	rule.format = functionFormat2;
+	highlightingRules.append(rule);
+	
 
 }
 

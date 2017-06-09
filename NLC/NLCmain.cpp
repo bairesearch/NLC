@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -34,21 +34,20 @@
 #include "NLCmain.hpp"
 
 static char errmessage[] = "Usage:  NLC.exe [options]\n\n\twhere options are any of the following\n"
-"\n\t-itxt [string]     : plain text .txt input filename to be parsed by the NLP parser (def: inputText.txt)"
-"\n\t-ionlprel [string] : NLP dependency relation parser .xml intermediary input/output filename (def: inputNLPrelation.xml)"
-"\n\t-ionlptag [string] : NLP feature tag parser .xml intermediary input/output filename (def: inputNLPfeature.xml)"
-"\n\t-ixml [string]     : semantic network definition .xml input filename (def: semanticNet.xml)"
+"\n\t-inlc [string]     : plain text .nlc input filename to be parsed by NLC/GIA (def: inputText.nlc)"
 #ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-"\n\t-ilist		: all input files (itxt, ionlprel, ionlptag, ixml) will be treated as file lists (new line delimited) referencing NLC function names ([functionSubject#]functionName)[+functionObject])"
+"\n\t-inlcp [string]	: file list (new line delimited) referencing nlc file names (def: inputFileList.nlcp)"
 #endif
 #ifdef NLC_PREPROCESSOR
-"\n\t-ipreprocess	: itxt input file will be preprocessed, supporting condition block indentation (eg if the ball is red\\n\\tthe stars are bright\\n\\tthe cat is happy) and multiple functions (delimited by 'function [functionSubject#]functionName)[+functionObject]'"
+"\n\t-ipreprocess	: input file(s) will be preprocessed, supporting condition block indentation (eg if the ball is red\\n\\tthe stars are bright\\n\\tthe cat is happy) and multiple functions (delimited by 'function [functionSubject#]functionName)[+functionObject]'"
 #endif
 #ifdef NLC_API
 "\n\t-api                       : expose third party API (wrap with NLC code) using doxygen xml output"
 "\n\t-apisourcefolder [string]  : location of third party API source code (def: /home/systemusername/source/doxygen)"
 "\n\t-apiclasslist [string]   	: third party API class list (def: apiClassList.txt)"
 #endif
+"\n\t-onlprel [string]  : NLP dependency relation parser .xml intermediary output filename (def: inputNLPrelation.xml)"
+"\n\t-onlptag [string]  : NLP feature tag parser .xml intermediary output filename (def: inputNLPfeature.xml)"
 "\n\t-oxml [string]     : semantic network definition .xml output filename (def: semanticNet.xml)"
 "\n\t-ocxl [string]     : semantic network display .cxl vector graphics output filename (def: semanticNet.cxl)"
 "\n\t-osvg [string]     : semantic network display .svg 2D vector graphics output filename (def: semanticNet.svg)"
@@ -81,8 +80,8 @@ static char errmessage[] = "Usage:  NLC.exe [options]\n\n\twhere options are any
 "\n"
 "\n\t-inputfolder [string]              : input directory name for input files (def: same as exe)"
 "\n\t-nlprelexfolder [string]           : directory name for Relex (def: same as exe)"
-"\n\t-nlpstanfordcorenlpfolder [string] : directory name for Stanford Parser (def: same as nlprelexefolder)"
-"\n\t-nlpstanfordparserfolder [string]  : directory name for Stanford CoreNLP (def: same as nlprelexefolder)"
+"\n\t-nlpstanfordcorenlpfolder [string] : directory name for Stanford Parser (def: same as exe)"
+"\n\t-nlpstanfordparserfolder [string]  : directory name for Stanford CoreNLP (def: same as exe)"
 #ifdef GIA_NLP_CLIENT_SERVER
 "\n\t-nlpclient                         : execute NLP as client (requires server to be already started)"
 #endif
@@ -120,16 +119,16 @@ int main(const int argc, const char** argv)
 	string NLPexeFolderArray[GIA_NLP_PARSER_NUMBER_OF_TYPES];
 
 	bool useInputTextPlainTXTFile = false;
-	string inputTextPlainTXTfileName = "inputText.txt";
-
-	bool useInputTextNLPrelationXMLFile = false;
-	string inputTextNLPrelationXMLfileName = "inputNLPrelation.xml";
-	bool useInputTextNLPfeatureXMLFile = false;
-	string inputTextNLPfeatureXMLfileName = "inputNLPfeature.xml";
+	string inputTextPlainTXTfileName = "inputText.nlc";
+	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
+	bool useNLCinputFileList = false;
+	string NLCinputFileListName = "inputFileList.nlcp";
+	#endif
+	
+	string outputTextNLPrelationXMLfileName = "inputNLPrelation.xml";
+	string outputTextNLPfeatureXMLfileName = "inputNLPfeature.xml";
 	bool useOutputTextCFFFile = false;
 	string outputTextCFFFileName = "outputNLP.cff";
-	bool useInputTextXMLFile = false;
-	string inputTextXMLFileName = "semanticNet.xml";
 	bool useOutputTextXMLFile = false;
 	string outputTextXMLFileName = "semanticNet.xml";
 	bool useOutputTextCXLFile = false;
@@ -144,10 +143,6 @@ int main(const int argc, const char** argv)
 	bool useOutputTextAllFile = false;
 	string outputTextAllFileName = "semanticNet";
 
-
-	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-	bool NLCinputFileList = false;
-	#endif
 	//#ifdef NLC_PREPROCESSOR
 	bool useNLCpreprocessor = false;
 	//#endif
@@ -156,6 +151,7 @@ int main(const int argc, const char** argv)
 	string APIsourceFolder = NLC_API_DEFAULT_SOURCE_FOLDER_NAME;
 	string APIclassListFileName = NLC_API_DEFAULT_CLASS_LIST_FILE_NAME;
 	#endif
+
 	bool printOutput = false;
 	bool displayInOpenGLAndOutputScreenshot = true;
 
@@ -193,40 +189,27 @@ int main(const int argc, const char** argv)
 
 	//basic execution flow outline; if no dataset or xml inputText file is specified, just form network - do not train network
 
-	#ifdef USE_CE
-	if(SHAREDvarsClass().argumentExists(argc, argv, "-icodeextensions"))
-	#else
-	if(SHAREDvarsClass().argumentExists(argc, argv, "-itxt") || SHAREDvarsClass().argumentExists(argc, argv, "-ionlprel") || SHAREDvarsClass().argumentExists(argc, argv, "-ixml"))
-	#endif
+	if(SHAREDvarsClass().argumentExists(argc, argv, "-inlc") || SHAREDvarsClass().argumentExists(argc, argv, "-inlcp") || SHAREDvarsClass().argumentExists(argc, argv, "-itxt"))
 	{
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-inlc"))
+		{
+			inputTextPlainTXTfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-inlc");
+			useInputTextPlainTXTFile = true;
+		}
+		
+		//for backwards compatibility:
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-itxt"))
 		{
 			inputTextPlainTXTfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-itxt");
 			useInputTextPlainTXTFile = true;
-		}
-
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-ionlprel"))
-		{
-			inputTextNLPrelationXMLfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ionlprel");
-			useInputTextNLPrelationXMLFile = true;
-		}
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-ionlptag"))
-		{
-			inputTextNLPfeatureXMLfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ionlptag");
-			useInputTextNLPfeatureXMLFile = true;
-		}
-
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-ixml"))
-		{
-			inputTextXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ixml");
-			//train = true;
-			useInputTextXMLFile = true;
+			cout << "-itxt has been depreciated; please use -inlc instead." << endl;
 		}
 
 		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-ilist"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-inlcp"))
 		{
-			NLCinputFileList = true;
+			NLCinputFileListName = SHAREDvarsClass().getStringArgument(argc, argv, "-inlcp");
+			useNLCinputFileList = true;
 		}
 		#endif
 		#ifdef NLC_PREPROCESSOR
@@ -250,45 +233,47 @@ int main(const int argc, const char** argv)
 		}
 		#endif
 
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocff"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-onlprel"))
 		{
-			outputTextCFFFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocff");
-			useOutputTextCFFFile = true;
+			outputTextNLPrelationXMLfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-onlprel");
 		}
-
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-onlptag"))
+		{
+			outputTextNLPfeatureXMLfileName = SHAREDvarsClass().getStringArgument(argc, argv, "-onlptag");
+		}
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-oxml"))
 		{
 			outputTextXMLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oxml");
 			useOutputTextXMLFile = true;
 		}
-
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocxl"))
 		{
 			outputTextCXLFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocxl");
 			useOutputTextCXLFile = true;
 		}
-
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-oldr"))
-		{
-			outputTextLDRFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oldr");
-			useOutputTextLDRFile = true;
-			printOutput = true;
-		}
-
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-oppm"))
-		{
-			outputTextPPMFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oppm");
-			useOutputTextPPMFile = true;
-			printOutput = true;
-		}
-
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-osvg"))
 		{
 			outputTextSVGFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-osvg");
 			useOutputTextSVGFile = true;
 			printOutput = true;
 		}
-
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oldr"))
+		{
+			outputTextLDRFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oldr");
+			useOutputTextLDRFile = true;
+			printOutput = true;
+		}
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-oppm"))
+		{
+			outputTextPPMFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oppm");
+			useOutputTextPPMFile = true;
+			printOutput = true;
+		}
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-ocff"))
+		{
+			outputTextCFFFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-ocff");
+			useOutputTextCFFFile = true;
+		}
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-oall"))
 		{
 			outputTextAllFileName = SHAREDvarsClass().getStringArgument(argc, argv, "-oall");
@@ -369,14 +354,12 @@ int main(const int argc, const char** argv)
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbfolder"))
 		{
 			databaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbfolder");
-			databaseFolderName = databaseFolderName + '/';
 		}
 		#endif
 		#ifdef GIA_SEMANTIC_PARSER
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbsemanticparserfolder"))
 		{
 			semanticParserDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbsemanticparserfolder");
-			semanticParserDatabaseFolderName = semanticParserDatabaseFolderName + '/';
 		}
 		#endif
 
@@ -393,7 +376,6 @@ int main(const int argc, const char** argv)
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-lrpfolder"))
 		{
 			lrpDataFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-lrpfolder");
-			lrpDataFolderName = lrpDataFolderName + '/';
 		}
 		else
 		{
@@ -451,7 +433,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2c1a 01-June-2017" << endl;
+			cout << "NLC.exe - Project Version: 2c1b 01-June-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -464,7 +446,7 @@ int main(const int argc, const char** argv)
 		exit(EXIT_ERROR);
 	}
 	
-	NLCfunction* firstNLCfunctionInList = new NLCfunction();
+	NLCfunction* firstNLCfunctionInList = NULL;
 	GIAtranslatorVariablesClass* translatorVariablesTemplate = new GIAtranslatorVariablesClass();
 	translatorVariablesTemplate->isQuery = false;
 	translatorVariablesTemplate->entityNodesActiveListComplete = new vector<GIAentityNode*>;	//NOT USED
@@ -484,21 +466,21 @@ int main(const int argc, const char** argv)
 		firstNLCfunctionInList,
 		translatorVariablesTemplate,
 
-		NLPexeFolderArray,
 		inputFolderLocal, 
 		outputFolderLocal,
+		NLPexeFolderArray,
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,
-
-		useInputTextNLPrelationXMLFile,
-		inputTextNLPrelationXMLfileName,
-		useInputTextNLPfeatureXMLFile,
-		inputTextNLPfeatureXMLfileName,
+		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
+		useNLCinputFileList,
+		NLCinputFileListName,
+		#endif
+		
+		outputTextNLPrelationXMLfileName,
+		outputTextNLPfeatureXMLfileName,
 		useOutputTextCFFFile,
 		outputTextCFFFileName,
-		useInputTextXMLFile,
-		inputTextXMLFileName,
 		useOutputTextXMLFile,
 		outputTextXMLFileName,
 		useOutputTextCXLFile,
@@ -517,9 +499,6 @@ int main(const int argc, const char** argv)
 		outputTextAnswerPlainTXTFileName,
 		#endif
 
-		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-		NLCinputFileList,
-		#endif
 		//#ifdef NLC_PREPROCESSOR
 		useNLCpreprocessor,
 		//#endif
@@ -571,22 +550,22 @@ bool NLCmainClass::executeNLC(
 
 	NLCfunction* firstNLCfunctionInList,
 	GIAtranslatorVariablesClass* translatorVariablesTemplate,
-	
+			
 	string inputFolderLocal, 
 	string outputFolderLocal,
 	string NLPexeFolderArray[],
 
 	bool useInputTextPlainTXTFile,
 	string inputTextPlainTXTfileName,
-
-	bool useInputTextNLPrelationXMLFile,
-	string inputTextNLPrelationXMLfileName,
-	bool useInputTextNLPfeatureXMLFile,
-	string inputTextNLPfeatureXMLfileName,
+	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
+	bool useNLCinputFileList,
+	string NLCinputFileListName,
+	#endif
+		
+	string outputTextNLPrelationXMLfileName,
+	string outputTextNLPfeatureXMLfileName,
 	bool useOutputTextCFFFile,
 	string outputTextCFFFileName,
-	bool useInputTextXMLFile,
-	string inputTextXMLFileName,
 	bool useOutputTextXMLFile,
 	string outputTextXMLFileName,
 	bool useOutputTextCXLFile,
@@ -601,9 +580,6 @@ bool NLCmainClass::executeNLC(
 	bool useOutputTextAllFile,
 	string outputTextAllFileName,
 
-	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-	bool NLCinputFileList,
-	#endif
 	//#ifdef NLC_PREPROCESSOR
 	bool useNLCpreprocessor,
 	//#endif
@@ -654,6 +630,13 @@ bool NLCmainClass::executeNLC2()
 	
 	int progLang = NLC_PROGRAMMING_LANGUAGE_DEFAULT;
 	NLCprintDefsClass().setProgLang(progLang);
+
+	bool useInputTextNLPrelationXMLFile = false;
+	string inputTextNLPrelationXMLfileName = outputTextNLPrelationXMLfileName;
+	bool useInputTextNLPfeatureXMLFile = false;
+	string inputTextNLPfeatureXMLfileName = outputTextNLPfeatureXMLfileName;
+	bool useInputTextXMLFile = false;
+	string inputTextXMLFileName = "semanticNet.xml";
 		
 	//GIA variables not used by NLC;
 	int queryNLPfeatureParser = GIA_NLP_FEATURE_PARSER_FOR_INPUT_QUERY_DEFAULT;
@@ -701,94 +684,46 @@ bool NLCmainClass::executeNLC2()
 		//exit(EXIT_ERROR);
 	}
 
-	#ifndef NLC_GIA_NLP_OR_XML_INPUT
-	if(!useInputTextPlainTXTFile)
+	if(!useInputTextPlainTXTFile && !useNLCinputFileList)
 	{
-		if(translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList == NULL)
+		if(firstNLCfunctionInList == NULL)
 		{
-			cout << "NLC requires useInputTextPlainTXTFile (itxt)" << endl;
+			cout << "NLC requires useInputTextPlainTXTFile (inlc) or useNLCinputFileList (inlcp) or (firstNLCfunctionInList != NULL)" << endl;
 		}
 	}
-	#endif
 
 	int numberOfInputFilesInList = 0;
 	vector<string> inputTextPlainTXTFileNameList;
-	#ifdef NLC_GIA_NLP_OR_XML_INPUT
-	vector<string> inputTextNLPrelationXMLFileNameList;
-	vector<string> inputTextNLPfeatureXMLFileNameList;
-	vector<string> inputTextXMLFileNameList;
-	#endif
 	vector<string> functionNameList;
 
 	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-	if(NLCinputFileList)
+	if(useNLCinputFileList)
 	{
-		#ifdef NLC_NLCI
-		cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: NLCinputFileList == true" << endl;
-		exit(EXIT_ERROR);
-		#endif
-		
-		if(useInputTextPlainTXTFile)
+		if(!SHAREDvarsClass().getLinesFromFile(NLCinputFileListName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
 		{
-			if(!SHAREDvarsClass().getFilesFromFileList(inputTextPlainTXTfileName, &inputTextPlainTXTFileNameList, &numberOfInputFilesInList))
+			cout << "main{} error: !getLinesFromFile: " << inputTextPlainTXTfileName << endl;
+		}
+		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR
+		else
+		{
+			if(useNLCpreprocessor)
 			{
-				cout << "main{} error: !getFilesFromFileList: " << inputTextPlainTXTfileName << endl;
-			}
-			#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR
-			else
-			{
-				if(useNLCpreprocessor)
+				//collapse all input list nlc text files into single input nlc text file
+				string tempStr = "";
+				SHAREDvarsClass().setCurrentDirectory(outputFolder);
+				SHAREDvarsClass().writeStringToFile(inputTextPlainTXTfileName, &tempStr);	//creates a new empty inputTextPlainTXTfile.txt in the output folder
+				SHAREDvarsClass().setCurrentDirectory(inputFolder);
+				for(vector<string>::iterator inputTextPlainTXTFileNameListIter = inputTextPlainTXTFileNameList.begin(); inputTextPlainTXTFileNameListIter != inputTextPlainTXTFileNameList.end(); inputTextPlainTXTFileNameListIter++)
 				{
-					//collapse all input list text files into single input text file
-					inputTextPlainTXTfileName = inputTextPlainTXTfileName + NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR_COMBINED_FILE_NAME_APPEND_TEXT;
-					string tempStr = "";
+					string inputTextPlainTXTfileNameSeparate = *inputTextPlainTXTFileNameListIter;
+					string functionContents = SHAREDvarsClass().getFileContents(inputTextPlainTXTfileNameSeparate);
 					SHAREDvarsClass().setCurrentDirectory(outputFolder);
-					SHAREDvarsClass().writeStringToFile(inputTextPlainTXTfileName, &tempStr);
+					SHAREDvarsClass().appendStringToFile(inputTextPlainTXTfileName, &functionContents);
 					SHAREDvarsClass().setCurrentDirectory(inputFolder);
-					for(vector<string>::iterator inputTextPlainTXTFileNameListIter = inputTextPlainTXTFileNameList.begin(); inputTextPlainTXTFileNameListIter != inputTextPlainTXTFileNameList.end(); inputTextPlainTXTFileNameListIter++)
-					{
-						string inputTextPlainTXTfileNameSeparate = *inputTextPlainTXTFileNameListIter;
-						string NLCfunctionName = NLCmainClass().removeNLCfileNameExtension(inputTextPlainTXTfileNameSeparate);
-						string functionName = "";
-						string functionOwnerName = "";
-						string functionObjectName = "";
-						bool hasFunctionOwnerClass = false;
-						bool hasFunctionObjectClass = false;
-						NLCitemClassClass().parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
-						string NLCfunctionHeader = NLCitemClassClass().generateNLCfunctionHeader(functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass);
-						string functionContents = SHAREDvarsClass().getFileContents(inputTextPlainTXTfileNameSeparate);
-						string functionText = NLCfunctionHeader + CHAR_NEWLINE + functionContents + CHAR_NEWLINE;
-						SHAREDvarsClass().setCurrentDirectory(outputFolder);
-						SHAREDvarsClass().appendStringToFile(inputTextPlainTXTfileName, &functionText);
-						SHAREDvarsClass().setCurrentDirectory(inputFolder);
-					}
-					SHAREDvarsClass().setCurrentDirectory(outputFolder);	//this is required such that NLC preprocessor can read the combined input file
-					inputTextPlainTXTFileNameList.clear();	//this is required such that NLC preprocessor can fill inputTextPlainTXTFileNameList
-					numberOfInputFilesInList = 1;		//this is required such that NLC preprocessor can fill inputTextPlainTXTFileNameList
 				}
-			}
-			#endif
-		}
-		#ifdef NLC_GIA_NLP_OR_XML_INPUT
-		if(useInputTextNLPrelationXMLFile)
-		{
-			if(!SHAREDvarsClass().getFilesFromFileList(inputTextNLPrelationXMLfileName, &inputTextNLPrelationXMLFileNameList, &numberOfInputFilesInList))
-			{
-				cout << "main{} error: !getFilesFromFileList: " << inputTextNLPrelationXMLfileName << endl;
-			}
-		}
-		if(useInputTextNLPfeatureXMLFile)
-		{
-			if(!SHAREDvarsClass().getFilesFromFileList(inputTextNLPfeatureXMLfileName, &inputTextNLPfeatureXMLFileNameList, &numberOfInputFilesInList))
-			{
-				cout << "main{} error: !getFilesFromFileList: " << inputTextNLPfeatureXMLfileName << endl;
-			}
-		}
-		if(useInputTextXMLFile)
-		{
-			if(!SHAREDvarsClass().getFilesFromFileList(inputTextXMLFileName, &inputTextXMLFileNameList, &numberOfInputFilesInList))
-			{
-				cout << "main{} error: !getFilesFromFileList: " << inputTextXMLFileName << endl;
+				SHAREDvarsClass().setCurrentDirectory(outputFolder);	//this is required such that NLC preprocessor can read the combined input file
+				inputTextPlainTXTFileNameList.clear();	//this is required such that NLC preprocessor can refill inputTextPlainTXTFileNameList
+				numberOfInputFilesInList = 1;		//this is required such that NLC preprocessor can refill inputTextPlainTXTFileNameList
 			}
 		}
 		#endif
@@ -803,34 +738,12 @@ bool NLCmainClass::executeNLC2()
 	{
 		string outputPreprocessedTextForNLConlyPlainTXTFileName = inputTextPlainTXTfileName + NLC_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT;
 		
-		#ifdef NLC_GIA_NLP_OR_XML_INPUT
-		if(firstNLCfunctionInList == NULL)
-		{
-			if(translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList == NULL)
-			{	
-				#ifdef NLC_NLCI
-				cout << "NLCmainClass::executeNLC{}: NLC_NLCI error: (firstNLCfunctionInList == NULL) && (translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList == NULL)" << endl;
-				exit(EXIT_ERROR);
-				#endif
-
-				if(!useInputTextPlainTXTFile)
-				{
-					cout << "useNLCpreprocessor (ipreprocess) requires useInputTextNLPrelationXMLFile (itxt)" << endl;
-				}
-				if(useInputTextNLPrelationXMLFile || useInputTextNLPfeatureXMLFile || useInputTextXMLFile)
-				{
-					cout << "useNLCpreprocessor (ipreprocess) does not support useInputTextNLPrelationXMLFile (ionlprel), useInputTextNLPfeatureXMLFile (ionlptag), and useInputTextXMLFile (ixml)" << endl;
-				}
-			}
-		}
-		#endif
-		
-		if(NLCpreprocessorClass().preprocessTextForNLC(inputTextPlainTXTfileName, &firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName, translatorVariablesTemplate))
+		if(NLCpreprocessorClass().preprocessTextForNLCwrapper(inputTextPlainTXTfileName, &firstNLCfunctionInList, &preprocessorDetectedFunctions, &numberOfInputFilesInList, &inputTextPlainTXTFileNameList, outputPreprocessedTextForNLConlyPlainTXTFileName))
 		{
 			#ifdef NLC_INPUT_FUNCTION_LISTS_PREPROCESSOR
 			if(preprocessorDetectedFunctions)
 			{
-				NLCinputFileList = true;
+				useNLCinputFileList = true;
 			}
 			else
 			{
@@ -843,7 +756,7 @@ bool NLCmainClass::executeNLC2()
 		}
 		else
 		{
-			cout << "main{} error: !preprocessTextForNLC{}" << endl;
+			cout << "main{} error: !preprocessTextForNLCwrapper{}" << endl;
 			exit(EXIT_ERROR);
 		}
 	}
@@ -872,7 +785,7 @@ bool NLCmainClass::executeNLC2()
 	vector<string> nlcLibraryFunctionList;
 	int nlcLibraryFunctionListSizeTemp;
 	#ifdef NLC_LIBRARY_STANDARD
-	if(!SHAREDvarsClass().getFilesFromFileList(NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
+	if(!SHAREDvarsClass().getLinesFromFile(NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_LIBRARY_STANDARD_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
@@ -880,7 +793,7 @@ bool NLCmainClass::executeNLC2()
 	}
 	#endif
 	#ifdef NLC_LIBRARY_USER
-	if(!SHAREDvarsClass().getFilesFromFileList(NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
+	if(!SHAREDvarsClass().getLinesFromFile(NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME, &nlcLibraryFunctionList, &nlcLibraryFunctionListSizeTemp))
 	{
 		#ifndef NLC_LIBRARY_DISABLE_FUNCTIONS_LIST_WARNING
 		cout << "main{} warning: " << NLC_LIBRARY_USER_FUNCTION_LIST_FILE_NAME << " function arguments will not be reconciled" << endl;
@@ -957,27 +870,11 @@ bool NLCmainClass::executeNLC2()
 		GIAtranslatorVariablesClass* translatorVariablesQuery = NULL;	//not used by NLC;
 		
 		#ifdef NLC_INPUT_FUNCTION_LISTS
-		if(NLCinputFileList)
+		if(useNLCinputFileList)
 		{
-			if(useInputTextPlainTXTFile)
-			{
-				//this will be the only case executed if useNLCpreprocessor
-				inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(functionDefinitionIndex);
-			}
-			#ifdef NLC_GIA_NLP_OR_XML_INPUT
-			if(useInputTextNLPrelationXMLFile)
-			{
-				inputTextNLPrelationXMLfileName = inputTextNLPrelationXMLFileNameList.at(functionDefinitionIndex);
-			}
-			if(useInputTextNLPfeatureXMLFile)
-			{
-				inputTextNLPfeatureXMLfileName = inputTextNLPfeatureXMLFileNameList.at(functionDefinitionIndex);
-			}
-			if(useInputTextXMLFile)
-			{
-				inputTextXMLFileName = inputTextXMLFileNameList.at(functionDefinitionIndex);
-			}
-			#endif
+			//this will be the only case executed if useNLCpreprocessor
+			inputTextPlainTXTfileName = inputTextPlainTXTFileNameList.at(functionDefinitionIndex);
+			useInputTextPlainTXTFile = true;	//this is required for GIA
 		}
 		#endif
 
@@ -986,7 +883,10 @@ bool NLCmainClass::executeNLC2()
 		#ifdef NLC_PREPROCESSOR
 		if(useNLCpreprocessor)
 		{
-			inputFolder = outputFolder;	//this is required such that GIA uses the output folder as its input folder (ie inputFolder), considering NLP has already written its output to this folder
+			//this is required such that GIA uses the output folder as its input folder (ie inputFolder), considering NLP has already written its output to this folder
+			SHAREDvars.copyFiles(inputFolder, NLC_RULES_XML_FILE_NAME, outputFolder, NLC_RULES_XML_FILE_NAME);
+			SHAREDvars.copyFiles(inputFolder, GIA_RULES_XML_FILE_NAME, outputFolder, GIA_RULES_XML_FILE_NAME);
+			inputFolder = outputFolder;
 		}
 		#endif
 
@@ -1009,20 +909,19 @@ bool NLCmainClass::executeNLC2()
 
 			useInputTextPlainTXTFile,
 			inputTextPlainTXTfileName,
-
 			#ifdef USE_CE
 			useInputTextCodeextensionsTXTFileName,
 			inputTextCodeextensionsTXTFileName,
 			#endif
-
 			useInputTextNLPrelationXMLFile,
 			inputTextNLPrelationXMLfileName,
 			useInputTextNLPfeatureXMLFile,
 			inputTextNLPfeatureXMLfileName,
-			useOutputTextCFFFile,
-			outputTextCFFFileName,
 			useInputTextXMLFile,
 			inputTextXMLFileName,
+			
+			useOutputTextCFFFile,
+			outputTextCFFFileName,
 			useOutputTextXMLFile,
 			outputTextXMLFileName,
 			useOutputTextCXLFile,
@@ -1101,7 +1000,7 @@ bool NLCmainClass::executeNLC2()
 		inputFolder = inputFolderOrig;
 
 		string NLCfunctionName = "";
-		if(NLCinputFileList)
+		if(useNLCinputFileList)
 		{
 			NLCfunctionName = currentNLCfunctionInList->NLCfunctionName;
 			cout << "NLCfunctionName = " << NLCfunctionName << endl;
@@ -1126,29 +1025,10 @@ bool NLCmainClass::executeNLC2()
 				}
 				#endif
 			}
-			#ifdef NLC_GIA_NLP_OR_XML_INPUT
-			else if(useInputTextNLPrelationXMLFile)
-			{
-				NLCfunctionName = inputTextNLPrelationXMLfileName;
-			}
-			else if(useInputTextNLPfeatureXMLFile)
-			{
-				NLCfunctionName = inputTextNLPfeatureXMLfileName;
-			}
-			else if(useInputTextXMLFile)
-			{
-				NLCfunctionName = inputTextXMLFileName;
-			}
-			else
-			{
-				cout << "error: NLC requires useInputTextPlainTXTFile or (useInputTextNLPrelationXMLFile and useInputTextNLPfeatureXMLFile) or useInputTextXMLFile" << endl;
-			}
-			#else
 			else
 			{
 				cout << "error: NLC requires useInputTextPlainTXTFile" << endl;
 			}
-			#endif
 			
 			#ifdef NLC_STRICT_MODE_FAVOUR_COMPILATION_RATHER_THAN_DESIGN_USE_MAIN_ENTRY_POINT
 			NLCfunctionName = progLangMainEntryPointFunctionName[progLang];
@@ -1200,9 +1080,9 @@ bool NLCmainClass::executeNLC2()
 		#else
 		vector<NLCclassDefinition*>* classDefinitionListAPI = new vector<NLCclassDefinition*>;
 		#endif
-		if(!SHAREDvarsClass().getFilesFromFileList(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
+		if(!SHAREDvarsClass().getLinesFromFile(APIclassListFileName, &APIclassList, &numberOfFilesInAPIclassList))
 		{
-			cout << "main{} error: !getFilesFromFileList: " << APIclassListFileName << endl;
+			cout << "main{} error: !getLinesFromFile: " << APIclassListFileName << endl;
 		}
 		for(vector<string>::iterator iter = APIclassList.begin(); iter != APIclassList.end(); iter++)
 		{

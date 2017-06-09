@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -100,8 +100,10 @@ class NLCIeditorWindowClass : public QMainWindow
 
 public slots:
 	void about();
-	bool prepreprocessText();
+	bool save();
 	bool processText();
+		bool preprepreprocessText();
+		bool createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList);
 
 public:
 	NLCIeditorWindowClass(QWidget *parent = 0);
@@ -110,11 +112,13 @@ public:
 	std::string projectName;
 	#endif
 	std::string editorName;
+	bool isPreprocessed;
 	
 	QTextEdit* editor;
 	
 	bool closeEditorWindow();
 	bool saveEditorWindow();
+	bool saveEditorWindowSimple();
 	bool eraseFromWindowList(NLCIeditorWindowClass* editorWindowRef);
 	void addToWindowList(NLCIeditorWindowClass* editorWindowRef);
 
@@ -122,6 +126,7 @@ private:
 	NLCIeditorOperationsClass NLCIeditorOperations;
 	NLCItextDisplayOperationsClass NLCItextDisplayOperations;
 	NLCmainClass NLCmain;
+	NLCitemClassClass NLCitemClass;
 
 	void setupEditor();
 	void setupFileMenu();
@@ -132,16 +137,20 @@ private:
 	
 	void closeEvent(QCloseEvent *e);
 		
+	#ifdef USE_NLCI
+	NLCfunction* firstNLCfunctionInList;
+	#elif defined USE_GIAI
 	GIAtranslatorVariablesClass* translatorVariablesTemplate;
-
+	#endif
 };
 
 string generateProjectFileContents();
 bool closeEditorWindowsAll();
 bool saveEditorWindowsAll();
-QString getFileNameFromFileNameFull(QString fileNameFull);
-QString getPathFromFileNameFull(QString fileNameFull);
-bool generateNLCfunctionList(NLCfunction* firstNLCfunctionInList);
+string getFileNameFromFileNameFull(const string fileNameFull);
+	QString getFileNameFromFileNameFull(QString fileNameFull);
+string getPathFromFileNameFull(const string fileNameFull);
+	QString getPathFromFileNameFull(QString fileNameFull);
 bool saveFile(const QString& fileName, const QString& fileContents);
 
 

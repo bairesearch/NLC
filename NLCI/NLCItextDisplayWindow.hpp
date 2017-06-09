@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -109,6 +109,9 @@ public:
 
 	std::string textDisplayFileName;
 	GIAtranslatorVariablesClass* translatorVariablesTemplate;
+	#ifdef USE_NLCI
+	NLCfunction* activeNLCfunctionInList;
+	#endif
 
 	QLabel* label;
 	

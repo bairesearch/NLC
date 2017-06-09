@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -130,13 +130,13 @@ class NLCitemClassClass
 	public: string removeClassTextFromClassDefinitionName(const string className);
 
 	#ifdef NLC_INPUT_FUNCTION_LISTS
-	public: string parseFunctionNameFromNLCfunctionName(string NLCfunctionName);
-	public: void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass);
-	public: void parseFunctionNameFromNLCfunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass);
+	public: string parseFunctionNameFromNLCfunctionName(const string NLCfunctionName);
+	public: void parseFunctionNameFromNLCfunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass);
+	public: void parseFunctionNameFromNLCfunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass);
 	#ifdef NLC_LIBRARY
-	public: void parseFunctionNameFromNLClibFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
+	public: void parseFunctionNameFromNLClibFunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
 	#endif
-	private: void parseFunctionNameFromNLCgeneralFunctionName(string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
+	private: void parseFunctionNameFromNLCgeneralFunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments);
 	public: string generateNLCfunctionHeader(const string functionName, const string functionOwnerName, const bool hasFunctionOwnerClass, const string functionObjectName, const bool hasFunctionObjectClass);
 	#endif
 

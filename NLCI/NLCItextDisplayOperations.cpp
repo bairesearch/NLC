@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -86,42 +86,48 @@
 #include "LDreferenceClass.hpp"
 
 
-bool NLCItextDisplayOperationsClass::processTextForNLC(QLabel* label, GIAtranslatorVariablesClass* translatorVariablesTemplate, bool displayLRPprocessedText)
+#ifdef USE_NLCI
+bool NLCItextDisplayOperationsClass::processTextForNLC(QLabel* label, GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* activeNLCfunctionInList, bool displayLRPprocessedText)
 {
 	bool result = true;
 	
-	#ifdef USE_NLCI
-	if(!NLCIoperations.executeNLCwrapper(translatorVariablesTemplate, NULL))
+	if(!NLCIoperations.executeNLCwrapper(translatorVariablesTemplate, activeNLCfunctionInList))
 	{
 		result = false;
 	}
-	#elif defined USE_GIAI
-	if(!NLCIoperations.executeGIAwrapper(translatorVariablesTemplate, false))
-	{
-		result = false;
-	}
-	#endif
-	
-	if(!processTextForNLChighlight(label, translatorVariablesTemplate, displayLRPprocessedText))
+	if(!processTextForNLChighlight(label, activeNLCfunctionInList->firstNLCprepreprocessorSentenceInList, displayLRPprocessedText, activeNLCfunctionInList->functionIndexTemp))
 	{
 		result = false;
 	}
 
 	return result;
 }
+#elif defined USE_GIAI
+bool NLCItextDisplayOperationsClass::processTextForNLC(QLabel* label, GIAtranslatorVariablesClass* translatorVariablesTemplate, bool displayLRPprocessedText)
+{
+	bool result = true;
+	
+	if(!NLCIoperations.executeGIAwrapper(translatorVariablesTemplate, false))
+	{
+		result = false;
+	}	
+	if(!processTextForNLChighlight(label, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, displayLRPprocessedText, 0))
+	{
+		result = false;
+	}
 
-bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QLabel* label, GIAtranslatorVariablesClass* translatorVariablesTemplate, bool displayLRPprocessedText)
+	return result;
+}
+#endif
+
+bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QLabel* label, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, bool displayLRPprocessedText, const int functionIndex)
 {
 	bool result = true;
 	
 	label->clear();
 
 	int sentenceIndex = 0;
-	#ifdef USE_NLCI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList;
-	#elif defined USE_GIAI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;
-	#endif
+	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = firstNLCprepreprocessorSentenceInList;
 	while(currentNLCprepreprocessorSentenceInList->next != NULL)
 	{
 		vector<GIApreprocessorWord*>* sentence = NULL;
@@ -138,7 +144,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QLabel* label, G
 		}
 		#endif
 
-		if(!processTextForNLChighlightSentence(label, sentence, sentenceIndex))
+		if(!processTextForNLChighlightSentence(label, sentence, sentenceIndex, functionIndex))
 		{
 			result = false;
 		}
@@ -150,7 +156,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QLabel* label, G
 	return result;
 }
 
-bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QLabel* label, vector<GIApreprocessorWord*>* sentence, int sentenceIndex)
+bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QLabel* label, vector<GIApreprocessorWord*>* sentence, const int sentenceIndex, const int functionIndex)
 {
 	bool result = true;
 
@@ -166,11 +172,12 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QLabel* 
 	
 		int colourIndex = processTextForNLChighlightWordDetermineColourIndex(wordTag->entityReference);
 		QColor colour = NLCIoperations.generateColourQ(colourIndex);
-		string colourHex = (colour.name()).toStdString();
+		string colourHex = convertQStringToString(colour.name());
 		
+		string functionIndexString = SHAREDvars.convertIntToString(functionIndex);
 		string sentenceIndexString = SHAREDvars.convertIntToString(sentenceIndex);
 		string wordIndexString = SHAREDvars.convertIntToString(i);
-		string link = sentenceIndexString + NLCI_URL_DELIMITER + wordIndexString;	//this format is important
+		string link = functionIndexString + NLCI_URL_DELIMITER + sentenceIndexString + NLCI_URL_DELIMITER + wordIndexString;	//this format is important
 
 		string wordHtmlText = "";
 		if(wordTag->entityReference != NULL)
@@ -200,7 +207,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QLabel* 
 
 	lineHtmlText = lineHtmlText + "<br />";
 
-	QString wordHtmlTextQ = QString::fromStdString(lineHtmlText);
+	QString wordHtmlTextQ = convertStringToQString(lineHtmlText);
 	QString temp = label->text() + wordHtmlTextQ;
 	label->setText(temp);
 
@@ -249,17 +256,43 @@ int NLCItextDisplayOperationsClass::processTextForNLChighlightWordDetermineColou
 }
 
 
-
-bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorWord** wordTagFound)
+#ifdef USE_NLCI
+/*
+//use this function in case label_linkActivated can't distinguish between the NLCItextDisplayWindowClass class object which triggered the function
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, GIApreprocessorWord** wordTagFound)
+{
+	bool result = true;
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+	while(currentNLCfunctionInList->next != NULL)
+	{
+		if(currentNLCfunctionInList->functionIndexTemp == functionIndex)
+		{
+			if(getWordByIndex(sentenceIndex, wordIndex, currentNLCfunctionInList, &wordTagFound))
+			{
+				result = false;
+			}
+		}
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
+	}
+	return result;
+}
+*/
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* activeNLCfunctionInList, GIApreprocessorWord** wordTagFound)
+{
+	return getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList->firstNLCprepreprocessorSentenceInList, wordTagFound);
+}
+#elif defined USE_GIAI
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* translatorVariablesTemplate, NLCfunction* NLCfunctionInList, GIApreprocessorWord** wordTagFound)
+{
+	return getWordByIndex(sentenceIndex, wordIndex,  translatorVariablesTemplate->firstGIApreprocessorSentenceInList, wordTagFound);
+}
+#endif
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorWord** wordTagFound)
 {
 	bool result = false;
 
 	int currentSentenceIndex = 0;
-	#ifdef USE_NLCI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList;
-	#elif defined USE_GIAI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;
-	#endif
+	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = firstNLCprepreprocessorSentenceInList;
 	while(currentNLCprepreprocessorSentenceInList->next != NULL)
 	{
 		if(sentenceIndex == currentSentenceIndex)

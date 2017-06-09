@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -103,11 +103,11 @@ public:
 public slots:
 	void about();
 	
-	#ifdef USE_NLCI
-	void createNewProject(QString projectFileNameFull = QString());
-	void openProject(QString projectFileNameFull = QString());
-	void addNewFileToProject(QString fileNameFull = QString());
-	void addExistingFileToProject(QString fileNameFull = QString());
+	//#ifdef USE_NLCI
+	void createNewProject(QString projectFileNameFull = "");
+	void openProject(QString projectFileNameFull = "");
+	void addNewFileToProject(QString fileNameFull = "");
+	void addExistingFileToProject(QString fileNameFull = "");
 	
 	void compileProject();
 	void compileGeneratedCppProjectCode();
@@ -115,9 +115,9 @@ public slots:
 	
 	void saveProject();
 	void closeProject();
-	#endif
+	//#endif
 	
-	void openFile(QString fileNameFull = QString(), string projectName = "");
+	void openFile(QString fileNameFull = QString(), string projectFileNameFull = "");
 
 private:
 	NLCIoperationsClass NLCIoperations;
@@ -127,7 +127,10 @@ private:
 	void setupHelpMenu();
 
 	void closeEvent(QCloseEvent *e);
-	bool maybeSave();
+
+	QString addFileNameExtensionIfNecessary(const QString fileName, const string extensionToAddIfNecessary);
+	string addFileNameExtensionIfNecessary(const string fileName, const string extensionToAddIfNecessary);
+	bool findFileNameExtension(const string fileName, const string extensionToFind);
 	
 	bool projectOpened;
 	string projectName;

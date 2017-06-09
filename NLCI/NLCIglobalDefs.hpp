@@ -25,7 +25,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -100,27 +100,30 @@
 #define NLCI_SEMANTIC_NETWORK_FULL_DISPLAY_WINDOW_WIDTH (1920)
 #define NLCI_SEMANTIC_NETWORK_FULLDISPLAY_WINDOW_HEIGHT (1080)
 
+#define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
+
 #ifdef USE_NLCI
 #define NLCI_NLC_NLP_CLIENT (true)
 #define NLCI_NLC_USE_LRP (true)
-#define NLCI_NLC_LRP_FOLDER "~/source/source/LRPdata"
+#define NLCI_NLC_LRP_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
 #define NLCI_NLC_USE_NLC_PREPROCESSOR (true)
 #define NLCI_NLC_USE_OUTPUT_TEXT_ALL_FILE (true)
 #define NLCI_NLC_PRINT_OUTPUT (true)
 #define NLCI_NLC_OUTPUT_TEXT_ALL_FILE_NAME "semanticNet"
 #define NLCI_NLC_NLP_FEATURE_PARSER (GIA_NLP_FEATURE_PARSER_FOR_INPUT_TEXT_DEFAULT)
 #define NLCI_NLC_NLP_DEPENDENCY_RELATIONS_PARSER (GIA_NLP_RELATIONS_PARSER_FOR_INPUT_TEXT_DEFAULT)
-#define NLCI_NLC_NLP_RELEX_FOLDER "~/soft/BAISource/relex/relex-1.4.0"
-#define NLCI_NLC_NLP_STANFORD_CORE_NLP_FOLDER "~/soft/BAISource/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
-#define NLCI_NLC_NLP_STANFORD_PARSER_FOLDER "~/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
-#define NLCI_NLC_INPUT_FOLDER "~/source/NLCinput"
-#define NLCI_NLC_OUTPUT_FOLDER "~/source/NLCgenerated"
+#define NLCI_NLC_NLP_RELEX_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/relex/relex-1.4.0"
+#define NLCI_NLC_NLP_STANFORD_CORE_NLP_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
+#define NLCI_NLC_NLP_STANFORD_PARSER_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
+#define NLCI_NLC_INPUT_FOLDER NLCI_HOME_FOLDER "/source/NLCinput"
+#define NLCI_NLC_OUTPUT_FOLDER NLCI_HOME_FOLDER "/source/NLCgenerated"
 #define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileNLClibraryGenerated.bat"	//or compileOpenNLClibraryGenerated.bat
 #define NLCI_NLC_EXE_NAME_NLC_GENERATED_PROGRAM "NLCgeneratedProgram.exe"
+#define NLCI_INPUT_FOLDER (NLCI_NLC_INPUT_FOLDER)
 #elif defined USE_GIAI
 #define GIAI_GIA_NLP_CLIENT (true)
 #define GIAI_GIA_USE_LRP (true)
-#define GIAI_GIA_LRP_FOLDER "~/source/source/LRPdata"
+#define GIAI_GIA_LRP_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
 #define GIAI_GIA_USE_NLC_PREPROCESSOR (true)
 #define GIAI_GIA_USE_OUTPUT_TEXT_ALL_FILE (true)
 #define GIAI_GIA_PRINT_OUTPUT (true)
@@ -130,11 +133,13 @@
 #define GIAI_GIA_NLP_DEPENDENCY_RELATIONS_PARSER (GIA_NLP_RELATIONS_PARSER_FOR_INPUT_TEXT_DEFAULT)
 #define GIAI_GIA_NLP_FEATURE_PARSER_QUERY (GIA_NLP_FEATURE_PARSER_FOR_INPUT_TEXT_DEFAULT)
 #define GIAI_GIA_NLP_DEPENDENCY_RELATIONS_PARSER_QUERY (GIA_NLP_RELATIONS_PARSER_FOR_INPUT_TEXT_DEFAULT)
-#define GIAI_GIA_NLP_RELEX_FOLDER "~/soft/BAISource/relex/relex-1.4.0"
-#define GIAI_GIA_NLP_STANFORD_CORE_NLP_FOLDER "~/soft/BAISource/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
-#define GIAI_GIA_NLP_STANFORD_PARSER_FOLDER "~/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
-#define GIAI_GIA_INPUT_FOLDER "~/source/GIAworking"
-#define GIAI_GIA_OUTPUT_FOLDER "~/source/GIAworking"
+#define GIAI_GIA_NLP_RELEX_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/relex/relex-1.4.0"
+#define GIAI_GIA_NLP_STANFORD_CORE_NLP_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
+#define GIAI_GIA_NLP_STANFORD_PARSER_FOLDER NLCI_HOME_FOLDER "/soft/BAISource/stanford/parser/stanford-parser-full-2016-10-31"
+#define GIAI_GIA_INPUT_FOLDER NLCI_HOME_FOLDER "/source/GIAworking"
+#define GIAI_GIA_OUTPUT_FOLDER NLCI_HOME_FOLDER "/source/GIAworking"
+#define NLCI_INPUT_FOLDER (GIAI_GIA_INPUT_FOLDER)
 #endif
+
 
 #endif

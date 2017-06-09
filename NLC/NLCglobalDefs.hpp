@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -333,10 +333,8 @@
 			#endif
 		#endif
 	#endif
-	//#define NLC_GIA_NLP_OR_XML_INPUT	//disabled 1q2b
 	#define NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR	//1q2b
 	#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR
-		#define NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_SUPPORT_PREPROCESSOR_COMBINED_FILE_NAME_APPEND_TEXT "afterInputListCombination.txt"
 		#define NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE_ENFORCE_NLC_FILE_EXTENSIONS
 	#endif
 	//#ifdef NLC_LIBRARY	//has not been defined yet
@@ -534,6 +532,7 @@
 		#endif
 	#endif
 	#define NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION ".nlc"
+	#define NLC_NATURAL_LANGUAGE_CODE_PROJECT_FILE_NAME_EXTENSION ".nlcp"
 #else
 	#define NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION ""
 #endif
@@ -762,7 +761,7 @@
 
 #define NLC_PREPROCESSOR	//1g17a/18-July-2014	//reimplementation 1h1a+/22-July-2014 //first working 1h1f
 #ifdef NLC_PREPROCESSOR
-	#define NLC_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT "afterPreprocessedforNLConly.txt"
+	#define NLC_PREPROCESSOR_PREPROCESSED_FILE_NAME_APPEND_TEXT ".afterPreprocessedforNLConly.nlc"
 	#ifndef NLC_DEBUG_DISABLE_1k_CODE
 		#ifdef NLC_ADVANCED_REFERENCING
 			#define NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT	//1k2a

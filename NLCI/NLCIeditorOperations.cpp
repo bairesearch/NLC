@@ -25,7 +25,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -96,79 +96,65 @@
 #include <QtWidgets>
 
 
-
-bool NLCIeditorOperationsClass::prepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate)
+#ifdef USE_NLCI
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 	
 	QString textQ = editor->toPlainText();	//.toAscii();
-	string text = textQ.toStdString();
-	#ifdef USE_NLCI
+	string text = convertQStringToString(textQ);
+
 	bool interpretNewLinesAsNewSentences = true;	//NB NLC interprets new lines as new sentences
-	#else	//USE_GIAI
-	bool interpretNewLinesAsNewSentences = false;
-	#endif
-	#ifdef USE_NLCI
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
-	#elif defined USE_GIAI
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIAprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
-	#endif
+
+	int numberOfLinesInFile = 0;
+	vector<string> fileLinesList;
+	if(!SHAREDvars.getLinesFromFile(&text, &fileLinesList, &numberOfLinesInFile))
+	{
+		cout << "NLCIeditorOperationsClass::preprepreprocessTextForNLC{} error: !getLinesFromFile" << endl;
+		exit(EXIT_ERROR);
+	}
+	bool detectedFunctions = false;
+	int numberOfFunctionsInList = 0;
+	vector<string> inputTextFileNameList;
+	if(!NLCpreprocessor.preprocessTextForNLCextractFunctionsAndCreatePreprocessSentences(&fileLinesList, firstNLCfunctionInList, &detectedFunctions, &numberOfFunctionsInList, &inputTextFileNameList))
 	{
 		result = false;
 	}
-	
-	if(!prepreprocessTextForNLChighlightFast(editor, highlightingRules, translatorVariablesTemplate))
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+	while(currentNLCfunctionInList->next != NULL)
 	{
-		result = false;
+		if(!preprepreprocessTextForNLChighlightFast(editor, highlightingRules, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList))
+		{
+			result = false;
+		}
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}
 	
 	return result;
 }
-
-bool NLCIeditorOperationsClass::prepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate, int lineIndex)
+#elif defined USE_GIAI
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate)
 {
 	bool result = true;
 	
-	QTextDocument* textDocQ = editor->document();
-	QTextBlock textBlockQ = textDocQ->findBlockByLineNumber(lineIndex);
-	QString textQ = textBlockQ.text();
-	string text = textQ.toStdString();
-	
-	#ifdef USE_NLCI
-	bool interpretNewLinesAsNewSentences = true;	//NB NLC interprets new lines as new sentences
-	#else	//USE_GIAI
+	QString textQ = editor->toPlainText();	//.toAscii();
+	string text = convertQStringToString(textQ);
+
 	bool interpretNewLinesAsNewSentences = false;
-	#endif
-	#ifdef USE_NLCI
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
-	#elif defined USE_GIAI
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, interpretNewLinesAsNewSentences))
-	#endif
+	
+	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIAprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
 	{
 		result = false;
 	}
-	
-	if(!prepreprocessTextForNLChighlightFastSingleLine(editor, highlightingRules, translatorVariablesTemplate, lineIndex, &textBlockQ))
+	if(!preprepreprocessTextForNLChighlightFast(editor, highlightingRules, translatorVariablesTemplate->firstGIApreprocessorSentenceInList))
 	{
 		result = false;
 	}
 	
 	return result;
 }
-
-
-/*
-FUTURE; parse these;
-	#ifdef GIA_PREPROCESSOR_RECORD_REFERENCES
-	GIApreprocessorMultiwordReductionPlainTextWord* preprocessorUpperLevelWordReference;
-	int preprocessorUpperLevelWordReferenceSize;	//number of words in preprocessor upper level phrase corresponding to preprocessor word
-	GIApreprocessorMultiwordReductionPlainTextWord* preprocessorLowerLevelWordReference;
-	#endif
-*/
-
-
-
-bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFast(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate)
+#endif
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFast(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList)
 {
 	bool result = true;
 	
@@ -181,41 +167,120 @@ bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFast(QTextEdit* 
 	#endif
 	
 	int line = 0;
-	#ifdef USE_NLCI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList;
-	#elif defined USE_GIAI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;
-	#endif
-	while(currentNLCprepreprocessorSentenceInList->next != NULL)
+	GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList = firstNLCpreprepreprocessorSentenceInList;
+	while(currentNLCpreprepreprocessorSentenceInList->next != NULL)
 	{
-		vector<GIApreprocessorWord*>* sentence = &(currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal);
-		if(!prepreprocessTextForNLChighlightFastSentence(editor, highlightingRules, sentence, &cursor, true))
+		vector<GIApreprocessorWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
+		if(!preprepreprocessTextForNLChighlightFastSentence(editor, highlightingRules, sentence, &cursor, true))
 		{
 			result = false;
 		}
 
-		currentNLCprepreprocessorSentenceInList = currentNLCprepreprocessorSentenceInList->next;
+		currentNLCpreprepreprocessorSentenceInList = currentNLCpreprepreprocessorSentenceInList->next;
 		line++;
 	}
 	
 	return result;
 }
 
-bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate, int lineIndex, QTextBlock* textBlockQ)
+#ifdef USE_NLCI
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList, int lineIndex)
+#elif defined USE_GIAI
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstGIApreprocessorSentenceInList, int lineIndex)
+#endif
 {
 	bool result = true;
 	
+	QTextDocument* textDocQ = editor->document();
+	QTextBlock textBlockQ = textDocQ->findBlockByLineNumber(lineIndex);
+	QString textQ = textBlockQ.text();
+	string text = convertQStringToString(textQ);
+	
 	#ifdef USE_NLCI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstNLCprepreprocessorSentenceInList;
+	bool interpretNewLinesAsNewSentences = true;	//NB NLC interprets new lines as new sentences
 	#elif defined USE_GIAI
-	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;
+	bool interpretNewLinesAsNewSentences = false;	//this implementation will not work as line detection won't match
 	#endif
-	while(currentNLCprepreprocessorSentenceInList->next->next != NULL)
+	
+	GIApreprocessorSentence* modifiedNLCpreprepreprocessorSentenceInList = new GIApreprocessorSentence();
+	if(!GIApreprocessor.createPreprocessSentences(text, modifiedNLCpreprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
 	{
-		cout << "prepreprocessTextForNLChighlightFast{} error: there should only be one line in preprocessed text" << endl;
-		exit(EXIT_ERROR);
+		result = false;
 	}
 	
+	//now replace the sentence in the existing list;
+	GIApreprocessorSentence* activeNLCprepreprocessorSentenceInList = NULL;
+	int currentLineNumber = 0;
+	bool foundActiveSentence = false;
+	#ifdef USE_NLCI
+	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
+	NLCfunction* activeNLCfunctionInList = NULL;
+	while(currentNLCfunctionInList->next != NULL)
+	{
+		currentLineNumber++;	//for function header
+		if(getActiveSentenceInList(&currentLineNumber, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, &activeNLCprepreprocessorSentenceInList, lineIndex))
+		{
+			foundActiveSentence = true;
+			activeNLCfunctionInList = currentNLCfunctionInList;
+		}
+
+		currentNLCfunctionInList = currentNLCfunctionInList->next;
+	}
+	#elif defined USE_GIAI
+	if(getActiveSentenceInList(&currentLineNumber, firstGIApreprocessorSentenceInList, &activeNLCprepreprocessorSentenceInList))
+	{
+		foundActiveSentence = true;
+	}
+	#endif
+	
+	if(foundActiveSentence)
+	{
+		//replace activeNLCprepreprocessorSentenceInList with modifiedNLCpreprepreprocessorSentenceInList
+		activeNLCprepreprocessorSentenceInList->sentenceContentsOriginalText = modifiedNLCpreprepreprocessorSentenceInList->sentenceContentsOriginalText;
+		activeNLCprepreprocessorSentenceInList->sentenceContentsOriginal = modifiedNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal;
+		activeNLCprepreprocessorSentenceInList->indentation = modifiedNLCpreprepreprocessorSentenceInList->indentation;
+		if(activeNLCprepreprocessorSentenceInList->sentenceIndexOriginal != modifiedNLCpreprepreprocessorSentenceInList->sentenceIndexOriginal)
+		{
+			cout << "NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine{} error: (activeNLCprepreprocessorSentenceInList->sentenceIndex != modifiedNLCpreprepreprocessorSentenceInList->sentenceIndex)" << endl;
+		}
+	}
+	else
+	{
+		result = false;
+	}
+
+	if(!preprepreprocessTextForNLCsingleLineHighlightFast(editor, highlightingRules, activeNLCprepreprocessorSentenceInList, lineIndex, &textBlockQ))
+	{
+		result = false;
+	}
+	
+	return result;
+}
+
+bool NLCIeditorOperationsClass::getActiveSentenceInList(int* currentLineNumber, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorSentence** activeNLCprepreprocessorSentenceInList, const int lineIndex)
+{
+	bool result = false;
+	
+	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = firstNLCprepreprocessorSentenceInList;
+	while(currentNLCprepreprocessorSentenceInList->next != NULL)
+	{
+		if(*currentLineNumber == lineIndex)
+		{
+			*activeNLCprepreprocessorSentenceInList = currentNLCprepreprocessorSentenceInList;
+			result = true;	
+		}
+		
+		(*currentLineNumber) = (*currentLineNumber) + 1;
+		currentNLCprepreprocessorSentenceInList = currentNLCprepreprocessorSentenceInList->next;
+	}
+	
+	return result;
+}
+		
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLineHighlightFast(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, int lineIndex, QTextBlock* textBlockQ)
+{
+	bool result = true;
+		
 	#ifdef NLCI_EDITOR_HIGHLIGHT_HTML
 	QTextCursor cursor = central_widget_TextEdit->textCursor();
 	cursor.setPosition(textBlockQ->position());	
@@ -226,8 +291,8 @@ bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSingleLine(Q
 	QTextCursor cursor;
 	#endif
 
-	vector<GIApreprocessorWord*>* sentence = &(currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal);
-	if(!prepreprocessTextForNLChighlightFastSentence(editor, highlightingRules, sentence, &cursor, true))
+	vector<GIApreprocessorWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
+	if(!preprepreprocessTextForNLChighlightFastSentence(editor, highlightingRules, sentence, &cursor, true))
 	{
 		result = false;
 	}
@@ -235,7 +300,17 @@ bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSingleLine(Q
 	return result;
 }
 
-bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSentence(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, QTextCursor* cursor, bool useOriginalSpacing)
+/*
+FUTURE; parse these;
+	#ifdef GIA_PREPROCESSOR_RECORD_REFERENCES
+	GIApreprocessorMultiwordReductionPlainTextWord* preprocessorUpperLevelWordReference;
+	int preprocessorUpperLevelWordReferenceSize;	//number of words in preprocessor upper level phrase corresponding to preprocessor word
+	GIApreprocessorMultiwordReductionPlainTextWord* preprocessorLowerLevelWordReference;
+	#endif
+*/
+
+
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFastSentence(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, QTextCursor* cursor, bool useOriginalSpacing)
 {
 	int characterIndexFirst = 0;
 	int charCount = 0;
@@ -244,10 +319,10 @@ bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSentence(QTe
 		string spaceText = STRING_SPACE;
 		GIApreprocessorWord* wordTag = (*sentence)[i];
 		string word = wordTag->tagName;
-		int colourIndex = prepreprocessTextForNLChighlightFastWordDetermineColourIndex(&word);
+		int colourIndex = preprepreprocessTextForNLChighlightFastWordDetermineColourIndex(&word);
 
 		#ifdef NLCI_EDITOR_HIGHLIGHT_HTML
-		int characterIndex = currentNLCprepreprocessorSentenceInList->characterIndexInSentenceContentsOriginalText;
+		int characterIndex = currentNLCpreprepreprocessorSentenceInList->characterIndexInSentenceContentsOriginalText;
 		if(useOriginalSpacing)
 		{
 			if(i == 0)
@@ -283,7 +358,7 @@ bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSentence(QTe
 		HighlightingRule rule;
 		string patternString = "";
 		patternString = patternString + "\\b" + word + "\\b";
-		QString patternStringQ = QString::fromStdString(patternString);
+		QString patternStringQ = convertStringToQString(patternString);
 		rule.pattern = QRegExp(patternStringQ);
 		rule.format = classFormat;
 		highlightingRules->push_back(rule);
@@ -297,7 +372,7 @@ bool NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastSentence(QTe
 	}
 }
 
-int NLCIeditorOperationsClass::prepreprocessTextForNLChighlightFastWordDetermineColourIndex(const string* word)
+int NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightFastWordDetermineColourIndex(const string* word)
 {
 	int colourIndex = DAT_FILE_COLOUR_BLACK;
 	int grammaticalBaseTenseForm = INT_DEFAULT_VALUE;

@@ -25,7 +25,7 @@
  * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1a 01-June-2017
+ * Project Version: 2c1b 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -97,15 +97,15 @@ class NLCmainClass
 
 		bool useInputTextPlainTXTFile,
 		string inputTextPlainTXTfileName,
-
-		bool useInputTextNLPrelationXMLFile,
-		string inputTextNLPrelationXMLfileName,
-		bool useInputTextNLPfeatureXMLFile,
-		string inputTextNLPfeatureXMLfileName,
+		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
+		bool useNLCinputFileList,
+		string NLCinputFileListName,
+		#endif
+	
+		string outputTextNLPrelationXMLfileName,
+		string outputTextNLPfeatureXMLfileName,
 		bool useOutputTextCFFFile,
 		string outputTextCFFFileName,
-		bool useInputTextXMLFile,
-		string inputTextXMLFileName,
 		bool useOutputTextXMLFile,
 		string outputTextXMLFileName,
 		bool useOutputTextCXLFile,
@@ -120,9 +120,6 @@ class NLCmainClass
 		bool useOutputTextAllFile,
 		string outputTextAllFileName,
 
-		#ifdef NLC_INPUT_FUNCTION_LISTS_EXPLICIT_FROM_DEDICATED_FILE
-		bool NLCinputFileList,
-		#endif
 		//#ifdef NLC_PREPROCESSOR
 		bool useNLCpreprocessor,
 		//#endif

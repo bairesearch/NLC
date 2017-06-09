@@ -25,7 +25,7 @@
  * File Name: NLCIeditorSyntaxHighlighter.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -44,10 +44,16 @@ void NLCIeditorSyntaxHighlighterClass::reinitialiseSyntaxHighlighterRules()
 	
 	highlightingRules.clear();
 	
-	logicalConditionFormat.setForeground(Qt::yellow);
+	QColor logicalConditionFormatColour = NLCIoperations.generateColourQ(NLCI_EDITOR_SYNTAX_HIGHLIGHTER_LOGICAL_CONDITION_COLOUR);
+	logicalConditionFormat.setForeground(logicalConditionFormatColour);	//Qt::darkYellow
 	logicalConditionFormat.setFontWeight(QFont::Bold);
 	QStringList keywordPatterns1;
-	keywordPatterns1 << "\\bif\\b" << "\\belse\\b" << "\\bfor\\b";
+	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_WORDS_BASIC_NUMBER_OF_TYPES; i++)
+	{
+		string logicalConditionName = logicalConditionOperationsWordsBasicArray[i];
+		string logicalConditionNameRegEx = string("\\b") + logicalConditionName + string("\\b");
+		keywordPatterns1 << convertStringToQString(logicalConditionNameRegEx);
+	}
 	foreach (const QString &pattern, keywordPatterns1)
 	{
 		rule.pattern = QRegExp(pattern);
@@ -55,10 +61,16 @@ void NLCIeditorSyntaxHighlighterClass::reinitialiseSyntaxHighlighterRules()
 		highlightingRules.append(rule);
 	}
 	
-	mathtextVariableTypeFormat.setForeground(Qt::yellow);
+	QColor mathtextVariableTypeFormatColour = NLCIoperations.generateColourQ(NLCI_EDITOR_SYNTAX_HIGHLIGHTER_MATHTEXT_VARIABLE_TYPE_COLOUR);
+	mathtextVariableTypeFormat.setForeground(mathtextVariableTypeFormatColour);	//Qt::darkYellow
 	mathtextVariableTypeFormat.setFontWeight(QFont::Bold);
 	QStringList keywordPatterns2;
-	keywordPatterns2 << "\\bint\\b" << "\\bstring\\b" << "\\bbool\\b";
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
+	{
+		string mathtextVariableTypeName = preprocessorMathNaturalLanguageVariables[i];
+		string mathtextVariableTypeNameRegEx = string("\\b") + mathtextVariableTypeName + string("\\b");
+		keywordPatterns2 << convertStringToQString(mathtextVariableTypeNameRegEx);
+	}
 	foreach (const QString &pattern, keywordPatterns2)
 	{
 		rule.pattern = QRegExp(pattern);

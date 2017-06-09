@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -433,7 +433,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2c1e 01-June-2017" << endl;
+			cout << "NLC.exe - Project Version: 2c1f 01-June-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -883,10 +883,13 @@ bool NLCmainClass::executeNLC2()
 		#ifdef NLC_PREPROCESSOR
 		if(useNLCpreprocessor)
 		{
-			//this is required such that GIA uses the output folder as its input folder (ie inputFolder), considering NLP has already written its output to this folder
-			SHAREDvars.copyFiles(inputFolder, NLC_RULES_XML_FILE_NAME, outputFolder, NLC_RULES_XML_FILE_NAME);
-			SHAREDvars.copyFiles(inputFolder, GIA_RULES_XML_FILE_NAME, outputFolder, GIA_RULES_XML_FILE_NAME);
-			inputFolder = outputFolder;
+			if(outputFolder != inputFolder)
+			{
+				//this is required such that GIA uses the output folder as its input folder (ie inputFolder), considering NLP has already written its output to this folder
+				SHAREDvars.copyFiles(inputFolder, NLC_RULES_XML_FILE_NAME, outputFolder, NLC_RULES_XML_FILE_NAME);
+				SHAREDvars.copyFiles(inputFolder, GIA_RULES_XML_FILE_NAME, outputFolder, GIA_RULES_XML_FILE_NAME);
+				inputFolder = outputFolder;
+			}
 		}
 		#endif
 

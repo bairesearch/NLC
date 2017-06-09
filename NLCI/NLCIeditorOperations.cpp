@@ -25,7 +25,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -96,9 +96,9 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, GI
 	QString textQ = editor->toPlainText();	//.toAscii();
 	string text = convertQStringToString(textQ);
 
-	bool interpretNewLinesAsNewSentences = false;
-	
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIAprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
+	bool interpretNewLinesAsNewSentences = false;	//NB NLC interprets new lines as new sentences
+	bool splitMultisentenceLines = false;	//not currently supported by NLCI, as line detection must match
+	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIAprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
 	{
 		result = false;
 	}
@@ -162,11 +162,12 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* 
 	#ifdef USE_NLCI
 	bool interpretNewLinesAsNewSentences = true;	//NB NLC interprets new lines as new sentences
 	#elif defined USE_GIAI
-	bool interpretNewLinesAsNewSentences = false;	//this implementation will not work as line detection won't match
+	bool interpretNewLinesAsNewSentences = true;	//ideally this should be false, but this implementation will not work as line detection won't match
 	#endif
+	bool splitMultisentenceLines = false;	//not currently supported by NLCI, as line detection must match
 	
 	GIApreprocessorSentence* modifiedNLCpreprepreprocessorSentenceInList = new GIApreprocessorSentence();
-	if(!GIApreprocessor.createPreprocessSentences(lineText, modifiedNLCpreprepreprocessorSentenceInList, interpretNewLinesAsNewSentences))
+	if(!GIApreprocessor.createPreprocessSentences(lineText, modifiedNLCpreprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
 	{
 		result = false;
 	}
@@ -206,6 +207,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVec
 		string word = wordTag->tagName;
 
 		bool ignoreWord = false;
+
 		for(int i=0; i<GIA_NLP_NUMBER_OF_MATH_CHARACTERS; i++)
 		{
 			if(word.find(nlpMathCharacterArray[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
@@ -213,17 +215,24 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVec
 				ignoreWord = true;
 			}
 		}
+
+		int colourIndex = NLCI_EDITOR_DEFAULT_FONT_COLOUR;
+		if(wordTag->entityReference != NULL)
+		{
+			colourIndex = NLCIoperations.processTextForNLChighlightWordDetermineColourIndex(wordTag->entityReference);
+		}
+		else
+		{
+			colourIndex = NLCIoperations.preprepreprocessTextForNLChighlightWordDetermineColourIndex(&word);
+		}
+		if(colourIndex == NLCI_EDITOR_DEFAULT_FONT_COLOUR)
+		{
+			ignoreWord = true;
+		}
+
 		if(!ignoreWord)
 		{
-			int colourIndex = DAT_FILE_COLOUR_BLACK;
-			if(wordTag->entityReference != NULL)
-			{
-				colourIndex = NLCIoperations.processTextForNLChighlightWordDetermineColourIndex(wordTag->entityReference);
-			}
-			else
-			{
-				colourIndex = NLCIoperations.preprepreprocessTextForNLChighlightWordDetermineColourIndex(&word);
-			}
+
 			//cout << "word = " << word << endl;
 			//cout << "colourIndex = " << colourIndex << endl;
 

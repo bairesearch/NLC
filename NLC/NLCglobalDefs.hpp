@@ -25,7 +25,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -42,7 +42,7 @@
 	#define NLC_LIBRARY_USER
 #endif
 #ifndef NLC_DEBUG_DISABLE_1q_CODE
-	//#define NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a	//disable for auto testing (standardTestScenarios)
+	#define NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a	//disable for auto testing (standardTestScenarios)
 #endif
 
 #define NLC_MAX_NUMBER_SENTENCES_PER_FUNCTION (1000000)
@@ -54,6 +54,7 @@
 		#define NLC_NLCI
 	#endif
 	#define NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT	//2b4a
+	#define NLC_PREPROCESSOR_SUPPORT_MULTI_SENTENCE_LINES	//NLC has the capacity to split multisentence lines (optional). According to NLC specification however new lines should be declared on new sentences. NLCI does not support multsentence lines.
 #endif
 
 //#define NLC_DEBUG_DISABLE_2a_CODE
@@ -676,6 +677,9 @@
 
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES (9)
 	static string logicalConditionOperationsArray[NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES] = {"for", "if", "as", "before", "after", "while", "when", "else", "else if"};	//should be dynamically defined in NLCrules.xml
+	#define NLC_LOGICAL_CONDITION_OPERATIONS_WORDS_BASIC_NUMBER_OF_TYPES (6)
+	static string logicalConditionOperationsWordsBasicArray[NLC_LOGICAL_CONDITION_OPERATIONS_WORDS_BASIC_NUMBER_OF_TYPES] = {"if", "else", "for", "If", "Else", "For"};
+	
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_IF_STRING "if"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_STRING "else"
 	#define NLC_LOGICAL_CONDITION_OPERATIONS_ELSE_IF_STRING "else if"

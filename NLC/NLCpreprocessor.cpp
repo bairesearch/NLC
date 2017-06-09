@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -102,7 +102,13 @@ bool NLCpreprocessorClass::preprocessTextForNLCextractFunctionsAndCreatePreproce
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<*numberOfFunctionsInList; functionDefinitionIndex++)
 	{
 		currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
-		if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, true))	//NB NLC interprets new lines as new sentences
+		bool interpretNewLinesAsNewSentences = true;	//NB NLC interprets new lines as new sentences
+		#ifdef NLC_PREPROCESSOR_SUPPORT_MULTI_SENTENCE_LINES
+		bool splitMultisentenceLines = true;
+		#else
+		bool splitMultisentenceLines = false;
+		#endif
+		if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))	//NB NLC interprets new lines as new sentences
 		{
 			result = false;
 		}

@@ -25,7 +25,7 @@
  * File Name: NLCIeditorSyntaxHighlighter.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -54,6 +54,7 @@ protected:
 	void highlightBlock(const QString &text) override;
 
 private:
+	NLCIoperationsClass NLCIoperations;
 	QTextCharFormat functionFormat1;
 	QTextCharFormat functionFormat2;
 	QTextCharFormat logicalConditionFormat;

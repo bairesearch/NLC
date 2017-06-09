@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -98,6 +98,14 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* te
 		}
 		#endif
 
+		//prepend indentation (tabulation currently set to 8 characters)
+		string indentationHTML = "";
+		for(int i=0; i<currentNLCprepreprocessorSentenceInList->indentation; i++)
+		{
+			indentationHTML = indentationHTML + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;";
+		}
+		htmlSource = htmlSource + indentationHTML;
+
 		if(!processTextForNLChighlightSentence(textBrowser, sentence, sentenceIndex, functionIndex, &htmlSource))
 		{
 			result = false;
@@ -129,9 +137,22 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QTextBro
 		//int characterIndex = currentNLCprepreprocessorSentenceInList->characterIndexInSentenceContentsOriginalText;
 	
 		int colourIndex = NLCIoperations.processTextForNLChighlightWordDetermineColourIndex(wordTag->entityReference);
+
+		bool logicalConditionFound = false;
+		if(SHAREDvars.textInTextArray(word, logicalConditionOperationsWordsBasicArray, NLC_LOGICAL_CONDITION_OPERATIONS_WORDS_BASIC_NUMBER_OF_TYPES))
+		{
+			logicalConditionFound = true;
+			colourIndex = NLCI_EDITOR_SYNTAX_HIGHLIGHTER_LOGICAL_CONDITION_COLOUR;
+		}
+		bool mathtextVariableTypeFound = false;
+		if(SHAREDvars.textInTextArray(word, preprocessorMathNaturalLanguageVariables, NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES))
+		{
+			mathtextVariableTypeFound = true;
+			colourIndex = NLCI_EDITOR_SYNTAX_HIGHLIGHTER_MATHTEXT_VARIABLE_TYPE_COLOUR;
+		}
+
 		QColor colour = NLCIoperations.generateColourQ(colourIndex);
 		string colourHex = convertQStringToString(colour.name());
-		
 		string functionIndexString = SHAREDvars.convertIntToString(functionIndex);
 		string sentenceIndexString = SHAREDvars.convertIntToString(sentenceIndex);
 		string wordIndexString = SHAREDvars.convertIntToString(i);
@@ -141,6 +162,10 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QTextBro
 		if(wordTag->entityReference != NULL)
 		{
 			wordHtmlText = wordHtmlText + "<a href=\"" + link + "\" style=\"color:" + colourHex + "\">" + word + "</a>";
+		}
+		else if(logicalConditionFound || mathtextVariableTypeFound)
+		{
+			wordHtmlText = wordHtmlText + "<font color=" + colourHex + ">" + word + "</font>";
 		}
 		else
 		{

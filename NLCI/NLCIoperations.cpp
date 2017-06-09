@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -34,13 +34,6 @@
 #include "NLCmain.hpp"
 #include "GIAmain.hpp"
 #include "GIApreprocessor.hpp"
-#include "GIAdraw.hpp"
-
-#define GIA_DRAW_VERB_NODE_COLOUR (GIA_DRAW_ACTION_NODE_COLOUR)
-#define GIA_DRAW_PREPOSITION_NODE_COLOUR (GIA_DRAW_CONDITION_NODE_COLOUR)
-#define GIA_DRAW_ADVERB_NODE_COLOUR (GIA_DRAW_SUBSTANCE_QUALITY_NODE_COLOUR)
-#define GIA_DRAW_ADJECTIVE_NODE_COLOUR (GIA_DRAW_SUBSTANCE_QUALITY_NODE_COLOUR)
-#define GIA_DRAW_NOUN_NODE_COLOUR (GIA_DRAW_PROPERTY_NODE_COLOUR)
 
 #include <QTextCodec>
 
@@ -516,7 +509,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 int NLCIoperationsClass::preprepreprocessTextForNLChighlightWordDetermineColourIndex(const string* word)
 {
-	int colourIndex = DAT_FILE_COLOUR_BLACK;
+	int colourIndex = NLCI_EDITOR_DEFAULT_FONT_COLOUR;
 	int grammaticalBaseTenseForm = INT_DEFAULT_VALUE;
 	if(GIApreprocessorMultiwordReduction.determineVerbCaseStandardWithAdditional(*word, &grammaticalBaseTenseForm))
 	{
@@ -547,7 +540,7 @@ int NLCIoperationsClass::preprepreprocessTextForNLChighlightWordDetermineColourI
 
 int NLCIoperationsClass::processTextForNLChighlightWordDetermineColourIndex(GIAentityNode* entity)
 {
-	int colourIndex = DAT_FILE_COLOUR_BLACK;
+	int colourIndex = NLCI_EDITOR_DEFAULT_FONT_COLOUR;
 	if(entity != NULL)
 	{
 		//cout << "entity->entityType = " << entity->entityType << endl;

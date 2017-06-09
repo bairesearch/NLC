@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1e 01-June-2017
+ * Project Version: 2c1f 01-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -78,6 +78,7 @@ void NLCIeditorWindowClass::textChangedFunction()
 }
 
 
+//CHECKTHIS: ensure that cursorPositionChangedFunction ignores textbox wrapping
 void NLCIeditorWindowClass::cursorPositionChangedFunction()
 {
 	//update editorCursorLineNumber to new position:
@@ -162,6 +163,8 @@ bool NLCIeditorWindowClass::preprepreprocessText(const bool highlight)
 	}
 	#endif
 	
+	highlighter->reinitialiseSyntaxHighlighterRules();
+
 	if(highlight)
 	{
 		if(!highlightText())
@@ -187,7 +190,6 @@ void NLCIeditorWindowClass::ensureTextEndsWithNewLineCharacter()
 bool NLCIeditorWindowClass::highlightText()
 {
 	bool result = true;
-	highlighter->reinitialiseSyntaxHighlighterRules();
 	#ifdef USE_NLCI
 	if(!NLCIeditorOperations.preprepreprocessTextForNLChighlightWrapper(&(highlighter->highlightingRules), firstNLCfunctionInList))
 	{

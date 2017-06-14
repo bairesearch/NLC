@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2a 12-June-2017
+ * Project Version: 2c2b 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -92,11 +92,12 @@ void NLCItextDisplayWindowClass::linkActivated(const QUrl &link)
 
 	GIApreprocessorWord* wordTagFound = NULL;
 
+	int sentenceIndexUpdated = INT_DEFAULT_VALUE;
 	#ifdef USE_NLCI
-	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList, &wordTagFound))
+	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList, &wordTagFound, &sentenceIndexUpdated))
 	//if(NLCItextDisplayOperations.getWordByIndex(functionIndex, sentenceIndex, wordIndex, firstNLCfunctionInList, &wordTagFound))	//use this function in case linkActivated can't distinguish between the NLCItextDisplayWindowClass class object which triggered the function
 	#elif defined USE_GIAI
-	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, translatorVariablesTemplate, &wordTagFound))
+	if(NLCItextDisplayOperations.getWordByIndex(sentenceIndex, wordIndex, translatorVariablesTemplate, &wordTagFound, &sentenceIndexUpdated))
 	#endif
 	{
 
@@ -116,30 +117,7 @@ void NLCItextDisplayWindowClass::linkActivated(const QUrl &link)
 		#endif
 
 		//2. draw the entity in SVG
-		string writeFileStringSVG = "";
-		int width = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_WIDTH;
-		int height = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT;
-		//cout << "functionIndex = " << functionIndex << endl;
-		//cout << "sentenceIndex = " << sentenceIndex << endl;
-		//cout << "wordIndex = " << wordIndex << endl;
-		int sentenceIndexGIA = sentenceIndex + GIA_NLP_START_SENTENCE_INDEX;
-		if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndexGIA, &writeFileStringSVG, wordTagFound->entityReference))
-		{
-			//cout << "writeFileStringSVG = " << writeFileStringSVG << endl;
-			QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
-			QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
-			QSvgWidget* svgDisplayWindow = new QSvgWidget();
-			svgDisplayWindow->load(writeFileStringSVGQbyteArray);
-			string svgDisplayWindowName = textDisplayFileName + " (semantic network)";
-			svgDisplayWindow->setWindowTitle(convertStringToQString(svgDisplayWindowName));
-			svgDisplayWindow->resize(NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_WIDTH, NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT);
-			svgDisplayWindow->show();
-		}
-		else
-		{
-			cout << "!printGIAnetworkNodesToSVGstring" << endl;
-			result = false;
-		}
+		displaySemanticNetwork(sentenceIndexUpdated, wordTagFound->entityReference);
 	}
 	else
 	{
@@ -153,46 +131,73 @@ bool NLCItextDisplayWindowClass::displayPreprocessedText()
 {
 	bool result = true;
 
+	cout << "displayPreprocessedText()" << endl;
+	
 	//1. create a new text display window to show NLC/GIA prepreprocessed text (ie without modifications)
 	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
 	textDisplayWindow->translatorVariablesTemplate = translatorVariablesTemplate;
 	textDisplayWindow->textDisplayFileName = textDisplayFileName;
-	string textDisplayWindowName = textDisplayWindow->textDisplayFileName;
+	string textDisplayWindowName = textDisplayWindow->textDisplayFileName + " (LRP)";
 	textDisplayWindow->setWindowTitle(convertStringToQString(textDisplayWindowName));
 	textDisplayWindow->resize(NLCI_TEXT_DISPLAY_WINDOW_WIDTH, NLCI_TEXT_DISPLAY_WINDOW_HEIGHT);
 	textDisplayWindow->show();
 	textDisplayWindow->addToWindowList(textDisplayWindow);
 
 	bool displayLRPprocessedText = true;
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, translatorVariablesTemplate, displayLRPprocessedText);
-
-	return result;
-}
-#endif
-
-
-bool NLCItextDisplayWindowClass::displaySemanticNetwork()
-{
-	bool result = true;
-
-	string writeFileStringSVG = "";
-	int width = NLCI_SEMANTIC_NETWORK_FULL_DISPLAY_WINDOW_WIDTH;
-	int height = NLCI_SEMANTIC_NETWORK_FULLDISPLAY_WINDOW_HEIGHT;
-	int sentenceIndex = GIA_DRAW_SENTENCE_INDEX_PRINT_ALL_SENTENCES;
-	GIAentityNode* entityReference = NULL;
-
-	if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndex, &writeFileStringSVG, entityReference))
-	{
-		QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
-		QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
-		QSvgWidget* svgDisplayWindow = new QSvgWidget();
-		svgDisplayWindow->load(writeFileStringSVGQbyteArray);
-	}
-	else
+	if(!NLCItextDisplayOperations.processTextForNLChighlight(textDisplayWindow->textBrowser, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, displayLRPprocessedText, 0))
 	{
 		result = false;
 	}
 
+	return result;
+}
+#else
+bool NLCItextDisplayWindowClass::displayPreprocessedText()
+{
+	return true;
+}
+#endif
+
+
+#ifdef USE_GIAI
+bool NLCItextDisplayWindowClass::displaySemanticNetwork()
+{
+	return displaySemanticNetwork(GIA_DRAW_SENTENCE_INDEX_PRINT_ALL_SENTENCES, NULL);
+}
+#else
+bool NLCItextDisplayWindowClass::displaySemanticNetwork()
+{
+	return true;
+}
+#endif
+bool NLCItextDisplayWindowClass::displaySemanticNetwork(int sentenceIndex, GIAentityNode* entityReference)
+{
+	bool result = true;
+
+	string writeFileStringSVG = "";
+	int width = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_WIDTH;
+	int height = NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT;
+	//cout << "functionIndex = " << functionIndex << endl;
+	//cout << "sentenceIndex = " << sentenceIndex << endl;
+	//cout << "wordIndex = " << wordIndex << endl;
+	if(GIAdraw.printGIAnetworkNodesToSVGstring(translatorVariablesTemplate, width, height, sentenceIndex, &writeFileStringSVG, entityReference))
+	{
+		//cout << "writeFileStringSVG = " << writeFileStringSVG << endl;
+		QString writeFileStringSVGQ = convertStringToQString(writeFileStringSVG);
+		QByteArray writeFileStringSVGQbyteArray= writeFileStringSVGQ.toUtf8();
+		QSvgWidget* svgDisplayWindow = new QSvgWidget();
+		svgDisplayWindow->load(writeFileStringSVGQbyteArray);
+		string svgDisplayWindowName = textDisplayFileName + " (semantic network)";
+		svgDisplayWindow->setWindowTitle(convertStringToQString(svgDisplayWindowName));
+		svgDisplayWindow->resize(NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_WIDTH, NLCI_SEMANTIC_NETWORK_DISPLAY_WINDOW_HEIGHT);
+		svgDisplayWindow->show();
+	}
+	else
+	{
+		cout << "!printGIAnetworkNodesToSVGstring" << endl;
+		result = false;
+	}
+	
 	return result;
 }
 
@@ -231,8 +236,8 @@ void NLCItextDisplayWindowClass::setupFileMenu()
 
 	#ifdef USE_GIAI
 	fileMenu->addAction(tr("Display GIA LRP preprocessed text"), this, SLOT(displayPreprocessedText()));
-	#endif
 	fileMenu->addAction(tr("Display semantic network"), this, SLOT(displaySemanticNetwork()));	//shows GIA generated svg file
+	#endif
 	//fileMenu->addAction(tr("Display NLP output"), this, SLOT(displayNLPoutput()));
 	fileMenu->addAction(tr("C&lose"), this, SLOT(close()), QKeySequence::Close);
 }

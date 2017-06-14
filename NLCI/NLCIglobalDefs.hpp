@@ -25,7 +25,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2a 12-June-2017
+ * Project Version: 2c2b 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -56,7 +56,7 @@
 #ifdef NLCI_OPEN_NLC
 #define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
 #define NLCI_NLC_ROOT_FOLDER NLCI_HOME_FOLDER "/source/git/repositories/NLC"
-#define NLCI_GIA_ROOT_FOLDER NLCI_HOME_FOLDER "/source/git/repositories/GIA"
+#define NLCI_GIA_ROOT_FOLDER NLCI_HOME_FOLDER "/source/git/repositories/NLC"
 #else
 #define NLCI_HOME_FOLDER "/home/user"	//QDir::homePath()
 #define NLCI_NLC_ROOT_FOLDER NLCI_HOME_FOLDER "/source"

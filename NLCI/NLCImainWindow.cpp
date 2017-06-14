@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2a 12-June-2017
+ * Project Version: 2c2b 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -308,6 +308,40 @@ void NLCImainWindowClass::closeProject()
 	{
 		cout << "NLCImainWindowClass::closeProject{} warning: project not open or selected" << endl;
 	}
+}
+#else
+void NLCImainWindowClass::createNewProject(QString projectFileNameFull)
+{
+}
+void NLCImainWindowClass::openProject(QString projectFileNameFull, bool openFiles)
+{
+}
+void NLCImainWindowClass::selectProject(QString projectFileNameFull)
+{
+}
+void NLCImainWindowClass::openProjectAssociatedFile(QString fileNameFull)
+{
+}
+void NLCImainWindowClass::addNewFileToProject(QString fileNameFull)
+{
+}
+void NLCImainWindowClass::addExistingFileToProject(QString fileNameFull)
+{
+}
+void NLCImainWindowClass::compileProject()
+{
+}
+void NLCImainWindowClass::compileGeneratedCppProjectCode()
+{
+}
+void NLCImainWindowClass::runGeneratedCppProjectCode()
+{
+}
+void NLCImainWindowClass::saveProject()
+{
+}
+void NLCImainWindowClass::closeProject()
+{
 }
 #endif
 

@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2a 12-June-2017
+ * Project Version: 2c2b 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -60,11 +60,11 @@ public:
 			bool processTextForNLChighlightSentence(QTextBrowser* textBrowser, vector<GIApreprocessorWord*>* sentence, const int sentenceIndex, const int functionIndex, string* htmlSource);
 	#ifdef USE_NLCI
 	//bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, GIApreprocessorWord** wordTagFound);
-	bool getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* NLCfunctionInList, GIApreprocessorWord** wordTagFound);
+	bool getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* NLCfunctionInList, GIApreprocessorWord** wordTagFound, int* sentenceIndexUpdated);
 	#elif defined USE_GIAI
-	bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorWord** wordTagFound);
+	bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorWord** wordTagFound, int* sentenceIndexUpdated);
 	#endif	
-		bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorWord** wordTagFound);
+		bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorWord** wordTagFound, int* sentenceIndexUpdated);
 
 };
 

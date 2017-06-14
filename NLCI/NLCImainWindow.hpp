@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2a 12-June-2017
+ * Project Version: 2c2b 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -53,7 +53,7 @@ public:
 public slots:
 	void about();
 	
-	#ifdef USE_NLCI
+	//#ifdef USE_NLCI
 	void createNewProject(QString projectFileNameFull = "");
 	void selectProject(QString projectFileNameFull = "");
 	void openProjectAssociatedFile(QString fileNameFull = "");
@@ -67,7 +67,7 @@ public slots:
 	
 	void saveProject();
 	void closeProject();
-	#endif
+	//#endif
 	
 	void openFile(QString fileNameFull = QString(), string projectFileNameFull = "", bool expectAssociatedFile = false);
 

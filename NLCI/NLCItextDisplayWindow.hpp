@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2a 12-June-2017
+ * Project Version: 2c2b 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -48,10 +48,11 @@ class NLCItextDisplayWindowClass : public QMainWindow
 public slots:
 	void about();
 	void linkActivated(const QUrl &link);
-	#ifdef USE_GIAI
+	//#ifdef USE_GIAI
 	bool displayPreprocessedText();
-	#endif
 	bool displaySemanticNetwork();
+	//#endif
+		bool displaySemanticNetwork(int sentenceIndex, GIAentityNode* entityReference);
 	//bool displayNLPoutput();
 
 public:

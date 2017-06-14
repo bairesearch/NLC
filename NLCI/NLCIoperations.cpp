@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1g 01-June-2017
+ * Project Version: 2c2a 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -329,7 +329,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	#endif
 	bool printOutput = GIAI_GIA_PRINT_OUTPUT;
 	bool printOutputQuery = GIAI_GIA_PRINT_OUTPUT_QUERY;
-	bool displayInOpenGLAndOutputScreenshot = true;
+	bool displayInOpenGLAndOutputScreenshot = false;
 
 	int rasterImageWidth = 640;
 	int rasterImageHeight = 480;
@@ -405,7 +405,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 	GIAmainClass().executeGIA(
 
-		translatorVariables,
+		translatorVariablesTemplate,
 		translatorVariablesQuery,
 
 		inputFolderLocal,

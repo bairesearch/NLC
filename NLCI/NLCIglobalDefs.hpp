@@ -25,7 +25,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1g 01-June-2017
+ * Project Version: 2c2a 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -92,6 +92,9 @@
 #define NLCI_NLC_EXE_NAME_NLC_GENERATED_PROGRAM "NLCgeneratedProgram.exe"
 #define NLCI_INPUT_FOLDER (NLCI_NLC_INPUT_FOLDER)
 #define NLCI_LRP_FOLDER (NLCI_NLC_LRP_FOLDER)
+#define NLCI_NLC_FILE_TYPE_FILTER_NAME "nlc files (*.nlc)"
+#define NLCI_NLC_PROJECT_FILE_TYPE_FILTER_NAME "nlcp files (*.nlcp)"
+#define NLCI_FILE_TYPE_FILTER_NAME (NLCI_NLC_FILE_TYPE_FILTER_NAME)
 #elif defined USE_GIAI
 #define GIAI_GIA_NLP_CLIENT (true)
 #define GIAI_GIA_USE_LRP (true)
@@ -112,6 +115,8 @@
 #define GIAI_GIA_OUTPUT_FOLDER NLCI_GIA_ROOT_FOLDER "/GIAgenerated"
 #define NLCI_INPUT_FOLDER (GIAI_GIA_INPUT_FOLDER)
 #define NLCI_LRP_FOLDER (GIAI_GIA_LRP_FOLDER)
+#define GIAI_TEXT_FILE_TYPE_FILTER_NAME "text files (*.txt)"
+#define NLCI_FILE_TYPE_FILTER_NAME (GIAI_TEXT_FILE_TYPE_FILTER_NAME)
 #endif
 
 

@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1g 01-June-2017
+ * Project Version: 2c2a 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -125,7 +125,7 @@ void NLCIeditorWindowClass::about()
 		"and generated C++ output</p>"));
 #elif defined USE_GIAI
     QMessageBox::about(this, tr("About GIAI (General Intelligence Algorithm Interface)"),
-                tr("<b>NLCI</b> enables editing of natural language code along " \
+				tr("<b>GIAI</b> enables editing of natural language text along " \
 		"with the real-time display of its semantic processing (GIA) " \
 		"</p>"));
 #endif
@@ -220,7 +220,7 @@ void NLCIeditorWindowClass::preprepreprocessTextLine(bool enterWasPressed)
 
 		//cout << "preprepreprocessTextForNLCsingleLine; lineIndex = " << lineIndex << endl;
 
-		if(!NLCIeditorOperations.preprepreprocessTextForNLCsingleLine(editor, &(highlighter->highlightingRules), firstNLCfunctionInList, editorCursorLineNumber))
+		if(!NLCIeditorOperations.preprepreprocessTextForNLCsingleLine(editor, &(highlighter->highlightingRules), editorCursorLineNumber))
 		{
 			result = false;
 		}

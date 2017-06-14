@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1g 01-June-2017
+ * Project Version: 2c2a 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -60,10 +60,10 @@ void NLCImainWindowClass::about()
 		"with the real-time display of its semantic processing (GIA) " \
 		"and generated C++ output</p>"));
 #elif defined USE_GIAI
-    QMessageBox::about(this, tr("About GIAI (General Intelligence Algorithm Interface)"),
-                tr("<b>NLCI</b> enables editing of natural language code along " \
+	QMessageBox::about(this, tr("About GIAI (General Intelligence Algorithm Interface)"),
+				tr("<b>GIAI</b> enables editing of natural language text along " \
 		"with the real-time display of its semantic processing (GIA) " \
-		"and generated C++ output</p>"));
+		"</p>"));
 #endif
 }
 
@@ -174,7 +174,7 @@ void NLCImainWindowClass::addNewFileToProject(QString fileNameFull)
 	{
 		if(fileNameFull == "")
 		{
-			fileNameFull = QFileDialog::getSaveFileName(this, tr("New nlc file"), NLCI_NLC_INPUT_FOLDER, "nlc files (*.nlc)");
+			fileNameFull = QFileDialog::getSaveFileName(this, tr("New nlc file"), NLCI_NLC_INPUT_FOLDER, NLCI_NLC_PROJECT_FILE_TYPE_FILTER_NAME);
 		}
 
 		if(!fileNameFull.isEmpty()) 
@@ -316,7 +316,7 @@ void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameF
 {
 	if(fileNameFull == "")
 	{
-		fileNameFull = QFileDialog::getOpenFileName(this, tr("Open File"), NLCI_INPUT_FOLDER, "nlc files (*.nlc)");
+		fileNameFull = QFileDialog::getOpenFileName(this, tr("Open File"), NLCI_INPUT_FOLDER, NLCI_FILE_TYPE_FILTER_NAME);
 	}
 	
 	if(!fileNameFull.isEmpty()) 

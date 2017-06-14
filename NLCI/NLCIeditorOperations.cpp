@@ -25,7 +25,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1g 01-June-2017
+ * Project Version: 2c2a 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -98,7 +98,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, GI
 
 	bool interpretNewLinesAsNewSentences = false;	//NB NLC interprets new lines as new sentences
 	bool splitMultisentenceLines = false;	//not currently supported by NLCI, as line detection must match
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIAprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
+	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
 	{
 		result = false;
 	}
@@ -144,11 +144,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlight(QVector<High
 	return result;
 }
 
-#ifdef USE_NLCI
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, NLCfunction* firstNLCfunctionInList, int lineIndex)
-#elif defined USE_GIAI
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstGIApreprocessorSentenceInList, int lineIndex)
-#endif
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, int lineIndex)
 {
 	bool result = true;
 	

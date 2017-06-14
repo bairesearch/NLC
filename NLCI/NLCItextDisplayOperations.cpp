@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c1g 01-June-2017
+ * Project Version: 2c2a 12-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -98,6 +98,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* te
 		}
 		#endif
 
+		#ifdef USE_NLCI
 		//prepend indentation (tabulation currently set to 8 characters)
 		string indentationHTML = "";
 		for(int i=0; i<currentNLCprepreprocessorSentenceInList->indentation; i++)
@@ -105,6 +106,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* te
 			indentationHTML = indentationHTML + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;" + "&nbsp;";
 		}
 		htmlSource = htmlSource + indentationHTML;
+		#endif
 
 		if(!processTextForNLChighlightSentence(textBrowser, sentence, sentenceIndex, functionIndex, &htmlSource))
 		{
@@ -226,7 +228,7 @@ bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, con
 	return getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList->firstNLCprepreprocessorSentenceInList, wordTagFound);
 }
 #elif defined USE_GIAI
-bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* translatorVariablesTemplate, NLCfunction* NLCfunctionInList, GIApreprocessorWord** wordTagFound)
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorWord** wordTagFound)
 {
 	return getWordByIndex(sentenceIndex, wordIndex,  translatorVariablesTemplate->firstGIApreprocessorSentenceInList, wordTagFound);
 }

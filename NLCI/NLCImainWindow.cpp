@@ -25,7 +25,7 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2b 12-June-2017
+ * Project Version: 2c3a 16-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -50,6 +50,7 @@ NLCImainWindowClass::NLCImainWindowClass(QWidget *parent)
 
 	setCentralWidget(textBox);
 	setWindowTitle(tr("NLCI"));
+	
 }
 
 void NLCImainWindowClass::about()
@@ -94,7 +95,7 @@ void NLCImainWindowClass::createNewProject(QString projectFileNameFull)
 	}
 }
 
-void NLCImainWindowClass::openProject(QString projectFileNameFull, bool openFiles)
+void NLCImainWindowClass::openProject(QString projectFileNameFull, const bool openFiles)
 {
 	if(projectFileNameFull != "")
 	{
@@ -134,7 +135,7 @@ void NLCImainWindowClass::openProject(QString projectFileNameFull, bool openFile
 				QString fileNameFull = projectFileNamePath + "/" + convertStringToQString(fileNameList[i]);
 				if(openFiles)
 				{
-					openFile(fileNameFull, projectName, false);
+					openFile(fileNameFull, projectName, false, false);
 				}
 				else
 				{
@@ -159,7 +160,7 @@ void NLCImainWindowClass::openProjectAssociatedFile(QString fileNameFull)
 {
 	if(projectName != "")
 	{
-		openFile(fileNameFull, projectName, true);
+		openFile(fileNameFull, projectName, true, false);
 	}
 	else
 	{
@@ -172,22 +173,7 @@ void NLCImainWindowClass::addNewFileToProject(QString fileNameFull)
 {
 	if(projectName != "")
 	{
-		if(fileNameFull == "")
-		{
-			fileNameFull = QFileDialog::getSaveFileName(this, tr("New nlc file"), NLCI_NLC_INPUT_FOLDER, NLCI_NLC_PROJECT_FILE_TYPE_FILTER_NAME);
-		}
-
-		if(!fileNameFull.isEmpty()) 
-		{
-			fileNameFull = addFileNameExtensionIfNecessary(fileNameFull, NLC_NATURAL_LANGUAGE_CODE_FILE_NAME_EXTENSION);
-			
-			QFile file(fileNameFull);
-			if(file.open(QFile::WriteOnly | QFile::Text))
-			{
-				file.close();
-				openFile(fileNameFull, projectName, false);
-			}
-		}
+		createNewFile(fileNameFull, false);
 
 		saveProject();
 	}
@@ -201,7 +187,7 @@ void NLCImainWindowClass::addExistingFileToProject(QString fileNameFull)
 {
 	if(projectName != "")
 	{
-		openFile(fileNameFull, projectName, false);
+		openFile(fileNameFull, projectName, false, false);
 		
 		saveProject();
 	}
@@ -313,7 +299,7 @@ void NLCImainWindowClass::closeProject()
 void NLCImainWindowClass::createNewProject(QString projectFileNameFull)
 {
 }
-void NLCImainWindowClass::openProject(QString projectFileNameFull, bool openFiles)
+void NLCImainWindowClass::openProject(QString projectFileNameFull, const bool openFiles)
 {
 }
 void NLCImainWindowClass::selectProject(QString projectFileNameFull)
@@ -345,8 +331,111 @@ void NLCImainWindowClass::closeProject()
 }
 #endif
 
+#ifdef USE_GIAI
+void NLCImainWindowClass::openTextFile(QString fileNameFull)
+{
+	openFile(fileNameFull, "", false, false);
+}
+void NLCImainWindowClass::openTextQueryFile(QString fileNameFull)
+{
+	openFile(fileNameFull, "", false, true);
+}
+void NLCImainWindowClass::createNewTextFile(QString fileNameFull)
+{
+	createNewFile(fileNameFull, false);
+}
+void NLCImainWindowClass::createNewTextQueryFile(QString fileNameFull)
+{
+	createNewFile(fileNameFull, true);
+}	
+bool NLCImainWindowClass::performQuery()
+{
+	bool result = true;
+	
+	if((getEditorWindowText() != NULL) && (getEditorWindowTextQuery() != NULL))
+	{
+		getEditorWindowText()->preprepreprocessText(false);
+		getEditorWindowTextQuery()->preprepreprocessText(false);
+		
+		if(!NLCIoperations.executeGIAwrapper(getEditorWindowText()->translatorVariablesTemplate, getEditorWindowTextQuery()->translatorVariablesTemplate, true))
+		{
+			result = false;
+		}
+		else
+		{
+			string outputDisplayText = string("performQuery output:\n\n") + getEditorWindowText()->translatorVariablesTemplate->giaQueryAnswer;
+			textBox->setText(convertStringToQString(outputDisplayText));	
+			
+			if(!getEditorWindowText()->createNewTextDisplayWindow(false))
+			{
+				result = false;
+			}
+			if(!getEditorWindowTextQuery()->createNewTextDisplayWindow(false))
+			{
+				result = false;
+			}
+	
+			getEditorWindowText()->highlightText();
+			getEditorWindowTextQuery()->highlightText();	
+		}
+	}
+	else
+	{
+		if(getEditorWindowText() == NULL) 
+		{
+			cout << "editorWindowText{} warning: (editorWindowTextQuery == NULL)" << endl;
+		}
+		else if(getEditorWindowTextQuery() == NULL)
+		{
+			cout << "performQuery{} warning: (editorWindowTextQuery == NULL)" << endl;
 
-void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameFull, bool expectAssociatedFile)
+		}
+	}	
+
+	return result;
+}
+#else
+void NLCImainWindowClass::openTextFile(QString fileNameFull)
+{
+}
+void NLCImainWindowClass::openTextQueryFile(QString fileNameFull)
+{
+}
+void NLCImainWindowClass::createNewTextFile(QString fileNameFull)
+{
+}
+void NLCImainWindowClass::createNewTextQueryFile(QString fileNameFull)
+{
+}
+bool NLCImainWindowClass::performQuery()
+{
+	bool result = true;
+	return result;
+}
+#endif
+
+
+void NLCImainWindowClass::createNewFile(QString fileNameFull, const bool isQuery)
+{
+	if(fileNameFull == "")
+	{
+		fileNameFull = QFileDialog::getSaveFileName(this, tr("New nlc file"), NLCI_INPUT_FOLDER, NLCI_FILE_TYPE_FILTER_NAME);
+	}
+
+	if(!fileNameFull.isEmpty()) 
+	{
+		fileNameFull = addFileNameExtensionIfNecessary(fileNameFull, NLCI_FILE_TYPE);
+		
+		QFile file(fileNameFull);
+		if(file.open(QFile::WriteOnly | QFile::Text))
+		{
+			file.close();
+			openFile(fileNameFull, projectName, false, isQuery);
+		}
+	}
+}
+
+void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameFull, const bool expectAssociatedFile, const bool isQuery)
 {
 	if(fileNameFull == "")
 	{
@@ -407,10 +496,22 @@ void NLCImainWindowClass::openFile(QString fileNameFull, string projectFileNameF
 
 				editorWindow->editor->setPlainText(file.readAll());
 				editorWindow->addToWindowList(editorWindow);
+				
+				#ifdef USE_GIAI
+				if(isQuery)
+				{
+					setEditorWindowTextQuery(editorWindow);
+				}
+				else
+				{
+					setEditorWindowText(editorWindow);
+				}
+				#endif
 			}
 		}
 	}
 }
+
 
 void NLCImainWindowClass::setupTextBrowser()
 {
@@ -456,7 +557,11 @@ void NLCImainWindowClass::setupFileMenu()
 	
 	fileMenu->addAction(tr("&Open nlc file (without project)"), this, SLOT(openFile()));
 	#elif defined USE_GIAI
-	fileMenu->addAction(tr("&Open text file"), this, SLOT(openFile()));	
+	fileMenu->addAction(tr("&Open text file"), this, SLOT(openTextFile()));	
+	fileMenu->addAction(tr("&Open text file (query)"), this, SLOT(openTextQueryFile()));	
+	fileMenu->addAction(tr("&Create new text file"), this, SLOT(createNewTextFile()));	
+	fileMenu->addAction(tr("&Create new text file (query)"), this, SLOT(createNewTextQueryFile()));
+	fileMenu->addAction(tr("&Perform Query"), this, SLOT(performQuery()));
 	#endif
 	
 	

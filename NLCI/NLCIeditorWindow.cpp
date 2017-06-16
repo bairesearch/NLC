@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2b 12-June-2017
+ * Project Version: 2c3a 16-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -38,6 +38,10 @@
 
 
 vector<NLCIeditorWindowClass*> editorWindowList;
+#ifdef USE_GIAI
+NLCIeditorWindowClass* editorWindowText = NULL;
+NLCIeditorWindowClass* editorWindowTextQuery = NULL;
+#endif
 
 NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent): QMainWindow(parent)
 {
@@ -164,7 +168,6 @@ bool NLCIeditorWindowClass::preprepreprocessText(const bool highlight)
 	#endif
 	
 	highlighter->reinitialiseSyntaxHighlighterRules();
-
 	if(highlight)
 	{
 		if(!highlightText())
@@ -239,14 +242,14 @@ bool NLCIeditorWindowClass::processText()
 	while(currentNLCfunctionInList->next != NULL)
 	{
 		//cout << "currentNLCfunctionInList:" << endl;
-		if(!createNewTextDisplayWindow(currentNLCfunctionInList))
+		if(!createNewTextDisplayWindow(currentNLCfunctionInList, true))
 		{
 			result = false;
 		}
 		currentNLCfunctionInList = currentNLCfunctionInList->next;
 	}	
 	#elif defined USE_GIAI
-	if(!createNewTextDisplayWindow())
+	if(!createNewTextDisplayWindow(true))
 	{
 		result = false;
 	}
@@ -262,11 +265,13 @@ bool NLCIeditorWindowClass::processText()
 }
 
 #ifdef USE_NLCI
-bool NLCIeditorWindowClass::createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList)
+bool NLCIeditorWindowClass::createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList, const bool processText)
 #elif defined USE_GIAI
-bool NLCIeditorWindowClass::createNewTextDisplayWindow()
+bool NLCIeditorWindowClass::createNewTextDisplayWindow(const bool processText)
 #endif
 {
+	bool result = true;
+	
 	//1. create a new text display window to show NLC/GIA prepreprocessed text (ie without modifications)
 	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();
 	#ifdef USE_NLCI
@@ -284,10 +289,15 @@ bool NLCIeditorWindowClass::createNewTextDisplayWindow()
 
 	bool displayLRPprocessedText = false;
 	#ifdef USE_NLCI
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, textDisplayWindow->translatorVariablesTemplate, activeNLCfunctionInList, displayLRPprocessedText);
+	if(!NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, textDisplayWindow->translatorVariablesTemplate, activeNLCfunctionInList, displayLRPprocessedText, processText))
 	#else
-	NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, textDisplayWindow->translatorVariablesTemplate, displayLRPprocessedText);
+	if(!NLCItextDisplayOperations.processTextForNLC(textDisplayWindow->textBrowser, textDisplayWindow->translatorVariablesTemplate, displayLRPprocessedText, processText))
 	#endif
+	{
+		result = false;
+	}
+	
+	return result;
 }
 
 
@@ -409,6 +419,18 @@ bool NLCIeditorWindowClass::saveEditorWindow(const bool simple)
 bool NLCIeditorWindowClass::eraseFromWindowList(NLCIeditorWindowClass* editorWindowRef)
 {
 	bool result = false;
+
+	#ifdef USE_GIAI
+	if(editorWindowRef == editorWindowText)
+	{
+		editorWindowText = NULL;
+	}
+	if(editorWindowRef == editorWindowTextQuery)
+	{
+		editorWindowTextQuery = NULL;
+	}
+	#endif
+		
 	vector<NLCIeditorWindowClass*>::iterator iter = std::find(editorWindowList.begin(), editorWindowList.end(), editorWindowRef);
 	if(iter != editorWindowList.end())
 	{
@@ -416,6 +438,7 @@ bool NLCIeditorWindowClass::eraseFromWindowList(NLCIeditorWindowClass* editorWin
 		editorWindowList.erase(iter);
 		//qDebug() << "eraseFromWindowList: editorWindowList size = " << editorWindowList.size();
 	}
+		
 	return result;
 }
 
@@ -511,6 +534,25 @@ bool saveFile(const QString& fileName, const QString& fileContents)
 
 	return result;
 }
+
+#ifdef USE_GIAI
+NLCIeditorWindowClass* getEditorWindowText()
+{
+	return editorWindowText;
+}
+NLCIeditorWindowClass* getEditorWindowTextQuery()
+{
+	return editorWindowTextQuery;
+}
+void setEditorWindowText(NLCIeditorWindowClass* editorWindowRef)
+{
+	editorWindowText = editorWindowRef;
+}
+void setEditorWindowTextQuery(NLCIeditorWindowClass* editorWindowRef)
+{
+	editorWindowTextQuery = editorWindowRef;
+}
+#endif
 
 
 

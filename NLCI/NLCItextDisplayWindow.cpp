@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2b 12-June-2017
+ * Project Version: 2c3a 16-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -130,8 +130,6 @@ void NLCItextDisplayWindowClass::linkActivated(const QUrl &link)
 bool NLCItextDisplayWindowClass::displayPreprocessedText()
 {
 	bool result = true;
-
-	cout << "displayPreprocessedText()" << endl;
 	
 	//1. create a new text display window to show NLC/GIA prepreprocessed text (ie without modifications)
 	NLCItextDisplayWindowClass* textDisplayWindow = new NLCItextDisplayWindowClass();

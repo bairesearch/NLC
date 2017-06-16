@@ -25,7 +25,7 @@
  * File Name: NLCIeditorWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2b 12-June-2017
+ * Project Version: 2c3a 16-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -63,9 +63,9 @@ public slots:
 	void preprepreprocessTextLine(const bool enterWasPressed);
 	bool processText();
 		#ifdef USE_NLCI
-		bool createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList);
+		bool createNewTextDisplayWindow(NLCfunction* activeNLCfunctionInList, const bool processText);
 		#elif defined USE_GIAI
-		bool createNewTextDisplayWindow();
+		bool createNewTextDisplayWindow(const bool processText);
 		#endif
 
 public:
@@ -87,6 +87,12 @@ public:
 	bool saveEditorWindow(const bool simple = false);
 	bool eraseFromWindowList(NLCIeditorWindowClass* editorWindowRef);
 	void addToWindowList(NLCIeditorWindowClass* editorWindowRef);
+	
+	#ifdef USE_NLCI
+	NLCfunction* firstNLCfunctionInList;
+	#elif defined USE_GIAI
+	GIAtranslatorVariablesClass* translatorVariablesTemplate;
+	#endif	
 
 private:
 	NLCIeditorOperationsClass NLCIeditorOperations;
@@ -104,12 +110,6 @@ private:
 	//QSyntaxHighlighter* syntaxHighlighter;
 	
 	void closeEvent(QCloseEvent *e);
-		
-	#ifdef USE_NLCI
-	NLCfunction* firstNLCfunctionInList;
-	#elif defined USE_GIAI
-	GIAtranslatorVariablesClass* translatorVariablesTemplate;
-	#endif
 };
 
 bool closeEditorWindowsAll();
@@ -120,5 +120,11 @@ string getPathFromFileNameFull(const string fileNameFull);
 	QString getPathFromFileNameFull(QString fileNameFull);
 bool saveFile(const QString& fileName, const QString& fileContents);
 
+#ifdef USE_GIAI
+NLCIeditorWindowClass* getEditorWindowText();
+NLCIeditorWindowClass* getEditorWindowTextQuery();
+void setEditorWindowText(NLCIeditorWindowClass* editorWindowRef);
+void setEditorWindowTextQuery(NLCIeditorWindowClass* editorWindowRef);
+#endif
 
 #endif

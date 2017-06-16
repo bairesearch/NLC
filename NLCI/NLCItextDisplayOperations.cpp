@@ -25,7 +25,7 @@
  * File Name: NLCItextDisplayOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2b 12-June-2017
+ * Project Version: 2c3a 16-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -37,17 +37,20 @@
 
 
 #ifdef USE_NLCI
-bool NLCItextDisplayOperationsClass::processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* activeNLCfunctionInList, bool displayLRPprocessedText)
+bool NLCItextDisplayOperationsClass::processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* activeNLCfunctionInList, const bool displayLRPprocessedText, const bool processText)
 {
 	bool result = true;
 	
-	NLCfunction* backupOfNextFunctionInList = activeNLCfunctionInList->next;
-	activeNLCfunctionInList->next = new NLCfunction();	//this is to prevent executeNLC from executing multiple functions in the list
-	if(!NLCIoperations.executeNLCwrapper(translatorVariablesTemplate, activeNLCfunctionInList))
+	if(processText)
 	{
-		result = false;
+		NLCfunction* backupOfNextFunctionInList = activeNLCfunctionInList->next;
+		activeNLCfunctionInList->next = new NLCfunction();	//this is to prevent executeNLC from executing multiple functions in the list
+		if(!NLCIoperations.executeNLCwrapper(translatorVariablesTemplate, activeNLCfunctionInList))
+		{
+			result = false;
+		}
+		activeNLCfunctionInList->next = backupOfNextFunctionInList;
 	}
-	activeNLCfunctionInList->next = backupOfNextFunctionInList;
 	if(!processTextForNLChighlight(textBrowser, activeNLCfunctionInList->firstNLCprepreprocessorSentenceInList, displayLRPprocessedText, activeNLCfunctionInList->functionIndexTemp))
 	{
 		result = false;
@@ -56,14 +59,17 @@ bool NLCItextDisplayOperationsClass::processTextForNLC(QTextBrowser* textBrowser
 	return result;
 }
 #elif defined USE_GIAI
-bool NLCItextDisplayOperationsClass::processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, bool displayLRPprocessedText)
+bool NLCItextDisplayOperationsClass::processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, const bool displayLRPprocessedText, const bool processText)
 {
 	bool result = true;
 	
-	if(!NLCIoperations.executeGIAwrapper(translatorVariablesTemplate, false))
+	if(processText)
 	{
-		result = false;
-	}	
+		if(!NLCIoperations.executeGIAwrapper(translatorVariablesTemplate, NULL, false))
+		{
+			result = false;
+		}	
+	}
 	if(!processTextForNLChighlight(textBrowser, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, displayLRPprocessedText, 0))
 	{
 		result = false;
@@ -73,7 +79,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLC(QTextBrowser* textBrowser
 }
 #endif
 
-bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* textBrowser, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, bool displayLRPprocessedText, const int functionIndex)
+bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* textBrowser, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, const bool displayLRPprocessedText, const int functionIndex)
 {
 	bool result = true;
 	

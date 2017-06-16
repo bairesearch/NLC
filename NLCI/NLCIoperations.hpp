@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c2b 12-June-2017
+ * Project Version: 2c3a 16-June-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -71,11 +71,11 @@ public:
 		QColor generateColourQ(colour* col);	
 	
 	#ifdef USE_NLCI
-	bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, bool useNLCinputFileList, string NLCinputFileListName);
+	bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, const bool useNLCinputFileList, const string NLCinputFileListName);
 	bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList);
-		bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList, bool useNLCinputFileList, string NLCinputFileListName);
+		bool executeNLCwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, NLCfunction* firstNLCfunctionInList, const bool useNLCinputFileList, const string NLCinputFileListName);
 	#else
-	bool executeGIAwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, bool query);
+	bool executeGIAwrapper(GIAtranslatorVariablesClass* translatorVariablesTemplate, GIAtranslatorVariablesClass* translatorVariablesQuery, const bool query);
 	#endif	
 	
 	int preprepreprocessTextForNLChighlightWordDetermineColourIndex(const string* word);

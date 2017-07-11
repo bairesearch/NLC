@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2c3a 16-June-2017
+ * Project Version: 2d1a 10-July-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -34,6 +34,10 @@
 #include "NLCmain.hpp"
 #include "GIAmain.hpp"
 #include "GIApreprocessor.hpp"
+
+#ifdef GIA_NEURAL_NETWORK
+#include "ANNdraw.hpp"
+#endif
 
 #include <QTextCodec>
 
@@ -160,6 +164,9 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 	translatorVariablesTemplate->NLPdependencyRelationsParser = NLPdependencyRelationsParser;
 	translatorVariablesTemplate->NLPrelexCompatibilityMode = NLPrelexCompatibilityMode;
 	translatorVariablesTemplate->NLPassumePreCollapsedStanfordRelations = NLPassumePreCollapsedStanfordRelations;
+	#ifdef GIA_NEURAL_NETWORK
+	translatorVariables->ANNfirstInputNeuronInNetwork = new ANNneuron();
+	#endif
 	#ifdef GIA_NLP_CLIENT_SERVER
 	translatorVariablesTemplate->NLPclient = NLPclient;
 	#endif
@@ -272,7 +279,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	NLPexeFolderArray[GIA_NLP_PARSER_STANFORD_PARSER] = NLCI_GIA_NLP_STANFORD_PARSER_FOLDER;
 	
 	bool useInputTextPlainTXTFile = false;
-	string inputTextPlainTXTfileName = "inputText.txt";
+	string inputTextPlainTXTfileName = string(GIA_TEXT_BASE_FILE_NAME) + GIA_TEXT_FILE_EXTENSION;			//"inputText.txt";
 
 	#ifdef USE_CE
 	bool useInputTextCodeextensionsTXTFileName = false;
@@ -280,48 +287,68 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	#endif
 
 	bool useInputTextNLPrelationXMLFile = false;
-	string inputTextNLPrelationXMLfileName = "inputNLPrelation.xml";
+	string inputTextNLPrelationXMLfileName = string(GIA_NLP_RELATION_BASE_FILE_NAME) + GIA_NLP_XML_FILE_EXTENSION;	//"inputNLPrelation.xml";
 	bool useInputTextNLPfeatureXMLFile = false;
-	string inputTextNLPfeatureXMLfileName = "inputNLPfeature.xml";
+	string inputTextNLPfeatureXMLfileName = string(GIA_NLP_FEATURE_BASE_FILE_NAME) + GIA_NLP_XML_FILE_EXTENSION;	//"inputNLPfeature.xml";
 	bool useOutputTextCFFFile = false;
-	string outputTextCFFFileName = "semanticNet.cff";
+	string outputTextCFFFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_CFF_FILE_EXTENSION;
 	bool useInputTextXMLFile = false;
-	string inputTextXMLFileName = "semanticNet.xml";
+	string inputTextXMLFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_XML_FILE_EXTENSION;
 	bool useOutputTextXMLFile = false;
-	string outputTextXMLFileName = "semanticNet.xml";
+	string outputTextXMLFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_XML_FILE_EXTENSION;
 	bool useOutputTextCXLFile = false;
-	string outputTextCXLFileName = "semanticNet.cxl";
+	string outputTextCXLFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_CXL_FILE_EXTENSION;
 	bool useOutputTextLDRFile = false;
-	string outputTextLDRFileName = "semanticNet.ldr";
+	string outputTextLDRFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_LDR_FILE_EXTENSION;
 	bool useOutputTextPPMFile = false;
-	string outputTextPPMFileName = "semanticNet.ppm";
+	string outputTextPPMFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_PPM_FILE_EXTENSION;
 	bool useOutputTextSVGFile = false;
-	string outputTextSVGFileName = "semanticNet.svg";
+	string outputTextSVGFileName = string(GIA_SEMANTIC_NET_BASE_FILE_NAME) + GIA_SEMANTIC_NET_SVG_FILE_EXTENSION;
 	bool useInputQueryPlainTXTFile = false;
-	string inputQueryPlainTXTFileName = "inputTextQuery.txt";
+	string inputQueryPlainTXTFileName = string(GIA_TEXT_BASE_FILE_NAME) + GIA_QUERY_FILE_PREPEND + GIA_TEXT_FILE_EXTENSION;				//"inputTextQuery.txt";
 	bool useInputQueryNLPrelationXMLFile = false;
-	string inputQueryNLPrelationXMLFileName = "inputNLPrelationQuery.xml";
+	string inputQueryNLPrelationXMLFileName = string(GIA_NLP_RELATION_BASE_FILE_NAME) + GIA_QUERY_FILE_PREPEND + GIA_NLP_XML_FILE_EXTENSION;	//"inputNLPrelationQuery.xml";
 	bool useInputQueryNLPfeatureXMLFile = false;
-	string inputQueryNLPfeatureXMLFileName = "inputNLPfeatureQuery.xml";
+	string inputQueryNLPfeatureXMLFileName = string(GIA_NLP_FEATURE_BASE_FILE_NAME) + GIA_QUERY_FILE_PREPEND + GIA_NLP_XML_FILE_EXTENSION;		//"inputNLPfeatureQuery.xml";
 	bool useOutputQueryCFFFile = false;
-	string outputQueryCFFFileName = "semanticNetQuery.cff";
+	string outputQueryCFFFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_CFF_FILE_EXTENSION;
 	bool useInputQueryXMLFile = false;
-	string inputQueryXMLFileName = "semanticNetQuery.xml";
+	string inputQueryXMLFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_XML_FILE_EXTENSION;
 	bool useOutputQueryXMLFile = false;
-	string outputQueryXMLFileName = "semanticNetQuery.xml";
+	string outputQueryXMLFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_XML_FILE_EXTENSION;
 	bool useOutputQueryCXLFile = false;
-	string outputQueryCXLFileName = "semanticNetQuery.cxl";
+	string outputQueryCXLFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_CXL_FILE_EXTENSION;
 	bool useOutputQueryLDRFile = false;
-	string outputQueryLDRFileName = "semanticNetQuery.ldr";
+	string outputQueryLDRFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_LDR_FILE_EXTENSION;
 	bool useOutputQueryPPMFile = false;
-	string outputQueryPPMFileName = "semanticNetQuery.ppm";
+	string outputQueryPPMFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_PPM_FILE_EXTENSION;
 	bool useOutputQuerySVGFile = false;
-	string outputQuerySVGFileName = "semanticNetQuery.svg";
+	string outputQuerySVGFileName = string(GIA_SEMANTIC_NET_BASE_QUERY_FILE_NAME) + GIA_SEMANTIC_NET_SVG_FILE_EXTENSION;
 	bool useOutputTextAllFile = NLCI_GIA_USE_OUTPUT_TEXT_ALL_FILE;
 	string outputTextAllFileName = NLCI_GIA_OUTPUT_TEXT_ALL_FILE_NAME;
+	
+	#ifdef GIA_NEURAL_NETWORK
+	bool ANNuseInputXMLFile = false;
+	string ANNinputXMLFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_XML_FILE_EXTENSION;
+	bool ANNuseOutputXMLFile = false;
+	string ANNoutputXMLFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_XML_FILE_EXTENSION;
+	bool ANNuseOutputLDRFile = false;
+	string ANNoutputLDRFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_LDR_FILE_EXTENSION;
+	bool ANNuseOutputSVGFile = false;
+	string ANNoutputSVGFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_SVG_FILE_EXTENSION;
+	bool ANNuseOutputPPMFile = false;
+	string ANNoutputPPMFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_PPM_FILE_EXTENSION;
+	bool ANNuseOutputPPMFileRaytraced = false;
+	string ANNoutputPPMFileNameRaytraced = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_PPM_RAYTRACED_FILE_EXTENSION;
+	string ANNoutputTALFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_TAL_FILE_EXTENSION;
+	bool ANNuseOutputAllFile = false;
+	string ANNoutputAllFileName = NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME;
+	bool ANNuseSprites = true;
+	#endif
+	
 	#ifdef GIA_QUERY_WRITE_ANSWER_TO_FILE
 	bool useOutputTextAnswerPlainTXTFile = false;
-	string outputTextAnswerPlainTXTFileName = "answer.txt";
+	string outputTextAnswerPlainTXTFileName = GIA_ANSWER_FILE_NAME;
 	#endif
 	
 	#ifdef GIA_INPUT_FILE_LISTS
@@ -353,9 +380,9 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	#ifdef GIA_PREPROCESSOR
 	bool useLRP = NLCI_GIA_USE_LRP;
 	bool useOutputLRPTextPlainTXTFile = false;
-	string outputLRPTextPlainTXTFileName = "inputTextWithLRP.txt";
+	string outputLRPTextPlainTXTFileName = string(GIA_TEXT_BASE_FILE_NAME) + GIA_TEXT_FILE_WITH_LRP_PREPEND + GIA_TEXT_FILE_EXTENSION;	//"inputTextWithLRP.txt";
 	bool useOutputQueryLRPTextPlainTXTFile = false;
-	string outputQueryLRPTextPlainTXTFileName = "inputTextWithLRPQuery.txt";
+	string outputQueryLRPTextPlainTXTFileName = string(GIA_TEXT_BASE_FILE_NAME) + GIA_TEXT_FILE_WITH_LRP_PREPEND + GIA_QUERY_FILE_PREPEND + GIA_TEXT_FILE_EXTENSION;	//"inputTextWithLRPQuery.txt";
 	string lrpDataFolderName = NLCI_GIA_LRP_FOLDER;
 	#endif
 
@@ -457,6 +484,25 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 		outputQuerySVGFileName,
 		useOutputTextAllFile,
 		outputTextAllFileName,
+		
+		#ifdef GIA_NEURAL_NETWORK
+		ANNuseInputXMLFile,
+		ANNinputXMLFileName,	
+		ANNuseOutputXMLFile,
+		ANNoutputXMLFileName,
+		ANNuseOutputLDRFile,
+		ANNoutputLDRFileName,
+		ANNuseOutputSVGFile,
+		ANNoutputSVGFileName,
+		ANNuseOutputPPMFile,
+		ANNoutputPPMFileName,
+		ANNuseOutputPPMFileRaytraced,
+		ANNoutputPPMFileNameRaytraced,				
+		ANNuseOutputAllFile,
+		ANNoutputAllFileName,
+		ANNuseSprites,
+		#endif
+		
 		#ifdef GIA_QUERY_WRITE_ANSWER_TO_FILE
 		useOutputTextAnswerPlainTXTFile,
 		outputTextAnswerPlainTXTFileName,

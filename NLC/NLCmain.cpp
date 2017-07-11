@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2c3a 16-June-2017
+ * Project Version: 2d1a 10-July-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -55,7 +55,7 @@ static char errmessage[] = "Usage:  NLC.exe [options]\n\n\twhere options are any
 "\n\t-oppm [string]     : semantic network display .ppm raster graphics output filename (def: semanticNet.ppm)"
 "\n\t-ocff [string]     : NLP parser generated .cff output filename (def: outputNLP.cff)"
 "\n\t-oall [string]     : semantic network display xml/.svg/.ldr/.ppm default generic output filename (def: semanticNet)"
-"\n\t-notshow           : do not display output in opengl"
+"\n\t-show              : display output in opengl"
 "\n\t-width [int]       : raster graphics width in pixels (def: 640)"
 "\n\t-height [int]      : raster graphics height in pixels (def: 480)"
 "\n\t-nlprelation [int] : NLP dependency relation parser to be executed by GIA (0 - Relex, 1 - Stanford Core NLP, 2 - Stanford Parser [def])"
@@ -153,7 +153,7 @@ int main(const int argc, const char** argv)
 	#endif
 
 	bool printOutput = false;
-	bool displayInOpenGLAndOutputScreenshot = true;
+	bool displayInOpenGLAndOutputScreenshot = false;
 
 	int rasterImageWidth = 640;
 	int rasterImageHeight = 480;
@@ -290,9 +290,9 @@ int main(const int argc, const char** argv)
 		}
 		*/
 
-		if(SHAREDvarsClass().argumentExists(argc, argv, "-notshow"))
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-show"))
 		{
-			displayInOpenGLAndOutputScreenshot = false;
+			displayInOpenGLAndOutputScreenshot = true;
 		}
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-width"))
@@ -433,7 +433,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2c3a 16-June-2017" << endl;
+			cout << "NLC.exe - Project Version: 2d1a 10-July-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -457,6 +457,9 @@ int main(const int argc, const char** argv)
 	translatorVariablesTemplate->NLPdependencyRelationsParser = NLPdependencyRelationsParser;
 	translatorVariablesTemplate->NLPrelexCompatibilityMode = NLPrelexCompatibilityMode;
 	translatorVariablesTemplate->NLPassumePreCollapsedStanfordRelations = NLPassumePreCollapsedStanfordRelations;
+	#ifdef GIA_NEURAL_NETWORK
+	translatorVariables->ANNfirstInputNeuronInNetwork = new ANNneuron();
+	#endif
 	#ifdef GIA_NLP_CLIENT_SERVER
 	translatorVariablesTemplate->NLPclient = NLPclient;
 	#endif
@@ -663,6 +666,25 @@ bool NLCmainClass::executeNLC2()
 	string outputQueryPPMFileName = "semanticNetQuery.ppm";
 	bool useOutputQuerySVGFile = false;
 	string outputQuerySVGFileName = "semanticNetQuery.svg";
+	#ifdef GIA_NEURAL_NETWORK
+	bool ANNuseInputXMLFile = false;
+	string ANNinputXMLFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_XML_FILE_EXTENSION;
+	bool ANNuseOutputXMLFile = false;
+	string ANNoutputXMLFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_XML_FILE_EXTENSION;
+	bool ANNuseOutputLDRFile = false;
+	string ANNoutputLDRFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_LDR_FILE_EXTENSION;
+	bool ANNuseOutputSVGFile = false;
+	string ANNoutputSVGFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_SVG_FILE_EXTENSION;
+	bool ANNuseOutputPPMFile = false;
+	string ANNoutputPPMFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_PPM_FILE_EXTENSION;
+	bool ANNuseOutputPPMFileRaytraced = false;
+	string ANNoutputPPMFileNameRaytraced = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_PPM_RAYTRACED_FILE_EXTENSION;
+	string ANNoutputTALFileName = string(NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME) + NEURAL_NETWORK_VISUALISATION_TAL_FILE_EXTENSION;
+	bool ANNuseOutputAllFile = false;
+	string ANNoutputAllFileName = NEURAL_NETWORK_VISUALISATION_BASE_FILE_NAME;
+	bool ANNdrawOutput = false;
+	bool ANNuseSprites = true;
+	#endif
 	#ifdef GIA_QUERY_WRITE_ANSWER_TO_FILE
 	bool useOutputTextAnswerPlainTXTFile = false;
 	string outputTextAnswerPlainTXTFileName = "answer.txt";
@@ -957,6 +979,25 @@ bool NLCmainClass::executeNLC2()
 			outputQuerySVGFileName,
 			useOutputTextAllFile,
 			outputTextAllFileName,
+			
+			#ifdef GIA_NEURAL_NETWORK
+			ANNuseInputXMLFile,
+			ANNinputXMLFileName,	
+			ANNuseOutputXMLFile,
+			ANNoutputXMLFileName,
+			ANNuseOutputLDRFile,
+			ANNoutputLDRFileName,
+			ANNuseOutputSVGFile,
+			ANNoutputSVGFileName,
+			ANNuseOutputPPMFile,
+			ANNoutputPPMFileName,
+			ANNuseOutputPPMFileRaytraced,
+			ANNoutputPPMFileNameRaytraced,				
+			ANNuseOutputAllFile,
+			ANNoutputAllFileName,
+			ANNuseSprites,
+			#endif
+		
 			#ifdef GIA_QUERY_WRITE_ANSWER_TO_FILE
 			useOutputTextAnswerPlainTXTFile,
 			outputTextAnswerPlainTXTFileName,

@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditionsAdvanced.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2d1a 10-July-2017
+ * Project Version: 2d2a 11-August-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/

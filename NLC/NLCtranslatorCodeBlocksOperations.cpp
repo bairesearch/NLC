@@ -25,7 +25,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2d1a 10-July-2017
+ * Project Version: 2d2a 11-August-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -2852,6 +2852,10 @@ bool NLCtranslatorCodeBlocksOperationsClass::isNonImmediateAction(const GIAentit
 	{
 		isNonImmediateAction = true;
 	}
+	else if(actionRelationshipEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_POTENTIAL_INVERSE] == true)	//redundant, as this is already filtered by isPotentialAction()
+	{
+		isNonImmediateAction = true;
+	}
 	else if(actionRelationshipEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_PROGRESSIVE] == true)
 	{
 		isNonImmediateAction = true;
@@ -2878,6 +2882,10 @@ bool NLCtranslatorCodeBlocksOperationsClass::isPotentialAction(const GIAentityNo
 	//updated 1m2a
 	bool isPotentialAction = false;
 	if(actionRelationshipEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_POTENTIAL] == true)
+	{
+		isPotentialAction = true;
+	}
+	if(actionRelationshipEntity->grammaticalTenseModifierArrayTemp[GRAMMATICAL_TENSE_MODIFIER_POTENTIAL_INVERSE] == true)
 	{
 		isPotentialAction = true;
 	}

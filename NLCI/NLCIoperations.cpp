@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2d1a 10-July-2017
+ * Project Version: 2d3a 12-November-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -555,7 +555,8 @@ int NLCIoperationsClass::preprepreprocessTextForNLChighlightWordDetermineColourI
 {
 	int colourIndex = NLCI_EDITOR_DEFAULT_FONT_COLOUR;
 	int grammaticalBaseTenseForm = INT_DEFAULT_VALUE;
-	if(GIApreprocessorMultiwordReduction.determineVerbCaseStandardWithAdditional(*word, &grammaticalBaseTenseForm))
+	string baseNameFoundNOTUSED = "";
+	if(GIApreprocessorMultiwordReduction.determineVerbCaseStandardWithAdditional(*word, &baseNameFoundNOTUSED, &grammaticalBaseTenseForm))
 	{
 		colourIndex = GIA_DRAW_VERB_NODE_COLOUR;
 	}

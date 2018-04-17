@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e1a 07-December-2017
+ * Project Version: 2e2a 13-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -163,12 +163,15 @@ int main(const int argc, const char** argv)
 	bool readFromDatabase = false;
 	bool writeToDatabase = false;
 	bool useDatabase = false;
-	string databaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	string KBdatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	#ifdef GIA_SEMANTIC_PARSER
 	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEMANTIC_PARSER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-
+	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#endif
+	
 	#ifdef GIA_PREPROCESSOR
 	bool useLRP = false;
 	bool useOutputLRPTextPlainTXTFile = false;
@@ -353,7 +356,7 @@ int main(const int argc, const char** argv)
 		}
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbfolder"))
 		{
-			databaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbfolder");
+			KBdatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbfolder");
 		}
 		#endif
 		#ifdef GIA_SEMANTIC_PARSER
@@ -362,7 +365,13 @@ int main(const int argc, const char** argv)
 			semanticParserDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbsemanticparserfolder");
 		}
 		#endif
-
+		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbpostaggerfolder"))
+		{
+			POStaggerDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbpostaggerfolder");
+		}
+		#endif
+		
 		#ifdef GIA_PREPROCESSOR
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-lrp"))
 		{
@@ -433,7 +442,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2e1a 07-December-2017" << endl;
+			cout << "NLC.exe - Project Version: 2e2a 13-December-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -522,13 +531,15 @@ int main(const int argc, const char** argv)
 		readFromDatabase,
 		writeToDatabase,
 		useDatabase,
-		databaseFolderName,
+		KBdatabaseFolderName,
 		#endif
-
 		#ifdef GIA_SEMANTIC_PARSER
 		semanticParserDatabaseFolderName,
 		#endif
-
+		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+		POStaggerDatabaseFolderName,
+		#endif
+		
 		#ifdef GIA_PREPROCESSOR
 		useLRP,
 		useOutputLRPTextPlainTXTFile,
@@ -602,12 +613,15 @@ bool NLCmainClass::executeNLC(
 	bool readFromDatabase,
 	bool writeToDatabase,
 	bool useDatabase,
-	string databaseFolderName,
+	string KBdatabaseFolderName,
 	#endif
 	#ifdef GIA_SEMANTIC_PARSER
 	string semanticParserDatabaseFolderName,
 	#endif
-
+	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+	string POStaggerDatabaseFolderName,
+	#endif
+		
 	#ifdef GIA_PREPROCESSOR
 	bool useLRP,
 	bool useOutputLRPTextPlainTXTFile,
@@ -1018,13 +1032,15 @@ bool NLCmainClass::executeNLC2()
 			readFromDatabase,
 			writeToDatabase,
 			useDatabase,
-			databaseFolderName,
+			KBdatabaseFolderName,
 			#endif
-
 			#ifdef GIA_SEMANTIC_PARSER
 			semanticParserDatabaseFolderName,
 			#endif
-
+			#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+			POStaggerDatabaseFolderName,
+			#endif
+		
 			#ifdef GIA_PREPROCESSOR
 			useLRP,
 			useOutputLRPTextPlainTXTFile,

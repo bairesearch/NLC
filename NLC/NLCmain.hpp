@@ -143,7 +143,7 @@ class NLCmainClass
 		#ifdef GIA_SEMANTIC_PARSER
 		string semanticParserDatabaseFolderName,
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		string POStaggerDatabaseFolderName,
 		#endif
 		

@@ -168,7 +168,7 @@ int main(const int argc, const char** argv)
 	#ifdef GIA_SEMANTIC_PARSER
 	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEMANTIC_PARSER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	
@@ -365,7 +365,7 @@ int main(const int argc, const char** argv)
 			semanticParserDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbsemanticparserfolder");
 		}
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbpostaggerfolder"))
 		{
 			POStaggerDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbpostaggerfolder");
@@ -532,7 +532,7 @@ int main(const int argc, const char** argv)
 		#ifdef GIA_SEMANTIC_PARSER
 		semanticParserDatabaseFolderName,
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		POStaggerDatabaseFolderName,
 		#endif
 		
@@ -614,7 +614,7 @@ bool NLCmainClass::executeNLC(
 	#ifdef GIA_SEMANTIC_PARSER
 	string semanticParserDatabaseFolderName,
 	#endif
-	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 	string POStaggerDatabaseFolderName,
 	#endif
 		
@@ -1033,7 +1033,7 @@ bool NLCmainClass::executeNLC2()
 			#ifdef GIA_SEMANTIC_PARSER
 			semanticParserDatabaseFolderName,
 			#endif
-			#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+			#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 			POStaggerDatabaseFolderName,
 			#endif
 		

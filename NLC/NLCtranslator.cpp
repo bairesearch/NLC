@@ -25,7 +25,7 @@
  * File Name: NLCtranslator.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -54,13 +54,13 @@ bool NLCtranslatorClass::translateNetwork(NLCcodeblock* firstCodeBlockInTree, ve
 	#endif
 	*/
 
-	if(!this->disableAllForLoopPredeterminers(entityNodesActiveListSentences, maxNumberSentences))
+	if(!disableAllForLoopPredeterminers(entityNodesActiveListSentences, maxNumberSentences))
 	{
 		result = false;
 	}
 
 	#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_ALPHANUMERIC_ENTITY_NAMES_ONLY
-	if(!this->checkAlphaNumericEntityNames(entityNodesActiveListComplete, maxNumberSentences))
+	if(!checkAlphaNumericEntityNames(entityNodesActiveListComplete, maxNumberSentences))
 	{
 		result = false;
 	}
@@ -192,7 +192,7 @@ void NLCtranslatorClass::reconcileFunctionDefinitionClassDefinitionArgumentsBase
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_BASED_ON_IMPLICITLY_DECLARED_VARIABLES_IN_CURRENT_FUNCTION_DEFINITION
 
 	//adds the arguments from firstCodeBlockInTree (NLC_ITEM_TYPE_FUNCTION_DEFINITION_ARGUMENT_INSTANCE_OR_CLASS_LIST) to the functionDefinition classDefinition
-	this->addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(&(firstCodeBlockInTree->parameters), functionDefinitionClassDefinition);	//note this has already been done for libraryFunctions
+	addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(&(firstCodeBlockInTree->parameters), functionDefinitionClassDefinition);	//note this has already been done for libraryFunctions
 
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_RECURSIVE_ACTIVE
 	//propogates arguments from dependency child functionDefintions to current functionDefintion
@@ -203,8 +203,8 @@ void NLCtranslatorClass::reconcileFunctionDefinitionClassDefinitionArgumentsBase
 		//find the dependency child functionDefinition
 		if(NLCclassDefinitionClass.findFunctionDefinitionClassDefinition(classDefinitionList, functionDefinitionFunctionDependencyChild->functionName, functionDefinitionFunctionDependencyChild->functionOwnerName, functionDefinitionFunctionDependencyChild->functionObjectName, functionDefinitionFunctionDependencyChild->hasFunctionOwnerClass, functionDefinitionFunctionDependencyChild->hasFunctionObjectClass, findFunctionOwnerExactMatch, findFunctionObjectExactMatch, &functionDefinitionClassDefinition2, rearrangeClassList))	//should find exact match as class definitions have already been created for all new function definitions (and their implicit declarations have been added to their function argument lists)
 		{
-			this->addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition(functionDefinitionClassDefinition2, functionDefinitionClassDefinition);	//pass arguments from child to parent
-			this->addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinitionArguments(functionDefinitionClassDefinition2, &(firstCodeBlockInTree->parameters));	//note can use functionDefinitionClassDefinition instead of functionDefinitionClassDefinition2
+			addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinition(functionDefinitionClassDefinition2, functionDefinitionClassDefinition);	//pass arguments from child to parent
+			addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionToFunctionDefinitionArguments(functionDefinitionClassDefinition2, &(firstCodeBlockInTree->parameters));	//note can use functionDefinitionClassDefinition instead of functionDefinitionClassDefinition2
 		}
 	}
 	#endif
@@ -363,11 +363,11 @@ bool NLCtranslatorClass::createFunctionDefinitionClassDefinition(vector<NLCclass
 	if(passNewFunctionDefinitionChecks)
 	{
 		bool isReferenceElseFunctionDefinition = false;		//ie isFunctionDefinition
-		NLCclassDefinition* functionClassDefinition = this->createFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, functionDefinitionIndex, isReferenceElseFunctionDefinition);
+		NLCclassDefinition* functionClassDefinition = createFunctionDefinitionClassDefinition(classDefinitionList, functionName, functionOwnerName, functionObjectName, hasFunctionOwnerClass, hasFunctionObjectClass, functionClassDefinitionName, functionOwnerClassDefinitionName, functionDefinitionIndex, isReferenceElseFunctionDefinition);
 		#ifdef NLC_LIBRARY
 		if(functionClassDefinition != NULL)
 		{
-			this->addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(&parameters, functionClassDefinition);
+			addImplicitlyDeclaredVariablesInCurrentFunctionDefinitionArgumentsToFunctionDefinition(&parameters, functionClassDefinition);
 		}
 		#ifdef NLC_LIBRARY_FUNCTION_LISTS_FOR_ARGUMENT_RECONCILIATION
 		if(libraryFunctionDeclaration)

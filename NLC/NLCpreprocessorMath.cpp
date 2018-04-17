@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -172,7 +172,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-	this->replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
+	replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(lineContents);
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -290,7 +290,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 				int variableTypeTemp = INT_DEFAULT_VALUE;
 				string variableName = currentWord;
-				if(!this->findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, fullSentence, &variableTypeTemp))
+				if(!findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, fullSentence, &variableTypeTemp))
 				{//variable not detected in previous sentences (found first use of variable in current sentence)
 
 					string variableTypeMathtext = "";
@@ -393,7 +393,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					if(addMathTextVariable)
 					{
 						//cout << "addNewMathTextVariable; variableName = " << variableName << endl;
-						this->addNewMathTextVariable(fullSentence, variableName, variableTypeObject);
+						addNewMathTextVariable(fullSentence, variableName, variableTypeObject);
 					}
 
 				}
@@ -401,7 +401,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 				else
 				{
 					//cout << "addNewMathTextVariable; variableName = " << variableName << endl;
-					this->addNewMathTextVariable(fullSentence, variableName, variableTypeTemp);
+					addNewMathTextVariable(fullSentence, variableName, variableTypeTemp);
 				}
 				#endif
 			}
@@ -438,7 +438,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					for(int i=0; i<currentPhrase.size(); i++)
 					{
 						//cout << "removing mathText variable: " << fullSentence->mathTextVariables.back()->name << endl;
-						this->removeLastMathTextVariable(fullSentence);
+						removeLastMathTextVariable(fullSentence);
 					}
 
 					//split sentence and add phrase
@@ -648,7 +648,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 			if(mathTextVariableName != newlyDeclaredVariable)
 			{
 				int variableTypeTemp = INT_DEFAULT_VALUE;
-				if(this->findPredefinedMathtextVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, fullSentence, &variableTypeTemp))
+				if(findPredefinedMathtextVariable(&mathTextVariableName, currentNLCfunctionInList, firstNLCfunctionInList, fullSentence, &variableTypeTemp))
 				{
 					#ifdef NLC_MATH_OBJECTS_ADVANCED_INFER_TYPE_BASED_ON_PREVIOUSLY_DECLARED_MATHTEXT_VARIABLES
 					if(variableTypeTemp == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
@@ -713,7 +713,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-	this->restoreExplicitVariableTypes(&(fullSentence->mathText));
+	restoreExplicitVariableTypes(&(fullSentence->mathText));
 	#endif
 
 	(*currentNLCsentenceInList)->next = new NLCpreprocessorSentence();
@@ -851,7 +851,7 @@ bool NLCpreprocessorMathClass::restoreExplicitVariableTypes(string* mathText)
 	bool result = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; i++)
 	{
-		*mathText = this->replaceSubstringAtStartOfString(mathText, preprocessorMathMathTextVariables[i]+STRING_SPACE, preprocessorMathNaturalLanguageVariables[i]+STRING_SPACE);
+		*mathText = replaceSubstringAtStartOfString(mathText, preprocessorMathMathTextVariables[i]+STRING_SPACE, preprocessorMathNaturalLanguageVariables[i]+STRING_SPACE);
 		result = true;
 	}
 
@@ -896,7 +896,7 @@ bool NLCpreprocessorMathClass::replaceNumericalVariablesWithDummyNumberIfNecessa
 	{
 		string currentWord = (*lineContents)[w]->tagName;
 		int variableTypeTemp = INT_DEFAULT_VALUE;
-		if(this->findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, NULL, &variableTypeTemp))	//pass firstNLCfunctionInList and update this->findPredefinedMathtextVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
+		if(findPredefinedMathtextVariable(&currentWord, currentNLCfunctionInList, firstNLCfunctionInList, NULL, &variableTypeTemp))	//pass firstNLCfunctionInList and update findPredefinedMathtextVariable() accordingly to allow global numerical variable definitions; not just local numerical variable definitions
 		{
 			if(variableTypeTemp == NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL)	//CHECKTHIS: is this required?
 			{
@@ -936,9 +936,9 @@ bool NLCpreprocessorMathClass::isWhiteSpaceOrInvalidWordCharacter(const char c)
 bool NLCpreprocessorMathClass::findPredefinedMathtextVariable(const string* currentWord, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList, const NLCpreprocessorSentence* sentenceToIgnoreWhileSearching, int* variableType)
 {
 	#ifdef NLC_PREPROCESSOR_REPLACE_NUMERICAL_VARIABLES_DETECT_GLOBAL_NUMERICAL_VARIABLES
-	return this->findPredefinedMathtextVariableInAnyFunctions(currentWord, firstNLCfunctionInList, sentenceToIgnoreWhileSearching, variableType);
+	return findPredefinedMathtextVariableInAnyFunctions(currentWord, firstNLCfunctionInList, sentenceToIgnoreWhileSearching, variableType);
 	#else
-	return this->findPredefinedMathtextVariableInFunction(currentWord, currentNLCfunctionInList, sentenceToIgnoreWhileSearching, variableType);
+	return findPredefinedMathtextVariableInFunction(currentWord, currentNLCfunctionInList, sentenceToIgnoreWhileSearching, variableType);
 	#endif
 }
 
@@ -950,7 +950,7 @@ bool NLCpreprocessorMathClass::findPredefinedMathtextVariableInAnyFunctions(cons
 	while(currentNLCfunctionInList->next != NULL)
 	{
 		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-		if(this->findPredefinedMathtextVariableInFunction(currentWord, currentNLCfunctionInList, sentenceToIgnoreWhileSearching, variableType)
+		if(findPredefinedMathtextVariableInFunction(currentWord, currentNLCfunctionInList, sentenceToIgnoreWhileSearching, variableType)
 		{
 			result = true;
 		}
@@ -1006,7 +1006,7 @@ bool NLCpreprocessorMathClass::findMathTextVariableWithinMathText(string mathTex
 			bool foundVariable = true;
 			if(currentIndexOfMathtextVariable > 0)
 			{
-				if(!this->isWhiteSpaceOrInvalidWordCharacter(mathText[currentIndexOfMathtextVariable-1]))
+				if(!isWhiteSpaceOrInvalidWordCharacter(mathText[currentIndexOfMathtextVariable-1]))
 				{
 					foundVariable = false;
 				}
@@ -1014,7 +1014,7 @@ bool NLCpreprocessorMathClass::findMathTextVariableWithinMathText(string mathTex
 
 			if(currentIndexOfMathtextVariable < mathText.length()-mathTextVariableName.length())
 			{
-				if(!this->isWhiteSpaceOrInvalidWordCharacter(mathText[currentIndexOfMathtextVariable + mathTextVariableName.length()]))
+				if(!isWhiteSpaceOrInvalidWordCharacter(mathText[currentIndexOfMathtextVariable + mathTextVariableName.length()]))
 				{
 					foundVariable = false;
 				}

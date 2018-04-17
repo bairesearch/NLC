@@ -25,7 +25,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -174,14 +174,14 @@ string NLCitemClassClass::generateCategoryListGenericObjectName(const GIAentityN
 	#ifdef NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX
 	string categoryListInstanceName = entity->entityName + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_INSTANCE_NAME) + SHAREDvars.convertLongToString(entity->idInstance) + string(NLC_GENERIC_LISTS_CATEGORIES_AND_SUBJECT_OBJECT_NAME_BY_INSTANCE_ID_AND_SENTENCE_INDEX_SENTENCE_NAME) + SHAREDvars.convertIntToString(sentenceIndex);
 	#else
-	string categoryListInstanceName = this->generateInstanceName(entity);
+	string categoryListInstanceName = generateInstanceName(entity);
 	#endif
 	return categoryListInstanceName;
 }
 
 string NLCitemClassClass::generateClassName(const GIAentityNode* entity)
 {
-	string className = this->generateClassName(entity->entityName);
+	string className = generateClassName(entity->entityName);
 	return className;
 }
 string NLCitemClassClass::generateClassName(const string entityName)
@@ -191,7 +191,7 @@ string NLCitemClassClass::generateClassName(const string entityName)
 }
 string NLCitemClassClass::generateFunctionName(const GIAentityNode* entity)
 {
-	return this->generateFunctionName(entity->entityName);
+	return generateFunctionName(entity->entityName);
 }
 string NLCitemClassClass::generateFunctionName(const string entityName)
 {
@@ -200,7 +200,7 @@ string NLCitemClassClass::generateFunctionName(const string entityName)
 }
 string NLCitemClassClass::generateInstanceName(const GIAentityNode* entity)
 {
-	return this->generateInstanceName(entity->entityName, entity->idInstance);
+	return generateInstanceName(entity->entityName, entity->idInstance);
 }
 string NLCitemClassClass::generateInstanceName(const string entityName, const long idInstance)
 {
@@ -245,7 +245,7 @@ string NLCitemClassClass::parseFunctionNameFromNLCfunctionName(const string NLCf
 	string functionName = "";
 	bool hasFunctionOwnerClass = false;
 	string functionOwnerName = "";
-	this->parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass);
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, &functionName, &functionOwnerName, &hasFunctionOwnerClass);
 	return functionName;
 }
 
@@ -254,19 +254,19 @@ void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(const string NLCfun
 	//gets "fight" from "dog::fight"
 	bool hasFunctionObjectClass = false;
 	string functionObjectName = "";
-	this->parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
+	parseFunctionNameFromNLCfunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, &functionObjectName, &hasFunctionObjectClass);
 }
 
 void NLCitemClassClass::parseFunctionNameFromNLCfunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass)
 {
 	vector<NLCitem*> additionalArgumentsTempNotUsed;
-	this->parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, &additionalArgumentsTempNotUsed);
+	parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, &additionalArgumentsTempNotUsed);
 }
 
 #ifdef NLC_LIBRARY
 void NLCitemClassClass::parseFunctionNameFromNLClibFunctionName(const string NLCfunctionName, string* functionName, string* functionOwnerName, bool* hasFunctionOwnerClass, string* functionObjectName, bool* hasFunctionObjectClass, vector<NLCitem*>* additionalArguments)
 {
-	this->parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, additionalArguments);
+	parseFunctionNameFromNLCgeneralFunctionName(NLCfunctionName, functionName, functionOwnerName, hasFunctionOwnerClass, functionObjectName, hasFunctionObjectClass, additionalArguments);
 }
 #endif
 
@@ -369,7 +369,7 @@ bool NLCitemClassClass::findFunctionArgument(vector<NLCitem*>* parameters, const
 		if(currentItem->itemType == itemType)
 		{
 			#ifdef NLC_LOCAL_LISTS_USE_INSTANCE_NAMES
-			if(currentItem->instanceName == this->generateInstanceName(entity))
+			if(currentItem->instanceName == generateInstanceName(entity))
 			#else
 			if(currentItem->name == entity->entityName)	//or if(currentItem->className == generateClassName(entity->entityName))
 			#endif

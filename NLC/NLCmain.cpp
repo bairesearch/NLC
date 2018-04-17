@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -442,7 +442,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2e2a 13-December-2017" << endl;
+			cout << "NLC.exe - Project Version: 2e3a 16-December-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -507,10 +507,6 @@ int main(const int argc, const char** argv)
 		
 		useOutputTextAllFile,
 		outputTextAllFileName,
-		#ifdef GIA_QUERY_WRITE_ANSWER_TO_FILE
-		useOutputTextAnswerPlainTXTFile,
-		outputTextAnswerPlainTXTFileName,
-		#endif
 
 		//#ifdef NLC_PREPROCESSOR
 		useNLCpreprocessor,

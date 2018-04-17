@@ -25,7 +25,7 @@
  * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -118,7 +118,7 @@ class NLCmainClass
 
 		bool useOutputTextAllFile,
 		string outputTextAllFileName,
-
+		
 		//#ifdef NLC_PREPROCESSOR
 		bool useNLCpreprocessor,
 		//#endif
@@ -127,6 +127,7 @@ class NLCmainClass
 		string APIsourceFolder,
 		string APIclassListFileName,
 		#endif
+		
 		bool printOutput,
 		bool displayInOpenGLAndOutputScreenshot,
 
@@ -137,12 +138,15 @@ class NLCmainClass
 		bool readFromDatabase,
 		bool writeToDatabase,
 		bool useDatabase,
-		string databaseFolderName,
+		string KBdatabaseFolderName,
 		#endif
 		#ifdef GIA_SEMANTIC_PARSER
 		string semanticParserDatabaseFolderName,
 		#endif
-
+		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE
+		string POStaggerDatabaseFolderName,
+		#endif
+		
 		#ifdef GIA_PREPROCESSOR
 		bool useLRP,
 		bool useOutputLRPTextPlainTXTFile,

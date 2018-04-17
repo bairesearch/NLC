@@ -25,7 +25,7 @@
  * File Name: NLCapi.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -94,8 +94,8 @@ bool NLCapiClass::parseDoxygenClassXMLfile(const string APIclassName, const stri
 					string printedClassDefinitionHeaderFileName = NLCprintClassDefinitions.generateCodeClassDefinitionHeaderFileName(classDefinition->name);	//eg "NLCgeneratedInterfaceXClass.hpp"
 					string printedClassDefinitionSourceFileName = NLCprintClassDefinitions.generateCodeClassDefinitionSourceFileName(classDefinition->name);	//eg "NLCgeneratedInterfaceXClass.cpp"
 					#endif
-					string APIwrapperSourceWrapObjectFunctionHeaderText = this->generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_WRAP_FUNCTION_NAME, APIclassName, progLang);	//wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
-					string APIwrapperSourceUnwrapObjectFunctionHeaderText = this->generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_UNWRAP_FUNCTION_NAME, APIclassName, progLang);	//unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
+					string APIwrapperSourceWrapObjectFunctionHeaderText = generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_WRAP_FUNCTION_NAME, APIclassName, progLang);	//wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
+					string APIwrapperSourceUnwrapObjectFunctionHeaderText = generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(NLC_API_THIRD_PARTY_API_OBJECT_UNWRAP_FUNCTION_NAME, APIclassName, progLang);	//unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject)
 					string APIwrapperSourceWrapObjectFunctionText = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceWrapObjectFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang] + CHAR_NEWLINE;		//void APIclassNameClass::wrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject){
 					string APIwrapperSourceUnwrapObjectFunctionText = progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceUnwrapObjectFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang] + CHAR_NEWLINE;	//void APIclassNameClass::unwrapThirdPartyAPIobject[APIclassName](APIclassName* thirdpartyAPIobject){
 					string APIwrapperSourceWrapFunctionFunctionsText = "";
@@ -132,11 +132,11 @@ bool NLCapiClass::parseDoxygenClassXMLfile(const string APIclassName, const stri
 							{
 								if(sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_privateattrib || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_publicattrib || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_protectedattrib)
 								{
-									this->generatePropertyClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapObjectFunctionText, &APIwrapperSourceUnwrapObjectFunctionText, progLang);
+									generatePropertyClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapObjectFunctionText, &APIwrapperSourceUnwrapObjectFunctionText, progLang);
 								}
 								else if(sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_privatefunc || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_publicfunc || sectionType == NET_XML_TAG_sectiondef_ATTRIBUTE_kind_VALUE_protectedfunc)
 								{
-									this->generateFunctionClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapFunctionFunctionsText, &APIwrapperHeaderWrapFunctionFunctionsText, progLang);
+									generateFunctionClassLists(currentTagUpdatedL3, classDefinitionList, classDefinition, APIclassName, &APIwrapperSourceWrapFunctionFunctionsText, &APIwrapperHeaderWrapFunctionFunctionsText, progLang);
 								}
 							}
 						}
@@ -204,7 +204,7 @@ void NLCapiClass::generatePropertyClassLists(XMLparserTag* currentTagUpdated, ve
 						}
 						if(currentTagUpdatedL3->name == NET_XML_TAG_type)	//eg <type><ref refid="classMemberList" kindref="compound">MemberList</ref> *</type>
 						{
-							variableType = this->getType(currentTagUpdatedL3);
+							variableType = getType(currentTagUpdatedL3);
 						}
 
 						currentTagUpdatedL3 = currentTagUpdatedL3->nextTag;
@@ -216,11 +216,11 @@ void NLCapiClass::generatePropertyClassLists(XMLparserTag* currentTagUpdated, ve
 					bool variableTypeList = false;
 					bool variableTypeStandard = false;
 					int mathtextVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
-					this->detectVariableTypeDetails(classDefinitionList, classDefinition, variableName, variableType, &variableType1, &variableType1ClassName, &variableType2, &variableTypeList, &variableTypeStandard, &mathtextVariableType);
+					detectVariableTypeDetails(classDefinitionList, classDefinition, variableName, variableType, &variableType1, &variableType1ClassName, &variableType2, &variableTypeList, &variableTypeStandard, &mathtextVariableType);
 
 					int level = 1;
-					this->generateCodeWrapObject(variableName, variableType1ClassName, APIclassName, variableTypeList, variableTypeStandard, mathtextVariableType, level, APIwrapperSourceWrapObjectFunctionText, progLang);
-					this->generateCodeUnwrapObject(variableName, variableType1ClassName, variableType1, variableTypeList, variableTypeStandard, mathtextVariableType, level, APIwrapperSourceUnwrapObjectFunctionText, progLang, false);
+					generateCodeWrapObject(variableName, variableType1ClassName, APIclassName, variableTypeList, variableTypeStandard, mathtextVariableType, level, APIwrapperSourceWrapObjectFunctionText, progLang);
+					generateCodeUnwrapObject(variableName, variableType1ClassName, variableType1, variableTypeList, variableTypeStandard, mathtextVariableType, level, APIwrapperSourceUnwrapObjectFunctionText, progLang, false);
 				}
 			}
 		}
@@ -252,7 +252,7 @@ void NLCapiClass::generateFunctionClassLists(XMLparserTag* currentTagUpdated, ve
 						}
 						else if(currentTagUpdatedL3->name == NET_XML_TAG_type)
 						{
-							functionType = this->getType(currentTagUpdatedL3);	//eg <type>void</type>
+							functionType = getType(currentTagUpdatedL3);	//eg <type>void</type>
 						}
 						else if(currentTagUpdatedL3->name == NET_XML_TAG_param)
 						{
@@ -267,7 +267,7 @@ void NLCapiClass::generateFunctionClassLists(XMLparserTag* currentTagUpdated, ve
 								}
 								else if(currentTagUpdatedL4->name == NET_XML_TAG_type)	//eg <type><ref refid="classClassDef" kindref="compound">parameterType</ref> *</type> / <type>bool</type>
 								{
-									param->typeString = this->getType(currentTagUpdatedL4);
+									param->typeString = getType(currentTagUpdatedL4);
 								}
 								currentTagUpdatedL4 = currentTagUpdatedL4->nextTag;
 							}
@@ -289,11 +289,11 @@ void NLCapiClass::generateFunctionClassLists(XMLparserTag* currentTagUpdated, ve
 
 							string variableType1 = variableName;
 							string variableType1ClassName = NLCitemClass.generateClassName(variableType1);
-							string variableType1InstanceName = this->generateInstanceNameArbitrary(variableType1);
+							string variableType1InstanceName = generateInstanceNameArbitrary(variableType1);
 							string variableType1LocalListName = NLCprintDefs.generateLocalListName(variableType1ClassName, variableType1InstanceName);
 							argumentText = argumentText + NLCprintDefs.generateDefinitionText(NLCprintDefs.generateCodeEntityListDefinitionTypeTextReferenceCompact(variableType1ClassName, progLang), variableType1LocalListName);		//vector<param1className*>& param1LocalList
 						}
-						string APIwrapperSourceWrapFunctionFunctionHeaderText = this->generateAPIwrapperSourceWrapFunctionFunctionHeaderText(NLC_API_THIRD_PARTY_API_FUNCTION_WRAP_FUNCTION_NAME + functionName, APIclassName, argumentText, progLang);	//wrapThirdPartyAPIfunction[functionName](vector<param1className*>& param1LocalList, vector<param2className*>& param2LocalList, etc)
+						string APIwrapperSourceWrapFunctionFunctionHeaderText = generateAPIwrapperSourceWrapFunctionFunctionHeaderText(NLC_API_THIRD_PARTY_API_FUNCTION_WRAP_FUNCTION_NAME + functionName, APIclassName, argumentText, progLang);	//wrapThirdPartyAPIfunction[functionName](vector<param1className*>& param1LocalList, vector<param2className*>& param2LocalList, etc)
 						*APIwrapperSourceWrapFunctionFunctionsText = *APIwrapperSourceWrapFunctionFunctionsText + progLangClassMemberFunctionTypeDefault[progLang] + classDefinition->name + progLangFunctionOwnerClassDelimiter[progLang] + APIwrapperSourceWrapFunctionFunctionHeaderText + CHAR_NEWLINE + progLangOpenBlock[progLang] + CHAR_NEWLINE;	//void APIclassNameClass::wrapThirdPartyAPIfunction[functionName](vector<param1className*>& param1LocalList, vector<param2className*>& param2LocalList, etc){
 						NLCprintDefs.printLine(progLangClassMemberFunctionTypeDefault[progLang] + APIwrapperSourceWrapFunctionFunctionHeaderText + progLangEndLine[progLang], 1, APIwrapperHeaderWrapFunctionFunctionsText);		//void wrapThirdPartyAPIfunction[APIclassName](vector<param1className*>& param1LocalList, vector<param2className*>& param2LocalList, etc);
 
@@ -312,12 +312,12 @@ void NLCapiClass::generateFunctionClassLists(XMLparserTag* currentTagUpdated, ve
 							bool variableTypeList = false;
 							bool variableTypeStandard = false;
 							int mathtextVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
-							this->detectVariableTypeDetails(classDefinitionList, classDefinition, variableName, variableType, &variableType1, &variableType1ClassName, &variableType2, &variableTypeList, &variableTypeStandard, &mathtextVariableType);
+							detectVariableTypeDetails(classDefinitionList, classDefinition, variableName, variableType, &variableType1, &variableType1ClassName, &variableType2, &variableTypeList, &variableTypeStandard, &mathtextVariableType);
 
 							string createNewEntityText = NLCprintDefs.generateCodeNewEntity(variableType, variableName, progLang);	//variableType variableName = new variableType();
 							NLCprintDefs.printLine(createNewEntityText, level, APIwrapperSourceWrapFunctionFunctionsText);
 
-							this->generateCodeUnwrapObject(variableName, variableType1ClassName, variableType1, variableTypeList, variableTypeStandard, mathtextVariableType, level, APIwrapperSourceWrapFunctionFunctionsText, progLang, true);
+							generateCodeUnwrapObject(variableName, variableType1ClassName, variableType1, variableTypeList, variableTypeStandard, mathtextVariableType, level, APIwrapperSourceWrapFunctionFunctionsText, progLang, true);
 
 							if(firstParameter)
 							{
@@ -389,7 +389,7 @@ void NLCapiClass::detectVariableTypeDetails(vector<NLCclassDefinition*>* classDe
 	}
 	NLCtranslatorClassDefinitions.addPropertyListToClassDefinition(classDefinition, targetClassDefinition);
 
-	if(this->variableTypeIsList(variableType, variableType2))
+	if(variableTypeIsList(variableType, variableType2))
 	{
 		//eg "vector<customClass*> listVariable;" / "vector<int> listVariable;"
 		createSecondLayer = true;
@@ -400,7 +400,7 @@ void NLCapiClass::detectVariableTypeDetails(vector<NLCclassDefinition*>* classDe
 		//eg "int variable;" / "customClass variable;"
 		variableTypeFinal = variableType;
 	}
-	if(this->variableTypeIsStandard(variableTypeFinal, &variableTypeStandardType))
+	if(variableTypeIsStandard(variableTypeFinal, &variableTypeStandardType))
 	{
 		//eg  "int variable;" / "vector<int> listVariable;"
 		*variableTypeStandard = true;
@@ -428,7 +428,7 @@ void NLCapiClass::detectVariableTypeDetails(vector<NLCclassDefinition*>* classDe
 
 void NLCapiClass::generateCodeWrapObject(const string variableName, const string variableType1ClassName, const string APIclassName, const bool variableTypeList, const bool variableTypeStandard, const int mathtextVariableType, const int level, string* APIwrapperSourceWrapObjectFunctionText, const int progLang)
 {
-	string APIclassInstanceName = this->generateInstanceNameArbitrary(APIclassName);
+	string APIclassInstanceName = generateInstanceNameArbitrary(APIclassName);
 
 	if(variableTypeList)
 	{
@@ -480,7 +480,7 @@ void NLCapiClass::generateCodeWrapObject(const string variableName, const string
 
 void NLCapiClass::generateCodeUnwrapObject(const string variableName, const string variableType1ClassName, const string variableType1, const bool variableTypeList, const bool variableTypeStandard, const int mathtextVariableType, const int level, string* APIwrapperSourceUnwrapObjectFunctionText, const int progLang, const bool useLocalList)
 {
-	string variableType1InstanceName = this->generateInstanceNameArbitrary(variableType1);
+	string variableType1InstanceName = generateInstanceNameArbitrary(variableType1);
 
 	if(variableTypeList)
 	{
@@ -592,13 +592,13 @@ bool NLCapiClass::variableTypeIsList(string variableType, string* variableTypeEm
 
 string NLCapiClass::generateAPIwrapperSourceWrapOrUnwrapObjectFunctionHeaderText(string functionNamePrepend, const string classNameRaw, const int progLang)
 {
-	string APIwrapperSourceWrapObjectFunctionHeaderText = this->generateFunctionHeader(this->generateAPIwrapperSourceWrapperFunctionName(functionNamePrepend, classNameRaw), this->generateAPIwrapperSourceWrapperFunctionArgumentDefinitionText(classNameRaw, progLang), progLang);
+	string APIwrapperSourceWrapObjectFunctionHeaderText = generateFunctionHeader(generateAPIwrapperSourceWrapperFunctionName(functionNamePrepend, classNameRaw), generateAPIwrapperSourceWrapperFunctionArgumentDefinitionText(classNameRaw, progLang), progLang);
 	return APIwrapperSourceWrapObjectFunctionHeaderText;
 }
 
 string NLCapiClass::generateAPIwrapperSourceWrapFunctionFunctionHeaderText(string functionNamePrepend, const string classNameRaw, const string argumentsDefinitionText, const int progLang)
 {
-	string APIwrapperSourceWrapFunctionFunctionHeaderText = this->generateFunctionHeader(this->generateAPIwrapperSourceWrapperFunctionName(functionNamePrepend, classNameRaw), argumentsDefinitionText, progLang);
+	string APIwrapperSourceWrapFunctionFunctionHeaderText = generateFunctionHeader(generateAPIwrapperSourceWrapperFunctionName(functionNamePrepend, classNameRaw), argumentsDefinitionText, progLang);
 	return APIwrapperSourceWrapFunctionFunctionHeaderText;
 }
 

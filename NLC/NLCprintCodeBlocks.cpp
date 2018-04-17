@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -93,7 +93,7 @@ bool NLCprintCodeBlocksClass::printCodeBlocks(NLCcodeblock* firstCodeBlockInLeve
 			string functionDeclarationOwnerName = "";
 			string functionDeclarationObjectName = "";
 			//#endif
-			this->generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
+			generateFunctionExecutionArgumentsWithActionNetworkIndexInheritanceString(classDefinitionList, &(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
 
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
 			string codeBlockText = functionDeclarationOwnerName + functionArgument->name + functionDeclarationObjectName + NLC_FUNCTION_NAME_APPEND + progLangOpenParameterSpace[progLang] + functionArguments + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];	//context1.param1(context.param2); 	[param1 = function, context1 = subject, param2 = object]
@@ -118,15 +118,15 @@ bool NLCprintCodeBlocksClass::printCodeBlocks(NLCcodeblock* firstCodeBlockInLeve
 			string functionDeclarationOwnerName = "";
 			string functionDeclarationObjectName = "";
 			//#endif
-			this->generateFunctionArgumentsBasedOnActionAndActionObjectVars(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
+			generateFunctionArgumentsBasedOnActionAndActionObjectVars(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang, &functionDeclarationOwnerName, &functionDeclarationObjectName);
 			#endif
 
 			#ifdef NLC_DERIVE_LOCAL_FUNCTION_ARGUMENTS_BASED_ON_IMPLICIT_DECLARATIONS
-			this->generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
+			generateLocalFunctionArgumentsBasedOnImplicitDeclarationsString(&(currentCodeBlockInLevel->parameters), &functionArguments, progLang);
 			#endif
 
 			#ifndef NLC_NONOO_DISABLE_CLASS_HEIRACHY
-			string functionOwnerContext = this->generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang, &functionDeclarationOwnerName);
+			string functionOwnerContext = generateFunctionOwnerContext(&(currentCodeBlockInLevel->parameters), progLang, &functionDeclarationOwnerName);
 			#endif
 
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -142,7 +142,7 @@ bool NLCprintCodeBlocksClass::printCodeBlocks(NLCcodeblock* firstCodeBlockInLeve
 			#endif
 
 			#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED_EXECUTE_IN_MAIN
-			printedCodeBlocksSourceMainFunctionText = this->generateMainFunctionText(&(currentCodeBlockInLevel->parameters), progLang);
+			printedCodeBlocksSourceMainFunctionText = generateMainFunctionText(&(currentCodeBlockInLevel->parameters), progLang);
 			#endif
 		}
 		#ifdef NLC_RECORD_ACTION_HISTORY
@@ -1026,7 +1026,7 @@ bool NLCprintCodeBlocksClass::printCodeBlocks(NLCcodeblock* firstCodeBlockInLeve
 
 		if(currentCodeBlockInLevel->lowerLevel != NULL)
 		{
-			this->printCodeBlocks(currentCodeBlockInLevel->lowerLevel, classDefinitionList, progLang, &printedCodeBlocksSourceText, (level+1));
+			printCodeBlocks(currentCodeBlockInLevel->lowerLevel, classDefinitionList, progLang, &printedCodeBlocksSourceText, (level+1));
 			#ifdef NLC_ADVANCED_REFERENCING_MONITOR_CONTEXT
 			if(currentCodeBlockInLevel->isLogicalCondition)
 			{				
@@ -1181,9 +1181,9 @@ void NLCprintCodeBlocksClass::generateFunctionExecutionArgumentsWithActionNetwor
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_SUBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments = *functionArguments + this->generateCodePluralReferenceText(currentItem, progLang, categoryList, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, NLC_ITEM_TYPE_SUBJECTCATEGORY_VAR_APPENDITION);
 			#else
-			*functionArguments = *functionArguments + this->generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -1212,9 +1212,9 @@ void NLCprintCodeBlocksClass::generateFunctionExecutionArgumentsWithActionNetwor
 			}
 			#ifdef NLC_GENERATE_FUNCTION_ARGUMENTS_BASED_ON_ACTION_AND_ACTION_OBJECT_VARS_PASS_AS_LISTS
 			bool categoryList = false;
-			*functionArguments = *functionArguments + this->generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
 			#else
-			*functionArguments = *functionArguments + this->generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 		}
 		else if(currentItem->itemType == NLC_ITEM_TYPE_FUNCTION_EXECUTION_ARGUMENT_FUNCTION_OBJECT)
@@ -1229,9 +1229,9 @@ void NLCprintCodeBlocksClass::generateFunctionExecutionArgumentsWithActionNetwor
 			#ifdef NLC_FUNCTIONS_SUPPORT_PLURAL_OBJECTS
 			categoryList = true;
 			#endif
-			*functionArguments = *functionArguments + this->generateCodePluralReferenceText(currentItem, progLang, categoryList, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION);
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, NLC_ITEM_TYPE_OBJECTCATEGORY_VAR_APPENDITION);
 			#else
-			*functionArguments = *functionArguments + this->generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 			#endif
 
 			#ifdef NLC_NONOO_DISABLE_CLASS_HEIRACHY
@@ -1258,7 +1258,7 @@ void NLCprintCodeBlocksClass::generateFunctionExecutionArgumentsWithActionNetwor
 			{
 				*functionArguments = *functionArguments + progLangClassMemberFunctionParametersNext[progLang];
 			}
-			*functionArguments = *functionArguments + this->generateCodeSingularReferenceText(currentItem, progLang);
+			*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);
 		}
 		#endif
 		*/
@@ -1270,8 +1270,8 @@ void NLCprintCodeBlocksClass::generateFunctionExecutionArgumentsWithActionNetwor
 			}
 
 			bool categoryList = false;
-			*functionArguments = *functionArguments + this->generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
-			//*functionArguments = *functionArguments + this->generateCodeSingularReferenceText(currentItem, progLang);	//OLD
+			*functionArguments = *functionArguments + generateCodePluralReferenceText(currentItem, progLang, categoryList, "");
+			//*functionArguments = *functionArguments + generateCodeSingularReferenceText(currentItem, progLang);	//OLD
 		}
 	}
 }
@@ -1300,7 +1300,7 @@ string NLCprintCodeBlocksClass::generateCodePluralReferenceText(const NLCitem* f
 	#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS_ADVANCED
 	if(functionArgumentItem->functionArgumentPassCastRequired)
 	{
-		codeFunctionArgumentNameWithCast = this->printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang, codeFunctionArgumentName);
+		codeFunctionArgumentNameWithCast = printCodeBlockCastVectorExecuteFunction(functionArgumentItem, progLang, codeFunctionArgumentName);
 	}
 	#endif
 	#endif

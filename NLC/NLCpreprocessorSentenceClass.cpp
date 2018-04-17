@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -165,7 +165,7 @@ bool NLCpreprocessorSentenceClassClass::isStringNLPparsableWord(string phrase, c
 	{
 	}
 
-	if(this->isStringValidVariableName(phrase, preprocessorMath))
+	if(isStringValidVariableName(phrase, preprocessorMath))
 	{
 		stringIsNLPparsableWord = true;
 	}
@@ -174,7 +174,7 @@ bool NLCpreprocessorSentenceClassClass::isStringNLPparsableWord(string phrase, c
 	{
 	#endif
 		//eg "If 3 baskets have a pie, eat the apple." <- don't interpret "3" as math, interpret as an NLP parsable phrase entity
-		if(this->isStringNumberPreprocessorMath(phrase))
+		if(isStringNumberPreprocessorMath(phrase))
 		{
 			stringIsNLPparsableWord = true;
 		}
@@ -182,7 +182,7 @@ bool NLCpreprocessorSentenceClassClass::isStringNLPparsableWord(string phrase, c
 	}
 	else
 	{
-		if(this->isStringNumberOrFractional(phrase))
+		if(isStringNumberOrFractional(phrase))
 		{
 			stringIsNLPparsableWord = true;
 		}
@@ -266,7 +266,7 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberOrFractional(string phrase
 	{
 		char c = phrase[i];
 		bool numberFound = SHAREDvars.charInCharArray(c, preprocessorMathNLPparsableNumericalCharacters, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_NUMERICAL_CHARACTERS_NUMBER_OF_TYPES);
-		bool decimalPlaceFound = this->isDecimalPlace(i, &phrase);
+		bool decimalPlaceFound = isDecimalPlace(i, &phrase);
 		if(!(numberFound || decimalPlaceFound))
 		{
 			stringIsNumberOrFractional = false;

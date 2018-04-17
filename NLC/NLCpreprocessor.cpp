@@ -25,7 +25,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -139,7 +139,7 @@ bool NLCpreprocessorClass::preprocessTextForNLCextractFunctions(vector<string>* 
 	{
 		string currentLine = (*fileLinesList)[currentLineNumber];
 		
-		if(this->detectFunctionHeader(&currentLine))
+		if(detectFunctionHeader(&currentLine))
 		{
 			//extract functions from file
 			if(*detectedFunctions)
@@ -162,8 +162,8 @@ bool NLCpreprocessorClass::preprocessTextForNLCextractFunctions(vector<string>* 
 			#ifdef USE_NLCI
 			lineIndexOfFunctionHeader = currentLineNumber;
 			#endif
-			NLCfunctionName = this->getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
-			functionFileName = this->generateNLCfunctionFileName(NLCfunctionName);
+			NLCfunctionName = getFunctionNameFromFunctionHeader(&currentLine);		//NLCfunctionName
+			functionFileName = generateNLCfunctionFileName(NLCfunctionName);
 			inputTextFileNameList->push_back(functionFileName);
 			functionContentsRaw = "";
 		}
@@ -266,7 +266,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 
 				#ifdef NLC_PREPROCESSOR_MATH
 				int lineLogicalConditionOperator;
-				if(this->detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
+				if(detectLogicalConditionOperatorAtStartOfLine(&lineContents, &lineLogicalConditionOperator))
 				{
 					currentNLCsentenceInList->hasLogicalConditionOperator = true;
 					#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
@@ -321,7 +321,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 								currentSentenceInLogicalConditionCommandTemp->sentenceContentsOriginal = GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents));
 								#endif
 
-								this->addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
+								addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
 								//cout << "currentSentenceInLogicalConditionCommandTemp->indentation = " << currentSentenceInLogicalConditionCommandTemp->indentation << endl;
 							}
 							currentSentenceInLogicalConditionCommandTemp = currentSentenceInLogicalConditionCommandTemp->next;
@@ -334,7 +334,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				#endif
 					currentNLCsentenceInList->sentenceContentsOriginal = GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&lineContents);		//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
 
-					this->addNonLogicalConditionSentenceToList(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, currentNLCfunctionInList, firstNLCfunctionInList);
+					addNonLogicalConditionSentenceToList(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, currentNLCfunctionInList, firstNLCfunctionInList);
 
 				#ifdef NLC_PREPROCESSOR_MATH
 				}
@@ -471,7 +471,7 @@ void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIAprepro
 	#endif
 	
 	#ifdef NLC_MATH_OBJECTS_ADVANCED
-	if(this->detectMathObjectStringDelimiter(lineContents))
+	if(detectMathObjectStringDelimiter(lineContents))
 	{
 		cout << "preprocessTextForNLC{} error: quotation marks detected without mathtext expression (illegal: 'Print \"this text\"'. legal: 'the value = \"this text\". print the value.')" << endl;
 	}

@@ -25,7 +25,7 @@
  * File Name: NLCprintCodeBlocksFunctions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e2a 13-December-2017
+ * Project Version: 2e3a 16-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -645,12 +645,12 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeCheckParentClassNameExecuteFu
 void NLCprintCodeBlocksFunctionsClass::generateCodeAddProperty(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeAddPropertyExecuteFunction(param1, param2, progLang, code, level);
+	generateCodeAddPropertyExecuteFunction(param1, param2, progLang, code, level);
 	#else
 	#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
-	this->generateCodeAddPropertyExecuteFunction(param1, param2, progLang, code, level);
+	generateCodeAddPropertyExecuteFunction(param1, param2, progLang, code, level);
 	#else
-	this->generateCodeAddPropertyEntityToList(param1, param2, progLang, code, level);
+	generateCodeAddPropertyEntityToList(param1, param2, progLang, code, level);
 	#endif
 	#endif
 }
@@ -658,11 +658,11 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeAddPropertyEntityToList(NLCit
 {
 	string contextParam1 = NLCprintDefs.generateStringFromContextVector(&(param1->context), progLang);
 	#ifdef NLC_NONOO
-	this->generateCodeAddEntityToList(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyListName(), param2->instanceName, progLang, code, level);
-	this->generateCodeAddEntityToList(param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyReverseListName(), contextParam1 + param1->instanceName, progLang, code, level);
+	generateCodeAddEntityToList(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyListName(), param2->instanceName, progLang, code, level);
+	generateCodeAddEntityToList(param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyReverseListName(), contextParam1 + param1->instanceName, progLang, code, level);
 	#else
-	this->generateCodeAddEntityToList(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyListName(param2->className), param2->instanceName, progLang, code, level);
-	this->generateCodeAddEntityToList(param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generateAllPropertyIncomingListName(), contextParam1 + param1->instanceName, progLang, code, level);
+	generateCodeAddEntityToList(contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyListName(param2->className), param2->instanceName, progLang, code, level);
+	generateCodeAddEntityToList(param2->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generateAllPropertyIncomingListName(), contextParam1 + param1->instanceName, progLang, code, level);
 	#endif
 }
 
@@ -721,7 +721,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeAddPropertyNewFunction(const 
 void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveProperty(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeRemovePropertyExecuteFunction(param1, param2, progLang, code, level);
+	generateCodeRemovePropertyExecuteFunction(param1, param2, progLang, code, level);
 	#else
 	FINISHTHIS
 	NLCprintDefs.printLine(codeBlockText, level, code);
@@ -730,7 +730,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveProperty(NLCitem* param
 void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveProperties(NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeRemovePropertiesExecuteFunction(param1, param2, progLang, code, level);
+	generateCodeRemovePropertiesExecuteFunction(param1, param2, progLang, code, level);
 	#else
 	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generatePropertyListName(param2) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveProperties[progLang] + progLangEndLine[progLang];		//context1->param1->param2PropertyList.clear();
 	NLCprintDefs.printLine(codeBlockText, level, code);
@@ -759,12 +759,12 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeRemovePropertiesExecuteFuncti
 void NLCprintCodeBlocksFunctionsClass::generateCodeAddCondition(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level, const bool inverseCondition)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level, inverseCondition);
+	generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level, inverseCondition);
 	#else
 	#ifdef NLC_NON_LIBRARY_FUNCTIONS_EXTENDED
-	this->generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level, inverseCondition);
+	generateCodeAddConditionExecuteFunction(param1, param2, param3, progLang, code, level, inverseCondition);
 	#else
-	this->generateCodeAddConditionAndObjectEntityToList(param1, param2, param3, progLang, code, level, inverseCondition);
+	generateCodeAddConditionAndObjectEntityToList(param1, param2, param3, progLang, code, level, inverseCondition);
 	#endif
 	#endif
 }
@@ -881,7 +881,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeAddConditionNewFunction(const
 void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveCondition(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeRemoveConditionExecuteFunction(param1, param2, param3, progLang, code, level);
+	generateCodeRemoveConditionExecuteFunction(param1, param2, param3, progLang, code, level);
 	#else
 	FINISHTHIS
 	//printLine(codeBlockText, level, code);
@@ -890,7 +890,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveCondition(NLCitem* para
 void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveConditions(NLCitem* param1, const NLCitem* param2, const NLCitem* param3, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeRemoveConditionsExecuteFunction(param1, param2, param3, progLang, code, level);
+	generateCodeRemoveConditionsExecuteFunction(param1, param2, param3, progLang, code, level);
 	#else
 	string codeBlockText = contextParam1 + param1->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generateConditionListName(param2->className,  param3->className) + progLangObjectReferenceDelimiter2[progLang] + progLangRemoveConditions[progLang] + progLangEndLine[progLang];	//context1->param1->param2param3ConditionList.clear();
 	NLCprintDefs.printLine(codeBlockText, level, code);
@@ -919,7 +919,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeRemoveConditionsExecuteFuncti
 void NLCprintCodeBlocksFunctionsClass::generateCodeAddActionSubject(const NLCitem* functionArgument, const NLCitem* functionOwnerArgument, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeAddActionSubjectExecuteFunction(functionArgument, functionOwnerArgument, progLang, code, level);
+	generateCodeAddActionSubjectExecuteFunction(functionArgument, functionOwnerArgument, progLang, code, level);
 	#else
 	string codeBlockTextAddAction = functionOwnerArgument->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generateActionListName(functionArgument->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + functionArgument->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//actionSubject1->actionClassActionList.push_back(action1);
 	NLCprintDefs.printLine(codeBlockTextAddAction, level, code);
@@ -940,7 +940,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeAddActionSubjectExecuteFuncti
 void NLCprintCodeBlocksFunctionsClass::generateCodeAddActionObject(const NLCitem* functionArgument, const NLCitem* functionObjectArgument, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeAddActionObjectExecuteFunction(functionArgument, functionObjectArgument, progLang, code, level);
+	generateCodeAddActionObjectExecuteFunction(functionArgument, functionObjectArgument, progLang, code, level);
 	#else
 	string codeBlockTextAddAction = functionObjectArgument->instanceName + progLangObjectReferenceDelimiter[progLang] + NLCprintDefs.generateActionIncomingListName(functionArgument->className) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + functionArgument->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//actionObject1->actionClassActionIncomingList.push_back(action1);
 	NLCprintDefs.printLine(codeBlockTextAddAction, level, code);
@@ -963,7 +963,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeAddActionObjectExecuteFunctio
 void NLCprintCodeBlocksFunctionsClass::generateCodeAddNewEntityToLocalList(const NLCitem* param1, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeAddNewEntityToLocalListExecuteFunction(param1, progLang, code, level);
+	generateCodeAddNewEntityToLocalListExecuteFunction(param1, progLang, code, level);
 	#else
 	string codeBlockTextCreate = NLCprintDefs.generateCodeNewEntity(param1, progLang);		//const param1className* param1 = new param1className();
 	NLCprintDefs.printLine(codeBlockTextCreate, level, code);
@@ -984,7 +984,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeAddNewEntityToLocalListExecut
 void NLCprintCodeBlocksFunctionsClass::generateCodeAddEntityToLocalList(const NLCitem* param1, const NLCitem* param2, const int progLang, string* code, const int level)
 {
 	#ifdef NLC_LIBRARY_BASE_EXTENDED
-	this->generateCodeAddEntityToLocalListExecuteFunction(param1, param2, progLang, code, level);
+	generateCodeAddEntityToLocalListExecuteFunction(param1, param2, progLang, code, level);
 	#else
 	string codeBlockText = NLCprintDefs.generateLocalListName(param1) + progLangObjectReferenceDelimiter2[progLang] + progLangAddEntityToList[progLang] + progLangOpenParameterSpace[progLang] + param2->instanceName + progLangCloseParameterSpace[progLang] + progLangEndLine[progLang];		//param1instanceList.push_back(param2);
 	NLCprintDefs.printLine(codeBlockText, level, code);
@@ -1005,7 +1005,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeForPropertyList(const NLCitem
 	string entityClassName = param1->className;
 	string entityListName = contextParam1 + NLCprintDefs.generatePropertyListName(param1);
 	string entityInstanceName = NLCprintDefs.generateEntityName(param1);
-	this->generateCodeForEntityList(entityClassName, entityListName, entityInstanceName, progLang, code, level);
+	generateCodeForEntityList(entityClassName, entityListName, entityInstanceName, progLang, code, level);
 }
 
 void NLCprintCodeBlocksFunctionsClass::generateCodeForLocalList(const NLCitem* param1, const int progLang, string* code, const int level)
@@ -1013,7 +1013,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeForLocalList(const NLCitem* p
 	string entityClassName = param1->className;
 	string entityListName = NLCprintDefs.generateLocalListName(param1);
 	string entityInstanceName = NLCprintDefs.generateEntityName(param1);
-	this->generateCodeForEntityList(entityClassName, entityListName, entityInstanceName, progLang, code, level);
+	generateCodeForEntityList(entityClassName, entityListName, entityInstanceName, progLang, code, level);
 }
 
 void NLCprintCodeBlocksFunctionsClass::generateCodeForEntityList(const string entityClassName, const string entityListName, const string entityInstanceName, const int progLang, string* code, const int level)
@@ -1031,7 +1031,7 @@ void NLCprintCodeBlocksFunctionsClass::generateCodeForConditionList(const NLCite
 	string entityListName = contextParam1 + NLCprintDefs.generateConditionListName(param1->className, param2->className);
 	string entityInstanceName1 = NLCprintDefs.generateEntityName(param1);
 	string entityInstanceName2 = NLCprintDefs.generateEntityName(param2);
-	this->generateCodeForConditionList(param1->className, param2->className, entityListName, entityInstanceName1, entityInstanceName2, progLang, code, level);
+	generateCodeForConditionList(param1->className, param2->className, entityListName, entityInstanceName1, entityInstanceName2, progLang, code, level);
 }
 
 void NLCprintCodeBlocksFunctionsClass::generateCodeForConditionList(const string entityClassName1, const string entityClassName2, const string entityListName, const string entityInstanceName1, const string entityInstanceName2, const int progLang, string* code, const int level)

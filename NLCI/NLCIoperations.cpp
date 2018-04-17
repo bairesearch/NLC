@@ -25,7 +25,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2d3a 12-November-2017
+ * Project Version: 2e1a 07-December-2017
  * Requirements: 
  *
  *******************************************************************************/
@@ -165,11 +165,12 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 	translatorVariablesTemplate->NLPrelexCompatibilityMode = NLPrelexCompatibilityMode;
 	translatorVariablesTemplate->NLPassumePreCollapsedStanfordRelations = NLPassumePreCollapsedStanfordRelations;
 	#ifdef GIA_NEURAL_NETWORK
-	translatorVariables->ANNfirstInputNeuronInNetwork = new ANNneuron();
+	translatorVariablesTemplate->ANNfirstInputNeuronInNetwork = new ANNneuron();
 	#endif
 	#ifdef GIA_NLP_CLIENT_SERVER
 	translatorVariablesTemplate->NLPclient = NLPclient;
 	#endif
+	SHAREDvarsClass().copyStringArray(NLPexeFolderArray, translatorVariablesTemplate->NLPexeFolderArray, GIA_NLP_PARSER_NUMBER_OF_TYPES);
 
 	NLCmainClass().executeNLC(
 
@@ -178,7 +179,6 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 
 		inputFolderLocal,
 		outputFolderLocal,
-		NLPexeFolderArray,
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,
@@ -410,6 +410,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	#ifdef GIA_NLP_CLIENT_SERVER
 	translatorVariablesTemplate->NLPclient = NLPclient;
 	#endif
+	SHAREDvars.copyStringArray(NLPexeFolderArray, translatorVariablesTemplate->NLPexeFolderArray, GIA_NLP_PARSER_NUMBER_OF_TYPES);
 	
 	if(query)
 	{
@@ -425,6 +426,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 		#ifdef GIA_NLP_CLIENT_SERVER
 		translatorVariablesQuery->NLPclient = NLPclient;
 		#endif
+		SHAREDvars.copyStringArray(NLPexeFolderArray, translatorVariablesQuery->NLPexeFolderArray, GIA_NLP_PARSER_NUMBER_OF_TYPES);
 	}
 	
 
@@ -435,7 +437,6 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 		inputFolderLocal,
 		outputFolderLocal,
-		NLPexeFolderArray,
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,

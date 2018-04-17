@@ -25,7 +25,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2017 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2d3a 12-November-2017
+ * Project Version: 2e1a 07-December-2017
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  *
  *******************************************************************************/
@@ -433,7 +433,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2d3a 12-November-2017" << endl;
+			cout << "NLC.exe - Project Version: 2e1a 07-December-2017" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -463,6 +463,8 @@ int main(const int argc, const char** argv)
 	#ifdef GIA_NLP_CLIENT_SERVER
 	translatorVariablesTemplate->NLPclient = NLPclient;
 	#endif
+	SHAREDvarsClass().copyStringArray(NLPexeFolderArray, translatorVariablesTemplate->NLPexeFolderArray, GIA_NLP_PARSER_NUMBER_OF_TYPES);
+	
 
 	NLCmainClass().executeNLC(
 
@@ -471,7 +473,6 @@ int main(const int argc, const char** argv)
 
 		inputFolderLocal, 
 		outputFolderLocal,
-		NLPexeFolderArray,
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,
@@ -556,7 +557,6 @@ bool NLCmainClass::executeNLC(
 			
 	string inputFolderLocal, 
 	string outputFolderLocal,
-	string NLPexeFolderArray[],
 
 	bool useInputTextPlainTXTFile,
 	string inputTextPlainTXTfileName,
@@ -930,7 +930,6 @@ bool NLCmainClass::executeNLC2()
 
 			inputFolder,
 			outputFolder,
-			NLPexeFolderArray,
 
 			useInputTextPlainTXTFile,
 			inputTextPlainTXTfileName,

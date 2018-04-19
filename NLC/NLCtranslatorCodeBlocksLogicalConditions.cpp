@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f7b 17-April-2018
+ * Project Version: 2f7c 17-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -861,9 +861,11 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 		{
 			string mathTextSubphraseContainingNLPparsablePhrase = "";
 			int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase, &mathTextSubphraseContainingNLPparsablePhrase);
+			//cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
 			if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 			{
 				#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+				//2f7b
 				//i.e. use generic operators (== / +)
 				bool foundGenericComparisonOperator = false;
 				for(int i=0; i<NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES; i++)
@@ -872,14 +874,29 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 					{
 						foundGenericComparisonOperator = true;
 					}
-				}
-				#endif
-				
+				}				
 				if(!foundGenericComparisonOperator)
 				{
-					//Note this is still not robust, e.g. "if(the dog)" where "the dog" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog is red)")
-					foundBooleanStatementExpression = true;
+				#endif
+					//2f7c
+					bool foundAuxiliaryOrVerb = false;
+					for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
+					{
+						GIApreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
+						if(isWordAuxiliaryOrVerb(currentWord))
+						{
+							foundAuxiliaryOrVerb = true;
+						}
+					}
+					
+					if(foundAuxiliaryOrVerb)
+					{
+						//Note this is still not robust, e.g. "if(the dog that has[aux] a ball)" where "the dog that has a ball" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog has a ball)")
+						foundBooleanStatementExpression = true;
+					}
+				#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 				}
+				#endif
 			}
 		}
 	}
@@ -892,31 +909,9 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 	//OLD2; not robust, as even if verb is found, the POS type will not necessarily be verb
 	for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
 	{
-		bool foundDelimiter = false;
-				
-		for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
-		{
-			if((parsablePhrase->sentenceContents)[w] == preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i])
-			{
-				foundDelimiter = true;
-			}
-		}
+		GIApreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
 		
-		#ifdef GIA_TXT_REL_TRANSLATOR_HYBRID_NLC_PREPROCESSOR_PREFERENCE_NLP_PRELIM_POS_TAGS_OVER_LRP_WORD_TYPE_LISTS
-		bool usePOSprelim = true;
-		#else
-		bool usePOSprelim = false;
-		#endif
-		#ifdef GIA_TXT_REL_TRANSLATOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY
-		bool grammaticallyStrict = true;
-		#else
-		bool grammaticallyStrict = false;
-		#endif
-		if(GIApreprocessorWordClassObject.determineIsVerb((parsablePhrase->sentenceContents)[w], usePOSprelim, grammaticallyStrict));	
-		{
-			//not robust, as even if verb is found, the POS type will not necessarily be verb
-			foundDelimiter = true;
-		}
+		bool foundDelimiter = isWordAuxiliaryOrVerb(currentWord);
 
 		if(foundDelimiter)
 		{
@@ -937,9 +932,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 			}
 		}
 	}
-	*/
 	
-	/*
 	//OLD1; not robust; what if there is more than one auxiliary of a particular type in the parsable phrase
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 	{
@@ -957,8 +950,37 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 		}
 	}
 	*/
-	
-	return foundBooleanStatementExpression;
+}
+
+bool NLCtranslatorCodeBlocksLogicalConditionsClass::isWordAuxiliaryOrVerb(GIApreprocessorPlainTextWord* currentWord)
+{
+	bool foundDelimiter = false;
+
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+	{
+		if(currentWord->tagName == preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i])	//CHECKTHIS (consider adding additional aux from wordlistAuxiliary.txt; e.g. "am")
+		{
+			foundDelimiter = true;
+		}
+	}
+
+	#ifdef GIA_TXT_REL_TRANSLATOR_HYBRID_NLC_PREPROCESSOR_PREFERENCE_NLP_PRELIM_POS_TAGS_OVER_LRP_WORD_TYPE_LISTS
+	bool usePOSprelim = true;
+	#else
+	bool usePOSprelim = false;
+	#endif
+	#ifdef GIA_TXT_REL_TRANSLATOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY
+	bool grammaticallyStrict = true;
+	#else
+	bool grammaticallyStrict = false;
+	#endif
+	if(GIApreprocessorWordIdentification.determineIsVerb(currentWord, usePOSprelim, grammaticallyStrict));	
+	{
+		//not robust, as even if verb is found, the POS type will not necessarily be verb
+		foundDelimiter = true;
+	}
+
+	return foundDelimiter;
 }
 	
 int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeSharedWrapper(bool foundBooleanStatementExpression, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)

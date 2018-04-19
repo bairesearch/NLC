@@ -26,7 +26,7 @@
  * File Name: NLCImainWindow.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f7b 17-April-2018
+ * Project Version: 2f7c 17-April-2018
  * Requirements: 
  * /
  *******************************************************************************/

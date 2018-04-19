@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f7b 17-April-2018
+ * Project Version: 2f7c 17-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -48,6 +48,7 @@
 #include "NLCprintDefs.hpp"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 #include "NLCpreprocessorMath.hpp"	//required for findCharacterAtIndexOrAfterSpace{}
 #include "GIApreprocessorWordClass.hpp"
+#include "GIApreprocessorWordIdentification.hpp"
 //#endif
 
 
@@ -62,6 +63,7 @@ class NLCtranslatorCodeBlocksLogicalConditionsClass
 	private: NLCprintDefsClass NLCprintDefs;
 	private: NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass NLCtranslatorCodeBlocksLogicalConditionsAdvanced;
 	private: NLCtranslatorCodeBlocksOperationsClass NLCtranslatorCodeBlocksOperations;
+	private: GIApreprocessorWordIdentificationClass GIApreprocessorWordIdentification;
 	private: NLCpreprocessorMathClass NLCpreprocessorMath;
 	#ifdef NLC_PREPROCESSOR_MATH
 	public: bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCpreprocessorSentence* fullSentence, const string NLCfunctionName);	
@@ -70,6 +72,7 @@ class NLCtranslatorCodeBlocksLogicalConditionsClass
 			//private: int getMathObjectVariableTypeBeforeGIA(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);	//not currently used
 				private: bool getMathObjectVariableTypeBooleanExpressionAfterGIA(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex);
 				public: bool getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);
+					private: bool isWordAuxiliaryOrVerb(GIApreprocessorPlainTextWord* currentWord);
 				private: int getMathObjectVariableTypeSharedWrapper(bool foundBooleanStatementExpression, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);
 					private: int getMathObjectVariableTypeShared(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase, string* mathTextSubphraseContainingNLPparsablePhraseRecord);
 						private: bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex);

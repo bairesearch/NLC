@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f6a 16-April-2018
+ * Project Version: 2f6b 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -41,7 +41,6 @@ GIAentityNode* logicalConditionForLoopPrimaryEntityTemp;
 #ifdef NLC_PREPROCESSOR_MATH
 bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCpreprocessorSentence* fullSentence, const string NLCfunctionName)
 {
-
 	bool result = true;
 
 	NLCcodeblock* currentCodeBlockInTreeAtBaseLevel = *currentCodeBlockInTree;
@@ -501,7 +500,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 			//FUTURE NLC - reject all sentences with !sameReferenceSet connections [as these cannot be combined with mathtext]
 		*/
 
-		int mathObjectVariableType = getMathObjectVariableType(entityNodesActiveListParsablePhrase, sentenceIndex, currentFullSentence, parsablePhrase);
+		int mathObjectVariableType = getMathObjectVariableTypeAfterGIA(entityNodesActiveListParsablePhrase, sentenceIndex, currentFullSentence, parsablePhrase);
 		if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_STATEMENT)
 		{
 			#ifdef NLC_PREPROCESSOR_MATH_USE_LOGICAL_CONDITION_OPERATIONS_ADVANCED_BACKWARDS_COMPATIBLE_VARIABLE_NAMES
@@ -794,25 +793,23 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::generateCodeBlocksFromMathTe
 	return foundParsablePhrase;
 }
 
-int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)
+int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeAfterGIA(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)
 {
-	string parsablePhraseReferenceName = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(currentFullSentence->firstNLPparsablePhraseInList->sentenceIndex, parsablePhrase);
+	bool foundBooleanStatementExpression = getMathObjectVariableTypeBooleanExpressionAfterGIA(entityNodesActiveListComplete, sentenceIndex);
+	int mathObjectVariableType = getMathObjectVariableTypeSharedWrapper(foundBooleanStatementExpression, currentFullSentence, parsablePhrase);
+	return mathObjectVariableType;
+}
+/*
+int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBeforeGIA(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)
+{
+	bool foundBooleanStatementExpression = getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate(parsablePhrase);
+	int mathObjectVariableType = getMathObjectVariableTypeSharedWrapper(foundBooleanStatementExpression, currentFullSentence, parsablePhrase);
+	return mathObjectVariableType;
+}
+*/
 
-
-	int mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
-
-	string mathTextSubphraseContainingNLPparsablePhrase = "";
-	int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
-	if(currentFullSentence->hasLogicalConditionOperator)
-	{
-		getMathTextSubphraseContainingNLPparsablePhrase(currentFullSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
-	}
-	else
-	{
-		mathTextSubphraseContainingNLPparsablePhrase = currentFullSentence->mathText;
-	}
-
-	//find boolean statement expressions
+bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBooleanExpressionAfterGIA(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex)
+{
 	bool foundBooleanStatementExpression = false;
 	for(vector<GIAentityNode*>::iterator entityIter = entityNodesActiveListComplete->begin(); entityIter != entityNodesActiveListComplete->end(); entityIter++)
 	{
@@ -848,22 +845,111 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 			}
 		}
 	}
-	/*//don't use this method (use GIA network instead):
-	for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+	return foundBooleanStatementExpression;
+}
+
+bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)
+{
+	 //parsablePhrasePrimarySubject
+	bool foundBooleanStatementExpression = false;
+
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
+	//NEW: note this function is not robust; e.g. in cases where the parsablePhrase represents NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN (e.g. "the dog = true", or "if(the dog)" where "the dog" represents a boolean value)
+	int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase);
+	if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 	{
-		int indexOfAuxiliaryTemp = currentPhrasePrimarySubject->sentenceContents.find(preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
-		if((indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		if(currentFullSentence->hasLogicalConditionOperator)
 		{
+			//Note this is still not robust, e.g. "if(the dog)" where "the dog" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog is red)")
+			foundBooleanStatementExpression = true;
+		}
+	}
+	else
+	{
+		cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
+	}
+	#else
+	cerr << "NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBooleanExpressionBeforeGIA{} error: NLC_MATH_OBJECTS_ADVANCED is required" << endl;
+	exit(EXIT_ERROR);
+	#endif
+	
+	/*
+	//OLD2; not robust, as even if verb is found, the POS type will not necessarily be verb
+	for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
+	{
+		bool foundDelimiter = false;
+				
+		for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+		{
+			if((parsablePhrase->sentenceContents)[w] == preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i])
+			{
+				foundDelimiter = true;
+			}
+		}
+		
+		#ifdef GIA_TXT_REL_TRANSLATOR_HYBRID_NLC_PREPROCESSOR_PREFERENCE_NLP_PRELIM_POS_TAGS_OVER_LRP_WORD_TYPE_LISTS
+		bool usePOSprelim = true;
+		#else
+		bool usePOSprelim = false;
+		#endif
+		#ifdef GIA_TXT_REL_TRANSLATOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY
+		bool grammaticallyStrict = true;
+		#else
+		bool grammaticallyStrict = false;
+		#endif
+		if(GIApreprocessorWordClassObject.determineIsVerb((parsablePhrase->sentenceContents)[w], usePOSprelim, grammaticallyStrict));	
+		{
+			//not robust, as even if verb is found, the POS type will not necessarily be verb
+			foundDelimiter = true;
+		}
+
+		if(foundDelimiter)
+		{
+			bool foundCorrespondingRcmod = false;
 			for(int i2=0; i2<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES; i2++)
 			{
-				int indexOfRcmodTemp = currentPhrasePrimarySubject->sentenceContents.rfind(preprocessorMathRcmodSameReferenceSetDelimiter[i2], indexOfAuxiliaryTemp);
-				if((indexOfAuxiliaryTemp != indexOfAuxiliaryTemp-(preprocessorMathRcmodSameReferenceSetDelimiter[i2].length()+1))
+				if(w >= 1)
 				{
-					foundBooleanStatementExpression = true;
+					if((parsablePhrase->sentenceContents)[w-1] == preprocessorMathRcmodSameReferenceSetDelimiter[i2])
+					{
+						foundCorrespondingRcmod = true;	
+					}
 				}
+			}
+			if(!foundCorrespondingRcmod)
+			{
+				foundBooleanStatementExpression = true;
+			}
 		}
 	}
 	*/
+	
+	/*
+	//OLD1; not robust; what if there is more than one auxiliary of a particular type in the parsable phrase
+	for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
+	{
+		int indexOfAuxiliaryTemp = GIApreprocessorWordClassObject.findStringInWordList(&(parsablePhrase->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
+		if(indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+		{
+			for(int i2=0; i2<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES; i2++)
+			{
+				int indexOfRcmodTemp = GIApreprocessorWordClassObject.findStringInWordListReverse(&(parsablePhrase->sentenceContents), preprocessorMathRcmodSameReferenceSetDelimiter[i2], indexOfAuxiliaryTemp);
+				if(indexOfAuxiliaryTemp != indexOfAuxiliaryTemp-(preprocessorMathRcmodSameReferenceSetDelimiter[i2].length()+1))
+				{
+					foundBooleanStatementExpression = true;
+				}
+			}
+		}
+	}
+	*/
+	
+	return foundBooleanStatementExpression;
+}
+	
+int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeSharedWrapper(bool foundBooleanStatementExpression, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)
+{
+	int mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+	
 	if(foundBooleanStatementExpression)
 	{
 		if(currentFullSentence->hasLogicalConditionOperator)
@@ -883,7 +969,58 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 		}
 	}
 
+	int mathObjectVariableType2 = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase);	//this requires NLC_MATH_OBJECTS to produce output
+	if(mathObjectVariableType2 != NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+	{
+		mathObjectVariableType = mathObjectVariableType2;
+	}
+	
 	#ifdef NLC_MATH_OBJECTS
+	#ifdef NLC_MATH_OBJECTS_ADVANCED
+
+	#ifdef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+	if(currentFullSentence->hasLogicalConditionOperator)
+	{
+		if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+		{
+			#ifdef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_ASSUME_LOGICAL_CONDITION_STATEMENTS_ARE_BOOLEAN_IF_UNKNOWN
+			mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
+			#else
+			cerr << "NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
+			exit(EXIT_ERROR);
+			#endif
+		}
+	}
+	#endif
+
+	#else
+	if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+	{
+		mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
+	}
+	#endif
+	#endif
+
+	return mathObjectVariableType;
+}
+
+
+int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeShared(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase)
+{
+	int mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
+
+	string parsablePhraseReferenceName = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(currentFullSentence->firstNLPparsablePhraseInList->sentenceIndex, parsablePhrase);
+	string mathTextSubphraseContainingNLPparsablePhrase = "";
+	int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
+	if(currentFullSentence->hasLogicalConditionOperator)
+	{
+		getMathTextSubphraseContainingNLPparsablePhrase(currentFullSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
+	}
+	else
+	{
+		mathTextSubphraseContainingNLPparsablePhrase = currentFullSentence->mathText;
+	}
+	
 	//find numerical expressions
 	for(int i=0; i<NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; i++)
 	{
@@ -893,6 +1030,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 		}
 	}
 
+	#ifdef NLC_MATH_OBJECTS
 	#ifdef NLC_MATH_OBJECTS_ADVANCED
 
 	//find string expressions
@@ -991,30 +1129,10 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 		}
 	}
 	#endif
-
-	#ifdef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
-	if(currentFullSentence->hasLogicalConditionOperator)
-	{
-		if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
-		{
-			#ifdef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_ASSUME_LOGICAL_CONDITION_STATEMENTS_ARE_BOOLEAN_IF_UNKNOWN
-			mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
-			#else
-			cerr << "NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: getMathObjectVariableType{} error: (currentFullSentence->hasLogicalConditionOperator) && (mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)" << endl;
-			exit(EXIT_ERROR);
-			#endif
-		}
-	}
-	#endif
-
-	#else
-	if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
-	{
-		mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
-	}
+	
 	#endif
 	#endif
-
+	
 	return mathObjectVariableType;
 }
 
@@ -1107,14 +1225,14 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContaini
 		else
 		{
 			result = false;
-			cerr << "getMathObjectVariableType{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
+			cerr << "getMathTextSubphraseContainingNLPparsablePhrase{} error: parsablePhraseReferenceNamePositionInMathtext cannot be identified" << endl;
 			exit(EXIT_ERROR);
 		}
 	}
 	else
 	{
 		result = false;
-		cerr << "getMathObjectVariableType{} error: !foundLogicalConditionStartText" << endl;
+		cerr << "getMathTextSubphraseContainingNLPparsablePhrase{} error: !foundLogicalConditionStartText" << endl;
 		exit(EXIT_ERROR);
 	}
 
@@ -1889,5 +2007,5 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::findDummyNumberAndReplaceWit
 	return result;
 }
 #endif
-
 #endif
+

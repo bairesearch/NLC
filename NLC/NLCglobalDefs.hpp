@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f6a 16-April-2018
+ * Project Version: 2f6b 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -234,6 +234,8 @@
 			#ifdef NLC_MATH_OBJECTS_BOOLEAN
 				#define NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS_ASSUME_LOGICAL_CONDITION_STATEMENTS_ARE_BOOLEAN_IF_UNKNOWN	//eg "if the dog"
 			#endif
+			//#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES (5)
+			//static string mathObjectsVariableTypeNumericalComparisonOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "~~", "&"};
 		#else
 			//NB strings: can use default string concatenation + and equality test == symbols
 			//NB booleans: boolean "== true" / "== false" test statements are supported; can say if(theDog == true) or if(theDog == false)
@@ -255,6 +257,8 @@
 				//#define NLC_MATH_OBJECTS_ADVANCED_ADDITIONS_SYMBOL_COMPARISON "=="	//implied
 				#define NLC_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME "testMathObjectValue"
 			#endif
+			//#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES (5)
+			//static string mathObjectsVariableTypeNumericalComparisonOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "+", "=="};
 		#endif
 	#endif
 	#define NLC_PREPROCESSOR_SUPPORT_WHITE_SPACE_BETWEEN_LOGICAL_CONDITION_AND_OPENING_BRACKET    //1r5j  //intermediary white text, eg "if (...)"; NB generated text will be less readable eg if((...))  //should temporarily disable when performing transitional autotesting

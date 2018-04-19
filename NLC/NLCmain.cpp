@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f1a 22-February-2018
+ * Project Version: 2f1b 22-February-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -94,16 +94,9 @@ static char errmessage[] = "Usage:  NLC.exe [options]\n\n\twhere options are any
 #ifdef COMPILE_NLC
 int main(const int argc, const char** argv)
 {
-	//print execution time
-	struct tm* current;
-	time_t now;
-	time(&now);
-	current = localtime(&now);
-	char timeAndDateString[100];
-	sprintf(timeAndDateString, "%i:%i:%i %.2i/%.2i/%i", current->tm_hour, current->tm_min, current->tm_sec, current->tm_mday, (current->tm_mon+1), (current->tm_year + TM_STRUCT_YEAR_OFFSET));
-	cout << "NLC execution time: " << timeAndDateString << " (start)" << endl;
-
 	bool result = true;
+
+	SHAREDvarsClass().printTime("NLC execution time: ", " (start)");
 
 	string currentFolder = SHAREDvarsClass().getCurrentDirectory();
 	string inputFolderLocal = currentFolder;
@@ -443,7 +436,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2f1a 22-February-2018" << endl;
+			cout << "NLC.exe - Project Version: 2f1b 22-February-2018" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -549,11 +542,7 @@ int main(const int argc, const char** argv)
 
 	);	
 	
-	//print execution time (end)
-	time(&now);
-	current = localtime(&now);
-	sprintf(timeAndDateString, "%i:%i:%i %.2i/%.2i/%i", current->tm_hour, current->tm_min, current->tm_sec, current->tm_mday, (current->tm_mon+1), (current->tm_year + TM_STRUCT_YEAR_OFFSET));
-	cout << "NLC execution time: " << timeAndDateString << " (finish)" << endl;
+	SHAREDvarsClass().printTime("NLC execution time: ", " (finish)");
 }
 #endif
 

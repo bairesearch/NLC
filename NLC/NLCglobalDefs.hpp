@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f2a 04-April-2018
+ * Project Version: 2f2b 04-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -37,6 +37,8 @@
 
 #include "SHAREDglobalDefs.hpp"
 #include "GIAglobalDefs.hpp"
+
+//#define NLC_PRINT_EXECUTION_TIME
 
 #define NLC_LIBRARY_STANDARD
 #ifndef NLC_LIBRARY_STANDARD

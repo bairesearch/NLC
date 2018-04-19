@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f8b 18-April-2018
+ * Project Version: 2f9a 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -869,15 +869,26 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 					#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 					//2f7b
 					//i.e. use generic operators (== / +)
-					bool foundGenericComparisonOperator = false;
+					bool foundNonBooleanStatementExpressionOperator = false;	
 					for(int i=0; i<NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES; i++)
 					{
 						if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeGenericOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
-							foundGenericComparisonOperator = true;
+							bool foundGenericComparisonOperator = true;
+							foundNonBooleanStatementExpressionOperator = true;
 						}
-					}				
-					if(!foundGenericComparisonOperator)
+					}
+					#ifdef NLC_MATH_OBJECTS_ADVANCED_DETECT_MALFORMED_STRING_OPERATORS
+					for(int i=0; i<NLC_MATH_OBJECTS_VARIABLE_TYPE_MALFORMED_STRING_OPERATORS_NUMBER_OF_TYPES; i++)
+					{
+						if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeMaformedStringOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+						{
+							bool foundMalformattedStringComparisonOperator = true;
+							foundNonBooleanStatementExpressionOperator =  true;
+						}
+					}
+					#endif				
+					if(!foundNonBooleanStatementExpressionOperator)
 					{
 					#endif
 						//2f7c

@@ -26,7 +26,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f8b 18-April-2018
+ * Project Version: 2f9a 18-April-2018
  * Requirements: 
  * /
  *******************************************************************************/

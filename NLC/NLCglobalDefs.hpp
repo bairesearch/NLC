@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f8b 18-April-2018
+ * Project Version: 2f9a 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -259,6 +259,12 @@
 			#endif
 			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES (2)
 			static string mathObjectsVariableTypeGenericOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES] = {"+", "=="};
+			//#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES (5)
+			#define NLC_MATH_OBJECTS_ADVANCED_DETECT_MALFORMED_STRING_OPERATORS
+			#ifdef NLC_MATH_OBJECTS_ADVANCED_DETECT_MALFORMED_STRING_OPERATORS
+				#define NLC_MATH_OBJECTS_VARIABLE_TYPE_MALFORMED_STRING_OPERATORS_NUMBER_OF_TYPES (2)
+				static string mathObjectsVariableTypeMaformedStringOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_MALFORMED_STRING_OPERATORS_NUMBER_OF_TYPES] = {"&", "~~"};	//note these are only used by NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS and are therefore malformed
+			#endif
 			//#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES (5)
 			//static string mathObjectsVariableTypeNumericalComparisonOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "+", "=="};
 		#endif

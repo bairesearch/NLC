@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -60,7 +60,7 @@ public:
 	~NLCpreprocessorParsablePhrase(void);
 
 	int sentenceIndex;
-	vector<GIApreprocessorWord*> sentenceContents;
+	vector<GIApreprocessorPlainTextWord*> sentenceContents;
 	#ifdef NLC_PREPROCESSOR_MATH;
 	int mathTextNLPparsablePhraseIndex;
 	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE

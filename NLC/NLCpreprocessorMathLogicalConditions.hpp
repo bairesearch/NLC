@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -52,7 +52,7 @@ public:
 	~NLCsubphrase(void);
 
 	int lineIndexOfFirstWordInPhrase;
-	vector<GIApreprocessorWord*> phraseContents;
+	vector<GIApreprocessorPlainTextWord*> phraseContents;
 	bool hasConjunction;
 	int conjunctionType;
 
@@ -66,14 +66,14 @@ class NLCpreprocessorMathLogicalConditionsClass
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
 	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
 
-	public: bool replaceLogicalConditionNaturalLanguageMathWithSymbols(vector<GIApreprocessorWord*>* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement);
+	public: bool replaceLogicalConditionNaturalLanguageMathWithSymbols(vector<GIApreprocessorPlainTextWord*>* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement);
 	public: bool replaceLogicalConditionNaturalLanguageMathWithSymbolsEnd(NLCpreprocessorSentence* fullSentence, const bool additionalClosingBracketRequired);
 
 	public: bool splitMathDetectedLineIntoNLPparsablePhrasesLogicalConditionAddExplicitSubjectTextForConjunctions(NLCpreprocessorSentence* fullSentence, const int* sentenceIndex, const bool additionalClosingBracketRequired);
 
 	#ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-	public: bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(vector<GIApreprocessorWord*>* lineContents, bool* detectedLogicalConditionCommand, vector<GIApreprocessorWord*>* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex);
-	public: bool generateSeparateSentencesFromCommand(vector<GIApreprocessorWord*>* logicalConditionCommandSubphraseContents, int currentIndentation, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp);
+	public: bool generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(vector<GIApreprocessorPlainTextWord*>* lineContents, bool* detectedLogicalConditionCommand, vector<GIApreprocessorPlainTextWord*>* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex);
+	public: bool generateSeparateSentencesFromCommand(vector<GIApreprocessorPlainTextWord*>* logicalConditionCommandSubphraseContents, int currentIndentation, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp);
 	#endif
 };
 

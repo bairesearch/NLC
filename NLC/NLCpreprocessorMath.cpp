@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -37,7 +37,7 @@
 #ifdef NLC_PREPROCESSOR
 #ifdef NLC_PREPROCESSOR_MATH
 
-bool NLCpreprocessorMathClass::detectMathSymbolsInLine(const vector<GIApreprocessorWord*>* lineContents)
+bool NLCpreprocessorMathClass::detectMathSymbolsInLine(const vector<GIApreprocessorPlainTextWord*>* lineContents)
 {
 	bool mathSymbolFound = false;
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
@@ -55,7 +55,7 @@ bool NLCpreprocessorMathClass::detectMathSymbolsInLine(const vector<GIApreproces
 	return mathSymbolFound;
 }
 
-bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(vector<GIApreprocessorWord*>* lineContents, const bool hasLogicalConditionOperator, const bool isMathText)
+bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(vector<GIApreprocessorPlainTextWord*>* lineContents, const bool hasLogicalConditionOperator, const bool isMathText)
 {
 	bool result = false;
 	//cout << "lineContents = " << *lineContents << endl;
@@ -111,7 +111,7 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(vector<GIApreprocessorWord*>* lineContents, int currentIndentation, const NLCpreprocessorSentence* fullSentence, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand)
+bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(vector<GIApreprocessorPlainTextWord*>* lineContents, int currentIndentation, const NLCpreprocessorSentence* fullSentence, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand)
 {
 	bool result = true;
 
@@ -138,7 +138,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoS
 	}
 	//#endif
 
-	vector<GIApreprocessorWord*> logicalConditionCommandSubphraseContents;
+	vector<GIApreprocessorPlainTextWord*> logicalConditionCommandSubphraseContents;
 	if(fullSentence->hasLogicalConditionOperator)
 	{
 		int logicalConditionCommandSubphraseLineIndex = INT_DEFAULT_VALUE;
@@ -157,7 +157,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoS
 }
 #endif
 
-bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vector<GIApreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 
@@ -181,7 +181,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	int logicalConditionOperatorNumberWords = 0; 
 	if(fullSentence->hasLogicalConditionOperator)
 	{
-		vector<GIApreprocessorWord*> logicalConditionOperationWordList;
+		vector<GIApreprocessorPlainTextWord*> logicalConditionOperationWordList;
 		GIApreprocessorMultiwordReductionClassObject.generateSentenceWordListFromStringSimple(&logicalConditionOperationWordList, &(logicalConditionOperationsArray[fullSentence->logicalConditionOperator]));
 		logicalConditionOperatorNumberWords = logicalConditionOperationWordList.size();
 		
@@ -198,14 +198,14 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 	int phraseIndex = NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX;
 	int wordIndex = 0;	//wordIndex in parsable phrase
-	vector<GIApreprocessorWord*> currentPhrase;
+	vector<GIApreprocessorPlainTextWord*> currentPhrase;
 	string mathText = "";
 	bool previousWordWasNLPparsable = false;
 	bool previousWordWasLogicalConditionOperator = false;
 	
 	for(int w=0; w<lineContents->size(); w++)
 	{
-		GIApreprocessorWord* currentWordTag = (*lineContents)[w];
+		GIApreprocessorPlainTextWord* currentWordTag = (*lineContents)[w];
 		string currentWord = currentWordTag->tagName;
 		//NLP parsable phrase is taken to be at least 2 consecutive words delimited by a space ie, [a-zA-Z0-9_] [a-zA-Z0-9_]
 				
@@ -301,7 +301,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					{//first word in mathText (type will automatically be assigned) (eg "X = ")
 
 						#ifdef NLC_MATH_OBJECTS_ADVANCED
-						vector<GIApreprocessorWord*> mathTextSubphraseContainingNLPparsablePhrase = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, 1);	//why not 2 (ie after = character)?
+						vector<GIApreprocessorPlainTextWord*> mathTextSubphraseContainingNLPparsablePhrase = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, 1);	//why not 2 (ie after = character)?
 						int mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 
 						for(int j=0; j<NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES; j++)
@@ -812,7 +812,7 @@ bool NLCpreprocessorMathClass::findCharacterAtIndexOrAfterSpace(const string* li
 	return foundCharacter;
 }
 	
-bool NLCpreprocessorMathClass::findWordAtIndex(const vector<GIApreprocessorWord*>* wordList, const int index, const string wordToFind)
+bool NLCpreprocessorMathClass::findWordAtIndex(const vector<GIApreprocessorPlainTextWord*>* wordList, const int index, const string wordToFind)
 {
 	bool result = false;
 	if(index < wordList->size())
@@ -828,7 +828,7 @@ bool NLCpreprocessorMathClass::findWordAtIndex(const vector<GIApreprocessorWord*
 
 
 #ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-bool NLCpreprocessorMathClass::replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(vector<GIApreprocessorWord*>* lineContents)
+bool NLCpreprocessorMathClass::replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords(vector<GIApreprocessorPlainTextWord*>* lineContents)
 {
 	bool result = false;
 	//replaceExplicitVariableTypesWithNLPparsablePhraseIllegalWords() is required to prevent creation of nlp parsable phrase from 2 word variable declarations
@@ -889,7 +889,7 @@ void NLCpreprocessorMathClass::removeLastMathTextVariable(NLCpreprocessorSentenc
 
 #ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 
-bool NLCpreprocessorMathClass::replaceNumericalVariablesWithDummyNumberIfNecessary(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+bool NLCpreprocessorMathClass::replaceNumericalVariablesWithDummyNumberIfNecessary(vector<GIApreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence* currentNLCsentenceInList, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	bool result = true;
 

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -236,7 +236,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;	//NLC sentence index
 		while(currentNLCprepreprocessorSentenceInList->next != NULL)
 		{
-			vector<GIApreprocessorWord*> lineContents = currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal;
+			vector<GIApreprocessorPlainTextWord*> lineContents = currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal;
 			if(lineContents.size() == 0)
 			{
 				currentNLCsentenceInList->isMath = true;
@@ -463,7 +463,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 
 
 	
-void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIApreprocessorWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIApreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	#ifdef NLC_PREPROCESSOR_MATH
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -535,7 +535,7 @@ string NLCpreprocessorClass::generateNLCfunctionFileName(const string NLCfunctio
 }
 #endif
 
-bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vector<GIApreprocessorWord*>* lineContents, int* logicalConditionOperator)
+bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vector<GIApreprocessorPlainTextWord*>* lineContents, int* logicalConditionOperator)
 {
 	*logicalConditionOperator = INT_DEFAULT_VALUE;
 	bool logicalConditionOperatorFound = false;
@@ -554,7 +554,7 @@ bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vec
 }
 
 #ifdef NLC_MATH_OBJECTS_ADVANCED
-bool NLCpreprocessorClass::detectMathObjectStringDelimiter(const vector<GIApreprocessorWord*>* lineContents)
+bool NLCpreprocessorClass::detectMathObjectStringDelimiter(const vector<GIApreprocessorPlainTextWord*>* lineContents)
 {
 	bool result = false;
 	for(int w = 0; w < lineContents->size(); w++)

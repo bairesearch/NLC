@@ -26,7 +26,7 @@
  * File Name: NLCItextDisplayOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -92,7 +92,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* te
 	GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = firstNLCprepreprocessorSentenceInList;
 	while(currentNLCprepreprocessorSentenceInList->next != NULL)
 	{
-		vector<GIApreprocessorWord*>* sentence = NULL;
+		vector<GIApreprocessorPlainTextWord*>* sentence = NULL;
 		#ifdef USE_GIAI
 		if(displayLRPprocessedText)
 		{
@@ -130,7 +130,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlight(QTextBrowser* te
 	return result;
 }
 
-bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QTextBrowser* textBrowser, vector<GIApreprocessorWord*>* sentence, const int sentenceIndex, const int functionIndex, string* htmlSource)
+bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QTextBrowser* textBrowser, vector<GIApreprocessorPlainTextWord*>* sentence, const int sentenceIndex, const int functionIndex, string* htmlSource)
 {
 	bool result = true;
 
@@ -140,7 +140,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QTextBro
 
 	for(int i=0; i<sentence->size(); i++)
 	{
-		GIApreprocessorWord* wordTag = (*sentence)[i];
+		GIApreprocessorPlainTextWord* wordTag = (*sentence)[i];
 		string word = wordTag->tagName;
 		//cout << "word = " << word << endl;
 
@@ -213,7 +213,7 @@ bool NLCItextDisplayOperationsClass::processTextForNLChighlightSentence(QTextBro
 #ifdef USE_NLCI
 /*
 //use this function in case label_linkActivated can't distinguish between the NLCItextDisplayWindowClass class object which triggered the function
-bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, GIApreprocessorWord** wordTagFound)
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, GIApreprocessorPlainTextWord** wordTagFound)
 {
 	bool result = true;
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
@@ -231,17 +231,17 @@ bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, con
 	return result;
 }
 */
-bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* activeNLCfunctionInList, GIApreprocessorWord** wordTagFound, int* sentenceIndexUpdated)
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* activeNLCfunctionInList, GIApreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated)
 {
 	return getWordByIndex(sentenceIndex, wordIndex, activeNLCfunctionInList->firstNLCprepreprocessorSentenceInList, wordTagFound, sentenceIndexUpdated);
 }
 #elif defined USE_GIAI
-bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorWord** wordTagFound, int* sentenceIndexUpdated)
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated)
 {
 	return getWordByIndex(sentenceIndex, wordIndex,  translatorVariablesTemplate->firstGIApreprocessorSentenceInList, wordTagFound, sentenceIndexUpdated);
 }
 #endif
-bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorWord** wordTagFound, int* sentenceIndexUpdated)
+bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated)
 {
 	bool result = false;
 
@@ -253,12 +253,12 @@ bool NLCItextDisplayOperationsClass::getWordByIndex(const int sentenceIndex, con
 		if(sentenceIndex == currentSentenceIndex)
 		{
 			//cout << "currentSentenceIndex = " << currentSentenceIndex << endl;
-			vector<GIApreprocessorWord*>* sentence = &(currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal);
+			vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal);
 			for(int i=0; i<sentence->size(); i++)
 			{
 				if(i == wordIndex)
 				{
-					GIApreprocessorWord* wordTag = (*sentence)[i];
+					GIApreprocessorPlainTextWord* wordTag = (*sentence)[i];
 					*wordTagFound = wordTag;
 					#ifdef USE_GIAI
 					#ifdef GIA_PREPROCESSOR_ASSIGN_UNIQUE_SENTENCE_INDICES_FOR_SENTENCES

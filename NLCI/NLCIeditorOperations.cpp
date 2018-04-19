@@ -26,7 +26,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -132,7 +132,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlight(QVector<High
 	GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList = firstNLCpreprepreprocessorSentenceInList;
 	while(currentNLCpreprepreprocessorSentenceInList->next != NULL)
 	{
-		vector<GIApreprocessorWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
+		vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
 		//cout << "currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 		if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 		{
@@ -183,7 +183,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QV
 {
 	bool result = true;
 
-	vector<GIApreprocessorWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
+	vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
 	//cout << "preprepreprocessTextForNLCsingleLinehighlight{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 	if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 	{
@@ -193,14 +193,14 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QV
 	return result;
 }
 
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorWord*>* sentence, const bool useOriginalSpacing)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorPlainTextWord*>* sentence, const bool useOriginalSpacing)
 {
 	int characterIndexFirst = 0;
 	int charCount = 0;
 	for(int i=0; i<sentence->size(); i++)
 	{
 		string spaceText = STRING_SPACE;
-		GIApreprocessorWord* wordTag = (*sentence)[i];
+		GIApreprocessorPlainTextWord* wordTag = (*sentence)[i];
 		string word = wordTag->tagName;
 
 		bool ignoreWord = false;

@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMathLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f2b 04-April-2018
+ * Project Version: 2f3a 10-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -51,7 +51,7 @@ NLCsubphrase::~NLCsubphrase(void)
 }
 #endif
 
-bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLanguageMathWithSymbols(vector<GIApreprocessorWord*>* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement)
+bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLanguageMathWithSymbols(vector<GIApreprocessorPlainTextWord*>* lineContents, int logicalConditionOperator, bool* additionalClosingBracketRequired, const bool parallelReplacement)
 {
 	bool result = true;
 
@@ -85,7 +85,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::replaceLogicalConditionNaturalLa
 	#endif
 	
 	
-	vector<GIApreprocessorWord*> logicalConditionOperationWordList;
+	vector<GIApreprocessorPlainTextWord*> logicalConditionOperationWordList;
 	GIApreprocessorMultiwordReductionClassObject.generateSentenceWordListFromStringSimple(&logicalConditionOperationWordList, &(logicalConditionOperationsArray[logicalConditionOperator]));
 	
 	if(!parallelReplacement)
@@ -278,7 +278,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 
 			if(indexOfPrimaryAuxiliaryTaggingSubject != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{
-				vector<GIApreprocessorWord*> subjectText = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(&(currentPhrasePrimarySubject->sentenceContents), 0, indexOfPrimaryAuxiliaryTaggingSubject);
+				vector<GIApreprocessorPlainTextWord*> subjectText = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(&(currentPhrasePrimarySubject->sentenceContents), 0, indexOfPrimaryAuxiliaryTaggingSubject);
 
 				NLCpreprocessorParsablePhrase* currentPhraseReferenceToPrimarySubject = currentPhrasePrimarySubject->next;
 				for(int phraseIndex2=phraseIndex+1; phraseIndex2<fullSentence->mathTextNLPparsablePhraseTotal; phraseIndex2++)
@@ -353,7 +353,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::splitMathDetectedLineIntoNLPpars
 }
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
-bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(vector<GIApreprocessorWord*>* lineContents, bool* detectedLogicalConditionCommand, vector<GIApreprocessorWord*>* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex)
+bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicitConjunctionsAndIdentifyCommand(vector<GIApreprocessorPlainTextWord*>* lineContents, bool* detectedLogicalConditionCommand, vector<GIApreprocessorPlainTextWord*>* logicalConditionCommandSubphraseContents, int* logicalConditionCommandSubphraseLineIndex)
 {
 	bool result = true;
 
@@ -386,7 +386,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 			}
 		}
 
-		vector<GIApreprocessorWord*> subphraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
+		vector<GIApreprocessorPlainTextWord*> subphraseContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, startPosToSearchForComma, indexOfNextComma-startPosToSearchForComma);
 
 
 		currentNLCsubphraseInList->lineIndexOfFirstWordInPhrase = startPosToSearchForComma;
@@ -556,7 +556,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateLogicalConditionImplicit
 
 
 
-bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCommand(vector<GIApreprocessorWord*>* logicalConditionCommandSubphraseContents, int currentIndentation, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp)
+bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCommand(vector<GIApreprocessorPlainTextWord*>* logicalConditionCommandSubphraseContents, int currentIndentation, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp)
 {
 	/*
 	algorithm;
@@ -612,7 +612,7 @@ bool NLCpreprocessorMathLogicalConditionsClass::generateSeparateSentencesFromCom
 			indexOfNextConjunction = logicalConditionCommandSubphraseContents->size();
 		}
 
-		vector<GIApreprocessorWord*> subCommandContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(logicalConditionCommandSubphraseContents, startPosToSearchForConjunction, indexOfNextConjunction-startPosToSearchForConjunction);	//CHECKTHIS; length parameter used to be indexOfNextConjunction
+		vector<GIApreprocessorPlainTextWord*> subCommandContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(logicalConditionCommandSubphraseContents, startPosToSearchForConjunction, indexOfNextConjunction-startPosToSearchForConjunction);	//CHECKTHIS; length parameter used to be indexOfNextConjunction
 
 		if(foundConjunction)
 		{

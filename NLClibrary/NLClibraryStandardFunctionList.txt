@@ -1,5 +1,0 @@
-function move+NLCgenericEntity
-function copy+NLCgenericEntity
-function print+NLCgenericEntity
-function write+NLCgenericEntity
-function read+NLCgenericEntity

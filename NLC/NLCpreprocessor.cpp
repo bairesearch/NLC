@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f3a 10-April-2018
+ * Project Version: 2f4a 14-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -370,6 +370,18 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 			{	
 				first = false;
 				functionContents = functionContents + indentationContents + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
+				
+				#ifdef GIA_TXT_REL_TRANSLATOR_RULES_PARSE_ISOLATED_SUBREFERENCE_SETS_OPTIMISED
+				if(currentSentence->isMath)
+				{
+					currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSets = true;
+					currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSetsFirst = true;
+					if(!(currentSentence->hasLogicalConditionOperator))
+					{
+						currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSetsOnly = true;
+					}
+				}
+				#endif
 				
 				#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
 				currentGIApreprocessorSentenceInList->sentenceIndexOriginal = sentenceIndexOriginal;

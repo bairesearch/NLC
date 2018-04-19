@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f7a 17-April-2018
+ * Project Version: 2f7b 17-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -377,6 +377,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				{
 					if(currentSentence->isMath)
 					{
+						//cout << "getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate:" << endl;
 						if(!NLCtranslatorCodeBlocksLogicalConditions.getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate(currentSentence, currentParsablePhrase))	//if estimated to have foundBooleanStatementExpression, then !parseIsolatedSubreferenceSets	//added 2f6b
 						{
 							//cout << "(currentSentence->isMath) currentSentence->mathText = : " << currentSentence->mathText << endl;
@@ -384,6 +385,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 							currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSetsFirst = true;
 							if(!(currentSentence->hasLogicalConditionOperator))
 							{
+								//cout << "(!(currentSentence->hasLogicalConditionOperator))" << endl;
 								currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSetsOnly = true;
 							}
 						}

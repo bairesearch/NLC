@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f7a 17-April-2018
+ * Project Version: 2f7b 17-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -257,6 +257,8 @@
 				//#define NLC_MATH_OBJECTS_ADVANCED_ADDITIONS_SYMBOL_COMPARISON "=="	//implied
 				#define NLC_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME "testMathObjectValue"
 			#endif
+			#define NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES (2)
+			static string mathObjectsVariableTypeGenericOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES] = {"+", "=="};
 			//#define NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES (5)
 			//static string mathObjectsVariableTypeNumericalComparisonOperators[NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES] = {">", "<", ">=", "<=", "+", "=="};
 		#endif

@@ -26,7 +26,7 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -51,7 +51,7 @@ NLCImainWindowClass::NLCImainWindowClass(QWidget *parent)
 	projectName = "";
 
 	setCentralWidget(textBox);
-	setWindowTitle(tr("NLCI"));
+	setWindowTitle(tr(NLCI_MAIN_WINDOW_TITLE));
 	
 }
 
@@ -527,7 +527,7 @@ void NLCImainWindowClass::setupTextBrowser()
 
 	textBox = new QTextEdit();
 	textBox->setReadOnly(true);
-	textBox->setText("Welcome to NLCI (Natural Language Compiler Interface)");
+	textBox->setText(NLCI_WELCOME_MESSAGE);
 
 	/*
 	QPalette* palette = new QPalette();

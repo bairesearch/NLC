@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #include "NLCglobalDefs.hpp"
 #include "NLCpreprocessorSentenceClass.hpp"
 #include "NLCpreprocessorMathLogicalConditions.hpp"
-#include "GIApreprocessorMultiwordReductionClass.hpp"
+#include "GIApreprocessorWordClass.hpp"
 #include "NLCprintDefs.hpp" //required for progLangOpenParameterSpace
 #include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
@@ -51,7 +51,7 @@ class NLCpreprocessorMathClass
 	private: SHAREDvarsClass SHAREDvars;
 	private: NLCpreprocessorMathLogicalConditionsClass NLCpreprocessorMathLogicalConditions;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
-	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	
 	public: bool detectMathSymbolsInLine(const vector<GIApreprocessorPlainTextWord*>* lineContents);
 	public: bool detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(vector<GIApreprocessorPlainTextWord*>* lineContents, const bool hasLogicalConditionOperator, const bool isMathText);

@@ -26,7 +26,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -558,25 +558,24 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 int NLCIoperationsClass::preprepreprocessTextForNLChighlightWordDetermineColourIndex(const string* word)
 {
 	int colourIndex = NLCI_EDITOR_DEFAULT_FONT_COLOUR;
-	int grammaticalBaseTenseForm = INT_DEFAULT_VALUE;
-	string baseNameFoundNOTUSED = "";
-	if(GIApreprocessorMultiwordReduction.determineVerbCaseStandardWithAdditional(*word, &baseNameFoundNOTUSED, &grammaticalBaseTenseForm))
+
+	if(GIApreprocessorWordIdentification.determineIsVerbString(*word))
 	{
 		colourIndex = GIA_DRAW_VERB_NODE_COLOUR;
 	}
-	else if(GIApreprocessorMultiwordReduction.determineIsPreposition(*word))
+	else if(GIApreprocessorWordIdentification.determineIsPrepositionString(*word))
 	{
 		colourIndex = GIA_DRAW_PREPOSITION_NODE_COLOUR;
 	}
-	else if(GIApreprocessorMultiwordReduction.determineIsAdverb(*word))
+	else if(GIApreprocessorWordIdentification.determineIsAdverbString(*word))
 	{
 		colourIndex = GIA_DRAW_ADVERB_NODE_COLOUR;
 	}
-	else if(GIApreprocessorMultiwordReduction.determineIsAdjective(*word))
+	else if(GIApreprocessorWordIdentification.determineIsAdjectiveString(*word))
 	{
 		colourIndex = GIA_DRAW_ADJECTIVE_NODE_COLOUR;
 	}
-	else if(GIApreprocessorMultiwordReduction.determineIsNoun(*word))
+	else if(GIApreprocessorWordIdentification.determineIsNounString(*word))
 	{
 		colourIndex = GIA_DRAW_NOUN_NODE_COLOUR;
 	}

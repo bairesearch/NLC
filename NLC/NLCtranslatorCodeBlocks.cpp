@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocks.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -363,12 +363,12 @@ bool NLCtranslatorCodeBlocksClass::declareLocalPropertyListsForIndefiniteEntitie
 	}
 
 	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
-	//added 1q14e - CHECKTHIS: is this required?
+	//added 1q14e - CHECKTHIS: is this required? [NB it will detect GIA_SHARED_POS_TYPE_POSSESSIVEENDING]
 	if(NLCpreprocessorSentenceClass.isStringIllegalTargetSourceCharacter(entityNode->entityName))
 	{
 		if(validClassContents)
 		{
-			cout << "declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks{} error: isStringIllegalTargetSourceCharacter; entityNode->entityName = " << entityNode->entityName << endl;
+			//cout << "declareLocalPropertyListsForIndefiniteEntitiesValidClassChecks{} error: isStringIllegalTargetSourceCharacter; entityNode->entityName = " << entityNode->entityName << endl;
 		}
 		validClassContents = false;
 	}

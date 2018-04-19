@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -65,10 +65,10 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 		{
 			//convert x is equal to/equals the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
-			//cout << "lineContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(lineContents) << endl;
+			//cout << "lineContents = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(lineContents) << endl;
 			//cout << "preprocessorMathOperatorsEquivalentNumberOfTypes[i] = " << preprocessorMathOperatorsEquivalentNumberOfTypes[i] << endl;
 			//cout << "preprocessorMathOperators[i] = " << preprocessorMathOperators[i] << endl;
-			if(GIApreprocessorMultiwordReductionClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i]))
+			if(GIApreprocessorWordClassObject.findAndReplaceAllOccurancesSimpleSubstringInWordListWithSimpleSubstring(lineContents, preprocessorMathOperatorsEquivalentNumberOfTypes[i], preprocessorMathOperators[i]))
 			{
 				result = true;
 			}
@@ -85,7 +85,7 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 					//ie 'is "' NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_STRING
 					(*lineContents)[w]->tagName = NLC_PREPROCESSOR_MATH_OPERATOR_STRING_EQUALS_SET; 	//NLC_PREPROCESSOR_MATH_OPERATOR_STRING_EQUALS_SET_NEW
 					result = true;
-					//cout << "lineContents = " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(lineContents) << endl;
+					//cout << "lineContents = " <<  GIApreprocessorWordClassObject.generateTextFromVectorWordList(lineContents) << endl;
 				}
 			}
 		}
@@ -95,7 +95,7 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.
 		//convert "x is the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
 		bool foundMatchedString = false;
-		if(GIApreprocessorMultiwordReductionClassObject.findAndReplaceSimpleSubstringInWordListAtIndexWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET))
+		if(GIApreprocessorWordClassObject.findAndReplaceSimpleSubstringInWordListAtIndexWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET))
 		{
 			result = true;
 			
@@ -132,7 +132,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoS
 			//add a comma after "else", such that the logical condition command will be created (in a new sentence) instead of creating an nlp parsable phrase
 			if((lineContents->size() >= 2) && ((*lineContents)[1]->tagName != STRING_COMMA))
 			{ 
-				GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(lineContents, STRING_COMMA, 1);
+				GIApreprocessorWordClassObject.insertStringIntoWordList(lineContents, STRING_COMMA, 1);
 			}
 		}
 	}
@@ -148,7 +148,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoS
 		}
 		if(*detectedLogicalConditionCommand)
 		{
-			*lineContents = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, 0, logicalConditionCommandSubphraseLineIndex); 
+			*lineContents = GIApreprocessorWordClassObject.extractSubWordListInWordList(lineContents, 0, logicalConditionCommandSubphraseLineIndex); 
 			NLCpreprocessorMathLogicalConditions.generateSeparateSentencesFromCommand(&logicalConditionCommandSubphraseContents, currentIndentation+1, firstSentenceInLogicalConditionCommandTemp);
 		}
 	}
@@ -182,7 +182,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	if(fullSentence->hasLogicalConditionOperator)
 	{
 		vector<GIApreprocessorPlainTextWord*> logicalConditionOperationWordList;
-		GIApreprocessorMultiwordReductionClassObject.generateSentenceWordListFromStringSimple(&logicalConditionOperationWordList, &(logicalConditionOperationsArray[fullSentence->logicalConditionOperator]));
+		GIApreprocessorWordClassObject.generateSentenceWordListFromStringSimple(&logicalConditionOperationWordList, &(logicalConditionOperationsArray[fullSentence->logicalConditionOperator]));
 		logicalConditionOperatorNumberWords = logicalConditionOperationWordList.size();
 		
 		if(!NLCpreprocessorMathLogicalConditions.replaceLogicalConditionNaturalLanguageMathWithSymbols(lineContents, fullSentence->logicalConditionOperator, &additionalClosingBracketRequired, false))
@@ -193,7 +193,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	#endif
 
 	#ifdef NLC_PREPROCESSOR_DEBUG
-	cout << "splitMathDetectedLineIntoNLPparsablePhrases lineContents = " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(lineContents) << endl;
+	cout << "splitMathDetectedLineIntoNLPparsablePhrases lineContents = " <<  GIApreprocessorWordClassObject.generateTextFromVectorWordList(lineContents) << endl;
 	#endif
 
 	int phraseIndex = NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX;
@@ -301,13 +301,13 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					{//first word in mathText (type will automatically be assigned) (eg "X = ")
 
 						#ifdef NLC_MATH_OBJECTS_ADVANCED
-						vector<GIApreprocessorPlainTextWord*> mathTextSubphraseContainingNLPparsablePhrase = GIApreprocessorMultiwordReductionClassObject.extractSubWordListInWordList(lineContents, 1);	//why not 2 (ie after = character)?
+						vector<GIApreprocessorPlainTextWord*> mathTextSubphraseContainingNLPparsablePhrase = GIApreprocessorWordClassObject.extractSubWordListInWordList(lineContents, 1);	//why not 2 (ie after = character)?
 						int mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN;
 
 						for(int j=0; j<NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN_OPERATORS_NUMBER_OF_TYPES; j++)
 						{
-							//OR: if(GIApreprocessorMultiwordReductionClassObject.findStringInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeBooleanOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
-							if(GIApreprocessorMultiwordReductionClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeBooleanOperators[j]))
+							//OR: if(GIApreprocessorWordClassObject.findStringInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeBooleanOperators[j]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+							if(GIApreprocessorWordClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeBooleanOperators[j]))
 							{
 								mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN;
 							}
@@ -315,11 +315,11 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 						for(int j=0; j<NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_OPERATORS_NUMBER_OF_TYPES; j++)
 						{
-							if(GIApreprocessorMultiwordReductionClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeNumericalOperators[j]))
+							if(GIApreprocessorWordClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeNumericalOperators[j]))
 							{
 								mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
 							}
-							if(GIApreprocessorMultiwordReductionClassObject.findSimpleSubstringInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeNumericalOperators[j]))
+							if(GIApreprocessorWordClassObject.findSimpleSubstringInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeNumericalOperators[j]))
 							{
 								mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL;
 							}
@@ -327,7 +327,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 						for(int j=0; j<NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING_OPERATORS_NUMBER_OF_TYPES; j++)
 						{
-							if(GIApreprocessorMultiwordReductionClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeStringOperators[j]))
+							if(GIApreprocessorWordClassObject.findSubstringAtStartOfWordInWordList(&mathTextSubphraseContainingNLPparsablePhrase, mathObjectsVariableTypeStringOperators[j]))
 							{
 								mathObjectVariableType = NLC_MATH_OBJECTS_VARIABLE_TYPE_STRING;
 							}
@@ -362,8 +362,8 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 						//#ifdef NLC_DEBUG_PREPROCESSOR_MATH_DETECT_AND_DECLARE_UNDECLARED_VARIABLES
 						cout << "implicitly declared mathText variable detected: declaring " << variableTypeMathtext << " " << currentWord << endl;	//inserting mathText variable declaration type (eg double)
 						//#endif
-						GIApreprocessorMultiwordReductionClassObject.insertStringIntoWordList(&currentPhrase, variableTypeMathtext, 0);
-						//cout << " currentPhrase = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
+						GIApreprocessorWordClassObject.insertStringIntoWordList(&currentPhrase, variableTypeMathtext, 0);
+						//cout << " currentPhrase = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
 
 						newlyDeclaredVariable = currentWord;
 						addMathTextVariable = true;
@@ -374,9 +374,9 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 						for(int j=0; j<NLC_PREPROCESSOR_MATH_MATHTEXT_VARIABLES_NUMBER_OF_TYPES; j++)
 						{
 							#ifdef NLC_PREPROCESSOR_MATH_SUPPORT_USER_VARIABLE_TYPE_DECLARATIONS
-							int indexOfType = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, preprocessorMathMathTextVariables[j]);
+							int indexOfType = GIApreprocessorWordClassObject.findStringInWordList(lineContents, preprocessorMathMathTextVariables[j]);
 							#else
-							int indexOfType = GIApreprocessorMultiwordReductionClassObject.findStringInWordList(lineContents, preprocessorMathNaturalLanguageVariables[j]);
+							int indexOfType = GIApreprocessorWordClassObject.findStringInWordList(lineContents, preprocessorMathNaturalLanguageVariables[j]);
 							#endif
 							if((indexOfType != CPP_STRING_FIND_RESULT_FAIL_VALUE) && (indexOfType < w))	//e.g. variableType(w-1) variableName(w) =(w+1)
 							{
@@ -411,7 +411,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 
 		if(logicalConditionOperatorInSentence)
 		{
-			mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, firstWordInSentence);
+			mathText = mathText + GIApreprocessorWordClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, firstWordInSentence);
 			currentPhrase.clear();
 		}
 		else
@@ -457,7 +457,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					if(!lastWordOfPhraseIsFullStop)
 					{
 					#endif
-						GIApreprocessorMultiwordReductionClassObject.addStringToWordList(&currentPhrase, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR));	//append a fullstop to the NLP parsable phrase to make it readable by NLP
+						GIApreprocessorWordClassObject.addStringToWordList(&currentPhrase, SHAREDvars.convertCharToString(NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR));	//append a fullstop to the NLP parsable phrase to make it readable by NLP
 					#ifdef NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
 					}
 					#endif
@@ -499,7 +499,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 							#endif
 						}
 
-						mathText = mathText + GIApreprocessorMultiwordReductionClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, !prependWhiteSpace);
+						mathText = mathText + GIApreprocessorWordClassObject.generateTextFromPreprocessorSentenceWord(currentWordTag, false, !prependWhiteSpace);
 					}
 					
 					#ifndef NLC_PREPROCESSOR_MATH_MAINTAIN_CONSISTENT_WHITESPACE_FOR_BRACKETS_IN_MATHTEXT
@@ -523,7 +523,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					}
 										
 					//added 2b3g;
-					//cout << "mathText = mathText + " <<  GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
+					//cout << "mathText = mathText + " <<  GIApreprocessorWordClassObject.generateTextFromVectorWordList(&currentPhrase) << endl;
 					string spaceTextBefore = "";
 					string spaceTextAfter = "";
 					
@@ -541,7 +541,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 					}	
 					#endif
 					
-					mathText = mathText + spaceTextBefore + GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&currentPhrase) + spaceTextAfter;
+					mathText = mathText + spaceTextBefore + GIApreprocessorWordClassObject.generateTextFromVectorWordList(&currentPhrase) + spaceTextAfter;
 				}
 
 				currentPhrase.clear();	//restart phrase (assuming it contains text)
@@ -575,7 +575,7 @@ bool NLCpreprocessorMathClass::splitMathDetectedLineIntoNLPparsablePhrases(vecto
 	if(fullSentence->mathTextNLPparsablePhraseTotal == 0)
 	{
 		//add dummy phrase for NLP to parse (will not be used by NLC; create NLP/GIA sentence as a filler for math text replacement only)
-		GIApreprocessorMultiwordReductionClassObject.addStringArrayToWordList((&currentParsablePhraseInList->sentenceContents), preprocessorMathNLPparsablePhraseDummyWordArray, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS);
+		GIApreprocessorWordClassObject.addStringArrayToWordList((&currentParsablePhraseInList->sentenceContents), preprocessorMathNLPparsablePhraseDummyWordArray, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS);
 		currentParsablePhraseInList->sentenceIndex = (*sentenceIndex);	//added 1r5h
 		currentParsablePhraseInList->next = new NLCpreprocessorParsablePhrase();
 		currentParsablePhraseInList = currentParsablePhraseInList->next;

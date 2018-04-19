@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -38,7 +38,7 @@
 #include "NLCglobalDefs.hpp"
 #include "SHAREDvars.hpp"
 #include "GIApreprocessorSentenceClass.hpp"
-#include "GIApreprocessorMultiwordReductionClass.hpp"
+#include "GIApreprocessorWordClass.hpp"
 
 class NLCvariable
 {
@@ -110,6 +110,7 @@ public:
 	#ifdef NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_REPLACE_ACTION_ALSO_DUE_TO_NLP_LIMITATION
 	string singleWordSentenceActionName;
 	#endif
+	bool isBlankSentence;
 	
 	NLCpreprocessorSentence* next;
 
@@ -139,7 +140,7 @@ public:
 class NLCpreprocessorSentenceClassClass
 {
 	private: SHAREDvarsClass SHAREDvars;
-	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 
 	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase);
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP

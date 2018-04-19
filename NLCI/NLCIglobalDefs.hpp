@@ -26,7 +26,7 @@
  * File Name: NLCIglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -37,7 +37,7 @@
 
 #include "NLCglobalDefs.hpp"
 
-#define NLCI_OPEN_NLC
+//#define NLCI_OPEN_NLC
 
 //#define NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS	//this will not work if the user adds a new file of the same name as an already associated file to the project
 //#define NLCI_EDITOR_HIGHLIGHT_HTML	//else use qt syntax highlighter
@@ -71,8 +71,11 @@
 #define NLCI_LRP_ROOT_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
 
 
+
 #ifdef USE_NLCI
 
+#define NLCI_MAIN_WINDOW_TITLE "NLCI"
+#define NLCI_WELCOME_MESSAGE "Welcome to NLCI (Natural Language Compiler Interface)"
 #define NLCI_NLC_NLP_CLIENT (true)
 #define NLCI_NLC_USE_LRP (true)
 #define NLCI_NLC_LRP_FOLDER NLCI_LRP_ROOT_FOLDER
@@ -102,6 +105,8 @@
 
 #elif defined USE_GIAI
 
+#define NLCI_MAIN_WINDOW_TITLE "GIAI"
+#define NLCI_WELCOME_MESSAGE "Welcome to GIAI (General Intelligence Algorithm Interface)"
 #define NLCI_GIA_NLP_CLIENT (true)
 #define NLCI_GIA_USE_LRP (true)
 #define NLCI_GIA_LRP_FOLDER NLCI_LRP_ROOT_FOLDER

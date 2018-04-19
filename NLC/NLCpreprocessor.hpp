@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -42,7 +42,7 @@
 #include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
 #include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
 #include "GIApreprocessor.hpp"
-#include "GIApreprocessorMultiwordReductionClass.hpp"
+#include "GIApreprocessorWordClass.hpp"
 #include "GIAtranslatorOperations.hpp"
 
 
@@ -52,7 +52,7 @@ class NLCpreprocessorClass
 	private: SHAREDvarsClass SHAREDvars;
 	private: NLCpreprocessorMathClass NLCpreprocessorMath;
 	private: GIApreprocessorClass GIApreprocessor;
-	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
 	public: bool preprocessTextForNLCwrapper(const string inputFileName, NLCfunction** firstNLCfunctionInList, bool* detectedFunctions, int* numberOfFunctionsInList, vector<string>* inputTextFileNameList, const string outputFileName);
 		public: bool preprocessTextForNLCextractFunctionsAndCreatePreprocessSentences(vector<string>* fileLinesList, NLCfunction* firstNLCfunctionInList, bool* detectedFunctions, int* numberOfFunctionsInList, vector<string>* inputTextFileNameList);

@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -504,7 +504,7 @@
 		#endif
 		#define NLC_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
-	#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
+	#ifdef GIA_PREPROCESSOR_WORD_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK	//1n2e
 	#endif
 	//#define NLC_NONOO	//1n1a
@@ -515,15 +515,15 @@
 #endif
 
 #ifndef NLC_DEBUG_DISABLE_1m_CODE
-	#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef GIA_PREPROCESSOR_WORD_NORMALISE_INVERSE_PREPOSITIONS
 		#define NLC_NORMALISE_INVERSE_PREPOSITIONS
 		#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
 			#define NLC_PARSE_CONDITION_PARENTS
 		#endif
 	#endif
-	#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NORMALISE_TWOWAY_PREPOSITIONS
+	#ifdef GIA_PREPROCESSOR_WORD_NORMALISE_TWOWAY_PREPOSITIONS
 		#define NLC_NORMALISE_TWOWAY_PREPOSITIONS
-		#ifdef GIA_PREPROCESSOR_MULTIWORD_REDUCTION_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+		#ifdef GIA_PREPROCESSOR_WORD_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED	//GIA dual conditions are enabled (NLC will not parse GIA entities with inverseConditionTwoWay set; prevents infinite loop parsing - relies on GIA advanced referencing to parse inverted sentence contents. E.g. sentenceIndex1: a new two way condition is created (the inverted condition of which has a inverseConditionTwoWay set) (eg Tom is near the house). This inverted condition is referenced using GIA advanced referencing by a new sentenceIndex2 with inverted sentence contents (eg The house that is near Tom). Yet the condition connection created for the referenced condition (sentenceIndex2) will not be inverted, therefore it will be correctly parsed by NLC)
 		#else
 			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED	//GIA dual conditions are disabled (NLC will create dual condition links; required for parsing of inverted sentence contents; eg Tom is near the house. The house that is near Tom is red.)
@@ -917,10 +917,17 @@
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_PHRASE "P"
 		//#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_LEVEL "L"	//not currently used
 		//#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_CASE "C"	//not currently used
-		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY "Do this."
-		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS (3)
-		static string preprocessorMathNLPparsablePhraseDummyWordArray[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS] = {"Do", "this", "."};
-				
+		
+		#ifdef GIA_TXT_REL_TRANSLATOR_RULES
+			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY "Make this."
+			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS (3)
+			static string preprocessorMathNLPparsablePhraseDummyWordArray[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS] = {"Make", "this", "."};
+		#else
+			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY "Do this."
+			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS (3)
+			static string preprocessorMathNLPparsablePhraseDummyWordArray[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS] = {"Do", "this", "."};	
+		#endif
+						
 		#define NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP	//old name: NLC_PREPROCESSOR_SUPPORT_MATH_DETECT_NUMERICAL_VARIABLES
 		#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
 			#define NLC_PREPROCESSOR_MATH_DUMMY_NUMBER_VALUE_BASE (9900)

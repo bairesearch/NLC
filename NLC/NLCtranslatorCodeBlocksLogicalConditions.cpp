@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -877,7 +877,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableType(vec
 			#else
 			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
 			cerr << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
-			cerr << "parsablePhrase->sentenceContents = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(parsablePhrase->sentenceContents)) << endl;
+			cerr << "parsablePhrase->sentenceContents = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(parsablePhrase->sentenceContents)) << endl;
 			exit(EXIT_ERROR);
 			#endif
 		}

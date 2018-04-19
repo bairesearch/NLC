@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -47,7 +47,7 @@
 #include "GIAtranslatorOperations.hpp"	//required for getPrimaryNetworkIndexNodeDefiningInstance{}
 #include "NLCprintDefs.hpp"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 #include "NLCpreprocessorMath.hpp"	//required for findCharacterAtIndexOrAfterSpace{}
-#include "GIApreprocessorMultiwordReductionClass.hpp"
+#include "GIApreprocessorWordClass.hpp"
 //#endif
 
 
@@ -59,7 +59,7 @@ class NLCtranslatorCodeBlocksLogicalConditionsClass
 	private: NLCitemClassClass NLCitemClass;
 	private: GIAtranslatorOperationsClass GIAtranslatorOperations;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
-	private: GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	private: NLCprintDefsClass NLCprintDefs;
 	private: NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass NLCtranslatorCodeBlocksLogicalConditionsAdvanced;
 	private: NLCtranslatorCodeBlocksOperationsClass NLCtranslatorCodeBlocksOperations;

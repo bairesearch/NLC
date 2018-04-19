@@ -26,7 +26,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -72,7 +72,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVect
 	bool result = true;
 	
 	string lrpFolder = string(NLCI_LRP_FOLDER) + CHAR_FOLDER_DELIMITER;
-	if(!GIApreprocessorMultiwordReduction.initialiseLRP(lrpFolder, true))
+	if(!GIApreprocessorWordIdentification.initialiseLRP(lrpFolder, true))
 	{
 		result = false;
 	}
@@ -111,7 +111,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVect
 	bool result = true;
 
 	string lrpFolder = string(NLCI_LRP_FOLDER) + CHAR_FOLDER_DELIMITER;
-	if(!GIApreprocessorMultiwordReduction.initialiseLRP(lrpFolder, true))
+	if(!GIApreprocessorWordIdentification.initialiseLRP(lrpFolder, true))
 	{
 		result = false;
 	}
@@ -133,7 +133,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlight(QVector<High
 	while(currentNLCpreprepreprocessorSentenceInList->next != NULL)
 	{
 		vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
-		//cout << "currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
+		//cout << "currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 		if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 		{
 			result = false;
@@ -184,7 +184,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QV
 	bool result = true;
 
 	vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
-	//cout << "preprepreprocessTextForNLCsingleLinehighlight{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorMultiwordReductionClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
+	//cout << "preprepreprocessTextForNLCsingleLinehighlight{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 	if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 	{
 		result = false;

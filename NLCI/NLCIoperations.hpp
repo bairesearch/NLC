@@ -26,7 +26,7 @@
  * File Name: NLCIoperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -39,6 +39,7 @@
 #include "SHAREDvars.hpp"
 #include "LDreferenceClass.hpp"
 #include "GIAtranslatorOperations.hpp"
+#include "GIApreprocessorWordIdentification.hpp"
 #include "NLCpreprocessor.hpp"
 #include "GIAdraw.hpp"
 
@@ -66,7 +67,7 @@ class NLCIoperationsClass
 {
 	//Q_OBJECT
 public:
-	GIApreprocessorMultiwordReductionClass GIApreprocessorMultiwordReduction;
+	GIApreprocessorWordIdentificationClass GIApreprocessorWordIdentification;
 	LDreferenceClassClass LDreferenceClass;
 
 	QColor generateColourQ(int colourIndex);

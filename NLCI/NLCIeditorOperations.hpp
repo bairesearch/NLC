@@ -26,7 +26,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2f5a 15-April-2018
+ * Project Version: 2f6a 16-April-2018
  * Requirements: 
  * /
  *******************************************************************************/
@@ -38,6 +38,7 @@
 #include "NLCIeditorOperations.hpp"
 #include "NLCIoperations.hpp"
 #include "GIAtranslatorOperations.hpp"
+#include "GIApreprocessorWordIdentification.hpp"
 #include "GIApreprocessor.hpp"
 
 #include <QTextBlock>
@@ -53,8 +54,8 @@ private:
 	SHAREDvarsClass SHAREDvars;
 	NLCIoperationsClass NLCIoperations;
 	GIApreprocessorClass GIApreprocessor;
-	GIApreprocessorMultiwordReductionClass GIApreprocessorMultiwordReduction;
-	GIApreprocessorMultiwordReductionClassClass GIApreprocessorMultiwordReductionClassObject;
+	GIApreprocessorWordIdentificationClass GIApreprocessorWordIdentification;
+	GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
 	NLCpreprocessorClass NLCpreprocessor;
 
 public:

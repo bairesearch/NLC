@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f8a 18-April-2018
+ * Project Version: 2f8b 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -893,6 +893,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 
 						if(foundAuxiliaryOrVerb)
 						{
+							//cout << "foundAuxiliaryOrVerb" << endl;
 							//Note this is still not robust, e.g. "if(the dog that has[aux] a ball)" where "the dog that has a ball" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog has a ball)")
 							foundBooleanStatementExpression = true;
 						}
@@ -953,6 +954,8 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 		}
 	}
 	*/
+	
+	return foundBooleanStatementExpression;
 }
 
 bool NLCtranslatorCodeBlocksLogicalConditionsClass::isWordAuxiliaryOrVerb(GIApreprocessorPlainTextWord* currentWord)

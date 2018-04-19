@@ -857,7 +857,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 	//NEW: note this function is not robust; e.g. in cases where the parsablePhrase represents NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN (e.g. "the dog = true", or "if(the dog)" where "the dog" represents a boolean value)
 	if(currentFullSentence->hasLogicalConditionOperator)
 	{
-		if(currentFullSentence->mathTextNLPparsablePhraseTotal > 0)
+		if(currentFullSentence->mathTextNLPparsablePhraseTotal > 0)	//2f8a
 		{
 			if(currentFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)	//NB getMathObjectVariableTypeShared will fail if NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (because sentence will contain no contents; only "else")
 			{

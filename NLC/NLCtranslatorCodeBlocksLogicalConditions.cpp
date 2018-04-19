@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f7c 17-April-2018
+ * Project Version: 2f8a 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -857,46 +857,49 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 	//NEW: note this function is not robust; e.g. in cases where the parsablePhrase represents NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN (e.g. "the dog = true", or "if(the dog)" where "the dog" represents a boolean value)
 	if(currentFullSentence->hasLogicalConditionOperator)
 	{
-		if(currentFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)	//NB getMathObjectVariableTypeShared will fail if NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (because sentence will contain no contents; only "else")
+		if(currentFullSentence->mathTextNLPparsablePhraseTotal > 0)
 		{
-			string mathTextSubphraseContainingNLPparsablePhrase = "";
-			int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase, &mathTextSubphraseContainingNLPparsablePhrase);
-			//cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
-			if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+			if(currentFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)	//NB getMathObjectVariableTypeShared will fail if NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (because sentence will contain no contents; only "else")
 			{
-				#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
-				//2f7b
-				//i.e. use generic operators (== / +)
-				bool foundGenericComparisonOperator = false;
-				for(int i=0; i<NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES; i++)
+				string mathTextSubphraseContainingNLPparsablePhrase = "";
+				int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase, &mathTextSubphraseContainingNLPparsablePhrase);
+				//cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
+				if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 				{
-					if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeGenericOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
+					#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+					//2f7b
+					//i.e. use generic operators (== / +)
+					bool foundGenericComparisonOperator = false;
+					for(int i=0; i<NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_OPERATORS_NUMBER_OF_TYPES; i++)
 					{
-						foundGenericComparisonOperator = true;
-					}
-				}				
-				if(!foundGenericComparisonOperator)
-				{
-				#endif
-					//2f7c
-					bool foundAuxiliaryOrVerb = false;
-					for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
-					{
-						GIApreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
-						if(isWordAuxiliaryOrVerb(currentWord))
+						if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeGenericOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
-							foundAuxiliaryOrVerb = true;
+							foundGenericComparisonOperator = true;
 						}
-					}
-					
-					if(foundAuxiliaryOrVerb)
+					}				
+					if(!foundGenericComparisonOperator)
 					{
-						//Note this is still not robust, e.g. "if(the dog that has[aux] a ball)" where "the dog that has a ball" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog has a ball)")
-						foundBooleanStatementExpression = true;
+					#endif
+						//2f7c
+						bool foundAuxiliaryOrVerb = false;
+						for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
+						{
+							GIApreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
+							if(isWordAuxiliaryOrVerb(currentWord))
+							{
+								foundAuxiliaryOrVerb = true;
+							}
+						}
+
+						if(foundAuxiliaryOrVerb)
+						{
+							//Note this is still not robust, e.g. "if(the dog that has[aux] a ball)" where "the dog that has a ball" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog has a ball)")
+							foundBooleanStatementExpression = true;
+						}
+					#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 					}
-				#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+					#endif
 				}
-				#endif
 			}
 		}
 	}
@@ -1050,6 +1053,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeShar
 	string parsablePhraseReferenceName = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(currentFullSentence->firstNLPparsablePhraseInList->sentenceIndex, parsablePhrase);
 	string mathTextSubphraseContainingNLPparsablePhrase = "";
 	int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
+	//cout << "currentFullSentence->mathText = " << currentFullSentence->mathText << endl;
 	if(currentFullSentence->hasLogicalConditionOperator)
 	{
 		getMathTextSubphraseContainingNLPparsablePhrase(currentFullSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
@@ -1203,6 +1207,8 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContaini
 		//algorithm: extract "&& (thehouse == " -> " (thehouse " -> "thehouse"
 
 		//find numerical expressions
+		//cout << "mathTextLogicalConditionContents = " << mathTextLogicalConditionContents << endl;
+		//cout << "parsablePhraseReferenceName = " << parsablePhraseReferenceName << endl;
 		int parsablePhraseReferenceNamePositionInMathtext = mathTextLogicalConditionContents.find(parsablePhraseReferenceName);
 		if(parsablePhraseReferenceNamePositionInMathtext != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{

@@ -26,9 +26,9 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
- *
+ * /
  *******************************************************************************/
 
 
@@ -239,7 +239,7 @@ bool NLCpreprocessorSentenceClassClass::isStringValidVariableName(string phrase,
 }
 
 //all numbers
-bool NLCpreprocessorSentenceClassClass::isStringNumberPreprocessorMath(string phrase)
+bool NLCpreprocessorSentenceClassClass::isStringNumberPreprocessorMath(const string phrase)
 {
 	bool stringIsNumber = true;
 	if(phrase.length() == 0)
@@ -257,7 +257,7 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberPreprocessorMath(string ph
 	return stringIsNumber;
 }
 
-bool NLCpreprocessorSentenceClassClass::isStringNumberOrFractional(string phrase)
+bool NLCpreprocessorSentenceClassClass::isStringNumberOrFractional(const string phrase)
 {
 	bool stringIsNumberOrFractional = true;
 	if(phrase.length() == 0)
@@ -277,7 +277,7 @@ bool NLCpreprocessorSentenceClassClass::isStringNumberOrFractional(string phrase
 }
 
 //based on isIntrawordPunctuationMark{}
-bool NLCpreprocessorSentenceClassClass::isDecimalPlace(int indexOfCurrentToken, string* lineContents)
+bool NLCpreprocessorSentenceClassClass::isDecimalPlace(int indexOfCurrentToken, const string* lineContents)
 {
 	bool decimalPlace = false;
 	char currentToken = (*lineContents)[indexOfCurrentToken];

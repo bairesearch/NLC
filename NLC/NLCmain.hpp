@@ -26,9 +26,9 @@
  * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
- *
+ * /
  *******************************************************************************/
 
 
@@ -54,11 +54,10 @@
 #ifdef USE_WORDNET
 #include "GIAwordnet.hpp"
 #endif
-#ifdef GIA_SEMANTIC_PARSER
+#ifdef GIA_SEM_REL_TRANSLATOR
 #include "GIAsemanticParserDatabase.hpp"
 #endif
 #include "GIAtranslatorOperations.hpp"
-#include "GIAtranslatorDefs.hpp"
 #include "XMLrulesClass.hpp"
 #include "SHAREDvars.hpp"
 
@@ -141,7 +140,7 @@ class NLCmainClass
 		bool useDatabase,
 		string KBdatabaseFolderName,
 		#endif
-		#ifdef GIA_SEMANTIC_PARSER
+		#ifdef GIA_SEM_REL_TRANSLATOR
 		string semanticParserDatabaseFolderName,
 		#endif
 		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT

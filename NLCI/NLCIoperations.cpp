@@ -26,10 +26,11 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: 
- *
+ * /
  *******************************************************************************/
+
 
 #include "NLCIoperations.hpp"
 #include "NLCmain.hpp"
@@ -130,8 +131,8 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 	bool useDatabase = false;
 	string KBdatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_SEMANTIC_PARSER
-	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEMANTIC_PARSER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#ifdef GIA_SEM_REL_TRANSLATOR
+	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEM_REL_TRANSLATOR_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
@@ -234,7 +235,7 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 		useDatabase,
 		KBdatabaseFolderName,
 		#endif
-		#ifdef GIA_SEMANTIC_PARSER
+		#ifdef GIA_SEM_REL_TRANSLATOR
 		semanticParserDatabaseFolderName,
 		#endif
 		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
@@ -286,11 +287,6 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	
 	bool useInputTextPlainTXTFile = false;
 	string inputTextPlainTXTfileName = string(GIA_TEXT_BASE_FILE_NAME) + GIA_TEXT_FILE_EXTENSION;			//"inputText.txt";
-
-	#ifdef USE_CE
-	bool useInputTextCodeextensionsTXTFileName = false;
-	string inputTextCodeextensionsTXTFileName = "codeextensionsEnumerated.txt";
-	#endif
 
 	bool useInputTextNLPrelationXMLFile = false;
 	string inputTextNLPrelationXMLfileName = string(GIA_NLP_RELATION_BASE_FILE_NAME) + GIA_NLP_XML_FILE_EXTENSION;	//"inputNLPrelation.xml";
@@ -379,8 +375,8 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	bool useDatabase = false;
 	string KBdatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_SEMANTIC_PARSER
-	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEMANTIC_PARSER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#ifdef GIA_SEM_REL_TRANSLATOR
+	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEM_REL_TRANSLATOR_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
@@ -449,10 +445,6 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 		useInputTextPlainTXTFile,
 		inputTextPlainTXTfileName,
-		#ifdef USE_CE
-		useInputTextCodeextensionsTXTFileName,
-		inputTextCodeextensionsTXTFileName,
-		#endif
 		useInputTextNLPrelationXMLFile,
 		inputTextNLPrelationXMLfileName,
 		useInputTextNLPfeatureXMLFile,
@@ -536,7 +528,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 		useDatabase,
 		KBdatabaseFolderName,
 		#endif
-		#ifdef GIA_SEMANTIC_PARSER
+		#ifdef GIA_SEM_REL_TRANSLATOR
 		semanticParserDatabaseFolderName,
 		#endif
 		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT

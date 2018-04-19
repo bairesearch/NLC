@@ -26,9 +26,9 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
- *
+ * /
  *******************************************************************************/
 
 
@@ -67,7 +67,7 @@ static char errmessage[] = "Usage:  NLC.exe [options]\n\n\twhere options are any
 "\n\t-dbwrite           : write to database (GIA knowledge base) [saves knowledge]"
 "\n\t-dbfolder          : database base folder path (def: /home/systemusername/source/GIAKBdatabase)"
 #endif
-#ifdef GIA_SEMANTIC_PARSER
+#ifdef GIA_SEM_REL_TRANSLATOR
 "\n\t-dbsemanticparserfolder    : direct semantic parser (corpus or optimised) database base folder path (def: /home/systemusername/source/GIAsemanticparserdatabase)"
 #endif
 #ifdef GIA_PREPROCESSOR
@@ -166,8 +166,8 @@ int main(const int argc, const char** argv)
 	bool useDatabase = false;
 	string KBdatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_SEMANTIC_PARSER
-	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEMANTIC_PARSER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#ifdef GIA_SEM_REL_TRANSLATOR
+	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEM_REL_TRANSLATOR_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
@@ -360,7 +360,7 @@ int main(const int argc, const char** argv)
 			KBdatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbfolder");
 		}
 		#endif
-		#ifdef GIA_SEMANTIC_PARSER
+		#ifdef GIA_SEM_REL_TRANSLATOR
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbsemanticparserfolder"))
 		{
 			semanticParserDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbsemanticparserfolder");
@@ -443,7 +443,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2e4a 15-January-2018" << endl;
+			cout << "NLC.exe - Project Version: 2f1a 22-February-2018" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -529,7 +529,7 @@ int main(const int argc, const char** argv)
 		useDatabase,
 		KBdatabaseFolderName,
 		#endif
-		#ifdef GIA_SEMANTIC_PARSER
+		#ifdef GIA_SEM_REL_TRANSLATOR
 		semanticParserDatabaseFolderName,
 		#endif
 		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
@@ -611,7 +611,7 @@ bool NLCmainClass::executeNLC(
 	bool useDatabase,
 	string KBdatabaseFolderName,
 	#endif
-	#ifdef GIA_SEMANTIC_PARSER
+	#ifdef GIA_SEM_REL_TRANSLATOR
 	string semanticParserDatabaseFolderName,
 	#endif
 	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
@@ -945,10 +945,6 @@ bool NLCmainClass::executeNLC2()
 
 			useInputTextPlainTXTFile,
 			inputTextPlainTXTfileName,
-			#ifdef USE_CE
-			useInputTextCodeextensionsTXTFileName,
-			inputTextCodeextensionsTXTFileName,
-			#endif
 			useInputTextNLPrelationXMLFile,
 			inputTextNLPrelationXMLfileName,
 			useInputTextNLPfeatureXMLFile,
@@ -1032,7 +1028,7 @@ bool NLCmainClass::executeNLC2()
 			useDatabase,
 			KBdatabaseFolderName,
 			#endif
-			#ifdef GIA_SEMANTIC_PARSER
+			#ifdef GIA_SEM_REL_TRANSLATOR
 			semanticParserDatabaseFolderName,
 			#endif
 			#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT

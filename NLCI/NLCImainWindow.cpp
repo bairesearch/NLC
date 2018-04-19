@@ -26,10 +26,11 @@
  * File Name: NLCImainWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: 
- *
+ * /
  *******************************************************************************/
+
 
 #include <QtWidgets>
 

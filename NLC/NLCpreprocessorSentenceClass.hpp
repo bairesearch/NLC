@@ -26,9 +26,9 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
- *
+ * /
  *******************************************************************************/
 
 
@@ -148,9 +148,9 @@ class NLCpreprocessorSentenceClassClass
 	#endif
 	public: bool isStringNLPparsableWord(string phrase, const bool preprocessorMath);
 	public: bool isStringValidVariableName(string phrase, const bool preprocessor);
-	public: bool isStringNumberPreprocessorMath(string phrase);
-	public: bool isStringNumberOrFractional(string phrase);
-		private: bool isDecimalPlace(int indexOfCurrentToken, string* lineContents);
+	public: bool isStringNumberPreprocessorMath(const string phrase);
+	public: bool isStringNumberOrFractional(const string phrase);
+		private: bool isDecimalPlace(int indexOfCurrentToken, const string* lineContents);
 	public: bool isStringAliasFileName(const string phrase);
 	#ifdef NLC_VERIFY_LEGAL_TARGET_SOURCE_CHARACTERS
 	public: bool isStringIllegalTargetSourceCharacter(const string phrase);

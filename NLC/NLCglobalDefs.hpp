@@ -26,9 +26,9 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2e4a 15-January-2018
+ * Project Version: 2f1a 22-February-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
- *
+ * /
  *******************************************************************************/
 
 
@@ -43,7 +43,7 @@
 	#define NLC_LIBRARY_USER
 #endif
 #ifndef NLC_DEBUG_DISABLE_1q_CODE
-	#define NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a	//disable for auto testing (standardTestScenarios)
+	//#define NLC_LIBRARY_GENERATE_INDIVIDUAL_FILES       //1q1a	//disable for auto testing (standardTestScenarios)
 #endif
 
 #define NLC_MAX_NUMBER_SENTENCES_PER_FUNCTION (1000000)
@@ -99,7 +99,7 @@
 #endif
 #ifndef NLC_DEBUG_DISABLE_1u_CODE
 	#define NLC_RECORD_ACTION_HISTORY_EXTENDED	//1u15b
-	#ifdef GIA_EXPLETIVES
+	#ifdef GIA_TRANSLATOR_EXPLETIVES
 		#define NLC_EXPLETIVES	//1u14a
 	#endif
 	//#define NLC_TRANSLATOR_SUPPORT_ISOLATED_INITIALISATIONS_THERE_IS_STATEMENTS	//1u13a
@@ -800,7 +800,7 @@
 
 		#define NLC_PREPROCESSOR_MATH_FIRST_PARSABLE_PHRASE_INDEX (0)
 
-		#ifndef GIA_NUMBER_OF
+		#ifndef GIA_TRANSLATOR_NUMBER_OF
 			#define NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
 		#endif
 

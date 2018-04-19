@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorMath.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f9a 18-April-2018
+ * Project Version: 2f9b 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -55,12 +55,67 @@ bool NLCpreprocessorMathClass::detectMathSymbolsInLine(const vector<GIApreproces
 	return mathSymbolFound;
 }
 
-bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(vector<GIApreprocessorPlainTextWord*>* lineContents, const bool hasLogicalConditionOperator, const bool isMathText)
+bool NLCpreprocessorMathClass::detectAndReplaceIsTextWithSymbol(vector<GIApreprocessorPlainTextWord*>* lineContents, const bool hasLogicalConditionOperator, const bool isMathText)
 {
 	bool result = false;
-	//cout << "lineContents = " << *lineContents << endl;
 	
-	if(!hasLogicalConditionOperator)
+	//cout << "lineContents = " << endl;
+	//GIApreprocessorWordClassObject.printWordList(lineContents);
+	
+	if(hasLogicalConditionOperator)
+	{		
+		#ifdef NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_COMPARISON_OPERATORS
+		int w = 0;
+		for(vector<GIApreprocessorPlainTextWord*>::iterator iter1 = lineContents->begin(); iter1 != lineContents->end();)
+		{
+			bool deleteCurrentWord = false;
+			if((*lineContents)[w]->tagName == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS)
+			{
+				int indexOfNumericalComparisonOperator = INT_DEFAULT_VALUE;
+				if(SHAREDvars.textInTextArray((*lineContents)[w+1]->tagName, mathObjectsVariableTypeNumericalComparisonOperators, NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_COMPARISON_OPERATORS_NUMBER_OF_TYPES, &indexOfNumericalComparisonOperator))
+				{
+					if(indexOfNumericalComparisonOperator == 0)
+					{
+						//cout << "NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_COMPARISON_OPERATORS" << endl;
+						//e.g. "is ==...", "is <...", "is >..." etc
+						deleteCurrentWord = true;
+					}
+				}
+			}
+			if(deleteCurrentWord)
+			{
+				iter1 = lineContents->erase(iter1);
+			}
+			else
+			{
+				iter1++;
+				w++;
+			}
+		}
+		#endif
+		
+		#ifdef NLC_PREPROCESSOR_REPLACE_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_WITH_MATH_OPERATOR_EQUALS_COMPARISON
+		//NOT USED: does not support natural language definitions; e.g. "if Sam is the dog"
+		#ifdef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
+		//cannot distinguish between types of comparions operators implied by NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_COMPARISON_INFORMAL ("is") at this stage of analysis
+		cerr << "NLCpreprocessorMathClass::detectAndRemoveIsNonLogicalConditionTextFromSymbol error: NLC_PREPROCESSOR_REPLACE_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_WITH_MATH_OPERATOR_EQUALS_COMPARISON && NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS: cannot distinguish between types of comparions operators implied by NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_COMPARISON_INFORMAL ("is") at this stage of analysis" << endl;
+		exit(EXIT_ERROR);
+		#else
+		//"if x is the number of chickens." is supported by mathText, with "number of chickens" parsable phrase
+		//the following cannot be parsed by NLP/GIA; "if x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables?
+		//convert "if x is the number of chickens" to mathText and parsable phrase ("x == the number of chickens")
+		bool foundMatchedString = false;
+		if(GIApreprocessorWordClassObject.findAndReplaceSimpleSubstringInWordListAtIndexWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS, 1+1, NLC_MATH_OBJECTS_VARIABLE_TYPE_GENERIC_COMPARSION_OPERATOR))	//NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_COMPARISON_INFORMAL	//+1 to take into account logical condition operator (ie if statement)
+		{
+			result = true;
+			//#ifdef NLC_DEBUG_PREPROCESSOR
+			cout << "detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol{}: found 'if x is ...' at start of line; convert to mathText 'if x == (nlp parsable phrase)" << endl;
+			//#endif
+		}
+		#endif
+		#endif
+	}
+	else
 	{
 		for(int i=0; i<NLC_PREPROCESSOR_MATH_OPERATORS_NUMBER_OF_TYPES; i++)
 		{
@@ -91,24 +146,56 @@ bool NLCpreprocessorMathClass::detectAndReplaceIsEqualToNonLogicalConditionTextW
 		}
 		#endif
 		
+		#ifdef NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_SET_OPERATORS
+		int w = 0;
+		for(vector<GIApreprocessorPlainTextWord*>::iterator iter1 = lineContents->begin(); iter1 != lineContents->end();)
+		{
+			bool deleteCurrentWord = false;
+			if((*lineContents)[w]->tagName == NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS)
+			{
+				int indexOfNumericalSetOperator = INT_DEFAULT_VALUE;
+				if(SHAREDvars.textInTextArray((*lineContents)[w+1]->tagName, mathObjectsVariableTypeNumericalSetOperators, NLC_MATH_OBJECTS_VARIABLE_TYPE_NUMERICAL_SET_OPERATORS_NUMBER_OF_TYPES, &indexOfNumericalSetOperator))
+				{
+					if(indexOfNumericalSetOperator == 0)
+					{
+						cout << "NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_SET_OPERATORS" << endl;
+						//e.g. "is =..." etc
+						deleteCurrentWord = true;
+					}
+				}
+			}
+			if(deleteCurrentWord)
+			{
+				iter1 = lineContents->erase(iter1);
+			}
+			else
+			{
+				iter1++;
+				w++;
+			}
+		}
+		#endif
+		
+		#ifdef NLC_PREPROCESSOR_REPLACE_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_WITH_MATH_OPERATOR_EQUALS_SET
+		//NOT USED: does not support natural language definitions; e.g. "Sam is the dog."
 		//"x is equal to number of chickens." is supported by mathText, with "number of chickens" parsable phrase
 		//the following cannot be parsed by NLP/GIA; "x is the number of chickens" as dummy numerical variable replacement only works for previously defined variables.
 		//convert "x is the number of chickens" to mathText and parsable phrase ("x = the number of chickens")
 		bool foundMatchedString = false;
-		if(GIApreprocessorWordClassObject.findAndReplaceSimpleSubstringInWordListAtIndexWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET))
+		if(GIApreprocessorWordClassObject.findAndReplaceSimpleSubstringInWordListAtIndexWithSimpleSubstring(lineContents, NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS, 1, NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_SET))	//NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_IS_EQUAL_TO_INFORMAL
 		{
 			result = true;
-			
 			//#ifdef NLC_DEBUG_PREPROCESSOR
 			cout << "detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol{}: found 'x is ...' at start of line; convert to mathText 'x = (nlp parsable phrase)" << endl;
 			//#endif
-		
-			//the following is not supported by NLC at present: "if x is the number of chickens", the user must say "if the number of chickens is equal to x"
 		}
+		#endif
 	}
 			
 	return result;
 }
+
+
 
 #ifdef NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_ADVANCED_PHRASE_DETECTION
 bool NLCpreprocessorMathClass::splitMathDetectedLineLogicalConditionCommandIntoSeparateSentences(vector<GIApreprocessorPlainTextWord*>* lineContents, int currentIndentation, const NLCpreprocessorSentence* fullSentence, NLCpreprocessorSentence* firstSentenceInLogicalConditionCommandTemp, bool* detectedLogicalConditionCommand)

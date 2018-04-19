@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f9a 18-April-2018
+ * Project Version: 2f9b 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -275,6 +275,11 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 					currentNLCsentenceInList->logicalConditionOperator = lineLogicalConditionOperator;
 					currentNLCsentenceInList->isMath = true;
 					#endif
+					
+					if(NLCpreprocessorMath.detectAndReplaceIsTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
+					{
+						currentNLCsentenceInList->isMath = true;
+					}
 				}
 				else
 				{
@@ -284,7 +289,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 					}
 
 					//#ifdef NLC_PREPROCESSOR_MATH_GENERATE_MATHTEXT_FROM_EQUIVALENT_NATURAL_LANGUAGE
-					if(NLCpreprocessorMath.detectAndReplaceIsEqualToNonLogicalConditionTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
+					if(NLCpreprocessorMath.detectAndReplaceIsTextWithSymbol(&lineContents, currentNLCsentenceInList->hasLogicalConditionOperator, currentNLCsentenceInList->isMath))
 					{
 						currentNLCsentenceInList->isMath = true;
 					}
@@ -370,6 +375,64 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 			while(currentParsablePhrase->next != NULL || (!currentSentence->isMath && first))
 			{	
 				first = false;
+				
+				#ifdef NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS_OLD_METHOD
+				//OLD method; yet to update mathText:
+				if(currentSentence->isMath)
+				{
+					if(currentSentence->hasLogicalConditionOperator)
+					{
+						if(currentSentence->mathTextNLPparsablePhraseTotal > 0)	//not required
+						{
+							vector<GIApreprocessorPlainTextWord*>* parsablePhraseSentenceContents = &(currentParsablePhrase->sentenceContents);
+							if(parsablePhraseSentenceContents->size() > 3)	//at least 3 words are required in parsable phrase for NLC_PREPROCESSOR_MATH_OPERATOR_LIKELY_PREPEND_NATURAL_LANGUAGE_WORD to exist
+							{
+								//cout << "parsablePhraseSentenceContents->back()->tagName = " << parsablePhraseSentenceContents->back()->tagName << endl;
+								vector<GIApreprocessorPlainTextWord*>::iterator iter = parsablePhraseSentenceContents->end()-2;
+								if((*iter)->tagName == NLC_PREPROCESSOR_MATH_OPERATOR_LIKELY_PREPEND_NATURAL_LANGUAGE_WORD)	//second last word as last word is full stop
+								{
+									//cout << "NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS" << endl;
+									//GIApreprocessorWordClassObject.printWordList(parsablePhraseSentenceContents);
+									
+									//1. modify sentence mathText;
+									string parsablePhraseReferenceName = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(currentParsablePhrase->sentenceIndex, currentParsablePhrase);
+									string mathTextSubphraseContainingNLPparsablePhrase = "";
+									int mathTextSubphraseContainingNLPparsablePhraseStartIndex = 0;
+									int mathTextSubphraseContainingNLPparsablePhraseEndIndex = 0;
+									NLCtranslatorCodeBlocksLogicalConditions.getMathTextSubphraseContainingNLPparsablePhrase(currentSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseStartIndex, &mathTextSubphraseContainingNLPparsablePhraseEndIndex);
+									
+									//cout << "parsablePhraseReferenceName = " << parsablePhraseReferenceName << endl;
+									//cout << "currentSentence->mathText = " << currentSentence->mathText << endl;
+									//cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
+
+									int indexOfMathOperatorLikelyPrependNaturalLanguageWord = mathTextSubphraseContainingNLPparsablePhrase.rfind(NLC_PREPROCESSOR_MATH_OPERATOR_LIKELY_PREPEND_NATURAL_LANGUAGE_WORD);	//find the last instance of "is" in the mathText parasble phrase string
+									if(indexOfMathOperatorLikelyPrependNaturalLanguageWord != INT_DEFAULT_VALUE)
+									{
+										int indexAfterIsWord = indexOfMathOperatorLikelyPrependNaturalLanguageWord + string(NLC_PREPROCESSOR_MATH_OPERATOR_LIKELY_PREPEND_NATURAL_LANGUAGE_WORD).size();
+										string mathTextSubphraseContainingNLPparsablePhraseModified = mathTextSubphraseContainingNLPparsablePhrase.substr(0, indexOfMathOperatorLikelyPrependNaturalLanguageWord) + mathTextSubphraseContainingNLPparsablePhrase.substr(indexAfterIsWord);
+										currentSentence->mathText.replace(mathTextSubphraseContainingNLPparsablePhraseStartIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseModified);
+										
+										//cout << "mathTextSubphraseContainingNLPparsablePhraseModified = " << mathTextSubphraseContainingNLPparsablePhraseModified << endl;
+										//cout << "currentSentence->mathText = " << currentSentence->mathText << endl;
+									}
+									else
+									{
+										cerr << "NLCpreprocessorClass::preprocessTextForNLC{} error: indexOfMathOperatorLikelyPrependNaturalLanguageWord == INT_DEFAULT_VALUE)" << endl;
+										exit(EXIT_ERROR);
+									}
+									
+									//2. modify parsablePhrase sentenceContents;
+									
+									parsablePhraseSentenceContents->erase(iter);
+		
+									//GIApreprocessorWordClassObject.printWordList(parsablePhraseSentenceContents);
+								}
+							}
+						}
+					}
+				}
+				#endif
+				
 				functionContents = functionContents + indentationContents + GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
 				
 				#ifdef GIA_TXT_REL_TRANSLATOR_RULES_PARSE_ISOLATED_SUBREFERENCE_SETS_OPTIMISED

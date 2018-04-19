@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f9a 18-April-2018
+ * Project Version: 2f9b 18-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -860,12 +860,14 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 		if(currentFullSentence->mathTextNLPparsablePhraseTotal > 0)	//2f8a
 		{
 			if(currentFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)	//NB getMathObjectVariableTypeShared will fail if NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (because sentence will contain no contents; only "else")
-			{
+			{				
 				string mathTextSubphraseContainingNLPparsablePhrase = "";
 				int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase, &mathTextSubphraseContainingNLPparsablePhrase);
 				//cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
 				if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 				{
+					//GIApreprocessorWordClassObject.printWordList(&(parsablePhrase->sentenceContents));
+
 					#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 					//2f7b
 					//i.e. use generic operators (== / +)
@@ -875,6 +877,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 						if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeGenericOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
 							bool foundGenericComparisonOperator = true;
+							//cout << "foundGenericComparisonOperator" << endl;
 							foundNonBooleanStatementExpressionOperator = true;
 						}
 					}
@@ -884,6 +887,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 						if(mathTextSubphraseContainingNLPparsablePhrase.find(mathObjectsVariableTypeMaformedStringOperators[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 						{
 							bool foundMalformattedStringComparisonOperator = true;
+							//cout << "foundMalformattedStringComparisonOperator" << endl;
 							foundNonBooleanStatementExpressionOperator =  true;
 						}
 					}
@@ -1066,11 +1070,12 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeShar
 
 	string parsablePhraseReferenceName = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(currentFullSentence->firstNLPparsablePhraseInList->sentenceIndex, parsablePhrase);
 	string mathTextSubphraseContainingNLPparsablePhrase = "";
-	int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
+	int mathTextSubphraseContainingNLPparsablePhraseStartIndex = 0;
+	int mathTextSubphraseContainingNLPparsablePhraseEndIndex = 0;
 	//cout << "currentFullSentence->mathText = " << currentFullSentence->mathText << endl;
 	if(currentFullSentence->hasLogicalConditionOperator)
 	{
-		getMathTextSubphraseContainingNLPparsablePhrase(currentFullSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex);
+		getMathTextSubphraseContainingNLPparsablePhrase(currentFullSentence->mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseStartIndex, &mathTextSubphraseContainingNLPparsablePhraseEndIndex);
 	}
 	else
 	{
@@ -1194,7 +1199,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeShar
 	return mathObjectVariableType;
 }
 
-bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex)
+bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseStartIndex, int* mathTextSubphraseContainingNLPparsablePhraseEndIndex)
 {
 	bool result = true;
 	bool foundConjunction = false;
@@ -1275,14 +1280,14 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContaini
 			}
 
 			*mathTextSubphraseContainingNLPparsablePhrase = mathTextLogicalConditionContents.substr(subphraseStartPosition, subphraseEndPosition-subphraseStartPosition);
-			*mathTextSubphraseContainingNLPparsablePhraseIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
+			*mathTextSubphraseContainingNLPparsablePhraseStartIndex = subphraseStartPosition + mathTextLogicalConditionContentsIndex;
+			*mathTextSubphraseContainingNLPparsablePhraseEndIndex = subphraseEndPosition + mathTextLogicalConditionContentsIndex;
 			
 			if(removeSurroundingBracketsOfSubphrase(mathTextSubphraseContainingNLPparsablePhrase))	//added 1u1b
 			{
 				int sizeOfBracket = string(NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET_STRING).length();
-				*mathTextSubphraseContainingNLPparsablePhraseIndex = *mathTextSubphraseContainingNLPparsablePhraseIndex + sizeOfBracket;		
+				*mathTextSubphraseContainingNLPparsablePhraseStartIndex = *mathTextSubphraseContainingNLPparsablePhraseStartIndex + sizeOfBracket;		
 			}
-			
 		}
 		else
 		{
@@ -1499,10 +1504,11 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 			exit(EXIT_ERROR);
 		}
 
-		int mathTextSubphraseContainingNLPparsablePhraseIndex = 0;
+		int mathTextSubphraseContainingNLPparsablePhraseStartIndex = 0;
+		int mathTextSubphraseContainingNLPparsablePhraseEndIndex = 0;
 		string mathTextSubphraseContainingNLPparsablePhrase = "";
 		bool subphraseFound = false;
-		if(!getMathTextSubphraseContainingNLPparsablePhrase(*mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseIndex))
+		if(!getMathTextSubphraseContainingNLPparsablePhrase(*mathText, parsablePhraseReferenceName, &mathTextSubphraseContainingNLPparsablePhrase, &mathTextSubphraseContainingNLPparsablePhraseStartIndex, &mathTextSubphraseContainingNLPparsablePhraseEndIndex))
 		{
 			cerr << "generateAssignMathTextValueExecuteFunctionMathText{} error: !getMathTextSubphraseContainingNLPparsablePhrase" << endl;
 			exit(EXIT_ERROR);
@@ -1520,7 +1526,7 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 				#else
 				string mathTextSubphraseContainingNLPparsablePhraseUpdated = sourceValueText + NLC_PREPROCESSOR_MATH_OPERATOR_EQUALS_TEST_WITH_PADDING + targetValueText;
 				#endif
-				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
+				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseStartIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
 				//progLangParameterSpaceNextParam
 			}
 		}
@@ -1532,7 +1538,7 @@ string NLCtranslatorCodeBlocksLogicalConditionsClass::generateAssignMathTextValu
 				string parsablePhraseReferenceNameUpdated = string(NLC_MATH_OBJECTS_ADVANCED_TEST_MATHOBJECT_VALUE_FUNCTION_NAME) + progLangOpenParameterSpace[progLang] + parsablePhraseReferenceName + progLangCloseParameterSpace[progLang];	//eg "thechickensvalue"  ->  "testMathObjectValue(thechickensvalue)"
 				string mathTextSubphraseContainingNLPparsablePhraseUpdated = mathTextSubphraseContainingNLPparsablePhrase;
 				mathTextSubphraseContainingNLPparsablePhraseUpdated.replace(parsablePhraseReferenceNamePositionInSubphrase, parsablePhraseReferenceName.length(), parsablePhraseReferenceNameUpdated);
-				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
+				mathTextUpdated.replace(mathTextSubphraseContainingNLPparsablePhraseStartIndex, mathTextSubphraseContainingNLPparsablePhrase.length(), mathTextSubphraseContainingNLPparsablePhraseUpdated);
 			}
 		}
 	}

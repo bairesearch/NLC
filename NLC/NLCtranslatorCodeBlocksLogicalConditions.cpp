@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f6b 16-April-2018
+ * Project Version: 2f7a 17-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -855,18 +855,17 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 
 	#ifdef NLC_MATH_OBJECTS_ADVANCED
 	//NEW: note this function is not robust; e.g. in cases where the parsablePhrase represents NLC_MATH_OBJECTS_VARIABLE_TYPE_BOOLEAN (e.g. "the dog = true", or "if(the dog)" where "the dog" represents a boolean value)
-	int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase);
-	if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+	if(currentFullSentence->hasLogicalConditionOperator)
 	{
-		if(currentFullSentence->hasLogicalConditionOperator)
+		if(currentFullSentence->logicalConditionOperator != NLC_LOGICAL_CONDITION_OPERATIONS_ELSE)	//NB getMathObjectVariableTypeShared will fail if NLC_LOGICAL_CONDITION_OPERATIONS_ELSE (because sentence will contain no contents; only "else")
 		{
-			//Note this is still not robust, e.g. "if(the dog)" where "the dog" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog is red)")
-			foundBooleanStatementExpression = true;
+			int mathObjectVariableType = getMathObjectVariableTypeShared(currentFullSentence, parsablePhrase);
+			if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
+			{
+				//Note this is still not robust, e.g. "if(the dog)" where "the dog" represents a boolean value (as opposed to a boolean expression; e.g. "if(the dog is red)")
+				foundBooleanStatementExpression = true;
+			}
 		}
-	}
-	else
-	{
-		cout << "mathObjectVariableType = " << mathObjectVariableType << endl;
 	}
 	#else
 	cerr << "NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBooleanExpressionBeforeGIA{} error: NLC_MATH_OBJECTS_ADVANCED is required" << endl;
@@ -1146,9 +1145,11 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathTextSubphraseContaini
 	int mathTextLogicalConditionContentsIndex = CPP_STRING_FIND_RESULT_FAIL_VALUE;
 	bool foundLogicalConditionStartText = false;
 	string logicalConditionEndText = string("") + NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_CLOSE_BRACKET;
+	//cout << "mathText = " << mathText << endl;
 	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
 	{
 		string logicalConditionStartText = logicalConditionOperationsArray[i] + NLC_PREPROCESSOR_MATH_OPERATOR_EQUIVALENT_NATURAL_LANGUAGE_OPEN_BRACKET;
+		//cout << "logicalConditionStartText = " << logicalConditionStartText << endl;
 		if(mathText.find(logicalConditionStartText) == 0)
 		{
 			mathTextLogicalConditionContents = mathText.substr(logicalConditionStartText.length(), mathText.length() - logicalConditionStartText.length() - logicalConditionEndText.length());

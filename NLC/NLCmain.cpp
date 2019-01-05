@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f10a 19-April-2018
+ * Project Version: 2f11a 20-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -438,7 +438,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2f10a 19-April-2018" << endl;
+			cout << "NLC.exe - Project Version: 2f11a 20-April-2018" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -456,7 +456,7 @@ int main(const int argc, const char** argv)
 	translatorVariablesTemplate->isQuery = false;
 	translatorVariablesTemplate->entityNodesActiveListComplete = new vector<GIAentityNode*>;	//NOT USED
 	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;	//NOT USED
-	translatorVariablesTemplate->timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;	//NOT USED
+	translatorVariablesTemplate->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;	//NOT USED
 	translatorVariablesTemplate->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;	//NOT USED
 	translatorVariablesTemplate->NLPfeatureParser = NLPfeatureParser;
 	translatorVariablesTemplate->NLPdependencyRelationsParser = NLPdependencyRelationsParser;
@@ -865,13 +865,13 @@ bool NLCmainClass::executeNLC2()
 			//if a function list has been passed to NLC by NLCI for compilation of nlc project to C++, then do not store entities for access by NLCI
 			translatorVariables->entityNodesActiveListComplete = new vector<GIAentityNode*>;
 			translatorVariables->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;
-			translatorVariables->timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
+			translatorVariables->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;
 			translatorVariables->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		}
 		#else
 		translatorVariables->entityNodesActiveListComplete = new vector<GIAentityNode*>;
 		translatorVariables->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;
-		translatorVariables->timeConditionNodesActiveList = new unordered_map<long, GIAtimeConditionNode*>;
+		translatorVariables->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;
 		translatorVariables->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		#endif
 		if(useNLCpreprocessor)

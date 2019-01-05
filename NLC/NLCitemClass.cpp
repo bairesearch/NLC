@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f10a 19-April-2018
+ * Project Version: 2f11a 20-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -203,7 +203,7 @@ string NLCitemClassClass::generateInstanceName(const GIAentityNode* entity)
 {
 	return generateInstanceName(entity->entityName, entity->idInstance);
 }
-string NLCitemClassClass::generateInstanceName(const string entityName, const long idInstance)
+string NLCitemClassClass::generateInstanceName(const string entityName, const int64_t idInstance)
 {
 	string idInstanceString = SHAREDvars.convertLongToString(idInstance);
 	#ifdef NLC_TRANSLATOR_LOGICAL_CONDITIONS_BOOLEAN_STATEMENTS_INTERPRET_SUBJECT_AND_OBJECT_INDEPENDENTLY

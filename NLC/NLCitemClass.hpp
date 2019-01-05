@@ -26,7 +26,7 @@
  * File Name: NLCitemClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2018 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2f10a 19-April-2018
+ * Project Version: 2f11a 20-April-2018
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -122,7 +122,7 @@ class NLCitemClassClass
 	public: string generateFunctionName(const GIAentityNode* entity);
 		public: string generateFunctionName(const string entityName);
 	public: string generateInstanceName(const GIAentityNode* entity);
-		public: string generateInstanceName(const string entityName, const long idInstance);
+		public: string generateInstanceName(const string entityName, const int64_t idInstance);
 
 	private: string generateTypeName(string entityName);
 

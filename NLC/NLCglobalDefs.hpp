@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2g1a 03-January-2019
+ * Project Version: 2k1a 02-June-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -50,10 +50,12 @@
 
 #define NLC_MAX_NUMBER_SENTENCES_PER_FUNCTION (1000000)
 
+#define NLC_DEBUG_PRINT_LINES
+
 //#define NLC_DEBUG_DISABLE_2f_CODE
 #ifndef NLC_DEBUG_DISABLE_2f_CODE
-	#ifdef GIA_TXT_REL_TRANSLATOR_RULES_GIA3
-		#define NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS	//2f9b	//remove "is" from "the new value is" [> the old value]	//this is required for GIAtxtRelTranslator to parse the parsable phrase correctly	//check this is compatible with NLCI
+	#ifdef GIA_POS_REL_TRANSLATOR_RULES_GIA3
+		#define NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS	//2f9b	//remove "is" from "the new value is" [> the old value]	//this is required for GIAposRelTranslator to parse the parsable phrase correctly	//check this is compatible with NLCI
 		#ifdef NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS
 			//#define NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS_OLD_METHOD	//note basic testing of this old method has been performed, but it is not planned to be used
 			#ifndef NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS_OLD_METHOD
@@ -953,7 +955,7 @@
 		//#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_LEVEL "L"	//not currently used
 		//#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_REFERENCE_CASE "C"	//not currently used
 		
-		#ifdef GIA_TXT_REL_TRANSLATOR_RULES
+		#ifdef GIA_POS_REL_TRANSLATOR_RULES
 			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY "Make this."
 			#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS (3)
 			static string preprocessorMathNLPparsablePhraseDummyWordArray[NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS] = {"Make", "this", "."};

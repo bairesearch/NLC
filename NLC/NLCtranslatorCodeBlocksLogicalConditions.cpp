@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2g1a 03-January-2019
+ * Project Version: 2k1a 02-June-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -985,12 +985,12 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::isWordAuxiliaryOrVerb(GIApre
 		}
 	}
 
-	#ifdef GIA_TXT_REL_TRANSLATOR_HYBRID_NLC_PREPROCESSOR_PREFERENCE_NLP_PRELIM_POS_TAGS_OVER_LRP_WORD_TYPE_LISTS
+	#ifdef GIA_POS_REL_TRANSLATOR_HYBRID_NLC_PREPROCESSOR_PREFERENCE_NLP_PRELIM_POS_TAGS_OVER_LRP_WORD_TYPE_LISTS
 	bool usePOSprelim = true;
 	#else
 	bool usePOSprelim = false;
 	#endif
-	#ifdef GIA_TXT_REL_TRANSLATOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY
+	#ifdef GIA_POS_REL_TRANSLATOR_GRAMMATICALLY_STRICT_VERB_VARIANTS_ONLY
 	bool grammaticallyStrict = true;
 	#else
 	bool grammaticallyStrict = false;

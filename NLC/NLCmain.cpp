@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2g1a 03-January-2019
+ * Project Version: 2k1a 02-June-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -438,7 +438,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2g1a 03-January-2019" << endl;
+			cout << "NLC.exe - Project Version: 2k1a 02-June-2020" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -916,7 +916,7 @@ bool NLCmainClass::executeNLC2()
 				SHAREDvars.copyFiles(inputFolder, NLC_RULES_XML_FILE_NAME, outputFolder, NLC_RULES_XML_FILE_NAME);
 				SHAREDvars.copyFiles(inputFolder, GIA_RULES_XML_FILE_NAME, outputFolder, GIA_RULES_XML_FILE_NAME);
 				SHAREDvars.copyFiles(inputFolder, GIA_SYN_REL_TRANSLATOR_RULES_XML_FILE_NAME, outputFolder, GIA_SYN_REL_TRANSLATOR_RULES_XML_FILE_NAME);
-				SHAREDvars.copyFiles(inputFolder, GIA_TXT_REL_TRANSLATOR_RULES_XML_FILE_NAME, outputFolder, GIA_TXT_REL_TRANSLATOR_RULES_XML_FILE_NAME);
+				SHAREDvars.copyFiles(inputFolder, GIA_POS_REL_TRANSLATOR_RULES_XML_FILE_NAME, outputFolder, GIA_POS_REL_TRANSLATOR_RULES_XML_FILE_NAME);
 				inputFolder = outputFolder;
 			}
 		}
@@ -1108,6 +1108,10 @@ bool NLCmainClass::executeNLC2()
 		{
 			currentNLCfunctionInList = currentNLCfunctionInList->next;
 		}
+		#endif
+		
+		#ifdef NLC_DEBUG_PRINT_LINES
+		DEBUGendPrintLines();
 		#endif
 	}
 
@@ -1422,4 +1426,9 @@ void NLCmainClass::printPredefinedNLCfunctions(NLCcodeblock* currentCodeBlockInT
 }
 #endif
 
-
+#ifdef NLC_DEBUG_PRINT_LINES
+bool NLCmainClass::DEBUGendPrintLines()
+{
+	return true;
+}
+#endif

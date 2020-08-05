@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2g1a 03-January-2019
+ * Project Version: 2k1a 02-June-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -62,7 +62,7 @@ bool NLCtranslatorCodeBlocksOperationsClass::generateCodeBlocksPart3subjectObjec
 				bool foundSubjectObjectConnection = false;
 
 				int connectionType = -1;
-
+								
 				if(entity->entityType == GIA_ENTITY_TYPE_ACTION)
 				{
 					#ifdef NLC_RECORD_ACTION_HISTORY_GENERALISABLE_DO_NOT_EXECUTE_PAST_TENSE_ACTIONS

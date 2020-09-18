@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -102,14 +102,14 @@ bool NLCpreprocessorClass::preprocessTextForNLCextractFunctionsAndCreatePreproce
 	NLCfunction* currentNLCfunctionInList = firstNLCfunctionInList;
 	for(int functionDefinitionIndex=0; functionDefinitionIndex<*numberOfFunctionsInList; functionDefinitionIndex++)
 	{
-		currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new GIApreprocessorSentence();
+		currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList = new LRPpreprocessorSentence();
 		bool interpretNewLinesAsNewSentences = true;	//NB NLC interprets new lines as new sentences
 		#ifdef NLC_PREPROCESSOR_SUPPORT_MULTI_SENTENCE_LINES
 		bool splitMultisentenceLines = true;
 		#else
 		bool splitMultisentenceLines = false;
 		#endif
-		if(!GIApreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))	//NB NLC interprets new lines as new sentences
+		if(!LRPpreprocessor.createPreprocessSentences(currentNLCfunctionInList->functionContentsRaw, currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))	//NB NLC interprets new lines as new sentences
 		{
 			result = false;
 		}
@@ -232,18 +232,18 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 	{
 		int currentLineNumber = 0;
 		NLCpreprocessorSentence* currentNLCsentenceInList = currentNLCfunctionInList->firstNLCsentenceInFunction;
-		GIApreprocessorSentence* currentNLCprepreprocessorSentenceInList = currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList;
-		int sentenceIndex = GIA_NLP_START_SENTENCE_INDEX;	//NLC sentence index
+		LRPpreprocessorSentence* currentNLCprepreprocessorSentenceInList = currentNLCfunctionInList->firstNLCprepreprocessorSentenceInList;
+		int sentenceIndex = LRP_NLP_START_SENTENCE_INDEX;	//NLC sentence index
 		while(currentNLCprepreprocessorSentenceInList->next != NULL)
 		{
-			vector<GIApreprocessorPlainTextWord*> lineContents = currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal;
+			vector<LRPpreprocessorPlainTextWord*> lineContents = currentNLCprepreprocessorSentenceInList->sentenceContentsOriginal;
 			if(lineContents.size() == 0)
 			{
 				currentNLCsentenceInList->isMath = true;
 				currentNLCsentenceInList->sentenceOriginal = "";
 				currentNLCsentenceInList->indentation = currentNLCprepreprocessorSentenceInList->indentation;
 				NLCpreprocessorParsablePhrase* currentParsablePhraseInList = currentNLCsentenceInList->firstNLPparsablePhraseInList;
-				GIApreprocessorWordClassObject.addStringArrayToWordList((&currentParsablePhraseInList->sentenceContents), preprocessorMathNLPparsablePhraseDummyWordArray, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS);
+				LRPpreprocessorWordClassObject.addStringArrayToWordList((&currentParsablePhraseInList->sentenceContents), preprocessorMathNLPparsablePhraseDummyWordArray, NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_DUMMY_NUMBER_OF_WORDS);
 				currentNLCsentenceInList->isBlankSentence = true;
 				currentParsablePhraseInList->sentenceIndex = sentenceIndex;
 				currentParsablePhraseInList->next = new NLCpreprocessorParsablePhrase();
@@ -254,16 +254,16 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 			}
 			else
 			{
-				//cout << "lineContents = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents) << endl;
+				//cout << "lineContents = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents) << endl;
 				//cout << "lineContents.size() = " << lineContents.size() << endl;
 
 				#ifdef NLC_PREPROCESSOR_PRINT_OUTPUT
-				string currentLine = GIApreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents);
+				string currentLine = LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents);
 				inputFileText = inputFileText + currentLine + CHAR_NEWLINE;
 				#endif
 				int currentIndentation = currentNLCprepreprocessorSentenceInList->indentation;
 				#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-				currentNLCsentenceInList->sentenceOriginal = GIApreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents); 	//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
+				currentNLCsentenceInList->sentenceOriginal = LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents); 	//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
 				#endif
 
 				#ifdef NLC_PREPROCESSOR_MATH
@@ -315,7 +315,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 						while(currentSentenceInLogicalConditionCommandTemp->next != NULL)
 						{
 							#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-							currentSentenceInLogicalConditionCommandTemp->sentenceOriginal = GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents));
+							currentSentenceInLogicalConditionCommandTemp->sentenceOriginal = LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents));
 							#endif
 
 							if(NLCpreprocessorMath.detectMathSymbolsInLine(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents)))
@@ -325,7 +325,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 							else
 							{
 								#ifdef NLC_PREPROCESSOR_GENERATE_COMMENTS
-								currentSentenceInLogicalConditionCommandTemp->sentenceContentsOriginal = GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents));
+								currentSentenceInLogicalConditionCommandTemp->sentenceContentsOriginal = LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents));
 								#endif
 
 								addNonLogicalConditionSentenceToList(&(currentSentenceInLogicalConditionCommandTemp->firstNLPparsablePhraseInList->sentenceContents), &currentNLCsentenceInList, &sentenceIndex, currentSentenceInLogicalConditionCommandTemp->indentation, currentNLCfunctionInList, firstNLCfunctionInList);
@@ -339,7 +339,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				else
 				{
 				#endif
-					currentNLCsentenceInList->sentenceContentsOriginal = GIApreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents);		//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
+					currentNLCsentenceInList->sentenceContentsOriginal = LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&lineContents);		//sentenceOriginal is stored for both isMath and !isMath (sentenceContentsOriginal is only stored for !isMath)
 
 					addNonLogicalConditionSentenceToList(&lineContents, &currentNLCsentenceInList, &sentenceIndex, currentIndentation, currentNLCfunctionInList, firstNLCfunctionInList);
 
@@ -362,13 +362,13 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 		NLCpreprocessorSentence* currentSentence = currentNLCfunctionInList->firstNLCsentenceInFunction;
 		
 		#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
-		currentNLCfunctionInList->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
-		GIApreprocessorSentence* currentGIApreprocessorSentenceInList = currentNLCfunctionInList->firstGIApreprocessorSentenceInList;
+		currentNLCfunctionInList->firstLRPpreprocessorSentenceInList = new LRPpreprocessorSentence();
+		LRPpreprocessorSentence* currentLRPpreprocessorSentenceInList = currentNLCfunctionInList->firstLRPpreprocessorSentenceInList;
 		#endif
-		int sentenceIndexOriginal = GIA_NLP_START_SENTENCE_INDEX;
+		int sentenceIndexOriginal = LRP_NLP_START_SENTENCE_INDEX;
 		while(currentSentence->next != NULL)
 		{
-			string indentationContents = GIApreprocessor.generateIndentationContents(currentSentence->indentation);
+			string indentationContents = LRPpreprocessor.generateIndentationContents(currentSentence->indentation);
 
 			NLCpreprocessorParsablePhrase* currentParsablePhrase = currentSentence->firstNLPparsablePhraseInList;
 			bool first = true;
@@ -384,15 +384,15 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 					{
 						if(currentSentence->mathTextNLPparsablePhraseTotal > 0)	//not required
 						{
-							vector<GIApreprocessorPlainTextWord*>* parsablePhraseSentenceContents = &(currentParsablePhrase->sentenceContents);
+							vector<LRPpreprocessorPlainTextWord*>* parsablePhraseSentenceContents = &(currentParsablePhrase->sentenceContents);
 							if(parsablePhraseSentenceContents->size() > 3)	//at least 3 words are required in parsable phrase for NLC_PREPROCESSOR_MATH_OPERATOR_LIKELY_PREPEND_NATURAL_LANGUAGE_WORD to exist
 							{
 								//cout << "parsablePhraseSentenceContents->back()->tagName = " << parsablePhraseSentenceContents->back()->tagName << endl;
-								vector<GIApreprocessorPlainTextWord*>::iterator iter = parsablePhraseSentenceContents->end()-2;
+								vector<LRPpreprocessorPlainTextWord*>::iterator iter = parsablePhraseSentenceContents->end()-2;
 								if((*iter)->tagName == NLC_PREPROCESSOR_MATH_OPERATOR_LIKELY_PREPEND_NATURAL_LANGUAGE_WORD)	//second last word as last word is full stop
 								{
 									//cout << "NLC_PREPROCESSOR_REMOVE_REDUNDANT_PRECEEDING_IS_FROM_NUMERICAL_OPERATORS" << endl;
-									//GIApreprocessorWordClassObject.printWordList(parsablePhraseSentenceContents);
+									//LRPpreprocessorWordClassObject.printWordList(parsablePhraseSentenceContents);
 									
 									//1. modify sentence mathText;
 									string parsablePhraseReferenceName = NLCpreprocessorSentenceClass.generateMathTextNLPparsablePhraseReference(currentParsablePhrase->sentenceIndex, currentParsablePhrase);
@@ -425,7 +425,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 									
 									parsablePhraseSentenceContents->erase(iter);
 		
-									//GIApreprocessorWordClassObject.printWordList(parsablePhraseSentenceContents);
+									//LRPpreprocessorWordClassObject.printWordList(parsablePhraseSentenceContents);
 								}
 							}
 						}
@@ -433,7 +433,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				}
 				#endif
 				
-				functionContents = functionContents + indentationContents + GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
+				functionContents = functionContents + indentationContents + LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) + CHAR_NEWLINE;
 				
 				#ifdef GIA_POS_REL_TRANSLATOR_RULES_PARSE_ISOLATED_SUBREFERENCE_SETS_OPTIMISED
 				if(!(currentSentence->isBlankSentence))
@@ -444,12 +444,12 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 						if(!NLCtranslatorCodeBlocksLogicalConditions.getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate(currentSentence, currentParsablePhrase))	//if estimated to have foundBooleanStatementExpression, then !parseIsolatedSubreferenceSets	//added 2f6b
 						{
 							//cout << "\tgetMathObjectVariableTypeBooleanExpressionBeforeGIAestimate" << endl;
-							currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSets = true;
-							currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSetsFirst = true;
+							currentLRPpreprocessorSentenceInList->parseIsolatedSubreferenceSets = true;
+							currentLRPpreprocessorSentenceInList->parseIsolatedSubreferenceSetsFirst = true;
 							if(!(currentSentence->hasLogicalConditionOperator))
 							{
 								//cout << "(!(currentSentence->hasLogicalConditionOperator))" << endl;
-								currentGIApreprocessorSentenceInList->parseIsolatedSubreferenceSetsOnly = true;
+								currentLRPpreprocessorSentenceInList->parseIsolatedSubreferenceSetsOnly = true;
 							}
 						}
 					}
@@ -457,13 +457,13 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 				#endif
 				
 				#ifndef NLC_PREPROCESSOR_SAVE_OUTPUT_TO_FILE
-				currentGIApreprocessorSentenceInList->sentenceIndexOriginal = sentenceIndexOriginal;
-				currentGIApreprocessorSentenceInList->sentenceContentsOriginal = currentParsablePhrase->sentenceContents;	//precondition: words in logicReferenceVariableWordList are unique across all logicReferenceVariableWordLists in memory
+				currentLRPpreprocessorSentenceInList->sentenceIndexOriginal = sentenceIndexOriginal;
+				currentLRPpreprocessorSentenceInList->sentenceContentsOriginal = currentParsablePhrase->sentenceContents;	//precondition: words in logicReferenceVariableWordList are unique across all logicReferenceVariableWordLists in memory
 				#ifdef NLC_PREPROCESSOR_DEBUG
-				cout << "currentGIApreprocessorSentenceInList = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentGIApreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
+				cout << "currentLRPpreprocessorSentenceInList = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentLRPpreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 				#endif
-				currentGIApreprocessorSentenceInList->next = new GIApreprocessorSentence();
-				currentGIApreprocessorSentenceInList = currentGIApreprocessorSentenceInList->next;
+				currentLRPpreprocessorSentenceInList->next = new LRPpreprocessorSentence();
+				currentLRPpreprocessorSentenceInList = currentLRPpreprocessorSentenceInList->next;
 				sentenceIndexOriginal++;
 				#endif
 				
@@ -522,7 +522,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 			while(currentParsablePhrase->next != NULL || (!currentSentence->isMath && first))
 			{	
 				first = false;
-				cout << "\tcurrentParsablePhrase->sentenceContents = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) << endl;
+				cout << "\tcurrentParsablePhrase->sentenceContents = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentParsablePhrase->sentenceContents)) << endl;
 				cout << "\tcurrentParsablePhrase->sentenceIndex = " << currentParsablePhrase->sentenceIndex << endl;
 				cout << "\tcurrentParsablePhrase->mathTextNLPparsablePhraseIndex = " << currentParsablePhrase->mathTextNLPparsablePhraseIndex << endl;
 
@@ -548,7 +548,7 @@ bool NLCpreprocessorClass::preprocessTextForNLC(NLCfunction* firstNLCfunctionInL
 
 
 	
-void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIApreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
+void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<LRPpreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList)
 {
 	#ifdef NLC_PREPROCESSOR_MATH
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP
@@ -573,19 +573,19 @@ void NLCpreprocessorClass::addNonLogicalConditionSentenceToList(vector<GIAprepro
 			string actionName = firstWordInSentence;
 			(*currentNLCsentenceInList)->singleWordSentenceActionName = actionName;
 			lineContents->clear();
-			GIApreprocessorWordClassObject.addStringArrayToWordList(lineContents, preprocessorInterpretSingleWordSentencesAsActionsDummyTextActionFullWordArray, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_FULL_NUMBER_OF_WORDS);
-			GIApreprocessorWordClassObject.addStringToWordList(lineContents, STRING_FULLSTOP);
+			LRPpreprocessorWordClassObject.addStringArrayToWordList(lineContents, preprocessorInterpretSingleWordSentencesAsActionsDummyTextActionFullWordArray, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_FULL_NUMBER_OF_WORDS);
+			LRPpreprocessorWordClassObject.addStringToWordList(lineContents, STRING_FULLSTOP);
 			#else
 			lineContents->clear();
-			GIApreprocessorWordClassObject.addStringToWordList(lineContents, actionName);
-			GIApreprocessorWordClassObject.addStringArrayToWordList(lineContents, preprocessorInterpretSingleWordSentencesAsActionsDummyTextActionObjectFullWordArray, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL_NUMBER_OF_WORDS);
-			GIApreprocessorWordClassObject.addStringToWordList(lineContents, STRING_FULLSTOP);
+			LRPpreprocessorWordClassObject.addStringToWordList(lineContents, actionName);
+			LRPpreprocessorWordClassObject.addStringArrayToWordList(lineContents, preprocessorInterpretSingleWordSentencesAsActionsDummyTextActionObjectFullWordArray, NLC_PREPROCESSOR_INTERPRET_SINGLE_WORD_SENTENCES_AS_ACTIONS_DUMMY_TEXT_ACTION_OBJECT_FULL_NUMBER_OF_WORDS);
+			LRPpreprocessorWordClassObject.addStringToWordList(lineContents, STRING_FULLSTOP);
 			#endif
 		}
 	}
 	#endif
 	
-	//cout << "lineContents = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(lineContents) << endl;
+	//cout << "lineContents = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(lineContents) << endl;
 
 	(*currentNLCsentenceInList)->firstNLPparsablePhraseInList->sentenceContents = *lineContents;	//full stop should already be appended
 	(*currentNLCsentenceInList)->firstNLPparsablePhraseInList->sentenceIndex = (*sentenceIndex);
@@ -620,7 +620,7 @@ string NLCpreprocessorClass::generateNLCfunctionFileName(const string NLCfunctio
 }
 #endif
 
-bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vector<GIApreprocessorPlainTextWord*>* lineContents, int* logicalConditionOperator)
+bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vector<LRPpreprocessorPlainTextWord*>* lineContents, int* logicalConditionOperator)
 {
 	*logicalConditionOperator = INT_DEFAULT_VALUE;
 	bool logicalConditionOperatorFound = false;
@@ -628,7 +628,7 @@ bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vec
 	//get first word in line
 	for(int i=0; i<NLC_LOGICAL_CONDITION_OPERATIONS_NUMBER_OF_TYPES; i++)
 	{
-		if(GIApreprocessorWordClassObject.findSimpleSubstringInWordListAtIndex(lineContents, logicalConditionOperationsArray[i], 0, true))
+		if(LRPpreprocessorWordClassObject.findSimpleSubstringInWordListAtIndex(lineContents, logicalConditionOperationsArray[i], 0, true))
 		{
 			logicalConditionOperatorFound = true;
 			*logicalConditionOperator = i;
@@ -639,7 +639,7 @@ bool NLCpreprocessorClass::detectLogicalConditionOperatorAtStartOfLine(const vec
 }
 
 #ifdef NLC_MATH_OBJECTS_ADVANCED
-bool NLCpreprocessorClass::detectMathObjectStringDelimiter(const vector<GIApreprocessorPlainTextWord*>* lineContents)
+bool NLCpreprocessorClass::detectMathObjectStringDelimiter(const vector<LRPpreprocessorPlainTextWord*>* lineContents)
 {
 	bool result = false;
 	for(int w = 0; w < lineContents->size(); w++)

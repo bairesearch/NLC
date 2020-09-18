@@ -26,7 +26,7 @@
  * File Name: NLCglobalDefs.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -541,7 +541,7 @@
 		#endif
 		#define NLC_LIBRARY_GENERATE_OBJECT_BY_NAME_FUNCTION_NAME "generateObjectByName"
 	#endif
-	#ifdef GIA_PREPROCESSOR_WORD_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
+	#ifdef LRP_PREPROCESSOR_WORD_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK
 		#define NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_SUPPORT_INTRAWORD_PUNCTUATION_MARK	//1n2e
 	#endif
 	//#define NLC_NONOO	//1n1a
@@ -552,15 +552,15 @@
 #endif
 
 #ifndef NLC_DEBUG_DISABLE_1m_CODE
-	#ifdef GIA_PREPROCESSOR_WORD_NORMALISE_INVERSE_PREPOSITIONS
+	#ifdef LRP_PREPROCESSOR_WORD_NORMALISE_INVERSE_PREPOSITIONS
 		#define NLC_NORMALISE_INVERSE_PREPOSITIONS
 		#ifdef NLC_NORMALISE_INVERSE_PREPOSITIONS
 			#define NLC_PARSE_CONDITION_PARENTS
 		#endif
 	#endif
-	#ifdef GIA_PREPROCESSOR_WORD_NORMALISE_TWOWAY_PREPOSITIONS
+	#ifdef LRP_PREPROCESSOR_WORD_NORMALISE_TWOWAY_PREPOSITIONS
 		#define NLC_NORMALISE_TWOWAY_PREPOSITIONS
-		#ifdef GIA_PREPROCESSOR_WORD_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
+		#ifdef LRP_PREPROCESSOR_WORD_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED
 			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_ENABLED	//GIA dual conditions are enabled (NLC will not parse GIA entities with inverseConditionTwoWay set; prevents infinite loop parsing - relies on GIA advanced referencing to parse inverted sentence contents. E.g. sentenceIndex1: a new two way condition is created (the inverted condition of which has a inverseConditionTwoWay set) (eg Tom is near the house). This inverted condition is referenced using GIA advanced referencing by a new sentenceIndex2 with inverted sentence contents (eg The house that is near Tom). Yet the condition connection created for the referenced condition (sentenceIndex2) will not be inverted, therefore it will be correctly parsed by NLC)
 		#else
 			#define NLC_NORMALISE_TWOWAY_PREPOSITIONS_DUAL_CONDITION_LINKS_DISABLED	//GIA dual conditions are disabled (NLC will create dual condition links; required for parsing of inverted sentence contents; eg Tom is near the house. The house that is near Tom is red.)
@@ -843,8 +843,8 @@
 			#define NLC_PREPROCESSOR_MATH_OLD_NUMBER_OF_IMPLEMENTATION_USING_QVARS
 		#endif
 
-		#define NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR (CHAR_FULLSTOP)	//this is defined by NLP/English	//GIA_PREPROCESSOR_END_OF_SENTENCE_CHAR
-		#define NLC_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR (CHAR_QUESTIONMARK)	//this is defined by NLP/English	//GIA_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR
+		#define NLC_PREPROCESSOR_END_OF_SENTENCE_CHAR (CHAR_FULLSTOP)	//this is defined by NLP/English	//LRP_PREPROCESSOR_END_OF_SENTENCE_CHAR
+		#define NLC_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR (CHAR_QUESTIONMARK)	//this is defined by NLP/English	//LRP_PREPROCESSOR_END_OF_SENTENCE_QUESTION_CHAR
 		#define NLC_PREPROCESSOR_MATH_TESTING_ALLOW_GENERATION_OF_UNCOMPILABLE_CODE
 		#ifdef NLC_PREPROCESSOR_MATH_TESTING_ALLOW_GENERATION_OF_UNCOMPILABLE_CODE
 			//#ifdef NLC_PREPROCESSOR_MATH_DETECT_USE_OF_UNDECLARED_VARIABLES	//will not be defined in releases < 1p
@@ -1108,7 +1108,7 @@
 	#endif
 	//#define NLC_PREPROCESSOR_SUPPORT_MULTILINE_SENTENCES
 	//#define NLC_PREPROCESSOR_SUPPORT_MATH_DECIMAL_PLACES
-	#define NLC_PREPROCESSOR_INDENTATION_CHAR (GIA_PREPROCESSOR_INDENTATION_CHAR)
+	#define NLC_PREPROCESSOR_INDENTATION_CHAR (LRP_PREPROCESSOR_INDENTATION_CHAR)
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_STRING "function"
 	#define NLC_PREPROCESSOR_FUNCTION_HEADER_MID_CHAR (STRING_SPACE)
 	#define NLC_PREPROCESSOR_MAX_INDENTATION_LEVELS (100)

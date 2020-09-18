@@ -26,7 +26,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -38,8 +38,8 @@
 #include "NLCIeditorOperations.hpp"
 #include "NLCIoperations.hpp"
 #include "GIAtranslatorOperations.hpp"
-#include "GIApreprocessorWordIdentification.hpp"
-#include "GIApreprocessor.hpp"
+#include "LRPpreprocessorWordIdentification.hpp"
+#include "LRPpreprocessor.hpp"
 
 #include <QTextBlock>
 
@@ -53,9 +53,9 @@ class NLCIeditorOperationsClass
 private: 
 	SHAREDvarsClass SHAREDvars;
 	NLCIoperationsClass NLCIoperations;
-	GIApreprocessorClass GIApreprocessor;
-	GIApreprocessorWordIdentificationClass GIApreprocessorWordIdentification;
-	GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
+	LRPpreprocessorClass LRPpreprocessor;
+	LRPpreprocessorWordIdentificationClass LRPpreprocessorWordIdentification;
+	LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	NLCpreprocessorClass NLCpreprocessor;
 
 public:
@@ -66,10 +66,10 @@ public:
 	bool preprepreprocessTextForNLC(QTextEdit* editor, GIAtranslatorVariablesClass* translatorVariablesTemplate);
 		bool preprepreprocessTextForNLChighlightWrapper(QVector<HighlightingRule>* highlightingRules, GIAtranslatorVariablesClass* translatorVariablesTemplate);
 	#endif
-		bool preprepreprocessTextForNLChighlight(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList);
+		bool preprepreprocessTextForNLChighlight(QVector<HighlightingRule>* highlightingRules, LRPpreprocessorSentence* firstNLCpreprepreprocessorSentenceInList);
 	bool preprepreprocessTextForNLCsingleLine(QTextEdit* editor, QVector<HighlightingRule>* highlightingRules, const int lineIndex);
-		bool preprepreprocessTextForNLCsingleLinehighlight(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, const int lineIndex);		
-	bool preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorPlainTextWord*>* sentence, const bool useOriginalSpacing);
+		bool preprepreprocessTextForNLCsingleLinehighlight(QVector<HighlightingRule>* highlightingRules, LRPpreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, const int lineIndex);		
+	bool preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<LRPpreprocessorPlainTextWord*>* sentence, const bool useOriginalSpacing);
 
 };
 

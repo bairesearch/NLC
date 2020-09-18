@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -70,7 +70,7 @@ static char errmessage[] = "Usage:  NLC.exe [options]\n\n\twhere options are any
 #ifdef GIA_SEM_REL_TRANSLATOR
 "\n\t-dbsemanticparserfolder    : direct semantic parser (corpus or optimised) database base folder path (def: /home/systemusername/source/GIAsemanticparserdatabase)"
 #endif
-#ifdef GIA_PREPROCESSOR
+#ifdef LRP_PREPROCESSOR
 "\n\t-lrp                               : language reduction preprocessor"
 "\n\t-olrptxt [string]                  : plain text .txt output filename with GIA language reduction preprocessor applied (def: inputTextWithLRP.txt)"
 "\n\t-lrpfolder                         : folder of LRP data files (list of multiword verbs, multiword prepositions etc) (def: same as exe)"
@@ -164,11 +164,11 @@ int main(const int argc, const char** argv)
 	#ifdef GIA_SEM_REL_TRANSLATOR
 	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEM_REL_TRANSLATOR_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
-	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + LRP_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	
-	#ifdef GIA_PREPROCESSOR
+	#ifdef LRP_PREPROCESSOR
 	bool useLRP = false;
 	bool useOutputLRPTextPlainTXTFile = false;
 	string outputLRPTextPlainTXTFileName = "inputTextWithLRP.txt";
@@ -361,14 +361,14 @@ int main(const int argc, const char** argv)
 			semanticParserDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbsemanticparserfolder");
 		}
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+		#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-dbpostaggerfolder"))
 		{
 			POStaggerDatabaseFolderName = SHAREDvarsClass().getStringArgument(argc, argv, "-dbpostaggerfolder");
 		}
 		#endif
 		
-		#ifdef GIA_PREPROCESSOR
+		#ifdef LRP_PREPROCESSOR
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-lrp"))
 		{
 			useLRP = true;
@@ -438,7 +438,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2k1a 02-June-2020" << endl;
+			cout << "NLC.exe - Project Version: 2m7a 11-September-2020" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -527,11 +527,11 @@ int main(const int argc, const char** argv)
 		#ifdef GIA_SEM_REL_TRANSLATOR
 		semanticParserDatabaseFolderName,
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+		#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		POStaggerDatabaseFolderName,
 		#endif
 		
-		#ifdef GIA_PREPROCESSOR
+		#ifdef LRP_PREPROCESSOR
 		useLRP,
 		useOutputLRPTextPlainTXTFile,
 		outputLRPTextPlainTXTFileName,
@@ -607,11 +607,11 @@ bool NLCmainClass::executeNLC(
 	#ifdef GIA_SEM_REL_TRANSLATOR
 	string semanticParserDatabaseFolderName,
 	#endif
-	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+	#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 	string POStaggerDatabaseFolderName,
 	#endif
 		
-	#ifdef GIA_PREPROCESSOR
+	#ifdef LRP_PREPROCESSOR
 	bool useLRP,
 	bool useOutputLRPTextPlainTXTFile,
 	string outputLRPTextPlainTXTFileName,
@@ -697,7 +697,7 @@ bool NLCmainClass::executeNLC2()
 	#endif
 	bool printOutputQuery = false;
 	bool useInputQuery = false;
-	#ifdef GIA_PREPROCESSOR
+	#ifdef LRP_PREPROCESSOR
 	bool useOutputQueryLRPTextPlainTXTFile = false;
 	string outputQueryLRPTextPlainTXTFileName = "inputTextWithLRPQuery.txt";
 	#endif
@@ -876,11 +876,11 @@ bool NLCmainClass::executeNLC2()
 		#endif
 		if(useNLCpreprocessor)
 		{
-			translatorVariables->firstGIApreprocessorSentenceInList = currentNLCfunctionInList->firstGIApreprocessorSentenceInList;	
+			translatorVariables->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList = currentNLCfunctionInList->firstLRPpreprocessorSentenceInList;	
 		}
 		else
 		{
-			translatorVariables->firstGIApreprocessorSentenceInList = translatorVariablesTemplate->firstGIApreprocessorSentenceInList;	//ie most likely NULL (unless the higher level application is executing NLC without useNLCpreprocessor)
+			translatorVariables->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList = translatorVariablesTemplate->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList;	//ie most likely NULL (unless the higher level application is executing NLC without useNLCpreprocessor)
 		}
 		
 		entityNodesActiveListCompleteFunctions.push_back(translatorVariables->entityNodesActiveListComplete);
@@ -1026,11 +1026,11 @@ bool NLCmainClass::executeNLC2()
 			#ifdef GIA_SEM_REL_TRANSLATOR
 			semanticParserDatabaseFolderName,
 			#endif
-			#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+			#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 			POStaggerDatabaseFolderName,
 			#endif
 		
-			#ifdef GIA_PREPROCESSOR
+			#ifdef LRP_PREPROCESSOR
 			useLRP,
 			useOutputLRPTextPlainTXTFile,
 			outputLRPTextPlainTXTFileName,

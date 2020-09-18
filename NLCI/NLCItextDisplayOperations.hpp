@@ -26,7 +26,7 @@
  * File Name: NLCItextDisplayOperations.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -58,15 +58,15 @@ public:
 	#elif defined USE_GIAI
 	bool processTextForNLC(QTextBrowser* textBrowser, GIAtranslatorVariablesClass* translatorVariablesTemplate, const bool displayLRPprocessedText, const bool processText);
 	#endif
-		bool processTextForNLChighlight(QTextBrowser* textBrowser, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, const bool displayLRPprocessedText, const int functionIndex);
-			bool processTextForNLChighlightSentence(QTextBrowser* textBrowser, vector<GIApreprocessorPlainTextWord*>* sentence, const int sentenceIndex, const int functionIndex, string* htmlSource);
+		bool processTextForNLChighlight(QTextBrowser* textBrowser, LRPpreprocessorSentence* firstNLCprepreprocessorSentenceInList, const bool displayLRPprocessedText, const int functionIndex);
+			bool processTextForNLChighlightSentence(QTextBrowser* textBrowser, vector<LRPpreprocessorPlainTextWord*>* sentence, const int sentenceIndex, const int functionIndex, string* htmlSource);
 	#ifdef USE_NLCI
-	//bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, GIApreprocessorPlainTextWord** wordTagFound);
-	bool getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* NLCfunctionInList, GIApreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated);
+	//bool NLCItextDisplayOperationsClass::getWordByIndex(const int functionIndex, const int sentenceIndex, const int wordIndex, NLCfunction* firstNLCfunctionInList, LRPpreprocessorPlainTextWord** wordTagFound);
+	bool getWordByIndex(const int sentenceIndex, const int wordIndex, NLCfunction* NLCfunctionInList, LRPpreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated);
 	#elif defined USE_GIAI
-	bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, GIApreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated);
+	bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIAtranslatorVariablesClass* translatorVariablesTemplate, LRPpreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated);
 	#endif	
-		bool getWordByIndex(const int sentenceIndex, const int wordIndex, GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList, GIApreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated);
+		bool getWordByIndex(const int sentenceIndex, const int wordIndex, LRPpreprocessorSentence* firstNLCprepreprocessorSentenceInList, LRPpreprocessorPlainTextWord** wordTagFound, int* sentenceIndexUpdated);
 
 };
 

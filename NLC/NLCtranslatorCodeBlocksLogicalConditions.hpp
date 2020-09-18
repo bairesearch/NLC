@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -47,8 +47,8 @@
 #include "GIAtranslatorOperations.hpp"	//required for getPrimaryNetworkIndexNodeDefiningInstance{}
 #include "NLCprintDefs.hpp"	//required for NLC_ITEM_TYPE_CATEGORY_VAR_APPENDITION
 #include "NLCpreprocessorMath.hpp"	//required for findCharacterAtIndexOrAfterSpace{}
-#include "GIApreprocessorWordClass.hpp"
-#include "GIApreprocessorWordIdentification.hpp"
+#include "LRPpreprocessorWordClass.hpp"
+#include "LRPpreprocessorWordIdentification.hpp"
 //#endif
 
 
@@ -59,11 +59,11 @@ class NLCtranslatorCodeBlocksLogicalConditionsClass
 	private: NLCitemClassClass NLCitemClass;
 	private: GIAtranslatorOperationsClass GIAtranslatorOperations;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
-	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: NLCprintDefsClass NLCprintDefs;
 	private: NLCtranslatorCodeBlocksLogicalConditionsAdvancedClass NLCtranslatorCodeBlocksLogicalConditionsAdvanced;
 	private: NLCtranslatorCodeBlocksOperationsClass NLCtranslatorCodeBlocksOperations;
-	private: GIApreprocessorWordIdentificationClass GIApreprocessorWordIdentification;
+	private: LRPpreprocessorWordIdentificationClass LRPpreprocessorWordIdentification;
 	private: NLCpreprocessorMathClass NLCpreprocessorMath;
 	#ifdef NLC_PREPROCESSOR_MATH
 	public: bool generateCodeBlocksFromMathText(NLCcodeblock** currentCodeBlockInTree, map<int, vector<GIAentityNode*>*>::iterator sentenceIterFirstInFullSentence, int sentenceIndex, NLCpreprocessorSentence* fullSentence, const string NLCfunctionName);	
@@ -72,7 +72,7 @@ class NLCtranslatorCodeBlocksLogicalConditionsClass
 			//private: int getMathObjectVariableTypeBeforeGIA(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);	//not currently used
 				private: bool getMathObjectVariableTypeBooleanExpressionAfterGIA(vector<GIAentityNode*>* entityNodesActiveListComplete, const int sentenceIndex);
 				public: bool getMathObjectVariableTypeBooleanExpressionBeforeGIAestimate(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);
-					private: bool isWordAuxiliaryOrVerb(GIApreprocessorPlainTextWord* currentWord);
+					private: bool isWordAuxiliaryOrVerb(LRPpreprocessorPlainTextWord* currentWord);
 				private: int getMathObjectVariableTypeSharedWrapper(bool foundBooleanStatementExpression, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);
 					private: int getMathObjectVariableTypeShared(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase, string* mathTextSubphraseContainingNLPparsablePhraseRecord);
 						public: bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex, int* mathTextSubphraseContainingNLPparsablePhraseEndIndex);

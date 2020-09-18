@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -866,7 +866,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 				//cout << "mathTextSubphraseContainingNLPparsablePhrase = " << mathTextSubphraseContainingNLPparsablePhrase << endl;
 				if(mathObjectVariableType == NLC_MATH_OBJECTS_VARIABLE_TYPE_UNKNOWN)
 				{
-					//GIApreprocessorWordClassObject.printWordList(&(parsablePhrase->sentenceContents));
+					//LRPpreprocessorWordClassObject.printWordList(&(parsablePhrase->sentenceContents));
 
 					#ifndef NLC_MATH_OBJECTS_ADVANCED_USE_UNIQUE_OPERATORS
 					//2f7b
@@ -899,7 +899,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 						bool foundAuxiliaryOrVerb = false;
 						for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
 						{
-							GIApreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
+							LRPpreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
 							if(isWordAuxiliaryOrVerb(currentWord))
 							{
 								foundAuxiliaryOrVerb = true;
@@ -928,7 +928,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 	//OLD2; not robust, as even if verb is found, the POS type will not necessarily be verb
 	for(int w=0; w<(parsablePhrase->sentenceContents).size(); w++)
 	{
-		GIApreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
+		LRPpreprocessorPlainTextWord* currentWord = (parsablePhrase->sentenceContents)[w];
 		
 		bool foundDelimiter = isWordAuxiliaryOrVerb(currentWord);
 
@@ -955,12 +955,12 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 	//OLD1; not robust; what if there is more than one auxiliary of a particular type in the parsable phrase
 	for(int i=0; i<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_AUXILIARY_KEYWORDS_TAGGING_SUBJECT_OR_REFERENCE_NUMBER_OF_TYPES; i++)
 	{
-		int indexOfAuxiliaryTemp = GIApreprocessorWordClassObject.findStringInWordList(&(parsablePhrase->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
+		int indexOfAuxiliaryTemp = LRPpreprocessorWordClassObject.findStringInWordList(&(parsablePhrase->sentenceContents), preprocessorMathAuxiliaryKeywordsTaggingSubjectOrReference[i], 0);
 		if(indexOfAuxiliaryTemp != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 		{
 			for(int i2=0; i2<NLC_PREPROCESSOR_MATH_NLP_PARSABLE_PHRASE_RCMOD_SAME_REFERENCE_SET_DELIMITER_NUMBER_OF_TYPES; i2++)
 			{
-				int indexOfRcmodTemp = GIApreprocessorWordClassObject.findStringInWordListReverse(&(parsablePhrase->sentenceContents), preprocessorMathRcmodSameReferenceSetDelimiter[i2], indexOfAuxiliaryTemp);
+				int indexOfRcmodTemp = LRPpreprocessorWordClassObject.findStringInWordListReverse(&(parsablePhrase->sentenceContents), preprocessorMathRcmodSameReferenceSetDelimiter[i2], indexOfAuxiliaryTemp);
 				if(indexOfAuxiliaryTemp != indexOfAuxiliaryTemp-(preprocessorMathRcmodSameReferenceSetDelimiter[i2].length()+1))
 				{
 					foundBooleanStatementExpression = true;
@@ -973,7 +973,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeBoo
 	return foundBooleanStatementExpression;
 }
 
-bool NLCtranslatorCodeBlocksLogicalConditionsClass::isWordAuxiliaryOrVerb(GIApreprocessorPlainTextWord* currentWord)
+bool NLCtranslatorCodeBlocksLogicalConditionsClass::isWordAuxiliaryOrVerb(LRPpreprocessorPlainTextWord* currentWord)
 {
 	bool foundDelimiter = false;
 
@@ -995,7 +995,7 @@ bool NLCtranslatorCodeBlocksLogicalConditionsClass::isWordAuxiliaryOrVerb(GIApre
 	#else
 	bool grammaticallyStrict = false;
 	#endif
-	if(GIApreprocessorWordIdentification.determineIsVerb(currentWord, usePOSprelim, grammaticallyStrict));	
+	if(LRPpreprocessorWordIdentification.determineIsVerb(currentWord, usePOSprelim, grammaticallyStrict));	
 	{
 		//not robust, as even if verb is found, the POS type will not necessarily be verb
 		foundDelimiter = true;
@@ -1021,7 +1021,7 @@ int NLCtranslatorCodeBlocksLogicalConditionsClass::getMathObjectVariableTypeShar
 			#else
 			//eg1 "the dog = the chicken is happy" - must say; "if the chicken is happy, the dog = true". eg2 "bool X = the chicken is happy" -  must say; "if the chicken is happy, X = true"
 			cerr << "generateCodeBlocksFromMathTextNLPparsablePhrase{} error: illegal expression detected: !(currentFullSentence->hasLogicalConditionOperator) && foundBooleanStatementExpression" << endl;
-			cerr << "parsablePhrase->sentenceContents = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(parsablePhrase->sentenceContents)) << endl;
+			cerr << "parsablePhrase->sentenceContents = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(parsablePhrase->sentenceContents)) << endl;
 			exit(EXIT_ERROR);
 			#endif
 		}

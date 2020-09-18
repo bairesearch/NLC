@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessor.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -41,9 +41,9 @@
 #include "NLCpreprocessorMathLogicalConditions.hpp"
 #include "NLCtranslatorCodeBlocksLogicalConditions.hpp"
 #include "SHAREDvars.hpp"	//required for convertStringToLowerCase/isWhiteSpace
-#include "GIAentityNodeClass.hpp" //required for GIA_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
-#include "GIApreprocessor.hpp"
-#include "GIApreprocessorWordClass.hpp"
+#include "GIAentityNodeClass.hpp" //required for LRP_NLP_START_SENTENCE_INDEX and entityNodesActiveListComplete
+#include "LRPpreprocessor.hpp"
+#include "LRPpreprocessorWordClass.hpp"
 #include "GIAtranslatorOperations.hpp"
 
 
@@ -52,8 +52,8 @@ class NLCpreprocessorClass
 {
 	private: SHAREDvarsClass SHAREDvars;
 	private: NLCpreprocessorMathClass NLCpreprocessorMath;
-	private: GIApreprocessorClass GIApreprocessor;
-	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
+	private: LRPpreprocessorClass LRPpreprocessor;
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 	private: NLCpreprocessorSentenceClassClass NLCpreprocessorSentenceClass;
 	private: NLCtranslatorCodeBlocksLogicalConditionsClass NLCtranslatorCodeBlocksLogicalConditions;
 
@@ -64,15 +64,15 @@ class NLCpreprocessorClass
 			#endif
 				private: string printStringVector(vector<string>* stringVector);	
 		private: bool preprocessTextForNLC(NLCfunction* firstNLCfunctionInList, bool detectedFunctions, int numberOfFunctionsInList, const string outputFileName);
-			private: void addNonLogicalConditionSentenceToList(vector<GIApreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
+			private: void addNonLogicalConditionSentenceToList(vector<LRPpreprocessorPlainTextWord*>* lineContents, NLCpreprocessorSentence** currentNLCsentenceInList, int* sentenceIndex, const int currentIndentation, NLCfunction* currentNLCfunctionInList, const NLCfunction* firstNLCfunctionInList);
 			#ifdef NLC_INPUT_FUNCTION_LISTS
 			public: bool detectFunctionHeader(const string* lineContents);
 			public: string getFunctionNameFromFunctionHeader(const string* lineContents);
 			private: string generateNLCfunctionFileName(const string NLCfunctionName);
 			#endif
-			private: bool detectLogicalConditionOperatorAtStartOfLine(const vector<GIApreprocessorPlainTextWord*>* lineContents, int* logicalConditionOperator);
+			private: bool detectLogicalConditionOperatorAtStartOfLine(const vector<LRPpreprocessorPlainTextWord*>* lineContents, int* logicalConditionOperator);
 			#ifdef NLC_MATH_OBJECTS_ADVANCED
-			private: bool detectMathObjectStringDelimiter(const vector<GIApreprocessorPlainTextWord*>* lineContents);
+			private: bool detectMathObjectStringDelimiter(const vector<LRPpreprocessorPlainTextWord*>* lineContents);
 			#endif
 };
 #endif

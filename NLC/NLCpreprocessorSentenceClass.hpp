@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -37,8 +37,8 @@
 
 #include "NLCglobalDefs.hpp"
 #include "SHAREDvars.hpp"
-#include "GIApreprocessorSentenceClass.hpp"
-#include "GIApreprocessorWordClass.hpp"
+#include "LRPpreprocessorSentenceClass.hpp"
+#include "LRPpreprocessorWordClass.hpp"
 
 class NLCvariable
 {
@@ -60,7 +60,7 @@ public:
 	~NLCpreprocessorParsablePhrase(void);
 
 	int sentenceIndex;
-	vector<GIApreprocessorPlainTextWord*> sentenceContents;
+	vector<LRPpreprocessorPlainTextWord*> sentenceContents;
 	#ifdef NLC_PREPROCESSOR_MATH;
 	int mathTextNLPparsablePhraseIndex;
 	#ifdef NLC_PREPROCESSOR_RECORD_PARSABLE_PHRASE_POSITION_APPROXIMATE
@@ -129,8 +129,8 @@ public:
 	#endif
 	string NLCfunctionName;
 	string functionContentsRaw;
-	GIApreprocessorSentence* firstNLCprepreprocessorSentenceInList;
-	GIApreprocessorSentence* firstGIApreprocessorSentenceInList;
+	LRPpreprocessorSentence* firstNLCprepreprocessorSentenceInList;
+	LRPpreprocessorSentence* firstLRPpreprocessorSentenceInList;
 	NLCpreprocessorSentence* firstNLCsentenceInFunction;
 	NLCfunction* next;
 };
@@ -140,7 +140,7 @@ public:
 class NLCpreprocessorSentenceClassClass
 {
 	private: SHAREDvarsClass SHAREDvars;
-	private: GIApreprocessorWordClassClass GIApreprocessorWordClassObject;
+	private: LRPpreprocessorWordClassClass LRPpreprocessorWordClassObject;
 
 	public: string generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase);
 	#ifdef NLC_PREPROCESSOR_MATH_REPLACE_NUMERICAL_VARIABLES_NAMES_FOR_NLP

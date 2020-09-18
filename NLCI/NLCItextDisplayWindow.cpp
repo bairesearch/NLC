@@ -26,7 +26,7 @@
  * File Name: NLCItextDisplayWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -92,7 +92,7 @@ void NLCItextDisplayWindowClass::linkActivated(const QUrl &link)
 	int sentenceIndex = SHAREDvars.convertStringToInt(sentenceIndexString);
 	int wordIndex = SHAREDvars.convertStringToInt(wordIndexString);
 
-	GIApreprocessorPlainTextWord* wordTagFound = NULL;
+	LRPpreprocessorPlainTextWord* wordTagFound = NULL;
 
 	int sentenceIndexUpdated = INT_DEFAULT_VALUE;
 	#ifdef USE_NLCI
@@ -144,7 +144,7 @@ bool NLCItextDisplayWindowClass::displayPreprocessedText()
 	textDisplayWindow->addToWindowList(textDisplayWindow);
 
 	bool displayLRPprocessedText = true;
-	if(!NLCItextDisplayOperations.processTextForNLChighlight(textDisplayWindow->textBrowser, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, displayLRPprocessedText, 0))
+    if(!NLCItextDisplayOperations.processTextForNLChighlight(textDisplayWindow->textBrowser, translatorVariablesTemplate->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList, displayLRPprocessedText, 0))
 	{
 		result = false;
 	}

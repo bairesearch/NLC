@@ -26,7 +26,7 @@
  * File Name: NLCIeditorWindow.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -36,7 +36,7 @@
 
 #include "NLCIeditorWindow.hpp"
 #include "NLCItextDisplayWindow.hpp"
-#include "GIApreprocessor.hpp"
+#include "LRPpreprocessor.hpp"
 
 
 vector<NLCIeditorWindowClass*> editorWindowList;
@@ -70,7 +70,7 @@ NLCIeditorWindowClass::NLCIeditorWindowClass(QWidget *parent): QMainWindow(paren
 	firstNLCfunctionInList = new NLCfunction();
 	#elif defined USE_GIAI
 	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
-	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();	
+	translatorVariablesTemplate->firstLRPpreprocessorSentenceInList = new LRPpreprocessorSentence();	
 	#endif
 	*/
 }
@@ -162,7 +162,7 @@ bool NLCIeditorWindowClass::preprepreprocessText(const bool highlight)
 	}
 	#elif defined USE_GIAI
 	translatorVariablesTemplate = new GIAtranslatorVariablesClass();
-	translatorVariablesTemplate->firstGIApreprocessorSentenceInList = new GIApreprocessorSentence();
+    translatorVariablesTemplate->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList = new LRPpreprocessorSentence();
 	if(!NLCIeditorOperations.preprepreprocessTextForNLC(editor, translatorVariablesTemplate))
 	{
 		result = false;

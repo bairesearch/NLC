@@ -26,7 +26,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -35,7 +35,7 @@
 #include "NLCIoperations.hpp"
 #include "NLCmain.hpp"
 #include "GIAmain.hpp"
-#include "GIApreprocessor.hpp"
+#include "LRPpreprocessor.hpp"
 
 #ifdef GIA_NEURAL_NETWORK
 #include "ANNdraw.hpp"
@@ -134,11 +134,11 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 	#ifdef GIA_SEM_REL_TRANSLATOR
 	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEM_REL_TRANSLATOR_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
-	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + LRP_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	
-	#ifdef GIA_PREPROCESSOR
+	#ifdef LRP_PREPROCESSOR
 	bool useLRP = NLCI_NLC_USE_LRP;
 	bool useOutputLRPTextPlainTXTFile = false;
 	string outputLRPTextPlainTXTFileName = "inputTextWithLRP.txt";
@@ -238,11 +238,11 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 		#ifdef GIA_SEM_REL_TRANSLATOR
 		semanticParserDatabaseFolderName,
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+		#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		POStaggerDatabaseFolderName,
 		#endif
 		
-		#ifdef GIA_PREPROCESSOR
+		#ifdef LRP_PREPROCESSOR
 		useLRP,
 		useOutputLRPTextPlainTXTFile,
 		outputLRPTextPlainTXTFileName,
@@ -378,11 +378,11 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	#ifdef GIA_SEM_REL_TRANSLATOR
 	string semanticParserDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_SEM_REL_TRANSLATOR_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
-	#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
-	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + GIA_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
+	#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+	string POStaggerDatabaseFolderName = GIA_DATABASE_FILESYSTEM_DEFAULT_SERVER_OR_MOUNT_NAME_BASE + LRP_PREPROCESSOR_POS_TAGGER_DATABASE_FILESYSTEM_DEFAULT_DATABASE_NAME;
 	#endif
 	
-	#ifdef GIA_PREPROCESSOR
+	#ifdef LRP_PREPROCESSOR
 	bool useLRP = NLCI_GIA_USE_LRP;
 	bool useOutputLRPTextPlainTXTFile = false;
 	string outputLRPTextPlainTXTFileName = string(GIA_TEXT_BASE_FILE_NAME) + GIA_TEXT_FILE_WITH_LRP_PREPEND + GIA_TEXT_FILE_EXTENSION;	//"inputTextWithLRP.txt";
@@ -531,11 +531,11 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 		#ifdef GIA_SEM_REL_TRANSLATOR
 		semanticParserDatabaseFolderName,
 		#endif
-		#ifdef GIA_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
+		#ifdef LRP_PREPROCESSOR_POS_TAGGER_DATABASE_PERSISTENT
 		POStaggerDatabaseFolderName,
 		#endif
 		
-		#ifdef GIA_PREPROCESSOR
+		#ifdef LRP_PREPROCESSOR
 		useLRP,
 		useOutputLRPTextPlainTXTFile,
 		outputLRPTextPlainTXTFileName,
@@ -559,23 +559,23 @@ int NLCIoperationsClass::preprepreprocessTextForNLChighlightWordDetermineColourI
 {
 	int colourIndex = NLCI_EDITOR_DEFAULT_FONT_COLOUR;
 
-	if(GIApreprocessorWordIdentification.determineIsVerbString(*word))
+	if(LRPpreprocessorWordIdentification.determineIsVerbString(*word))
 	{
 		colourIndex = GIA_DRAW_VERB_NODE_COLOUR;
 	}
-	else if(GIApreprocessorWordIdentification.determineIsPrepositionString(*word))
+	else if(LRPpreprocessorWordIdentification.determineIsPrepositionString(*word))
 	{
 		colourIndex = GIA_DRAW_PREPOSITION_NODE_COLOUR;
 	}
-	else if(GIApreprocessorWordIdentification.determineIsAdverbString(*word))
+	else if(LRPpreprocessorWordIdentification.determineIsAdverbString(*word))
 	{
 		colourIndex = GIA_DRAW_ADVERB_NODE_COLOUR;
 	}
-	else if(GIApreprocessorWordIdentification.determineIsAdjectiveString(*word))
+	else if(LRPpreprocessorWordIdentification.determineIsAdjectiveString(*word))
 	{
 		colourIndex = GIA_DRAW_ADJECTIVE_NODE_COLOUR;
 	}
-	else if(GIApreprocessorWordIdentification.determineIsNounString(*word))
+	else if(LRPpreprocessorWordIdentification.determineIsNounString(*word))
 	{
 		colourIndex = GIA_DRAW_NOUN_NODE_COLOUR;
 	}

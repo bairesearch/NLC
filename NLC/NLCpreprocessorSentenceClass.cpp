@@ -26,7 +26,7 @@
  * File Name: NLCpreprocessorSentenceClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -111,7 +111,7 @@ NLCfunction::NLCfunction(void)
 	NLCfunctionName = "";
 	functionContentsRaw = "";
 	firstNLCprepreprocessorSentenceInList = NULL;
-	firstGIApreprocessorSentenceInList = NULL;
+	firstLRPpreprocessorSentenceInList = NULL;
 	firstNLCsentenceInFunction = new NLCpreprocessorSentence();
 	next = NULL;
 }
@@ -125,7 +125,7 @@ NLCfunction::~NLCfunction(void)
 string NLCpreprocessorSentenceClassClass::generateMathTextNLPparsablePhraseReference(const int sentenceIndexOfFullSentence, const NLCpreprocessorParsablePhrase* currentPhrase)
 {
 	#ifdef NLC_PREPROCESSOR_MATH_USE_HUMAN_READABLE_VARIABLE_NAMES
-	string variableName = GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentPhrase->sentenceContents));
+	string variableName = LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentPhrase->sentenceContents));
 	variableName = SHAREDvars.replaceAllOccurancesOfString(&variableName, STRING_SPACE, "");
 	variableName = SHAREDvars.replaceAllOccurancesOfString(&variableName, STRING_FULLSTOP, "");
 	variableName = SHAREDvars.replaceAllOccurancesOfString(&variableName, STRING_APOSTROPHE, "");

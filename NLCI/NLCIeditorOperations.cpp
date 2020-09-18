@@ -26,7 +26,7 @@
  * File Name: NLCIeditorOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2k1a 02-June-2020
+ * Project Version: 2m7a 11-September-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -72,7 +72,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVect
 	bool result = true;
 	
 	string lrpFolder = string(NLCI_LRP_FOLDER) + CHAR_FOLDER_DELIMITER;
-	if(!GIApreprocessorWordIdentification.initialiseLRP(lrpFolder, true))
+	if(!LRPpreprocessorWordIdentification.initialiseLRP(lrpFolder, true))
 	{
 		result = false;
 	}
@@ -100,7 +100,7 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLC(QTextEdit* editor, GI
 
 	bool interpretNewLinesAsNewSentences = false;	//NB NLC interprets new lines as new sentences
 	bool splitMultisentenceLines = false;	//not currently supported by NLCI, as line detection must match
-	if(!GIApreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->firstGIApreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
+    if(!LRPpreprocessor.createPreprocessSentences(text, translatorVariablesTemplate->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
 	{
 		result = false;
 	}
@@ -111,12 +111,12 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVect
 	bool result = true;
 
 	string lrpFolder = string(NLCI_LRP_FOLDER) + CHAR_FOLDER_DELIMITER;
-	if(!GIApreprocessorWordIdentification.initialiseLRP(lrpFolder, true))
+	if(!LRPpreprocessorWordIdentification.initialiseLRP(lrpFolder, true))
 	{
 		result = false;
 	}
 	
-	if(!preprepreprocessTextForNLChighlight(highlightingRules, translatorVariablesTemplate->firstGIApreprocessorSentenceInList))
+    if(!preprepreprocessTextForNLChighlight(highlightingRules, translatorVariablesTemplate->LRPpreprocessorTranslatorVariables.firstLRPpreprocessorSentenceInList))
 	{
 		result = false;
 	}
@@ -124,16 +124,16 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightWrapper(QVect
 }
 #endif
 
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlight(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* firstNLCpreprepreprocessorSentenceInList)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlight(QVector<HighlightingRule>* highlightingRules, LRPpreprocessorSentence* firstNLCpreprepreprocessorSentenceInList)
 {
 	bool result = true;
 	
 	int line = 0;
-	GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList = firstNLCpreprepreprocessorSentenceInList;
+	LRPpreprocessorSentence* currentNLCpreprepreprocessorSentenceInList = firstNLCpreprepreprocessorSentenceInList;
 	while(currentNLCpreprepreprocessorSentenceInList->next != NULL)
 	{
-		vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
-		//cout << "currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
+		vector<LRPpreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
+		//cout << "currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 		if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 		{
 			result = false;
@@ -163,8 +163,8 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* 
 	#endif
 	bool splitMultisentenceLines = false;	//not currently supported by NLCI, as line detection must match
 	
-	GIApreprocessorSentence* modifiedNLCpreprepreprocessorSentenceInList = new GIApreprocessorSentence();
-	if(!GIApreprocessor.createPreprocessSentences(lineText, modifiedNLCpreprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
+	LRPpreprocessorSentence* modifiedNLCpreprepreprocessorSentenceInList = new LRPpreprocessorSentence();
+	if(!LRPpreprocessor.createPreprocessSentences(lineText, modifiedNLCpreprepreprocessorSentenceInList, interpretNewLinesAsNewSentences, splitMultisentenceLines))
 	{
 		result = false;
 	}
@@ -179,12 +179,12 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLine(QTextEdit* 
 	return result;
 }
 		
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QVector<HighlightingRule>* highlightingRules, GIApreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, const int lineIndex)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QVector<HighlightingRule>* highlightingRules, LRPpreprocessorSentence* currentNLCpreprepreprocessorSentenceInList, const int lineIndex)
 {
 	bool result = true;
 
-	vector<GIApreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
-	//cout << "preprepreprocessTextForNLCsingleLinehighlight{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << GIApreprocessorWordClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
+	vector<LRPpreprocessorPlainTextWord*>* sentence = &(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal);
+	//cout << "preprepreprocessTextForNLCsingleLinehighlight{}: currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal = " << LRPpreprocessorWordClassObject.generateTextFromVectorWordList(&(currentNLCpreprepreprocessorSentenceInList->sentenceContentsOriginal)) << endl;
 	if(!preprepreprocessTextForNLChighlightSentence(highlightingRules, sentence, true))
 	{
 		result = false;
@@ -193,19 +193,19 @@ bool NLCIeditorOperationsClass::preprepreprocessTextForNLCsingleLinehighlight(QV
 	return result;
 }
 
-bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<GIApreprocessorPlainTextWord*>* sentence, const bool useOriginalSpacing)
+bool NLCIeditorOperationsClass::preprepreprocessTextForNLChighlightSentence(QVector<HighlightingRule>* highlightingRules, vector<LRPpreprocessorPlainTextWord*>* sentence, const bool useOriginalSpacing)
 {
 	int characterIndexFirst = 0;
 	int charCount = 0;
 	for(int i=0; i<sentence->size(); i++)
 	{
 		string spaceText = STRING_SPACE;
-		GIApreprocessorPlainTextWord* wordTag = (*sentence)[i];
+		LRPpreprocessorPlainTextWord* wordTag = (*sentence)[i];
 		string word = wordTag->tagName;
 
 		bool ignoreWord = false;
 
-		for(int i=0; i<GIA_NLP_NUMBER_OF_MATH_CHARACTERS; i++)
+        for(int i=0; i<LRP_NLP_NUMBER_OF_MATH_CHARACTERS; i++)
 		{
 			if(word.find(nlpMathCharacterArray[i]) != CPP_STRING_FIND_RESULT_FAIL_VALUE)
 			{

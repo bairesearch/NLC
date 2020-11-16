@@ -26,7 +26,7 @@
  * File Name: NLCmain.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -75,9 +75,6 @@ class NLCmainClass
 		private: string removeFileNameExtensions(string NLCfunctionName);
 		#ifdef NLC_PREDEFINED_FUNCTION_NAME_FOR_NATURAL_LANGUAGE_CODE_WITHOUT_FUNCTION_SPECIFIED
 		public: string removeNLCfileNameExtension(string NLCfunctionName);
-		#endif
-		#ifdef NLC_TRANSFORM_THE_ACTION_OF_POSSESSION_EG_HAVING_INTO_A_PROPERTY
-		public: void transformTheActionOfPossessionEgHavingIntoAproperty(vector<GIAentityNode*>* entityNodesActiveListComplete);
 		#endif
 		#ifdef NLC_RECONCILE_CLASS_DEFINITION_LIST_FUNCTION_DECLARATION_ARGUMENTS
 		public: bool generateClassDefinitionFunctionDeclarationsAndReconcileArguments(const int numberOfInputFilesInList, vector<NLCclassDefinition*>* classDefinitionList, vector<vector<GIAentityNode*>*>* entityNodesActiveListCompleteFunctions, vector<NLCcodeblock*>* firstCodeBlockInTreeList);
@@ -160,7 +157,7 @@ class NLCmainClass
 		);
 	
 	#ifdef USE_CS_WORKAROUND
-	bool GIAmainClass::executeNLC2();
+	bool executeNLC2();
 	#endif
 	#ifdef NLC_DEBUG_PRINT_LINES
 	bool DEBUGendPrintLines();

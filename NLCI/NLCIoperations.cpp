@@ -26,7 +26,7 @@
  * File Name: NLCIoperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: 
  * /
  *******************************************************************************/
@@ -162,7 +162,7 @@ bool NLCIoperationsClass::executeNLCwrapper(GIAtranslatorVariablesClass* transla
 
 	translatorVariablesTemplate->isQuery = false;
 	translatorVariablesTemplate->entityNodesActiveListComplete = new vector<GIAentityNode*>;	//NOT USED
-	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;	//NOT USED
+	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string,GIAentityNode*>;	//NOT USED
 	translatorVariablesTemplate->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;	//NOT USED
 	translatorVariablesTemplate->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;	//NOT USED
 	translatorVariablesTemplate->NLPfeatureParser = NLPfeatureParser;
@@ -405,7 +405,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 
 	translatorVariablesTemplate->isQuery = false;
 	translatorVariablesTemplate->entityNodesActiveListComplete = new vector<GIAentityNode*>;	//NOT USED
-	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;	//NOT USED
+	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string,GIAentityNode*>;	//NOT USED
 	translatorVariablesTemplate->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;	//NOT USED
 	translatorVariablesTemplate->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;	//NOT USED
 	translatorVariablesTemplate->NLPfeatureParser = NLPfeatureParser;
@@ -421,7 +421,7 @@ bool NLCIoperationsClass::executeGIAwrapper(GIAtranslatorVariablesClass* transla
 	{
 		translatorVariablesQuery->isQuery = true;
 		translatorVariablesQuery->entityNodesActiveListComplete = new vector<GIAentityNode*>;
-		translatorVariablesQuery->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;
+		translatorVariablesQuery->entityNodesActiveListNetworkIndexes = new unordered_map<string,GIAentityNode*>;
 		translatorVariablesQuery->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;
 		translatorVariablesQuery->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		translatorVariablesQuery->NLPfeatureParser = queryNLPfeatureParser;

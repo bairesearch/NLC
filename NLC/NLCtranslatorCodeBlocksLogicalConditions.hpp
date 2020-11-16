@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksLogicalConditions.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -75,7 +75,7 @@ class NLCtranslatorCodeBlocksLogicalConditionsClass
 					private: bool isWordAuxiliaryOrVerb(LRPpreprocessorPlainTextWord* currentWord);
 				private: int getMathObjectVariableTypeSharedWrapper(bool foundBooleanStatementExpression, NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase);
 					private: int getMathObjectVariableTypeShared(NLCpreprocessorSentence* currentFullSentence, const NLCpreprocessorParsablePhrase* parsablePhrase, string* mathTextSubphraseContainingNLPparsablePhraseRecord);
-						public: bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseIndex, int* mathTextSubphraseContainingNLPparsablePhraseEndIndex);
+						public: bool getMathTextSubphraseContainingNLPparsablePhrase(string mathText, const string parsablePhraseReferenceName, string* mathTextSubphraseContainingNLPparsablePhrase, int* mathTextSubphraseContainingNLPparsablePhraseStartIndex, int* mathTextSubphraseContainingNLPparsablePhraseEndIndex);
 							private: bool findMatchingBrackets(string subphraseTemp, int* subphraseStartPositionTemp, int* subphraseEndPositionTemp);
 			#ifdef NLC_MATH_OBJECTS_ADVANCED
 			private: string generateAssignMathTextValueExecuteFunctionMathText(const NLCpreprocessorSentence* currentFullSentence, string parsablePhraseReferenceName, const bool hasLogicalConditionOperator);

@@ -26,7 +26,7 @@
  * File Name: NLCtranslatorCodeBlocksOperations.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -3537,7 +3537,7 @@ void NLCtranslatorCodeBlocksOperationsClass::fillFunctionAliasClassList(vector<G
 				string aliasName = aliasEntity->entityName;
 				string aliasClassName = aliasClassEntity->entityName;
 					
-				unordered_map<string, string>* functionAliasClassList = NLCcodeBlockClass.getFunctionAliasClassList();
+				unordered_map<string,string>* functionAliasClassList = NLCcodeBlockClass.getFunctionAliasClassList();
 				functionAliasClassList->insert(pair<string, string>(aliasName, aliasClassName));
 			}
 		}

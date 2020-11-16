@@ -26,7 +26,7 @@
  * File Name: NLCprintClassDefinitions.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -228,22 +228,22 @@ bool NLCprintClassDefinitionsClass::printClassDefinitions(vector<NLCclassDefinit
 							#endif
 
 							#ifdef NLC_LIBRARY
-							string allListDeclarationText = NLCprintDefs.generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> propertyLists;
+							string allListDeclarationText = NLCprintDefs.generateCodeAllPropertyListDefinitionText(progLang);	//unordered_map<string,vector<NLCgenericEntityClass*>*> propertyLists;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 							allListDeclarationText = NLCprintDefs.generateCodeAllPropertyIncomingListDefinitionText(progLang);	//vector<NLCgenericEntityClass*> propertyIncomingList;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 							allListDeclarationText = NLCprintDefs.generateCodeAllConditionListDefinitionText(progLang);		//e.g. unordered_map<pair<string, string>*, unordered_map<NLCgenericEntityClass*, NLCgenericEntityClass*>*> conditionLists;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
-							allListDeclarationText = NLCprintDefs.generateCodeAllConditionIncomingListDefinitionText(progLang);	//unordered_map<string, NLCgenericEntityClass*> conditionIncomingList;
+							allListDeclarationText = NLCprintDefs.generateCodeAllConditionIncomingListDefinitionText(progLang);	//unordered_map<string,NLCgenericEntityClass*> conditionIncomingList;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 							#ifdef NLC_RECORD_ACTION_HISTORY
-							allListDeclarationText = NLCprintDefs.generateCodeAllActionListDefinitionText(progLang);		//unordered_map<string, vector<NLCgenericEntityClass*>*> actionLists;
+							allListDeclarationText = NLCprintDefs.generateCodeAllActionListDefinitionText(progLang);		//unordered_map<string,vector<NLCgenericEntityClass*>*> actionLists;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
-							allListDeclarationText = NLCprintDefs.generateCodeAllActionIncomingListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionIncomingLists;
+							allListDeclarationText = NLCprintDefs.generateCodeAllActionIncomingListDefinitionText(progLang);	//unordered_map<string,vector<NLCgenericEntityClass*>*> actionIncomingLists;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
-							allListDeclarationText = NLCprintDefs.generateCodeAllActionSubjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionSubjectLists;
+							allListDeclarationText = NLCprintDefs.generateCodeAllActionSubjectListDefinitionText(progLang);	//unordered_map<string,vector<NLCgenericEntityClass*>*> actionSubjectLists;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
-							allListDeclarationText = NLCprintDefs.generateCodeAllActionObjectListDefinitionText(progLang);	//unordered_map<string, vector<NLCgenericEntityClass*>*> actionObjectLists;
+							allListDeclarationText = NLCprintDefs.generateCodeAllActionObjectListDefinitionText(progLang);	//unordered_map<string,vector<NLCgenericEntityClass*>*> actionObjectLists;
 							NLCprintDefs.printLine(allListDeclarationText, 1, &printedClassDefinitionHeaderText);
 							#endif
 							#endif

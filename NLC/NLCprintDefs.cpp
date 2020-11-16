@@ -26,7 +26,7 @@
  * File Name: NLCprintDefs.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -463,7 +463,7 @@ string NLCprintDefsClass::generateCodeVectorPairListDefinitionTypeText(const str
 string NLCprintDefsClass::generateCodeMapsListDefinitionTypeText(const string conditionClassName, const string conditionObjectClassName, const int progLang)
 {
 	#ifdef NLC_CONDITION_LISTS_STORE_CONDITION_AS_STRING
-	string codeConditionListDefinitionTypeText = progLangClassList2DMapTypeStart[progLang] + progLangClassList2DTypeConditionTypeStringVar[progLang] + progLangClassList2DMapTypeMiddle[progLang] + generatePointerTypeText(conditionObjectClassName, progLang) + progLangClassListTypeEnd[progLang];	//unordered_map<string, conditionObjectClassName*>
+	string codeConditionListDefinitionTypeText = progLangClassList2DMapTypeStart[progLang] + progLangClassList2DTypeConditionTypeStringVar[progLang] + progLangClassList2DMapTypeMiddle[progLang] + generatePointerTypeText(conditionObjectClassName, progLang) + progLangClassListTypeEnd[progLang];	//unordered_map<string,conditionObjectClassName*>
 	#else
 	string codeConditionListDefinitionTypeText = progLangClassList2DMapTypeStart[progLang] + generatePointerTypeText(conditionClassName, progLang) + progLangClassList2DMapTypeMiddle[progLang] + generatePointerTypeText(conditionObjectClassName, progLang) + progLangClassListTypeEnd[progLang];	//unordered_map<conditionClassName*, conditionObjectClassName*>
 	#endif
@@ -597,7 +597,7 @@ string NLCprintDefsClass::generateReinterpretCastOfConditionList(const string ve
 //this code is not currently used;
 string NLCprintDefsClass::generateCodeGenericStringMapListDefinitionText(const string entityClassName, const string genericListNameStart, const string genericListAppendName, const int progLang)
 {
-	string codeEntityStringMapListDefinitionText = generateCodeEntityStringMapListDefinitionTypeText(entityClassName, progLang) + generateGenericStringMapListName(genericListNameStart, genericListAppendName);	//unordered_map<string, entityClassName*> genericListNameStart+genericListAppendName;
+	string codeEntityStringMapListDefinitionText = generateCodeEntityStringMapListDefinitionTypeText(entityClassName, progLang) + generateGenericStringMapListName(genericListNameStart, genericListAppendName);	//unordered_map<string,entityClassName*> genericListNameStart+genericListAppendName;
 	return codeEntityStringMapListDefinitionText;
 }
 string NLCprintDefsClass::generateGenericStringMapListName(const string genericListNameStart, const string genericListAppendName)
@@ -648,7 +648,7 @@ string NLCprintDefsClass::generateCodeAllVectorListAddText(const string allListN
 }
 string NLCprintDefsClass::generateCodeAllVectorListDefinitionTypeText(const int progLang)
 {
-	string codeEntityStringMapListDefinitionTypeText = generateCodeEntityMapListDefinitionTypeText(NLC_LIBRARY_ALL_LISTS_KEY_TYPE, NLCitemClass.generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE), progLang) + CHAR_SPACE;	//unordered_map<string, vector<NLCgenericEntityClass*>*>
+	string codeEntityStringMapListDefinitionTypeText = generateCodeEntityMapListDefinitionTypeText(NLC_LIBRARY_ALL_LISTS_KEY_TYPE, NLCitemClass.generateClassName(NLC_CLASS_DEFINITIONS_GENERIC_LIBRARY_ENTITY_CLASS_TITLE), progLang) + CHAR_SPACE;	//unordered_map<string,vector<NLCgenericEntityClass*>*>
 	return codeEntityStringMapListDefinitionTypeText;
 }
 string NLCprintDefsClass::generateCodeEntityMapListDefinitionTypeText(const string pairItem1className, const string entityClassName, const int progLang)
@@ -752,12 +752,12 @@ string NLCprintDefsClass::generateAllConditionIncomingListName()
 
 string NLCprintDefsClass::generateCodeEntityStringMapListDefinitionText(const string entityClassName, const string mapListName, const int progLang)
 {
-	string codeEntityStringMapListDefinitionText = generateCodeEntityStringMapListDefinitionTypeText(entityClassName, progLang) + mapListName;	//unordered_map<string, entityClassName*> mapListName;
+	string codeEntityStringMapListDefinitionText = generateCodeEntityStringMapListDefinitionTypeText(entityClassName, progLang) + mapListName;	//unordered_map<string,entityClassName*> mapListName;
 	return codeEntityStringMapListDefinitionText;
 }
 string NLCprintDefsClass::generateCodeEntityStringMapListDefinitionTypeText(const string entityClassName, const int progLang)
 {
-	string codeEntityStringMapListDefinitionTypeText = progLangClassList2DMapTypeStart[progLang] + progLangClassList2DTypeConditionTypeStringVar[progLang] + progLangClassList2DMapTypeMiddle[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string, entityClassName*>
+	string codeEntityStringMapListDefinitionTypeText = progLangClassList2DMapTypeStart[progLang] + progLangClassList2DTypeConditionTypeStringVar[progLang] + progLangClassList2DMapTypeMiddle[progLang] + entityClassName + progLangPointer[progLang] + progLangClassListTypeEnd[progLang];	//unordered_map<string,entityClassName*>
 	return codeEntityStringMapListDefinitionTypeText;
 }
 string NLCprintDefsClass::generateEntityStringPairText(const string entity1Name, const string entity2ClassName, const string entity2Name, const int progLang)

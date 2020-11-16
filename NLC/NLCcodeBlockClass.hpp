@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.hpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -562,7 +562,7 @@ class NLCcodeBlockClassClass
 	public: NLCcodeblock* createCodeBlocksFindAliasExecuteFunction(NLCcodeblock* currentCodeBlockInTree, const string aliasName, const GIAentityNode* entity);
 	public: bool findAliasInEntity(GIAentityNode* entity, string* aliasName);
 	#ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
-	public: unordered_map<string, string>* getFunctionAliasClassList();
+	public: unordered_map<string,string>* getFunctionAliasClassList();
 	public: void initialiseFunctionAliasClassList();
 	public: bool findEntityNameInFunctionAliasList(const string aliasName, string* aliasClassName);
 	#endif

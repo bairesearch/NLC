@@ -26,7 +26,7 @@
  * File Name: NLCmain.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -438,7 +438,7 @@ int main(const int argc, const char** argv)
 
 		if(SHAREDvarsClass().argumentExists(argc, argv, "-version"))
 		{
-			cout << "NLC.exe - Project Version: 2m7a 11-September-2020" << endl;
+			cout << "NLC.exe - Project Version: 2o2a 08-November-2020" << endl;
 			exit(EXIT_OK);
 		}
 
@@ -455,7 +455,7 @@ int main(const int argc, const char** argv)
 	GIAtranslatorVariablesClass* translatorVariablesTemplate = new GIAtranslatorVariablesClass();
 	translatorVariablesTemplate->isQuery = false;
 	translatorVariablesTemplate->entityNodesActiveListComplete = new vector<GIAentityNode*>;	//NOT USED
-	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;	//NOT USED
+	translatorVariablesTemplate->entityNodesActiveListNetworkIndexes = new unordered_map<string,GIAentityNode*>;	//NOT USED
 	translatorVariablesTemplate->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;	//NOT USED
 	translatorVariablesTemplate->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;	//NOT USED
 	translatorVariablesTemplate->NLPfeatureParser = NLPfeatureParser;
@@ -864,13 +864,13 @@ bool NLCmainClass::executeNLC2()
 		{
 			//if a function list has been passed to NLC by NLCI for compilation of nlc project to C++, then do not store entities for access by NLCI
 			translatorVariables->entityNodesActiveListComplete = new vector<GIAentityNode*>;
-			translatorVariables->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;
+			translatorVariables->entityNodesActiveListNetworkIndexes = new unordered_map<string,GIAentityNode*>;
 			translatorVariables->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;
 			translatorVariables->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		}
 		#else
 		translatorVariables->entityNodesActiveListComplete = new vector<GIAentityNode*>;
-		translatorVariables->entityNodesActiveListNetworkIndexes = new unordered_map<string, GIAentityNode*>;
+		translatorVariables->entityNodesActiveListNetworkIndexes = new unordered_map<string,GIAentityNode*>;
 		translatorVariables->timeConditionNodesActiveList = new unordered_map<int64_t, GIAtimeConditionNode*>;
 		translatorVariables->entityNodesActiveListSentences = new map<int, vector<GIAentityNode*>*>;
 		#endif
@@ -1148,7 +1148,7 @@ bool NLCmainClass::executeNLC2()
 			string APIclassName = *iter;
 			if(!NLCapiClass().parseDoxygenClassXMLfile(APIclassName, APIsourceFolder, classDefinitionListAPI, progLang))
 			{
-				cout << "main{} error: !NLCapiClass().parseDoxygenClassXMLfile(: " << APIsourceFolder + "..." + APIclassName + "..." << endl;
+				cout << "main{} error: !NLCapiClass{}.parseDoxygenClassXMLfile{: " << APIsourceFolder + "..." + APIclassName + "..." << endl;
 			}
 		}
 		#ifdef NLC_API_SEPARATE_FILE_FOR_WRAPPER_FUNCTIONS

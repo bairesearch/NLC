@@ -26,7 +26,7 @@
  * File Name: NLCcodeBlockClass.cpp
  * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler
- * Project Version: 2m7a 11-September-2020
+ * Project Version: 2o2a 08-November-2020
  * Requirements: requires text parsed by BAI General Intelligence Algorithm (GIA)
  * /
  *******************************************************************************/
@@ -1988,9 +1988,9 @@ bool NLCcodeBlockClassClass::findAliasInEntity(GIAentityNode* entity, string* al
 }
 
 #ifdef NLC_ADVANCED_REFERENCING_SUPPORT_ALIASES_PREVENT_ADDING_AS_FUNCTION_ARGUMENT
-unordered_map<string, string>* functionAliasClassList;	//<aliasName, aliasClassName>
+unordered_map<string,string>* functionAliasClassList;	//<aliasName, aliasClassName>
 
-unordered_map<string, string>* NLCcodeBlockClassClass::getFunctionAliasClassList()
+unordered_map<string,string>* NLCcodeBlockClassClass::getFunctionAliasClassList()
 {
 	return functionAliasClassList;
 }
@@ -1998,13 +1998,13 @@ unordered_map<string, string>* NLCcodeBlockClassClass::getFunctionAliasClassList
 void NLCcodeBlockClassClass::initialiseFunctionAliasClassList()
 {
 	//functionAliasClassList->clear();
-	functionAliasClassList = new unordered_map<string, string>;
+	functionAliasClassList = new unordered_map<string,string>;
 }
 
 bool NLCcodeBlockClassClass::findEntityNameInFunctionAliasList(const string aliasName, string* aliasClassName)
 {
 	bool result = false;
-	unordered_map<string, string>::iterator iter1 = functionAliasClassList->find(aliasName);
+	unordered_map<string,string>::iterator iter1 = functionAliasClassList->find(aliasName);
 	if(iter1 != functionAliasClassList->end())
 	{
 		*aliasClassName = iter1->second;

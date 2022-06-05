@@ -7,6 +7,3 @@
 [submodule "LRP"]
 	path = LRP
 	url = https://github.com/baxterai/LRP.git
-[submodule "SANI"]
-	path = SANI
-	url = https://github.com/baxterai/SANI.git

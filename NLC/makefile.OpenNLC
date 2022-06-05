@@ -1,0 +1,25 @@
+
+
+CC=g++
+#CFLAGS=-c -Wall
+CFLAGS=-c -W --no-warn -I. -I../RT/RT -I../GIA/GIA -std=c++0x
+LDFLAGS=-lglut -lGL -lGLU -lwordnet
+SOURCES= NLCmain.cpp NLCcodeBlockClass.cpp NLCclassDefinitionClass.cpp NLCitemClass.cpp NLCtranslator.cpp NLCtranslatorCodeBlocks.cpp NLCtranslatorCodeBlocksLogicalConditions.cpp NLCtranslatorCodeBlocksLogicalConditionsAdvanced.cpp NLCtranslatorCodeBlocksOperations.cpp NLCtranslatorClassDefinitions.cpp NLCprint.cpp NLCprintCodeBlocks.cpp NLCprintCodeBlocksFunctions.cpp NLCprintClassDefinitions.cpp NLCprintDefs.cpp NLCpreprocessor.cpp NLCpreprocessorSentenceClass.cpp NLCpreprocessorMath.cpp NLCpreprocessorMathLogicalConditions.cpp NLCapi.cpp \
+../GIA/GIA/GIAmain.cpp ../GIA/GIA/GIAnlpParser.cpp ../GIA/GIA/GIAtranslator.cpp ../GIA/GIA/GIAtranslatorGrammar.cpp ../GIA/GIA/GIAtranslatorReferencing.cpp ../GIA/GIA/GIAtranslatorOperations.cpp ../GIA/GIA/GIAsynRelTranslatorParser.cpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelations.cpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelationsStanford.cpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelationsRelex.cpp ../GIA/GIA/GIAsynRelTranslatorDefineSubstances.cpp ../GIA/GIA/GIAsynRelTranslatorLinkEntities.cpp ../GIA/GIA/GIAsynRelTranslatorLinkEntitiesDynamic.cpp ../GIA/GIA/GIAsynRelTranslatorApplyAdvancedFeatures.cpp ../GIA/GIA/GIAentityNodeClass.cpp ../GIA/GIA/GIAentityConnectionClass.cpp ../GIA/GIA/GIAconditionNodeClass.cpp ../GIA/GIA/GIAsentenceClass.cpp ../GIA/GIA/GIAdraw.cpp ../GIA/GIA/GIAxmlConversion.cpp ../GIA/GIA/GIAcxlConversion.cpp ../GIA/GIA/GIAquery.cpp ../GIA/GIA/GIAdatabase.cpp ../GIA/GIA/GIAnlp.cpp ../GIA/GIA/GIAwordnet.cpp ../GIA/GIA/GIAnlg.cpp ../GIA/GIA/GIAposRelTranslator.cpp ../GIA/GIA/GIAposRelTranslatorParser.cpp ../GIA/GIA/GIAposRelTranslatorParserOperations.cpp ../GIA/GIA/GIAposRelTranslatorHybrid.cpp ../GIA/GIA/GIAposRelTranslatorHybridSentenceClass.cpp ../GIA/GIA/GIAposRelTranslatorHybridLogicReference.cpp ../GIA/GIA/GIAposRelTranslatorHybridReferenceSet.cpp ../GIA/GIA/GIAbot.cpp ../GIA/GIA/GIAsynRelTranslatorGeneric.cpp ../GIA/GIA/GIAsynRelTranslatorRules.cpp ../GIA/GIA/GIAsemRelTranslator.cpp ../GIA/GIA/GIAsemRelTranslatorOperations.cpp ../GIA/GIA/GIAsemRelTranslatorParser.cpp ../GIA/GIA/GIAsemRelTranslatorDatabase.cpp ../GIA/GIA/GIAneuralNetworkNonSemantic.cpp ../GIA/GIA/GIAneuralNetworkSymbolicCore.cpp ../GIA/GIA/GIAneuralNetworkOperations.cpp \
+../LRP/LRP/LRPpreprocessor.cpp ../LRP/LRP/LRPpreprocessorSentenceClass.cpp ../LRP/LRP/LRPpreprocessorWordIdentification.cpp ../LRP/LRP/LRPpreprocessorWordReduction.cpp ../LRP/LRP/LRPpreprocessorWordClass.cpp ../LRP/LRP/LRPpreprocessorPOStagger.cpp ../LRP/LRP/LRPpreprocessorPOStaggerDatabase.cpp \
+../RT/RT/XMLparserClass.cpp ../RT/RT/XMLrulesClass.cpp \
+../RT/RT/LDsvg.cpp ../RT/RT/LDopengl.cpp ../RT/RT/LDparser.cpp ../RT/RT/LDsprite.cpp ../RT/RT/LDreferenceManipulation.cpp ../RT/RT/LDreferenceClass.cpp \
+../RT/RT/RTpixelMaps.cpp ../RT/RT/RTppm.cpp ../RT/RT/RTviewinfo.cpp \
+../RT/RT/SHAREDglobalDefs.cpp ../RT/RT/SHAREDvector.cpp ../RT/RT/SHAREDvars.cpp
+
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=OpenNLC.exe
+
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+

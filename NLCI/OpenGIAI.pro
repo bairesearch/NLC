@@ -1,0 +1,27 @@
+QT += widgets
+QT += svg
+
+CONFIG += c++11
+CONFIG += warn_off
+
+LIBS+= -lglut -lGL -lGLU -lwordnet
+
+QMAKE_CXXFLAGS += -I../NLC/
+QMAKE_CXXFLAGS += -I../GIA/GIA/
+QMAKE_CXXFLAGS += -I../RT/RT/
+QMAKE_CXXFLAGS += -I../LRP/LRP/
+
+HEADERS         = NLCIeditorSyntaxHighlighter.hpp NLCIeditorWindow.hpp NLCImainWindow.hpp NLCImain.hpp NLCIeditorOperations.hpp NLCIglobalDefs.hpp NLCItextDisplayOperations.hpp NLCItextDisplayWindow.hpp NLCIoperations.hpp \
+../GIA/GIA/GIAmain.hpp ../GIA/GIA/GIAnlpParser.hpp ../GIA/GIA/GIAtranslator.hpp ../GIA/GIA/GIAtranslatorGrammar.hpp ../GIA/GIA/GIAtranslatorReferencing.hpp ../GIA/GIA/GIAtranslatorOperations.hpp ../GIA/GIA/GIAsynRelTranslatorParser.hpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelations.hpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelationsStanford.hpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelationsRelex.hpp ../GIA/GIA/GIAsynRelTranslatorDefineSubstances.hpp ../GIA/GIA/GIAsynRelTranslatorLinkEntities.hpp ../GIA/GIA/GIAsynRelTranslatorLinkEntitiesDynamic.hpp ../GIA/GIA/GIAsynRelTranslatorApplyAdvancedFeatures.hpp ../GIA/GIA/GIAentityNodeClass.hpp ../GIA/GIA/GIAentityConnectionClass.hpp ../GIA/GIA/GIAconditionNodeClass.hpp ../GIA/GIA/GIAsentenceClass.hpp ../GIA/GIA/GIAdraw.hpp ../GIA/GIA/GIAxmlConversion.hpp ../GIA/GIA/GIAcxlConversion.hpp ../GIA/GIA/GIAquery.hpp ../GIA/GIA/GIAdatabase.hpp ../GIA/GIA/GIAnlp.hpp ../GIA/GIA/GIAwordnet.hpp ../GIA/GIA/GIAnlg.hpp ../GIA/GIA/GIAposRelTranslator.hpp ../GIA/GIA/GIAposRelTranslatorParser.hpp ../GIA/GIA/GIAposRelTranslatorParserOperations.hpp ../GIA/GIA/GIAposRelTranslatorHybrid.hpp ../GIA/GIA/GIAposRelTranslatorHybridSentenceClass.hpp ../GIA/GIA/GIAposRelTranslatorHybridLogicReference.hpp ../GIA/GIA/GIAposRelTranslatorHybridReferenceSet.hpp ../GIA/GIA/GIAbot.hpp ../GIA/GIA/GIAsynRelTranslatorGeneric.hpp ../GIA/GIA/GIAsynRelTranslatorRules.hpp ../GIA/GIA/GIAsemRelTranslator.hpp ../GIA/GIA/GIAsemRelTranslatorOperations.hpp ../GIA/GIA/GIAsemRelTranslatorParser.hpp ../GIA/GIA/GIAsemRelTranslatorDatabase.hpp ../GIA/GIA/GIAneuralNetworkNonSemantic.hpp ../GIA/GIA/GIAneuralNetworkSymbolicCore.hpp ../GIA/GIA/GIAneuralNetworkOperations.hpp \
+../GIA/GIA/GIAglobalDefs.hpp ../GIA/GIA/GIAsynRelTranslatorDefs.hpp ../GIA/GIA/GIAsemRelTranslatorDefs.hpp \
+../LRP/LRP/LRPpreprocessor.hpp ../LRP/LRP/LRPpreprocessorSentenceClass.hpp ../LRP/LRP/LRPpreprocessorWordIdentification.hpp ../LRP/LRP/LRPpreprocessorWordReduction.hpp ../LRP/LRP/LRPpreprocessorWordClass.hpp ../LRP/LRP/LRPpreprocessorPOStagger.hpp ../LRP/LRP/LRPpreprocessorPOStaggerDatabase.hpp \
+../RT/RT/XMLparserClass.hpp ../RT/RT/XMLrulesClass.hpp ../RT/RT/LDsvg.hpp ../RT/RT/LDopengl.hpp ../RT/RT/LDparser.hpp ../RT/RT/LDsprite.hpp ../RT/RT/LDreferenceManipulation.hpp ../RT/RT/LDreferenceClass.hpp ../RT/RT/RTpixelMaps.hpp ../RT/RT/RTppm.hpp ../RT/RT/RTviewinfo.hpp ../RT/RT/SHAREDglobalDefs.hpp ../RT/RT/SHAREDvector.hpp ../RT/RT/SHAREDvars.hpp \
+
+SOURCES         = NLCIeditorSyntaxHighlighter.cpp NLCIeditorWindow.cpp NLCImainWindow.cpp NLCImain.cpp NLCIeditorOperations.cpp NLCItextDisplayOperations.cpp NLCItextDisplayWindow.cpp NLCIoperations.cpp \
+../GIA/GIA/GIAmain.cpp ../GIA/GIA/GIAnlpParser.cpp ../GIA/GIA/GIAtranslator.cpp ../GIA/GIA/GIAtranslatorGrammar.cpp ../GIA/GIA/GIAtranslatorReferencing.cpp ../GIA/GIA/GIAtranslatorOperations.cpp ../GIA/GIA/GIAsynRelTranslatorParser.cpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelations.cpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelationsStanford.cpp ../GIA/GIA/GIAsynRelTranslatorRedistributeRelationsRelex.cpp ../GIA/GIA/GIAsynRelTranslatorDefineSubstances.cpp ../GIA/GIA/GIAsynRelTranslatorLinkEntities.cpp ../GIA/GIA/GIAsynRelTranslatorLinkEntitiesDynamic.cpp ../GIA/GIA/GIAsynRelTranslatorApplyAdvancedFeatures.cpp ../GIA/GIA/GIAentityNodeClass.cpp ../GIA/GIA/GIAentityConnectionClass.cpp ../GIA/GIA/GIAconditionNodeClass.cpp ../GIA/GIA/GIAsentenceClass.cpp ../GIA/GIA/GIAdraw.cpp ../GIA/GIA/GIAxmlConversion.cpp ../GIA/GIA/GIAcxlConversion.cpp ../GIA/GIA/GIAquery.cpp ../GIA/GIA/GIAdatabase.cpp ../GIA/GIA/GIAnlp.cpp ../GIA/GIA/GIAwordnet.cpp ../GIA/GIA/GIAnlg.cpp ../GIA/GIA/GIAposRelTranslator.cpp ../GIA/GIA/GIAposRelTranslatorParser.cpp ../GIA/GIA/GIAposRelTranslatorParserOperations.cpp ../GIA/GIA/GIAposRelTranslatorHybrid.cpp ../GIA/GIA/GIAposRelTranslatorHybridSentenceClass.cpp ../GIA/GIA/GIAposRelTranslatorHybridLogicReference.cpp ../GIA/GIA/GIAposRelTranslatorHybridReferenceSet.cpp ../GIA/GIA/GIAbot.cpp ../GIA/GIA/GIAsynRelTranslatorGeneric.cpp ../GIA/GIA/GIAsynRelTranslatorRules.cpp ../GIA/GIA/GIAsemRelTranslator.cpp ../GIA/GIA/GIAsemRelTranslatorOperations.cpp ../GIA/GIA/GIAsemRelTranslatorParser.cpp ../GIA/GIA/GIAsemRelTranslatorDatabase.cpp ../GIA/GIA/GIAneuralNetworkNonSemantic.cpp ../GIA/GIA/GIAneuralNetworkSymbolicCore.cpp ../GIA/GIA/GIAneuralNetworkOperations.cpp \
+../LRP/LRP/LRPpreprocessor.cpp ../LRP/LRP/LRPpreprocessorSentenceClass.cpp ../LRP/LRP/LRPpreprocessorWordIdentification.cpp ../LRP/LRP/LRPpreprocessorWordReduction.cpp ../LRP/LRP/LRPpreprocessorWordClass.cpp ../LRP/LRP/LRPpreprocessorPOStagger.cpp ../LRP/LRP/LRPpreprocessorPOStaggerDatabase.cpp \
+../RT/RT/XMLparserClass.cpp ../RT/RT/XMLrulesClass.cpp ../RT/RT/LDsvg.cpp ../RT/RT/LDopengl.cpp ../RT/RT/LDparser.cpp ../RT/RT/LDsprite.cpp ../RT/RT/LDreferenceManipulation.cpp ../RT/RT/LDreferenceClass.cpp ../RT/RT/RTpixelMaps.cpp ../RT/RT/RTppm.cpp ../RT/RT/RTviewinfo.cpp ../RT/RT/SHAREDglobalDefs.cpp ../RT/RT/SHAREDvector.cpp ../RT/RT/SHAREDvars.cpp \
+
+# install
+target.path = .
+INSTALLS += target

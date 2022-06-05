@@ -1,32 +1,15 @@
-/*******************************************************************************
+ /*******************************************************************************
  *
- * No License
- * 
- * This work is under exclusive copyright (c) Baxter AI (baxterai.com). 
- * Nobody else can use, copy, distribute, or modify this work without being 
- * at risk of take-downs, shake-downs, or litigation. 
- * 
- * By publishing this source code in a public repository on GitHub, Terms of 
- * Service have been accepted by which Baxter AI have allowed others to view 
- * and fork their repository.
- * 
- * If you find software that doesn't have a license, that generally means you 
- * have no permission from the creators of the software to use, modify, or 
- * share the software. Although a code host such as GitHub may allow you to 
- * view and fork the code, this does not imply that you are permitted to use, 
- * modify, or share the software for any purpose.
- *
- * This notice has been derived from https://choosealicense.com/no-permission 
- * (https://web.archive.org/web/20180312144938/https://choosealicense.com/no-permission)
+ * License: GNU Affero General Public License version 3 (AGPLv3)
  *
  *******************************************************************************/
 
 /*******************************************************************************
  *
  * File Name: NLCIglobalDefs.hpp
- * Author: Richard Bruce Baxter - Copyright (c) 2005-2019 Baxter AI (baxterai.com)
+ * Author: Richard Bruce Baxter - Copyright (c) 2005-2022 Baxter AI (baxterai.com)
  * Project: Natural Language Compiler Interface
- * Project Version: 2o2a 08-November-2020
+ * Project Version: 2p1a 05-June-2022
  * Requirements: 
  * /
  *******************************************************************************/
@@ -37,7 +20,7 @@
 
 #include "NLCglobalDefs.hpp"
 
-//#define NLCI_OPEN_NLC
+#define NLCI_OPEN_NLC
 
 //#define NLCI_PROJECT_NLC_FILE_LIST_STORE_FULL_PATHS	//this will not work if the user adds a new file of the same name as an already associated file to the project
 //#define NLCI_EDITOR_HIGHLIGHT_HTML	//else use qt syntax highlighter
@@ -68,7 +51,7 @@
 #define NLCI_NLP_RELEX_FOLDER NLCI_NLP_ROOT_FOLDER "/relex/relex-1.4.0"
 #define NLCI_NLP_STANFORD_CORE_NLP_FOLDER NLCI_NLP_ROOT_FOLDER "/stanford/coreNLP/stanford-corenlp-full-2016-10-31"
 #define NLCI_NLP_STANFORD_PARSER_FOLDER NLCI_NLP_ROOT_FOLDER "/stanford/parser/stanford-parser-full-2016-10-31"
-#define NLCI_LRP_ROOT_FOLDER NLCI_HOME_FOLDER "/source/source/LRPdata"
+#define NLCI_LRP_ROOT_FOLDER NLCI_HOME_FOLDER "/source/LRPdata"
 
 
 
@@ -91,9 +74,9 @@
 #define NLCI_NLC_INPUT_FOLDER NLCI_NLC_ROOT_FOLDER "/NLCinput"
 #define NLCI_NLC_OUTPUT_FOLDER NLCI_NLC_ROOT_FOLDER "/NLCgenerated"
 #ifdef NLCI_OPEN_NLC
-#define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileOpenNLClibraryGenerated.bat"	//or compileOpenNLClibraryGenerated.bat
+#define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileOpenNLClibraryGenerated.sh"	//or compileOpenNLClibraryGenerated.sh
 #else
-#define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileNLClibraryGenerated.bat"	//or compileOpenNLClibraryGenerated.bat
+#define NLCI_NLC_EXE_NAME_COMPILE_NLC_LIBRARY_GENERATED "compileNLClibraryGenerated.sh"	//or compileOpenNLClibraryGenerated.sh
 #endif
 #define NLCI_NLC_EXE_NAME_NLC_GENERATED_PROGRAM "NLCgeneratedProgram.exe"
 #define NLCI_INPUT_FOLDER (NLCI_NLC_INPUT_FOLDER)
